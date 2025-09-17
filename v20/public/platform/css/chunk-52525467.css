@@ -1,0 +1,58 @@
+
+.content[data-v-a20155ec] {
+  overflow: hidden;
+}
+.code-box[data-v-a20155ec] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-align: center;
+      align-items: center;
+  text-align: center;
+}
+.code[data-v-a20155ec] {
+  margin: 10px;
+}
+.code img[data-v-a20155ec] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+.error-msg[data-v-a20155ec] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+
+
+.label-sm {
+  font-size: 11px;
+  height: 22px;
+  background-color: #82af6f;
+  border: 1px solid #82af6f;
+  color: #ffffff;
+  cursor: pointer;
+  width: 84px;
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+.label-sm.yellow {
+  background-color: #f89406 !important;
+  border: 1px solid #f89406 !important;
+}
+.label-sm.purple {
+  background-color: #9585bf !important;
+  border: 1px solid #9585bf !important;
+}
+.label-sm.blue {
+  background-color: #3a87ad !important;
+  border: 1px solid #3a87ad !important;
+}
+.label-sm.purplish-red {
+  background-color: #d6487e !important;
+  border: 1px solid #d6487e !important;
+}
+

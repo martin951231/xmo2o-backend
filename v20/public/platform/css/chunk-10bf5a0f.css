@@ -1,0 +1,166 @@
+.video_surveillance[data-v-07d2c8e2] {
+  height: calc(30vh - 32px);
+  width: 100%;
+  padding-left: 20px;
+}
+.video_surveillance .top_monitor[data-v-07d2c8e2] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  height: 60%;
+}
+.video_surveillance .top_monitor .left_video[data-v-07d2c8e2] {
+  width: 50%;
+  height: 100%;
+}
+.video_surveillance .top_monitor .left_video .title[data-v-07d2c8e2] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.video_surveillance .top_monitor .left_video .title .left_icon[data-v-07d2c8e2] {
+  width: 15px;
+}
+.video_surveillance .top_monitor .left_video .title .left_icon img[data-v-07d2c8e2] {
+  width: 15px;
+}
+.video_surveillance .top_monitor .left_video .title .right_txt[data-v-07d2c8e2] {
+  color: #fff;
+  width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+.video_surveillance .top_monitor .left_video .video_con[data-v-07d2c8e2] {
+  width: 90%;
+  height: 80%;
+}
+.video_surveillance .top_monitor .left_video .video_con .videoPlayer[data-v-07d2c8e2] {
+  height: 100%;
+  width: 100%;
+}
+.video_surveillance .top_monitor .left_video .video_con .videoPlayer[data-v-07d2c8e2]::-webkit-media-controls-timeline {
+  display: none;
+}
+.video_surveillance .top_monitor .left_video .video_con .videoPlayer[data-v-07d2c8e2]::-webkit-media-controls-play-button {
+  display: none;
+}
+.video_surveillance .top_monitor .left_video .video_con img[data-v-07d2c8e2] {
+  height: 100%;
+  width: 100%;
+}
+.video_surveillance .bottom_face[data-v-07d2c8e2] {
+  width: 100%;
+  height: 40%;
+}
+.video_surveillance .bottom_face .top_title[data-v-07d2c8e2] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.video_surveillance .bottom_face .top_title .left_con[data-v-07d2c8e2] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  width: 50%;
+}
+.video_surveillance .bottom_face .top_title .left_con .icon[data-v-07d2c8e2] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: transparent;
+  border: 3px solid #BFFDFF;
+}
+.video_surveillance .bottom_face .top_title .left_con .title[data-v-07d2c8e2] {
+  color: #ffffff;
+  font-size: 12px;
+  margin-left: 3px;
+}
+.video_surveillance .bottom_face .top_title .left_con .value[data-v-07d2c8e2] {
+  color: #5AE8F5;
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 3px;
+}
+.video_surveillance .bottom_face .top_title .right_con[data-v-07d2c8e2] {
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.video_surveillance .bottom_face .top_title .right_con .icon[data-v-07d2c8e2] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: transparent;
+  border: 3px solid #BFFDFF;
+}
+.video_surveillance .bottom_face .top_title .right_con .title[data-v-07d2c8e2] {
+  color: #ffffff;
+  font-size: 12px;
+  margin-left: 3px;
+}
+.video_surveillance .bottom_face .top_title .right_con .value[data-v-07d2c8e2] {
+  color: #5AE8F5;
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 3px;
+}
+.video_surveillance .bottom_face .top_title .right_con .right_arr[data-v-07d2c8e2] {
+  width: 10px;
+  margin-left: 50px;
+}
+.video_surveillance .bottom_face .top_title .right_con .right_arr img[data-v-07d2c8e2] {
+  width: 10px;
+}
+.video_surveillance .bottom_face .bottom_avr[data-v-07d2c8e2] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  overflow-x: scroll;
+}
+.video_surveillance .bottom_face .bottom_avr[data-v-07d2c8e2]::-webkit-scrollbar {
+  height: 0;
+}
+.video_surveillance .bottom_face .bottom_avr .item[data-v-07d2c8e2] {
+  margin: 5px;
+  width: 50px;
+  height: 50px;
+  background-color: #5AE8F5;
+}
+.video_surveillance .bottom_face .bottom_avr .item[data-v-07d2c8e2]:nth-child(1) {
+  margin-left: 0;
+}
+.video_surveillance .bottom_face .bottom_avr .item img[data-v-07d2c8e2] {
+  width: 50px;
+  height: 50px;
+}
+

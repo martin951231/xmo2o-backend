@@ -1,0 +1,56 @@
+.content[data-v-4721d9fc] {
+  cursor: pointer;
+  overflow: hidden;
+}
+.imgs[data-v-4721d9fc] {
+  transition: all 0.3s;
+}
+.contain[data-v-4721d9fc] {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.cover[data-v-4721d9fc] {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.fill[data-v-4721d9fc] {
+  -o-object-fit: fill;
+     object-fit: fill;
+}
+.none[data-v-4721d9fc] {
+  -o-object-fit: none;
+     object-fit: none;
+}
+.scale-down[data-v-4721d9fc] {
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+}
+.img-border-radius[data-v-4721d9fc] {
+  border-radius: 50% !important;
+}
+.is-hover[data-v-4721d9fc]:hover {
+  transform: scale(1.2);
+}
+.status-1[data-v-4721d9fc] {
+  background-color: #f3f4f6;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.status-1 .trip[data-v-4721d9fc] {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.edit-sort[data-v-ac9c300e] {
+  display: none;
+}
+.form-content[data-v-ac9c300e] {
+  margin-bottom: 16px;
+}
+

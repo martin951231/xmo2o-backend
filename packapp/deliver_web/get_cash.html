@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>提现</title>
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/vant.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/get_cash.css">
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/vue@2.6.10.min.js"></script>
+    <script src="scripts/vant.min.js"></script>
+    <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <!-- <script>
+        // 初始化
+        var vConsole = new VConsole();
+    </script> -->
+</head>
+
+<body>
+    <div id="app">
+        <!-- <section id="header" class="header"></section> -->
+        <section id="content" class="content">
+            <van-field style="margin-top: 1px;" v-model="name" :label="L_('提现人')" :placeholder="L_('请填写真实姓名')" autofocus
+                label-class="left-label"></van-field>
+            <div class="card">
+                <div class="card-line br-f4 fs-13 cr-33 pb-10">{{L_('可提现金额X1X2',{X1:currency,X2:cashMoney})}}</div>
+                <div class="flex flex-end card-line br-f4 lh-50">
+                    <span class="cr-33 mr-5" style="font-size: 24px;">{{currency}}</span>
+                    <!-- 只能输入两位小数 -->
+                    <input class="cr-33 fw-bold flex-1" style="font-size: 28px;max-width: 70%;" :value="inputMoney"
+                        oninput="value=onInput(value)" />
+                    <div class="all-cash" @click="allCash">{{L_('全部提现')}}</div>
+                </div>
+                <div class="mt-10 pb-10 cr-66 fs-11 lh-24">
+                    {{L_('当前余额X1X2，可提现：X1X3',{X1:currency,X2:allMoney,X3:cashMoney})}}
+                    <span v-if="rate > 0">，{{L_('提现服务费率X1%',{X1:rate})}}</span>
+                </div>
+            </div>
+            <div class="mt-10">
+                <van-field readonly clickable :label="L_('提现至')" :value="cashTypeTxt" :placeholder="L_('请选择提现方式')"
+                    @click="showPicker = true" right-icon="arrow-down" label-class="left-label"></van-field>
+                <van-popup v-model="showPicker" round position="bottom">
+                    <van-picker show-toolbar :columns="typeList" @cancel="showPicker = false" value-key="name"
+                        @confirm="onConfirm" :confirm-button-text="L_('确认')" :cancel-button-text="L_('取消')"></van-picker>
+                </van-popup>
+            </div>
+            <van-field v-if="cashType == 'alipay' " style="margin-top: 1px;" v-model="account" :label="L_('支付宝账号')"
+                :formatter="formatter" :placeholder="L_('请填写支付宝账号')" label-class="left-label" right-icon="warning-o"
+                @click-right-icon="accountClick">
+            </van-field>
+            <div class="cash-btn" @click="cash">
+                {{L_('提现')}}
+            </div>
+        </section>
+    </div>
+
+</body>
+<script src="scripts/common.js?t=4"></script>
+<script src="./scripts/work/get_cash.js?t=121"></script>
+
+</html>

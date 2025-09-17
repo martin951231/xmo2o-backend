@@ -1,0 +1,30 @@
+.user-register.error {
+  color: #ff0000;
+}
+.user-register.warning {
+  color: #ff7e05;
+}
+.user-register.success {
+  color: #52c41a;
+}
+.user-layout-register .ant-input-group-addon:first-child {
+  background-color: #fff;
+}
+
+.user-layout-register > h3[data-v-49c86bda] {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+.user-layout-register .getCaptcha[data-v-49c86bda] {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+.user-layout-register .register-button[data-v-49c86bda] {
+  width: 50%;
+}
+.user-layout-register .login[data-v-49c86bda] {
+  float: right;
+  line-height: 40px;
+}
+

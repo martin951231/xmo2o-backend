@@ -1,0 +1,26 @@
+
+[data-v-c7e1aee0] .imgname {
+  width: 100px;
+}
+[data-v-c7e1aee0] .balance_info .textarea {
+  width: 80% !important;
+}
+[data-v-c7e1aee0] .label_col {
+  width: 90px;
+  display: inline-block;
+}
+[data-v-c7e1aee0] .balance_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-c7e1aee0] .balance_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-c7e1aee0] .balance_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-c7e1aee0] .balance_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+

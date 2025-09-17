@@ -1,0 +1,25 @@
+.weui-media-box__title{ font-size: 14px;}
+.weui-media-box_text .weui-media-box__title{ margin-bottom: 4px;}
+.header{ height: 44px; width: 100%; background: #f2f2f2; position: relative;}
+.header .com_til{ line-height: 44px; font-size: 17px; color: #000; font-weight: bold; text-align: center; width: 60%; display: block; margin: 0 auto;}
+.icon_menu{ width: 44px; height: 44px; position: absolute; right: 10px; top:0; background: url(../images/caidan.png) center no-repeat; background-size: 30px auto;}
+.close{ width: 44px; height: 44px; background: url(../images/close.png) left center no-repeat; background-size: 20px auto; position: absolute; left: 10px; top:0px;}
+.goleft{width: 44px;height: 44px; background: url(../images/goLeft.png) left center no-repeat;background-size:30px auto; position: absolute; left: 0; top:0}
+.btn_recharge{ margin:20px; background: #0f9cd6; display: block; width: auto;}
+.weui-icon_toast.weui-icon-success-no-circle:before{ display: none; }
+.weui-icon_toast{ margin: 5px 0;}
+.weui-toast{ min-height: 30px;  }
+.weui-toast__content{ margin-bottom: 0;}
+.weui-dialog__btn_primary{ color: #0f9cd6;}
+.code{ padding:20px; text-align: center; }
+.code img{ max-width: 100%;}
+.code p.p1{font-size: 16px; font-weight: bold; }
+.cz_btn{  margin: 0 10px; padding: 0 5px; background:#0f9cd6; color:#fff; border-radius:4px; font-size:12px; padding:2px 4px;}
+.codeTxt{ padding: 10px 20px;}
+.icon_search{ position: absolute; left: 10px; top:4px;width: 24px; height: 24px; } 
+.searchBox{ position: relative; border:1px solid #ddd; background: #fff; margin: 10px; height: 30px; line-height: 30px; border-radius: 12px; }
+.searchBox input{ padding-left: 42px;}
+
+.schoolList{ padding: 5px 0; }
+.schoolList a{ display: block; padding:10px; color: #666; border-top:1px solid #ddd; background: url(../images/pointRg.png) right 10px center no-repeat; background-size: 15px auto;}
+ 

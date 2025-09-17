@@ -1,0 +1,28 @@
+#charts_container_15[data-v-e701dcdc] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px)/3 - 42px);
+  position: relative;
+}
+#charts_container_15 .videoPlayer2[data-v-e701dcdc] {
+  width: 92%;
+  height: 92%;
+  -o-object-fit: fill;
+     object-fit: fill;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+#charts_container_15 .introduce[data-v-e701dcdc] {
+  position: absolute;
+  left: 25px;
+  top: 15px;
+  color: #ffffff;
+  z-index: 99;
+}
+#myFlvVideo2[data-v-e701dcdc]::-webkit-media-controls-timeline {
+  display: none;
+}
+#myFlvVideo2[data-v-e701dcdc]::-webkit-media-controls-play-button {
+  display: none;
+}
+

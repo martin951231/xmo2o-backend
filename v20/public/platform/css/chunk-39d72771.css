@@ -1,0 +1,15 @@
+
+.ant-form-item label {
+    width: 50px;
+}
+.ant-card-body {
+    padding: 1px;
+    zoom: 1;
+}
+.txt-green {
+  color: green;
+}
+.txt-red {
+    color: red;
+}
+

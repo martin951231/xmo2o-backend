@@ -1,0 +1,598 @@
+.al-title {
+  background-color: #fff;
+  font-size: 16px;
+  margin: 10px 0 0 10px;
+}
+
+.al-container {
+  background-color: #fff;
+}
+
+.al-container .al-item {
+  display: block;
+  width: 300.37px;
+  margin-left: 9.81px;
+  padding: 14.08px 3.84px 3.84px 0;
+}
+
+.al-container .al-main-img {
+  width: 292.69px;
+  height: 164.27px;
+  border-top-left-radius: 1.28px;
+  border-top-right-radius: 1.28px;
+}
+
+.al-container .al-buy-btn {
+  float: right;
+  margin-right: 17.07px;
+}
+
+.al-container .al-board {
+  color: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 292.69px;
+  height: 34.13px;
+  line-height: 34.13px;
+  text-align: center;
+  border-bottom-left-radius: 1.28px;
+  border-bottom-right-radius: 1.28px;
+}
+
+.al-container .al-type-name {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 28.59px;
+  height: 13.65px;
+  margin-top: 10.24px;
+  font-size: 14.51px;
+  line-height: 13.65px;
+  letter-spacing: 0px;
+  color: #ffffff;
+}
+
+.al-container .al-type-name p {
+  font-weight: bold;
+}
+
+.al-container .al-time-count {
+  -webkit-box-flex: 2;
+      -ms-flex: 2;
+          flex: 2;
+  line-height: 35.01px;
+}
+
+.al-container .al-time-count p {
+  font-size: 10.24px;
+}
+
+.al-container .al-remain-sku {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 57.60px;
+  height: 12.80px;
+  line-height: 12.80px;
+  margin-top: 10.67px;
+  background-color: #ffffff;
+  border-radius: 6.40px;
+  font-size: 7.68px;
+  text-align: center;
+}
+
+.al-container .al-action-list {
+  height: 27.31px;
+  text-align: left;
+}
+
+.al-container .al-buy-btn {
+  display: inline-block;
+  width: 52.91px;
+  height: 22.19px;
+  border-radius: 3.41px;
+  font-size: 10.24px;
+  line-height: 22.19px;
+  text-align: center;
+}
+
+.al-container .al-good-name {
+  margin-left: 8.53px;
+  margin-right: 21.33px;
+  font-size: 12.80px;
+  font-weight: normal;
+  font-stretch: normal;
+  height: 25.60px;
+  line-height: 25.60px;
+  text-align: left;
+  color: #333333;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.al-container .al-price {
+  display: inline-block;
+  height: 22.19px;
+  line-height: 22.19px;
+  margin-left: 8.53px;
+  text-align: left;
+}
+
+.al-container .al-price p {
+  display: inline-block;
+}
+
+.al-container .al-price-prefix {
+  font-size: 10.24px;
+}
+
+.al-container .al-current-price {
+  font-size: 15.36px;
+}
+
+.al-container .al-original-price {
+  color: #6d6d6d;
+  font-size: 10.24px;
+  text-decoration: line-through;
+}
+
+.al-container .al-btn-buy-lg {
+  width: 163.84px;
+}
+
+.al-container .al-btn-buy-md {
+  width: 133px;
+}
+
+.al-container.al-display-style-1 .al-main-image-size-style-2.al-main-img {
+  height: 292.69px;
+}
+
+.al-container.al-display-style-2 {
+  white-space: nowrap;
+}
+
+.al-container.al-display-style-2 .al-item {
+  display: inline-block;
+  width: 267.09px;
+  padding: 1.71px 0.00px 0.00px 2.56px;
+}
+
+.al-container.al-display-style-2 .al-board {
+  width: 258.56px;
+}
+
+.al-container.al-display-style-2 .al-main-img {
+  width: 258.56px;
+}
+
+.al-container.al-display-style-2 .al-main-image-size-style-2.al-main-img {
+  height: 258.56px;
+}
+
+.al-container.al-display-style-4 {
+  white-space: nowrap;
+}
+
+.al-container.al-display-style-4 .al-item {
+  display: inline-block;
+  float: left;
+  width: 153.60px;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 12.80px;
+}
+
+.al-container.al-display-style-4 .al-item:nth-child(2n-1) {
+  margin-left: 12.80px;
+}
+
+.al-container.al-display-style-4 .al-type-name {
+  width: 30.72px;
+  height: 9.39px;
+  font-size: 10.24px;
+  font-weight: normal;
+  line-height: 6.83px;
+}
+
+.al-container.al-display-style-4 .al-time-count {
+  line-height: 26.48px;
+}
+
+.al-container.al-display-style-4 .al-time-count p {
+  font-size: 7.25px;
+  -webkit-transform: scale(0.725);
+          transform: scale(0.725);
+}
+
+.al-container.al-display-style-4 .al-remain-sku {
+  display: inline-block;
+  margin-top: 0;
+  margin-left: 4.27px;
+}
+
+.al-container.al-display-style-4 .al-main-img {
+  width: 140.80px;
+  height: 85.33px;
+}
+
+.al-container.al-display-style-4 .al-board {
+  width: 140.80px;
+  height: 25.60px;
+  line-height: 25.60px;
+}
+
+.al-container.al-display-style-4 .al-good-name {
+  font-size: 11.95px;
+  line-height: 16.64px;
+  width: 136.53px;
+  margin-left: 4.27px;
+  height: 29.87px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.al-container.al-display-style-4 .al-price {
+  margin-left: 4.27px;
+}
+
+.al-container.al-display-style-4 .al-price-prefix, .al-container.al-display-style-4 .al-original-price {
+  font-size: 8.53px;
+}
+
+.al-container.al-display-style-4 .al-current-price {
+  font-size: 12.80px;
+}
+
+.al-container.al-display-style-5 .al-item {
+  width: 299.52px;
+  height: 100.69px;
+  padding: 11.52px 11.52px 8.53px 2.56px;
+  margin: 0;
+  margin-left: 10.24px;
+  border-bottom: 0.43px solid #eeeeee;
+}
+
+.al-container.al-display-style-5 .al-left, .al-container.al-display-style-5 .al-right {
+  display: inline-block;
+  height: 93.87px;
+  float: left;
+}
+
+.al-container.al-display-style-5 .al-right {
+  margin-left: 6.83px;
+}
+
+.al-container.al-display-style-5 .al-time-count {
+  line-height: 20.08px;
+}
+
+.al-container.al-display-style-5 .al-time-count p {
+  font-size: 6.40px;
+  -webkit-transform: scale(0.64);
+          transform: scale(0.64);
+}
+
+.al-container.al-display-style-5 .al-remain-sku {
+  display: inline-block;
+  margin-top: 0;
+  margin-left: 4.27px;
+}
+
+.al-container.al-display-style-5 .al-main-img {
+  width: 102.40px;
+  height: 72.53px;
+}
+
+.al-container.al-display-style-5 .al-board {
+  width: 102.40px;
+  height: 21.33px;
+  line-height: 21.33px;
+}
+
+.al-container.al-display-style-5 .al-good-name {
+  font-size: 11.95px;
+  line-height: 16.64px;
+  width: 164.69px;
+  margin-left: 4.27px;
+  margin-top: 5.55px;
+  height: 29.87px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
+.al-container.al-display-style-5 .al-price {
+  margin-top: 5.55px;
+}
+
+.al-container.al-display-style-5 .al-price-prefix, .al-container.al-display-style-5 .al-original-price {
+  font-size: 9.39px;
+}
+
+.al-container.al-display-style-5 .al-current-price {
+  font-size: 14.51px;
+}
+
+.al-container.al-display-style-5 .al-remain-sku {
+  margin-top: 10.67px;
+}
+
+.al-container.al-display-style-5 .al-buy-btn {
+  margin-top: 7.68px;
+}
+
+.blackTheme .al-container {
+  color: #000000;
+}
+
+.blackTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#595959), color-stop(71%, #000000)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #595959 0%, #000000 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.blackTheme .al-container .al-remain-sku {
+  color: #000000;
+}
+
+.blackTheme .al-container.al-display-style-4 .al-remain-sku, .blackTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #000000;
+}
+
+.blackTheme .al-container .al-buy-btn-style-1, .blackTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #000000;
+  height: 21.33px;
+  border: 0.85px solid #000000;
+}
+
+.blackTheme .al-container .al-buy-btn-style-2, .blackTheme .al-container .al-buy-btn-style-4 {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.blackTheme .al-container .al-buy-btn-style-3, .blackTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.blackTheme .al-container .al-price {
+  color: #595959;
+}
+
+.redTheme .al-container {
+  color: #FA0029;
+}
+
+.redTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#F45C43), color-stop(71%, #FA0029)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #F45C43 0%, #FA0029 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.redTheme .al-container .al-remain-sku {
+  color: #FA0029;
+}
+
+.redTheme .al-container.al-display-style-4 .al-remain-sku, .redTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #FA0029;
+}
+
+.redTheme .al-container .al-buy-btn-style-1, .redTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #FA0029;
+  height: 21.33px;
+  border: 0.85px solid #FA0029;
+}
+
+.redTheme .al-container .al-buy-btn-style-2, .redTheme .al-container .al-buy-btn-style-4 {
+  background-color: #FA0029;
+  color: #ffffff;
+}
+
+.redTheme .al-container .al-buy-btn-style-3, .redTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.redTheme .al-container .al-price {
+  color: #F45C43;
+}
+
+.orangeTheme .al-container {
+  color: #FF5C1C;
+}
+
+.orangeTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#F06A0B), color-stop(71%, #FF5C1C)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #F06A0B 0%, #FF5C1C 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.orangeTheme .al-container .al-remain-sku {
+  color: #FF5C1C;
+}
+
+.orangeTheme .al-container.al-display-style-4 .al-remain-sku, .orangeTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #FF5C1C;
+}
+
+.orangeTheme .al-container .al-buy-btn-style-1, .orangeTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #FF5C1C;
+  height: 21.33px;
+  border: 0.85px solid #FF5C1C;
+}
+
+.orangeTheme .al-container .al-buy-btn-style-2, .orangeTheme .al-container .al-buy-btn-style-4 {
+  background-color: #FF5C1C;
+  color: #ffffff;
+}
+
+.orangeTheme .al-container .al-buy-btn-style-3, .orangeTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.orangeTheme .al-container .al-price {
+  color: #F06A0B;
+}
+
+.blueTheme .al-container {
+  color: #0098F8;
+}
+
+.blueTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#43B4FC), color-stop(71%, #0098F8)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #43B4FC 0%, #0098F8 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.blueTheme .al-container .al-remain-sku {
+  color: #0098F8;
+}
+
+.blueTheme .al-container.al-display-style-4 .al-remain-sku, .blueTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #0098F8;
+}
+
+.blueTheme .al-container .al-buy-btn-style-1, .blueTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #0098F8;
+  height: 21.33px;
+  border: 0.85px solid #0098F8;
+}
+
+.blueTheme .al-container .al-buy-btn-style-2, .blueTheme .al-container .al-buy-btn-style-4 {
+  background-color: #0098F8;
+  color: #ffffff;
+}
+
+.blueTheme .al-container .al-buy-btn-style-3, .blueTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.blueTheme .al-container .al-price {
+  color: #43B4FC;
+}
+
+.pinkDarkTheme .al-container {
+  color: #FF007C;
+}
+
+.pinkDarkTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#FC6767), color-stop(71%, #FF007C)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #FC6767 0%, #FF007C 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.pinkDarkTheme .al-container .al-remain-sku {
+  color: #FF007C;
+}
+
+.pinkDarkTheme .al-container.al-display-style-4 .al-remain-sku, .pinkDarkTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #FF007C;
+}
+
+.pinkDarkTheme .al-container .al-buy-btn-style-1, .pinkDarkTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #FF007C;
+  height: 21.33px;
+  border: 0.85px solid #FF007C;
+}
+
+.pinkDarkTheme .al-container .al-buy-btn-style-2, .pinkDarkTheme .al-container .al-buy-btn-style-4 {
+  background-color: #FF007C;
+  color: #ffffff;
+}
+
+.pinkDarkTheme .al-container .al-buy-btn-style-3, .pinkDarkTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.pinkDarkTheme .al-container .al-price {
+  color: #FC6767;
+}
+
+.purpleTheme .al-container {
+  color: #7948FD;
+}
+
+.purpleTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#E100FF), color-stop(71%, #7948FD)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #E100FF 0%, #7948FD 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.purpleTheme .al-container .al-remain-sku {
+  color: #7948FD;
+}
+
+.purpleTheme .al-container.al-display-style-4 .al-remain-sku, .purpleTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #7948FD;
+}
+
+.purpleTheme .al-container .al-buy-btn-style-1, .purpleTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #7948FD;
+  height: 21.33px;
+  border: 0.85px solid #7948FD;
+}
+
+.purpleTheme .al-container .al-buy-btn-style-2, .purpleTheme .al-container .al-buy-btn-style-4 {
+  background-color: #7948FD;
+  color: #ffffff;
+}
+
+.purpleTheme .al-container .al-buy-btn-style-3, .purpleTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.purpleTheme .al-container .al-price {
+  color: #E100FF;
+}
+
+.brownTheme .al-container {
+  color: #B7A392;
+}
+
+.brownTheme .al-container .al-board {
+  background-image: -webkit-gradient(linear, right top, left top, from(#CBBCAF), color-stop(71%, #B7A392)), -webkit-gradient(linear, left top, left bottom, from(#da3c3f), to(#da3c3f));
+  background-image: linear-gradient(-90deg, #CBBCAF 0%, #B7A392 71%), linear-gradient(#da3c3f, #da3c3f);
+  background-blend-mode: normal, normal;
+}
+
+.brownTheme .al-container .al-remain-sku {
+  color: #B7A392;
+}
+
+.brownTheme .al-container.al-display-style-4 .al-remain-sku, .brownTheme .al-container.al-display-style-5 .al-remain-sku {
+  border: 0.43px solid #B7A392;
+}
+
+.brownTheme .al-container .al-buy-btn-style-1, .brownTheme .al-container .al-buy-btn-style-3 {
+  background-color: #fff;
+  color: #B7A392;
+  height: 21.33px;
+  border: 0.85px solid #B7A392;
+}
+
+.brownTheme .al-container .al-buy-btn-style-2, .brownTheme .al-container .al-buy-btn-style-4 {
+  background-color: #B7A392;
+  color: #ffffff;
+}
+
+.brownTheme .al-container .al-buy-btn-style-3, .brownTheme .al-container .al-buy-btn-style-4 {
+  border-radius: 11.09px;
+}
+
+.brownTheme .al-container .al-price {
+  color: #CBBCAF;
+}
+/*# sourceMappingURL=customFieldActivities.css.map */

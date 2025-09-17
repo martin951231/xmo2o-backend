@@ -1,0 +1,92 @@
+// 弹框
+.cu-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999;
+    opacity: 0;
+    outline: 0;
+    text-align: center;
+    -ms-transform: scale(1.185);
+    transform: scale(1.185);
+    backface-visibility: hidden;
+    perspective: 2000rpx;
+    background: rgba(0, 0, 0, 0.6);
+    transition: all 0.3s ease-in-out 0s;
+    pointer-events: none;
+}
+
+.cu-modal::before {
+    content: "\200B";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.cu-modal.show {
+    opacity: 1;
+    transition-duration: 0.3s;
+    -ms-transform: scale(1);
+    transform: scale(1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    pointer-events: auto;
+}
+
+.cu-dialog {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    max-width: 100%;
+    overflow: hidden;
+	box-sizing: border-box;
+}
+
+.cu-dialog-lg {
+	width: 90%;
+}
+
+.cu-modal.bottom-modal {
+	text-align: left;
+}
+
+.cu-modal.bottom-modal::before {
+    vertical-align: bottom;
+}
+
+.cu-modal.bottom-modal .cu-dialog {
+    width: 100%;
+    border-radius: 0;
+}
+
+.cu-modal.bottom-modal {
+    margin-bottom: -1000upx;
+}
+
+.cu-modal.bottom-modal.show {
+    margin-bottom: 0;
+}
+
+.cu-content {
+	width: 100%;
+	border-radius: 20rpx;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+.cu-modal.bottom-modal .cu-content {
+	border-radius: 30rpx 30rpx 0 0;
+}
+.close-icon {
+	margin: 20rpx auto;
+	padding: 20rpx 40rpx;
+	display: inline-block;
+}
+
+.close-icon .iconfont {
+	font-size: 48rpx;
+}

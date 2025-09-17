@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>在线客服</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>  
+		<link rel="stylesheet" type="text/css" href="scripts/weui/weui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/pigcms.css">
+		<link rel="stylesheet" type="text/css" href="css/chat.css">
+		<script type="text/javascript" src="https://dev.zopim.com/web-sdk/1.8.1/web-sdk.js"></script>
+	</head>
+	<body> 
+		<div class="container">
+			<div class="list-wrapper">
+				<ul class="list"></ul>
+			</div>
+			
+
+			<div class="footer flexs">
+				
+				<div class="file-box">
+					<input id="fileBtn" type="file" accept="image/*">
+					<img class="img" src="images/file.png">
+				</div>
+				<textarea id="textarea" class="input flex-grow" type="text" name="input" rows='4' placeholder="消息"></textarea>
+				<button class="send L_">发送</button>
+				
+				
+			</div>
+		</div>
+		
+		
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/textareaH.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/weui/weui.min.js"></script>
+		<script>
+			$(function(){
+				// 初始化页面高度
+				$('.container').height($(window).height())
+			    $('.list-wrapper').height($(window).height() - 50)
+
+			    // textarea高度自适应
+			    var text = document.getElementById("textarea");
+        		autoTextarea(text, 0, 132);// 调用
+				
+				
+				// 获取用户信息
+				common.removeCache('userInfo',true);
+				var userInfo = {};
+				var urlParam = {};
+				load_config(function(urlParam){
+				
+					replace_html_lang();
+					
+					userInfo = common.getCache('userInfo',true);
+					
+					var loading = weui.loading('loading', {
+						className: ''
+					});
+					
+					
+					for (var i in urlParam) {
+						urlParam[i] = decodeURIComponent(urlParam[i])
+						if (i == 'zendesk_tag') {
+							urlParam[i] = urlParam[i].split('^&^')
+						}
+						if (i == 'zendesk_newPage') {
+							urlParam[i] = urlParam[i].split('&^&^&')
+							for (var j=0; j<urlParam[i].length; j++) {
+								urlParam[i][j] = urlParam[i][j].split('^&^')
+							}
+						}
+					}
+					urlParam = urlParam
+					console.log('userInfo',userInfo);
+					console.log('url参数', urlParam)
+
+					zChat.init({
+					    account_key: urlParam.account_key
+					});
+					
+					zChat.on('connection_update', function(status) {
+					    if (status === 'connected') {
+					    	document.getElementById("textarea").focus();
+        						textareaFocus();
+        						
+					        // Start consuming your API here
+					        console.log('Zendesk-chat已连接', status)
+
+					        // ^&^
+					        if (urlParam.zendesk_tag) {
+					        	zChat.addTags(urlParam.zendesk_tag, function(err) { 
+						        	console.log('添加用户标签成功')
+						        });
+					        }
+					        
+							var zChatDepartment = {
+								'goldcoast':1818127635,
+								'brisbane':1818140155,
+								'sydney':1818140157,
+								'canberra':1818234383,
+								'melbourne':1818405615,
+								'aldelaide':1818405617,
+								'perth':1818405619
+							};
+							var userCity = urlParam.city ? urlParam.city : (urlParam.zendesk_tag ? urlParam.zendesk_tag[0] : '');
+							if(userCity){
+								userCity = userCity.toLowerCase().replace(' ','');
+								console.log('userCity', userCity);
+								console.log('zChatDepartment[userCity]', zChatDepartment[userCity]);
+								zChat.setVisitorDefaultDepartment(zChatDepartment[userCity], function(err) {
+									console.log('setVisitorDefaultDepartment',err);
+								});
+							}
+
+					        var visitorInfo = {
+							    display_name: userInfo.nickname + ' ' + userInfo.uid,
+							    email: userInfo.email,
+							    phone: userInfo.phone
+							};
+
+							zChat.setVisitorInfo(visitorInfo, function(err) { 
+								console.log('发送用户信息成功')
+							});
+
+							if(typeof urlParam.zendesk_newPage != 'undefined'){
+								for (var i=0; i<urlParam.zendesk_newPage.length; i++) {
+									if (urlParam.zendesk_newPage[i] != undefined) {
+										var newPage = {
+											title: urlParam.zendesk_newPage[i][0],
+											url: urlParam.zendesk_newPage[i][1]
+										};
+										zChat.sendVisitorPath(newPage, function(err) { 
+											console.log('发送用户页面路径成功')
+										});
+									}
+								}
+							}
+
+
+							
+							loading.hide(function() {
+								 console.log('`loading` has been hidden');
+								 // 进入页面让键盘自动聚焦
+							});
+
+
+							
+							
+							
+							// 发送文字
+							$(document).on('click', '.send', function(){
+					        	var input_msg = $('#textarea').val()
+					        	if(input_msg != '') {
+					        		zChat.sendChatMsg(input_msg, function(err) { 
+					        			appendToList('my', input_msg, '', '')
+					        			$('#textarea').val('').height(20)
+					        			window.scroll(0, 0);
+					        		});
+					        	}
+					        	return false
+							})
+					       
+
+					        // 发送图片
+					        $('#fileBtn').on('change', function(){
+					        	console.log('44444445555',  $("#fileBtn"))
+					        	var file = $("#fileBtn")[0].files[0]
+					        	
+					        	if(file){
+					        		zChat.sendFile(file, function(err, data){
+					        			$('#fileBtn').val('');
+						        		console.log('发送文件成功', data)
+						        		
+						        		if (data.mime_type.indexOf('image') != -1) {
+								        	var img_size = calcImg(data.metadata.width, data.metadata.height)
+								        	appendToList('my', '', '', { width:img_size.width, height:img_size.height, url:data.url })
+								        }else{
+											appendToList('my', '', data.name, '')
+										}
+						        	})
+					        	}
+					        	
+					        })
+					    } else if (status === 'closed') {
+							weui.alert( L_('连接错误！') )
+					    }
+					});
+
+					// 监听聊天信息的到达
+					zChat.on('chat', function(event_data) {
+						// 文件类型
+						if (event_data.type === 'chat.file') {
+					        if(event_data.nick.indexOf('visitor') !== -1) {
+					        	if (event_data.attachment.mime_type.indexOf('image') != -1) {
+						        	var img_size = calcImg(event_data.attachment.metadata.width, event_data.attachment.metadata.height)
+						        	appendToList('my', '', '', { width:img_size.width, height:img_size.height, url:event_data.attachment.url })
+						        }else{
+									appendToList('my', '', event_data.attachment.name, '')
+								}
+
+					        } else { 
+					        	if (event_data.attachment.mime_type.indexOf('image') != -1) {
+						        	var img_size = calcImg(event_data.attachment.metadata.width, event_data.attachment.metadata.height)
+						        	appendToList(event_data.display_name, '', '', {width:img_size.width, height:img_size.height, url:event_data.attachment.url})
+						        	
+						        }else{
+									appendToList(event_data.display_name, '', event_data.attachment.name, '')
+								}
+					        }
+					        
+					    }
+
+					    // 文本类型
+					    if (event_data.type === 'chat.msg') {
+							if(event_data.nick.indexOf('visitor') !== -1){
+								appendToList('my', event_data.msg, '', '')
+							}else{
+								appendToList(event_data.display_name, event_data.msg, '', '')
+							}
+					    }
+					});
+				},true);
+
+				
+				// 将聊天信息显示在页面上
+				function appendToList (person, msg, file_name, img) {
+					var html = ''
+					if (person == 'my') {
+						html = '<li class="item flexs my flex-xreverse"><div class="left"><img src="'+userInfo.avatar+'"></div><div class="right"><div class="name">'+ L_('我') +'</div>'
+						if (msg != '') {
+							html += '<div class="content">'+ msg
+						}
+						if (file_name != '') {
+							html += '<div class="content">'+ file_name + ' ['+L_('暂时不支持该文件查看')+']'
+						}
+						if (img != '') {
+							html += '<div class="content img_handle"><img style="height:'+ img.height +'px;width:'+ img.width +'px" src="'+ img.url + '">'
+						}
+						html +='</div><div class="arrow"><img src="images/san-right.png"></div></div></li>'
+					}
+
+					if (person != 'my') {
+						html = '<li class="item flexs"><div class="left"><img src="images/avatar-left.jpg"></div><div class="right"><div class="name">'+ person +'</div>'
+						if (msg != '') {
+							html += '<div class="content">'+ msg
+						}
+						if (file_name != '') {
+							html += '<div class="content">'+ file_name + ' ['+L_('暂时不支持该文件查看')+']'
+						}
+						if (img != '') {
+							html += '<div class="content img_handle"><img style="height:'+ img.height +'px;width:'+ img.width +'px" src="'+ img.url + '">'
+						}
+						html +='</div><div class="arrow"><img src="images/san-right.png"></div></div></li>'
+					}
+
+					$('.list').append(html)
+					var scroll_distance = $('.list').height() - $('.list-wrapper').height()
+					$('.list-wrapper').scrollTop(scroll_distance)
+				}
+
+
+				// 计算图片尺寸
+				var img_w = $(window).width() - 140
+				function calcImg (width, height) {
+					var scale = width / height
+		        	var img_h = img_w / scale
+
+		        	if (img_h > img_w) {
+		        		img_h = img_w
+		        		img_w = img_h * scale
+		        	}
+		        	return {width:img_w, height:img_h}
+				}
+				
+				$(document).on('click','.img_handle',function(){
+					var gallery = weui.gallery($(this).find('img').attr('src'), {
+						className: '',
+						onDelete: function(){
+							if(confirm( L_('确定删除该图片？') )){ 
+								console.log('删除'); 
+							}
+							gallery.hide(function(){
+								console.log('`gallery` has been hidden');
+							});
+						}
+					});
+					$('.weui-gallery__del').remove();
+				});
+
+
+				var timerId = null; 
+				$('#textarea').on('focus', function(e){
+					textareaFocus()
+				})
+
+				function textareaFocus () {
+					var cnt = 0;
+				  	setInterval(function(){
+					    if (cnt < 3) {
+					      cnt++;
+					    } else {
+					      clearInterval(timerId);
+					      timerId = null;
+					      return;
+					    }
+					    document.body.scrollTop = document.body.scrollHeight;
+					}, 300);
+				}
+				
+				$('#textarea').on('blur', function(e){
+					if (timerId) {
+					    clearInterval(timerId);
+					    timerId = null;
+					}
+				})
+
+
+				$('body, *').on('click', function(){
+					window.scroll(0, 0);
+				})
+
+
+			})
+		</script> 
+	</body>
+</html>

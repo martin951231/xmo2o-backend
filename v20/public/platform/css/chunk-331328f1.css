@@ -1,0 +1,32 @@
+.vehicle_management[data-v-3dc52b58] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.vehicle_management .header_search[data-v-3dc52b58] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.vehicle_management .header_search .search_item[data-v-3dc52b58] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.vehicle_management .header_search .operation_btn[data-v-3dc52b58] {
+  margin-left: 20px;
+}
+.vehicle_management .table_content[data-v-3dc52b58] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

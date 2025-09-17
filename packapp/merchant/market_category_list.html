@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>分类批发市场</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/market_list.css"/>
+	<link rel="stylesheet" type="text/css" href="css/market_footer.css"/>
+</head>
+<style>
+	.mui-card {
+		width: 47%;
+		float: left;
+		min-height: 330px;
+	}
+	.mui-card img{
+		width: 100%;
+		object-fit: cover;
+	}
+	.allGoods .run {
+		background: #fff;
+	}
+	.allGoods .clear:after {
+		content: " ";
+		display: block;
+		clear: both;
+	}
+	.allGoods .run .runItem {
+		width: 49.8%;
+		text-align: center;
+	}
+	.allGoods .add {
+		border-right: 1px solid #f1f1f1;
+	}
+	.allGoods .ft {
+		float: left;
+	}
+	.allGoods .adds .itemTop, .adds .itemBottom {
+		padding-bottom: 0;
+	}
+	.allGoods .itemTop {
+		border-bottom: 1px solid #f1f1f1;
+	}
+	.allGoods .adds ul {
+		margin: 0;
+	}
+	.allGoods .adds ul li img {
+		margin: 0!important;
+		width: 100%!important;
+		height: 100%!important;
+	}
+	.tip_adver {
+		min-height: 26px;
+	}
+	.tip_adver img{
+		width: 100%;
+		height: 100%;
+	}
+	.vip {
+		display: inline-block;
+		width: 18px;height: 18px;
+		background: url(./images/vip.png) center no-repeat;
+		background-size: contain;
+		vertical-align: middle;
+		position: relative;
+		top: -3px;
+		margin: 0;
+	}
+	.vip_price {
+		color: #FD1946;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 18px;
+	}
+	.currency_txt {
+		font-size: 10px;
+		color: #999c9e;
+	}
+	.virtual_msg {
+		clear: both;
+		width: 100%;
+		text-align: center;
+		padding: 10px;
+		position: absolute;
+		bottom: 0px;
+	}
+	.virtual_msg .virtual_push {
+		background: #ffa200;
+		color: white;
+		padding: 5px 15px;
+		border-radius: 15px;
+	}
+</style>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	     <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		<h1 class="mui-title title_info">加载中</h1>
+	</header>
+	<div class="mui-content" style="padding-bottom: 60px;background-color: #fff;">
+	    <div class="allGoods">
+
+			<div class="alls" id="data">
+
+			</div>
+
+			<div class="pullup1" style="clear: both;display:none;">上拉加载更多...</div>
+			<div class="loading1" style="clear: both;display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_><div>
+		</div>
+	</div>
+	<script src="js/fastclick.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+
+	<script id="adver_info" type="text/html">
+		{{# if (d.wholesale_top_tip_img) { }}
+			<div class="tip_adver link-url title_img" data-url="{{d.wholesale_top_tip_img['url']}}">
+				<img src="{{d.wholesale_top_tip_img['pic']}}">
+			</div>
+
+			<section class="cityRun">
+				<div class="cityTheck">
+					<ul class="clear" style="display:flex;min-height: 60px;">
+						{{# for (var i in d.wholesale_top_6_img) { }}
+							{{# if (d.wholesale_top_6_img[i] && i < 3) { }}
+								<li class="ft link-url" data-url="{{d.wholesale_top_6_img[i]['url']}}" style="padding:0px;flex:1">
+									<img src="{{d.wholesale_top_6_img[i]['pic']}}" class="four " style="width: 100%;min-height: 65px;">
+								</li>
+							{{# } }}
+						{{# } }}
+					</ul>
+				</div>
+				<div class="cityTheck">
+					<ul class="clear" style="display:flex;min-height: 60px;">
+						{{# for (var i in d.wholesale_top_6_img) { }}
+						{{# if (d.wholesale_top_6_img[i] && i > 2) { }}
+							<li class="ft link-url" data-url="{{d.wholesale_top_6_img[i]['url']}}" style="padding:0px;flex:1">
+								<img src="{{d.wholesale_top_6_img[i]['pic']}}" class="four " style="width: 100%;min-height: 65px;">
+							</li>
+						{{# } }}
+						{{# } }}
+					</ul>
+				</div>
+			</section>
+		{{# } }}
+
+		{{# if (d.wholesale_middle_tip_img) { }}
+			<div class="tip_adver img_4 link-url title_img" data-url="{{d.wholesale_middle_tip_img['url']}}">
+				<img src="{{d.wholesale_middle_tip_img['pic']}}">
+			</div>
+			<section class="run clear adds">
+				<div class="runItem ft">
+					<div class="itemTop">
+						<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[0]['url']}}">
+							<li class="ft fire" style="min-height: 95px;width: 100%;">
+								<img src="{{d.wholesale_middle_4_img[0]['pic']}}">
+							</li>
+						</ul>
+					</div>
+					<div class="itemBottom">
+						<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[1]['url']}}">
+							<li class="ft fire" style="min-height: 95px;width: 100%;">
+								<img src="{{d.wholesale_middle_4_img[1]['pic']}}">
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="runItem ft">
+					<div class="itemTop">
+						<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[2]['url']}}">
+							<li class="ft fire" style="min-height: 95px;width: 100%;">
+								<img src="{{d.wholesale_middle_4_img[2]['pic']}}">
+							</li>
+						</ul>
+					</div>
+					<div class="itemBottom">
+						<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[3]['url']}}">
+							<li class="ft fire" style="min-height: 95px;width: 100%;">
+								<img src="{{d.wholesale_middle_4_img[3]['pic']}}">
+							</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+		{{# } }}
+	</script>
+
+	<script id="pluscardLists" type="text/html">
+		{{# for(var i = 0, len = d.length; i < len; i++){ }}
+			<div class="mui-card buy_detail" data-id="{{ d[i].goods_id }}" style="margin:{{ i%2==0?'2% 1% 0% 2%;':' 2% 2% 0% 1%;' }}border: 1px solid #e9e9e9;">
+				<div class="mui-card-content buy_detail_btn" data-id="{{ d[i].goods_id }}" >
+					<a href="javascript:void(0);">
+						<img class="but_img"  src="{{ d[i].pic }}"/>
+						<ul style="width: 100%;">
+							<li><span>{{ d[i].name }}</span></li>
+							{{# if(d[i].vip_wholesale_price>0){ }}
+							<li class="mui-pull-left">
+								<i class="vip"></i>
+								<span class="vip_price">
+									{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].vip_wholesale_price) }}
+								</span>
+							</li>
+							{{# if (d[i].sell_count>0) { }}
+							<li class="mui-pull-right" style="font-size: 12px;line-height: 24px;">{{L_('已售')}}：{{ d[i].sell_count }}</li>
+							{{# } }}
+							<li class="mui-pull-left" style="width: 100%;">
+								{{L_('普通批发')}}：
+								<span class="normal_price">{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].price) }}</span>
+							</li>
+							{{# } else { }}
+								<li class="mui-pull-left" style="width: 100%;color: #333;">
+									{{L_('批发')}}：{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].price) }}
+								</li>
+								{{# if (d[i].sell_count>0) { }}
+									<li class="mui-pull-left" style="width: 100%;font-size: 12px;">{{L_('已售')}}：{{ d[i].sell_count }}</li>
+								{{# } }}
+							{{# } }}
+						</ul>
+						{{# if (d[i].merchant_store_info) { }}
+						<div class="mui-pull-left flex" style="width: 100%;padding-top: 10px;">
+							{{# if (d[i].merchant_store_info.logo) { }}
+							<img style="width: 35px;height: 35px; border-radius: 2px;" src="{{d[i].merchant_store_info.logo}}">
+							{{# } }}
+							{{# if (d[i].merchant_store_info.name) { }}
+							<div style="font-size: 12px;line-height: 35px;color: #666;overflow: hidden;">
+								{{d[i].merchant_store_info.name}}
+							</div>
+							{{# } }}
+						</div>
+						{{# } }}
+					</a>
+				</div>
+				{{# if (d[i]['is_publish_integral_mall']==1 && !d[i]['integral_mall_goods_id'] && (d[i]['express_is_type']==1 || d[i]['express_is_type']==2)) { }}
+				<div class="virtual_msg"  data-id="{{ d[i].goods_id }}">
+					<a class="virtual_push"  data-id="{{ d[i].goods_id }}">{{L_('虚拟批发')}}</a>
+				</div>
+				{{# } }}
+			</div>
+		{{# } }}
+	</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var ticket = common.getCache('ticket');
+var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+var cat_fid = $.getUrlParam('cat_fid');
+var cat_id = $.getUrlParam('cat_id');
+
+
+
+
+var pindex=1;
+function market_index(page){
+	common.http('Merchantapp&a=market_index',{'ticket':ticket,'client':client,'page':page,'cat_fid':cat_fid,'cat_id':cat_id},function(data){
+		console.log('data',data);
+		
+		if (data.category) {
+			var txt = '';
+			if (data.category.fid_info) {
+				txt += data.category.fid_info.name;
+			}
+			if (txt) {
+				txt += '-'+data.category.name;
+			} else {
+				txt += data.category.name;
+			}
+			document.title = txt;
+			$('.title_info').html(txt);
+		}
+			
+		if (data.orders.length!=0) {
+			data.orders.length<=19&&$('.pullup1').html(L_('没有更多数据啦'));
+			$('.loading1').hide();
+			$('.pullup1').show();
+
+			laytpl(document.getElementById('pluscardLists').innerHTML).render(data.orders, function(html){
+				$('.alls').append(html);
+                setTimeout(function () {
+                    if (data.is_integral_mall!=1) {
+                        $('.mui-card').css('min-height','340px');
+                    }
+                },800)
+			});
+
+			if(data.orders.length>19){
+				var flag = false;
+				$(window).scroll(function(e) {
+				    e.stopPropagation();
+				    if(flag){
+				      //数据加载中
+				      return false;
+				    }
+				    //上拉加载
+				    if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+				    	$('.pullup1').hide();
+				    	$('.loading1').show();
+				    	flag = true;
+				        pindex++;
+                        market_index(pindex);
+				    }
+				});
+			}
+		}else{
+			$('.pullup1').html(L_('没有更多数据啦'));
+			$('.loading1').hide();
+			$('.pullup1').show();
+		}
+	});
+}
+
+market_index(1);
+mui('.mui-content').on('tap','.cli_status',function(e){
+	var status=0;
+	var me=this;
+	var appoint_id=$(this).parents('.mui-card').attr('data-id');
+	if($(this).text()=="开启"){
+		status=1;
+		$(this).text('关闭').removeClass('open').addClass('close');
+	}else{
+		status=0;
+		$(this).text('开启').removeClass('close').addClass('open');
+	}
+	common.http('Merchantapp&a=appoint_status',{'ticket':ticket,'client':client,'appoint_id':appoint_id,'appoint_status':status},function(data){
+		console.log(data);
+		if(data.length==0){
+			mui.toast('操作成功');
+		}
+	});
+
+});
+// 点击跳转
+mui('.header_adver_img').on('tap','.link-url',function(e){
+    window.location.href = $(this).data('url');
+});
+
+//进入购买详情页面
+mui('.mui-content').on('tap','.buy_detail_btn',function(e){
+	var goods_id=$(this).attr('data-id');
+	openWindow({
+		url:'market_buy_detail.html?goods_id='+goods_id,
+		id:'market_buy_detail'
+	});
+});
+// 进入虚拟批发页面
+mui('.mui-content').on('tap','.virtual_msg .virtual_push',function(e){
+    var goods_id=$(this).attr('data-id');
+    openWindow({
+        url:'market_virtual_push.html?goods_id='+goods_id+'&type=virtual_market',
+        id:'market_virtual_push'
+    });
+});
+</script>
+</body>
+</html>

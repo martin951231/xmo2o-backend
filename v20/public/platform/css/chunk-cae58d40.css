@@ -1,0 +1,9 @@
+
+[data-v-3293b43b] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+[data-v-3293b43b] .ant-form-item-label > label::after {
+  display: none;
+}
+

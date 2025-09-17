@@ -1,0 +1,19 @@
+
+.disabled-input[data-v-f18da52a],[data-v-f18da52a] .ant-input[disabled] {
+  border: none;
+  color: #000;
+  background: #fff !important;
+  cursor: auto;
+}
+.disabled-input.area[data-v-f18da52a] input {
+  border: none !important;
+  cursor: auto !important;
+}
+.disabled-input.area[data-v-f18da52a] i {
+  display: none !important;
+}
+.disabled-input.textarea[data-v-f18da52a] {
+  resize: none;
+  margin-top: 6px;
+}
+

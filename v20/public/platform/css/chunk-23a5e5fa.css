@@ -1,0 +1,97 @@
+
+.imgname {
+  width: 100px;
+}
+.refund_type_desc table{font-weight: bold;}
+.refund_type_desc  .ant-descriptions-item-colon,.refund_type_desc .ant-descriptions-item-content{padding: 8px 20px;}
+
+
+.imgname {
+  width: 100px;
+}
+
+
+[data-v-399cdb8a] .ant-select-dropdown-menu-item {
+  height: 32px !important;
+}
+
+.message-suggestions-list-box[data-v-311b2cac] {
+  margin: 10px 20px 10px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-311b2cac] {
+  padding: 10px 10px 20px 10px;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-311b2cac] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-311b2cac] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-311b2cac] {
+  padding: 20px;
+}
+.lbsf[data-v-311b2cac] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-311b2cac] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.modal_box_1[data-v-311b2cac] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.modal_box_1 .flex_text_box[data-v-311b2cac] {
+  width: 50%;
+}
+.margin_top_10[data-v-311b2cac] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-311b2cac] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.flex_text_box .text_1[data-v-311b2cac] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.page_top[data-v-311b2cac] {
+  background-color: #e6f7ff;
+  display: inline-block;
+  width: 98%;
+  padding: 20px 20px;
+  margin: 15px;
+  color: #666666;
+}
+.a_row_dill[data-v-311b2cac] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.a_col_dill[data-v-311b2cac] {
+  display: -ms-flexbox;
+  display: flex;
+  width: 320px;
+  margin-top: 15px;
+}
+.a_col_btn[data-v-311b2cac] {
+  display: -ms-flexbox;
+  display: flex;
+  width: 120px;
+  margin-top: 15px;
+}
+

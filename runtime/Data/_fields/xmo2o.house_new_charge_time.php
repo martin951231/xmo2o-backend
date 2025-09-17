@@ -1,0 +1,1 @@
+<?php	return array ( 0 => 'id', 1 => 'property_id', 2 => 'take_effect_time', 3 => 'add_time', 4 => 'update_time', '_autoinc' => true, '_pk' => 'id', '_type' => array ( 'id' => 'int(11) unsigned', 'property_id' => 'int(11) unsigned', 'take_effect_time' => 'int(11) unsigned', 'add_time' => 'int(11)', 'update_time' => 'int(11)', ), );?>

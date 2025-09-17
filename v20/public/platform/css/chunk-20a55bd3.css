@@ -1,0 +1,32 @@
+.upload-img-container[data-v-5afeb148] {
+  width: 102px;
+  height: 102px;
+}
+.file-upload[data-v-5afeb148] .ant-upload-list-item-name {
+  color: #999999 !important;
+}
+
+.color-picker[data-v-3f377444] {
+  margin: 10px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.color-picker .color-box[data-v-3f377444] .colorBtn {
+  width: 80px;
+  height: 30px;
+  border: 1px solid #666666;
+}
+.color-picker .color-box[data-v-3f377444] .box {
+  z-index: 999;
+}
+.color-picker .color-name[data-v-3f377444] {
+  display: inline-block;
+  margin: 0px 20px;
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: bold;
+}
+

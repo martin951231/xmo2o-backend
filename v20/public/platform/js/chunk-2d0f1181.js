@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0f1181"],{"9eba":function(e,n,c){"use strict";c.r(n);var t=function(){var e=this,n=e.$createElement,c=e._self._c||n;return c("h2",[e._v("家属管理")])},a=[],u={},r=u,s=c("0c7c"),l=Object(s["a"])(r,t,a,!1,null,"7c4aa078",null);n["default"]=l.exports}}]);

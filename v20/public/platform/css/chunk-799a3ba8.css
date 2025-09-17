@@ -1,0 +1,78 @@
+
+.search[data-v-43850f42] .ant-form-item-children {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.statisticsData[data-v-43850f42] {
+  font-size: 30px;
+  color: #000000;
+}
+.order-header[data-v-43850f42] {
+  padding: 16px 0;
+  width: 100%;
+  border: 1px solid #e8e8e8;
+  background: #e8e8e8;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.mb-50[data-v-43850f42] {
+  margin-top: 0;
+}
+.mt-50[data-v-43850f42] {
+  margin-top: 0;
+}
+.padding-left-24[data-v-43850f42] {
+  padding-left: 24px;
+}
+.a-form-item.ant-form-item[data-v-43850f42] {
+  display: -ms-flexbox;
+  display: flex;
+}
+.a-form-item[data-v-43850f42] .ant-form-item-control-wrapper {
+  -ms-flex: 1;
+      flex: 1;
+}
+.input-class[data-v-43850f42] {
+  width: calc(100% - 80px);
+}
+.ant-card-bordered[data-v-43850f42] {
+  border: unset;
+}
+.order-body[data-v-43850f42] {
+  overflow-y: scroll !important;
+  height: 478px !important;
+}
+.mt-10.ant-table-wrapper[data-v-43850f42] {
+  display: none;
+}
+.mt-10.ant-table-wrapper[data-v-43850f42] {
+  display: none;
+}
+.spinning[data-v-43850f42] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.tab-item-wrap[data-v-43850f42] .ant-badge-count, .ant-badge-dot[data-v-43850f42], .ant-badge .ant-scroll-number-custom-component[data-v-43850f42] {
+  transform: translate(99%, -50%);
+}
+.colorBlue[data-v-43850f42] {
+  color:blue;
+  width:40px;
+  text-center:center;
+  font-weight: bold;
+}
+.colorRed[data-v-43850f42] {
+  color:red;
+  width:40px;
+  text-center:center;
+  font-weight: bold;
+}
+

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>我的生日</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>  
+		<link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/birth_email.css" rel="stylesheet"/> 
+		<style>
+		   .weui-dialog__bd:first-child {
+				padding: 15px 20px 1.7em;
+				color: #353535;
+				text-align: center
+			}
+			.weui-dialog__bd{
+				text-align: center
+			} 
+			.expire_timer .weui-picker__bd .weui-picker__group{
+				width: 33.3%;
+				position: absolute; 
+			}
+		</style>
+	</head>
+	<body> 
+		 <div class="">
+		 	<p class="pwdTil center"><L_>请选择您的生日</L_></p>   
+			 <div class="regInput center" style="width:260px">
+				<input type="text" name="birthday" id="birthday" class="birthday" readonly style="width:260px"  placeholder="点击选择您的生日" />
+			</div> 
+		 </div> 
+		<div class="bottmButton">
+		 	<button class="next "><label ><L_>保存</L_></label><i class="iconfont">&#xe600;</i></button>
+		</div> 
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/weui/weui.min.js"></script>
+		<script> 
+			common.iosKeybordTop('birthday'); 
+			common.removeCache('userInfo',true);
+			var userInfo = {};
+			load_config(function(){
+				userInfo = common.getCache('userInfo',true);
+				console.log('userInfo',userInfo);
+				if(userInfo.birthday != '0000-00-00'){
+					var year=userInfo.birthday.substr(0,4);
+					var yue=userInfo.birthday.substr(5,2);
+					var day=userInfo.birthday.substr(8,2); 
+					if(config.config.map_config == 'google'){
+						$('#birthday').val(day+'-'+yue+'-'+year);
+					}else{
+						$('#birthday').val(year+'-'+yue+'-'+day);
+					}
+				}
+			},true);
+			
+			$('#birthday').click(function(){  
+				var defaultValue = [1,1,new Date().getFullYear() - 22];
+				if(userInfo.birthday != '0000-00-00'){
+					var birthdayArr = userInfo.birthday.split('-');
+					console.log(birthdayArr);
+					defaultValue = [parseInt(birthdayArr[2]),parseInt(birthdayArr[1]),parseInt(birthdayArr[0])];
+                    console.log(defaultValue,'defaultValue')
+				}else{
+					birthdayArr = defaultValue
+				}
+                 
+                console.log(defaultValue,'defaultValue') 
+				weui.datePicker({  
+                    start: defaultValue[2]-50,
+                    end: defaultValue[2]+50,   
+					defaultValue: [birthdayArr[0],birthdayArr[1],birthdayArr[2]],  
+					onConfirm: function(result){    
+                        console.log(result); 
+                        var year=new Date().getFullYear();
+                        var month=new Date().getMonth()+1;
+                        var day=new Date().getDate(); 
+                         if(result[0].value > year){ 
+                             weui.toast('填写正确的年份',{
+                                duration: 1000,
+                                className: 'custom-classname1'}); 
+                             return false
+                        }else if(result[0].value == year){  
+                            if(result[1].value > month){  
+                                weui.toast('填写正确的月份',{
+                                duration: 1000,
+                               className: 'custom-classname1'}); 
+                                return false
+                            }else if(result[1].value == month){  
+                                if(result[2].value > day){
+                                    weui.toast('填写正确的日期',{
+                                        duration: 1000,
+                                        className: 'custom-classname1'}); 
+                                     return false
+                                }
+                            }
+                        } 
+                        
+						result[0].value = result[0].value.toString();
+						if(result[1].value < 10){
+							result[1].value = '0'+result[1].value.toString();
+						}else{
+							result[1].value = result[1].value.toString();
+						}
+						if(result[2].value < 10){
+							result[2].value = '0'+result[2].value.toString();
+						}else{
+							result[2].value = result[2].value.toString();
+						}  
+                        if(config.config.map_config == 'google'){
+							$('#birthday').val(result[2].value + '-' + result[1].value + '-' + result[0].value); 
+						}else{
+							$('#birthday').val(result[0].value + '-' + result[1].value + '-' + result[2].value); 
+						}
+						if(userInfo.birthday != $('#birthday').val()){
+							$('.bottmButton label').addClass('red');
+						}
+					},
+					onChange:function(result){   
+						var len=$('.expire_timer .weui-picker__group').length
+						for(var i=0; i<len; i++){
+							$('.expire_timer .weui-picker__group:eq('+i+') .weui-picker__content .weui-picker__item').each(function(){
+								var pickHtml=$(this).text().toString();  
+								pickHtml=pickHtml.replace(/[^0-9]/ig,"");
+								$(this).html(pickHtml);  
+							})
+						}   
+					},
+					id: 'datePicker',
+					className: 'expire_timer'
+				});
+			    
+                $('.weui-picker__action').html(L_('取消'));
+                $('#weui-picker-confirm').html(L_('确定'));
+				
+				if(config.config.map_config == 'google'){
+					$('.expire_timer .weui-picker__bd .weui-picker__group:eq(0)').css('right','0');
+					$('.expire_timer .weui-picker__bd .weui-picker__group:eq(1)').css('left','33.3%');
+					$('.expire_timer .weui-picker__bd .weui-picker__group:eq(2)').css('left','0'); 
+				}else{
+					$('.expire_timer .weui-picker__bd .weui-picker__group').css({'width':'auto','position':'relative'});
+				}
+				
+				var len=$('.expire_timer .weui-picker__group').length;
+				for(var i=0; i<len; i++){
+					$('.expire_timer .weui-picker__group:eq('+i+') .weui-picker__content .weui-picker__item').each(function(){
+						var pickHtml=$(this).text().toString();  
+						pickHtml=pickHtml.replace(/[^0-9]/ig,"");
+						$(this).html(pickHtml);
+					})
+				} 
+               
+			});
+			
+			$('.bottmButton').click(function(){
+				if(!$('.bottmButton label').hasClass('red')){
+					return false;
+				}
+				var birthdayArr = $('#birthday').val().split('-');
+				if(config.config.map_config == 'google'){
+					var birthday = birthdayArr[2] + '-' + birthdayArr[1] + '-' + birthdayArr[0];
+				}else{
+					var birthday = birthdayArr[0] + '-' + birthdayArr[1] + '-' + birthdayArr[2];
+				}
+				common.http('My&a=birthday',{birthday:birthday},function(result){
+                     weui.toast('操作成功', {
+                        duration: 1000,
+                        className: 'custom-classname1',
+                        callback: function(){ 
+                            openWebviewUrl('back'); }
+                    }); 
+				});
+			});
+		</script> 
+	</body>
+</html>

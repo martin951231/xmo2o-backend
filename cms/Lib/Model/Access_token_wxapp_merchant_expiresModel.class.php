@@ -1,0 +1,48 @@
+<?php
+class Access_token_wxapp_merchant_expiresModel extends Model
+{
+	public function get_access_token($mer_id)
+	{
+		$access_obj = M('Weixin_app_bind')->field(true)->where(['bind_type'=>0, 'other_id'=>$mer_id])->find();
+		$now = intval(time());
+		if ($access_obj && intval($access_obj['expires_in']) > ($now + 1200)) {
+			$url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=' . $access_obj['access_token'];
+			$json = json_decode($this->curlGet($url));
+			//获取到IP地址，或者超出接口每日调用数都正常使用该 key
+			if (isset($json->ip_list) || $json->errcode == '45009') {
+				return array('errcode' => 0, 'access_token' => $access_obj['access_token']);
+			}
+		}
+		
+		$appid = $access_obj['appid'];
+		$appsecret = $access_obj['appsecret'];
+		$url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.trim($appid).'&secret='.trim($appsecret);
+		$json = json_decode($this->curlGet($url));
+		if (isset($json->access_token) && $json->access_token) {
+			$this->where(['bind_id' => $access_obj['bind_id']])->save(['access_token' => $json->access_token, 'expires_in' => intval($json->expires_in + $now)]);
+			return array('errcode' => 0, 'access_token' => $json->access_token);
+		} else {
+			return array('errcode' => $json->errcode, 'errmsg' => $json->errmsg);
+		}
+	}
+	
+	function curlGet($url){
+		$ch = curl_init();
+		$header = "Accept-Charset: utf-8";
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+		curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)');
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+		//curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$temp = curl_exec($ch);
+		return $temp;
+	}
+	
+}
+?>

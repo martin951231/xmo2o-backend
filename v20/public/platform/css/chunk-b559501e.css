@@ -1,0 +1,89 @@
+.content[data-v-7135f060] {
+  cursor: pointer;
+  overflow: hidden;
+}
+.imgs[data-v-7135f060] {
+  transition: all 0.3s;
+}
+.contain[data-v-7135f060] {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.cover[data-v-7135f060] {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.fill[data-v-7135f060] {
+  -o-object-fit: fill;
+     object-fit: fill;
+}
+.none[data-v-7135f060] {
+  -o-object-fit: none;
+     object-fit: none;
+}
+.scale-down[data-v-7135f060] {
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+}
+.img-border-radius[data-v-7135f060] {
+  border-radius: 50% !important;
+}
+.is-hover[data-v-7135f060]:hover {
+  transform: scale(1.2);
+}
+.status-1[data-v-7135f060] {
+  background-color: #f3f4f6;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.status-1 .trip[data-v-7135f060] {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+.color-1[data-v-58ce8b2a] {
+  color: #979797;
+}
+.sku-box[data-v-58ce8b2a] {
+  max-height: 300px;
+  overflow-y: scroll;
+  padding-right: 8px;
+}
+.sku-box .sku-item[data-v-58ce8b2a] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #d6d6d6;
+  padding: 6px 0;
+}
+.sku-box .sku-item[data-v-58ce8b2a]:last-child {
+  margin-bottom: 0px;
+}
+/* 1,滚动条 */
+.sku-box[data-v-58ce8b2a]::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 4px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 4px;
+}
+.sku-box[data-v-58ce8b2a]::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 5px;
+  -webkit-box-shadow: inset005pxrgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+}
+.sku-box[data-v-58ce8b2a]::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  -webkit-box-shadow: inset005pxrgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+

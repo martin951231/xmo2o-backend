@@ -1,0 +1,19 @@
+.message-suggestions-list-box[data-v-1914551e] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-1914551e] {
+  display: -ms-flexbox;
+  display: flex;
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-1914551e] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-1914551e] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-1914551e] {
+  padding: 20px;
+}
+

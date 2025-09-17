@@ -1,0 +1,745 @@
+<html lang="zh-CN"><head>
+		<meta charset="utf-8">
+		<title>商品详情</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link href="css/mui.css" rel="stylesheet"/>
+     	<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<link href="css/pigcms.css" rel="stylesheet">
+	<style>
+		.spec_list table td {
+			text-align: center;
+		}
+		.spec_list table th {
+			text-align: center;
+			padding: 1px;
+			font-size: 14px;
+		}
+		.spec_list table tr {
+			border-bottom: #f1f1f1 1px solid;
+		}
+		.spec_list table {
+			margin: 12px 3%;
+		}
+		.plus_class {
+			position: fixed;
+			height: 60px;
+			width: 100%;
+			bottom: 0;
+			line-height: 60px;
+			background: #EFEFF4;
+		}
+		.mg_60 {
+			margin-bottom: 60px;
+		}
+		.plus_class div {
+			margin: 0 5%;
+			width: 90%;
+			padding: 10px 0;
+			display: flex;
+		}
+		.plus_class a.edit_market_goods {
+			background: #ffa200;
+			border-radius: 5px;
+			margin-left: 1%;
+		}
+		.plus_class a.market_order {
+			background: #06CCAB;
+			border-radius: 5px;
+			margin-left: 1%;
+		}
+		.plus_class a {
+			margin-left: 5%;
+			width: 50%;
+			height: 40px;
+			color: #fff;
+			font-size: 16px;
+			line-height: 40px;
+			text-align: center;
+			display: inline-block;
+		}
+
+		.vip {
+			display: inline-block;
+			width: 18px;height: 18px;
+			background: url(./images/vip.png) center no-repeat;
+			background-size: contain;
+			vertical-align: middle;
+			position: relative;
+			top: -3px;
+			margin: 0;
+		}
+		.vip_price {
+			color: #FD1946;
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 18px;
+		}
+		.currency_txt {
+			font-size: 10px;
+			color: #999c9e;
+		}
+
+
+		.write_info li#li_delivery {
+			margin-top: 10px;
+			background: white;
+		}
+		.write_info li#li_delivery {
+			padding: 10px 15px;
+			border-width: 0 0 1px;
+			line-height: 24px;
+		}
+		.write_info li a {
+			min-height: 24px;
+		}
+		.write_info a {
+			color: #323232;
+			outline-style: none;
+			text-decoration: none;
+		}
+		.write_info #li_delivery a strong {
+			width: 100%;
+		}
+		.write_info #li_delivery a > * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.showName, .showTel {
+			color: #666;
+		}
+		#li_delivery i {
+			display: inline-block;
+			width: 6px;
+			height: 11px;
+			background: url(images/33-1_03.png) center no-repeat;
+			background-size: contain;
+			margin-right: 10px;
+		}
+		#li_delivery strong, b {
+			font-weight: normal;
+		}
+		.w100 {
+			width: 100%;
+		}
+
+
+
+
+		.spec_list .flex {
+			display: flex;
+		}
+		.spec_list .flex_grow {
+			flex-grow: 1;
+			text-align: center
+		}
+
+		.spec_list .spec_val_name {
+			padding: 1px 0;
+		}
+		.spec_list .list_spec_name {
+			font-size: 12px;
+			line-height: 22px;
+			border-radius: 5px;
+			padding: 2px 5px;
+			margin-top: 2px;
+			color: #fff;
+			background: #f23030;
+			width: 60px;
+		}
+		.spec_list .spec_price_single{
+			width: 40px;
+		}
+		.spec_list .list_title_name {
+			font-size: 12px;
+			line-height: 22px;
+			padding: 2px 5px 2px 0;
+			margin-top: 2px;
+			color: #333;
+			background: #fff;
+			width: 60px;
+		}
+		.spec_list .spec_title_name {
+			padding: 1px 0;
+		}
+		.spec_list .spec_title_name.title {
+			width: 40px;
+		}
+		.spec_list .spec_title_name div {
+			font-size: 12px;
+			line-height: 22px;
+			color: #333;
+			background: #fff;
+		}
+		.spec_list .spec_val_name div {
+			font-size: 12px;
+			line-height: 22px;
+			color: #fff;
+			background: #f23030;
+		}
+		.spec_list .spec_price {
+			color: #ff4d45;
+			width: 100%;
+		}
+		.right {
+			float: right;
+		}
+		.clr {
+			zoom: 1;
+		}
+		.spec_buy_num .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.spec_buy_num .wrap .plus input {
+			width: 65px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+
+		.normal .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.normal .wrap .plus input {
+			width: 50px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+		.normal .right {
+			float: right;
+		}
+		.wait_close {
+			color: #999999;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		    <h1 class="mui-title"><span class="market"><L_>批发</L_></span><L_>订单详情</L_></h1>
+		</header>
+		<div class="mui-content">
+			<section class="g_details allHtml mg_60">
+
+			</section>
+		</div>
+		<nav class="plus_class">
+			<div>
+				<a href="javascript:;" class="edit_market_goods"><L_>编辑</L_></a>
+				<a href="javascript:;" class="market_order"><L_>售出详情</L_></a>
+			</div>
+		</nav>
+
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.js"></script>
+		<script src="js/mui.dtpicker.js"></script>
+		<script src="js/mui.poppicker.js"></script>
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/fastclick.js"></script>
+		<script src="js/jRoll.js"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js"></script>
+
+
+
+		<script id="pluscardLists" type="text/html">
+			{{# var data=d; }}
+			{{# console.log(data); }}
+			<div class="commod detail_list">
+				<input type="hidden" class="limit_num" data-min_unit="{{d.now_goods.min_unit}}" data-min_num="{{d.now_goods['min_num']}}" data-stock_num="{{d.now_goods.stock_num}}"/>
+				<div class="top clr">
+					<h2 class="fl">{{L_('商品信息')}}</h2>
+				</div>
+				<div class="commod_list">
+					<div class="img fl" style="width: 100px;height: 100px;">
+						<img src="{{ data.now_goods.pic }}">
+					</div>
+					<div class="content" style="margin-left: 110px;height: 100px;">
+						<h2>
+							{{ data.now_goods.name }}
+							{{# if (data.now_goods.number!='') { }}
+							<span class="ecc">({{data.now_goods.number}})</span>
+							{{# } }}
+						</h2>
+						<div class="clr price">
+							{{# if (data.config['merchant_type_switch']==1) { }}
+							<div>{{L_('普通批发价')}}：{{ data.now_goods.wholesale_price }}{{ data.config.Currency_txt }}</div>
+							<div>{{L_('VIP批发价')}}：{{ data.now_goods.vip_wholesale_price }}{{ data.config.Currency_txt }}</div>
+							{{# } else { }}
+								<div>{{L_('批发价')}}：{{ data.now_goods.wholesale_price }}{{ data.config.Currency_txt }}</div>
+							{{# } }}
+						</div>
+						<div class="clr">
+							<div class="fl total">库存：
+								{{# if(data.now_goods.stock_num==-1) { }}
+									{{L_('不限')}}
+								{{# } else if (data.now_goods.stock_num<=0) {}}
+									{{L_('不足')}}
+								{{# } else { }}
+									{{ data.now_goods.stock_num }}
+									{{# if (data.now_goods.unit) { }}
+										({{ data.now_goods.unit }})
+									{{# }  }}
+								{{# } }}
+							</div>
+							<div class="state fr">
+								{{# if(data.now_goods['status']==0){ }}<span class="wait_close">{{L_('下架')}}<span>{{# } }}
+								{{# if(data.now_goods['status']==1){ }}
+								   <span class="ecc">{{L_('正常')}}<span>
+								{{# } }}
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="user_list">
+					<ul>
+						<li class="clr">
+							<span class="fl">{{L_('最小批发倍数单位')}}</span>
+							<span class="fr">
+								{{# if (data.now_goods.min_unit > 0) { }}
+									{{ data.now_goods.min_unit }}
+								{{# } else { }}
+									1
+								{{# }  }}
+							</span>
+						</li>
+						{{# if (data.now_goods.cat_fname || data.now_goods.cat_name) { }}
+							<li class="clr">
+								<span class="fl">{{L_('商品分类')}}</span>
+								<span class="fr">
+									{{ data.now_goods.cat_fname }}
+									{{# if (data.now_goods.cat_fname && data.now_goods.cat_name) { }}
+									-
+								    {{# }  }}
+									{{ data.now_goods.cat_name }}
+								</span>
+							</li>
+						{{# }  }}
+
+						{{# if (!data.now_goods.list) { }}
+
+								<li class="clr">
+									{{# if (1==data.config.merchant_type_switch) { }}
+									<span class="fl">{{L_('普通批发价')}}</span>
+									{{# } else { }}
+									<span class="fl">{{L_('批发价')}}</span>
+									{{# }  }}
+									<span class="fr">
+										{{ data.config.Currency_symbol }}{{ data.now_goods.wholesale_price }}
+									</span>
+								</li>
+								{{# if (1==data.config.merchant_type_switch) { }}
+								<li class="clr">
+									<span class="fl">{{L_('VIP批发价')}}</span>
+									<span class="fr">
+										{{ data.config.Currency_symbol }}{{ data.now_goods.vip_wholesale_price }}
+									</span>
+								</li>
+								{{# }  }}
+								<li class="clr">
+									<span class="fl">{{L_('最低批发数')}}</span>
+									<span class="fr">
+										{{ data.now_goods.min_num }}
+										{{# if (data.now_goods.unit) { }}
+											({{ data.now_goods.unit }})
+										{{# }  }}
+									</span>
+								</li>
+								{{# if (data.express_list) { }}
+									{{# var express_list=data.express_list; }}
+									<li class="clr" {{# if (express_list.template_msgs) { }}style="border-bottom:none;"{{# }  }}>
+										<span class="fl">{{L_('运费模板')}}</span>
+										<span class="fr">
+											{{ express_list.name }}
+										</span>
+									</li>
+									{{# if (express_list.template_msgs) { }}
+									<li class="clr">
+										<span class="fl">
+											{{# for (var i in express_list.template_msgs) { }}
+												{{express_list.template_msgs[i]['express_txt']}}
+											{{# }  }}
+										</span>
+									</li>
+									{{# }  }}
+									<li class="clr">
+										<span class="fl">{{L_('其他区域运费')}}</span>
+										<span class="fr">
+											{{ data.now_goods.express_fee }}
+										</span>
+									</li>
+								{{# }  }}
+								{{# if (2==data.is_parameter || 5==data.is_parameter) { }}
+									<li class="clr">
+										<span class="fl">{{L_('重量')}}</span>
+										<span class="fr">
+											{{ data.now_goods.goods_weight }}（千克kg）
+										</span>
+									</li>
+								{{# }  }}
+								{{# if (3==data.is_parameter || 5==data.is_parameter) { }}
+								<li class="clr">
+									<span class="fl">{{L_('体积')}}</span>
+									<span class="fr">
+										{{ data.now_goods.goods_volume }}（立方m³）
+									</span>
+								</li>
+								{{# }  }}
+						{{# }  }}
+
+						<li class="clr" {{# if (data.pick_list) { }}style="border-bottom:none;"{{# }  }}>
+							<span class="fl">{{L_('是否可以自提')}}</span>
+							<span class="fr">
+								{{# if (0==data.now_goods.is_pick || !data.now_goods.is_pick) { }}
+									{{L_('否')}}
+								{{# } else {  }}
+									{{L_('是')}}
+								{{# } }}
+							</span>
+						</li>
+						{{# if (data.pick_list) { }}
+							<li class="clr">
+								<span class="fl">
+									{{# for (var n in data.pick_list) { }}
+										{{data.pick_list[n]['name']}}
+									{{# }  }}
+								</span>
+							</li>
+						{{# }  }}
+						<li class="clr" {{# if (data.white_msg && data.now_goods['is_add_white_list']==1) { }}style="border-bottom:none;"{{# }  }}>
+							<span class="fl">{{L_('是否加入白名单')}}</span>
+							<span class="fr">
+								{{# if (1==data.now_goods.is_add_white_list) { }}
+								{{L_('是')}}
+								{{# } else {  }}
+								{{L_('否')}}
+								{{# } }}
+							</span>
+						</li>
+						{{# if (data.white_msg && data.now_goods['is_add_white_list']==1) { }}
+							<li class="clr">
+								<span class="fl">
+									{{# for (var m in data.white_msg) { }}
+										{{data.white_msg[m]['name']}}&nbsp;&nbsp;&nbsp;
+									{{# }  }}
+								</span>
+							</li>
+						{{# }  }}
+						{{# if (data.now_goods.discount_info) { }}
+						{{# var discount_info=data.now_goods.discount_info; }}
+						<li class="clr">
+							<span class="fl">
+								{{L_('优惠信息')}}：
+							</span><br/>
+							<span class="fl">
+								{{# for (var l in discount_info) { }}
+								{{L_("批发满")}}&nbsp;&nbsp;{{discount_info[l]['num']}}&nbsp;&nbsp;{{L_("件，享受")}}&nbsp;&nbsp;{{discount_info[l]['discount']}}&nbsp;&nbsp;{{L_("折优惠")}}<br/>
+								{{# }  }}
+							</span>
+						</li>
+						{{# }  }}
+
+						{{# if (data.now_goods.spec_list) { }}
+							{{# if (data.express_list) { }}
+								{{# var express_list=data.express_list; }}
+								<li class="clr" {{# if (express_list.template_msgs) { }}style="border-bottom:none;"{{# }  }}>
+									<span class="fl">{{L_('运费模板')}}</span>
+									<span class="fr">
+										{{ express_list.name }}
+									</span>
+								</li>
+								{{# if (express_list.template_msgs) { }}
+									<li class="clr">
+										<span class="fl">
+											{{# for (var i in express_list.template_msgs) { }}
+												{{express_list.template_msgs[i]['express_txt']}}
+											{{# }  }}
+										</span>
+									</li>
+								{{# }  }}
+								<li class="clr">
+									<span class="fl">{{L_('其他区域运费')}}</span>
+									<span class="fr">
+										{{ data.now_goods.express_fee }}
+									</span>
+								</li>
+							{{# }  }}
+
+						{{# }  }}
+
+
+
+					</ul>
+				</div>
+
+
+				{{# if (data.now_goods.spec_list) { }}
+				<div class="spec_info detail_list">
+					<div class="top clr">
+						<h2 class="fl">{{L_('规格信息')}}</h2>
+					</div>
+					<div class="user_list spec_list" style="border-bottom: #f1f1f1 1px solid;padding: 15px 10px;">
+
+						{{# var spec_list=data.now_goods['spec_list']; }}
+						<div class="flex" >
+							<div class="list_title_name flex">
+								{{# for(var k in spec_list) { }}
+									{{# if (spec_list[k] && spec_list[k]['name']) { }}
+										<div class="spec_title_name">
+											<div>
+												{{# if (k>0) { }}/{{# } }}{{spec_list[k]['name']}}
+											</div>
+										</div>
+									{{# } }}
+								{{# } }}
+							</div>
+
+							{{# if (1==data.config.merchant_type_switch) { }}
+							&nbsp;&nbsp;
+							<div class="spec_title_name title">
+								<div>
+									{{L_("普通批发价")}}
+								</div>
+							</div>
+							&nbsp;&nbsp;
+							<div class="spec_title_name title">
+								<div>
+									{{L_("VIP批发价")}}
+								</div>
+							</div>
+							{{# } else { }}
+							&nbsp;&nbsp;
+							<div class="spec_title_name title">
+								<div>
+									{{L_("批发价")}}
+								</div>
+							</div>
+							{{# } }}
+							&nbsp;&nbsp;
+							<div class="spec_title_name title">
+								<div>
+									{{L_("库存")}}
+								</div>
+							</div>
+							{{# if (2==data.is_parameter || 5==data.is_parameter) { }}
+							&nbsp;&nbsp;
+							<div class="spec_title_name title">
+								<div>
+									{{L_("重量")}}(kg)
+								</div>
+							</div>
+							{{# }  }}
+							{{# if (3==data.is_parameter || 5==data.is_parameter) { }}
+							&nbsp;&nbsp;
+							<div class="spec_title_name title">
+								<div>
+									{{L_("体积")}}(m³)
+								</div>
+							</div>
+							{{# }  }}
+							&nbsp;&nbsp;
+							<div class="spec_title_name title" style="width: 30px;">
+								<div>
+									{{L_("最低批发数")}}
+								</div>
+							</div>
+						</div>
+						{{# var list=data.now_goods['list']; }}
+						{{# for(var n in list) { }}
+						{{# if (list[n]) { }}
+						<div class="flex" >
+							<div class="list_spec_name flex " data-number="{{list[n]['number']}}">
+								{{# for(var m in list[n]['spec']) { }}
+								{{# if (list[n]['spec'][m]) { }}
+								<div class="spec_val_name">
+									<div>
+										{{# if (m>0) { }}/{{# } }}{{list[n]['spec'][m]['spec_val_name']}}
+									</div>
+								</div>
+								{{# } }}
+								{{# } }}
+							</div>
+							<div class="flex flex_grow">
+								{{# if (1==data.config.merchant_type_switch) { }}
+								&nbsp;&nbsp;
+								<div class="spec_price_single">
+									{{list[n]['wholesale_prices']}}
+								</div>
+								&nbsp;&nbsp;
+								<div class="spec_price_single">
+									{{list[n]['vip_wholesale_prices']}}
+								</div>
+								{{# } else { }}
+								&nbsp;&nbsp;
+								<div class="spec_price_single">
+									{{list[n]['wholesale_prices']}}
+								</div>
+								{{# } }}
+								&nbsp;&nbsp;
+								<div class="spec_price_single">
+									{{list[n]['wholesale_prices']}}
+								</div>
+
+								{{# if (2==data.is_parameter || 5==data.is_parameter) { }}
+								&nbsp;&nbsp;
+								<div class="spec_price_single">
+									{{list[n]['goods_weights']}}
+								</div>
+								{{# }  }}
+								{{# if (3==data.is_parameter || 5==data.is_parameter) { }}
+								&nbsp;&nbsp;
+								<div class="spec_price_single">
+									{{list[n]['goods_volumes']}}
+								</div>
+								{{# }  }}
+								<div class="spec_price_single">
+									{{list[n]['min_nums']}}
+								</div>
+							</div>
+						</div>
+						{{# } }}
+						{{# } }}
+					</div>
+				</div>
+				{{# } }}
+
+
+			</div>
+
+		</script>
+		<script>
+            mui.init();
+            var ticket = common.getCache('ticket');
+            var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+            var goods_id = $.getUrlParam('goods_id');
+            var shopList = [];
+            var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+
+
+            mui('.mui-scroll-wrapper').scroll({
+                deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+            });
+            // 点击进入详情
+            mui('body').on('tap','.market_order',function(){
+                console.log('goods_id',goods_id);
+                openWindow({
+                    url:'my_sell_wholesale_order.html?goods_id='+goods_id,
+                    id:'my_sell_wholesale_order'
+                });
+            });
+            // 点击进入编辑
+            mui('body').on('tap','.edit_market_goods',function(){
+                console.log('goods_id',goods_id);
+                openWindow({
+                    url:'market_goods_push.html?goods_id='+goods_id,
+                    id:'market_goods_push'
+                });
+            });
+
+
+            // 渲染数据
+            common.http('Merchantapp&a=market_goods_detail', {
+                'ticket': ticket,
+                'client': client,
+                'goods_id': goods_id
+            }, function (data) {
+                console.log('data',data);
+                if (data && data.now_goods) {
+					if (parseInt(data.now_goods.goods_id)>0 && goods_id != parseInt(data.now_goods.goods_id)) {
+						console.log('goods_id1',parseInt(data.now_goods.goods_id));
+						goods_id = parseInt(data.now_goods.goods_id);
+					}
+                    Currency_txt = data.config['Currency_txt'];
+                    laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+                        $('.allHtml').html(html);
+                    });
+                }
+            });
+
+            function selectChange(lists) {
+                $.each(lists, function (i, val) {
+                    var goods_id_list = {'value': '', 'text': ''};
+                    goods_id_list.text = val.name;
+                    goods_id_list.value = val.store_id;
+                    shopList.push(goods_id_list);
+                });
+            }
+
+            mui('body').on('tap', '.modify', function (e) {
+                var merchant_remark = $('.textarea textarea').val();
+                common.http('Merchantapp&a=group_remark ', {
+                    'ticket': ticket,
+                    'client': client,
+                    'order_id': order_id,
+                    'merchant_remark': merchant_remark
+                }, function (data) {
+                    console.log(data);
+                    if (data.length == 0) {
+                        mui.toast('修改成功');
+                    }
+                });
+            });
+
+
+
+            (function ($, doc) {
+                $.init();
+                mui('.freight').on('tap', '#freight', function (e) {
+                    var userPicker = new $.PopPicker();
+                    userPicker.setData(fareTemplet);
+                    var that = this;
+                    userPicker.show(function (items) {
+                        that.children[0].innerHTML = items[0].text;
+                        that.children[0].style.color = "#333333";
+                        document.getElementById('freight_template').value = items[0].value;
+                        pindex = 1;
+                    }, false);
+
+                });
+
+            })(mui, document);
+            function realod_info(){
+                window.location.reload();
+            };
+
+
+		</script>
+
+</body></html>

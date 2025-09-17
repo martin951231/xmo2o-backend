@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <meta name="format-detection" content="telephone=yes"/> 
+    <title></title>
+</head>
+<body>
+<script>
+  (function () {
+        let url = location.href.split('?')
+        let pars = url[1].split('&')
+        let data = {}
+        pars.forEach((n, i) => {
+            let p = n.split('=')
+            data[p[0]] = p[1]
+        })
+        location.href = decodeURIComponent(data.redirectUrl)
+    })(); 
+</script>
+</body>
+</html>

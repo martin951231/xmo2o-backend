@@ -1,0 +1,949 @@
+<html lang="zh-CN"><head>
+	<meta charset="utf-8">
+	<title>添加积分商城商品</title>
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-touch-fullscreen" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="address=no">
+	<link href="css/mui.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link href="css/pigcms.css" rel="stylesheet">
+	<style>
+		.spec_list table td {
+			text-align: center;
+		}
+		.spec_list table th {
+			text-align: center;
+			padding: 1px;
+			font-size: 14px;
+		}
+		.spec_list table tr {
+			border-bottom: #f1f1f1 1px solid;
+		}
+		.spec_list table {
+			margin: 12px 3%;
+		}
+		.plus_class {
+			position: fixed;
+			height: 60px;
+			width: 100%;
+			bottom: 0;
+			line-height: 60px;
+			background: #EFEFF4;
+		}
+		.mg_60 {
+			margin-bottom: 60px;
+		}
+		.plus_class div {
+			margin: 0 5%;
+			width: 90%;
+			padding: 10px 0;
+			display: flex;
+		}
+		.plus_class a.edit_market_goods {
+			background: #ffa200;
+			border-radius: 5px;
+			margin-left: 1%;
+		}
+		.plus_class a.market_order {
+			background: #06CCAB;
+			border-radius: 5px;
+			margin-left: 1%;
+		}
+		.plus_class a {
+			margin-left: 5%;
+			width: 100%;
+			height: 40px;
+			color: #fff;
+			font-size: 16px;
+			line-height: 40px;
+			text-align: center;
+			display: inline-block;
+		}
+
+		.vip {
+			display: inline-block;
+			width: 18px;height: 18px;
+			background: url(./images/vip.png) center no-repeat;
+			background-size: contain;
+			vertical-align: middle;
+			position: relative;
+			top: -3px;
+			margin: 0;
+		}
+		.vip_price {
+			color: #FD1946;
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 18px;
+		}
+		.currency_txt {
+			font-size: 10px;
+			color: #999c9e;
+		}
+
+
+		.write_info li#li_delivery {
+			margin-top: 10px;
+			background: white;
+		}
+		.write_info li#li_delivery {
+			padding: 10px 15px;
+			border-width: 0 0 1px;
+			line-height: 24px;
+		}
+		.write_info li a {
+			min-height: 24px;
+		}
+		.write_info a {
+			color: #323232;
+			outline-style: none;
+			text-decoration: none;
+		}
+		.write_info #li_delivery a strong {
+			width: 100%;
+		}
+		.write_info #li_delivery a > * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.showName, .showTel {
+			color: #666;
+		}
+		#li_delivery i {
+			display: inline-block;
+			width: 6px;
+			height: 11px;
+			background: url(images/33-1_03.png) center no-repeat;
+			background-size: contain;
+			margin-right: 10px;
+		}
+		#li_delivery strong, b {
+			font-weight: normal;
+		}
+		.w100 {
+			width: 100%;
+		}
+
+
+
+
+		.spec_list .flex {
+			display: flex;
+		}
+		.spec_list .flex_grow {
+			flex-grow: 1;
+			text-align: center
+		}
+
+		.spec_list .spec_val_name {
+			padding: 1px 0;
+		}
+		.spec_list .list_spec_name {
+			font-size: 12px;
+			line-height: 22px;
+			border-radius: 5px;
+			padding: 2px 5px;
+			margin-top: 2px;
+			color: #fff;
+			background: #f23030;
+			width: 60px;
+		}
+		.spec_list .spec_price_single{
+			width: 40px;
+		}
+		.spec_list .list_title_name {
+			font-size: 12px;
+			line-height: 22px;
+			padding: 2px 5px 2px 0;
+			margin-top: 2px;
+			color: #333;
+			background: #fff;
+			width: 60px;
+		}
+		.spec_list .spec_title_name {
+			padding: 1px 0;
+		}
+		.spec_list .spec_title_name.title {
+			width: 40px;
+		}
+		.spec_list .spec_title_name div {
+			font-size: 12px;
+			line-height: 22px;
+			color: #333;
+			background: #fff;
+		}
+		.spec_list .spec_val_name div {
+			font-size: 12px;
+			line-height: 22px;
+			color: #fff;
+			background: #f23030;
+		}
+		.spec_list .spec_price {
+			color: #ff4d45;
+			width: 100%;
+		}
+
+
+
+		.template_list .spec_val_name {
+			padding: 1px 0;
+		}
+		.template_list .list_spec_name {
+			font-size: 12px;
+			line-height: 22px;
+			border-radius: 5px;
+			padding: 2px 5px;
+			margin-top: 2px;
+			color: #fff;
+			background: #f23030;
+			width: 60px;
+		}
+		.template_list .spec_price_single{
+			width: 60px;
+		}
+		.template_list .list_title_name {
+			font-size: 12px;
+			line-height: 22px;
+			padding: 2px 5px 2px 0;
+			margin-top: 2px;
+			color: #333;
+			background: #fff;
+			width: 60px;
+		}
+		.template_list .spec_title_name {
+			padding: 1px 0;
+		}
+		.template_list .spec_title_name.title {
+			width: 60px;
+			font-weight: bolder;
+		}
+		.template_list .spec_title_name div {
+			font-size: 12px;
+			line-height: 22px;
+			color: #333;
+			background: #fff;
+		}
+		.template_list .spec_val_name div {
+			font-size: 12px;
+			line-height: 22px;
+			color: #fff;
+			background: #f23030;
+		}
+
+		.right {
+			float: right;
+		}
+		.clr {
+			zoom: 1;
+		}
+		.spec_buy_num .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.spec_buy_num .wrap .plus input {
+			width: 65px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+
+		.normal .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.normal .wrap .plus input {
+			width: 50px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+		.normal .right {
+			float: right;
+		}
+		.wait_close {
+			color: #999999;
+		}
+
+
+        .input_width {
+            width: 50% !important;
+        }
+		.add_properties {
+			background: #06CCAB;
+			border-radius: 5px;
+			margin-left: 1%;
+			width: 6rem;
+			color: white;
+			text-align: center;
+			padding: 2px 5px;
+		}
+		.add_properties a {
+			color: white;
+		}
+		.box_del {
+			color: #428bca;
+		}
+		input {
+			padding: 0 !important;
+			text-align: center;
+		}
+
+
+		.up_img_pc {
+			position: relative;
+		}
+		.up_img_wap {
+			position: relative;
+		}
+		.up_img_pc img {
+			width: 85px;
+			height: 53px;
+			margin-top: -4px;
+		}
+		.up_img_wap img {
+			width: 85px;
+			height: 53px;
+			margin-top: -4px;
+		}
+		#pc_fileImage {
+			opacity: 0;
+			position: absolute;
+			left: 15px;
+			top: 10px;
+			width: 85px;
+			height: 53px;
+		}
+		#wap_fileImage {
+			opacity: 0;
+			position: absolute;
+			left: 15px;
+			top: 10px;
+			width: 85px;
+			height: 53px;
+		}
+		.up_img_pc input {
+			padding: 0;
+			margin: 0;
+			height: 30px;
+			border: none;
+			font-size: 14px;
+			width: 40%;
+		}
+		.up_img_wap input {
+			padding: 0;
+			margin: 0;
+			height: 30px;
+			border: none;
+			font-size: 14px;
+			width: 40%;
+		}
+		input.input_width {
+			margin-bottom: 0;
+		}
+	</style>
+<body>
+<header class="mui-bar mui-bar-nav">
+	<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	<h1 class="mui-title"><span class="market"><L_>发布/编辑商品</L_></span></h1>
+</header>
+<div class="mui-content">
+	<form id="myform"  style="flex:1;padding: 6px;"  action="">
+	<section class="g_details allHtml mg_60">
+	</section>
+	</form>
+</div>
+<nav class="plus_class">
+	<div>
+		<a href="javascript:;" class="edit_market_goods"><L_>保存</L_></a>
+	</div>
+</nav>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/fastclick.js"></script>
+<script src="js/jRoll.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+<script id="pluscardLists" type="text/html">
+	{{# var data=d; }}
+	{{# console.log(data); }}
+	<div class="commod detail_list">
+
+		<input type="hidden" name='goods_id' value="{{d.now_goods.goods_id}}"/>
+		<input type="hidden" name='market_goods_id' value="{{d.now_goods.market_goods_id}}"/>
+		<input type="hidden" name='market_order_id' value="{{d.now_goods.market_order_id}}"/>
+		<input type="hidden" name='is_spec' value="{{d.now_goods.is_spec}}"/>
+
+
+		<input type="hidden" value="{{data.ticket}}" name="ticket" id="ticket"/>
+		<input type="hidden" value="{{data.client}}" name="client" id="client"/>
+		<input type="hidden" value="{{data.goods_id}}" name="goods_id" id="goods_id"/>
+		<input type="hidden" value="{{data['Device-Id']}}" name="Device-Id" id="Device-Id"/>
+		<input type="hidden" value="{{data.app_version}}" name="app_version" id="app_version"/>
+		<input type="hidden" value="{{data.now_lang}}" name="now_lang" id="now_lang"/>
+
+		<input type="hidden" class="limit_num" data-min_unit="{{d.now_goods.min_unit}}" data-min_num="{{d.now_goods['min_num']}}" data-stock_num="{{d.now_goods.stock_num}}"/>
+		<div class="top clr">
+			<h2 class="fl">{{L_('商品信息')}}</h2>
+		</div>
+
+
+		<div class="user_list">
+			<ul>
+				<li class="clr">
+					<span class="fl">{{L_('商品名称')}}</span>
+					<span class="fr">
+						<input name="goods_name" value="" class="goods_name input_width fr" type="text">
+					</span>
+				</li>
+				<li class="clr">
+					<span class="fl" style="margin-right: 25%;">{{L_('所需积分')}}</span>
+					<span class="fr">
+					<input class="col-sm-1  input_width fr" size="10" maxlength="20" name="payment_pure_integral" type="text" value="" />
+				</span>
+				</li>
+				<li class="clr flex">
+					<span class="fl" style="margin-right: 25%;">{{L_('商品分类')}}({{L_('点击选择')}})</span>
+					<div class="flex fr input_width" id="choose_category" cat_fid="{{ data.now_goods.cat_fid }}" cat_id="{{ data.now_goods.cat_id }}"></div>
+				</li>
+				<li class="clr">
+					<span class="fl">{{L_('商品配送方式')}}</span>
+					<span class="fr">
+						{{L_('到店自提')}}
+						 <input class="col-sm-1" size="10"  name="deliver_type" type="hidden" value="1" />
+					</span>
+				</li>
+				<li class="clr">
+					<span class="fl">{{L_('每人限制兑换数量')}}</span>
+					<span class="fr">
+						<input class="col-sm-1  input_width fr" size="10" maxlength="20" name="exchange_limit_num" type="text" value="" />
+					</span>
+				</li>
+				<li class="clr">
+					<span class="fl">{{L_('已兑换人数')}}</span>
+					<span class="fr">
+						<input class="col-sm-1  input_width fr" size="10" maxlength="20" name="exchanged_num" type="text" value="" />
+					</span>
+				</li>
+                <li class="clr">
+                    <span class="fl">{{L_('库存')}}</span>
+                    <span class="fr">
+                        <input name="sku" value="" class="stock_info input_width fr" type="number">
+                    </span>
+                </li>
+
+                <li class="clr" style="border-bottom: none;">
+					<span class="fl">{{L_('电脑端图片')}}</span>
+					<span class="fr" style="font-size: 12px;color: red;">
+						{{L_("第一张将作为列表页图片展示！最多上传5个图片！建议尺寸：")}}800*800
+					</span>
+				</li>
+				<li class="clr up_img_pc" data-type="pc"  style="border-bottom: none;">
+					<img data-type="pc" src="images/17-8_03.png" alt=""/>
+					<input type="file" data-type="pc" accept="image/*" id="pc_fileImage" name="pc_pics"/>
+				</li>
+				<li class="clr">
+					<div class="fl show_img pc_photo">
+					</div>
+				</li>
+				<li class="clr" style="border-bottom: none;">
+					<span class="fl">{{L_('手机端图片')}}</span>
+					<span class="fr" style="font-size: 12px;color: red;">
+						{{L_("第一张将作为列表页图片展示！最多上传5个图片！建议尺寸：")}}800*800
+					</span>
+				</li>
+				<li class="clr up_img_wap" data-type="wap"  style="border-bottom: none;">
+					<img data-type="wap" src="images/17-8_03.png" alt=""/>
+					<input type="file" data-type="wap" accept="image/*" id="wap_fileImage" name="wap_pics"/>
+				</li>
+				<li class="clr">
+					<div class="fl show_img wap_photo">
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div class="user_list">
+			<ul>
+				<li class="clr">
+					<span class="fl">{{L_('商品详情')}}</span>
+				</li>
+				<li class="clr">
+                    <textarea class="goods_content" name="" rows="5" cols="5" placeholder="请填商品详情" id="content"></textarea>
+                    <input  type="hidden" name="goods_content" value=""/>
+				</li>
+
+				<li class="clr">
+					<span class="fl">{{L_('排序')}}</span>
+					<span class="fr">
+						<input size="10" maxlength="20" name="sort" type="text" value="" />
+					</span>
+				</li>
+				<li class="clr flex">
+					<span class="fl">{{L_('今日新品')}}</span>
+					<span class="fr">
+					<div class="mui-row">
+					    <div class="mui-col-sm-4">
+					    	<div class="mui-input-row mui-radio mui-left">
+								<label for=""><input name="is_new" value="1" type="radio" /> <L_>开启</L_></label>
+							</div>
+						</div>
+					    <div class="mui-col-sm-5">
+					    	<div class="mui-input-row mui-radio mui-left">
+								<label for=""><input name="is_new" type="radio" value="0" checked='checked'/> <L_>关闭</L_></label>
+							</div>
+						</div>
+					</div>
+					</span>
+				</li>
+                <li class="clr flex">
+                    <span class="fl">{{L_('商品状态')}}</span>
+                    <span class="fr">
+                    <div class="mui-row">
+                        <div class="mui-col-sm-4">
+                            <div class="mui-input-row mui-radio mui-left">
+                                <label for=""><input name="status" value="1" type="radio" checked='checked'/> <L_>开启</L_></label>
+                            </div>
+                        </div>
+                        <div class="mui-col-sm-5">
+                            <div class="mui-input-row mui-radio mui-left">
+                                <label for=""><input name="status" type="radio" value="0"/> <L_>关闭</L_></label>
+                            </div>
+                        </div>
+                    </div>
+                    </span>
+                </li>
+			</ul>
+		</div>
+	</div>
+
+</script>
+<script>
+    mui.init();
+    var ticket = common.getCache('ticket');
+    var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+    var goods_id = $.getUrlParam('goods_id');
+    var type = $.getUrlParam('type');
+    var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+    var h=$(window).height();
+    $('#middlePopover .mui-card').css({'height': 0.6*h, 'overflow': 'auto'});
+    var pindex=1;
+
+    mui('.mui-scroll-wrapper').scroll({
+        deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+    });
+    var pic_lens=0;
+    var wap_pic_lens=0;
+
+
+    function buy_num_keyup(val,obj,stock_num){
+        if(parseInt(val) > parseInt(stock_num)){
+            $(obj).val(stock_num);
+            $(obj).next("span").css("display", "");
+        }else{
+            $(obj).next("span").css("display", "none");
+        }
+    }
+    //点击选择白名单
+    mui('body').on('tap','.give_white_list',function(e){
+        openWindow({
+            url:'market_capture_merchant.html?goods_id='+goods_id,
+            id:'market_capture_merchant'
+        });
+    });
+
+
+    // 点击进入详情
+    mui('body').on('tap','.market_order',function(){
+        console.log('goods_id',goods_id);
+        openWindow({
+            url:'my_sell_wholesale_order.html?goods_id='+goods_id,
+            id:'my_sell_wholesale_order'
+        });
+    });
+    // 点击进入编辑
+    mui('body').on('tap','.edit_market_goods',function(){
+        var content = $('#content').val();
+		$('input[name="goods_content"]').val(content);
+        var msg = $('#myform').serialize();
+        common.http('Merchantapp&a=integral_mall_goods_save', msg, function (data) {
+           if (data) {
+               openWindow({
+                   url:'integral_mall_index.html',
+                   id:'integral_mall_index'
+               });
+		   }
+		})
+    });
+
+
+    // 渲染数据
+    common.http('Merchantapp&a=integral_mall_goods_info', {
+        'ticket': ticket,
+        'client': client,
+        'goods_id': goods_id,
+        'type': type
+    }, function (data) {
+        console.log('data',data);
+        data.ticket = ticket;
+        data.client = client;
+        data.goods_id = goods_id;
+        data['Device-Id'] = common.getDeviceId();
+        data.app_version = common.getVersion();
+        data.now_lang = now_lang;
+
+        if (data) {
+            if (data.now_goods && data.now_goods.pc_pic_list) {
+                pic_lens = data.now_goods.pc_pic_list.length;
+            }
+            if (data.now_goods && data.now_goods.wap_pic_list) {
+                wap_pic_lens = data.now_goods.wap_pic_list.length;
+            }
+            Currency_txt = data.config['Currency_txt'];
+            laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+                $('.allHtml').html(html);
+                setTimeout(function () {
+                    reload_msg();
+                },500);
+            });
+            var category_list = data.cate_list_json;
+            if (category_list != undefined) {
+                var father_category_list = $.parseJSON(category_list);
+                var son_category_list = null, cat_fid = parseInt($('#choose_category').attr('cat_fid')), cat_id = parseInt($('#choose_category').attr('cat_id'));
+                var area_dom = '<select id="cat_fid" name="cat_fid" class="fr" style="margin-right:10px;">';
+                if (cat_fid == 0) {
+                    area_dom += '<option value="0" selected="selected" >'+L_("选择分类")+'</option>';
+                } else {
+                    area_dom += '<option value="0">'+L_("选择分类")+'</option>';
+                }
+                $.each(father_category_list, function(i, item){
+                    if (item.cat_id == cat_fid) {
+                        if (item.son_list != undefined) {
+                            son_category_list = item.son_list;
+                            show_son_category(item.son_list, cat_id)
+                        }
+                        area_dom += '<option value="'+item.cat_id+'" selected="selected" >'+item.cat_name+'</option>';
+                    } else {
+                        area_dom += '<option value="'+item.cat_id+'">'+item.cat_name+'</option>';
+                    }
+                });
+                area_dom+= '</select>';
+                $('#choose_category').prepend(area_dom);
+            }
+            $('#cat_fid').change(function(){
+                var cat_fid = $(this).val(), father_category_list = $.parseJSON(category_list);
+                var this_son_list = null;
+                $.each(father_category_list, function(i, item){
+                    if (item.cat_id == cat_fid) {
+                        if (item.son_list != undefined) {
+                            this_son_list = item.son_list;
+                            show_son_category(item.son_list, 0);
+                        }
+                    }
+                });
+                if (this_son_list == null) {
+                    $('.sortproperties').remove();
+                    if (document.getElementById('cat_id')) {
+                        $('#cat_id').replaceWith('');
+                    } else if(document.getElementById('cat_fid')) {
+                        $('#cat_fid').after('');
+                    } else {
+                        $('#choose_category').prepend('');
+                    }
+                }
+            });
+
+        }
+    });
+
+    function show_son_category(son_category_list, cat_id)
+    {
+        var area_dom = '<select id="cat_id" name="cat_id" class="fr" style="margin-right:10px;">', now_cat_id = 0, isFirst = 0;
+        $.each(son_category_list, function(i, item){
+            if (cat_id == 0) {
+                if (isFirst == 0) {
+                    now_cat_id = item.cat_id;
+                    area_dom += '<option value="'+item.cat_id+'" selected="selected" >'+item.cat_name+'</option>';
+                } else {
+                    area_dom += '<option value="'+item.cat_id+'">'+item.cat_name+'</option>';
+                }
+                isFirst ++;
+            } else {
+                if (item.cat_id == cat_id) {
+                    now_cat_id = item.cat_id;
+                    area_dom += '<option value="'+item.cat_id+'" selected="selected" >'+item.cat_name+'</option>';
+                } else {
+                    area_dom += '<option value="'+item.cat_id+'">'+item.cat_name+'</option>';
+                }
+            }
+        });
+        area_dom += '</select>';
+        if (document.getElementById('cat_id')) {
+            $('#cat_id').replaceWith(area_dom);
+        } else if(document.getElementById('cat_fid')) {
+            $('#cat_fid').after(area_dom);
+        } else {
+            $('#choose_category').prepend(area_dom);
+        }
+    }
+
+    function reload_msg() {
+        // 切换选择
+        mui('body').on('tap','.is_pick_click',function(){
+            var is_pick = $(this).val();
+            if (is_pick==1) {
+                $('.pick_title').css('border-bottom','none');
+                $('.pick_content').show();
+            } else {
+                $('.pick_title').css('border-bottom','#f1f1f1 1px solid');
+                $('.pick_content').hide();
+            }
+        });
+        // 切换选择
+        mui('body').on('tap','.is_add_white_list_click',function(){
+            var is_add_white_list = $(this).val();
+            if (is_add_white_list==1) {
+                $('.white_list_title').css('border-bottom','none');
+                $('.white_list_content').show();
+            } else {
+                $('.white_list_title').css('border-bottom','#f1f1f1 1px solid');
+                $('.white_list_content').hide();
+            }
+        });
+        $('select[name="express_template_id"]').change(function(){
+            var val=$(this).val();
+            var is_freight=$('.express_template_is_freight_' + val).val();
+            var spec=$(this).data('spec');
+            console.log('val', val);
+            console.log('is_freight', is_freight);
+            console.log('spec', spec);
+            if (spec) {
+                if (is_freight==0) {
+                    $('.goods_weight_spec').hide();
+                    $('.goods_volume_spec').hide();
+                } else if (is_freight==1) {
+                    $('.goods_weight_spec').show();
+                    $('.goods_volume_spec').hide();
+                } else if (is_freight==2) {
+                    $('.goods_weight_spec').hide();
+                    $('.goods_volume_spec').show();
+                } else if (is_freight==3) {
+                    $('.goods_weight_spec').show();
+                    $('.goods_volume_spec').show();
+                } else if (val==0) {
+                    $('.goods_weight_spec').hide();
+                    $('.goods_volume_spec').hide();
+                }
+            } else if (is_freight==0) {
+                $('.goods_weight').hide();
+                $('.goods_volume').hide();
+            } else if (is_freight==1) {
+                $('.goods_weight').show();
+                $('.goods_volume').hide();
+            } else if (is_freight==2) {
+                $('.goods_weight').hide();
+                $('.goods_volume').show();
+            } else if (is_freight==3) {
+                $('.goods_weight').show();
+                $('.goods_volume').show();
+            } else if (val==0) {
+                $('.goods_weight').hide();
+                $('.goods_volume').hide();
+            }
+        });
+        $('select[name="express_template_id"]').change();
+
+
+        $("#add_properties").click(function(){
+            var t = '<div class="question_box properties"><p class="question_info"><span>'+L_("批发满 ")+'</span><input type="text" class="txt properties_name" value="" name="nums[]" style="width:50px"/><span>'+L_(" 件，享受 ")+'</span><input type="text" class="txt properties_num" value="" name="discounts[]" style="width:50px"/>'+L_("折优惠")+
+                '<a href="javascript:;" class="box_del">'+L_("删除")+'</a></p></div>';
+            $(".add_properties").before(t);
+        });
+
+
+
+        if(common.checkAndroidApp()){
+            $("#fileImage").hide().remove()
+            androidImg(true);
+
+        }else if(common.checkIosApp()){
+            $("#fileImage").hide().remove();
+            androidImg(false);
+        }
+        else{
+            imgUpload();
+        }
+    }
+
+    mui('body').on('tap', '.modify', function (e) {
+        var merchant_remark = $('.textarea textarea').val();
+        common.http('Merchantapp&a=group_remark ', {
+            'ticket': ticket,
+            'client': client,
+            'order_id': order_id,
+            'merchant_remark': merchant_remark
+        }, function (data) {
+            console.log(data);
+            if (data.length == 0) {
+                mui.toast('修改成功');
+            }
+        });
+    });
+
+    // 上传图片
+    var type = '';
+    function androidImg (type){
+        $('.up_img_pc').on('click', function (e,d) {
+            if (pic_lens < 5) {
+                if(type){
+                    window.pigcmspackapp.uploadpic(upload_pic,requestImgUrl+'/appapi.php?c=Merchantapp&a=upload_market_image&path=goods','ceshi_pc');
+                }else{
+                    var iosHref = window.btoa(requestImgUrl+"/appapi.php?c=Merchantapp&a=upload_market_image&path=goods");
+                    iosHref = iosHref.replace(/\//g,"&");
+                    var datas=upload_pic+'/'+iosHref
+                    common.iosFunction('upload_pic/'+datas+'/ceshi_pc', {name:'upload_pic', scale: upload_pic, upload_url:iosHref, callback:'ceshi_pc'});
+
+                }
+            } else {
+                mui.toast('最多只能上传5张图片');
+            }
+
+        });
+        $('.up_img_wap').on('click', function (e,d) {
+            if (wap_pic_lens < 5) {
+                if(type){
+                    window.pigcmspackapp.uploadpic(upload_pic,requestImgUrl+'/appapi.php?c=Merchantapp&a=upload_market_image&path=goods','ceshi_wap');
+                }else{
+                    var iosHref = window.btoa(requestImgUrl+"/appapi.php?c=Merchantapp&a=upload_market_image&path=goods");
+                    iosHref = iosHref.replace(/\//g,"&");
+                    var datas=upload_pic+'/'+iosHref
+                    common.iosFunction('upload_pic/'+datas+'/ceshi_wap', {name:'upload_pic', scale: upload_pic, upload_url:iosHref, callback:'ceshi_wap'});
+
+                }
+            } else {
+                mui.toast('最多只能上传5张图片');
+            }
+
+        });
+    }
+    // 手机app上传
+    function ceshi_pc(path,url){
+        pic_lens++;
+        var str = '<img class="fl" style="width: 24%;height: 57px;margin:0 1% 2px 0;" src="'+path+'"/><input type="hidden" name="pc_pic[]" value="'+url+'"/>';
+        $('.show_img.pc_photo').append(str);
+    }
+    function ceshi_wap(path,url){
+        wap_pic_lens++;
+        var str = '<img class="fl" style="width: 24%;height: 57px;margin:0 1% 2px 0;" src="'+path+'"/><input type="hidden" name="pc_pic[]" value="'+url+'"/>';
+        $('.show_img.wap_photo').append(str);
+    }
+    function imgUpload(){
+        $('.up_img_wap').off('change','#wap_fileImage').on('change','#wap_fileImage',function(e){
+            console.log('up_img_wap');
+            var index = layer.open({type:2,shade:false,shadeClose:false});
+            var fullPath=window.document.location.href;
+            var pathName=window.document.location.pathname;
+            var pos=fullPath.indexOf(pathName);
+            var localhostPath=fullPath.substring(0,pos);
+            var post_url = localhostPath+'/appapi.php?c=Merchantapp&a=upload_market_image&path=goods';
+            $.ajaxFileUpload({
+                url:post_url,
+                secureuri:false,
+                fileElementId:'wap_fileImage',
+                dataType: 'json',
+                success: function(data){
+                    wap_pic_lens++;
+                    var str = '<img class="fl" style="width: 24%;height: 57px;margin:0 1% 2px 0;" src="'+data.result.title+'"/><input type="hidden" name="wap_pic[]" value="'+data.result.url+'"/>';
+                    $('.wap_photo').append(str);
+                    layer.close(index);
+                }
+            });
+        });
+        $('.up_img_pc').off('change','#pc_fileImage').on('change','#pc_fileImage',function(e){
+            console.log('up_img_pc');
+            var index = layer.open({type:2,shade:false,shadeClose:false});
+            var fullPath=window.document.location.href;
+            var pathName=window.document.location.pathname;
+            var pos=fullPath.indexOf(pathName);
+            var localhostPath=fullPath.substring(0,pos);
+            var post_url = localhostPath+'/appapi.php?c=Merchantapp&a=upload_market_image&path=goods';
+            $.ajaxFileUpload({
+                url:post_url,
+                secureuri:false,
+                fileElementId:'pc_fileImage',
+                dataType: 'json',
+                success: function(data){
+					pic_lens++;
+                    var str = '<img class="fl" style="width: 24%;height: 57px;margin:0 1% 2px 0;" src="'+data.result.title+'"/><input type="hidden" name="pc_pic[]" value="'+data.result.url+'"/>';
+                    $('.pc_photo').append(str);
+                    layer.close(index);
+                }
+            });
+        });
+    }
+
+
+    (function ($, doc) {
+        $.init();
+        // mui('.freight').on('tap', '#freight', function (e) {
+        //     var userPicker = new $.PopPicker();
+        //     userPicker.setData(fareTemplet);
+        //     var that = this;
+        //     userPicker.show(function (items) {
+        //         that.children[0].innerHTML = items[0].text;
+        //         that.children[0].style.color = "#333333";
+        //         document.getElementById('freight_template').value = items[0].value;
+        //         pindex = 1;
+        //     }, false);
+        //
+        // });
+
+    })(mui, document);
+    function realod_info(){
+        window.location.reload();
+    };
+
+
+</script>
+
+</body></html>

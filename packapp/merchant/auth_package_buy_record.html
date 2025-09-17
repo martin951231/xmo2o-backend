@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>权限购买记录</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/recharge_record.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title"><L_>权限购买记录</L_></h1>
+</header>
+<div class="mui-content">
+    <div class="all_recards">
+
+    </div>
+    <!-- 上拉刷新 -->
+    <div class="pullup" style="display:none;">上拉加载更多...</div>
+    <div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_></div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="cardlist" type="text/html">
+    {{# for(var i = 0, len = d.data.length; i < len; i++){ }}
+    <div class="mui-card">
+        <div class="mui-card-header">
+            <span>{{ L_('套餐名称') }}: {{d.data[i].name?d.data[i].name:'无'}}</span>
+            <p>{{ L_('购买时间') }}: {{d.data[i].add_time}}</p>
+        </div>
+        <div class="mui-card-header">
+            <span>{{ L_('订单状态') }}</span>
+            {{# if(d.data[i].paid == 1){ }}
+            <p><span style="color:#0AB86D">{{ L_('订购成功') }}</span></p>
+            {{# } else { }}
+            <p><span style="color:#2a6496">{{ L_('待支付') }}</span></p>
+            {{# } }}
+        </div>
+        <div class="mui-card-content">
+            <ul class="mui-clearfix">
+
+                <li class="mui-pull-left">
+                    <dl>
+                        <dt class="add">
+                            {{# if(d.data[i].is_default == 1) { }}
+                                {{ L_('永久') }}
+                            {{#  } else if(d.data[i].num > 0) { }}
+                                {{ d.data[i].num }}{{ d.data[i].time_type_str ? d.data[i].time_type_str : ''  }}
+                            {{# } else { }}
+                                -
+                            {{# } }}
+                        </dt>
+                        <dd>{{ L_('服务周期') }}</dd>
+                    </dl>
+                </li>
+                <li class="mui-pull-left">
+                    <dl>
+                        <dt class="add">
+                            {{# if(d.data[i].is_try == 1) { }}
+                                <span style="color:#2a6496">{{ L_("试用期") }}{{ d.data[i].try_time }}{{ d.data[i].try_time_type_str ? d.data[i].try_time_type_str : ''}}</span>
+                            {{# } else { }}
+                                {{ L_('否') }}
+                            {{# } }}
+                        </dt>
+                        <dd>{{ L_('是否试用') }}</dd>
+                    </dl>
+                </li>
+                <li class="mui-pull-left">
+                    <dl>
+                        <dt class="add">{{ d.data[i].money }}{{ d.config.Currency_txt }}</dt>
+                        <dd>{{ L_('费用') }}</dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+<!--        <div class="mui-card-footer">-->
+<!--            <p><span><i></i> {{ L_('详情') }}:</span> {{d.data[i].desc}}</p>-->
+<!--        </div>-->
+    </div>
+    {{# } }}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    var ticket = common.getCache('ticket');
+    var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+    var page=1;
+    $('.all_recards').html('');
+    function recordAll(page){
+        common.http('Merchantapp&a=auth_package_buy_record',{'ticket':ticket,'client':client,'pindex':page},function(data){
+            data.config = data.config;
+            data.data = data.order_list;
+            console.log(data);
+            if(data.data.length==0){
+                $('.pullup').html(L_('没有更多数据啦'));
+                $('.loading').hide();
+                $('.pullup').show();
+            }else{
+                data.data.length<10&&$('.pullup').html(L_('没有更多数据啦'));
+                $('.loading').hide();
+                $('.pullup').show();
+                laytpl(document.getElementById('cardlist').innerHTML).render(data, function(html){
+
+                    $('.all_recards').append(html);
+                    $('.loading').hide();
+                    $('.pullup').show();
+                });
+                if(data.data.length>9){
+                    var flag=false;
+                    $(window).scroll(function() {
+                        if(flag){
+                            return false;
+                        }
+
+                        //上拉加载
+                        if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                            $('.pullup').hide();
+                            $('.loading').show();
+                            flag=true;
+                            page++;
+                            recordAll(page);
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+    recordAll(1);
+    // 上拉加载下拉刷新数据
+
+</script>
+</body>
+</html>

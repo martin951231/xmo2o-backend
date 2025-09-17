@@ -1,0 +1,70 @@
+
+.flex_text_box[data-v-11693940] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.margin_top_10[data-v-11693940] {
+  margin-top: 10px;
+}
+.text_1[data-v-11693940] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.input_style[data-v-11693940] {
+  width: 100px;
+}
+.cascader_style[data-v-11693940] {
+  width: 120px;
+}
+
+
+.message-suggestions-list-box[data-v-4319ce90] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-4319ce90] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-4319ce90] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-4319ce90] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-4319ce90] {
+  padding: 20px;
+}
+.lbsf[data-v-4319ce90] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-4319ce90] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.flex_text_box[data-v-4319ce90] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flex_text_box .text_1[data-v-4319ce90] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+

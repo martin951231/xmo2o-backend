@@ -1,0 +1,14 @@
+.videoPlayer[data-v-19dd4a33] {
+  width: 100%;
+  height: 600px;
+}
+#myFlvVideo[data-v-19dd4a33]::-webkit-media-controls-timeline {
+  display: none;
+}
+#myFlvVideo[data-v-19dd4a33]::-webkit-media-controls-play-button {
+  display: none;
+}
+[data-v-19dd4a33] .ant-modal-body {
+  padding: 0;
+}
+

@@ -1,0 +1,26 @@
+
+.item[data-v-d802c25c] {
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    min-width: 150px;
+    height: 36px;
+    background: #ffffff;
+    opacity: 0.6;
+    border-radius: 2px;
+    font-size: 14px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: #323233;
+    line-height: 22px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+}
+.item[data-v-d802c25c]:hover,.item.active[data-v-d802c25c] {
+    background: rgba(224, 240, 255, 1);
+    color: rgba(24, 144, 255, 1);
+}
+

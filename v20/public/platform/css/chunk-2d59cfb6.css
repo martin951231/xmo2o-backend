@@ -1,0 +1,51 @@
+
+div[data-v-a573843c] .ant-modal-body{
+    max-height: 600px;
+    overflow-y: auto;
+}
+.font-red[data-v-a573843c] {
+    color: #ff3d0d;
+}
+.page-bar[data-v-a573843c] {
+    margin: 40px;
+}
+ul[data-v-a573843c], li[data-v-a573843c] {
+    margin: 0px;
+    padding: 0px;
+}
+li[data-v-a573843c] {
+    list-style: none
+}
+.page-bar li:first-child > a[data-v-a573843c] {
+    margin-left: 0px
+}
+.page-bar a[data-v-a573843c] {
+    border: 1px solid #ddd;
+    text-decoration: none;
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    cursor: pointer
+}
+.page-bar a[data-v-a573843c]:hover {
+    background-color: #eee;
+}
+.page-bar a.banclick[data-v-a573843c] {
+    cursor: not-allowed;
+}
+.page-bar .active a[data-v-a573843c] {
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.page-bar i[data-v-a573843c] {
+    font-style: normal;
+    color: #d44950;
+    margin: 0px 4px;
+    font-size: 12px;
+}
+

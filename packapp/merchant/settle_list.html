@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>入驻缴费记录</title>
+    <link href="css/mui.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link href="css/mui.picker.css" rel="stylesheet" />
+    <link href="css/mui.picker.min.css" rel="stylesheet" />
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/record.css" />
+</head>
+
+<body>
+    <header class="mui-bar mui-bar-nav">
+        <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+        <h1 class="mui-title">
+            <L_>入驻缴费记录</L_>
+        </h1>
+
+    </header>
+    <div class="mui-content">
+        <div class="record_money">
+            <div class="mui-row mui-clearfix">
+                <div class="mui-col-sm-6 left_show">
+                    <p><span class="jin" id="jin">
+                            <L_>充值总额</L_>
+                    </p>
+                    <h3 id="moneys">0.00</h3>
+                    <p>
+                        <L_>余额</L_><span class="left_money">0</span>
+                    </p>
+                </div>
+
+                <div class="mui-col-sm-6 right_show">
+                    <p><span id="jin1" class="jin">
+                            <L_>退款总额</L_>
+                        </span></p>
+                    <h3 id="counts">0</h3>
+                    <p>
+                        <L_>审核中</L_><span class="audit">0</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!--筛选后内容-->
+        <div class="cards" id="cards">
+
+          
+
+
+
+        </div>
+        <!-- 上拉刷新 -->
+        <div class="pullup" style="display:none;">上拉加载更多...</div>
+        <div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt="">
+            <L_>正在加载</L_>
+        </div>
+    </div>
+    <script src="js/fastclick.js"></script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/mui.dtpicker.js"></script>
+    <script src="js/mui.picker.js"></script>
+    <script src="js/mui.poppicker.js"></script>
+    <script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+    <script id="cardlist" type="text/html">
+	{{# for(var i = 0, len = d.income_list.length; i < len; i++){ }}
+		<div class="mui-card" data-id="{{d.income_list[i].id}}">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header">
+					<span>{{d.income_list[i].store_name}}</span>
+
+					<a>{{d.income_list[i].type_name}}</a>
+ 
+					<p>{{d.income_list[i].money}}</p>
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content show_content mui-clearfix">
+				</div>
+				<div class="mui-card-footer show">
+			       <span>{{ L_('描述') }}:&nbsp;{{d.income_list[i].desc}}</span>
+			       <i class="mui-pull-right up_down"></i>
+				</div>
+			</div>
+	{{# } }}
+</script>
+    <script id="content_list" type="text/html">
+	{{# for(var i = 0, len = d.income_info.length; i < len; i++){ }}
+		{{#  if(d.income_info[i].name!="描述"){ }}
+			{{# if(d.income_info[i].value!=null){}}
+				<div class="mui-pull-left" style="width: 50%;">
+					<p>{{d.income_info[i].name}}:{{d.income_info[i].value}}</p>
+				</div>
+			{{# } else { }}
+				<div class="mui-pull-left" style="width: 50%;">
+					<p>{{d.income_info[i].name}}:{{ L_('无') }}</p>
+				</div>
+			{{# } }}
+		{{# } }}
+		
+	{{# } }}
+</script>
+    <script type="text/javascript" charset="utf-8">
+        var ticket = common.getCache('ticket');
+        //console.log(ticket);
+        var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+        var be_date = '';
+        var enddate = '';
+        var stor_list = [];
+        var type_list = [];
+        var type_index = 'all';
+        var store_index = '';
+        var page = 1;
+        var zuiShi = '';
+        var ctuan = common.getCache('ctuan');
+        $('.ctuan').text(ctuan);
+        function p(s) {
+            return s < 10 ? '0' + s : s;
+        }
+
+        //获取当前时间
+        var myDate = new Date();
+        //获取当前年
+        var year = myDate.getFullYear() || 2099;
+        //获取当前月
+        var month = myDate.getMonth() + 1;
+        //获取当前日
+        var date = myDate.getDate();
+        var now = year + '-' + p(month) + "-" + p(date);
+        //console.log(now);
+        $('#begin_date').text(now);
+        $('#end_date').text(now);
+
+        now = replaceAll(now);
+        zuiShi = now + '-' + now;
+        be_date = now;
+        enddate = now;
+        function selectChange(lists) {
+            stor_list = [];
+            $.each(lists, function (i, val) {
+                var goods_id_list = { 'value': '', 'text': '' };
+                goods_id_list.text = val.name;
+                goods_id_list.value = val.store_id;
+                stor_list.push(goods_id_list);
+            });
+        }
+        function replaceAll(str) {
+            if (str != null)
+                str = str.replace(/-/g, "/")
+            return str;
+        }
+        function changeAllshou() {
+            console.log(zuiShi);
+            common.http('Merchantapp&a=settleList', { 'ticket': ticket, 'client': client, 'page': page, 'type': type_index, 'store_id': store_index, 'period': zuiShi }, function (data) {
+                console.log('get_income_list---data', data);
+
+                $('#moneys').text(data.countMoney.recharge);
+                $('.left_money').text(data.countMoney.money);
+                $('#counts').text(data.countMoney.refund);
+                $('.audit').text(data.countMoney.audit);
+
+            
+            });
+        }
+       
+        mui.init();
+        //点击二维码进入二维码页面
+
+
+        
+
+        // })(mui, document);
+
+        //控制显示隐藏
+     
+
+
+        $(document).ready(function () {
+            $.post('/appapi.php?c=Merchantapp&a=settleList', {
+                'ticket': ticket,
+                'client': client,
+            }, function (res) {
+                let data = res.result;
+                $('#moneys').text(data.countMoney.recharge);
+                $('.left_money').text(data.countMoney.money);
+                $('#counts').text(data.countMoney.refund);
+                $('.audit').text(data.countMoney.audit);
+
+                let html = '';
+                if(data.list.length > 0){
+ 
+
+                    for(v of data.list){
+                        if(v.type == 1){
+                            html += `  <div class="mui-card">
+                                <!--页眉，放置标题-->
+                                <div class="mui-card-header"> <span>${v.type_text}</span> <a></a>
+                                    <p>${v.money}</p>
+                                </div>
+                                <!--内容区-->
+                                <div class="mui-card-content show_content mui-clearfix" style="display: block;">
+                                    <div class="mui-pull-left" style="width: 50%;">
+                                        <p>金额： ￥${v.money}</p>
+                                    </div>
+                                    <div class="mui-pull-left" style="width: 50%;">
+                                        <p>支付时间：${v.format_time}</p>
+                                    </div>
+                                    <div class="mui-pull-left" style="width: 50%;">
+                                        <p>状态：${v.status_text}</p>
+                                    </div>
+                                    <div class="mui-pull-left" style="width: 100%;">
+                                        <p>描述：${v.remark}</p>
+                                    </div>
+                                    
+                                    <div class="mui-pull-left" style="width: 100%;">
+                                         <p></p>
+                                    </div>
+                                </div>
+                                
+                            </div>`;
+
+                        }else{
+                            html += `  <div class="mui-card">
+                                <!--页眉，放置标题-->
+                                <div class="mui-card-header"> <span>${v.type_text}</span> <a></a>
+                                    <p style="color: red">${v.money}</p>
+                                </div>
+                                <!--内容区-->
+                                <div class="mui-card-content show_content mui-clearfix" style="display: block;">
+                                    <div class="mui-pull-left" style="width: 50%;">
+                                        <p>金额： ￥${v.money}</p>
+                                    </div>
+                                    <div class="mui-pull-left" style="width: 50%;">
+                                        <p>支付时间：${v.format_time}</p>
+                                    </div>
+                                    <div class="mui-pull-left" style="width: 50%;">
+                                        <p>状态：${v.status_text}</p>
+                                    </div>
+                                    <div class="mui-pull-left" style="width: 100%;">
+                                        <p>描述：${v.remark}</p>
+                                    </div>
+                                    `;
+                                if(v.status == 22){
+                                    html += `<div class="mui-pull-left" style="width: 100%;">
+                                        <p>原因：${v.msg}</p>
+                                    </div>`
+                                }
+                                   html += `
+                                    <div class="mui-pull-left" style="width: 100%;">
+                                         <p></p>
+                                    </div>
+                                </div>
+                                
+                            </div>`;
+
+                        }
+                       
+
+                    }
+                    $('#cards').html(html)
+  
+                }
+
+
+
+
+
+
+            }, 'json')
+        })
+    </script>
+
+    <script>
+
+
+    </script>
+</body>
+
+</html>

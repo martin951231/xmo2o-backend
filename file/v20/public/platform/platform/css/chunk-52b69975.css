@@ -1,0 +1,15 @@
+
+.ant-form-item label {
+  width: 150px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+

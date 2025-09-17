@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>注销申请</title>
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/vant.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/cancel_account.css">
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/vue@2.6.10.min.js"></script>
+    <script src="scripts/vant.min.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <script>
+        // 初始化
+        var vConsole = new VConsole();
+    </script> -->
+</head>
+
+<body>
+    <div id="app">
+        <van-nav-bar :safe-area-inset-top="true"></van-nav-bar>
+        <section id="content" class="contents" :style="common.checkIos()?'padding-top: 44px':''" v-if="detail">
+            <div class="logoffCheck-box" v-if="flag">
+                <div v-for="(item,index) in detail.list" key="index" class="items">
+                    <div class="logoffCheck-box-item" v-if="item.status == 0">
+                        <div class="title">{{item.title}}</div>
+                        <div class="text">{{item.msg}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="logoffCheck-box tost">
+                <div v-html="detail.content"></div>
+                <div class="btn" @click="cancellation">注销</div>
+            </div>
+        </section>
+    </div>
+
+</body>
+<script src="./scripts/common.js?t=22" type="text/javascript" charset="utf-8"></script>
+<script src="./scripts/work/cancel_account.js?t=1" type="text/javascript" charset="utf-8"></script>
+
+</html>

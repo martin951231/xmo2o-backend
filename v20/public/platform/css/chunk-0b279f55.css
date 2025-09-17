@@ -1,0 +1,30 @@
+.imgname[data-v-c40802be] {
+  width: 100px;
+}
+[data-v-c40802be] .project_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-c40802be] .project_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-c40802be] .project_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-c40802be] .project_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+[data-v-c40802be] .draggable-tree .ant-tree-title {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  width: 307px;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+}
+[data-v-c40802be] .draggable-tree .icon_size {
+  width: 16px;
+}
+

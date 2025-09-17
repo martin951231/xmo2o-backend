@@ -1,0 +1,164 @@
+.title {
+  padding: 12px 10px;
+  background-color: #f8f8f8;
+  font-weight: bold;
+  text-align: left;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  color: #000000;
+  font-size: 16px;
+}
+.font-14 {
+  font-size: 14px;
+}
+.border-bottom {
+  border-bottom: 1px solid #ffffff;
+}
+/deep/ textarea {
+  overflow-x: hidden;
+  overflow-y: auto !important;
+}
+.cr-333 {
+  color: #333333;
+}
+.font-blue {
+  color: #1890ff;
+}
+.font-red {
+  color: red;
+}
+.font-gray {
+  color: gray;
+}
+.merchant-account-auth-menu-tree li.ant-tree-treenode-disabled > span:not(.ant-tree-switcher),
+.merchant-account-auth-menu-tree li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper,
+.merchant-account-auth-menu-tree li.ant-tree-treenode-disabled > .ant-tree-node-content-wrapper span {
+  color: #333333;
+}
+.merchant-account-auth-menu-tree.ant-tree li span.ant-tree-switcher {
+  width: 0;
+  overflow: hidden;
+}
+.merchant-account-auth-menu-tree.ant-tree > li:first-child,
+.merchant-account-auth-menu-tree.ant-tree li,
+.merchant-account-auth-menu-tree .ant-tree-child-tree > li:first-child {
+  padding-top: 0 !important;
+  padding-bottom: 1px !important;
+}
+.merchant-account-auth-menu-tree.ant-tree li.menu_first ul {
+  padding-left: 0;
+}
+.merchant-account-auth-menu-tree .menu_first span.ant-tree-node-content-wrapper {
+  color: #333333;
+  font-size: 16px;
+  font-weight: bold;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f8f8f8 !important;
+  padding: 10px;
+  min-height: 24px;
+  height: auto;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.merchant-account-auth-menu-tree .menu_first span.ant-tree-checkbox {
+  padding: 10px;
+  background-color: #f8f8f8 !important;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-right: 0;
+  min-height: 44px;
+  height: auto;
+}
+.merchant-account-auth-menu-tree .menu_first span.ant-tree-checkbox .ant-tree-checkbox-inner {
+  top: 4px;
+}
+.merchant-account-auth-menu-tree .menu_first span.ant-tree-checkbox::after {
+  width: 0;
+  height: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border: none;
+}
+.merchant-account-auth-menu-tree .menu_last span.ant-tree-checkbox {
+  padding: 10px 10px 10px 30px;
+  background-color: #f8f8f8 !important;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-right: 0;
+  height: auto;
+  min-height: 44px;
+}
+.merchant-account-auth-menu-tree .menu_last span.ant-tree-checkbox .ant-tree-checkbox-inner {
+  top: 4px;
+}
+.merchant-account-auth-menu-tree .menu_last span.ant-tree-checkbox::after {
+  width: 0;
+  height: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border: none;
+}
+.merchant-account-auth-menu-tree .menu_last span.ant-tree-node-content-wrapper {
+  color: #333333;
+  font-size: 14px;
+  font-weight: bold;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f8f8f8 !important;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  height: auto;
+  min-height: 24px;
+  width: calc(100% - 66px) !important;
+}
+.merchant-account-auth-menu-tree .menu_last ul.ant-tree-child-tree {
+  padding-left: 50px !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -ms-flex-wrap: wrap !important;
+      flex-wrap: wrap !important;
+}
+.merchant-account-auth-menu-tree .menu_last ul.ant-tree-child-tree li {
+  width: 25%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.merchant-account-auth-menu-tree .menu_last ul.ant-tree-child-tree li span.ant-tree-checkbox {
+  background-color: #ffffff !important;
+  padding: 0;
+  margin-right: 8px;
+  min-height: 24px;
+}
+.merchant-account-auth-menu-tree .menu_last ul.ant-tree-child-tree li span.ant-tree-checkbox::after {
+  width: 0;
+  height: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border: none;
+}
+.merchant-account-auth-menu-tree .menu_last ul.ant-tree-child-tree li span.ant-tree-node-content-wrapper {
+  margin-right: 20px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+  min-height: 24px;
+  height: auto;
+  color: #333333;
+  font-size: 12px;
+  font-weight: normal;
+  background-color: #ffffff !important;
+  padding: 0;
+}
+

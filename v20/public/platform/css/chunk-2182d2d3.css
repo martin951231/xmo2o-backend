@@ -1,0 +1,28 @@
+.message-suggestions-list-box[data-v-0dfa171d] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-0dfa171d] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-0dfa171d] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-0dfa171d] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-0dfa171d] {
+  padding: 20px;
+}
+.lbsf[data-v-0dfa171d] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-0dfa171d] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+[data-v-0dfa171d] .ant-col-4 {
+  width: 20%;
+}
+

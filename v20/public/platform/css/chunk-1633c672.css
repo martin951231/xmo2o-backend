@@ -1,0 +1,47 @@
+.upload-img-container[data-v-5afeb148] {
+  width: 102px;
+  height: 102px;
+}
+.file-upload[data-v-5afeb148] .ant-upload-list-item-name {
+  color: #999999 !important;
+}
+
+.color-picker[data-v-6f2db989] {
+  margin: 10px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.color-picker[data-v-6f2db989] .m-colorPicker .box {
+  width: 220px;
+}
+.color-picker .color-box[data-v-6f2db989] .colorBtn {
+  width: 80px;
+  height: 30px;
+  border: 1px solid #666666;
+}
+.color-picker .color-box[data-v-6f2db989] .box {
+  z-index: 999;
+}
+.color-picker .color-name[data-v-6f2db989] {
+  display: inline-block;
+  margin: 0px 20px;
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: bold;
+}
+.bottom_form[data-v-6f2db989] {
+  background: #fff;
+  position: fixed;
+  right: 820px;
+  bottom: 0px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+}
+

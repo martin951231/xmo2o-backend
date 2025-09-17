@@ -1,0 +1,182 @@
+.message-suggestions-list-box[data-v-40ecc1f6] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-40ecc1f6] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-40ecc1f6] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-40ecc1f6] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-40ecc1f6] {
+  padding: 20px;
+}
+.lbsf[data-v-40ecc1f6] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-40ecc1f6] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.margin_top_10[data-v-40ecc1f6] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-40ecc1f6] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flex_text_box .text_1[data-v-40ecc1f6] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.form_item[data-v-40ecc1f6] {
+  width: 50%;
+}
+[data-v-40ecc1f6] .ant-form-extra {
+  margin-left: 30px;
+}
+
+.message-suggestions-list-box[data-v-5173533e] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-5173533e] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-5173533e] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-5173533e] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-5173533e] {
+  padding: 20px;
+}
+.lbsf[data-v-5173533e] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-5173533e] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.margin_top_10[data-v-5173533e] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-5173533e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flex_text_box .text_1[data-v-5173533e] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.form_item[data-v-5173533e] {
+  width: 50%;
+}
+[data-v-5173533e] .ant-form-extra {
+  margin-left: 30px;
+}
+
+.message-suggestions-list-box[data-v-4b45a894] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-4b45a894] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-4b45a894] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-4b45a894] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-4b45a894] {
+  padding: 20px;
+}
+.lbsf[data-v-4b45a894] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-4b45a894] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.margin_top_10[data-v-4b45a894] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-4b45a894] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flex_text_box .text_1[data-v-4b45a894] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.form_item[data-v-4b45a894] {
+  width: 50%;
+}
+[data-v-4b45a894] .ant-form-extra {
+  margin-left: 30px;
+}
+
+.build_index[data-v-346c1a34] {
+  background-color: #ffffff;
+  padding: 0 20px;
+}
+.top-box-padding[data-v-346c1a34] {
+  border-bottom: 1px solid #ebedf0;
+  padding: 20px 0;
+}
+.status-color-ok[data-v-346c1a34] {
+  color: green;
+}
+.status-color-fail[data-v-346c1a34] {
+  color: red;
+}
+.total_number[data-v-346c1a34] {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  height: 50px;
+  padding-right: 20px;
+}
+

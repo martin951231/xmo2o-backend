@@ -1,0 +1,320 @@
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<title>订单详情</title>
+	<meta name="viewport"
+		content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-touch-fullscreen" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="address=no">
+	<link href="css/mui.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link href="css/pigcms.css" rel="stylesheet">
+
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+		<h1 class="mui-title"><span class="ctuan">
+				<L_>团购</L_>
+			</span>
+			<L_>订单详情</L_>
+		</h1>
+	</header>
+	<!-- <span class="ff0"><L_>未付款</L_></span>        
+									<span class="ef6"><L_>未发货</L_></span>         
+									<span class="ecc"><L_>已付款</L_></span>         
+									<span class="fc6"><L_>待评价</L_></span>         
+									<span class="a2a"><L_>已取消</L_></span> -->
+	<section class="g_details p40 allHtml">
+
+	</section>
+	<script src="js/fastclick.js"></script>
+	<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.dtpicker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/fastclick.js"></script>
+	<script src="js/JRoll.js"></script>
+	<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js"></script>
+	<script id="pluscardLists" type="text/html">
+			{{# var data=d; }}
+			{{# console.log(data); }} 
+			<div class="commod detail_list">
+					<div class="top clr">
+						<h2 class="fl">{{ L_('商品信息') }}</h2>
+					</div>     
+					<div class="commod_list">
+						<div class="img fl">
+							<img src="{{ data.now_order.pic }}">
+						</div>      
+						<div class="content" style="height: 76px;">       
+							<h2>{{ data.now_order.s_name }}</h2>       
+							<div class="clr price">        
+								<div class="fl">{{ L_('单价') }}<L_>：{{ L_('￥') }}{{ data.now_order.price }}</L_></div>        
+								<div class="fl">{{ L_('数量') }}：{{ data.now_order.num }}</div>
+							</div>       
+							<div class="clr">        
+								<div class="fl total">{{ L_('共计') }}：{{ L_('￥') }}{{ data.now_order.total_money }}</div>
+								<div class="state fr">                  
+									<span class="ecc">{{ data.now_order.paystatus }}</span>                             
+									<span class="ff0">{{ data.now_order.paytypestr }}</span>                  
+									  
+								</div>       
+							</div>      
+						</div>     
+					</div>   
+				</div>
+				<div class="user detail_list">
+					<div class="top clr">    
+						<h2 class="fl">{{ L_('用户信息') }}</h2>   
+					</div>   
+					<div class="user_list">    
+						<ul>     
+							<li class="clr">      
+								<span class="fl">{{ L_('用户ID') }}</span>      
+								<span class="fr">{{  data.user.uid }}</span>     
+							</li>     
+							<li class="clr">      
+								<span class="fl">{{ L_('用户名') }}</span>      
+								<span class="fr">{{  data.user.nickname }}</span>     
+							</li>     
+							<li class="clr">      
+								<span class="fl">{{ L_('手机号') }}</span>      
+								<span class="fr blue callPhone" data-phone="{{ data.user.user_phone }}">{{ data.user.user_phone }}</span>     
+							</li>    
+						</ul>   
+					</div>   
+				</div>
+
+
+				{{# if(data.write_list){ }}
+					<div class="user detail_list">
+						<div class="top clr">
+							<h2 class="fl">{{ L_('用户填写信息') }}</h2>
+						</div>
+						<div class="user_list">
+							<ul>
+								{{# for(var i in data.write_list){ }}
+									{{# if (data.write_list[i]){ }}
+										<li class="clr">
+											<span class="fl">{{ data.write_list[i].name }}</span>
+											<span class="fr">{{ data.write_list[i].value }}</span>
+									</li>
+									{{# } }}
+								{{# } }}
+							</ul>
+						</div>
+					</div>
+				{{# } }}
+
+
+				{{# if(data.now_order.tuan_type==2){ }}
+					<div class="distri detail_list" id="distriBox">
+						<div class="top clr">
+							<h2 class="fl">{{ L_('配送信息') }}</h2>
+						</div>
+						<div class="distri_list">
+							<ul>
+								<li class="clr address">
+									<div class="tit">
+										<div class="tit_top clr">
+											<div class="fl">{{ L_('收件人') }}：</div>
+											<div class="fr blue callPhone" data-phone="{{ data.user.user_phone }}">{{ data.user.user_phone }}</div>
+										</div>
+										<div class="tit_bot openMap" data-type="baidu" data-name="收件人：" data-address="{{ data.distribution.adress }} 联系电话：{{ data.distribution.phone }}">
+											{{ data.distribution.adress }} {{ L_('联系电话') }}：{{ data.distribution.phone }}</div>
+									</div>
+								</li>
+
+								<li class="clr express additional">
+									<h2>{{ L_('额外信息') }} <span class="modify">{{ L_('修改') }}</span></h2>
+									<div class="textarea">
+										<textarea class="L_P" placeholder="点击进行修改信息">{{ data.now_order.merchant_remark }}</textarea>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				{{# } }}
+				
+
+				{{# if(data.now_order.tuan_type==2 && data.now_order.store_id=="0"){ }}
+					{{# if( data.now_order.pin_num>0 && data.now_order.can_assign_store ==0){ }}
+						<div class="mui-card guishu">
+							<div class="mui-card-header">
+								<span>{{ L_('收货地址') }}</span>
+								<b><span>{{ L_('还未成团不能分配店铺') }} </span> </b>
+							</div>
+						</div>
+					{{# } else { }}
+						<div class="mui-card guishu">
+							<div class="mui-card-header">
+								<span>{{ L_('将订单归属所属店铺') }}</span>
+								<b id="showUserPicker1"><span id="shop_class">{{ L_('请选择店铺分类') }}</span> <i class="mui-pull-right"></i></b>
+							</div>
+						</div>
+					{{# } }}
+				{{# } }}
+
+				
+
+				
+	            <div class="order detail_list">         
+	            	<div class="top clr">             
+	            		<h2 class="fl">{{ L_('订单信息') }}</h2>         
+	            	</div>         
+	            	<div class="user_list">             
+	            		<ul>                 
+	            			<li class="clr">                     
+	            				<span class="fl">{{ L_('订单类型') }}</span>                     
+	            				<span class="fr">{{ data.now_order.order_type }}</span>                 
+	            			</li>                 
+	            			<li class="clr">                     
+	            				<span class="fl">{{ L_('订单号') }}</span>                     
+	            				<span class="fr">{{ data.now_order.real_orderid }}</span>                 
+	            			</li>                 
+	            			<li class="clr">                     
+	            				<span class="fl">{{ L_('下单时间') }}</span>                     
+	            				<span class="fr">{{ data.now_order.add_time }}</span>                 
+	            			</li>                                  
+	            			<li class="clr">                     
+	            				<span class="fl">{{ L_('付款时间') }}</span>                     
+	            				<span class="fr">{{ data.now_order.pay_time }}</span>                 
+	            			</li>  
+							{{# if (data.now_order.refund_detail.refund_time) { }}
+							 <li class="clr">
+								<span class="fl">{{ L_('退款时间') }}</span>
+								<span class="fr" style="color:red;">{{ data.now_order.refund_detail.refund_time }}</span>
+							</li>
+							{{# } }}                            
+	            		</ul>         
+	            	</div>         
+	            </div>
+
+				<div class="payment detail_list" id="paymentBox">
+					<div class="top clr">    
+						<h2 class="fl">{{ L_('付款方式') }}</h2>   
+					</div>   
+					<div class="user_list">    
+						<ul>     
+							<li class="clr">      
+								<span class="fl">{{ L_('平台余额支付') }}</span>      
+								<span class="fr">{{ L_('￥') }}{{ data.now_order.balance_pay }}</span>     
+							</li>     
+							<li class="clr">      
+								<span class="fl">{{ L_('商家会员卡余额支付') }}</span>      
+								<span class="fr">{{ L_('￥') }}{{ data.now_order.merchant_balance }}</span>     
+							</li>     
+							<li class="clr">      
+								<span class="fl">{{ L_('在线支付金额') }}</span>      
+								<span class="fr">{{ L_('￥') }}{{ data.now_order.payment_money }}</span>     
+							</li> 
+							{{# if (data.now_order.internal_card_pay_money > 0) { }}
+							<li class="clr" id="internal_card_pay">      
+								<span class="fl">{{ L_('一卡通支付金额') }}</span>      
+								<span class="fr">{{ L_('￥') }}{{ data.now_order.internal_card_pay_money }}</span>     
+							</li>  
+							{{# } }}  
+						</ul>   
+					</div>   
+				</div>
+
+				<div class="leaving detail_list">
+					<div class="top clr">
+						<h2 class="fl">{{ L_('买家留言') }}</h2>
+					</div>
+					<div class="textarea">
+						<textarea class="L_P" placeholder="暂无" readonly="readonly">{{ data.now_order.delivery_comment }}</textarea>
+					</div>
+				</div>
+			
+		</script>
+	<script>
+		mui.init();
+		var ticket = common.getCache('ticket');
+		var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+		var ctuan = common.getCache('ctuan');
+		$('.ctuan').text(ctuan);
+		var order_id = $.getUrlParam('order_id');
+		var shopList = [];
+		var group_id = $.getUrlParam('group_id');
+		//$('.mui-icon-left-nav').attr('href','grouping_buy_lists.html?group_id='+group_id);
+		// 渲染数据
+		common.http('Merchantapp&a=gdetail', { 'ticket': ticket, 'client': client, 'order_id': order_id }, function (data) {
+			//console.log(data);
+			laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+				$('.allHtml').html(html);
+
+			});
+		});
+		// 渲染店铺列表
+		common.http('Merchantapp&a=merchant_money_info', { 'ticket': ticket, 'client': client }, function (data) {
+			//console.log(data);
+			selectChange(data.store_list);
+		});
+		function selectChange(lists) {
+			$.each(lists, function (i, val) {
+				var goods_id_list = { 'value': '', 'text': '' };
+				goods_id_list.text = val.name;
+				goods_id_list.value = val.store_id;
+				shopList.push(goods_id_list);
+			});
+		}
+		mui('body').on('tap', '.modify', function (e) {
+			var merchant_remark = $('.textarea textarea').val();
+			$('.textarea textarea').blur()
+			common.http('Merchantapp&a=group_remark ', { 'ticket': ticket, 'client': client, 'order_id': order_id, 'merchant_remark': merchant_remark }, function (data) {
+				console.log(data);
+				if (data.length == 0) {
+					mui.toast(L_('修改成功'));
+				}
+			});
+		});
+
+
+		(function ($, doc) {
+			$.init();
+			mui('body').on('tap', '#showUserPicker1', function (e) {
+				//消费密码
+				var userPicker = new $.PopPicker();
+				console.log(shopList);
+				userPicker.setData(shopList);
+				var that = this;
+				userPicker.show(function (items) {
+					that.children[0].innerHTML = items[0].text;
+					that.children[0].style.color = "#333333";
+					var store_id = items[0].value;
+					common.http('Merchantapp&a=order_store_id', { 'ticket': ticket, 'client': client, 'store_id': store_id, 'order_id': order_id }, function (data) {
+						console.log(data);
+						if (data.length == 0) {
+							mui.toast(L_('归属成功'));
+							common.http('Merchantapp&a=gdetail', { 'ticket': ticket, 'client': client, 'order_id': order_id }, function (data) {
+								//console.log(data);
+								laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+									$('.allHtml').html(html);
+
+								});
+							});
+						}
+					});
+				}, false);
+
+			});
+
+
+		})(mui, document);
+
+	</script>
+
+</body>
+
+</html>

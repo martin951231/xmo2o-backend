@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>权限套餐购买</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link href="css/mui.picker.css" rel="stylesheet" />
+    <link href="css/mui.picker.min.css" rel="stylesheet" />
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/auth_package_buy.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title"><L_>权限套餐购买</L_></h1>
+    <span class="auth_package_buy_record"></span>
+</header>
+<div class="mui-content">
+    <!--筛选后内容-->
+    <div class="cards" id="cards">
+
+
+    </div>
+    <!-- 上拉刷新 -->
+    <div class="pullup L_" style="display:none;">上拉加载更多...</div>
+    <div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""/><L_>正在加载</L_></div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="cardlist" type="text/html">
+    {{# for(var i = 0, len = d.data.length; i < len; i++){ }}
+    <div class="mui-card" data-id="{{ d.merchant.mer_id }}">
+        <!--页眉，放置标题-->
+        <div class="mui-card-header" data-id="{{d.data[i]['id']}}"
+             {{# if( d.data[i].is_default == 1 && d.merchant.authority_group_id == d.data[i].id ) { }}
+             {{#  } else {  }} onclick="artconfirms({{ d.data[i]['id'] }},1{{# if( d.data[i]['is_try'] == 1 && d.data[i]['had_try'] != 1 ) { }},1 {{# } }});"  {{#  } }}>
+            <div class="auth_buy">
+                <div class="header-title">
+                    <p class="title">{{ d.data[i]['name'] }}
+                        {{# if (d.merchant.authority_group_id == d.data[i].id) { }}
+                        <span style="color: #FC8080;font-size: 12px;">{{ L_("正在使用") }}</span>
+                        {{# } }}
+                    </p>
+                    <p class="price">
+                        {{ d.data[i]['price'] }}{{ d.config.Currency_txt }}
+                        {{# if (d.data[i]['is_default'] == '0') { }}/
+                        <span data-v-455236be="">{{ d.data[i]['time_type_txt'] }}</span>
+                        {{# } }}
+                    </p>
+                </div>
+                <div class="header-desc">
+                    {{# if(d.data[i]['is_try'] == 1 && d.data[i]['had_try'] != 1) { }}
+                    <p class="try-time">{{ L_("可试用") }} {{ d.data[i]['try_time'] }} {{ d.data[i]['try_time_type_txt'] ? d.data[i]['try_time_type_txt'] : '' }}</p>
+                    {{# } }}
+                    <p> {{ d.data[i]['des'] }} </p>
+                </div>
+            </div>
+        </div>
+
+        <!--内容区-->
+        <div class="mui-card-content show_content mui-clearfix">
+            {{# for(var j = 0, lenj = d.data[i]['detail'].length; j < lenj; j++){ }}
+            <ul>
+                {{# if (d.data[i]['detail'] != '') { }}
+                <li>
+                    <img data-v-455236be="" src="/tpl/Merchant/default/static/images/new/createico1.png">
+                    <span class="content-text">{{ d.data[i]['detail'][j] }}<span>
+                </li>
+                {{# } }}
+                </ul>
+            {{# } }}
+        </div>
+        <div class="mui-card-footer show">
+            <span style="color:#000;">
+                {{ L_("平台抽成比例:") }}{{ d.data[i]['percent'] }}%
+                {{# if( d.data[i]['id'] == d.merchant.authority_group_id && d.data[i]['is_default'] == 0 && d.merchant.merchant_end_time > 0 ) { }}
+                    <span>{{ L_("当前套餐:将于") }} {{ d.merchant.merchant_end_time_str }} {{ L_("过期") }}</span>
+            {{# } }}
+            </span>
+
+            <i class="mui-pull-right up_down"></i>
+        </div>
+    </div>
+    {{# } }}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    var ticket = common.getCache('ticket');
+    //console.log(ticket);
+    var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+    var be_date='';
+    var enddate='';
+    var stor_list=[];
+    var set_state_index='';
+    var page=1;
+    var zuiShi='';
+    var ctuan=common.getCache('ctuan');
+    $('.ctuan').text(ctuan);
+    function p(s) {
+        return s < 10 ? '0' + s: s;
+    }
+
+    //获取当前时间
+    var myDate = new Date();
+    //获取当前年
+    var year=myDate.getFullYear();
+    //获取当前月
+    var month=myDate.getMonth()+1;
+    //获取当前日
+    var date=myDate.getDate();
+    var now=year+'-'+p(month)+"-"+p(date);
+    var start=year+'-'+p(month)+"-"+p('1');
+    //console.log(now);
+    $('#begin_date').text(start);
+    $('#end_date').text(now);
+
+    now=replaceAll(now);
+    start=replaceAll(start);
+    zuiShi=start+'-'+now;
+    be_date=start;
+    enddate=now;
+    console.log(zuiShi)
+    function selectChange(lists){
+        stor_list=[];
+        $.each(lists,function(i,val){
+            var goods_id_list ={'value':'','text':''};
+            goods_id_list.text=val.name;
+            goods_id_list.value=val.store_id;
+            stor_list.push(goods_id_list);
+        });
+    }
+    function replaceAll(str){
+        if(str!=null)
+            str = str.replace(/-/g,"/")
+        return str;
+    }
+    function changeAllshou(){
+        common.http('Merchantapp&a=auth_package',{'ticket':ticket,'client':client,'page':page},function(data){
+            console.log(data.list.config);
+            console.log(data.list.group_list);
+            console.log(data.list.now_merchant);
+
+            data.config = data.list.config;
+            data.data = data.list.group_list;
+            data.merchant = data.list.now_merchant;
+
+            if(data.data.length==0 || data.totalPage < page){
+                $('.pullup').html(L_('没有更多数据啦'));
+                $('.loading').hide();
+                $('.pullup').show();
+
+            }else{
+                data.data.length<1&&$('.pullup').html(L_('没有更多数据啦'));
+                $('.loading').hide();
+                $('.pullup').show();
+                // var list = data.list;
+
+                laytpl(document.getElementById('cardlist').innerHTML).render(data, function(html){
+                    $('.cards').append(html);
+                    $('.loading').hide();
+                    $('.pullup').show();
+                });
+                if(data.data.length>9){
+                    var flag = false;
+                    // 上拉加载和下拉刷新
+                    $(window).scroll(function(e) {
+                        e.stopPropagation();
+                        //上拉加载
+                        if(flag){
+                            //数据加载中
+                            return false;
+                        }
+                        if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+                            $('.pullup').hide();
+                            $('.loading').show();
+                            flag = true;
+                            page++;
+                            changeAllshou();
+                            $('.pullup').show();
+                            $('.loading').hide();
+                        }
+                    });
+                }
+
+            }
+
+
+        });
+    }
+
+    function artconfirms(auth_id, type, is_try) {
+        common.http('Merchantapp&a=check_before_buy', {
+            'ticket': ticket,
+            'client': client,
+            'auth_id': auth_id,
+            'is_try': is_try
+        }, function (data) {
+            console.log(data);
+
+            change_money = data['fill_money'];
+            currency_txt = data.config['Currency_txt'];
+            if (change_money == -1) {
+                var btnArray = [L_('否'), L_('是')];
+                mui.confirm(L_('您确定购买吗？'), L_('购买提醒'), btnArray, function (e) {
+                    if (typeof (type) != 'undefined') {
+                        if (e.index == 1) {
+                            openWindow({
+                                url: 'auth_pay_check.html?menu_group=' + auth_id + '&is_try=' + is_try + '&change_money=' + change_money,
+                                id: 'auth_pay_check'
+                            });
+                        }
+                    }
+                });
+            } else {
+                if (change_money > 0) {
+                    var html_notice = L_("您当前的套餐价格低于订购的套餐价格，需另外补足" + change_money + currency_txt);
+                    change_money = 1;
+                } else {
+                    var html_notice = L_("当前的套餐价格低于订购的套餐价格,可直接试用该套餐,但多余的钱将无法退回");
+                    change_money = 0;
+                }
+                var btnArray = [L_('否'), L_('是')];
+                mui.confirm(html_notice, L_('购买提醒'), btnArray, function (e) {
+                    if(typeof(type)!='undefined'){
+                        if (e.index == 1) {
+                            openWindow({
+                                url: 'auth_pay_check.html?menu_group=' + auth_id + '&is_try=' + is_try + '&change_money=' + change_money,
+                                id: 'auth_pay_check'
+                            });
+                        }
+                    }
+                });
+            };
+        });
+    }
+
+
+    // 页面初次加载
+    changeAllshou();
+
+    mui.init();
+    //筛选
+    (function($, doc) {
+        $.init();
+    })(mui, document);
+
+    //控制显示隐藏
+    mui('.mui-content').on('click','.show',function(e){
+        var id=$(this).parents('.mui-card').data('id');
+        var me=this;
+        if($(this).is('.active')){
+            $(this).removeClass('active');
+            $(this).prev('.show_content').hide();
+        }else{
+            // common.http('Merchantapp&a=gift_order_detail',{'ticket':ticket,'client':client,'id':id},function(data){
+            //     console.log(data);
+            //     laytpl(document.getElementById('content_list').innerHTML).render(data, function(html){
+            //         $(me).prev('.show_content').html(html);
+            //     });
+            // });
+            $(this).addClass('active');
+            $(this).prev('.show_content').show();
+        }
+    });
+
+
+
+    //查询记录按钮点击
+    mui('.mui-bar-nav').on('tap','.auth_package_buy_record',function(e){
+        openWindow({
+            url:'auth_package_buy_record.html',
+            id:'auth_package_buy_record'
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	        <a href="{pigcms{:U('Config/index',array('galias'=>'yuedan','header'=>'Yuedan/config'))}" class="on">约单配置</a>    <a href="{pigcms{:U('Config/index',array('galias'=>'yuedan','header'=>'Yuedan/config'))}" class="">用户三级推广</a>	</ul></div>

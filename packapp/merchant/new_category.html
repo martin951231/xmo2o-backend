@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>新建分类</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/app.css" /> 
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.css" /> 
+    <link rel="stylesheet" type="text/css" href="css/new_category.css"/>
+	<style>
+		.left_style i {
+			display: inline-block;
+			width: 12px;
+			height: 12px;
+			background: url(./images/12-_03.png) center no-repeat;
+			background-size: contain;
+		    margin-left: 8px;
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		<h1 class="mui-title"><L_>新建分类</L_></h1>
+		<!-- <a class="mui-pull-right delate_class"></a> -->
+	</header>	
+	<div class="mui-content">
+	    <div class="mui-card add">
+			<div class="mui-card-header">
+				<span class="left_style"><L_>分类名称</L_></span><input class="right_style sort_name" type="text" id="" value="" placeholder="请输入分类名称"/>
+			</div>
+
+			<div class="mui-card-content acc">
+				<span class="left_style"><L_>分类排序</L_></span>
+				<ul class="right_style">
+					<li><input type="tel" class="sort" value="0"  placeholder="请输入分类排序值" /></li>
+					<li>* 默认添加顺序排序，手动调值，数值越大，排序越前</li>
+				</ul>
+			</div>
+			<div class="mui-card-content acc">
+				<span class="left_style"><L_>产品折扣率</L_></span>
+				<ul class="right_style">
+					<li><input type="number" class="sort_discount"  placeholder="请输入产品折扣率" /></li>
+					<li>* 0~10之间的数字，支持一位小数！8代表8折，8.5代表85折，0与10代表无折扣</li>
+				</ul>
+			</div>
+			<div class="mui-card-footer moreLists">
+				<span class="left_style"><L_>选择分类</L_></span>
+				<b id="showUserPicker" class="right_style"><span id="class_text1"><L_>请选择分类</L_></span><i class="mui-pull-right"></i></b>
+			</div>
+		</div>
+		<div class="mui-card week">
+			<!--页眉，放置标题-->
+			<div class="mui-card-header">
+				<span class="left_style subsidiary_cat"><L_>是否是附属商品分类</L_><i></i></span>
+				<div class="mui-switch status">
+					<div class="mui-switch-handle"></div>
+				</div>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content list_week mui-row">
+				<div class="mui-col-sm-4 left_style"><span><L_>星期几显示</L_></div>
+				<div class="mui-col-sm-8 right_style">
+					<ul>
+						<li class="mui-pull-left" data-num="1"><L_>星期一</L_></li>
+						<li class="mui-pull-left" data-num="2"><L_>星期二</L_></li>
+						<li class="mui-pull-left" data-num="3"><L_>星期三</L_></li>
+						<li class="mui-pull-left" data-num="4"><L_>星期四</L_></li>
+						<li class="mui-pull-left" data-num="5"><L_>星期五</L_></li>
+						<li class="mui-pull-left" data-num="6"><L_>星期六</L_></li>
+						<li class="mui-pull-left" data-num="0"><L_>星期日</L_></li>
+					</ul>
+				</div>
+			</div>
+			<div class="mui-card-header">
+				<span class="left_style sort_status_title"><L_>状态</L_><i></i></span>
+				<div class="mui-switch mui-active sort_status">
+					<div class="mui-switch-handle"></div>
+				</div>
+			</div>
+			<nav class="mui-bar mui-bar-tab">
+			    <a href="javascript:;"><L_>保存</L_></a>
+			</nav>
+		</div>
+	</div>
+<script src="js/mui.min.js"></script>
+
+<!--筛选用到js-->
+<script src="js/fastclick.js"></script>
+<script src="js/mui.picker.js"></script> 
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var shopId= common.getCache('shopId');
+var storeClass=[];//选择分类选择框
+var type=common.getCache('type');//0-添加分类  1-一级分类编辑 2-二级分类编辑 3-三级分类编辑
+console.log(type);
+var fid=-1,zid=-1;
+var sortId=common.getCache('sortId');
+
+
+
+
+
+/*保存按钮点击*/
+if(type==0){
+	/*定义数据格式*/
+	common.http('WapMerchant&a=getGoodsSort	',{'store_id':shopId,'sort_id':sortId},function(data){
+		console.log(data);
+		if(data.list.length==0){
+			$('.moreLists').hide();
+		}else{
+			$('.moreLists').show();
+			storeClass=data.list;
+		}
+	});
+	
+	mui('.mui-content').on('tap', '.subsidiary_cat', function (e) {
+        e.stopPropagation();
+        $("input").blur();
+        mui.alert(L_('如果麻辣烫、奶茶、火锅等存在配菜、配料的情况，请您选中该分类为“附属菜品分类”。选中后，在附属菜品分类里创建的菜品，不会在用户端的餐厅菜品列表中显示。'), function (e) {
+
+        });
+    });
+
+	mui('.mui-content').on('tap', '.sort_status_title', function (e) {
+        e.stopPropagation();
+        $("input").blur();
+        mui.alert(L_('关闭则代表该分类不在用户前端展示，反之则展示；该选项的2个状态只针对不是附属菜的分类有效且只针对外卖业务的分类有效。'), function (e) {
+
+        });
+    });
+	
+	// $('.delate_class').hide();
+	mui('.mui-bar-tab').on('tap','a',function(e){
+		sortId="";
+		var sort_name=$('.sort_name').val();
+		var sort=$('.sort').val();
+		if($('#class_text1').attr('data-id')!="-1"){
+			fid=$('#class_text1').attr('data-id');
+		}else{
+			fid=$('#class_text1').attr('data-fid');
+		}
+		var status = $('.status').is('.mui-active') ? 0 : 1;
+		var sort_status = $('.sort_status').is('.mui-active') ? 1 : 0;
+		var sort_discount=$('.sort_discount').val();
+		
+		var week='';
+		$.each($('.list_week li'),function(i,val){
+			if($(this).is('.active')){
+				week+=$(this).data('num')+',';
+			}
+		});
+		week = week.slice(0,-1);
+
+		var fen_text=$('#class_text1').text();
+
+		common.http('WapMerchant&a=sortAdd',{'store_id':shopId,'sort_id':sortId,'sort_name':sort_name,'sort':sort,'fid':fid,'status':status,'sort_status':sort_status,'week':week,'sort_discount':sort_discount},function(data){
+			console.log(data);
+			data!=undefined&&mui.toast('保存成功');
+			if(common.checkApp()){
+				setTimeout(function(){
+					if(common.checkAndroidApp()){
+							window.pigcmspackapp.closewebview(2);
+						}else{
+							common.iosFunction('closewebview/2', {name:'closewebview', type: '2'});
+						}
+				},2000);
+			}else{
+				setTimeout(function(){
+					history.go(-1);
+					document.execCommand('Refresh');
+				},2000); 
+			}	 
+		});
+	});
+}else{
+	$(".mui-title").text(L_('修改分类'));
+	// /*定义数据格式*/
+	common.http('WapMerchant&a=getGoodsSort',{'store_id':shopId,'sort_id':sortId},function(data){
+		console.log(data);
+		if(data.list.length==0){
+			$('.moreLists').hide();
+		}else{
+			$('.moreLists').show();
+			storeClass=data.list;
+		}
+		common.http('WapMerchant&a=sortModify',{'store_id':shopId,'sort_id':sortId},function(data){
+			console.log(data);
+			if(data.ffid=="0"){
+				fid=data.fid;
+				zid=data.sort_id;
+				$('#class_text1').attr('data-fid',fid);
+				$('#class_text1').attr('data-id',"-1");
+			}else{
+				fid=data.ffid;
+				zid=data.fid;
+				$('#class_text1').attr('data-fid',fid);
+				$('#class_text1').attr('data-id',zid);
+			}
+			$('.sort_discount').val(data.sort_discount);
+			var text='';
+			for(var i=0;i<storeClass.length;i++){
+				if(fid==storeClass[i].value){
+					text+=storeClass[i].text;
+					if(storeClass[i].children!=undefined){
+						for(var k=0;k<storeClass[i].children.length;k++){
+							if(zid==storeClass[i].children[k].value){
+								text+=' '+storeClass[i].children[k].text;
+							}
+						}
+					}
+				}
+			}
+			$('#class_text1').text(text).css('color','#333');
+			
+
+			if(data.week!=''){
+				$('.list_week').show();
+				$('.is_weekshow').addClass('mui-active');
+				var arr=data.week.split(',');
+				for(var m=0;m<arr.length;m++){
+					for(var n=0;n<$('.list_week ul li').length;n++){
+						if(arr[m]==$('.list_week ul li:eq('+n+')').data('num')){
+							$('.list_week ul li:eq('+n+')').addClass('active');
+						}
+					}
+				}
+			}else{
+				$('.list_week ul li').removeClass('active');
+			}
+
+			if(data.sort_status!='0'){
+				$('.sort_status').addClass('mui-active');
+				
+			}else{
+				$('.sort_status').removeClass('mui-active');
+			}
+
+			$('.sort_name').val(data.sort_name);
+			$('.sort').val(data.sort);
+		});
+
+	});
+	
+	/*点击修改进入页面点击保存*/
+	mui('.mui-bar-tab').on('tap','a',function(e){
+		var sort_name=$('.sort_name').val();
+		var sort=$('.sort').val();
+		var ffid='';
+		if($('#class_text1').text()=="不选择"){
+			ffid=0;
+		}else{
+			// console.log($('#class_text1').attr('data-id'));
+			if($('#class_text1').attr('data-id')!="-1"&&$('#class_text1').attr('data-id')!=0){
+				ffid=$('#class_text1').attr('data-id');
+			}else{
+				ffid=$('#class_text1').attr('data-fid');
+			}
+		}
+		console.log(ffid);
+		var status = $('.status').is('.mui-active') ? 0 : 1;
+		var sort_status = $('.sort_status').is('.mui-active') ? 1 : 0;
+		var sort_discount=$('.sort_discount').val();
+		
+		var week = '';
+		$.each($('.list_week li'),function(i,val){
+			if($(this).is('.active')){
+				week+=$(this).data('num')+',';
+			}
+		});
+		week = week.slice(0,-1);
+
+		common.http('WapMerchant&a=sortEdit',{'store_id':shopId,'sort_id':sortId,'sort_name':sort_name,'sort':sort,'fid':ffid,'status':status,'sort_status':sort_status,'week':week,'sort_discount':sort_discount},function(data){
+			console.log(data);
+			data!=undefined&&mui.toast('修改成功');
+			if(common.checkApp()){
+				setTimeout(function(){
+					if(common.checkAndroidApp()){
+						window.pigcmspackapp.closewebview(2);
+					}else{
+						common.iosFunction('closewebview/2', {name:'closewebview', type: '2'});
+					}
+				},2000);
+			}else{
+				setTimeout(function(){
+					history.go(-1);
+					window.document.execCommand('Refresh');
+				},2000); 
+			}	  
+		});
+	});
+}
+
+
+//筛选
+(function($, doc) {
+	$.init();
+	mui('.mui-content').on('tap','#showUserPicker',function(e){
+		/**
+		 * 获取对象属性的值
+		 * 主要用于过滤三级联动中，可能出现的最低级的数据不存在的情况，实际开发中需要注意这一点；
+		 * @param {Object} obj 对象
+		 * @param {String} param 属性名
+		 */
+		var _getParam = function(obj, param) {
+			return obj[param] || '';
+		};
+		//普通示例
+		var cityPicker= new $.PopPicker({
+			layer: 2
+		});
+		///console.log(storeClass);
+		cityPicker.setData(storeClass);
+		// if(type!=0){
+			//console.log(fid);
+			cityPicker.pickers[0].setSelectedValue(fid);
+			//console.log(zid);
+			cityPicker.pickers[1].setSelectedValue(zid);	
+		//}
+		cityPicker.show(function(items) {
+			if(items[1].text!=undefined){
+				document.getElementById('class_text1').innerHTML = items[0].text+" "+items[1].text;
+				zid=items[1].value;
+				document.getElementById('class_text1').setAttribute('data-id',items[1].value);
+			}else{
+				document.getElementById('class_text1').innerHTML = items[0].text;
+				zid=-1;
+				document.getElementById('class_text1').setAttribute('data-id',zid);
+			}	
+			// console.log(items[1].text);
+			document.getElementById('class_text1').style.color="#333";
+			document.getElementById('class_text1').setAttribute('data-fid',items[0].value);
+			
+			fid=items[0].value;
+			
+			//返回 false 可以阻止选择框的关闭
+			//return false;
+		});		
+	});
+})(mui, document);
+			
+			
+			
+//星期点击事件
+mui('.list_week').on('tap','ul>li',function(e){
+	if($(this).is('.active')){
+		$(this).removeClass('active')
+	}else{
+		$(this).addClass('active');
+	}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>一卡通</title>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" href="css/vant/vant@2.12.47.css" />
+    <script src="js/vant/vue@2.6.14.min.js"></script>
+    <script src="js/vant/vant@2.12.14.min.js"></script>
+    <link rel="stylesheet" href="css/internalCardStatistics.css?t=3" />
+</head>
+<style>
+
+</style>
+
+<body>
+    <section id="app" class="msg-list-page" style="display: none;">
+        <van-nav-bar z-index="99" :title="L_(urlParam.tabsActive == 0?'一卡通交易记录明细':'一卡通结算统计明细')" fixed
+            :placeholder="true" :safe-area-inset-top="true" left-arrow @click-left="onClickLeft"></van-nav-bar>
+        <div class="header-box" v-if="urlParam.tabsActive == 1">
+            <div class="filter-box">
+                <div class="search-box" style="padding-left: 10px;">
+                    <select name="search_type" v-model="params.search_type">
+                        <option :value="item.value" v-for="item in searchType">{{item.label}}</option>
+                    </select>
+                    <van-search style="flex: 1;" v-model="params.keywords" placeholder="请输入关键词" @search="search"
+                        @cancel="search" show-action>
+                        <template #action>
+                            <div @click="search">搜索</div>
+                        </template>
+                    </van-search>
+                </div>
+                <div class="select-box">
+                    <div class="item">
+                        <span>{{L_('结算方式')}}：</span>
+                        <select name="" v-model="params.bill_type">
+                            <option :value="item.value" v-for="item in settlementList">{{item.label}}</option>
+                        </select>
+                    </div>
+                    <div class="item">
+                        <span>{{L_('票据类型')}}：</span>
+                        <select name="" id="" v-model="params.tax_ticket_type">
+                            <option :value="item.value" v-for="item in billList">{{item.label}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <van-list v-model="loading" :finished="finished" :finished-text="L_('没有更多了')" @load="onLoad">
+            <div class="box-list" v-if="urlParam.tabsActive == 0">
+                <div class="item" v-for="(item,index) in dataList" :key="item.id">
+                    <div class="add-time" style="display: flex;justify-content: space-between;">
+                        <span>{{L_('下单时间') +'：'+ item.create_time}}</span>
+                        <span v-if="item.operation_type == 1">{{L_('已充值')}}</span>
+                        <span v-if="item.operation_type == 2">{{L_('已支付')}}</span>
+                        <span v-if="item.operation_type == 3">{{L_('已退款')}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('序号')}}：</span>
+                        <span>{{index + 1}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('店铺')}}：</span>
+                        <span>{{item.store_name}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('卡名称')}}：</span>
+                        <span>{{item.card_name}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('卡号')}}：</span>
+                        <span>{{item.card_no}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('用户姓名')}}：</span>
+                        <span>{{item.user_name}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('手机号')}}：</span>
+                        <span>{{item.phone}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('订单号')}}：</span>
+                        <span>{{item.order_no}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('交易金额')}}：</span>
+                        <span>￥{{item.money}}</span>
+                    </div>
+                    <div class="desc" v-if="item.describe">
+                        <span>{{L_('描述')}}：</span>
+                        <span>{{item.describe}}</span>
+                    </div>
+                    <div class="footer" :style="{color: mainColor}">
+                        <span>{{L_('业务类型')}}：{{item.business_type_text}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box-list" v-else>
+                <div class="item" style="padding-bottom: 0;" v-for="(item,index) in dataList" :key="item.id">
+                    <div class="add-time">{{L_('结算时间') +'：'+ item.create_time}}</div>
+                    <div class="desc">
+                        <span>{{L_('序号')}}：</span>
+                        <span>{{index + 1}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('经办人')}}：</span>
+                        <span>{{item.admin_user_name}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('备注')}}：</span>
+                        <span>{{item.remark}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('结算方式')}}：</span>
+                        <span>{{item.bill_type_text}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('票据类')}}：</span>
+                        <span>{{item.tax_ticket_type_text}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('税点')}}：</span>
+                        <span>{{item.tax_point}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('结算金额')}}：</span>
+                        <span>{{item.bill_money}}</span>
+                    </div>
+                </div>
+            </div>
+        </van-list>
+        <van-calendar v-model="dateShow" type="range" @confirm="onDateConfirm" :color="mainColor" />
+    </section>
+
+    <div class="loading">加载中...</div>
+
+    <script src="js/mui.min.js"></script>
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/weui/weui.min.js"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/work/internalCardPayDetails.js?t=3"></script>
+</body>
+
+</html>

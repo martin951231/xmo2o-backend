@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>店员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/pigcms.css?t=2" rel="stylesheet"/>
+        <link href="css/mobiscroll.2.13.2.css" rel="stylesheet"/>
+        <style>
+            .search-condition .cable {
+                position: relative;
+                top: 0;
+                background-color: #ffffff;
+                min-height: 100px;
+            }
+            .search-condition .cable .cable_n {
+                height: auto;
+            }
+            .search-condition .cable .cable_n .kd_time {
+                margin-top: 8px;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: none;
+            }
+            .search-condition .cable .cable_n .kd_time .pos {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .search-condition .cable .cable_n .total-price {
+                margin-top: 8px;
+                width: 100%;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                line-height: 1;
+            }
+            .search-condition .cable .cable_n .total-price .price {
+                color: #f3324d;
+            }
+            .printer{
+                width: 1.7rem;float: right;right: 5px;margin-top: 1px;
+            }
+            .found{
+                top: calc(constant(safe-area-inset-top) / 2)!important;
+                top: calc(env(safe-area-inset-top) / 2)!important;
+            }
+        </style>
+	</head>
+	<body>
+		<section class="public pageSliderHide">
+			<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+			<div class="content"><L_>店员收银</L_></div>
+			<div class="found link-url" data-url="cashier_set.html" data-webview="true"><L_>创建订单</L_></div>
+			<div class="census">
+                <div class="sus_popup"></div>
+                <div class="sus_url">
+                    <a href="javascript:void(0)" class="scan search" ><L_>扫码支付</L_></a>
+                    <a href="cashier_set.html" class="cashier_set " ><L_>创建订单</L_></a>
+                </div>
+            </div>
+		</section>
+        <div class="h44 iosHeader"></div>
+        <section class="search-condition">
+            <div class="cable pageSliderHide">
+				<div class="cable_n">
+					<form id="searchForm" method="post">
+                        <div>
+                            <div class="input">
+                                <input type="search" id="keyword" placeholder="请输入搜索内容" />
+                            </div>
+                            <div class="select">
+                                <select id="condition">
+                                    <option value="order_id" class="L_">订单号</option>
+                                    <option value="phone" class="L_">手机号</option>
+                                </select>
+                            </div>
+                        </div>
+					</form>
+                    <div class="kd_time">
+                        <div class="pos">
+                            <input type="text" placeholder="开始时间" readonly="readonly" id="stime" class='datas'/>
+                        </div>
+                        <div class="pos">
+                            <input type="text" placeholder="结束时间" readonly="readonly" id="etime" class='datas'/>
+                        </div>
+                    </div>
+                    <div class="total-price">
+                        <L_>总额：</L_>
+                        <span class="price">
+                            <span id="Currency_symbol"><L_>￥</L_></span>
+                            <span id="totalPrice">0.00</span>
+                        </span>
+                         <L_>退款总额：</L_>
+                        <span class="price">
+                            <span id="Currency_symbol"><L_>￥</L_></span>
+                            <span id="refundTotalPrice">0.00</span>
+                        </span>
+                    </div>
+				</div>
+			</div>
+        </section>
+		<section class="order">
+			<div class="discount" id="order_list"><ul></ul></div>
+		</section>
+		<script id="listTpl" type="text/html">
+			{{# for(var i = 0, len = d.length; i < len; i++){ }}
+				<li>
+					<a href="cashier_detail.html?order_id={{ d[i].order_id }}"  data-webview="true">
+						<div class="orderno">
+							<div class="orderno_top">
+                                {{# if(d[i].refund == 1) { }}
+                                    <img style="width:30px;float: right;position: relative;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGMAAABiCAMAAABzuZ0CAAAAJFBMVEVHcEz/MTH/Nzf/ODj/Nzf/Njb/MjL/MjL/Nzf/Nzf/SEj/SEi+vDhkAAAADHRSTlMACzFIYI6ouXYeprpVlC/OAAAFD0lEQVR42rVa65qrIAzcXEns+7/v+VilUQOo7Z782W3FDDO5oNCfhwYA8PO/DIlFtKymIkz4l2CALKWZqpZmwn+DA2SrP2P05tEd2VZcoW9h3HQy342f4TcxkMuJAv2OwS8QlP2aK+uHKP6LADdjVlH8KQQnhLlVFIanJAye5V+d1QPBqA1/rC7fnZEFicdUBG6NlKL0aSpqUb/BeDLMkYiZidDHeileQ/TpApoUFTNmZhMtYgR9FQpekjXoFbPKqc8imUoPxhJIYmG9njXoSLheySA+CXeFyH4YZhUumEHUJxklKY+VLivczh6l6Ghali7RrX7CSvPJhtGZIpj4zQoXOMeVuwPP+eDK91voqSqwn1xyijdeRWI6mkP38Zf0sCu60ikkfKUURWw+A8FcJXZUCgPiUxA75xYelfK5UAm/dxfoKexH9WAabpQFRoGHQy3IhIbZbCF6vV6j6yyJyIAG6YTE8qo2klIoEYmkgh3+pKPZa7WRWq4+IMLF5koFiWY8Umu9OfvV4vupwJTEglL/+GCQYlcfPCSADaZIKwmDH/+FGrV6OcSZ3tXClzRcNhI1s6ZqKaaoh1QzGtyiEEEZqUUW/0MTC4vu9YQOidWteGRW/ZjGZQ9ScIs+d+UMiDOJhX55UR/EKGeWFOoOCLPNI1gLOyxjtfBQeeuHQwHG/2GrxwVoJYGV7go2Fyuce9HeHMKay5a7kWQ+bygRENoXOXO/hb97CEaSERHiVWZZoXPIBQ+hXoTJ92GHGvaWZJUNTAPSGNg+5OongapZ+2DRUOo9FawrVtnhFdkUi5o5Z9O7baxNCiMoP55rJM/UN4zdN7oPXStobmpFUBpP7gd9P2utoAVGaQVItrRa47d0vixLgzMm9FkVlnLCIOtUOW3Xl0bCXyfjKQZsQBkjm7cFEM8Y4TJXgN7GgKZW9UfLam8M/AMM4JdHSzm+hLIt9SJ8ieHLlqS4a1IssCPJcjvmKD0Sobk1ZapuAvtF0ocY5/qQ4bPIUS2KRWr7wMP6GNV5LvaX7dxRtN3WhKVf51hk1q+i8hY+qmU7CHq1FtmdKRXLfTcvT1UGaRnlx4R1iQrJUW3eR+tH3OCr61ArWHDrLsPysEKDdTAbtal7QODWXWiyDmrBViVpLU7W1OIGAbaRSHcUSA9YUjCldjbfEhRky97WIqfLIBa5eL7KGfY7f4F3rBmunq94w9KU28MHIKooaJGw18+J+XmXuQ8RLX1pf6nPNz3vjp/bszXnvVhnIaICs1jGEx6B4A/ePyKJM5EcdHFiy1uJg5dJL+GLiyVBs1la8e6/D+b32r4nmWNkESCSKaKetgtSyH0OAYP38xAuIO1DDEv7DOP9EqEBxlwrOsyUG42IiF/t+yDbMsVA9URjstuEn5xNKHZ2xCao+Kf7cLHzCt8wwbyf+Lf7onmLk4t2uZajU5f7pzkW0naVCrVOiQB2Uy9XgzTfu/vtqDeogCmNzh+ySTrDAc67+mmEwdRPwk8X3ZRhiuCJV1F/eBrlHIdC6QjJsreAmIEkI1Nh9NO5fUBnFg9BwqeKWDURrZgwOF30b84HwZGqocPDu/NMIrkfGoUKF/bxeW3c+L/OnVFLoYfn5/6YhPhTZQvDsxN6fsrc7cHvGVifhjAEu6WY21e//rBy9fMPZ/n2VyzOWmGMBrWvaRIfktFSPQkTOlQsAEfi7euPKWRBtHRMOAF8h4NsskGpijHdVugfhNY6wFmUIAgAAAAASUVORK5CYII=" draggable="false">
+                                {{# } }}
+								<h2>{{ L_('订单号') }}：{{ d[i].order_id }}</h2>
+								<div class="clr letter">
+									<div class="fl clr"><em class="fl">{{ L_('总价') }}：{{ currency_symbol }}</em> <span class="fl">{{ parseFloat(d[i].total_price) }} </span></div>
+									{{# if(d[i].phone){ }}
+										<div class="fr callPhone" data-phone="{{ d[i].phone }}">{{ L_('用户手机') }}：{{ d[i].phone }}</div>
+									{{# }else{ }}
+										<div class="fr">{{ L_('用户手机') }}：---</div>
+									{{# } }}
+								</div>
+							</div>
+							<div class="orderno_end">
+                                {{ L_('买单时间') }}：{{ d[i].pay_time }}
+                                <img class="printer" data-short_order_id ="{{ d[i].short_order_id }}" src="images/g_07.png">
+                            </div>
+						</div>
+					</a>
+				</li>
+			{{# } }}
+		</script>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+        <script src="scripts/mobiscroll.2.13.2.js"></script>
+		<script src="scripts/work/cashier.js?t=3"></script>
+        <script>
+            if(common.checkIosApp()){
+                $('.order').css({
+                    marginTop: '20px'
+                })
+            }
+        </script>
+	</body>
+</html>

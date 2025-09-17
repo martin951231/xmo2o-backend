@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>订单详情</title>
+		<link href="css/mui.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/newMarketing_orderDetail.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+			<h1 class="mui-title"><L_>订单详情</L_></h1>
+		</header>
+		<div class="mui-content">
+			<div class="content"></div>
+		</div>
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+        <script id="content" type="text/html">
+            <p class="title text-wrap"><span><L_>订单信息</L_></span></p>
+            <div class="flex justify-between">
+                <span class="label text-wrap"><L_>订单编号</L_></span>
+                <span class="value text-wrap">{{d.orderid}}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="label text-wrap"><L_>{{d.order_type && d.order_type == 1?'续费店铺':'下单店铺'}}</L_></span>
+                <span class="value text-wrap">{{d.store_name}}</span>
+            </div>
+            {{# if (d.order_type && d.order_type == 1) { }}
+                <div class="flex justify-between">
+                    <span class="label text-wrap"><L_>续费周期</L_></span>
+                    <span class="value text-wrap">{{d.pay_years}}</span>
+                </div>
+            {{# } else if (d.buy_detail && d.buy_detail.length) { }}
+                <div class="flex justify-between">
+                    <span class="label text-wrap"><L_>购买周期</L_></span>
+                    <ul class="flex-1 value">
+                        {{# for(var i = 0, len = d.buy_detail.length; i < len; i++){ }}
+                            <li class="text-wrap item"><span class="cr-orange">{{d.buy_detail[i].num}}</span><L_>{{d.buy_detail[i].msg}}</L_></li>
+                        {{# } }}
+                    </ul>
+                </div>
+                <div class="flex justify-between">
+                    <span class="label text-wrap"><L_>购买数量</L_></span>
+                    <span class="value text-wrap">{{d.buy_num}}</span>
+                </div>
+            {{# } }}
+            <div class="flex justify-between">
+                <span class="label text-wrap"><L_>下单时间</L_></span>
+                <span class="value text-wrap">{{d.add_time}}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="label text-wrap"><L_>支付方式</L_></span>
+                <span class="value text-wrap">{{d.pay_type}}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="label text-wrap"><L_>订单金额</L_></span>
+                <span class="value text-wrap">￥{{d.total_price}}</span>
+            </div>
+        </script>   
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			var order_id = $.getUrlParam('order_id');
+            var order_type = $.getUrlParam('order_type');
+            function getDetail(){
+                var params = {
+                    order_id: order_id,
+                    order_type: order_type
+                }
+                var success = function(data) {
+					laytpl(document.getElementById('content').innerHTML).render(data.detail, function(html){
+                        $('.content').append(html);
+                    });
+                }
+				common.http('StoreMarketingOrder&a=getOrderDetail',params,success);
+			}
+            if (order_id) {
+                getDetail();
+            }
+		</script>
+	</body>
+</html>

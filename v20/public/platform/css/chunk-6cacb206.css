@@ -1,0 +1,57 @@
+
+.imgname{
+    width: 100px;
+}
+.page_top{
+    background-color: #e6f7ff;
+    display: inline-block;
+    width: 100%;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+    color: #666666;
+}
+
+
+[data-v-57906760] .form_con {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+[data-v-57906760] .label_title {
+  width: 27%;
+  text-align: right;
+}
+[data-v-57906760] .input_container {
+  width: 33%;
+}
+[data-v-57906760] .label_desc {
+  width: 55%;
+  font-size: 12px;
+  color: #999999;
+  line-height: 15px;
+  -webkit-transform: translateY(10px);
+          transform: translateY(10px);
+}
+[data-v-57906760] .label_title_two {
+  width: 24%;
+  text-align: right;
+}
+[data-v-57906760] .input_container_two {
+  width: 77%;
+  font-size: 12px;
+  color: #999999;
+  line-height: 15px;
+}
+[data-v-57906760] .rule_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-57906760] .rule_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-57906760] .rule_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+

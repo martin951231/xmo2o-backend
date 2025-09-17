@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>店铺管理</title>
+	<link href="css/mui.css" rel="stylesheet"/>
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/imange-view.css"/>
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link rel="stylesheet" type="text/css" href="css/mui.picker.css" />
+    <link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.ext.dtpicker.css" rel="stylesheet" />
+	<link href="css/mapqird.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/shop_manger_penci.css"/>
+    
+	<style type="text/css">
+		.showImg{
+			width:100%;
+			height: 52px;  
+		}
+		#shap_manger img{width:85px; height: 57px;}
+		.adress_detail{
+			max-height: 50px;
+			padding: 0px 5px 1px 3px;
+			color: #000;
+			min-height: 35px;
+			margin: 0 3%;
+			width: 94%;
+			font-size: 15px;
+		}
+		.adres_no_check:before{
+			font-family: Muiicons;
+			font-size: 28px;
+			font-weight: normal;
+			line-height: 1;
+			text-decoration: none;
+			color: #aaa;
+			border-radius: 0;
+			background: none;
+			-webkit-font-smoothing: antialiased;
+			content: '\e411';
+		}
+		.adres_check:before{
+			font-family: Muiicons;
+			font-size: 28px;
+			font-weight: normal;
+			line-height: 1;
+			text-decoration: none;
+			border-radius: 0;
+			background: none;
+			-webkit-font-smoothing: antialiased;
+			content: '\e441';
+			color: #FFA200;
+		}
+		.un_set{
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 1;
+			white-space: unset !important;
+		}
+		.ad_name{
+			display: block !important;
+			white-space: unset !important;
+		}
+
+		.close_map .dot {
+			display: none;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 19px;
+			height: 25px;
+			margin-top: -25px;
+			margin-left: -10px;
+			background: url(images/marker_red_sprite_ec1a2a9.png) 0 0 no-repeat;
+		}
+		#map_baidu .map_header{
+			position: relative;
+			height: 100%;
+		}
+		#map_baidu .map_header>header{
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			position: fixed;
+			z-index: 500;
+			top: 0;
+			width: 100%;
+
+		}
+		#map_baidu  .mui-icon {
+			font-size: 24px;
+			position: relative;
+			z-index: 20;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			margin-left: -10px;
+			padding-right: 10px;
+			padding-left: 10px;
+			color: #fff;
+		}
+		.shop_class .mui-card-header i.mui_rg{
+			position: absolute;
+			right: 10px;
+			top:0px;
+			
+		}
+		.overp{
+			overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block;
+		}
+		.fl{
+			float: left;
+		}
+		.fr{
+			float: right;
+		}
+		.clear{
+			clear: both
+		}
+		.alap{
+			background-color: rgba(0,0,0,0.8);
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			left: 0;
+			top:0;
+			z-index: 1111;
+			display: none;
+		}
+		.alap_con{
+			background: #fff;
+			width: 90%;
+			max-height:500px; 
+			margin: 50px auto;
+			padding: 50px  0px 60px 10px;
+			position: relative; 
+		}
+		.business_time1{ 
+			height: 400px;
+			overflow-y: scroll;
+			padding-bottom: 50px;
+		}
+		.shop_keep1{
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			z-index: 99999999;
+			margin-top: 10px;
+			display: inline-block;
+			width: 100%;
+			height: 50px;
+			background: #ffa200;
+			text-align: center;
+			line-height: 50px;
+			color: #fff;
+		}
+		.close_btn{
+			position: absolute;
+			right: 10px;
+			top:10px;
+		} 
+		.business_time1  .time_show{
+			font-size:12px;
+			color: #FFA200;
+			padding-left: 10px;
+		}
+		.business_time1 .mui-card-content{
+      padding-top: 10px;
+		}
+		.business_time1	.timeManger{
+      padding-left: 10px;
+		}
+		.business_time1 .mui-pull-left{
+			padding: 0 2px;
+		}
+		.mui-backdrop{
+			z-index: 998;
+		}
+        #map_Google{
+            display: none;
+            height: 100%;
+            width: 100%;
+        }
+	</style>
+</head>
+<body>
+<div id="maps" style="display:none"></div>
+<div id="shap_manger">
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="1"></div>
+		<h1 class="mui-title"><L_>店铺管理</L_></h1>
+	</header>
+	<div class="mui-content">
+
+		<!-- 营业时间弹窗 --> 
+	  	<div class="alap">
+				<div class="alap_con">
+					<div class="close_btn"><img src="images/35-5_03.png" style="width: 20px;height: 20px;"></div>
+					<div class="business_time1"></div>
+					<a href="javascript:void(0);" class="shop_keep1 L_">保存</a> 
+				</div>
+			</div> 
+			<!-- 营业时间弹窗 end-->
+
+		<div class="shop_introduce">
+			<div class="mui-card">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header shop_name">
+					<span style="width: 35%;" id="addressText2" ><L_>店铺名称</L_></span>
+					<input type="text"  value=""  placeholder="请填写店铺名称"/>
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content">
+					<textarea class="txt_info" name="" rows="5" cols="5" placeholder="请填写店铺描述"></textarea>
+				</div>
+				<!--页脚，放置补充信息或支持的操作-->
+				<div class="mui-card-footer">
+					<span class="mui-pull-left open_photo"><L_>商家图片</L_> <i></i></span>
+					<div class="mui-scroll-wrapper left_srcoll">
+						<div class="mui-scroll showImg">
+							<div class="mui-pull-left uload">
+								<ul id="up_img">
+									<li class="up_img" >
+										<img src="images/17-8_03.png" alt="" />
+										<input type="file" accept="image/*" id="fileImage" name="imgFile"/>
+									</li>
+								</ul>
+							</div>  
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--联系电话-->
+		<div class="shop_phone">
+			<div class="mui-card">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header">
+					<span class="mui-pull-left"><L_>联系电话</L_></span>
+					<ul  class="phone_style">
+						<li><input class="uesrPhone" style="height: 30px;" type="tel" name="" id="" value=""  placeholder="请填写联系电话"/></li>
+						<li>*&nbsp;<L_>用于展示在用户前台</L_></li>
+					</ul>
+				</div>
+				<div class="mui-card-header">
+					<span class="mui-pull-left"><L_>客服电话</L_></span>
+					<ul>
+						<li class="phone_style"><input  class="kePhone" type="tel" name="" id=""  placeholder="请填写客服电话"/> </li>
+						<li>*&nbsp;<L_>客服下单电话，商家收入余额短信提醒</L_></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!--营业时间-->
+		<div class="business_time"> 
+			<div class="mui-card">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header">
+					<span class="zhuContent"><L_>是否设置成主店</L_> <i></i></span>
+					<div class="mui-switch mui-active ismainStore">
+						<div class="mui-switch-handle"></div>
+					</div>
+				</div> 
+                
+				<!--内容区-->
+			  
+				<!--页脚，放置补充信息或支持的操作-->
+				<!--<div class="mui-card-footer"><L_>页脚</L_></div>-->
+			</div>
+			<!--店铺分类-->
+			<div class="shop_class">
+				<div class="mui-card">
+					<!-- 营业时间 --> 
+					<div class="mui-card-header" style="line-height:2;margin-top: 10px; color: #000" >
+							<span class="fl zhuContent22"><L_>营业时间</L_><i></i></span>
+							<span  class="fr" style="font-size: 15px;width: 72%;margin-left: -13%;" id="shop_manger_penciDetails"><span style="width: 89%" class="overp" id="time_week">  </span><i class="mui-icon mui-icon-arrowright mui_rg" style="margin-right:2px; font-size: 26px; background:none; color: #C7C7CD;"></i></span>
+	                        <div class="clear"></div>
+					</div> 
+					<!--页眉，放置标题-->
+					<div class="mui-card-header" style="line-height:2;margin-top: 0;">
+						<span><L_>店铺分类</L_></span>
+						<span id='showUserPicker1' style="color: #C7C7CD;font-size: 15px;width: 72%;margin-left: -13%;padding:5px 0;"><span style="width: 89%" id="change_text"><L_>请选择店铺分类</L_> </span><i class="mui-pull-right" style="margin-right:2px;"></i></span>
+
+					</div>
+					<div class="mui-card-header" style="line-height:2;margin-top: 0;">
+						<span><L_>店铺所在地</L_></span>
+						<span id="storeAddress" style="color: #C7C7CD;font-size: 15px;width: 72%;margin-left: -13%;padding:5px 0;"><span style="width: 89%" id="change_address"><L_>请选择店铺所在地</L_></span><i class="mui-pull-right"></i></span>
+
+					</div>
+					<!-- 店铺所在商圈 -->
+					<div class="mui-card-header" id="trade" style="line-height:2;margin-top: 0;display:none;">
+						<span><L_>店铺所在商圈</L_></span>
+						<span id="shopTrade" style="color: #C7C7CD;font-size: 15px;width: 72%;margin-left: -13%;padding:5px 0;"><span style="width: 89%" id="tradeAddress"><L_>请选择店铺所在商圈</L_></span><i class="mui-pull-right"></i></span>
+
+					</div>
+					<!--内容区-->
+					<div class="mui-card-header have_meal_show">
+						<span><span class="byin"><L_>餐饮</L_></span></span>
+						<div class="mui-switch mui-active have_meal">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<div class="mui-card-header have_group_show">
+						<span><span class="ctuan"><L_>团购</L_></span></span>
+						<div class="mui-switch have_group  ">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<div class="mui-card-header have_shop_show">
+						<span><span class="ashop"><L_>快店</L_></span></span>
+						<div class="mui-switch   have_shop">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<div class="mui-card-header have_mall_show">
+						<span><span class="amall"><L_>商城</L_></span></span>
+						<div class="mui-switch   have_mall">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</div>
+					<div class="mui-card-header shop_adress" id="map">
+						<span class="left_style"><L_>店铺地址</L_></span>
+						<p style="width: 68%;">
+							<b id="addressText"><L_>请选择店铺地址</L_></b>
+							<i></i>
+						</p>
+					</div>
+					<div class="mui-card-header ">
+						<span style="width: 35%;" ><L_>店铺详细地址</L_></span>
+						<textarea   rows="4" class="adress_detail" placeholder="请填写店铺详细地址" ></textarea>
+					</div>
+					<div clsss="mui-card-footer ">
+						<span class="left_style"><L_>人均消费</L_></span>
+						<span class="left_style"><L_>￥</L_></span>
+						<input type="tel" class="consumption"/>
+						<span>（<L_>必填</L_>）</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!--优惠买单-->
+		<h5 style="margin: 10px 0 10px 5px;"><L_>优惠买单</L_></h5>
+		<div class="preference_type">
+			<div class="mui-card">
+
+				<div class="mui-card-content">
+					<div class="mui-row">
+						<div class="mui-col-sm-3"><L_>优惠类型</L_></div>
+						<div class="mui-col-sm-9 discountType">
+							<div class="a1">
+								<div class="mui-input-row mui-radio mui-left">
+									<label for=""><input name="radio1" class="a" type="radio" checked="checked" data-id="1"><L_>无优惠</L_></label>
+								</div>
+							</div>
+							<div></div>
+							<div >
+								<div class="mui-input-row mui-radio mui-left">
+									<label for=""><input name="radio1"  class="a2"type="radio" data-id="2"><L_>折扣</L_></label>
+									<input style="padding-left: 8px;" class="discount_percent" type="number" placeholder=" 请输入折扣"/>
+								</div>
+								<span>* <L_>0-10之间的数字，支持一位小数8代表8折，8.5代表85折</L_></span>
+							</div>
+							<div></div>
+							<div class="a3">
+								<div class="mui-input-row mui-radio mui-left">
+									<label for=""><input class="a3" name="radio1" type="radio"  data-id="3"><L_>满减</L_></label>
+									<p><span><L_>每满</L_></span> <span><L_>￥</L_></span><input type="number" class="condition_price" placeholder="请输入金额"/> <span>， <L_>减</L_></span> <span><L_>￥</L_></span><input type="number" class="minus_price" placeholder="请输入金额"/></p>
+								</div>
+							</div>
+							<div></div>
+						</div>
+					</div>
+
+					<div class="mui-input-row radio_style VipDiscountType">
+						<div class="mui-row">
+							<div class="mui-col-sm-4 left_style"><L_>优惠方式</L_> <i class="vip_style"></i></div>
+							<div class="mui-col-sm-4 ">
+								<div class="mui-input-row mui-radio mui-left">
+									<label style="width:100%;"><input name="vip_discount_type" value="2" class="vip_1" type="radio" /><L_>折上折</L_></label>
+								</div>
+							</div>
+							<div class="mui-col-sm-4 ">
+								<div class="mui-input-row mui-radio mui-left">
+									<label style="width:100%;"><input name="vip_discount_type" value="1" class="vip_2" type="radio" /><L_>折扣最优</L_></label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<a href="javascript:void(0);" class="shop_keep"><L_>保 存</L_></a>
+
+		<div class="mui-clearfix"> 
+		</div>
+	</div>
+	<input type="hidden" id="province_id"/>
+	<input type="hidden" id="city_id"/>
+	<!-- <input type="hidden" id="area_id"/> -->
+	<div id="middlePopover" class="mui-popover">
+		<p><span><L_>选择地址</L_></span><i class="mui-pull-right"></i></p>
+		<input id="txtAddress" type="text" placeholder="请输入店铺地址" data-bind="textInput: addressInput" />
+		<div class="mui-scroll-wrapper top_scroll">
+			<div class="mui-scroll">
+				<ul class="allAddress"> 
+
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="map_baidu" style="display:none;">
+	<div class="map_header">
+		<header class=" mui-bar-nav tjt-bar mui-bar-nav">
+			<div class=" mui-icon mui-icon-back  mui-pull-left"  style="margin-right:0px;display: inline;cursor: pointer" onclick="back_star()"></div>
+			<form id="myform"  style="flex:1"  action="" target="frameFile" onsubmit="loadData()">
+				<input type="search" id="editmap_id"  class="editmap_id" style="margin:0px 10px 0px 0px;text-align:left;    background-color: #fff" placeholder="搜索位置"/>
+				<iframe name="frameFile" style="display:none"></iframe>
+			</form>
+			<div class="" style="cursor: pointer"><a class="remove_input" href="javascript:;"><L_>完成</L_></a></div>
+		</header>
+		<div style="padding-top:45px;" class='pt_45'>
+			<div class="close_map" >
+				<div  style="height:250px;position:relative" >
+					<div id="map_show" style="height:100%"></div>
+                    <div id="map_Google"> </div>
+					<div class="dot" style="display:block;z-index: 999;"></div>
+				</div>
+				<div id="searchMore" ></div>
+			</div>
+			<div id="searchAdd" style="display:none;overflow-y: auto;"></div>
+		</div>
+
+	</div>
+
+</div>
+<script id="add" type="text/html">
+	<div class="mapaddress" style='height:100%'>
+		<ul class="mapaddress allAddress" style='height:100%'>
+			{{# for(var i = 0; i < d.length; i++){ }}
+			<li data-long="{{ d[i].point.x }}" data-lat="{{ d[i].point.y }} " data-city="{{d[i].city}}" class="addresslist" style="position:relative">
+				<input name="radio1" class="a" type="radio" {{# if(i==0){ }} checked="checked"{{# } }} value="" id="tjt_{{ d[i].lat }}" style=" opacity:0;width: 100%; position: absolute;  height: 100%;z-index:10">
+				<label for='tjt_{{ d[i].lat }}'  style="align-items: center; display: flex;width:100%;position:relative">
+					<div style="flex:1">
+						<div class="mapaddress-title un_set">
+							<span class="icon-location" data-node="icon"></span>
+							<span class="recommend ad_name"> {{ d[i].name }} </span>
+						</div>
+						<div class="mapaddress-body un_set"> {{ d[i].addr }} </div>
+					</div>
+					<div >
+						<div class="mui-input-row  mui-left  {{# if(i==0){ }}adres_check {{# } else { }}adres_no_check {{# } }}" style="height: 30px;width: 30px;">
+
+						</div>
+					</div>
+				</label> 
+			</li>
+			{{# } }} 
+		</ul>
+	</div>
+</script>
+<script id="show_add" type="text/html">
+	<div class="mapaddress">
+		<ul class="mapaddress allAddress">
+			{{# for(var i = 0; i < d.length; i++){ }}
+			<li data-long="{{ d[i].long }}" data-lat="{{ d[i].lat }} " class="addresslist">
+				<div class="mapaddress-title ">
+					<span class="icon-location" data-node="icon"></span>
+					<span class="recommend"> {{ d[i].address }} </span>
+				</div>
+				<div class="mapaddress-body"> {{ d[i].name }}  </div>
+			</li>
+			{{# } }}
+
+		</ul>
+	</div>
+</script>
+
+<script id="google_add" type="text/html">
+	<div class="mapaddress" style='height:100%'>
+		<ul class="mapaddress allAddress" style='height:100%'>
+			{{# for(var i = 0; i < d.length; i++){ }}
+				<li data-long="{{ d[i].point.x }}" data-lat="{{ d[i].point.y }} " data-city="{{d[i].city}}" class="addresslist" style="position:relative">
+					<input name="radio1" class="a" type="radio" {{# if(i==0){ }} checked="checked"{{# } }} value="" id="tjt_{{ d[i].lat }}" style=" opacity:0;width: 100%; position: absolute;  height: 100%;z-index:10">
+					<label for='tjt_{{ d[i].lat }}'  style="align-items: center; display: flex;width:100%;position:relative">
+						<div style="flex:1">
+							<div class="mapaddress-title un_set">
+								<span class="icon-location" data-node="icon"></span>
+								<span class="recommend ad_name"> {{ d[i].name }} </span>
+							</div>
+							<div class="mapaddress-body un_set"> {{ d[i].addr }} </div>
+						</div>
+						<div >
+							<div class="mui-input-row  mui-left  {{# if(i==0){ }}adres_check {{# } else { }}adres_no_check {{# } }}" style="height: 30px;width: 30px;">
+
+							</div>
+						</div>
+					</label> 
+				</li>
+			{{# } }} 
+		</ul>
+	</div>
+</script>
+<script id="google_show_add" type="text/html">
+	<div class="mapaddress">
+		<ul class="mapaddress allAddress">
+			{{# for(var i = 0; i < d.length; i++){ }}
+				<li data-place_id="{{ d[i].place_id }}" class="google_addresslist">
+					<div class="mapaddress-title " style="padding:5px 0;font-size:14px;">
+						<span class="icon-location" data-node="icon"></span>
+						<span class="recommend"> {{ d[i].name }} </span>
+					</div>
+				</li>
+			{{# } }}
+		</ul>
+	</div>
+</script>
+
+<script id="listWeek" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+	    <div class="mui-card"  data-id="{{ d[i].week }}">
+			<!--页眉，放置标题-->
+			<div class="mui-card-header">
+				<span class="zhuContent week_show">{{ d[i].week_show }} </span>
+				<div class="mui-switch ismain">
+					<div class="mui-switch-handle"></div>
+				</div>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<div class="mui-row">
+					<div class="mui-col-sm-3">{{ L_('营业时间') }}</div>
+					<div class="mui-col-sm-9 timeManger">
+					{{# if(d[i].time_list.length == 0){ }}
+						<div class="mui-clearfix"> 
+							<ul class="mui-pull-left date_btn">
+								<li><sapn class="time_show">{{ L_('开始时间') }}<L_>开始时间</L_></sapn></li>
+								<li> <h4   class="btn time_active openTime">00:00:00</h4> </li>
+							</ul>
+							<ul class="mui-pull-left">
+								<li></li>
+								<li class="time_zhi">{{ L_('至') }}</li>
+							</ul>
+							<ul class="mui-pull-left date_btn">
+								<li><sapn class="time_show">{{ L_('停业时间') }}</sapn></li>
+								<li> <h4   class="btn time_active closeTime">00:00:00</h4> </li>
+							</ul>
+							<ul class="mui-pull-right addTime">
+								<li> <i></i></li>
+							</ul>
+						</div> 
+					{{# }else{ }} 
+						{{# for(var j = 0, len1 = d[i].time_list.length; j < len1; j++){ }} 
+							<div class="mui-clearfix"> 
+								<ul class="mui-pull-left date_btn">
+									<li><sapn class="time_show">{{ L_('开始时间') }}</sapn></li>
+									<li> <h4 data-options='{"type":"time"}' class="btn time_active openTime">{{ d[i].time_list[j].open_time}} </h4> </li>
+								</ul>
+								<ul class="mui-pull-left">
+									<li></li>
+									<li class="time_zhi">{{ L_('至') }}</li>
+								</ul>
+								<ul class="mui-pull-left date_btn">
+									<li><sapn class="time_show">{{ L_('停业时间') }}</sapn></li>
+									<li> <h4  data-options='{"type":"time"}' class="btn time_active closeTime">{{ d[i].time_list[j].close_time}}</h4> </li>
+								</ul>
+								{{# if(j== 0){ }}
+								<ul class="mui-pull-right addTime "><li> <i></i></li></ul>
+								{{# }else{ }}  
+								<ul class="mui-pull-right jianTime"><li> <i></i></li></ul>
+								{{# } }} 
+							</div>
+						{{# } }}  
+					{{# } }} 
+					</div>
+				</div>
+			</div>
+			<!--页脚，放置补充信息或支持的操作--> 
+		</div>  
+	{{# } }}
+</script>
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js"></script>
+<!--图片滚动-->
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script src="js/mui.picker.js"></script>
+
+
+<!--筛选用到js-->
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js?t=5" type="text/javascript" charset="utf-8"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="js/work/shop_manger_penci.js?t=2" charset="utf-8"></script>
+<script>
+ // 添加时间点击 
+ mui('.business_time1').on('tap','.addTime',function(e){  
+	var length=$(this).parents('.timeManger').find('.mui-clearfix').length;
+	var indexId=$(this).parents('.mui-card').data('id'); 
+	indexId++
+    if(length<3){
+        var str='<div class="mui-clearfix">	<ul class="mui-pull-left date_btn"><li><sapn class="time_show">开始时间</sapn></li><li> <h4  data-options={"type":"time"} class="btn time_active">00:00:00</h4> </li></ul><ul class="mui-pull-left"><li></li><li class="time_zhi">至</li></ul><ul class="mui-pull-left date_btn"><li><sapn class="time_show">停业时间</sapn></li><li> <h4  data-options={"type":"time"} class="btn time_active">00:00:00</h4> </li></ul><ul class="mui-pull-right jianTime"><li> <i></i></li></ul></div>';
+		$('.business_time1  .mui-card:nth-child('+indexId+') .timeManger').append(str);
+		replace_html_lang();
+    }else{
+        mui.toast(L_("最多只能选择3个时间段"));
+    }  
+});
+//删除时间点击
+mui('.business_time1').on('tap','.jianTime',function(e){
+    $(this).parents('.mui-clearfix').remove();
+});
+
+</script> 
+</body>
+</html>

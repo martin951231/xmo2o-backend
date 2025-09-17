@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>商家平台积分记录</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+     <link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/platform_score_record.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		<a href="javascript:;" class="mui-pull-right buy_score"><L_>购买积分</L_></a>
+	    <h1 class="mui-title"><L_>平台积分记录</L_></h1>
+	</header>
+	<div class="mui-content">
+		<div class="record_money">
+			<div class="mui-row mui-clearfix">
+				<div class="mui-col-sm-6 left_show" style="text-align: center;width: 100%;height: 0px;">
+					<p><span class="total" >当前总积分&nbsp;&nbsp;<span><b style="font-size: 18px;" id="total">0</b></span></span></p>
+				</div>
+			    <div class="mui-col-sm-6 left_show">
+			    	<p><span class="jin">当前筛选购买增加总积分&nbsp;&nbsp;</span></p>
+			    	<p id="pay_add_score">0</p>
+					<p>消耗减少总积分&nbsp;&nbsp;<span class="use_score">0</span></p>
+			    </div>
+			 
+			    <div class="mui-col-sm-6 right_show">
+			    	<p><span class="jin"><L_>当前筛选管理员增加总积分</L_><span></p>
+			    	<p id="admin_add">0</p>
+			    	<p>减少总积分&nbsp;&nbsp;<span class="admin_reduce">0</span></p>
+			    </div>
+			</div>
+		</div>
+		<!--报表统计-->
+		<div class="mui-card report" style="margin: 10px 0;">
+			<!--页眉，放置标题-->
+			<!--<div class="mui-card-header" style="justify-content: baseline;">
+				<i></i><span><L_>报表统计</L_></span>
+			</div>-->
+			<!--内容区-->
+			<div class="mui-card-content mui-clearfix">
+				<div class="mui-row">
+				    <div class="mui-col-sm-12" id='showUserPicker'>
+				    	<span id="tuan_buy"><span id="tuanding"><L_>全部状态</L_><span> <i></i></span>
+				    </div>
+				</div>
+				
+			</div>
+			<!--页脚，放置补充信息或支持的操作-->
+			<div class="mui-card-footer">
+				<div class="mui-row" style="width: 100%;">
+				        <div class="mui-col-sm-6 begin_date">
+				            <li class="" >
+				            	<i></i>
+								<span id="begin_date"><L_>请选择开始日期</L_><span>
+								<b></b>
+				            </li>
+				        </div>
+				        <div class="mui-col-sm-6 end_date">
+				            <li class="" >
+				            	<i></i>
+								<span id="end_date"><L_>请选择结束日期</L_><span>
+								<b></b>
+				            </li>
+				        </div>
+			    </div>
+			</div>
+		</div>
+		<!--筛选后内容-->
+		<div class="cards" id="cards">
+			
+			
+		</div>
+		<!-- 上拉刷新 -->
+		<div class="pullup" style="display:none;">上拉加载更多...</div>
+		<div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_><div>
+	</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="cardlist" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<div class="mui-card" data-id="{{d[i]['order_id']}}">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header">
+					<span></span>
+
+					<a></a>
+					{{# if (d[i]['set_type'] == 1) {}}
+						<p style="color: red;">{{d[i]['sore_count_desc']}}</p>
+					{{# } else { }}
+						<p>{{d[i]['sore_count_desc']}}</p>
+					{{# } }}
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content show_content mui-clearfix">
+				</div>
+				<div class="mui-card-footer show">
+			       <span>{{ L_('描述') }}:&nbsp;{{d[i]['desc']}}</span>
+			       <i class="mui-pull-right up_down"></i>
+				</div>
+			</div>
+	{{# } }}
+</script>
+<script id="content_list" type="text/html">
+	{{# for(var i = 0, len = d.merchant_platform_info.length; i < len; i++){ }}
+		{{#  if(d.merchant_platform_info[i].name!="描述"){ }}
+			{{# if(d.merchant_platform_info[i].value!=null){}}
+				<div class="mui-pull-left" style="width: 50%;">
+					<p>{{d.merchant_platform_info[i].name}}:{{d.merchant_platform_info[i].value}}</p>
+				</div>
+			{{# } else { }}
+				<div class="mui-pull-left" style="width: 50%;">
+					<p>{{d.merchant_platform_info[i].name}}:{{ L_('无') }}</p>
+				</div>
+			{{# } }}
+		{{# } }}
+
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+	var ticket = common.getCache('ticket');
+	//console.log(ticket);
+	var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+	var be_date='';
+	var enddate='';
+	var stor_list=[];
+	var set_state_index='';
+	var page=1;
+	var zuiShi='';
+	var ctuan=common.getCache('ctuan');
+	$('.ctuan').text(ctuan);
+	function p(s) {
+	    return s < 10 ? '0' + s: s;
+	}
+
+	//获取当前时间
+	var myDate = new Date();
+	//获取当前年
+	var year=myDate.getFullYear();
+	//获取当前月
+	var month=myDate.getMonth()+1;
+	//获取当前日
+	var date=myDate.getDate(); 
+	var now=year+'-'+p(month)+"-"+p(date);
+	//console.log(now);
+	$('#begin_date').text(now);
+	$('#end_date').text(now);
+
+	now=replaceAll(now);
+	zuiShi=now+'-'+now;
+	be_date=now;
+	enddate=now;
+	function selectChange(lists){
+		stor_list=[];
+		$.each(lists,function(i,val){
+			var goods_id_list ={'value':'','text':''};
+			goods_id_list.text=val.name;
+			goods_id_list.value=val.store_id;
+			stor_list.push(goods_id_list);
+		});
+	}
+	function replaceAll(str){
+		if(str!=null)
+		str = str.replace(/-/g,"/")
+		return str;
+	}
+	function changeAllshou(){
+		console.log(zuiShi);
+		common.http('Merchantapp&a=merchant_platform_score',{'ticket':ticket,'client':client,'page':page,'set_state':set_state_index,'period':zuiShi},function(data){
+			console.log('data', data);
+			var sore_num = data.sore_num;
+            console.log('sore_num-----', sore_num);
+			var pay_score_add_num = sore_num['pay_score_add_num'] ? sore_num['pay_score_add_num'] : 0;
+            $('#pay_add_score').text(pay_score_add_num);
+            var user_score_num = sore_num['user_score_num'] ? sore_num['user_score_num'] : 0;
+            $('.use_score').text(user_score_num);
+            var admin_score_add_num = sore_num['admin_score_add_num'] ? sore_num['admin_score_add_num'] : 0;
+            $('#admin_add').text(admin_score_add_num);
+            var admin_score_reduce_num = sore_num['admin_score_reduce_num'] ? sore_num['admin_score_reduce_num'] : 0;
+            $('.admin_reduce').text(admin_score_reduce_num);
+
+			$('#total').text(data.mer_info.platform_score);
+
+			if(data.order_list.length==0 || data.page_num < page){
+				$('.pullup').html(L_('没有更多数据啦'));
+				$('.loading').hide();
+				$('.pullup').show();
+
+			}else{
+				data.order_list.length<10&&$('.pullup').html(L_('没有更多数据啦'));
+				$('.loading').hide();
+				$('.pullup').show();
+				var order_list = data.order_list;
+				laytpl(document.getElementById('cardlist').innerHTML).render(order_list, function(html){
+					$('.cards').append(html);
+					$('.loading').hide();
+					$('.pullup').show();
+				});
+				if(data.order_list.length>9){
+				 var flag = false;
+					 // 上拉加载和下拉刷新
+					 $(window).scroll(function(e) {
+					 	e.stopPropagation();
+		                //上拉加载
+		                 if(flag){
+					      //数据加载中
+					      return false;
+					    }
+		                if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+		                	$('.pullup').hide();
+		                	$('.loading').show();
+		                	flag = true;
+		                    page++;
+		                    changeAllshou();
+		                    //$('.pullup').show();
+		                	//$('.loading').hide();
+		                }
+		            });
+				}
+				
+			}
+			
+		});
+	}
+	// 页面初次加载
+	changeAllshou();
+
+    var set_state_list=[
+        {'text':'全部状态','value':''},
+        {'text':'支付成功增加','value':'1'},
+        {'text':'用户消费消耗','value':'2'},
+        {'text':'管理员操作增加','value':'3'},
+        {'text':'管理员操作减少','value':'4'}
+        ];
+
+      	mui.init();
+      	//筛选
+      	  	(function($, doc) {
+				$.init();
+				// 团购订单
+				mui('.mui-content').on('tap','#showUserPicker',function(e){
+					/**
+					 * 获取对象属性的值
+					 * 主要用于过滤三级联动中，可能出现的最低级的数据不存在的情况，实际开发中需要注意这一点；
+					 * @param {Object} obj 对象
+					 * @param {String} param 属性名
+					 */
+					var _getParam = function(obj, param) {
+						return obj[param] || '';
+					};
+					//普通示例
+					var userPicker = new $.PopPicker();
+					userPicker.setData(set_state_list);
+					userPicker.pickers[0].setSelectedValue(set_state_index);
+					var userResult = doc.getElementById('userResult');
+					userPicker.show(function(items) {
+						$('#tuanding')[0].innerText= items[0].text;
+						var type=items[0].value;
+                        set_state_index=items[0].value;
+						page=1;
+						zuiShi=be_date+'-'+enddate;
+						if(zuiShi=='-'){
+							zuiShi='';
+						}
+						 document.getElementById('cards').innerHTML='';
+						changeAllshou();
+						
+					});
+				});
+
+				// 两类时间选择
+				$('.begin_date')[0].addEventListener('tap',function(){
+					var timeValue=document.getElementById('begin_date').innerText;
+					var optionsJson = '{"type":"date","beginYear":2014,"beginMonth":5,"beginDay":1,"endYear":2018}';
+					var options = JSON.parse(optionsJson);
+					var id = this.getAttribute('id');
+					var picker = new $.DtPicker(options);
+					picker.setSelectedValue(timeValue);
+					picker.show(function(rs) {
+						$('#begin_date')[0].innerText = rs.text;
+						be_date=replaceAll(rs.text);
+						picker.dispose();
+						if(enddate==''){
+							mui.toast('请选择结束日期');
+						}else{
+							page=1;
+							zuiShi=be_date+'-'+enddate;
+							console.log(zuiShi);
+							 document.getElementById('cards').innerHTML='';
+							changeAllshou();
+						}
+
+						
+					});
+				});
+				$('.end_date')[0].addEventListener('tap',function(){
+					var timeValue=document.getElementById('end_date').innerText;
+					var optionsJson = '{"type":"date","beginYear":2014,"endYear":2018}';
+					var options = JSON.parse(optionsJson);
+					var id = this.getAttribute('id');
+					var picker = new $.DtPicker(options);
+					picker.setSelectedValue(timeValue);
+					picker.show(function(rs) {
+						$('#end_date')[0].innerText = rs.text;
+						picker.dispose();
+						//var start_date=replaceAll($('#begin_date').text());
+						 enddate=replaceAll(rs.text);
+						 if(be_date==''){
+						 	mui.toast('请选择开始日期');
+						 }else{
+						 	page=1;
+						 	zuiShi=be_date+'-'+enddate;
+							 document.getElementById('cards').innerHTML='';
+							changeAllshou();
+						 }
+						
+						
+					});
+				});
+			})(mui, document);
+
+			//控制显示隐藏
+			mui('.mui-content').on('click','.show',function(e){
+				var id=$(this).parents('.mui-card').data('id');
+				var me=this;
+				if($(this).is('.active')){
+					$(this).removeClass('active');
+					$(this).prev('.show_content').hide();
+				}else{
+					common.http('Merchantapp&a=merchant_platform_info',{'ticket':ticket,'client':client,'id':id},function(data){
+						console.log(data);
+						laytpl(document.getElementById('content_list').innerHTML).render(data, function(html){
+							$(me).prev('.show_content').html(html);
+						});
+					});
+					$(this).addClass('active');
+					$(this).prev('.show_content').show();
+				}
+			});
+			
+            mui('.mui-bar').on('tap','.buy_score', function () {
+                openWindow({
+                    url:'merchant_buy_score.html',
+                    id:'merchant_buy_score'
+                });
+            });
+
+
+
+</script>
+</body>
+</html>

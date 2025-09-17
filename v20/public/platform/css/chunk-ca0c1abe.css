@@ -1,0 +1,240 @@
+.ant-switch-checked[data-v-6b012ad0] {
+  background: #18c6b6 !important;
+}
+.body_cashier_container[data-v-6b012ad0] {
+  width: 100%;
+  height: 86%;
+  display: -ms-flexbox;
+  display: flex;
+  overflow: hidden;
+}
+.body_cashier_container .details_container[data-v-6b012ad0] {
+  width: 100%;
+  height: 100%;
+  background-color: #faf8f6;
+  border-radius: 0.05208333rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.body_cashier_container .details_container .title_bar[data-v-6b012ad0] {
+  width: 100%;
+  height: 9%;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  padding: 0 0.15625rem;
+}
+.body_cashier_container .details_container .title_bar .title_text[data-v-6b012ad0] {
+  font-size: 0.125rem;
+  font-weight: 500;
+  color: #666666;
+}
+.body_cashier_container .details_container .changecolor[data-v-6b012ad0] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+}
+.body_cashier_container .details_container .changecolor[data-v-6b012ad0] svg {
+  color: #9f9f9f;
+}
+.body_cashier_container .details_container .changecolor[data-v-6b012ad0] .ant-spin-container {
+  height: 100%;
+}
+.body_cashier_container .details_container .details_content[data-v-6b012ad0] {
+  width: 100%;
+  height: 78%;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.body_cashier_container .details_container .details_content .slider_content[data-v-6b012ad0] {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info[data-v-6b012ad0] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  box-sizing: border-box;
+  -ms-flex-align: center;
+      align-items: center;
+  padding: 0 0.22916667rem;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .foodname[data-v-6b012ad0] {
+  width: 100%;
+  height: 0.57291667rem;
+  border-bottom: dashed 1px #e2e2e2;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .foodname .left_name[data-v-6b012ad0] {
+  font-size: 0.1875rem;
+  font-weight: bold;
+  letter-spacing: 0px;
+  color: #222222;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .foodname .right_price[data-v-6b012ad0] {
+  font-size: 0.15625rem;
+  font-weight: bold;
+  color: #222;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .foodname .right_price span[data-v-6b012ad0] {
+  font-size: 0.15625rem;
+  line-height: 0.1875rem;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container[data-v-6b012ad0] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  box-sizing: border-box;
+  margin-top: 0.15625rem;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container .food_spec_list[data-v-6b012ad0] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container .food_spec_list .foodspec_items[data-v-6b012ad0] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+      align-items: flex-start;
+  margin-bottom: 0.13020833rem;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container .food_spec_list .foodspec_items .left_spec_keyname[data-v-6b012ad0] {
+  line-height: 0.234375rem;
+  font-size: 0.11458333rem;
+  font-weight: 500;
+  color: #666666;
+  white-space: nowrap;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container .food_spec_list .foodspec_items .specList[data-v-6b012ad0] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container .food_spec_list .foodspec_items .specList .spec_items[data-v-6b012ad0] {
+  padding: 0 8px;
+  min-width: 0.625rem;
+  height: 0.234375rem;
+  border-radius: 0.03125rem;
+  border: solid 0.00520833rem #e2e2e2;
+  font-size: 0.10416667rem;
+  font-weight: 500;
+  line-height: 0.234375rem;
+  color: #666666;
+  text-align: center;
+  margin-right: 0.10416667rem;
+  margin-bottom: 0.078125rem;
+  box-sizing: border-box;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .food_spec_container .food_spec_list .foodspec_items .specList .spec_items_active[data-v-6b012ad0] {
+  background-color: #18c6b6;
+  border: solid 0.00520833rem #18c6b6;
+  color: #ffffff;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .accessory_dish_container[data-v-6b012ad0] {
+  width: 100%;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  margin-top: 0.05208333rem #18c6b6;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .accessory_dish_container .accessory_dish_list[data-v-6b012ad0] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .accessory_dish_container .accessory_dish_list .accessoryDish_items[data-v-6b012ad0] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .accessory_dish_container .accessory_dish_list .accessoryDish_items .accessoryList_name[data-v-6b012ad0] {
+  font-size: 0.125rem;
+  font-weight: bold;
+  color: #222222;
+  margin-bottom: 0.05208333rem;
+}
+.body_cashier_container .details_container .details_content .slider_content .food_details_info .accessory_dish_container .accessory_dish_list .accessoryDish_items .accessoryList_name .package_maxnum[data-v-6b012ad0] {
+  margin-left: 10px;
+  color: #19c6b6;
+}
+.body_cashier_container .details_container .details_content .slider_content[data-v-6b012ad0]::-webkit-scrollbar {
+  width: 0;
+}
+.body_cashier_container .details_container .bottom_bar[data-v-6b012ad0] {
+  width: 100%;
+  height: 13%;
+  background-color: #ffffff;
+  border-top: 1px solid #e6e6e6;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.body_cashier_container .details_container .bottom_bar .cancel_btn[data-v-6b012ad0] {
+  width: 1.19791667rem;
+  height: 0.390625rem;
+  background-color: #e7e7e7;
+  border-radius: 0.05208333rem;
+  text-align: center;
+  line-height: 0.390625rem;
+  font-size: 0.15625rem;
+  font-weight: bold;
+  color: #666666;
+  margin-right: 0.234375rem;
+  cursor: pointer;
+}
+.body_cashier_container .details_container .bottom_bar .confirm_btn[data-v-6b012ad0] {
+  width: 1.19791667rem;
+  height: 0.390625rem;
+  background-color: #18c6b6;
+  border-radius: 0.05208333rem;
+  text-align: center;
+  line-height: 0.390625rem;
+  font-size: 0.15625rem;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+}
+

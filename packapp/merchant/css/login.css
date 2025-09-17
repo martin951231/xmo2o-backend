@@ -1,0 +1,102 @@
+#app{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+body {
+    background-color: #fff;
+}
+
+.header {
+    position: relative;
+    height: 280px;
+    padding-top: calc(60px + env(safe-area-inset-top));
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.header .title {
+    font-size: 18px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #FFFFFF;
+    margin-top: 24px;
+}
+
+.header .bj {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.form {
+    margin: 10px 20px;
+    position: relative;
+}
+
+.van-field__left-icon {
+    margin-right: 14px;
+}
+
+.van-field__left-icon .van-icon {
+    font-size: 25px;
+}
+
+.form::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 0;
+    border-bottom: 1px solid #ebedf0;
+    opacity: .6;
+    z-index: 999;
+}
+
+.login-buttom {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0 30px 0;
+    padding: 0 18%;
+}
+
+.login-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #999999;
+}
+
+.login-action .settle {
+    color: #FFA200;
+}
+
+.login-action .line {
+    margin: 0 10px;
+}
+
+.privacy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* position: fixed; */
+    /* bottom: 22px; */
+    margin: 22px  0;
+    text-align: center;
+    width: 100%;
+    left: 0;
+    font-size: 12px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #9B9B9B;
+}
+.privacy span{
+    color: #FFA200;
+}

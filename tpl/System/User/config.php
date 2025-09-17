@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('User/config')}" class="on">会员配置</a>	</ul></div>

@@ -1,0 +1,14 @@
+
+.top-box-padding{
+    border-bottom: 1px solid #ebedf0;
+    padding: 42px 24px 50px;
+}
+.status-color-ok {
+    color: green;
+    font-weight: bold;
+}
+.status-color-fail {
+    color: red;
+    font-weight: bold;
+}
+

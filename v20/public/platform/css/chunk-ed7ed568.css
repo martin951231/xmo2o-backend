@@ -1,0 +1,73 @@
+.message-suggestions-list-box[data-v-15bae1cd] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-15bae1cd] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-15bae1cd] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-15bae1cd] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-15bae1cd] {
+  padding: 20px;
+}
+.lbsf[data-v-15bae1cd] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-15bae1cd] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+
+.imgname {
+  width: 100px;
+}
+.ant-card-body {
+  padding: 0px;
+  padding-left: 24px;
+  zoom: 1;
+}
+.ant-modal-body {
+  padding: 24px;
+  zoom: 1;
+}
+.ant-card-bordered {
+  border: 0px;
+}
+.ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #ffffff;
+  cursor: not-allowed;
+  opacity: 1;
+}
+.ant-card-input {
+  color:#333333;
+  width: 30%;
+ /* margin-left: 24px;*/
+  border: 0px;
+}
+.ant-card-span {
+  padding-right: 55px;
+}
+.ant-card-span1 {
+  padding-right: 200px;
+}
+.ant-card-head {
+  min-height: 48px;
+  margin-bottom: -1px;
+  padding: 0 24px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 14px;
+  background: transparent;
+  border-bottom: 0px;
+  border-radius: 2px 2px 0 0;
+  zoom: 1;
+}
+

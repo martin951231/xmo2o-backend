@@ -1,0 +1,11 @@
+.village_info_set[data-v-8c725d9a] {
+  width: 100%;
+}
+.village_info_set .input_style_240[data-v-8c725d9a] {
+  width: 360px;
+}
+[data-v-8c725d9a] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+

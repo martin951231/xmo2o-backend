@@ -1,0 +1,41 @@
+.imgname[data-v-91605f00] {
+  width: 100px;
+}
+[data-v-91605f00] .project_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-91605f00] .project_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-91605f00] .project_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-91605f00] .project_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+
+.message-suggestions-box-1[data-v-89985604] {
+  margin-top: 10px;
+  background-color: white;
+}
+.message-suggestions-box-1 .search-box[data-v-89985604] {
+  padding: 0 20px 0;
+}
+.message-suggestions-box-1 .add-box[data-v-89985604] {
+  padding: 10px 10px 10px;
+}
+.lbsf[data-v-89985604] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-89985604] {
+  padding-top: 15px;
+  padding-bottom: 20px;
+}
+[data-v-89985604] .but-box {
+  width: 365px !important;
+  padding-left: 0 !important;
+}
+

@@ -1,0 +1,139 @@
+<html lang="zh-CN"><head>
+		<meta charset="utf-8">
+		<title>支付</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link href="css/mui.css" rel="stylesheet"/>
+     	<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<link href="css/pigcms.css" rel="stylesheet">
+	<style>
+		.goods_name {
+			padding: 15px;
+			text-align: center;
+			font-size: 16px;
+		}
+		.pay_img {
+			height: 200px;
+			width: auto;
+			padding: 5px 30px;
+			text-align: center;
+			font-size: 16px;
+		}
+		.pay_money {
+			padding: 15px 30px;
+			text-align: left;
+			font-size: 16px;
+		}
+		.pay_money .detail{
+			color: #F19257;
+			font-size: 18px;
+		}
+
+		.plus_class a {
+			margin-left: 5%;
+			width: 100%;
+			height: 40px;
+			color: #fff;
+			font-size: 16px;
+			line-height: 40px;
+			text-align: center;
+		}
+		.true_btn {
+			background: #ffa200;
+			border-radius: 5px;
+			margin: 0 5%;
+			width: 90%;
+			padding: 10px 0;
+			color: #fff;
+		}
+		.pay_msg {
+			padding: 10px 30px 0;
+			text-align: left;
+			font-size: 14px;
+		}
+		.pay_msg .tip{
+			color: red;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		    <h1 class="mui-title"><L_>支付详情</L_></h1>
+		</header>
+		<div class="mui-content">
+			<section class="g_details allHtml ma" style="margin-top: 0;background-color: white;">
+				<div class="goods_name"></div>
+				<div class="pay_img">
+					<img src="images/pay/weixin@2x.png" height="100%" width="auto">
+				</div>
+				<!--<div class="pay_msg">-->
+					<!--<span>注意:  </span> <span class="tip">如果当前处于微信，请使用浏览器打开页面</span>-->
+				<!--</div>-->
+				<div class="pay_money">
+					<span>微信付款:  ￥</span> <span class="detail"></span>
+				</div>
+			</section>
+		</div>
+		<div>
+			<button type="button" class="true_btn"><L_>确认支付</L_></button>
+		</div>
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js?t=01"></script>
+
+
+		<script>
+            mui.init();
+			if(urlParam.mweb_url){
+			    var mweb_url = urlParam.mweb_url;
+                var total_money = urlParam.total_money;
+                var h5_name = decodeURIComponent(urlParam.h5_name);
+			}else{
+                var mweb_url = common.getCache('jump_url');
+                var total_money = common.getCache('total_money');
+                var h5_name = common.getCache('h5_name');
+			}
+
+            if (h5_name) {
+                $('.goods_name').html('商品名称:' + h5_name);
+            }
+            if (total_money) {
+                $('.pay_money .detail').html(total_money);
+            }
+
+
+            function go_weixin_pay(){
+                location.href = mweb_url;
+            }
+
+            // 确认支付订单
+            mui('body').on('tap','.true_btn',function(e){
+                e.stopPropagation();
+                e.preventDefault();
+                go_weixin_pay();
+			})
+
+            if(urlParam.mweb_url){
+                location.href = urlParam.mweb_url;
+            }
+
+            go_weixin_pay();
+
+            (function ($, doc) {
+                $.init();
+
+            })(mui, document);
+
+		</script>
+	</body>
+</html>

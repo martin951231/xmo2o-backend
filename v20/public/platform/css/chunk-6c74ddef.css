@@ -1,0 +1,88 @@
+.message-suggestions-list-box[data-v-2319905c] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-2319905c] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-2319905c] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-2319905c] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-2319905c] {
+  padding: 20px;
+}
+.lbsf[data-v-2319905c] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-2319905c] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.modal_box_1[data-v-2319905c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.modal_box_1 .flex_text_box[data-v-2319905c] {
+  width: 50%;
+}
+.margin_top_10[data-v-2319905c] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-2319905c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flex_text_box .text_1[data-v-2319905c] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.message-suggestions-list-box[data-v-7e1e8d9a] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-7e1e8d9a] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-7e1e8d9a] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-7e1e8d9a] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-7e1e8d9a] {
+  padding: 20px;
+}
+.lbsf[data-v-7e1e8d9a] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-7e1e8d9a] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+

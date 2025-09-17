@@ -1,0 +1,92 @@
+.party_consultation[data-v-49d4774e] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px) / 3 - 42px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow-y: scroll;
+}
+.party_consultation[data-v-49d4774e]::-webkit-scrollbar {
+  display: none;
+}
+.party_consultation .table_content[data-v-49d4774e] {
+  margin-top: 20px;
+  width: 92%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.party_consultation .table_content .table_col[data-v-49d4774e] {
+  width: 100%;
+  padding: 4.5px;
+  border-bottom: 0.5px dashed rgba(2, 160, 243, 0.5);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.party_consultation .table_content .table_col .col_id[data-v-49d4774e] {
+  width: 33.3%;
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.77);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.party_consultation .table_content .table_col .col_name[data-v-49d4774e] {
+  width: 33.3%;
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.77);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.party_consultation .table_content .table_col .col_value[data-v-49d4774e] {
+  width: 33.3%;
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.77);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  cursor: pointer;
+}
+

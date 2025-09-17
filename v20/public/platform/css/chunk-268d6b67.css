@@ -1,0 +1,13 @@
+
+.imgname {
+  width: 100px;
+}
+
+
+/deep/ .imgname{
+    width: 100px;
+}
+.content-p1{
+    color: #52A5FF;font-weight: bold;padding: 0px 10px 0 10px;
+}
+

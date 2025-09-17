@@ -1,0 +1,49 @@
+.input_style_240[data-v-571c5513] {
+  width: 240px;
+}
+
+
+[data-v-3468d95a] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+
+[data-v-451d4622] .ant-select-dropdown-menu-item {
+  height: 32px !important;
+}
+
+
+[data-v-5e7e088a] .ant-drawer-body {
+  padding: 0px;
+}
+
+.build_index[data-v-5151e9f1] {
+  background-color: #ffffff;
+  padding: 0 20px;
+}
+.top-box-padding[data-v-5151e9f1] {
+  border-bottom: 1px solid #ebedf0;
+  padding: 20px 0;
+}
+.status-color-ok[data-v-5151e9f1] {
+  color: green;
+}
+.status-color-fail[data-v-5151e9f1] {
+  color: red;
+}
+.total_number[data-v-5151e9f1] {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  height: 50px;
+  padding-right: 20px;
+}
+

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>我的推广码</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/my_mer_spread_code.css"/>
+	<style>
+		#selects{
+			border-radius: 5px;
+			height: 28px;
+			width: 85px;
+			padding: 0 10px;
+			line-height: 28px;
+			margin-right: 5px;
+		}
+		
+		.select:after {
+			display: block;
+			content: "";
+			border-top: 1px solid #838383;
+			border-left: 1px solid #838383;
+			width: 5px;
+			height: 5px;
+			-webkit-transform: rotate(225deg);
+			background-color: transparent;
+			position: absolute;
+			right: 12px;
+			margin-top: 9px;
+		}
+		.mui-bar-nav ~ .mui-content {
+			padding: 44px 20px 0;
+		}
+	</style>
+</head>
+<body style="background: #ec4729;">
+	<header class="mui-bar mui-bar-nav">
+	    <h1 class="mui-title"><L_>我的推广码</L_></h1>
+	</header>
+	<div class="mui-content" style="background: #ec4729;">
+	    <div class="center">
+	    	<ul class=" recom_top">
+				<li class="mui-media h2">
+					我的推广码
+				</li>
+
+				<li class="mui-media con">
+					<input class="zm mer_code" readonly="readonly"/>
+					<button class="form_libirly click_copy" data-clipboard-action="copy" data-clipboard-target="input"><L_>复制推广码</L_></button>
+				</li>
+			</ul>
+
+			<ul class=" recom_end">
+				<li class="mui-media h2">
+					使用方法
+				</li>
+				<li class="mui-media con">
+					<div class="list_con">
+						<div class="con_h2"><L_>一、推广码</L_></div>
+						<div class="p"><L_>您可以将推广码发送给您的商家，您的商家注册为（仅限app，pc端，手机浏览器端）成为平台审核通过的商家，且该商家在批发市场消费后，则您可获得一定的推广佣金。</L_></div>
+					</div>
+				</li>
+			</ul>
+	    </div>
+	    
+	</div>
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.dtpicker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/work/my_mer_spread_code.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+		<!-- android=appbackmonitor -->
+	</body>
+</html>

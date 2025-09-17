@@ -1,0 +1,35 @@
+
+html,body,#app {
+    height: 100%;
+    background-color: #f4f4f4;
+}
+.filter {
+    position: fixed;
+    height: 50px;
+    left: 0;
+    top: 0px;
+    width: 100%;
+    z-index: 9999;
+}
+.all-date {
+    width: 80px;
+    height: 30px;
+    color: #666666;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #666666;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 10px;
+    line-height: 30px;
+    text-align: center;
+}
+.btn-active {
+    color: #27A3F7;
+     background: rgba(39, 163, 247, 0.1);
+     border: 1px solid #27A3F7;
+}
+.content {
+    /* top: 50px; */
+    padding-bottom: 10px;
+    overflow-x: hidden;
+}

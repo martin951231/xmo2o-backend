@@ -1,0 +1,46 @@
+.adverBox{
+	background-size:100%;
+	padding-top:calc(100% * 500 / 900);
+}
+
+.categoryBox{
+	width:100%;
+	overflow-x:scroll;
+	white-space:nowrap;
+}
+.categoryBox .item{
+	display:inline-block;
+	color:#999;
+	padding:16px 12px;
+}
+.categoryBox .item.active{
+	color:black;
+	font-weight:bold;
+}
+.categoryBox .item:first-child{
+	padding-left:24px;
+}
+.categoryBox .item:last-child{
+	padding-right:24px;
+}
+.goodListBox{
+	margin:0 15px 15px;
+}
+
+.goodListBox.list .goodItem{
+    width: calc((100% - 15px) / 2);
+}
+
+
+
+.two_category .goodList{
+	margin-top:10px;
+}
+.two_category .goodItem .goodImage{
+	padding-top: calc(100% * 500 / 900);
+	background-size:100%;
+	margin-bottom:4px;
+}
+.two_category .goodListBox{
+	border-top:none;
+}

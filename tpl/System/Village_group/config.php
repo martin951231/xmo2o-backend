@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Village_group/config')}" class="on"><if condition="$config.village_group_alias">{pigcms{$config.village_group_alias}<else/>社区拼团</if>配置</a>	</ul></div>

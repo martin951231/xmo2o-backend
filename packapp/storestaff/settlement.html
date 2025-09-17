@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8"/>
+        <title>店员中心</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name='apple-touch-fullscreen' content='yes'/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="format-detection" content="address=no"/>
+        <link href="css/pigcms.css" rel="stylesheet"/>
+        <style>
+            .hasDiscount .switch {
+                border-radius: 5px;
+                width: 90px;
+                height: 26px;
+                text-align: center;
+                line-height: 24px;
+                position: relative;
+                top: -3px;
+            }
+            .switch div.no.on {
+                color: #fff;
+                background: #2ecc71;
+                border: #2ecc71 1px solid;
+            }
+            .switch div.off.on {
+                color: #fff;
+                background: #f3324d;
+                border: #f3324d 1px solid;
+            }
+            .switch div {
+                width: 50%;
+                color: #ccc;
+            }
+            .switch div.off {
+                border: #ccc 1px solid;
+                border-left: 0px;
+                border-radius: 0 5px 5px 0;
+            }
+            .switch div.no {
+                border: #ccc 1px solid;
+                border-right: 0px;
+                border-radius: 5px 0 0 5px;
+            }
+      
+            .if {
+                font-size: 12px;
+                color: #cccccc;
+                position: relative;
+                top: 5px;
+            }
+            .m100 {
+                margin-left: 108px;
+            }
+            input.mt[type=checkbox] {
+                -webkit-appearance: none;
+                width: 1.45rem;
+                height: 1.45rem;
+                margin: -.07rem 0;
+                border-radius: 50%;
+                border: 1px solid #ddd8ce;
+                text-align: center;
+                vertical-align: middle;
+                line-height: .45rem;
+                outline: 0;
+            }
+            input.mt[type=checkbox]:checked {
+                background-color: #2bb2a3;
+                border: 0;
+                color: #fff;
+            }
+            .flex{
+                display: flex;
+               align-items: center
+            }
+            .flex_one{
+                flex:1;
+            }
+            .rel{position:relative;}
+            .switch div.no.on {
+               border-radius: 5px 0px 0px 5px;
+            }
+            input.mt[type=radio]:checked:after, input.mt[type=checkbox]:checked:after {
+                top: 0.3rem;
+                left: 0.3rem;
+                position: absolute;
+                content: "✓";
+                font-size: 1.4rem;
+                font-family: base_icon;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="public pageSliderHide">
+            <div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+            <div class="content"><L_>结算订单</L_></div>
+            <div class="cancel"><L_>整单取消</L_></div>
+        </section>
+        <div class="h44"></div>
+        
+        <section class="settlement">
+            <div class="set_top">
+                <div class="h2"><L_>订单信息</L_></div>
+                <ul>
+                    <li class="clr">
+                        <div class="fl"><L_>订单编号</L_></div>
+                        <div class="fr" id="order_info-real_orderid"></div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>订单总价</L_></div>
+                        <div class="fr ce9"><L_>￥</L_><span id="order_info-price"></span></div>
+                    </li>
+                   
+                    <li class="clr hasDiscount hasBindPhone">
+                        <div class="fl tit"><L_>商家优惠</L_></div>
+                        <div class="m100">
+                            <div class="switch clr flex" id="switch1">
+                                <div class="fl no flex_one">ON</div>
+                                <div class="fl off on flex_one" id="offDiscount">OFF</div>
+                            </div>
+                            <p class="if"><L_>若开启则会使用“优惠买单”的优惠</L_></p>
+                        </div>
+                    </li>
+                    <div class="ample no_discount_money"  style="display: none;">
+                        <ul>
+                            <li class="clr">
+                                <div class="fl tit"><L_>不可优惠金额</L_></div>
+                                <div class="m100">
+                                    <input type="number" id="no_discount_money" placeholder="请输入金额"/>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ample offDiscount">
+                        <div class="snap" id="discountTxt">&nbsp;</div>
+                    </div>
+                    <li class="clr hasDiscount offDiscount">
+                        <div class="fl"><L_>商家优惠金额</L_></div>
+                        <div class="fr f33" id="show_minus"></div>
+                    </li>
+                    <li class="clr hasCardDiscount" id="merchant_discount_li">
+                        <div class="fl"><L_>商家会员卡折扣</L_></div>
+                        <div class="fr ce9" id="merchant_discount"></div>
+                    </li>
+
+                    <li class="clr">
+                        <div class="fr text_r">
+                            <div class="cope">
+                                应付金额：<span class="ce9" id="pay_price"></span>  
+                            </div>
+                            <div class="modify" id="changeOrderMoney"><L_>修改金额</L_></div>
+                        </div>
+                    </li>
+
+                    <li class="clr" id="merchant_coupon_li">
+                        <div class="fl"><L_>商家优惠券</L_></div>
+                        <div class="fr">
+                            <span class="ce9 yhq_discount"></span>
+                            <span class="choice choice1"><L_>选择优惠券</L_></span>
+                        </div>
+                    </li>
+                    <li class="clr hasBindPhone" id="merchant_coupon_li">
+                        <div class="fl"><L_>平台优惠券</L_></div>
+                        <div class="fr">
+                            <span class="ce9 yhq_discount"></span>
+                            <span class="choice choice2"><L_>选择优惠券</L_></span>
+                        </div>
+                    </li>
+                    <li class="clr score_discount_li hasBindPhone" id="score_discount_li">
+                        <div class="fl"><span id="score_label">本单可使用积分<font color="red" id="score_can_use_count" data-num="0">32</font>个,可抵扣金额<font color="red" id="score_deducte" data-price="0"><L_>￥</L_>0</font></span></div>
+                        <div class="fr">
+                            <input type="checkbox" class="mt rel" value="1" id="use_score" name="use_score" checked="checked">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="set_top set_middle hasCardDiscount" id="card_data">
+                <ul>
+                    <li class="clr">
+                        <div class="fl top">
+                            <h2><L_>会员卡号</L_></h2>
+                            <p id="card_data-card_id"></p>
+                        </div>
+                        <div class="refresh"><L_>刷新</L_></div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前余额</L_></div>
+                        <div class="fr ce9"><L_>￥</L_><span id="card_data-card_money"></span></div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>本次可用</L_></div>
+                        <div class="fr">
+                            <span class="ce9" id="user_card_money"></span>
+                            <div class="modify" id="change_card_money"><L_>修改金额</L_></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- 一卡通 -->
+            <div class="set_top set_middle" id="internalCard_info">
+                <ul>
+                    <li class="clr">
+                        <div class="fl top">
+                            <h2><L_>一卡通卡</L_></h2>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前余额</L_></div>
+                        <div class="fr ce9"><L_>￥</L_><span id="internalCard_money">0</span></div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>本次可用</L_></div>
+                        <div class="fr">
+                            <span class="ce9" id="user_internalCard_money"><L_>￥</L_>0</span>
+                            <div class="modify" id="change_internalCard_money"><L_>修改金额</L_></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="set_top set_end" id="otherPayMethod">
+                <div class="h2"><L_>选择支付方式</L_></div>
+                <ul>
+                    <li class="clr xxzf on">
+                        <div class="fl"><L_>线下支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+					<li class="clr pufapos" style="display:none;">
+                        <div class="fl"><L_>刷卡支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+					<li class="clr pufapos_scan" style="display:none;">
+                        <div class="fl"><L_>扫码支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+					 <li class="clr yzf" id="open_yzf_pay">
+                        <div class="fl"><L_>翼支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+                    <li class="clr wxzf">
+                        <div class="fl"><L_>微信支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+                    <li class="clr zfb" id="open_alipay">
+                        <div class="fl"><L_>支付宝支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+                    <li class="clr wxsm">
+                        <div class="fl"><L_>用户微信扫码</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+					
+					<li class="clr balance_pay">
+                        <div class="fl"><L_>平台余额支付</L_></div>
+                        <div class="fr icon"></div>
+                    </li>
+                </ul>
+            </div>
+
+        </section>
+
+        <section class="js_confirm">
+            <div class="fl need">还需支付：<span class="ce9" id="otherPayMoney"><L_>￥</L_>0</span></div>
+            <div class="fl affirm"><L_>确认支付</L_></div>
+        </section>
+
+
+        <section class="amend" id="merchant_card_change" style="height:280px;">
+            <div class="alter">
+                <h2><L_>修改金额</L_></h2>
+                <div class="del"></div>
+            </div>
+            <div class="correct">
+                <ul>
+                    <li class="clr">
+                        <div class="fl"><L_>修改金额</L_></div>
+                        <div class="fr">
+                            <input type="number" id="merchant_card_money" placeholder="请输入修改金额"/>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前值</L_></div>
+                        <div class="fr e93" id="money_now"></div>
+                    </li>
+                </ul>
+                <div class="clr button">
+                    <div class="fl recovery"><L_>恢复初始价格</L_></div>
+                    <div class="fr ensure"><L_>确定修改</L_></div>
+                </div>
+            </div>
+        </section>
+		
+		<section class="amend" id="change_order_price">
+            <div class="alter">
+                <h2><L_>修改金额</L_></h2>
+                <div class="del"></div>
+            </div>
+            <div class="correct">
+                <ul>
+                    <li class="clr">
+                        <div class="fl"><L_>修改金额</L_></div>
+                        <div class="fr">
+                            <input type="number" id="change_price" placeholder="请输入修改金额"/>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>备注</L_></div>
+                        <div class="fr">
+                            <input type="text" id="change_price_reason" placeholder="请输入备注，限定8字以内"/>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前值</L_></div>
+                        <div class="fr e93" id="order_money_now"></div>
+                    </li>
+                </ul>
+                <div class="clr button">
+                    <div class="fl recovery"><L_>恢复初始价格</L_></div>
+                    <div class="fr ensure"><L_>确定修改</L_></div>
+                </div>
+            </div>
+        </section>
+		
+        <section class="coupon">
+            <div class="p20">
+                <div class="h2"><span><L_>选择优惠券</L_></span></div>
+                <ul></ul>
+                <div class="no_coupon">
+                    <p>暂无优惠劵，该用户有 <span id="coupon_can_had"></span> 张优惠劵可领取</p>
+                    <div class="img"><img src="" id="merchant_card_qrcode"/></div>
+                </div>
+            </div>
+            <div class="del"></div>
+        </section>
+
+        <section class="js_line">
+            <div class="h2"><L_>线下支付</L_></div>
+            <ul>
+                <li class="clr">
+                    <div class="fl">应收:</div>
+                    <div class="fr ce9" id="offline_money"></div>
+                </li>
+                <li class="clr">
+                    <div class="fl">已收:</div>
+                    <div class="fr"><input type="number" placeholder="输入收取的金额" id="offline_cash"/></div>
+                </li>
+                <li class="clr">
+                    <div class="fl"><L_>找零：</L_></div>
+                    <div class="fr cf8" id="offline_zhaoling">0.00</div>
+                </li>
+            </ul>
+            <dl class="clr" id="offline_method">
+                <dd data-id="0"><L_>现金支付</L_></dd>
+            </dl>
+            <div class="del"></div>
+        </section>
+
+        <section class="popup alipay">
+            <div class="h2"><span><L_>支付宝支付</L_></span></div>
+            <div class="bot">
+                <div class="sm_input">
+                    <div class="input" id="alipay_input_dom">
+                        <input type="tel" id="alipay_input"/>
+                        <em></em>
+                    </div>
+                    <div class="qrzf" id="alipay_btn"><L_>确认支付</L_></div>
+                </div>
+                <p><L_>点击扫码按钮得到值，如果扫码提示支付宝错误，可关闭本页面重新创建订单！</L_></p>
+            </div>
+            <div class="del"></div>
+        </section>
+		
+		<section class="popup balance">
+            <div class="h2"><span><L_>平台余额支付</L_></span></div>
+            <div class="bot" style="padding: 69px 10px;">
+				<p  id="balance_title" style="margin-top:-50px"><L_>只有在平台账户绑定手机号的用户才能使用平台余额支付</L_></p>
+                <div class="sm_input">
+                    <div class="input" id="balance_input_dom">
+                        <input type="tel" id="balance_phone" placeholder="请输入手机号"/>
+                        <input type="tel" id="smscode"  placeholder="请输入验证码" style="display:none;width:94%"/>
+                        
+                    </div>
+                    <div class="qrzf" id="verify_phone"><L_>发送验证码</L_></div>
+                    <div class="qrzf" id="balance_smscode" data-second="" style="width:80px;display:none;"><L_>发送验证码</L_></div>
+                </div>
+                    <div class="pay_btn" id="balance_btn" ><L_>确认支付</L_></div>
+              
+            </div>
+            <div class="del" ></div>
+            <div class="back_check" style="right: 8px;top: 10px;position: absolute;color: #fff;display:none" ><L_>上一步</L_></div>
+        </section>
+
+        <section class="popup wechat">
+            <div class="h2"><span><L_>微信支付</L_></span></div>
+            <div class="bot">
+                <div class="sm_input">
+                    <div class="input" id="weixin_input_dom">
+                        <input type="tel" id="weixin_input"/>
+                        <em></em>
+                    </div>
+                    <div class="qrzf" id="weixin_btn"><L_>确认支付</L_></div>
+                </div>
+                <p><L_>点击扫码按钮得到值，如果扫码提示微信错误，可关闭本页面重新创建订单！</L_></p>
+            </div>
+            <div class="del"></div>
+        </section>
+		
+		<section class="popup yzfpay">
+            <div class="h2"><span><L_>翼支付</L_></span></div>
+            <div class="bot">
+                <div class="sm_input">
+                    <div class="input" id="yzfpay_input_dom">
+                        <input type="tel" id="yzfpay_input"/>
+                        <em></em>
+                    </div>
+                    <div class="qrzf" id="yzfpay_btn"><L_>确认支付</L_></div>
+                </div>
+                <p><L_>点击扫码按钮得到值，如果扫码提示翼支付错误，可关闭本页面重新创建订单！</L_></p>
+            </div>
+            <div class="del"></div>
+        </section>
+
+        <section class="popup scan_code">
+            <div class="h2"><span><L_>用户微信扫码</L_></span></div>
+            <div class="cot">
+                <img src="" id="scan_code_img"/>
+                <div class="inb"><L_>用户微信扫码支付</L_></div>
+            </div>
+            <div class="del"></div>
+        </section>
+		
+		 <section class="popup yzf_scan_code">
+            <div class="h2"><span><L_>用户翼支付扫码</L_></span></div>
+            <div class="cot">
+                <img src="" id="scan_code_img"/>
+                <div class="inb"><L_>用户翼支付扫码支付</L_></div>
+            </div>
+            <div class="del"></div>
+        </section>
+
+        <section class="back_index pageSliderHide">
+            <div class="p10">
+                <img src="images/cg_03.jpg" width="170" height="125"/>
+                <p><L_>支付成功</L_></p>
+                <div class="back"><a href="back"><L_>回到首页</L_></a></div>
+            </div>
+        </section>
+
+        <section class="seek empty pageSliderHide">
+            <div class="within">
+                <h2><L_>整单取消</L_></h2>
+                <div class="con">
+                    <div class="img">
+                        <img src="images/tct_06.jpg"/>   
+                    </div>
+                    <div class="tit">
+                        <p class="on"><L_>重要提示</L_></p>
+                        <p class="p">取消后，当前订单会被取消并且不可恢复，<span class="red"><L_>确定取消当前订单？</L_></span></p>
+                    </div>
+                    <div class="button">
+                        <div class="clr p20">
+                            <div class="fl close"><L_>点错了</L_></div>
+                            <div class="fr ensure"><L_>确定取消</L_></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="del"></div>
+        </section>
+			
+        <script id="listCouponTpl" type="text/html">
+            {{# for (var i in d){ }}
+                <li data-id="{{ d[i].coupon_id }}" data-full="{{ d[i].full_money }}" data-reduce="{{ d[i].reduce_money }}">
+                    <div class="fl price">
+                        <span><em>{{ L_('￥') }}</em>{{ d[i].reduce_money }}</span>
+                    </div>
+                    <div class="p85">
+                        <div class="tabcal">
+                            <h2><L_>满{{ d[i].full_money }}元可用</L_></h2>
+                            <p>{{ L_('有效期至') }}：{{ d[i].end_time }}</p>
+                        </div>
+                    </div>
+                    <div class="use"><em>{{ L_('点击使用') }}</em></div>
+                </li>
+            {{# } }}
+        </script>   
+        <script id="listCouponTpl2" type="text/html">
+            {{# for (var i in d){ }}
+                <li data-id="{{ d[i].coupon_id }}" data-full="{{ d[i].order_money }}" data-reduce="{{ d[i].discount_money }}">
+                    <div class="fl price">
+                        <span><em>{{ L_('￥') }}</em>{{ d[i].discount_money }}</span>
+                    </div>
+                    <div class="p85">
+                        <div class="tabcal">
+                            <h2><L_>满{{ d[i].order_money }}元可用</L_></h2>
+                            <p>{{ L_('有效期至') }}：{{ d[i].end_time }}</p>
+                        </div>
+                    </div>
+                    <div class="use"><em>{{ L_('点击使用') }}</em></div>
+                </li>
+            {{# } }}
+        </script>       
+        <div class="mask"></div>
+        <div class="pay_ok_mask"></div>
+        <script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/settlement.js?t=7"></script> 
+    </body>
+</html>

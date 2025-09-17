@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<title>配送员中心</title>
+		<meta
+			name="viewport"
+			content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover"
+		/>
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-touch-fullscreen" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="format-detection" content="address=no" />
+		<link href="scripts/weui/weui.min.css" rel="stylesheet" />
+		<link href="css/deliver.css" rel="stylesheet" />
+		<style type="text/css">
+			.deliver_scan {
+				left: 15px;
+				width: 32px;
+				background: #2999f1;
+				position: absolute;
+				z-index: 999;
+				top: 20px;
+				color: #fff;
+				height: 32px;
+				line-height: 32px;
+				border-radius: 20px;
+				display: none;
+			}
+			.deliver_scan img {
+				width: 20px;
+				line-height: 32px;
+				margin: 6px;
+			}
+		</style>
+	</head>
+	<body>
+		<section class="page hide" id="startBg">
+			<img src="bg.png" style="height: 100%; width: 100%" />
+		</section>
+		<section class="page hide" id="mainPage">
+			<section id="fixed_top">
+				<section class="public pageSliderHide">
+					<div class="content"><L_>配送员中心</L_></div>
+				</section>
+				<div class="h44"></div>
+			</section>
+			<section class="clerk">
+				<div class="clerk_top">
+					<div class="fl clerk_img">
+						<span></span>
+					</div>
+					<div class="clerk_r">
+						<h2>
+							<span id="deliver_info-name"></span
+							><i> , <L_>您好</L_></i>
+						</h2>
+						<p id="deliver_info-tip">&nbsp;&nbsp;</p>
+						<div
+							class="work_handle"
+							id="work_handle"
+							style="display: none"
+						>
+							<div class="work_tip" id="work_tip">未接单</div>
+							<input
+								type="checkbox"
+								class="jtoggler"
+								id="work_toggler"
+							/>
+							<div class="jtoggler-control">
+								<div class="jtoggler-handle"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clerk_end">
+					<ul class="clr">
+						<li class="Grab fl">
+							<a href="grab.html" data-webview="true">
+								<i></i>
+								<h2 id="gray_count">0</h2>
+								<p><L_>待抢单</L_></p>
+							</a>
+						</li>
+						<li class="Handle fl">
+							<a href="pick.html" data-webview="true">
+								<i></i>
+								<h2 id="deliver_count">0</h2>
+								<p><L_>处理中</L_></p>
+							</a>
+						</li>
+						<li class="complete fl">
+							<a href="finish.html" data-webview="true">
+								<i></i>
+								<h2 id="finish_count">0</h2>
+								<p><L_>已完成</L_></p>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</section>
+
+			<div class="mapBox">
+				<section class="deliver_scan" id="indexScanOrder">
+					<img src="images/scan.png" />
+				</section>
+				<section class="postion_deliver">
+					<span class="cur"
+						><L_>全部</L_>(<label id="allOrder" data-status="0"
+							>0</label
+						>)</span
+					>
+					<span
+						><L_>待取货</L_>(<label
+							id="allOrderFrom"
+							data-status="2"
+							>0</label
+						>)</span
+					>
+					<span
+						><L_>待送达</L_>(<label id="allOrderAim" data-status="3"
+							>0</label
+						>)</span
+					>
+				</section>
+				<div class="">
+					<section class="Map" id="biz-map"></section>
+					<section
+						class="map_location pageSliderHide"
+						id="map_location"
+					></section>
+				</div>
+			</div>
+
+			<section class="bottom pageSliderHide">
+				<div class="bottom_n">
+					<ul>
+						<li class="Statistics fl">
+							<a href="javascript:redirect_self('tongji.html');"
+								><L_>统计</L_></a
+							>
+						</li>
+						<li class="home homeon fl">
+							<a href="javascript:void(0);"
+								><i></i><L_>首页</L_></a
+							>
+						</li>
+						<li class="My fl">
+							<a href="javascript:redirect_self('info.html');"
+								><L_>我的</L_></a
+							>
+						</li>
+					</ul>
+				</div>
+			</section>
+		</section>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/work/common.js"></script>
+		<script src="scripts/weui/weui.min.js"></script>
+		<script src="scripts/common.js?t=02"></script>
+		<script src="scripts/work/index.js"></script>
+		<script src="scripts/work/scanOrder.js"></script>
+		<!-- android=appbackmonitor -->
+		<audio
+			controls="controls"
+			preload="true"
+			loop="loop"
+			id="newOrderMp3"
+			style="display: none"
+		>
+			<source src="new_order.mp3" type="audio/mp3" />
+		</audio>
+	</body>
+</html>

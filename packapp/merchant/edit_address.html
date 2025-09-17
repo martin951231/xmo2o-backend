@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>编辑收货地址</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+	<link href="css/mapqird.css" rel="stylesheet" />
+</head>
+<style>
+	/*头部*/
+	.mui-bar-nav{
+		background: #ffa200;
+	}
+	.mui-bar-nav a,.mui-bar-nav h1{
+		color: #fff;
+	}
+
+	.add_edit_address dl.list:first-child {
+		margin: 0;
+		border-top: 0;
+	}
+	.add_edit_address dl.list {
+		background-color: #fff;
+	}
+	.add_edit_address dl.list dt, dl.list dd {
+		margin: 0;
+		border-bottom: 1px solid #e5e5e5;
+		overflow: hidden;
+		font-size: inherit;
+		font-weight: 400;
+		position: relative;
+	}
+	.add_edit_address dl.list dd dl {
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: -1px;
+		padding-left: 10px;
+		border: 0;
+	}
+	.add_edit_address dl.list .dd-padding, dl.list dt, dl.list dd>.react {
+		padding: 14px 10px;
+	}
+	.add_edit_address .kv-line {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		margin: 10px 0;
+	}
+
+	.add_edit_address dl.list-in dd {
+		border-bottom: 1px dashed #e5e5e5;
+	}
+
+	.add_edit_address dl.list dd dl {
+		padding-left: 10px;
+		border: 0;
+	}
+	.add_edit_address dl.list dt, dl.list dd {
+		margin: 0;
+		overflow: hidden;
+		font-size: inherit;
+		font-weight: 400;
+	}
+	.add_edit_address  .kv-line h6 {
+		width: 4rem;
+		color: #333;
+	}
+	.add_edit_address .kv-line>h6, .kv-line>.kv-k {
+		display: block;
+		font-size: 14px;
+		font-weight: 400;
+	}
+	.add_edit_address p, h6 {
+		line-height: 1.41;
+		text-align: justify;
+		margin: -2px 0;
+		word-break: break-all;
+	}
+	.add_edit_address dl.list dd>.input-weak {
+		width: 100%;
+		display: block;
+	}
+	.add_edit_address .kv-line>.kv-v, .kv-line>p {
+		-webkit-box-flex: 1;
+	}
+	.add_edit_address input.input-weak, textarea.input-weak {
+		border: 0;
+		height: 32px;
+		margin: -7px 0;
+		text-indent: 1px;
+		line-height: 16px;
+		font-size: 14px;
+		border-radius: 5px;
+	}
+	.add_edit_address  .kv-line {
+		display: -webkit-box;
+	}
+	.add_edit_address img {
+		vertical-align: middle;
+		border: 0;
+	}
+    .add_edit_address a.react, label.react {
+        display: block;
+        color: inherit;
+        height: 100%;
+    }
+    input.mt[type=radio], input.mt[type=checkbox] {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        margin: -7px 0;
+        border-radius: 50%;
+        border: 1px solid #ddd8ce;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 20px;
+        outline: 0;
+    }
+    input.mt[type=radio]:checked:after, input.mt[type=checkbox]:checked:after {
+        content: "✓";
+        font-size: .4rem;
+        font-family: base_icon;
+    }
+    input.mt[type=radio]:checked, input.mt[type=checkbox]:checked {
+        background-color: #2bb2a3;
+        border: 0;
+        color: #fff;
+    }
+	.btn-wrapper {
+		margin: 10px;
+		padding: 0;
+	}
+	.btn {
+		background: #06c1bb;
+	}
+	.btn-larger {
+		height: 45px;
+		line-height: 45px;
+		font-size: 18px;
+	}
+	.btn-block {
+		display: block;
+		width: 100%;
+	}
+	.btn {
+		margin: 0;
+		text-align: center;
+		padding: 0  15px;
+		border-radius: 6px;
+		color: #fff;
+		border: 0;
+		vertical-align: middle;
+		box-sizing: border-box;
+		cursor: pointer;
+	}
+	#map_baidu .map_header {
+		position: relative;
+		height: 100%;
+	}
+	#map_baidu .map_header>header {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: flex;
+		position: absolute;
+		z-index: 500;
+		top: 0;
+		width: 100%;
+	}
+	#map_baidu .editmap_id {
+		flex: 1 !important;
+		height: 32px !important;
+		outline: 0;
+		border: 0;
+		border: none !important;
+		text-indent: 10px;
+		font-size: 16px;
+		margin-bottom: 0px !important;
+	}
+	#map_baidu  .mui-icon {
+		font-size: 24px;
+		position: relative;
+		z-index: 20;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		margin-left: -10px;
+		padding-right: 10px;
+		padding-left: 10px;
+		color: #fff;
+	}
+	.shop_class .mui-card-header i.mui_rg{
+		position: absolute;
+		right: 10px;
+		top:0px;
+
+	}
+	.overp{
+		overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block;
+	}
+	.fl{
+		float: left;
+	}
+	.fr{
+		float: right;
+	}
+	.clear{
+		clear: both
+	}
+	.alap{
+		background-color: rgba(0,0,0,0.8);
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		left: 0;
+		top:0;
+		z-index: 999;
+		display: none;
+	}
+	.alap_con{
+		background: #fff;
+		width: 90%;
+		max-height:500px;
+		margin: 50px auto;
+		padding: 50px  0px 60px 10px;
+		position: relative;
+	}
+	.mui-bar-nav a, .mui-bar-nav h1 {
+		color: #FFFFFF;
+	}
+	.remove_input {
+		color: #fff;
+		line-height: 32px;
+		height: 32px !important;
+		margin: 6px;
+		display: inline;
+		cursor: pointer;
+		font-size: 14px;
+	}
+	.un_set{
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 1;
+		white-space: unset !important;
+	}
+	.ad_name{
+		display: block !important;
+		white-space: unset !important;
+	}
+
+	.close_map .dot {
+		display: none;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 19px;
+		height: 25px;
+		margin-top: -25px;
+		margin-left: -10px;
+		background: url(images/marker_red_sprite_ec1a2a9.png) 0 0 no-repeat;
+	}
+	.adress_detail{
+		max-height: 50px;
+		padding: 0px 5px 1px 3px;
+		color: #000;
+		margin: 0 3%;
+		width: 94%;
+		font-size: 15px;
+	}
+	.adres_no_check:before{
+		font-family: Muiicons;
+		font-size: 28px;
+		font-weight: normal;
+		line-height: 1;
+		text-decoration: none;
+		color: #aaa;
+		border-radius: 0;
+		background: none;
+		-webkit-font-smoothing: antialiased;
+		content: '\e411';
+	}
+	.adres_check:before {
+		font-family: Muiicons;
+		font-size: 28px;
+		font-weight: normal;
+		line-height: 1;
+		text-decoration: none;
+		border-radius: 0;
+		background: none;
+		-webkit-font-smoothing: antialiased;
+		content: '\e441';
+		color: #FFA200;
+	}
+	.mui-bar-nav ~ .mui-content {
+		padding: 44px 0 0;
+	}
+</style>
+<body>
+<div id="edit">
+	<header class="mui-bar mui-bar-nav">
+	    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		<h1 class="mui-title"><L_>编辑收货地址</L_></h1>
+	</header>
+	<div class="mui-content">
+		<div class="add_edit_address">
+			<dl class="list list-in">
+				<dd>
+					<dl style="padding-right:10px;">
+						<dd class="dd-padding kv-line">
+							<h6>联系人</h6>
+							<input id="name_info" name="name" type="text" class="kv-v input-weak" placeholder="最少2个字" pattern=".{2,}" data-err="姓名必须大于2个字！" value="">
+						</dd>
+
+						<dd class="dd-padding kv-line">
+							<h6>手机号</h6>
+
+							<input id="phone_info" name="phone" type="tel" class="kv-v input-weak" placeholder="请输入手机号" value=""/>
+						</dd>
+						<dd class="dd-padding kv-line" id="color-gray" style="padding-right:0px;">
+							<h6>地址</h6>
+							<span class="color-gray" id="color-gray-address" style="position: relative; display: block; width: 337px;">
+								<img src="images/location.png" style="width:16px;height:16px;position:absolute;left:3px;top:0;">
+								<span style="padding-left:22px;display:block;line-height:15px;" class="adress_detail">点击选择位置</span>
+							</span>
+						</dd>
+						<dd class="dd-padding kv-line">
+							<h6>门牌号</h6>
+							<input id="detail_info" name="detail" type="text" class="kv-v input-weak" placeholder="详细地址，例：1号楼一单元101室" pattern=".{2,}" data-err="详址必须大于2个字！" value="">
+						</dd>
+						<dd>
+							<label class="react">
+								<input  id="checkbox_info" type="checkbox" name="default" value="1" class="mt">
+								设为默认地址
+							</label>
+						</dd>
+					</dl>
+				</dd>
+			</dl>
+			<div class="btn-wrapper">
+				<input type="hidden" name="adress_id" value="">
+				<input type="hidden" name="longitude" id="longitude" value="">
+				<input type="hidden" name="latitude" id="latitude" value="">
+				<input type="hidden" name="adress" id="adress" value="">
+				<input type="hidden" name="current_id" value="">
+				<input type="hidden" name="province" value="">
+				<input type="hidden" name="city" value="">
+				<input type="hidden" name="area" value="">
+				<button type="submit" class="btn btn-block btn-larger add_address_btn">添加</button>
+				<button type="submit" class="btn btn-block btn-larger save_address_btn" style="display: none;">保存</button>
+				<button type="button" class="btn btn-block btn-larger address_del" style=" background:#fff; color:#000; margin-top:5px;display: none;">删除</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<div id="map_baidu" style="display:none;">
+		<div class="map_header">
+			<header class=" mui-bar-nav tjt-bar">
+				<div class=" mui-icon mui-icon-back  mui-pull-left"  style="margin-right:0px;display: inline;cursor: pointer" onclick="back_star()"></div>
+				<form id="myform"  style="flex:1;padding: 6px;"  action="" target="frameFile" onsubmit="loadData()">
+					<input type="search" id="editmap_id"  class="editmap_id" style="margin:0px 10px 0px 0px;text-align:left;    background-color: #fff" placeholder="搜索位置"/>
+					<iframe name="frameFile" style="display:none"></iframe>
+				</form>
+				<div class="" style="cursor: pointer;padding: 5px 0;"><a class="remove_input" href="javascript:;"><L_>完成</L_></a></div>
+			</header>
+			<div style="padding-top:45px;" class='pt_45'>
+				<div class="close_map" >
+					<div  style="height:250px;position:relative" >
+						<div id="map_show" style="height:100%"></div>
+						<div class="dot" style="display:block;"></div>
+					</div>
+					<div id="searchMore" ></div>
+				</div>
+				<div id="searchAdd" style="display:none;overflow-y: auto;"></div>
+			</div>
+
+		</div>
+
+	</div>
+
+<script id="add" type="text/html">
+	<div class="mapaddress" style='height:100%'>
+		<ul class="mapaddress allAddress" style='height:100%'>
+			{{# for(var i = 0; i < d.length; i++){ }}
+			<li data-long="{{ d[i].point.x }}" data-lat="{{ d[i].point.y }} " data-city="{{d[i].city}}" class="addresslist" style="position:relative">
+				<input name="radio1" class="a" type="radio" {{# if(i==0){ }} checked="checked"{{# } }} value="" id="tjt_{{ d[i].lat }}" style=" opacity:0;width: 100%; position: absolute;  height: 100%;z-index:10">
+				<label for='tjt_{{ d[i].lat }}'  style="align-items: center; display: flex;width:100%;position:relative">
+					<div style="flex:1">
+						<div class="mapaddress-title un_set">
+							<span class="icon-location" data-node="icon"></span>
+							<span class="recommend ad_name"> {{ d[i].name }} </span>
+						</div>
+						<div class="mapaddress-body un_set"> {{ d[i].addr }} </div>
+					</div>
+					<div >
+						<div class="mui-input-row  mui-left  {{# if(i==0){ }}adres_check {{# } else { }}adres_no_check {{# } }}" style="height: 30px;width: 30px;">
+
+						</div>
+					</div>
+				</label>
+			</li>
+			{{# } }}
+		</ul>
+	</div>
+</script>
+<script id="show_add" type="text/html">
+	<div class="mapaddress">
+		<ul class="mapaddress allAddress">
+			{{# for(var i = 0; i < d.length; i++){ }}
+			<li data-long="{{ d[i].long }}" data-lat="{{ d[i].lat }} " class="addresslist">
+				<div class="mapaddress-title ">
+					<span class="icon-location" data-node="icon"></span>
+					<span class="recommend" style="display: block;"> {{ d[i].address }} </span>
+				</div>
+				<div class="mapaddress-body"> {{ d[i].name }}  </div>
+			</li>
+			{{# } }}
+
+		</ul>
+	</div>
+</script>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="js/work/edit_address.js?t=05" charset="utf-8"></script>
+
+<script id="adver_info" type="text/html">
+	{{# if (d.wholesale_top_tip_img) { }}
+		<div class="tip_adver link-url" data-url="{{d.wholesale_top_tip_img['url']}}">
+			<img src="{{d.wholesale_top_tip_img['pic']}}">
+		</div>
+
+		<section class="cityRun">
+			<div class="cityTheck">
+				<ul class="clear" style="display:flex;height: 75px;">
+					{{# for (var i in d.wholesale_top_6_img) { }}
+						{{# if (d.wholesale_top_6_img[i] && i < 3) { }}
+							<li class="ft link-url" data-url="{{d.wholesale_top_6_img[i]['url']}}" style="padding:0px;flex:1">
+								<img src="{{d.wholesale_top_6_img[i]['pic']}}" class="four " style="width: 100%; height: 75px;">
+							</li>
+						{{# } }}
+					{{# } }}
+				</ul>
+			</div>
+			<div class="cityTheck">
+				<ul class="clear" style="display:flex;height: 75px;">
+					{{# for (var i in d.wholesale_top_6_img) { }}
+					{{# if (d.wholesale_top_6_img[i] && i > 2) { }}
+						<li class="ft link-url" data-url="{{d.wholesale_top_6_img[i]['url']}}" style="padding:0px;flex:1">
+							<img src="{{d.wholesale_top_6_img[i]['pic']}}" class="four " style="width: 100%; height: 75px;">
+						</li>
+					{{# } }}
+					{{# } }}
+				</ul>
+			</div>
+		</section>
+	{{# } }}
+
+	{{# if (d.wholesale_middle_tip_img) { }}
+		<div class="tip_adver img_4 link-url" data-url="{{d.wholesale_middle_tip_img['url']}}">
+			<img src="{{d.wholesale_middle_tip_img['pic']}}">
+		</div>
+		<section class="run clear adds">
+			<div class="runItem ft">
+				<div class="itemTop">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[0]['url']}}">
+						<li class="ft shree" style="height: 125px;">
+							<img src="{{d.wholesale_middle_4_img[0]['pic']}}">
+						</li>
+					</ul>
+				</div>
+				<div class="itemBottom">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[1]['url']}}">
+						<li class="ft shree" style="height: 125px;">
+							<img src="{{d.wholesale_middle_4_img[1]['pic']}}">
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="runItem ft">
+				<div class="itemTop">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[2]['url']}}">
+						<li class="ft shree" style="height: 125px;">
+							<img src="{{d.wholesale_middle_4_img[2]['pic']}}">
+						</li>
+					</ul>
+				</div>
+				<div class="itemBottom">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[3]['url']}}">
+						<li class="ft shree" style="height: 125px;">
+							<img src="{{d.wholesale_middle_4_img[3]['pic']}}">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+	{{# } }}
+</script>
+
+<script id="google_add" type="text/html">
+	<div class="mapaddress" style='height:100%'>
+		<ul class="mapaddress allAddress" style='height:100%'>
+			{{# for(var i = 0; i < d.length; i++){ }}
+				<li data-long="{{ d[i].point.x }}" data-lat="{{ d[i].point.y }} " data-city="{{d[i].city}}" class="addresslist" style="position:relative">
+					<input name="radio1" class="a" type="radio" {{# if(i==0){ }} checked="checked"{{# } }} value="" id="tjt_{{ d[i].lat }}" style=" opacity:0;width: 100%; position: absolute;  height: 100%;z-index:10">
+					<label for='tjt_{{ d[i].lat }}'  style="align-items: center; display: flex;width:100%;position:relative">
+						<div style="flex:1">
+							<div class="mapaddress-title un_set">
+								<span class="icon-location" data-node="icon"></span>
+								<span class="recommend ad_name"> {{ d[i].name }} </span>
+							</div>
+							<div class="mapaddress-body un_set"> {{ d[i].addr }} </div>
+						</div>
+						<div >
+							<div class="mui-input-row  mui-left  {{# if(i==0){ }}adres_check {{# } else { }}adres_no_check {{# } }}" style="height: 30px;width: 30px;">
+
+							</div>
+						</div>
+					</label> 
+				</li>
+			{{# } }} 
+		</ul>
+	</div>
+</script>
+<script id="google_show_add" type="text/html">
+	<div class="mapaddress">
+		<ul class="mapaddress allAddress">
+			{{# for(var i = 0; i < d.length; i++){ }}
+				<li data-place_id="{{ d[i].place_id }}" class="google_addresslist">
+					<div class="mapaddress-title " style="padding:5px 0;font-size:14px;">
+						<span class="icon-location" data-node="icon"></span>
+						<span class="recommend"> {{ d[i].name }} </span>
+					</div>
+				</li>
+			{{# } }}
+		</ul>
+	</div>
+</script>
+
+<script id="pluscardLists" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+
+		<div class="mui-card buy_detail" data-id="{{ d[i].goods_id }}" style="margin:{{ i%2==0?'2% 1% 0% 2%;':' 2% 2% 0% 1%;' }}border: 1px solid #e9e9e9;">
+	    	<div class="mui-card-content">
+	    		<a href="javascript:void(0);">
+	    			<img src="{{ d[i].pic }}"/>
+					<ul style="width: 100%;">
+		    			<li><span>{{ d[i].name }}</span></li>
+		    			{{# if(d[i].vip_wholesale_price>0){ }}
+							<li class="mui-pull-left" style="width: 100%;"><L_>VIP {{ d[i].vip_wholesale_price }}{{ d[i]['Currency_txt'] }}</L_><li>
+							<li class="mui-pull-left" style="width: 100%;"><L_>普通批发：{{ d[i].price }}{{ d[i]['Currency_txt'] }}</L_><li>
+							{{# if (d[i].sell_count>0) { }}
+								<li class="mui-pull-left" style="width: 100%;"><L_>已售：{{ d[i].sell_count }}</L_><li>
+							{{# } }}
+						{{# } else { }}
+							<li class="mui-pull-left" style="width: 100%;"><L_>批发：{{ d[i].price }}{{ d[i]['Currency_txt'] }}</L_><li>
+							{{# if (d[i].sell_count>0) { }}
+								<li class="mui-pull-left" style="width: 100%;"><L_>已售：{{ d[i].sell_count }}</L_><li>
+							{{# } }}
+						{{# } }}
+		    		</ul>
+	    		</a>
+	    	</div>
+	    </div>	
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var ticket = common.getCache('ticket');
+var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+var adress_id = $.getUrlParam('adress_id');
+var type = $.getUrlParam('type');
+var type_info = $.getUrlParam('type_info');
+var goods_id = $.getUrlParam('goods_id');
+var order_id = $.getUrlParam('order_id');
+var is_pick = $.getUrlParam('is_pick');
+
+function address_index(){
+	common.http('Merchantapp&a=edit_address_info',{'ticket':ticket,'adress_id':adress_id,'type':type,'goods_id':goods_id,'order_id':order_id},function(data){
+		console.log('edit_address_info',data);
+        if (adress_id>0 && data) {
+            $('.add_address_btn').hide();
+            $('.save_address_btn').show();
+            $('.address_del').show();
+        }
+        if (data.name) {
+            $('input[name="name"]').val(data.name);
+        }
+        if (data.default && 1==data.default) {
+            $('input[name="default"]').attr('checked', true);
+        }
+        if (data.detail) {
+            $('input[name="detail"]').val(data.detail);
+        }
+        if (data.zipcode) {
+            $('input[name="zipcode"]').val(data.zipcode);
+        }
+        if (data.phone) {
+            $('input[name="phone"]').val(data.phone);
+        }
+        if (data.longitude) {
+            $('input[name="longitude"]').val(data.longitude);
+        }
+        if (data.latitude) {
+            $('input[name="latitude"]').val(data.latitude);
+        }
+        if (data.adress) {
+            $('.adress_detail').html(data.adress);
+        }
+	});
+}
+
+if (adress_id>0) {
+    address_index();
+}
+
+// 添加地址
+mui('.add_edit_address').on('tap','.add_address_btn',function(e){
+    var detail = new Object();
+    var name = $('input[name="name"]').val();
+    if (!name || name.length<2) {
+        mui.toast('请填写最少两个字的联系人！');
+        return false;
+	}
+    detail.name = name;
+    detail.province = $('input[name="province"]').val();
+    detail.area = $('input[name="area"]').val();
+    detail.city = $('input[name="city"]').val();
+    var is_default=$('input[name="default"]').get(0).checked;
+    if(is_default){
+        detail.default = 1;
+    }else{
+        detail.default = 0;
+    }
+    detail.detail = $('input[name="detail"]').val();
+    detail.zipcode = $('input[name="zipcode"]').val();
+    var phone = $('input[name="phone"]').val();
+    if (!phone || phone.length <= 6) {
+        mui.toast('请填写手机号！');
+        return false;
+    }
+    detail.phone = $('input[name="phone"]').val();
+    if (adress_id && adress_id>0) {
+        detail.adress_id = adress_id;
+	}
+    detail.longitude = $('input[name="longitude"]').val();
+    detail.latitude = $('input[name="latitude"]').val();
+
+
+    detail.adress = $('.adress_detail').html();
+    if (!detail.adress || detail.adress=='点击选择位置') {
+        mui.toast('您的位置没有选择！请点击选择位置进行完善！');
+        return false;
+	}
+
+    detail.ticket = ticket;
+    detail.client = client;
+    if (type) {
+        detail.type = type;
+    }
+    if (goods_id) {
+        detail.type = goods_id;
+    }
+    if (order_id) {
+        detail.type = order_id;
+    }
+    common.http('Merchantapp&a=edit_address',detail,function(data){
+		console.log('edit_address',data);
+		var param='';
+		if (data) {
+            if (data.type) {
+                param += '&type='+data.type;
+            }
+            if (data.goods_id) {
+                param += '&goods_id='+data.goods_id;
+            }
+            if (data.order_id) {
+                param += '&order_id='+data.order_id;
+            }
+            if (data.type_info) {
+                param += '&type_info='+data.type_info;
+            }
+		}
+        param += '&is_pick='+is_pick;
+        mui.toast('添加成功！');
+		setTimeout(function () {
+            openWindow({
+                url:'my_address.html?t=1'+param,
+                id:'my_address'
+            });
+        },800);
+	});
+
+});
+
+
+
+// 修改地址
+mui('.add_edit_address').on('tap','.save_address_btn',function(e){
+    var detail = new Object();
+    detail.name = $('input[name="name"]').val();
+    detail.province = $('input[name="province"]').val();
+    detail.area = $('input[name="area"]').val();
+    detail.city = $('input[name="city"]').val();
+    var is_default=$('input[name="default"]').get(0).checked;
+    if(is_default){
+        detail.default = 1;
+    }else{
+        detail.default = 0;
+    }
+    detail.detail = $('input[name="detail"]').val();
+    detail.zipcode = $('input[name="zipcode"]').val();
+    detail.phone = $('input[name="phone"]').val();
+    if (adress_id && adress_id>0) {
+        detail.adress_id = adress_id;
+    }
+    detail.longitude = $('input[name="longitude"]').val();
+    detail.latitude = $('input[name="latitude"]').val();
+
+
+    detail.adress = $('.adress_detail').html();
+    if (!detail.adress || detail.adress=='点击选择位置') {
+        mui.toast('您的位置没有选择！请点击选择位置进行完善！');
+        return false;
+    }
+
+    detail.ticket = ticket;
+    detail.client = client;
+    if (type) {
+        detail.type = type;
+    }
+    if (goods_id) {
+        detail.type = goods_id;
+    }
+    if (order_id) {
+        detail.type = order_id;
+    }
+    common.http('Merchantapp&a=edit_address',detail,function(data){
+        console.log('edit_address',data);
+        var param='';
+        if (data) {
+            if (data.type) {
+                param += '&type='+data.type;
+            }
+            if (data.goods_id) {
+                param += '&goods_id='+data.goods_id;
+            }
+            if (data.order_id) {
+                param += '&order_id='+data.order_id;
+            }
+        }
+        param += '&is_pick='+is_pick;
+        mui.toast('修改成功！');
+        setTimeout(function () {
+            openWindow({
+                url:'my_address.html?t=1'+param,
+                id:'my_address'
+            });
+        },800);
+    });
+
+});
+
+
+
+// 删除地址
+mui('.add_edit_address').on('tap','.address_del',function(e){
+    var detail = new Object();
+    if (adress_id && adress_id>0) {
+        detail.adress_id = adress_id;
+    } else {
+        mui.toast('删除失败！');
+        return false;
+    }
+
+    detail.ticket = ticket;
+    detail.client = client;
+    if (type) {
+        detail.type = type;
+    }
+    if (goods_id) {
+        detail.type = goods_id;
+    }
+    if (order_id) {
+        detail.type = order_id;
+    }
+    common.http('Merchantapp&a=del_address',detail,function(data){
+        console.log('edit_address',data);
+        var param='';
+        if (type) {
+            param += '&type='+type;
+        }
+        if (goods_id) {
+            param += '&goods_id='+goods_id;
+        }
+        if (order_id) {
+            param += '&order_id='+order_id;
+        }
+        param += '&is_pick='+is_pick;
+        mui.toast('删除成功！');
+        setTimeout(function () {
+            openWindow({
+                url:'my_address.html?t=1'+param,
+                id:'my_address'
+            });
+        },800);
+    });
+
+});
+
+
+</script>
+</body>
+</html>

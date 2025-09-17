@@ -1,0 +1,24 @@
+.select-cate-content .select-cate-item[data-v-4a210db6] {
+  cursor: pointer;
+  margin: 0 20px 10px 20px;
+}
+.select-cate-content .select-cate-item .flex[data-v-4a210db6] {
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.select-cate-content .select-cate-item .left[data-v-4a210db6] {
+  -ms-flex-positive: 2;
+      flex-grow: 2;
+}
+.select-cate-content .select-cate-item .left .title[data-v-4a210db6] {
+  font-size: 20px;
+  font-weight: 600;
+  padding-bottom: 4px;
+}
+.select-cate-content .select-cate-item .right[data-v-4a210db6] {
+  -ms-flex-positive: 1;
+      flex-grow: 1;
+}
+

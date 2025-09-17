@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>支付错误</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>  
+		<link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/pigcms.css" rel="stylesheet"/> 
+	</head>
+	<body style="background:rgba(247,247,247,1);"> 
+		<div class="center errorBox">
+			<img src="images/pay_error_icon.png" style="width:119px"/>
+			<div class="p1 ">
+				<p id="errorTip"></p>
+				<p id="message"></p>
+				<p id="code" style="color:#FF1940"></p> 
+			</div> 
+			<p class="p2"><L_>若有问题请联系客服。</L_></p> 
+		</div>  
+
+		<button class="btn_next red" id="payAgain" style="margin-bottom:20px"><L_>重新支付</L_></button>
+		<button class="btn_next" id="contact" style="color:#666666;background:#fff;margin-top:0"><L_>在线客服</L_></button>
+
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		
+		<script src="scripts/common.js?8759"></script>
+		<script src="scripts/weui/weui.min.js?8759"></script> 
+		<script>
+			console.log(urlParam);
+			console.log(decodeURIComponent(urlParam.errorTip));
+			if(urlParam.ticket){
+				common.setCache('ticket',urlParam.ticket,true);
+			}
+			if(urlParam.device_id){
+				common.setCache('device_id',urlParam.device_id,true);
+			}
+			if(urlParam.now_lang){
+				common.setCache('now_lang',urlParam.now_lang,true);
+			}
+			if(urlParam.from){
+				common.setCache('from',urlParam.from,true);
+			}
+			if(urlParam.orderid){
+				common.setCache('orderid',urlParam.orderid,true);
+			}
+			if(urlParam.message){
+				$('#message').html(urlParam.message.replace('+',' '));
+			}
+			if(urlParam.code){
+				$('#code').append('（Code: '+urlParam.code+'）');
+			}
+			if(urlParam.errorTip){
+				$('#errorTip').html(decodeURIComponent(urlParam.errorTip));
+			}else{
+				$('#errorTip').html(L_('支付出错啦。'));
+			}
+			
+			$('#payAgain').click(function(){
+				redirect_self('index.html');
+			});
+			$('#contact').click(function(){
+				location.href = window.location.protocol+'//'+requestDomain+'/wap.php?c=Redirect&a=zendesk_chat&zendesk_tag=credit_paymentError&device_id='+common.getCache('device_id',true)+'&ticket='+common.getCache('ticket',true);
+			});
+		</script>
+	</body>
+</html>

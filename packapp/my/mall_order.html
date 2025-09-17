@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>订单详情</title>
+    <meta name="viewport"
+        content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name='apple-touch-fullscreen' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=yes" />
+    <meta name="format-detection" content="address=no" />
+    <link href="scripts/weui/weui.min.css" rel="stylesheet" />
+    <link href="css/pigcms.css" rel="stylesheet" />
+    <style>
+        .order_goods_basket {
+            margin-top: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order_goods_basket:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- map -->
+    <div id="map"></div> <!-- map end -->
+    <div class="pay_box">
+        <!-- 红色背景 -->
+        <div class="redbg"></div><!-- 红色背景 end -->
+        <div class="flex_position">
+            <!-- 标题 -->
+            <div class="pay_indexTil ">
+                <L_>支付已完成</L_>
+            </div>
+            <!-- 支付成功 -->
+            <div class="flex  pay_block pay_sucess">
+                <div class="flex">
+                    <img src="images/pay_phone.png" style="width:51px">
+                    <dl class="dl_pay_sucess">
+                        <dd>
+                            <L_>订单已支付成功！</L_>
+                        </dd>
+                        <dt><label style="color:#ff1940">
+                                <L_>温馨提示</L_>
+                            </label>：<L_>商家由于某种原因可能会拒绝接单或者超过</L_><label id="order-shop_order_cancel_time"></label>
+                            <L_>分钟商家未接单，订单会取消并且自动退钱到您的余额。请注意订单状态。</L_>
+                            <span class="close_dt"><img src="images/close.png"></span>
+                        </dt>
+                    </dl>
+                </div>
+            </div>
+            <!--  支付成功 end-->
+            <!-- 用户配送地址 -->
+            <div class="pay_block pd10sizing pd20  DeliveryAddress">
+                <div class="flex">
+                    <span class="span1 span11">
+                        <L_>用户配送地址为</L_>：<label id="order-address"></label>
+                    </span>
+                    <span class="span1 span12">
+                        <L_>自提地址为</L_>：<label class="orderAddress"></label>
+                    </span>
+                    <span class="span1 span13">
+                        <L_>快递配送地址为</L_>：<label class="orderAddress"></label>
+                    </span>
+                    <button class="span2 openMap"><label>
+                            <L_>导航</L_>
+                        </label></button>
+                </div>
+            </div>
+            <!-- 用户配送地址 end-->
+            <div class="pay_block pd10sizing pd20 topStatic">
+                <dl class="dl_arrviceInfo">
+                    <dd class="is_pick1">
+                        <L_>期望</L_><label class="red expect_use_time"></label>
+                        <L_>到达</L_>
+                    </dd>
+                    <dt class="is_pick1">
+                        <L_>由</L_><label class="deliver_userName" id="deliver_user-name"></label>
+                        <L_>配送</L_>
+                    </dt>
+                    <dd class="is_pick">
+                        <L_>自取时间</L_>：<label class="red expect_use_time"></label>
+                    </dd>
+                    <dt class="is_pick">
+                        <L_>预留手机号</L_>:<label id="order-userphone"></label>
+                    </dt>
+                </dl>
+                <div class="evaluate">
+                    <div class="flex">
+                        <span>
+                            <L_>您已对本次订单评分</L_>
+                        </span>
+                        <span class="star">
+                            <label class="starNum">
+                                <div class="starNumFull"></div>
+                            </label>
+                            <label class="order_score" id="order-order_score">1</label>
+                            <L_>分</L_>
+                        </span>
+                    </div>
+                </div>
+                <div class="com_btn">
+                    <span class="pay_order">
+                        <L_>支付订单</L_>
+                    </span>
+                    <span class="cancel_order">
+                        <L_>取消订单</L_>
+                    </span>
+                    <span class="callTel">
+                        <L_>联系商户</L_>
+                    </span>
+                    <span class="link_horseman">
+                        <L_>联系骑手</L_>
+                    </span>
+                    <span class="link_reminder">
+                        <L_>催单</L_>
+                    </span>
+                    <span class="btn_evaluate">
+                        <L_>评价</L_>
+                    </span>
+                    <span class="after_sale">
+                        <L_>申请售后</L_>
+                    </span>
+                    <span class="confirm">
+                        <L_>确认收货</L_>
+                    </span>
+                </div>
+                <div class="progress_con">
+                    <div class="cur_progress"></div>
+                </div>
+                <div class="pay_static_con">
+                    <div class="toggleSlide"><img src="images/pointBt.png" style="width:18px;" /></div>
+                    <div class="hideSelect "></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pay_block pd10sizing pd20">
+            <div class="com_til " id="store-name"> </div>
+            <div class="order_listBox"></div>
+            <div class="clickToggle"><label>
+                    <L_>展开更多</L_>
+                </label><img src="images/pointBt1.png" style="width:10px; margin-left:5px;"></div>
+            <!--  -->
+            <div class="paySmBolck">
+                <ul class="paySmBolck1">
+                    <li class="flexStart other_money">
+                        <span>
+                            <L_>加价送的金额</L_>
+                        </span>
+                        <span>
+                            <currency></currency><label id="order-other_money"></label>
+                        </span>
+                    </li>
+                    <li class="flexStart packing_charge">
+                        <span>
+                            <L_>包装费</L_>
+                        </span>
+                        <span>
+                            <currency></currency><label id="order-packing_charge"></label>
+                        </span>
+                    </li>
+                    <li class="flexStart freight_charge">
+                        <span>
+                            <L_>配送费</L_>
+                        </span>
+                        <span>
+                            <currency></currency><label id="order-freight_charge"></label>
+                        </span>
+                    </li>
+
+                    <li class="flexStart service_charge">
+                        <span>
+                            <L_>支付手续费</L_>
+                        </span>
+                        <span>
+                            <currency></currency><label id="order-service_charge"></label>
+                        </span>
+                    </li>
+
+                </ul>
+                <ul class="paySmBolck2"></ul>
+
+                <ul>
+                    <li class="flexStart orderAll" style="justify-content:flex-end">
+                        <span class="color9">
+                            <L_>订单</L_>： <currency></currency><label id="order-total_price"></label>
+                        </span>
+                        <!-- class="discount_price"  -->
+                        <span class="red" id="order_discount_minus">
+                            <L_>优惠</L_>： <currency></currency><label class="minus_price"></label>
+                        </span>
+                        <span class="allSum">
+                            <L_>总计</L_>
+                            <currency></currency><label id="order-go_pay_price"> </label>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <!-- end -->
+        </div>
+        <!--  -->
+        <!-- 配送信息 -->
+        <div class="pay_block pd10sizing pd20 is_pick1">
+            <div class="com_til">
+                <label class="pick_paisong">
+                    <L_>配送信息</L_>
+                </label>
+            </div>
+            <ul class="ul_info">
+                <li class="flexStart"><span>
+                        <L_>配送服务</L_>
+                    </span><span id="order-deliver_str"></span></li>
+                <li><span id="order-expect_use_time_str">
+                        <L_></L_>
+                    </span><span id="order-expect_use_time" style="float: right;"></span></li>
+                <li class="flexStart"><span>
+                        <L_>配送地址</L_>
+                    </span><span class="order-address"></span></li>
+            </ul>
+
+            <div class="flexStart deliver_details" style="justify-content: flex-start">
+                <span style="color:#999; margin-right:10px;">
+                    <L_>快递详情:</L_>
+                </span>
+                <span>
+                    <L_>店家已发货</L_>：<label id="order-express_name"></label> <label id="order-express_number"></label>
+                </span>
+                <label class="copyBtn copyBtn2" style="display: inline-block;" onClick="copy1()">
+                    <L_>复制</L_>
+                </label>
+                <p><label style="color:#ff1940" class="look_more">查看物流</label></p>
+            </div>
+
+        </div>
+        <!-- 配送信息 end -->
+        <!-- 自取时间 -->
+        <div class="pay_block pd10sizing pd20 is_pick2">
+            <div class="com_til">
+                <label class="pick_paisong">
+                    <L_>自取信息</L_>
+                </label>
+            </div>
+            <ul class="ul_info">
+                <li class="flexStart"><span>
+                        <L_>自取时间</L_>
+                    </span><span class="expect_use_time"></span></li>
+                <li class="flexStart"><span>
+                        <L_>预留手机号码</L_>
+                    </span><span class="userphone"></span></li>
+                <li class="flexStart"><span>
+                        <L_>自取地址</L_>
+                    </span><span class="order-address"></span></li>
+            </ul>
+        </div>
+        <!-- 自取时间 end -->
+        <!-- 订单信息 -->
+        <div class="pay_block pd10sizing pd20">
+            <div class="com_til">
+                <L_>订单信息</L_>
+            </div>
+            <ul class="ul_info" id="order_info">
+                <li class="flexStart"><span>
+                        <L_>订单号码</L_>
+                    </span><span><label id="order-real_orderid">
+                        </label><label style="display: inline-block;" class="copyBtn copyBtn1" onClick="copy2()">
+                            <L_>复制</L_>
+                        </label></span></li>
+                <li class="flexStart"><span>
+                        <L_>下单时间</L_>
+                    </span><span id="order-create_time"></span></li>
+                <li class="flexStart"><span>
+                        <L_>支付方式</L_>
+                    </span><span id="order-pay_type_str"></span></li>
+                <li class="flexStart invoice"><span>
+                        <L_>发票抬头</L_>
+                    </span><span class="desc">
+                        <L_>无</L_>
+                    </span></li>
+                <li class="flexStart remark"><span>
+                        <L_>订单备注</L_>
+                    </span><span class="desc">
+                        <L_>无</L_>
+                    </span></li>
+            </ul>
+        </div>
+        <!-- 订单信息 end -->
+        <!-- 支付信息 -->
+        <div class="pay_block pd10sizing pd20 payInfoBox">
+            <div class="com_til">
+                <L_>支付信息</L_>
+            </div>
+            <ul class="ul_info">
+                <li class="flexStart"><span>
+                        <L_>支付时间</L_>
+                    </span><span><label id="order-pay_time"></label> </span></li>
+                <li class="flexStart"><span>
+                        <L_>总计</L_>
+                    </span><span style="color:#FF1940">
+                        <currency></currency><label class="go_pay_price"></label>
+                    </span></li>
+                <li class="flexStart" style="padding-bottom:10px;">
+                    <span style="line-height:15px;height:15px; width: 70%">
+                        <L_>商家会员卡折扣</L_>
+                        <P style=" font-size:10px; color:#999" id="is_hark">
+                            <L_>商家会员卡折扣无法与哈客特权同时使用</L_>
+                        </P>
+                    </span>
+                    <span style="color:#FF1940;width: 30%">-<currency></currency><label id="order-minus_card_discount"
+                            style="color:red"></label>(<label id="order-card_discount"></label>
+                        <L_>折</L_>)
+                    </span>
+                </li>
+                <li class="flexStart">
+                    <span>
+                        <L_>平台优惠券</L_>
+                    </span>
+                    <span style="color:#FF1940">-<currency></currency><label id="order-coupon_price"></label></span>
+                </li>
+                <li class="flexStart">
+                    <span>
+                        <L_>商家优惠券</L_>
+                    </span>
+                    <span style="color:#FF1940">-<currency></currency><label id="order-card_price"></label></span>
+                </li>
+                <li class="flexStart"><span><label class="score_name"></label>
+                        <L_>抵扣</L_>
+                    </span><span>-<currency></currency><label id="order-score_deducte"></label></span></li>
+                <li class="flexStart"><span>
+                        <L_>会员卡赠送余额支付</L_>
+                    </span><span>-<currency></currency><label id="order-card_give_money"></label></span></li>
+                <li class="flexStart"><span>
+                        <L_>商家余额抵扣</L_>
+                    </span><span style="color:#FF1940">-<currency></currency><label
+                            id="order-merchant_balance"></label></span></li>
+                <li class="flexStart"><span>
+                        <L_>平台余额抵扣</L_>
+                    </span><span style="color:#FF1940">-<currency></currency><label
+                            id="order-balance_pay"></label></span></li>
+                <li class="flexStart"><span>
+                        <L_>实付金额</L_>
+                    </span><span style="color:#FF1940">
+                        <currency></currency> <label class="amountPaid"></label>
+                    </span></li>
+                <!-- <li class="flex"><span id="order-pay_type_str"> </span><span >-<label id="order-payment_money"></label></span></li>    -->
+            </ul>
+        </div>
+        <!-- 支付信息 end -->
+    </div>
+
+
+    <!-- 商品列表 -->
+    <script id="order_listBox" type="text/html">
+            {{# for(var i in d){ }}
+				<div class="order_goods_basket">
+					<p>{{ d[i].name }}</p>
+					<ul class="ul_order_list">
+						{{# for(var j = 0, len1 = d[i].list.length; j < len1; j++){ }}
+						<li class="flex" style="align-items: flex-start">
+								<!-- discount_type -->
+								<span class="order_list1">
+									{{# if(d[i].list[j].discount_type == 1 ||  d[i].list[j].discount_type == 4 || d[i].list[j].discount_type == 2 ||  d[i].list[j].discount_type == 5) { }}
+										<em class="em_icon" ><L_>折</L_></em>
+									{{# } }} 
+									
+									{{# if(d[i].list[j].is_seckill == true ) { }}
+										 <em class="em_icon yellow"><L_>限</L_></em>
+									{{# } }}
+									
+									{{ d[i].list[j].name }}
+									<p style="color:#999; font-size:12px;">{{ d[i].list[j].spec }}</p> 
+								</span>
+								<span class="order_list3 order_listColorGray">x{{ d[i].list[j].num }}</span>
+								<span class="order_list2 order_listColorGray old_price">{{# if(d[i].list[j].total != d[i].list[j].discount_total){ }}<currency></currency>{{ d[i].list[j].total }}{{# }else{ }}{{# } }}</span>
+								<span class="order_list2"><currency></currency>{{ d[i].list[j].discount_total }}</span> 
+							</li> 
+						{{# } }} 
+					</ul> 
+				</div>
+            {{# } }} 
+        </script>
+    <!-- 商品列表 end -->
+    <!-- 点击查看状态 -->
+    <script id="hideSelectList" type="text/html">
+            {{# for(var i = d.length-1; i>=0; i--){ }}
+                <div class="pay_static"><div class="staticTime"><label>{{ d[i].dateline }} </label> <span> {{ d[i].status_txt }}</span></div></div> 
+            {{# } }}  
+        </script>
+    <!-- 点击查看状态 end -->
+
+    <!-- 点击抽奖 -->
+    <a href="#" class="click_lottery choujiang">
+        <img src="images/lottery.png" style="width: 50px;">
+    </a>
+    <!-- 点击抽奖 end-->
+    <div class="alap alap1">
+        <div class="alapcon">
+            <div class="close">
+                <img src="images/close2.png" style="width: 26px;">
+            </div>
+            <h2>恭喜你获得<label class="share_coupon_get_num"></label>张优惠券</h2>
+            <p>已经存入你账号</p>
+            <a href="#" class="look_btn">立即查看</a>
+        </div>
+    </div>
+    <!-- 我要发券 -->
+    <div class="click_lottery releaseLottery">
+        <img src="images/share_coupon.png" style="width: 50px;">
+    </div>
+
+    <div class="alap alap2">
+        <div class="alapcon">
+            <div class="close">
+                <img src="images/close2.png" style="width: 26px;">
+            </div>
+            <h2>恭喜你获得<label id="share_coupon_num"></label>张优惠券</h2>
+            <p>赶快把优惠券分享给小伙伴们抢吧，分享后您自己可获得<label class="share_coupon_get_num"></label>张优惠券</p>
+            <a href="javascript:;" class="share_btn">立即分享</a>
+        </div>
+    </div>
+
+    <!-- 分享指示 -->
+    <div class="alap alap3">
+        <img src="images/shareMask.png">
+    </div>
+    <!-- 分享指示  end-->
+
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/fastclick.js"></script>
+    <script src="scripts/common.js"></script>
+    <script src="scripts/weui/weui.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+    <script src="scripts/work/shop_order.js?9"></script>
+
+
+</body>
+
+</html>

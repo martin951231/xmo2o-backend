@@ -1,0 +1,53 @@
+.IOTSensingEquipment[data-v-ade7be48] {
+  width: 100%;
+  height: calc(17.5vh - 32px);
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48] {
+  width: 33.3%;
+  height: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48]:nth-child(1) {
+  transform: translateX(24.5px);
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48]:nth-child(2) {
+  transform: translateX(10.5px);
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48]:nth-last-child(1) {
+  transform: translateX(-3px);
+}
+.IOTSensingEquipment .chart_item .top_con[data-v-ade7be48] {
+  width: 75px;
+  height: 75px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  color: #F0E32A;
+  font-size: 20px;
+  font-weight: bold;
+  background-size: 100% 100%;
+}
+.IOTSensingEquipment .chart_item .bottom_title[data-v-ade7be48] {
+  color: #fff;
+  font-size: 14px;
+  margin-top: 10px;
+}
+

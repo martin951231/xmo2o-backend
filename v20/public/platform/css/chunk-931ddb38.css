@@ -1,0 +1,23 @@
+
+.bm-view[data-v-4c2249b6] {
+    width: 650px;
+    height: 500px;
+}
+
+
+.page[data-v-0ff43642] {
+    width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+}
+.page-header[data-v-0ff43642] {
+    background-color: #eef0f3;
+    padding: 14px 16px;
+    font-size: 1rem;
+}
+.ant-upload-list-picture-card-container[data-v-0ff43642] {
+    margin: 8px 8px 8px 0;
+}
+
+

@@ -1,0 +1,23 @@
+
+.cout-fee-list-box[data-v-a03e7916] {
+  margin: 10px 20px 10px 20px;
+  background-color: white;
+}
+.cout-fee-list-box .search-box[data-v-a03e7916] {
+  padding: 0px 10px 10px 10px;
+  border: 1px solid #e4dfdf;
+  border-top: none;
+}
+.txt-green[data-v-a03e7916] {
+  color: #0fb70f;
+}
+.txt-red[data-v-a03e7916] {
+  color: red;
+}
+.table-operator[data-v-a03e7916]{
+  margin-bottom: 10px;
+}
+.count-fee-list-tip-box[data-v-a03e7916] {
+  padding:0px 4px;
+}
+

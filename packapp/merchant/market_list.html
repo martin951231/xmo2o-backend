@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>批发市场首页</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/market_list.css"/>
+	<link rel="stylesheet" type="text/css" href="css/market_footer.css"/>
+</head>
+<style>
+	.mui-card {
+		width: 47%;
+		float: left;
+		min-height: 330px;
+	}
+	.mui-card img{
+		width: 100%;
+		object-fit: cover;
+	}
+	.allGoods .run {
+		background: #fff;
+	}
+	.allGoods .clear:after {
+		content: " ";
+		display: block;
+		clear: both;
+	}
+	.allGoods .run .runItem {
+		width: 49.8%;
+		text-align: center;
+	}
+	.allGoods .add {
+		border-right: 1px solid #f1f1f1;
+	}
+	.allGoods .ft {
+		float: left;
+	}
+	.allGoods .adds .itemTop, .adds .itemBottom {
+		padding-bottom: 0;
+	}
+	.allGoods .itemTop {
+		border-bottom: 1px solid #f1f1f1;
+	}
+	.allGoods .adds ul {
+		margin: 0;
+	}
+	.allGoods .adds ul li img {
+		margin: 0!important;
+		width: 100%!important;
+		height: 100%!important;
+	}
+	.tip_adver {
+		min-height: 26px;
+	}
+	.tip_adver img{
+		width: 100%;
+		height: 100%;
+	}
+	.vip {
+		display: inline-block;
+		width: 16px;height: 16px;
+		background: url(images/vip.png) center no-repeat;
+		background-size: contain;
+		vertical-align: middle;
+		position: relative;
+		top: -3px;
+		margin: 0;
+	}
+	.vip_price {
+		color: #FD1946;
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 18px;
+	}
+	.currency_txt {
+		font-size: 10px;
+		color: #999c9e;
+	}
+	.allGoods .ui-list-single>li {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	.allGoods .ui-list>li {
+		position: relative;
+		margin-left: 12px;
+		display: -webkit-box;
+	}
+	.allGoods  .ui-list-single .ui-list-info {
+		-webkit-box-orient: horizontal;
+		-webkit-box-align: center;
+		padding-top: 10px;
+	}
+	.allGoods  .ui-list li h4 {
+		font-size: 16px;
+		line-height: 24px;
+		font-weight: normal;
+	}
+	.allGoods  .ui-list-single h4 {
+		-webkit-box-flex: 1;
+	}
+	.allGoods  .ui-nowrap {
+		max-width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+	.maket_list .commod {
+		width: 100%;
+		background: #FFA200;
+		height: 44px;
+	}
+	.maket_list .commod .search {
+		width: 90%;
+		margin: 0 5%;
+	}
+	.maket_list .commod .search p {
+		height: 32px;
+		width: 100%;
+		background: #fff;
+		border-radius: 5px;
+		line-height: 32px;
+		text-align: left;
+		padding-left: 10px;
+	}
+	.maket_list .commod p {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.maket_list .commod p {
+		font-size: 14px;
+		color: #8f8f94;
+	}
+	.maket_list .commod .search p i {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		background: url(images/sst_06.png) center no-repeat;
+		background-size: contain;
+		vertical-align: middle;
+	}
+	.maket_list .commod .search p span {
+		font-size: 15px;
+	}
+	.allGoods .h100 {
+		height: 100%;
+	}
+	.allGoods .w100 {
+		width: 100%;
+	}
+	.allGoods a:visited {
+		text-decoration: none;
+		color: #353535;
+	}
+	.allGoods .block {
+		display: block !important;
+	}
+	.allGoods .ui-border-b:before {
+		border-bottom: 1px solid #e9e9e9;
+		content: '';
+		display: block;
+		width: 100%;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+	}
+	.allGoods .swiper-container {
+		margin: 0 auto;
+		position: relative;
+		overflow: hidden;
+		z-index: 1;
+	}
+	.allGoods .ui-border-b{
+		position: relative;
+	}
+	.allGoods .swiper-wrapper {
+		z-index: 1;
+		display: -webkit-box;
+		display: -moz-box;
+		display: -ms-flexbox;
+		display: -webkit-flex;
+		display: flex;
+		-webkit-transition-property: -webkit-transform;
+		-moz-transition-property: -moz-transform;
+		-o-transition-property: -o-transform;
+		-ms-transition-property: -ms-transform;
+		transition-property: transform;
+		-moz-transform: translate3d(0, 0, 0);
+		-o-transform: translate(0, 0);
+		-ms-transform: translate3d(0, 0, 0);
+		transform: translate3d(0, 0, 0);
+		-webkit-box-sizing: content-box;
+		-moz-box-sizing: content-box;
+		box-sizing: content-box;
+	}
+	.allGoods .swiper-slide, .swiper-wrapper {
+		height: auto;
+		position: relative;
+		transform-style: preserve-3d;
+		width: 100%;
+	}
+	.allGoods .swiper-slide {
+		-webkit-flex-shrink: 0;
+		-ms-flex: 0 0 auto;
+		flex-shrink: 0;
+	}
+	.allGoods .menu {
+		background-color: #fff;
+	}
+	.allGoods .mb_10 {
+		margin-bottom: 10px !important;
+	}
+	.allGoods .flex_col {
+		flex-direction: column;
+	}
+	.allGoods .flex {
+		display: flex !important;
+		display: -webkit-box;
+		display: -moz-box;
+		display: -ms-flexbox;
+		display: -webkit-flex;
+		align-items: center;
+	}
+	.allGoods .align_center {
+		text-align: center;
+	}
+	.allGoods .menu a {
+		padding-top: 12px;
+	}
+	.allGoods .overflow_ellipsis2 {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+	.allGoods .color_9 {
+		color: #999;
+	}
+	.allGoods .font_size12 {
+		font-size: 12px !important;
+	}
+	.allGoods .swiper-pagination9.swiper-pagination {
+		width: 100% !important;
+		padding-right: 0px !important;
+	}
+	.allGoods .swiper-container-horizontal>.swiper-pagination .swiper-pagination-bullet {
+		margin: 0 5px;
+	}
+	.allGoods .swiper-container9 .swiper-pagination-bullet-active {
+		opacity: 1 !important;
+		background: #f23030 !important;
+		border-radius: 50% !important;
+		width: 5px !important;
+		height: 5px !important;
+		border: 1px solid #f23030;
+	}
+	.del-line{
+		text-decoration: line-through;
+	}
+	.virtual_msg {
+		clear: both;
+		width: 100%;
+		text-align: center;
+		padding: 10px;
+		position: absolute;
+		bottom: 0px;
+	}
+	.virtual_msg .virtual_push {
+		background: #ffa200;
+		color: white;
+		padding: 5px 15px;
+		border-radius: 15px;
+	}
+</style>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	     <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="1"></div>
+		 <h1 class="mui-title"><L_>市场首页</L_></h1>
+	</header>
+	<div class="mui-content maket_list" style="padding-bottom: 60px;background-color: #fff;">
+		<div class="commod">
+			<div class="search">
+				<p><i></i> <span>商品名称</span></p>
+			</div>
+		</div>
+	    <div class="allGoods">
+			<div class="homepage ui-border-b " id="listBanner">
+				<div class="swiper-container swiper-container1 w100 h100" >
+					<div class="swiper-wrapper w100 h100">
+
+					</div>
+					<div class="swiper-pagination"></div>
+				</div>
+			</div>
+
+			<div  id="one_img" class="list_all ui-border-b hide" style="margin:auto">
+				<div class="swiper-container swiper-container2 w100 h100" >
+					<div class="swiper-wrapper w100 h100">
+
+					</div>
+
+				</div>
+			</div>
+
+			<div class="menu ui-borderloading-b mb_10 none" id="listSlider">
+				<div class="swiper-container swiper-container9 w100 h100" style="padding:20px 0;">
+					<div class="swiper-wrapper w100 h100">
+
+					</div>
+					<div class="swiper-pagination swiper-pagination9" style="bottom: 2px;"></div>
+				</div>
+			</div>
+
+            <div class="header_adver_img">
+			</div>
+
+
+
+			<div class="alls" id="data">
+				<ul class="ui-list ui-list-single ui-list-link  mb_0">
+					<li class="after">
+						<div class="ui-list-info">
+							<h4 class="ui-nowrap ui-selected"><span class="rel " style="padding-left: 5px; border-left: 3px solid #f23030">为您优选</span></h4>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+			<div class="pullup1" style="clear: both;display:none;">上拉加载更多...</div>
+			<div class="loading1" style="clear: both;display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_><div>
+		</div>
+	</div>
+	<nav class="mui-bar mui-bar-tab">
+		<div class="mui-tab-item market_home mui-active">
+			<span class="market-home"></span>
+			<span class="mui-tab-label"><L_>市场首页</L_></span>
+		</div>
+		<div class="mui-tab-item market_plus">
+			<span class="market-plus"></span>
+			<span class="mui-tab-label"><L_>分类</L_></span>
+		</div>
+		<div class="mui-tab-item market_take">
+			<span class="market-take"></span>
+			<span class="mui-tab-label"><L_>购物车</L_></span>
+		</div>
+		<div class="mui-tab-item market_my">
+			<span class="market-my"></span>
+			<span class="mui-tab-label"><L_>我的</L_></span>
+		</div>
+	</nav>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/swiper.js"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js?t=01" type="text/javascript" charset="utf-8"></script>
+<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+<!-- android=appbackmonitor -->
+
+<!-- 首页轮播图 -->
+<script type="text/html" id="swiper1">
+	{{#  for(var i=0;i < d.length;i++) { }}
+		{{# var item=d[i]; }}
+		<div class="swiper-slide w100 h100" >
+			<a href="{{ item.url?item.url:'javascript:;'}}" target="_blank" class="w100 block h100">
+				<img src="{{ item.pic }}" alt=""  class="w100 h100"/>
+			</a>
+		</div>
+	{{# } }}
+</script>
+<!-- 中间单图广告 -->
+<script type="text/html" id="one">
+	{{#  for(var i=0;i < d.length;i++) { }}
+	{{# var item=d[i]; }}
+	<div class="swiper-slide w100 h100" >
+		<a href="{{ item.url?item.url:'javascript:;' }}" target="_blank">
+			<img src="{{ item.pic }}" alt=""  class="w100 h100" id="{{# if(i==0) { }}do_pic{{# } }}"/>
+		</a>
+	</div>
+	{{# } }}
+</script>
+
+<script type="text/html" id="swiper2">
+	{{#  for(var i=0;i< d.length;i++) { }}
+	{{# var _item=d[i];}}
+	<div class="swiper-slide">
+		<div class="flex flex_col">
+			<div class="flex w100">
+				{{# for(var n=0;n< _item.length;n++) { }}
+					{{# var _item_list=_item[n];}}
+					{{# if(n<=4) { }}
+						<div style="width:20%;" class='align_center'>
+							<a href="{{ _item_list.url }}" target="_blank">
+								<span class="icon-circle">
+									<img src="{{ _item_list.pic }}" alt="" width="36" height="36" style="display:block;margin:0 auto 5px;">
+								</span>
+								<span class="icon-desc font_size12 color_9 overflow_ellipsis2">{{ _item_list.name }}</span>
+							</a>
+						</div>
+					{{# } }}
+				{{# } }}
+			</div>
+			<div class="flex w100">
+				{{# for(var n=0;n< _item.length;n++) { }}
+					{{# var _item_list=_item[n];}}
+					{{# if(n>4) { }}
+						<div style="width:20%;padding-top: 12px;" class='align_center'>
+							<a href="{{ _item_list.url }}" target="_blank">
+								<span class="icon-circle">
+									<img src="{{ _item_list.pic }}" alt="" width="36" height="36" style="display:block;margin:0 auto 5px;">
+								</span>
+								<span class="icon-desc font_size12 color_9 overflow_ellipsis2">{{ _item_list.name }}</span>
+							</a>
+						</div>
+					{{# } }}
+				{{# } }}
+			</div>
+
+		</div>
+	</div>
+	{{# } }}
+
+</script>
+
+
+<script id="adver_info" type="text/html">
+	{{# if (d.wholesale_top_tip_img) { }}
+		<div class="tip_adver link-url title_img" data-url="{{d.wholesale_top_tip_img['url']}}">
+			<img src="{{d.wholesale_top_tip_img['pic']}}">
+		</div>
+
+		<section class="cityRun">
+			<div class="cityTheck">
+				<ul class="clear" style="display:flex;min-height: 60px;">
+					{{# for (var i in d.wholesale_top_6_img) { }}
+						{{# if (d.wholesale_top_6_img[i] && i < 3) { }}
+							<li class="ft link-url" data-url="{{d.wholesale_top_6_img[i]['url']}}" style="padding:0px;flex:1">
+								<img src="{{d.wholesale_top_6_img[i]['pic']}}" class="four " style="width: 100%;min-height: 65px;">
+							</li>
+						{{# } }}
+					{{# } }}
+				</ul>
+			</div>
+			<div class="cityTheck">
+				<ul class="clear" style="display:flex;min-height: 60px;">
+					{{# for (var i in d.wholesale_top_6_img) { }}
+					{{# if (d.wholesale_top_6_img[i] && i > 2) { }}
+						<li class="ft link-url" data-url="{{d.wholesale_top_6_img[i]['url']}}" style="padding:0px;flex:1">
+							<img src="{{d.wholesale_top_6_img[i]['pic']}}" class="four " style="width: 100%;min-height: 65px;">
+						</li>
+					{{# } }}
+					{{# } }}
+				</ul>
+			</div>
+		</section>
+	{{# } }}
+
+	{{# if (d.wholesale_middle_tip_img) { }}
+		<div class="tip_adver img_4 link-url title_img" data-url="{{d.wholesale_middle_tip_img['url']}}">
+			<img src="{{d.wholesale_middle_tip_img['pic']}}">
+		</div>
+		<section class="run clear adds">
+			<div class="runItem ft">
+				<div class="itemTop">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[0]['url']}}">
+						<li class="ft fire" style="min-height: 95px;width: 100%;">
+							<img src="{{d.wholesale_middle_4_img[0]['pic']}}">
+						</li>
+					</ul>
+				</div>
+				<div class="itemBottom">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[1]['url']}}">
+						<li class="ft fire" style="min-height: 95px;width: 100%;">
+							<img src="{{d.wholesale_middle_4_img[1]['pic']}}">
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="runItem ft">
+				<div class="itemTop">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[2]['url']}}">
+						<li class="ft fire" style="min-height: 95px;width: 100%;">
+							<img src="{{d.wholesale_middle_4_img[2]['pic']}}">
+						</li>
+					</ul>
+				</div>
+				<div class="itemBottom">
+					<ul class="clear link-url" data-url="{{d.wholesale_middle_4_img[3]['url']}}">
+						<li class="ft fire" style="min-height: 95px;width: 100%;">
+							<img src="{{d.wholesale_middle_4_img[3]['pic']}}">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+	{{# } }}
+</script>
+
+<script id="pluscardLists" type="text/html">
+
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+
+		<div class="mui-card buy_detail" data-id="{{ d[i].goods_id }}" style="margin:{{ i%2==0?'2% 1% 0% 2%;':' 2% 2% 0% 1%;' }}border: 1px solid #e9e9e9;">
+	    	<div class="mui-card-content"  data-id="{{ d[i].goods_id }}">
+	    		<a href="javascript:void(0);">
+	    			<img class="but_img" src="{{ d[i].pic }}"/>
+					<ul style="width: 100%;">
+		    			<li><span style="    color: #333;font-size: 12px;font-weight: 600;">{{ d[i].name }}</span></li>
+		    			{{# if(d[i].vip_wholesale_price>0){ }}
+						<li class="mui-pull-left" style="width: 100%;">
+							<i class="vip"></i>
+							<span class="vip_price">
+								{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].vip_wholesale_price) }}
+							</span>
+
+							{{# if (d[i]['shop_goods_price'] && d[i]['shop_goods_price']>0 && parseFloat(d[i]['shop_goods_price'])>parseFloat(d[i].vip_wholesale_price)) { }}
+								<span class="mui-pull-right del-line" style="font-size: 10px; color: #999;">
+									{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i]['shop_goods_price']) }}
+								</span>
+							{{# } }}
+							{{# if(d[i].unit){ }}
+							<span class="vip_price">{{'/' + d[i].unit }}</span>
+							{{# } }}
+						</li>
+						<li class="mui-pull-left" style="font-size: 10px;">
+							{{L_('普通批发')}}:
+							<span class="normal_price">
+								{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].price) }}
+								{{# if(d[i].unit){ }}
+								<span>{{'/' + d[i].unit }}</span>
+								{{# } }}
+							</span>
+						</li>
+						{{# if (d[i].sell_count>0) { }}
+						<li class="mui-pull-right" style="font-size: 10px;line-height: 20px;">{{L_('已售')}}:{{ d[i].sell_count }}</li>
+						{{# } }}
+						{{# } else { }}
+							<li class="mui-pull-left" style="width: 100%;color: #333;font-size: 10px;">
+								{{L_('批发')}}:{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].price) }}
+								{{# if (d[i]['shop_goods_price'] && d[i]['shop_goods_price']>0 && parseFloat(d[i]['shop_goods_price'])>parseFloat(d[i].price)) { }}
+									<span class="mui-pull-right del-line" style="font-size: 10px; color: #999;">
+										{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i]['shop_goods_price']) }}
+									</span>
+								{{# } }}
+								{{# if(d[i].unit){ }}
+								<span>{{'/' + d[i].unit }}</span>
+								{{# } }}
+							</li>
+							{{# if (d[i].sell_count>0) { }}
+								<li class="mui-pull-left" style="width: 100%;font-size: 10px;">{{L_('已售')}}:{{ d[i].sell_count }}</li>
+							{{# } }}
+						{{# } }}
+		    		</ul>
+					{{# if (d[i].merchant_store_info) { }}
+					<div class="mui-pull-left flex" style="width: 100%;padding-top: 10px;">
+						{{# if (d[i].merchant_store_info.logo) { }}
+						<img style="width: 35px;height: 35px; border-radius: 2px;" src="{{d[i].merchant_store_info.logo}}">
+						{{# } }}
+						{{# if (d[i].merchant_store_info.name) { }}
+						<div style="font-size: 12px;line-height: 35px;color: #666;overflow: hidden;">
+							{{d[i].merchant_store_info.name}}
+						</div>
+						{{# } }}
+					</div>
+					{{# } }}
+	    		</a>
+	    	</div>
+			{{# if (d[i]['is_publish_integral_mall']==1 && !d[i]['integral_mall_goods_id'] && (d[i]['express_is_type']==1 || d[i]['express_is_type']==2)) { }}
+				<div class="virtual_msg"  data-id="{{ d[i].goods_id }}">
+					<a class="virtual_push"  data-id="{{ d[i].goods_id }}">{{L_('虚拟批发')}}</a>
+				</div>
+			{{# } }}
+	    </div>
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var ticket = common.getCache('ticket');
+var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+var cat_fid = urlParam.cat_fid;
+var cat_id = urlParam.cat_id;
+
+function img_auto() {
+    var width = parseFloat($(window).width());
+    console.log('width',width);
+    if (width <= 320) {
+        $(".title_img").css("height",'32px');
+        $(".fire").css("height",'95px');
+        $(".four").css('height','65px');
+        $(".cityTheck").css('height','65px');
+
+    }else if( width>375){
+        $(".title_img").css("height",'40px');
+        $(".fire").css("height",'120px');
+        $(".four").css('height','85px' );
+        $(".cityTheck").css('height','85px');
+    }else{
+        $(".title_img").css("height",'38px');
+        $(".fire").css("height",'109px');
+        $(".four").css('height','75px' );
+        $(".cityTheck").css('height','75px');
+    }
+}
+
+var wh=$(window).width();
+var myswiper = null;
+var mySwiper9 = null;
+function swiper_reload(length) {
+    if (!length) {
+        length=1;
+	}
+    var banner_height=wh/320;
+    banner_height=Math.ceil(banner_height*119);
+    $("#listBanner").css('height',banner_height);
+    if(length<2){
+        $(".swiper-container1 .swiper-pagination").hide()
+    }else{
+        $(".swiper-container1 .swiper-pagination").show()
+    }
+	console.log('length',length);
+    myswiper = new Swiper('.swiper-container1', {
+        pagination: {
+            el: '.swiper-container1 .swiper-pagination',
+            clickable: true,
+            type:'bullets'
+        },
+        autoplay:length>1?3000:false,
+        autoplayDisableOnInteraction : false,
+        loop: true,
+        preventClicks : true,
+        preventLinksPropagation:true
+    });
+    this_preventDefault();
+}
+function this_preventDefault() {
+    $(".swiper-container .swiper-slide  a").click(function(e){
+        if(myswiper!=null && myswiper.animating==true){
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    });
+}
+
+function swiper2_reload(length) {
+    if (!length) {
+        length=1;
+    }
+    mySwiper9=new Swiper('.swiper-container9', {
+        pagination: {
+            el: '.swiper-container9 .swiper-pagination',
+            clickable: true,
+            type:'bullets'
+        },
+        autoplay:false,
+        autoplayDisableOnInteraction : false,
+        preventClicks : true,
+        preventLinksPropagation:true,
+        noSwiping: length > 1 ? false : true
+    });
+    $(".swiper-container9").css("padding",'20px 0px 10px');
+    this_preventDefault()
+}
+
+var pindex=1;
+var top_img=false;
+var banner=false;
+var advert=false;
+var slider=false;
+
+function market_index(page){
+	common.http('Merchantapp&a=market_index',{'ticket':ticket,'client':client,'page':page,'cat_fid':cat_fid,'cat_id':cat_id},function(data){
+		console.log('data',data);
+		if (data.orders.length!=0) {
+			data.orders.length<=19&&$('.pullup1').html(L_('没有更多数据啦'));
+			$('.loading1').hide();
+			$('.pullup1').show();
+
+            if ((data.wholesale_top_tip_img || data.wholesale_middle_tip_img) && !top_img) {
+                laytpl(document.getElementById('adver_info').innerHTML).render(data, function(html){
+                    $('.header_adver_img').append(html);
+                    setTimeout(function () {
+                        img_auto();
+                    },10)
+                });
+                top_img = true;
+            }
+			laytpl(document.getElementById('pluscardLists').innerHTML).render(data.orders, function(html){
+				$('.alls').append(html);
+                setTimeout(function () {
+                    if (data.is_integral_mall!=1) {
+						$('.mui-card').css('min-height','310px');
+					}
+                },800)
+			});
+            if (data.banner_list && data.banner_list.length>0 && !banner) {
+                var length = data.banner_list.length;
+                laytpl(document.getElementById('swiper1').innerHTML).render(data.banner_list, function(html){
+                    $('#listBanner .swiper-wrapper').append(html);
+                    setTimeout(function () {
+                        swiper_reload(length);
+                    },10);
+                });
+                banner = true;
+            } else if(!banner) {
+                $('#listBanner').hide();
+            }
+            if (data.adver_middle_img && data.adver_middle_img.length>0 && !advert) {
+                var win_w=$(window).width();
+                var one_img_h=win_w*0.38;
+                laytpl(document.getElementById('one').innerHTML).render(data.adver_middle_img, function(html){
+                    $('#one_img .swiper-wrapper').append(html);
+                    $("#one_img").css('height',one_img_h+'px');
+                    $("#one_img").removeClass('hide');
+                });
+                advert = true;
+            } else if (!advert) {
+                $('#one_img').hide();
+            }
+
+            if (data.slider_list && data.slider_list.length>0 && !slider) {
+                var  result=[];
+                for(var i=0,len=data.slider_list.length;i<len;i+=10){
+                    result.push(data.slider_list.slice(i,i+10));
+                }
+                laytpl(document.getElementById('swiper2').innerHTML).render(result, function(html){
+                    $('#listSlider .swiper-wrapper').append(html).removeClass('none');
+                    $('#listSlider').removeClass('none');
+                    if(data.slider_list.length<2){
+                        $(".swiper-container9 .swiper-pagination9").hide();
+                        $(".swiper-container9 .swiper-slide").addClass('swiper-no-swiping');
+                    }else{
+                        $(".swiper-container9 .swiper-pagination9").show();
+                    }
+                    setTimeout(function () {
+                        swiper2_reload(data.slider_list.length);
+                    },10);
+                });
+                slider = true;
+            } else if (!slider) {
+                $('#listSlider').hide();
+                slider = true;
+            }
+
+
+            if(data['orders'].length>19){
+				var flag = false;
+				$(window).scroll(function(e) {
+				    e.stopPropagation();
+				    if(flag){
+				      //数据加载中
+				      return false;
+				    }
+				    //上拉加载
+				    if ($(document).scrollTop() >= $(document).height() - $(window).height() - 1) {
+				    	$('.pullup1').hide();
+				    	$('.loading1').show();
+				    	flag = true;
+				        pindex++;
+                        market_index(pindex);
+				    }
+				});
+			}
+
+			// 重新计算下图片，使其高度余宽度一致
+			var height = $('.buy_detail img').width();
+            console.log('height', height);
+			$('.buy_detail img.but_img').css('height', height);
+		}else{
+			$('.pullup1').html(L_('没有更多数据啦'));
+			$('.loading1').hide();
+			$('.pullup1').show();
+		}
+	});
+}
+
+market_index(1);
+mui('.mui-content').on('tap','.cli_status',function(e){
+	var status=0;
+	var me=this;
+	var appoint_id=$(this).parents('.mui-card').attr('data-id');
+	if($(this).text()=="开启"){
+		status=1;
+		$(this).text('关闭').removeClass('open').addClass('close');
+	}else{
+		status=0;
+		$(this).text('开启').removeClass('close').addClass('open');
+	}
+	common.http('Merchantapp&a=appoint_status',{'ticket':ticket,'client':client,'appoint_id':appoint_id,'appoint_status':status},function(data){
+		console.log(data);
+		if(data.length==0){
+			mui.toast('操作成功');
+		}
+	});
+
+});
+// 点击跳转
+mui('.header_adver_img').on('tap','.link-url',function(e){
+    openWindow({
+        url:$(this).data('url'),
+        id:'link_url'
+    });
+});
+
+//进入购买详情页面
+mui('.mui-content').on('tap','.buy_detail .mui-card-content',function(e){
+	var goods_id=$(this).attr('data-id');
+	openWindow({
+		url:'market_buy_detail.html?goods_id='+goods_id,
+		id:'market_buy_detail'
+	});
+});
+//点击搜索框
+$('.search').on('tap',function(e){
+    openWindow({
+        url:'market_search.html',
+        id:'search'
+    });
+});
+// 进入虚拟批发页面
+mui('.mui-content').on('tap','.virtual_msg .virtual_push',function(e){
+    var goods_id=$(this).attr('data-id');
+    openWindow({
+        url:'market_virtual_push.html?goods_id='+goods_id+'&type=virtual_market',
+        id:'market_virtual_push'
+    });
+});
+
+</script>
+</body>
+</html>

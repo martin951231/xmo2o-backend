@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>我的等级</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/swiper.min.css" rel="stylesheet"/>
+		<link href="css/deliver.css" rel="stylesheet"/>
+	</head>
+	<body> 
+		<section class="myGradeBox"> 
+		  <ul class="myGradeTop">
+			  <li>
+				  <p><L_>当前等级</L_></p>
+				  <p class="currentName" id="now_level-name"></p>
+			  </li>
+			  <li>
+				<p><L_>当前等级分</L_></p>
+				<span id="now_level-score"></span>
+				<p class="nextGrade">距下一等级还有<label id="now_level-diff_score"></label>分</p>
+			</li>
+			<div class="clear"></div>
+		  </ul>
+
+		  <!-- 左右滑动 -->
+		  <div class="swiper-container swiperSlide">
+				<div class="swiper-wrapper swiperSlideBox">  
+				</div>
+		   	<!-- Add Pagination -->
+		  	<div class="swiper-pagination"></div>
+		  </div>
+		  <!-- end -->
+
+		  <!--列表 -->
+     <ul class="gradeList"> 
+				<div class="gradeList_a"> 
+				</div>
+				<div class="ge_line"></div>
+			  <a href="myGradeLog.html"><L_>等级分记录</L_></a> 
+		  </ul>
+		  
+		  <!-- 列表 end -->
+		</section>
+		<script id="level_ruleListBoxTpl" type="text/html">
+			{{# for(var i in d){ }}
+			<a href="myGradeDetails.html?pigcms_id={{ d[i].pigcms_id }}">{{ d[i].name }}</a> 
+			{{# } }}
+		</script> 
+		<script id="replyListBoxTpl" type="text/html">
+			{{# for(var i in d){ }}
+			<div class="swiper-slide"> 
+			    {{# if (d[i].image =='') { }}
+					<img src="images/login_02.jpg" class="slideImg" alt="">
+						{{# } else {  
+						}} 
+						<img src="{{ d[i].image }}" class="slideImg" alt="">
+						{{# } }} 
+					<dl class="dl_block">
+							<dd>{{ d[i].name }}</dd> 
+							<dt class="dt1">{{ d[i].desc }}</dt>
+							<dt class="dt2"><label>{{ d[i].score }}</label><L_>积分</L_></dt>
+					</dl> 
+			</div>
+			{{# } }}
+		</script> 
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/work/common.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/myGrade.js"></script>
+		<script src="scripts/swiper.min.js"></script>    
+	</body>
+</html>

@@ -1,0 +1,35 @@
+.input_style_240[data-v-3ff525aa] {
+  width: 240px;
+}
+
+
+[data-v-6dff8b0e] .ant-drawer-body {
+  padding: 0px;
+}
+
+.build_index[data-v-7f775108] {
+  background-color: #ffffff;
+  padding: 0 20px;
+}
+.top-box-padding[data-v-7f775108] {
+  border-bottom: 1px solid #ebedf0;
+  padding: 20px 0;
+}
+.status-color-ok[data-v-7f775108] {
+  color: green;
+}
+.status-color-fail[data-v-7f775108] {
+  color: red;
+}
+.total_number[data-v-7f775108] {
+  font-weight: bold;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+  height: 50px;
+  padding-right: 20px;
+}
+

@@ -1,0 +1,17 @@
+
+.card-detail[data-v-4ebffa34] {
+    margin-bottom: 20px;
+    display: -ms-flexbox;
+    display: flex;
+}
+.card-detail[data-v-4ebffa34] .ant-descriptions-title {
+    white-space: nowrap;
+    margin-right: 20px;
+}
+.card-detail[data-v-4ebffa34] .ant-descriptions-view {
+    /* padding-left: 80px!important; */
+    box-sizing: border-box !important;
+    -ms-flex: 1;
+        flex: 1;
+}
+

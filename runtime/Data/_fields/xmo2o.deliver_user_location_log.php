@@ -1,0 +1,1 @@
+<?php	return array ( 0 => 'pigcms_id', 1 => 'uid', 2 => 'lng', 3 => 'lat', 4 => 'create_time', 5 => 'create_ip', '_autoinc' => true, '_pk' => 'pigcms_id', '_type' => array ( 'pigcms_id' => 'int(11)', 'uid' => 'int(11)', 'lng' => 'decimal(10,7)', 'lat' => 'decimal(10,7)', 'create_time' => 'int(11)', 'create_ip' => 'varchar(80)', ), );?>

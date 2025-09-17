@@ -1,0 +1,122 @@
+
+.wrap[data-v-58a87fd0] {
+    width: 100%;
+    min-height: 100%;
+}
+.page-title[data-v-58a87fd0] {
+    padding: 20px 30px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 15px;
+    font-weight: bold;
+    color: #000000;
+}
+.content[data-v-58a87fd0] {
+    margin: 20px 30px;
+}
+.ant-row-flex[data-v-58a87fd0] {
+    margin-bottom: 12px;
+}
+.ant-form-item[data-v-58a87fd0] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+.ant-form-item-control-wrapper[data-v-58a87fd0] {
+    padding-right: 100px;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.ant-form-item-children[data-v-58a87fd0] {
+    width: 100%;
+    display: inline-block;
+}
+.total-performance[data-v-58a87fd0] {
+    margin: 20px 0;
+    padding: 0 30px;
+    width: 100%;
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1;
+}
+.cr-f1[data-v-58a87fd0] {
+    color: #f1f1f1;
+}
+.label[data-v-58a87fd0]{
+    line-height: 32px;
+}
+
+
+.wrap[data-v-63797a8c] {
+    width: 100%;
+    min-height: 100%;
+}
+.page-title[data-v-63797a8c] {
+    padding: 20px 30px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 15px;
+    font-weight: bold;
+    color: #000000;
+}
+.content[data-v-63797a8c] {
+    margin: 20px 30px;
+}
+.ant-row-flex[data-v-63797a8c] {
+    margin-bottom: 12px;
+}
+.ant-form-item[data-v-63797a8c] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+.ant-form-item-control-wrapper[data-v-63797a8c] {
+    padding-right: 100px;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.ant-form-item-children[data-v-63797a8c] {
+    width: 100%;
+    display: inline-block;
+}
+.total-performance[data-v-63797a8c] {
+    margin: 20px 0;
+    padding: 0 30px;
+    width: 100%;
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1;
+}
+.cr-f1[data-v-63797a8c] {
+    color: #f1f1f1;
+}
+.card_tab[data-v-63797a8c]{
+    text-align: center;
+   width: 140px;
+   float: left;
+   margin: 0 0 20px 0;
+}
+.card_tab span[data-v-63797a8c]{
+    color:#000000;
+    font-size: 15px;
+    padding: 7px 10px;
+}
+.card_tab span.on[data-v-63797a8c]{
+    color: #1890ff;
+    border-bottom: 2px solid #1890ffcc;
+}
+

@@ -1,0 +1,162 @@
+@charset "utf-8";
+
+body,div,dl,dt,dd,ul,li,form,input,button,h1,h2,h3,h4,h5,h6,p {
+    margin: 0 auto;
+    padding: 0;
+    font-family: 微软雅黑;
+    color: #ff4d00
+}
+
+ul,li,dl,dt,dd {
+    display: block;
+    list-style: none
+}
+
+a {
+    text-decoration: none;
+    outline: 0
+}
+
+.fl {
+    float: left
+}
+
+.fr {
+    float: right
+}
+
+.none {
+    display: none
+}
+
+.loan_jm1 {
+    width: 94%;
+    margin: 0 auto
+}
+
+.loan_jm_spa1 {
+    width: 39%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 1em;
+    color: #666;
+    display: block;
+    float: left
+}
+
+.loan_jm_l1 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    height: 40px
+}
+
+.wbk_srn {
+    width: 57%;
+    height: 40px;
+    border: 1px solid #ccc;
+    background: #fff;
+    float: left;
+    padding-left: 3%;
+    line-height: 40px;
+    color: #adadad;
+    font-size: 1.1em;
+    background-size: 45%;
+    background-position: center;
+    background: #fff
+}
+
+.wbk_srn b {
+    width: 30px;
+    height: 40px;
+    border: 1px solid #ccc;
+    background: #fff;
+    float: left;
+    padding-left: 3%;
+    line-height: 40px;
+    color: #adadad;
+    font-size: 1.1em
+}
+
+.showLetter {
+    position: fixed;
+    color: #ff4d00;
+    width: 50px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: #ff4d00 1px solid;
+    text-align: center;
+    display: none;
+    -webkit-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
+.showLetter span {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 30px
+}
+
+.container {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.letter {
+    width: auto;
+    position: fixed;
+    top: 10%;
+    right: 10px;
+    text-align: center
+}
+
+.letter ul {
+    list-style-type: none
+}
+
+.letter ul li a {
+    text-decoration: none;
+    color: #ff4d00;
+    font-size: 18px
+}
+
+.city {
+    width: 90%;
+    overflow: hidden;
+    padding: 20px
+}
+
+.city-list {
+    width: 100%
+}
+
+.city-list .city-letter {
+    font-size: 20px;
+    display: inline-block;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e8ecf1;
+    width: 100%
+}
+
+.city-list p,.city-list p a {
+    color: #afafaf;
+    width: 95%;
+    height: 50px;
+    line-height: 50px;
+    border-bottom: 1px solid #e8ecf1;
+    display:block
+}
+.city-list p {
+    border-bottom: 1px solid #e8ecf1;
+}
+.city-list p a:active{background:#ECECEC}
+.UISelect {
+    margin-top: 5px
+}

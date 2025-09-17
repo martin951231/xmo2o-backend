@@ -1,0 +1,13 @@
+
+.page[data-v-5c639afa] {
+    width: 100%;
+    min-height: 100%;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    background: #ffffff;
+}
+.page-header.ant-page-header[data-v-5c639afa] .ant-page-header-heading-title {
+    font-size: 18px!important;
+    color: #333333;
+}
+

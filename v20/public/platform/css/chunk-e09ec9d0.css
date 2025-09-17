@@ -1,0 +1,5 @@
+
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+    margin-left: 0;
+}
+

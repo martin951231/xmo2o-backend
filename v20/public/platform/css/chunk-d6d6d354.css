@@ -1,0 +1,12 @@
+
+th.column-money[data-v-a840895c],
+td.column-money[data-v-a840895c] {
+    text-align: right !important;
+}
+.label-sm[data-v-a840895c] {
+    color: green;
+}
+.label-sm.blue[data-v-a840895c] {
+    color: #1890ff !important;
+}
+

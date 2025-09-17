@@ -1,0 +1,82 @@
+.form_title[data-v-8d6671a6] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-8d6671a6] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-8d6671a6] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-8d6671a6] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+[data-v-8d6671a6] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+
+.ant-card-input_park[data-v-7ca696a8] {
+    width: 300px;
+    margin-top: 15px;
+}
+.ant-card-span_park[data-v-7ca696a8] {
+    margin-right: 150px;
+    padding-left: 113px;
+    padding-top: 10px;
+}
+.ant-card-span1_park[data-v-7ca696a8] {
+    margin-right: 10px;
+}
+
+.lane_management[data-v-5cb62d12] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.lane_management .header_search[data-v-5cb62d12] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
+.lane_management .header_search .search_item[data-v-5cb62d12] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.lane_management .header_search .operation_btn[data-v-5cb62d12] {
+  margin-left: 20px;
+}
+.lane_management .table_content[data-v-5cb62d12] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

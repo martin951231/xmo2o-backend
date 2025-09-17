@@ -1,0 +1,161 @@
+@font-face {
+  font-family: 'iconfont';
+  /* project id 1997987 */
+  src: url('https://at.alicdn.com/t/font_1997987_c00o7bb6ctc.eot');
+  src: url('https://at.alicdn.com/t/font_1997987_c00o7bb6ctc.eot?#iefix') format('embedded-opentype'), url('https://at.alicdn.com/t/font_1997987_c00o7bb6ctc.woff2') format('woff2'), url('https://at.alicdn.com/t/font_1997987_c00o7bb6ctc.woff') format('woff'), url('https://at.alicdn.com/t/font_1997987_c00o7bb6ctc.ttf') format('truetype'), url('https://at.alicdn.com/t/font_1997987_c00o7bb6ctc.svg#iconfont') format('svg');
+}
+.iconfont[data-v-e0990f78] {
+  font-family: 'iconfont' !important;
+}
+.cashier[data-v-e0990f78] {
+  width: 100%;
+  max-height: 100vh;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-color: #2e2e2e;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.cashier .nav_container[data-v-e0990f78] {
+  width: 5.2%;
+  height: 100%;
+  max-height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.cashier .nav_container .navcontent[data-v-e0990f78] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.cashier .nav_container .navcontent .nav_items_wrapper[data-v-e0990f78] {
+  width: 100%;
+  height: 0.78125rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  border-bottom: 1px solid rgba(165, 171, 201, 0.1);
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+.cashier .nav_container .navcontent .nav_items_wrapper .icon[data-v-e0990f78] {
+  color: #c6c6c6;
+  opacity: 0.8;
+  font-size: 0.14583333rem;
+}
+.cashier .nav_container .navcontent .nav_items_wrapper .items_name[data-v-e0990f78] {
+  width: 0.22916667rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  color: #c6c6c6;
+  text-align: center;
+  opacity: 0.8;
+  font-size: 0.11458333rem;
+}
+.cashier .nav_container .navcontent .item_active .icon[data-v-e0990f78] {
+  color: #18c6b6;
+}
+.cashier .nav_container .navcontent .item_active .items_name[data-v-e0990f78] {
+  color: #18c6b6;
+}
+.cashier .nav_container .backbtn[data-v-e0990f78] {
+  width: 100%;
+  padding: 0.078125rem;
+  border-top: 1px solid rgba(165, 171, 201, 0.1);
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.10416667rem;
+  letter-spacing: 0px;
+  color: #c6c6c6;
+  margin-top: 0.15625rem;
+}
+.cashier .content_wrapper[data-v-e0990f78] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: 94.8%;
+  height: 100vh;
+  max-height: 100vh;
+  background: #ffffff;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow: auto;
+}
+.rotatecls[data-v-e0990f78] {
+  -webkit-animation: turn-data-v-e0990f78 0.5s linear infinite;
+          animation: turn-data-v-e0990f78 0.5s linear infinite;
+}
+@-webkit-keyframes turn-data-v-e0990f78 {
+0% {
+    -webkit-transform: rotate(0deg);
+}
+25% {
+    -webkit-transform: rotate(90deg);
+}
+50% {
+    -webkit-transform: rotate(180deg);
+}
+75% {
+    -webkit-transform: rotate(270deg);
+}
+100% {
+    -webkit-transform: rotate(360deg);
+}
+}
+@keyframes turn-data-v-e0990f78 {
+0% {
+    -webkit-transform: rotate(0deg);
+}
+25% {
+    -webkit-transform: rotate(90deg);
+}
+50% {
+    -webkit-transform: rotate(180deg);
+}
+75% {
+    -webkit-transform: rotate(270deg);
+}
+100% {
+    -webkit-transform: rotate(360deg);
+}
+}
+

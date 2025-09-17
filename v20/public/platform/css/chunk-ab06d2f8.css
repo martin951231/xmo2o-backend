@@ -1,0 +1,176 @@
+.container[data-v-4ae4f318] {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  position: relative;
+  min-height: 750px;
+}
+.container .center_box[data-v-4ae4f318] {
+  width: 1400px;
+  margin-top: 26px;
+}
+.container .center_box .title[data-v-4ae4f318] {
+  font-size: 36px;
+  font-family: Microsoft YaHei;
+  font-weight: bold;
+  color: #000000;
+  line-height: 60px;
+}
+.container .center_box .text_1[data-v-4ae4f318] {
+  font-size: 13px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #333333;
+  line-height: 40px;
+}
+.container .center_box .flex_box_1[data-v-4ae4f318] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-top: 152px;
+}
+.container .center_box .flex_box_1 .item_box[data-v-4ae4f318] {
+  width: 440px;
+  height: 204px;
+  border: 1px solid #EEEEEE;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: start;
+      align-items: flex-start;
+  padding-top: 57px;
+}
+.container .center_box .flex_box_1 .item_box .img_1[data-v-4ae4f318] {
+  margin-left: 34px;
+}
+.container .center_box .flex_box_1 .item_box .flex_1[data-v-4ae4f318] {
+  width: 180px;
+  height: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  margin-left: 23px;
+  position: relative;
+  margin-right: 40px;
+}
+.container .center_box .flex_box_1 .item_box .flex_1 .flex_text_box[data-v-4ae4f318] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-top: 5px;
+}
+.container .center_box .flex_box_1 .item_box .flex_1 .flex_text_box .dot[data-v-4ae4f318] {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #2681f3;
+}
+.container .center_box .flex_box_1 .item_box .flex_1 .flex_text_box .text_4[data-v-4ae4f318] {
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #2681f3;
+  line-height: 20px;
+  text-align: justify;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.container .center_box .flex_box_1 .item_box .flex_1 .text_2[data-v-4ae4f318] {
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: bold;
+  color: #000000;
+}
+.container .center_box .flex_box_1 .item_box .flex_1 .text_3[data-v-4ae4f318] {
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #7F7F7F;
+  line-height: 18px;
+  text-align: justify;
+  margin-top: 5px;
+}
+.container .center_box .flex_box_1 .item_box .flex_1 .btn_a[data-v-4ae4f318] {
+  width: 100px;
+  height: 36px;
+  border: 2px solid #1890FF;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #1890FF;
+  line-height: 32px;
+  text-align: center;
+  position: absolute;
+  bottom: 26px;
+  cursor: pointer;
+}
+.container .center_box .flex_box_2[data-v-4ae4f318] {
+  width: 100%;
+  height: 80px;
+  background: #FAFBFE;
+  padding-left: 19px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-top: 126px;
+}
+.container .center_box .flex_box_2 .text_4[data-v-4ae4f318] {
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #000000;
+  line-height: 80px;
+}
+.container .center_box .flex_box_2 .btn_b[data-v-4ae4f318] {
+  width: 115px;
+  height: 40px;
+  background: #1890FF;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #FFFFFF;
+  line-height: 40px;
+  text-align: center;
+  margin-left: 26px;
+  cursor: pointer;
+}
+.container .logo[data-v-4ae4f318] {
+  position: absolute;
+  left: 44px;
+  top: 36px;
+  width: 190px;
+}
+.container .tip[data-v-4ae4f318] {
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #7A8BAA;
+  position: absolute;
+  bottom: 37px;
+  left: 50%;
+  transform: translateX(-50%);
+  /*移动自身的一半*/
+}
+

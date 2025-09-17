@@ -1,0 +1,119 @@
+.page{
+	background:#F8F8F8;
+}
+
+.categoryBox{
+	width:100%;
+	overflow-x:scroll;
+	white-space:nowrap;
+    margin-bottom: 10px;
+	background:white;
+}
+.categoryBox .item{
+	display:inline-block;
+	color:#999;
+	padding:16px 12px;
+}
+.categoryBox .item.active{
+	color:black;
+	font-weight:bold;
+}
+.categoryBox .item:first-child{
+	padding-left:24px;
+}
+.categoryBox .item:last-child{
+	padding-right:24px;
+}
+
+
+#orderList{
+	
+}
+#orderList .item{
+	background:white;
+	padding:0 15px;
+	margin-bottom:10px;
+}
+#orderList .item .title{
+	height:44px;
+	line-height:44px;
+	color:#999;
+	font-size:12px;
+	border-bottom:1px solid #F8F8F8;
+}
+#orderList .item .title .merLogo{
+	width:30px;
+	height:30px;
+	border-radius:100%;
+	overflow:hidden;
+	padding-top:7px;
+}
+#orderList .item .title .merName{
+	margin-left:7px;
+}
+#orderList .item .title .status{
+	color:#F64031;
+}
+
+#orderList .item .order{
+	padding:10px 0;
+	position:relative;
+}
+#orderList .item .order .groupImg{
+	width:60px;
+	height:60px;
+	border-radius:5px;
+	overflow:hidden;
+	position:absolute;
+}
+#orderList .item .order .groupImg img{
+	width:80px;
+	margin-left:-10px;
+}
+#orderList .groupNameBox{
+	padding:0 40px 0 75px;
+}
+#orderList .groupName {
+	line-height:1.3;
+	-webkit-box-orient: vertical;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    height: 36px;
+}
+#orderList .groupDesc {
+	font-size:12px;
+	color:#999;
+	margin-top:6px;
+}
+#orderList .groupPriceBox{
+	position:absolute;
+	right:0;
+	top:10px;
+	text-align:right;
+	color:#999;
+	font-size:12px;
+}
+#orderList .groupPriceBox .price{
+	font-weight:500;
+	color:#333;
+	font-size:14px;
+}
+#orderList .handleBar{
+	border-top:1px solid #F8F8F8;
+	padding:10px 0;
+}
+#orderList .handleBar .btn{
+	padding:6px 12px;
+	font-size:12px;
+	border:1px solid #E1E1E1;
+	border-radius:5px;
+}
+#orderList .handleBar .btn.invite{
+	margin-left:15px;
+	color:#F64031;
+	border-color:#F64031;
+}

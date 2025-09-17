@@ -1,0 +1,69 @@
+.community_profile[data-v-77681c3a] {
+  width: 100%;
+  height: calc(20vh - 32px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding-left: 15px;
+}
+.community_profile .profile_item[data-v-77681c3a] {
+  background-image: -webkit-gradient(linear, left top, right top, from(rgba(24, 72, 170, 0.6)), to(rgba(4, 54, 125, 0.3)));
+  background-image: linear-gradient(to right, rgba(24, 72, 170, 0.6), rgba(4, 54, 125, 0.3));
+  width: 30%;
+  margin: 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: ;
+      -ms-flex-pack: ;
+          justify-content: ;
+  padding: 3px 10px;
+}
+.community_profile .profile_item .item_top[data-v-77681c3a] {
+  color: #ffffff;
+}
+.community_profile .profile_item .item_bottom[data-v-77681c3a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.community_profile .profile_item .item_bottom .left[data-v-77681c3a] {
+  font-size: 12px;
+  color: #F0DE6B;
+  font-weight: bold;
+}
+.community_profile .profile_item .item_bottom .right[data-v-77681c3a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-left: 10px;
+}
+.community_profile .profile_item .item_bottom .right .percent[data-v-77681c3a] {
+  color: #0CE8FF;
+  font-size: 12px;
+}
+.community_profile .profile_item .item_bottom .right .icon[data-v-77681c3a] {
+  width: 5px;
+}
+.community_profile .profile_item .item_bottom .right .icon img[data-v-77681c3a] {
+  width: 5px;
+}
+

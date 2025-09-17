@@ -1,0 +1,38 @@
+.form_con .form_item[data-v-cc3c0396] {
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 10px;
+}
+.form_con .form_item .form_lable[data-v-cc3c0396] {
+  width: 100px;
+}
+.form_con .form_item .form_value[data-v-cc3c0396] {
+  width: calc(100% - 180px);
+}
+
+.equipment_list[data-v-0f4e1a3f] {
+  padding: 20px;
+  background: #ffffff;
+  margin-top: 10px;
+}
+.equipment_list .search_con[data-v-0f4e1a3f] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  transform: tranlateX(-10px);
+}
+.equipment_list .search_con .search_item[data-v-0f4e1a3f] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin: 10px;
+}
+.equipment_list .search_con .search_item .label[data-v-0f4e1a3f] {
+  font-size: 14px;
+  color: #666666;
+}
+

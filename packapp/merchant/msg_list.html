@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+        <title>消息</title>
+        <link href="css/mui.css" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="css/app.css"/>
+        <link rel="stylesheet" href="css/vant/vant@2.12.47.css"/>
+        <link rel="stylesheet" type="text/css" href="css/msg_list.css?t=001"/>
+        <script src="js/vant/vue@2.6.14.min.js"></script>
+        <script src="js/vant/vant@2.12.14.min.js"></script>
+    </head>
+    <style>
+        .box-list{
+            padding-top: calc(constant(safe-area-inset-top) + 46px);
+            padding-top: calc( env(safe-area-inset-top) + 46px);
+        }
+    </style>
+    <body>
+        <section id="msgListPage" class="msg-list-page">
+            <van-nav-bar z-index="99" :title="L_('消息')" style="background-color: #FFA200;" fixed safe-area-inset-top="true" left-arrow :right-text="L_('全部已读')" @click-left="onClickLeft" @click-right="onClickRight"></van-nav-bar>
+            <van-list v-model="loading" :finished="finished" :finished-text="L_('没有更多了')" @load="onLoad">
+                <div class="box-list">
+                    <van-collapse v-model="activeNames" @change="msgChange" class="box-list-collapse">
+                        <van-collapse-item :name="item.pigcms_id" v-for="item in dataList" :key="item.pigcms_id" :title="item.title" :value="item.create_time" class="item" :title-class="item.is_read == 1?'read-box':''">
+                            <div class="text-wrap" v-html="item.content">
+                            </div>
+                        </van-collapse-item>
+                    </van-collapse>
+                </div>
+            </van-list>
+        </section>
+
+        <script src="js/mui.min.js"></script>
+        <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/weui/weui.min.js"></script>
+        <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/work/msg_list.js"></script>
+    </body>
+</html>

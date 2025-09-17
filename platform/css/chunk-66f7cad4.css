@@ -1,0 +1,36 @@
+.input_style_240[data-v-5d59dd62] {
+  width: 240px;
+}
+.input_style_140[data-v-5d59dd62] {
+  width: 140px;
+}
+
+.build_index[data-v-3a5859d2] {
+  background-color: #ffffff;
+  padding: 0 20px;
+}
+.top-box-padding[data-v-3a5859d2] {
+  border-bottom: 1px solid #ebedf0;
+  padding: 20px 0;
+}
+.status-color-ok[data-v-3a5859d2] {
+  color: green;
+}
+.status-color-fail[data-v-3a5859d2] {
+  color: red;
+}
+.total_number[data-v-3a5859d2] {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  height: 50px;
+  padding-right: 20px;
+}
+

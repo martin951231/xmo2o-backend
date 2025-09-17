@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Appoint/config')}" class="on">预约配置</a>	</ul></div>

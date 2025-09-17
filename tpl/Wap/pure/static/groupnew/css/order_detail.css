@@ -1,0 +1,99 @@
+.page{
+	background: #f4f4f4;
+}
+
+.order-detail{
+	background: #fff;
+}
+
+.order-detail .store-name {
+	height: 45px;
+	line-height: 45px;
+	margin-left: 15px;
+	border-bottom: 1px solid #f4f4f4;
+}
+
+.order-detail .store-name img{
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	margin-right: 10px;
+	vertical-align: text-bottom;
+}
+
+.order-detail .goods-detail{
+	padding: 15px;
+	border-bottom: 1px solid #f4f4f4;
+	color: #333;
+}
+
+.order-detail .goods-detail img{
+	width: 80px;
+	height: 80px;
+	border-radius: 3px;
+	margin-right: 10px;
+}
+
+.order-detail .goods-detail .desc-box .title{
+	font-size: 16px;
+}
+
+.order-detail .goods-detail .small-gray{
+	color: #999;
+	font-size:12px;
+}
+
+.order-detail .goods-detail .num-box{
+	margin-left: 10px;
+	text-align: right;
+}
+
+.order-detail .goods-detail .num-box .now-price{
+	font-size: 18px;
+	color: #000;
+}
+
+.order-detail .goods-detail .num-box .old-price{
+	text-decoration: line-through;
+}
+
+.other-info-box{
+	margin-left: 15px;
+	border-bottom: 1px solid #f4f4f4;
+	padding: 15px 15px 15px 0
+}
+
+.other-info-box .line{
+	margin-bottom: 10px;
+	color:#999;
+}
+
+.other-info-box .line:last-child{
+	margin-bottom: 0;
+}
+
+.other-info-box .line .left{
+	white-space: nowrap;
+	margin-right: 10px;
+}
+
+.other-info-box .line .right{
+	text-align: right;
+}
+
+.handleBtn{
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 16px;
+    background: #F64031;
+    position: fixed;
+    color: white;
+    z-index: 9999;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+}
+.canceled{
+    background: #c2c2c2;
+}

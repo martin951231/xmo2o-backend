@@ -1,0 +1,405 @@
+.pad-bot-comm {
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-bottom: 40px;
+}
+.yxc-payment-bg {
+  min-height: 100%;
+  background: #f0f4f5;
+  position: relative;
+}
+.yxc-brand {
+  height: 40px;
+  overflow: hidden;
+  text-align: center;
+  line-height: 40px;
+  font-size: 16px;
+  background: #fff;
+  position: relative;
+  border-bottom: 1px solid #ddd;
+}
+.arrow-wrapper {
+  width: 44px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.bt-brand-back {
+  display: block;
+  border-top: 2px solid #c5c5c5;
+  border-left: 2px solid #c5c5c5;
+  width: 11px;
+  height: 11px;
+  -webkit-transform: rotate(315deg);
+  background-color: transparent;
+  float: left;
+  position: absolute;
+  left: 16px;
+  top: 12px;
+}
+small, cite, code, em, th, i, b {
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 500;
+}
+.selectInput {
+  margin: 5px 0px;
+}
+.selectInput input {
+  padding: 5px;
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #ccc;
+  width: 90%;
+  margin: 0 auto;
+  display: block;
+}
+input, button, textarea, input:focus, button:focus, textarea:focus {
+  -webkit-appearance: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.mapBox {
+  border-top: 1px solid #d9e0ec;
+  border-bottom: 1px solid #d9e0ec;
+  width: 100%;
+  height: 300px;
+  position: relative;
+}
+.mapBox #allmap {
+  width: 100%;
+  height: 300px;
+}
+.mapaddress ul {
+  padding: 0 10px;
+  background: #fff;
+}
+.mapaddress ul li {
+  height: 59px;
+  font-size: 16px;
+  border-bottom: 1px solid #eee;
+  line-height: normal;
+}
+ul, ol, li {
+  list-style: none;
+}
+.mapaddress ul li:nth-child(1) .mapaddress-title {
+  color: #fe2947;
+}
+.mapaddress ul li .mapaddress-title {
+  padding-top: 10px;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mapaddress ul li .mapaddress-body {
+  padding-left: 28px;
+  font-size: 14px;
+  padding-top: 6px;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listSearchBtn {
+  position: absolute;
+  width: 50px;
+  height: 100%;
+  top: 0;
+  right: 0;
+}
+#searchBtn:before {
+  left: 25px;
+  content: " ";
+  display: inline-block;
+  height: 6px;
+  width: 6px;
+  border-width: 2px 2px 0 0;
+  border-color: #c8c8cd;
+  border-style: solid;
+  -webkit-transform: matrix(.71,.71,-.71,.71,0,0);
+  transform: matrix(.71,.71,-.71,.71,0,0);
+  position: absolute;
+  top: 50%;
+  margin-top: -4px;
+}
+.listSearchBtn div {
+  height: 20px;
+  position: absolute;
+  width: 20px;
+  top: 17px;
+  right: 10px;
+}
+.listSearchBtn div:before, .listSearchBtn div:after {
+  content: '';
+  height: 10px;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.listSearchBtn div:before {
+  width: 10px;
+  border: 1px white solid;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+}
+.listSearchBtn div:after {
+  width: 1px;
+  background: white;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  top: 10px;
+  left: 11px;
+  height: 4px;
+}
+.pageDiv {
+  display: none;
+  /* position: absolute; */
+  width: 100%;
+  background-color: #f4f4f4;
+}
+.searchHeader {
+  border-bottom: 1px solid #eee;
+}
+.searchHeader {
+  top: 0;
+  height: 50px;
+  background: white;
+  /* display: -webkit-box; */
+  position: fixed;
+  width: 100%;
+  z-index: 21;
+}
+.searhBackBtn {
+  position: absolute;
+  width: 50px;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+.searhBackBtn:after {
+  display: block;
+  content: "";
+  border-top: 2px solid #666;
+  border-left: 2px solid #666;
+  width: 8px;
+  height: 8px;
+  -webkit-transform: rotate(315deg);
+  background-color: transparent;
+  position: absolute;
+  top: 19px;
+  left: 19px;
+}
+.searchBox {
+  background-color: #f4f4f4;
+  height: 38px;
+  margin-left: 50px;
+  margin-right: 74px;
+  margin-top: 6px;
+  position: relative;
+}
+.searchBox .searchIco {
+  position: absolute;
+  left: 10px;
+  top: 12px;
+}
+.searchBox .searchIco:before {
+  width: 10px;
+  border: 1px #A6A6A6 solid;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+}
+.searchBox .searchIco:after {
+  width: 1px;
+  background: #A6A6A6;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  top: 8px;
+  left: 12px;
+  height: 0px;
+}
+.searchTxt {
+  height: 14px;
+  padding: 12px 0;
+  border: none;
+  margin-left: 32px;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  width: 87%;
+}
+input {
+  padding: 1px 0px;
+}
+input {
+  -webkit-appearance: textfield;
+  background-color: white;
+  -webkit-rtl-ordering: logical;
+  cursor: text;
+  padding: 1px;
+  border-width: 2px;
+  border-style: inset;
+  border-color: initial;
+  border-image: initial;
+}
+input, textarea, select, button {
+  text-rendering: auto;
+  color: initial;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0px;
+  text-shadow: none;
+  display: inline-block;
+  text-align: start;
+  margin: 0em;
+  font: 400 13.3333px Arial;
+}
+input, textarea, select, button, meter, progress {
+  -webkit-writing-mode: horizontal-tb !important;
+}
+.searchBox .delIco {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 38px;
+  height: 38px;
+  display: none;
+}
+.searchBox .delIco div {
+  background-color: #CDCDCD;
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  margin-left: 9px;
+  margin-top: 9px;
+}
+.searchBox .delIco div:before, .searchBox .delIco div:after {
+  content: '';
+  height: 2px;
+  width: 14px;
+  display: block;
+  background: white;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  position: absolute;
+  top: 18px;
+  left: 12px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+}
+.searchBox .delIco div:after {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+}
+.searchBtn {
+  position: absolute;
+  width: 50px;
+  height: 38px;
+  line-height: 38px;
+  top: 6px;
+  right: 6px;
+  text-align: center;
+  background-color: #B5B5B5;
+  color: white;
+  padding: 0 6px;
+}
+#storeListLoadTip {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+element.style {
+  zoom: 1;
+  width: 412px;
+  min-height: 732px;
+  overflow-y: auto;
+}
+body {
+  _background-image: url(about:blank);
+  _background-attachment: fixed;
+}
+body {
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  background-color: #f4f4f4;
+  /* padding-bottom: 49px; */
+  overflow-x: hidden;
+}
+
+.searchBox .searchIco:before, .searchBox .searchIco:after {
+  content: '';
+  height: 10px;
+  display: block;
+  position: absolute;
+}
+.searchBtn.so {
+  background-color: #06c1ae;
+}
+.searchBox .delIco div:after {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+}
+
+.dealcard dd {
+  background-color: white;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 8px 3px;
+  margin-bottom: 8px;
+  height: 55px;
+}
+.dealcard .dealcard-img {
+  width: 90px;
+  height: 60px;
+  border-radius: 2px;
+  float: left;
+  position: absolute;
+  /* overflow: hidden; */
+}
+.dealcard .dealcard-img img {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+}
+.dealcard .dealcard-block-right {
+  margin-left: 100px;
+  line-height: 55px;
+}
+
+
+
+
+
+
+
+
+
+
+

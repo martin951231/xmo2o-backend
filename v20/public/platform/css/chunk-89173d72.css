@@ -1,0 +1,22 @@
+.owner_msg .label_con[data-v-701394f0] {
+  margin-top: 20px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-701394f0]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-701394f0] {
+  font-weight: bold;
+}
+.owner_msg .label_con .choose_con[data-v-701394f0] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-left: 10px;
+}
+

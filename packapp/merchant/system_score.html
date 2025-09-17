@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>平台商户积分记录</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+     <link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/platform_score_record.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	    <h1 class="mui-title"><L_>平台商户积分记录</L_></h1>
+	</header>
+	<div class="mui-content">
+		<div class="record_money">
+			<div class="mui-row mui-clearfix">
+				<div class="mui-col-sm-6 left_show" style="text-align: center;width: 100%;height: 0px;margin: 20px 0;">
+					<p><span class="total" >当前总积分&nbsp;&nbsp;<span><b style="font-size: 18px;" id="total">0</b></span></span></p>
+				</div>
+			    <div class="mui-col-sm-6 left_show" style="text-align: center;width: 100%;height: 0px;margin: 20px 0">
+			    	<p>获得总积分&nbsp;&nbsp;<span class="jin" id="score_get">0</span>&nbsp;&nbsp;&nbsp;&nbsp;消耗总积分&nbsp;&nbsp;<span class="score_use">0</span></p>
+			    </div>
+			    <div class="mui-col-sm-6 left_show mer_log" style="text-align: center;width: 100%; height: 0px; font-size: 14px; position: relative;margin: 20px 0">
+					<span style="background-color: #fff; color: #FF532A; display: inline-block; padding: 4px 8px; border-radius: 4px; margin: 0 auto; position: absolute; top: 0; left: 50%; transform: translateX(-50%);"><L_>积分兑换礼品</L_><span>
+				</div>
+			</div>
+		</div>
+		<!--报表统计-->
+		<div class="mui-card report" style="margin: 10px 0;">
+			<!--页眉，放置标题-->
+			<!--<div class="mui-card-header" style="justify-content: baseline;">
+				<i></i><span><L_>报表统计</L_></span>
+			</div>-->
+			<!--内容区-->
+			<div class="mui-card-content mui-clearfix">
+				<div class="mui-row">
+				    <div class="mui-col-sm-12" id='showUserPicker'>
+				    	<span id="tuan_buy"><span id="tuanding"><L_>全部类型</L_></span> <i></i></span>
+				    </div>
+				</div>
+				
+			</div>
+			<!--页脚，放置补充信息或支持的操作-->
+			<div class="mui-card-footer">
+				<div class="mui-row" style="width: 100%;">
+				        <div class="mui-col-sm-6 begin_date">
+				            <li class="" >
+				            	<i></i>
+								<span id="begin_date"><L_>请选择开始日期</L_></span>
+								<b></b>
+				            </li>
+				        </div>
+				        <div class="mui-col-sm-6 end_date">
+				            <li class="" >
+				            	<i></i>
+								<span id="end_date"><L_>请选择结束日期</L_></span>
+								<b></b>
+				            </li>
+				        </div>
+			    </div>
+			</div>
+		</div>
+		<!--筛选后内容-->
+		<div class="cards" id="cards">
+			
+			
+		</div>
+		<!-- 上拉刷新 -->
+		<div class="pullup L_" style="display:none;">上拉加载更多...</div>
+		<div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""/><L_>正在加载</L_></div>
+	</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="cardlist" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<div class="mui-card" data-id="{{d[i]['id']}}">
+				<!--页眉，放置标题-->
+				<div class="mui-card-header">
+					<span></span>
+
+					<a></a>
+					{{# if (d[i]['type'] == 2) {}}
+						<p style="color: red;">-{{d[i]['score']}}</p>
+					{{# } else { }}
+						<p>+{{d[i]['score']}}</p>
+					{{# } }}
+				</div>
+				<!--内容区-->
+				<div class="mui-card-content show_content mui-clearfix">
+				</div>
+				<div class="mui-card-footer show">
+			       <span>{{ L_('描述') }}:&nbsp;{{d[i]['desc']}}</span>
+			       <i class="mui-pull-right up_down"></i>
+				</div>
+			</div>
+	{{# } }}
+</script>
+<script id="content_list" type="text/html">
+	{{# for(var i = 0, len = d.data.length; i < len; i++){ }}
+		{{#  if(d.data[i].name!="描述"){ }}
+			{{# if(d.data[i].value!=null){}}
+				<div class="mui-pull-left" style="width: 50%;">
+					<p>{{d.data[i].name}}:{{d.data[i].value}}</p>
+				</div>
+			{{# } else { }}
+				<div class="mui-pull-left" style="width: 50%;">
+					<p>{{d.data[i].name}}:{{ L_('无') }}</p>
+				</div>
+			{{# } }}
+		{{# } }}
+
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+	var ticket = common.getCache('ticket');
+	//console.log(ticket);
+	var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+	var be_date='';
+	var enddate='';
+	var stor_list=[];
+	var set_state_index='';
+	var page=1;
+	var zuiShi='';
+	var ctuan=common.getCache('ctuan');
+	$('.ctuan').text(ctuan);
+	function p(s) {
+	    return s < 10 ? '0' + s: s;
+	}
+
+	//获取当前时间
+	var myDate = new Date();
+	//获取当前年
+	var year=myDate.getFullYear();
+	//获取当前月
+	var month=myDate.getMonth()+1;
+	//获取当前日
+	var date=myDate.getDate(); 
+	var now=year+'-'+p(month)+"-"+p(date);
+	var start=year+'-'+p(month)+"-"+p('1');
+	//console.log(now);
+	$('#begin_date').text(start);
+	$('#end_date').text(now);
+
+	now=replaceAll(now);
+	start=replaceAll(start);
+	zuiShi=start+'-'+now;
+	be_date=start;
+	enddate=now;
+	console.log(zuiShi)
+	function selectChange(lists){
+		stor_list=[];
+		$.each(lists,function(i,val){
+			var goods_id_list ={'value':'','text':''};
+			goods_id_list.text=val.name;
+			goods_id_list.value=val.store_id;
+			stor_list.push(goods_id_list);
+		});
+	}
+	function replaceAll(str){
+		if(str!=null)
+		str = str.replace(/-/g,"/")
+		return str;
+	}
+	function changeAllshou(){
+		common.http('Merchantapp&a=system_score',{'ticket':ticket,'client':client,'page':page,'type':set_state_index,'period':zuiShi},function(data){
+			var sore_num = data.sore_num;
+            $('#score_get').text(sore_num['score_get']);
+            $('.score_use').text(sore_num['score_use']);
+
+			$('#total').text(data.mer_info.system_score);
+			console.log( data.list.totalPage)
+			if(data.list.list.length==0 || data.list.totalPage < page){
+				$('.pullup').html(L_('没有更多数据啦'));
+				$('.loading').hide();
+				$('.pullup').show();
+
+			}else{
+				data.list.list.length<10&&$('.pullup').html(L_('没有更多数据啦'));
+				$('.loading').hide();
+				$('.pullup').show();
+				var list = data.list.list;
+				console.log(list)
+				laytpl(document.getElementById('cardlist').innerHTML).render(list, function(html){
+					$('.cards').append(html);
+					$('.loading').hide();
+					$('.pullup').show();
+				});
+				if(data.list.list.length>9){
+				 var flag = false;
+					 // 上拉加载和下拉刷新
+					 $(window).scroll(function(e) {
+					 	e.stopPropagation();
+		                //上拉加载
+		                 if(flag){
+					      //数据加载中
+					      return false;
+					    }
+		                if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+		                	$('.pullup').hide();
+		                	$('.loading').show();
+		                	flag = true;
+		                    page++;
+		                    changeAllshou();
+		                    //$('.pullup').show();
+		                	//$('.loading').hide();
+		                }
+		            });
+				}
+				
+			}
+			
+		});
+	}
+	// 页面初次加载
+	changeAllshou();
+
+    var set_state_list=[
+        {'text':L_('全部状态'),'value':''},
+        {'text':L_('增加'),'value':'1'},
+        {'text':L_('消耗'),'value':'2'},
+        ];
+
+      	mui.init();
+      	//筛选
+      	  	(function($, doc) {
+				$.init();
+				// 团购订单
+				mui('.mui-content').on('tap','#showUserPicker',function(e){
+					/**
+					 * 获取对象属性的值
+					 * 主要用于过滤三级联动中，可能出现的最低级的数据不存在的情况，实际开发中需要注意这一点；
+					 * @param {Object} obj 对象
+					 * @param {String} param 属性名
+					 */
+					var _getParam = function(obj, param) {
+						return obj[param] || '';
+					};
+					//普通示例
+					var userPicker = new $.PopPicker();
+					userPicker.setData(set_state_list);
+					userPicker.pickers[0].setSelectedValue(set_state_index);
+					var userResult = doc.getElementById('userResult');
+					userPicker.show(function(items) {
+						$('#tuanding')[0].innerText= items[0].text;
+						var type=items[0].value;
+                        set_state_index=items[0].value;
+						page=1;
+						zuiShi=be_date+'-'+enddate;
+						if(zuiShi=='-'){
+							zuiShi='';
+						}
+						 document.getElementById('cards').innerHTML='';
+						changeAllshou();
+						
+					});
+				});
+
+				// 两类时间选择
+				$('.begin_date')[0].addEventListener('tap',function(){
+					var timeValue=document.getElementById('begin_date').innerText;
+					var d=new Date();
+					var optionsJson = '{"type":"date","beginYear":2014,"beginMonth":5,"beginDay":1,"endYear":'+d.getFullYear()+'}';
+					var options = JSON.parse(optionsJson);
+					var id = this.getAttribute('id');
+					var picker = new $.DtPicker(options);
+					picker.setSelectedValue(timeValue);
+					picker.show(function(rs) {
+						$('#begin_date')[0].innerText = rs.text;
+						be_date=replaceAll(rs.text);
+						picker.dispose();
+						if(enddate==''){
+							mui.toast(L_('请选择结束日期'));
+						}else{
+							page=1;
+							zuiShi=be_date+'-'+enddate;
+							console.log(zuiShi);
+							 document.getElementById('cards').innerHTML='';
+							changeAllshou();
+						}
+
+						
+					});
+				});
+				$('.end_date')[0].addEventListener('tap',function(){
+					var timeValue=document.getElementById('end_date').innerText;
+					var d=new Date();
+					var optionsJson = '{"type":"date","beginYear":2014,"endYear":'+d.getFullYear()+'}';
+					var options = JSON.parse(optionsJson);
+					var id = this.getAttribute('id');
+					var picker = new $.DtPicker(options);
+					picker.setSelectedValue(timeValue);
+					picker.show(function(rs) {
+						$('#end_date')[0].innerText = rs.text;
+						picker.dispose();
+						//var start_date=replaceAll($('#begin_date').text());
+						 enddate=replaceAll(rs.text);
+						 if(be_date==''){
+						 	mui.toast(L_('请选择开始日期'));
+						 }else{
+						 	page=1;
+						 	zuiShi=be_date+'-'+enddate;
+							 document.getElementById('cards').innerHTML='';
+							changeAllshou();
+						 }
+						
+						
+					});
+				});
+			})(mui, document);
+
+			//控制显示隐藏
+			mui('.mui-content').on('click','.show',function(e){
+				var id=$(this).parents('.mui-card').data('id');
+				var me=this;
+				if($(this).is('.active')){
+					$(this).removeClass('active');
+					$(this).prev('.show_content').hide();
+				}else{
+					common.http('Merchantapp&a=system_score_detail',{'ticket':ticket,'client':client,'id':id},function(data){
+						console.log(data);
+						laytpl(document.getElementById('content_list').innerHTML).render(data, function(html){
+							$(me).prev('.show_content').html(html);
+						});
+					});
+					$(this).addClass('active');
+					$(this).prev('.show_content').show();
+				}
+			});
+			
+            mui('.mui-bar').on('tap','.buy_score', function () {
+                openWindow({
+                    url:'merchant_buy_score.html',
+                    id:'merchant_buy_score'
+                });
+            });
+
+
+			//控制显示隐藏
+			mui('.mui-content').on('click','.mer_log',function(e){
+				common.http('Merchantapp&a=merchant_login',{'ticket':ticket,'client':client},function(data){
+					window.location.href=data.data
+				});
+			});
+
+</script>
+</body>
+</html>

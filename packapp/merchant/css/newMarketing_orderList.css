@@ -1,0 +1,84 @@
+ul{
+	list-style: none;
+	margin: 0;
+    padding: 0;
+}
+.mui-bar-nav {
+	background: #FFA200;
+    color: #ffffff;
+}
+.mui-bar-nav .mui-title {
+    color: #ffffff;
+}
+
+/*下拉刷新样式*/
+.pullup1,.loading1,.empty{
+	text-align: center;
+	padding: 10px 0;
+    padding-bottom: 10px;
+    padding-bottom: calc(10px + constant(safe-area-inset-bottom));
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+	font-size: 14px;
+	color: #999;
+}
+.empty {
+    margin-top: 200px;
+}
+.loading1 img{
+	height: 14px;
+	vertical-align: middle;
+	margin-right: 2px;
+}
+
+.cr-red {
+    color:rgba(255, 103, 28, 1);
+}
+
+.cr-gray {
+    color:rgba(153, 153, 153, 1);
+}
+
+.mr-4 {
+    margin-right: 4px;
+}
+.list .item {
+    padding: 16px 17px;
+    margin: 10px 12px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    color: rgba(75, 75, 75, 1);
+    font-size: 12px;
+}
+.list .item .order-type {
+    font-size: 15px;
+    font-weight: bold;
+}
+.list .item .orderid {
+    margin-top: 4px;
+    font-weight: 400;
+}
+.list .item .btn {
+    padding: 10px 16px;
+    border: 1px solid #E8E8E8;
+    border-radius: 18px;
+    line-height: 1;
+}
+.list .item .content {
+    padding: 4px 0;
+    margin-top: 15px;
+    background: #F8F8F8;
+    border-radius: 5px;
+}
+.list .item .content li {
+    padding: 4px 15px;
+}
+.list .item .content li span {
+    display: inline-block;
+}
+.list .item .content li .label {
+    width: 75px;
+    font-weight: 500;
+    color: #999999;
+    text-align: left;
+}

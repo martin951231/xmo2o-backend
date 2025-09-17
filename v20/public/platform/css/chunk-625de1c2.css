@@ -1,0 +1,21 @@
+.ant-upload-list-picture-card .ant-upload-list-item {
+  float: left;
+  width: 104px;
+  height: 104px;
+  margin: 10px 8px 8px 0;
+}
+.add-volunteer-activity-box {
+  margin: 30px 20px;
+  background-color: white;
+  padding: 20px 0;
+}
+/* you can make up upload button and sample style by using stylesheets */
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+

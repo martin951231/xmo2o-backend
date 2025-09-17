@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>钱账通入网</title>
+		<link href="css/mui.css" rel="stylesheet" />
+	</head>
+	<body>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+                var ticket = common.getCache('ticket');
+			    var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+                common.http('Merchantapp&a=getQianZhangTongRegisterUrl',{'ticket':ticket,'client':client},function(data){
+					window.location.href = data.url;
+                    return;
+				});
+		</script>
+	</body>
+</html>

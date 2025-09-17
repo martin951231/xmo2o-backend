@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<script type="text/javascript" src="{pigcms{$static_path}js/jquery.min.js"></script>
+		<title>{pigcms{$config.site_name} - {pigcms{:L_("会员卡编辑")}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<link rel="stylesheet" type="text/css" href="{pigcms{$static_path}css/group_edit.css"/>
+		<style>
+			a:hover,a:visited{color:#666;}
+		</style>
+	</head>
+	<body>
+	<form id="myform" method="post" action="{pigcms{:U('shop_fitment_color')}" autocomplete="off">
+		<input type="hidden" name="store_id" value="{pigcms{$_GET.store_id}"/>
+		<table>
+			<tr>
+				<th width="25%">{pigcms{:L_("选择主题色")}</th>
+				<td width="75%" colspan="3">
+					<select name="shop_fitment_color" id="shop_fitment_color" style="width:150px;">
+                        <option value="113533" <if condition="$now_store['shop_fitment_color'] eq '113533'">selected="selected"</if>>{pigcms{:L_("默认")}</option>
+						<option value="06C1AE" <if condition="$now_store['shop_fitment_color'] eq '06C1AE'">selected="selected"</if>>{pigcms{:L_("绿色")}</option>
+						<option value="D32C0C" <if condition="$now_store['shop_fitment_color'] eq 'D32C0C'">selected="selected"</if>>{pigcms{:L_("红色")}</option>
+						<option value="F57224" <if condition="$now_store['shop_fitment_color'] eq 'F57224'">selected="selected"</if>>{pigcms{:L_("黄色")}</option>
+						<option value="0E6CD8" <if condition="$now_store['shop_fitment_color'] eq '0E6CD8'">selected="selected"</if>>{pigcms{:L_("蓝色")}</option>
+						<option value="6F31D7" <if condition="$now_store['shop_fitment_color'] eq '6F31D7'">selected="selected"</if>>{pigcms{:L_("紫色")}</option>
+						<option value="C0956A" <if condition="$now_store['shop_fitment_color'] eq 'C0956A'">selected="selected"</if>>{pigcms{:L_("棕色")}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th width="25%">{pigcms{:L_("颜色预览")}</th>
+				<td width="75%" colspan="3">
+					<div id="color_preview" style="width:150px;height:28px;display:inline-block;background:#{pigcms{$now_store.shop_fitment_color|default='06C1AE'};"></div>
+				</td>
+			</tr>
+			<tr>
+				<th width="25%">{pigcms{:L_("分类限购提示背景色")}</th>
+				<td width="75%" colspan="3">
+				<input type="color" name="category_limit_num_bg" style="width:150px;height:35px;border: none;padding: 0;" value="{pigcms{$now_store['category_limit_num_bg']}" />
+				</td>
+			</tr>
+		</table>
+		<div class="btn">
+			<button type="submit" id="submit">{pigcms{:L_("保存")}</button>
+		</div>
+		</form>
+		<script>
+			// 获得子弹窗的滚动值
+		    function getScrollTop() {
+		        var scrollTop = parent.document.getElementById('contentView') ? parent.document.getElementById('contentView').scrollTop : 0;
+		        console.log(scrollTop,'scrollTop')
+		        var top = '100px'
+		        if(scrollTop >= 0){
+		            top = scrollTop + 200 + 'px'
+		        }
+		        return top;
+		    }
+
+			$(function(){
+				$('#shop_fitment_color').change(function(){
+					$('#color_preview').css('background','#' + $(this).val());
+					console.log($('#fitment_preview .fitment_header',parent.document));
+					$('#fitment_preview .fitment_header',parent.document).css('background-color','#' + $(this).val());
+				});
+				$('#myform').submit(function(){
+					$('#submit').prop('disabled',true).html('{pigcms{:L_("保存中")}...');
+					$.post($('#myform').attr('action'),$('#myform').serialize(),function(result){
+						if(result.status == 1){
+							parent.fitment_header_bgcolor = $('#shop_fitment_color').val();
+							parent.layer.alert(result.info,{
+								offset: getScrollTop(),
+								end:function(){
+									window.parent.layer.closeAll();
+								}
+							});
+						}else{
+							parent.layer.alert(result.info,{offset: getScrollTop()});
+							$('#submit').prop('disabled',false).html('{pigcms{:L_("保存")}');
+						}
+					});
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>

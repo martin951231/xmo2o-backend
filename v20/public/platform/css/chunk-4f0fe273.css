@@ -1,0 +1,31 @@
+.bm-view[data-v-3a0bc6fd] {
+  width: 100%;
+  margin-top: 10px;
+}
+.ms[data-v-3a0bc6fd] {
+  color: #888;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.mapContent .chooseLocationBox[data-v-bbdc0ae6] {
+  overflow: hidden;
+}
+#tiandimap[data-v-bbdc0ae6] {
+  width: 100%;
+  height: 450px;
+}
+.ms[data-v-bbdc0ae6] {
+  color: #888;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+

@@ -1,0 +1,212 @@
+.title_right{
+    background:#FF7B44;
+    text-align:center;
+    padding:0px 4px;
+    color:#fff;
+    border-radius:2px;
+}
+.iconfont{font-size: 14px;color: #999;margin-right: 5px;}
+.icon-see, .icon-share1{font-size: 12px;color:#ccc;}
+.activity_image img{width:100%;height:100%}
+.none{display:none}
+.weui-media-box__info_d {
+
+    font-size: 13px;
+    color: #CECECE;
+
+}
+body, html {
+    height: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+.demos-title {
+    text-align: center;
+    font-size: 34px;
+    color: #3cc51f;
+    font-weight: 400;
+    margin: 0 15%;
+}
+
+.demos-sub-title {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+}
+
+.demos-header {
+    padding: 35px 0;
+}
+
+.demos-content-padded {
+    padding: 15px;
+}
+
+.demos-second-title {
+    text-align: center;
+    font-size: 24px;
+    color: #3cc51f;
+    font-weight: 400;
+    margin: 0 15%;
+}
+
+footer {
+    text-align: center;
+    font-size: 14px;
+    padding: 20px;
+}
+
+footer a {
+    color: #999;
+    text-decoration: none;
+}
+.weui-tabbar {
+    padding: 10px 0px;
+    background-color: #fff;
+}
+
+
+
+.yui-auth-form.auth-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count:infinite;
+    animation-iteration-count:infinite;
+    -webkit-animation-name:slideInDown;
+    animation-name:slideInDown;
+}
+.showAminate{display:block}
+.showAminateNone{display:none}
+.flex2{flex:2}
+@-webkit-keyframes slideInDown {
+    0% {
+        opacity: 0.1;
+        top: -100%;}
+    80%{
+        top: 25%;
+    }
+    100% {
+        top: 20%;}
+}
+@keyframes slideInDown {
+    0% {
+        opacity: 0.1;
+        top: -100%;}
+    80%{
+        top: 25%;
+    }
+    100% {
+        top: 20%;}
+}
+.yui-auth-form.close-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count:infinite;
+    animation-iteration-count:infinite;
+    -webkit-animation-name: slideInUp;
+    animation-name: slideInUp;
+}
+@-webkit-keyframes slideInUp {
+    0% {}
+    30%{
+        top: 10%;
+    }
+    100% {
+        opacity: 0.2;
+        top: 100%;}
+}
+@keyframes slideInUp {
+    0% {}
+    30%{
+        top: 10%;
+    }
+    100% {
+        opacity: 0.2;
+        top: 100%;}
+}
+.change-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: slideTurn;
+    animation-name: slideTurn;
+}
+
+@-webkit-keyframes slideTurn {
+    0% {
+        transform: rotateY(0);
+    }
+    50%{
+        transform: rotateY(90deg);
+    }
+    100% {
+        transform: rotateY(0);
+        top: 20%;}
+}
+.tjt_weui_mask{
+    z-index: 100;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition-duration: .3s;
+    background: rgba(0,0,0,.6);
+}
+.tjt_weui_mask_visible{
+    opacity: 1;
+    visibility: visible;
+}
+.tjt_weui_dialog{
+    -webkit-transition-duration: .2s;
+    transition-duration: .2s;
+    margin: 0;
+    left: 7.5%;
+    top: 15%;
+    z-index: 100;
+    position: fixed;
+    width: 85%;
+    background-color: #fafafc;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.tjt_weui_dialog.tjt_weui_dialog_visible {opacity: 1;visibility: visible;-webkit-transform: scale(1);transform: scale(1);}
+.btn{border-radius:0}
+.btn:after,.btn:before{border-radius:0}
+.weui-media-box__title{overflow:auto !important;white-space: normal !important}
+.mobile{line-height:2.58823529em !important;padding:0px 5px !important;margin-top:0px !important;}
+.iconfont{font-size: 14px;color: #999;margin-right: 5px;}
+.icon-see, .icon-share1{font-size: 12px;color:#ccc;}
+.create_group{
+    position: fixed;
+    bottom: 60px;
+    right: 15px;
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+}
+
+.create_group image{
+    width: 100%;
+    height: 100%;
+}
+.tjt-checkDadio:before {
+    content: '\EA01';
+    color: #C9C9C9;
+    font-size: 23px;
+    display: block;
+}
+.weui-cells_radio .weui-check:checked + .weui-icon-checked:before {
+    display: block;
+    content: '\EA06';
+    color: #09BB07;
+    font-size: 23px;
+}
+.tjt-cells:after{
+    content: none;
+}
+.bg-ddd{
+    background: #ddd !important
+}

@@ -1,0 +1,24 @@
+
+.contact-store-wrap[data-v-4c661626] {
+  padding: 9px 16px;
+  width: 100%;
+  height: 60px;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+.store-name[data-v-4c661626] {
+  margin-right: 6px;
+  color: #333333;
+  font-weight: bold;
+}
+.address-icon[data-v-4c661626] {
+  padding-right: 10px;
+}
+.phone-icon[data-v-4c661626] {
+  padding-right: 10px;
+}
+.address-txt[data-v-4c661626] {
+  font-weight: 400;
+  color: #999999;
+}
+

@@ -1,0 +1,73 @@
+{
+    "name": "topthink/think",
+    "description": "the new thinkphp framework",
+    "type": "project",
+    "keywords": [
+        "framework",
+        "thinkphp",
+        "ORM"
+    ],
+    "homepage": "http://thinkphp.cn/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "liu21st",
+            "email": "liu21st@gmail.com"
+        },
+        {
+            "name": "yunwuxin",
+            "email": "448901948@qq.com"
+        }        
+    ],
+    "require": {
+        "php": "^7.1.0",
+        "topthink/framework": "6.0.3",
+        "topthink/think-orm": "2.0.31",
+        "topthink/think-multi-app": "^1.0",
+        "topthink/think-captcha": "^3.0",
+        "topthink/think-image": "^1.0",
+        "dompdf/dompdf": "^1.1",
+        "phpoffice/phpspreadsheet": "^1.12",
+        "workerman/mqtt": "^1.1",
+        "freedsx/snmp": "^0.4.2",
+        "workerman/mysql": "^1.0",
+        "topthink/think-queue": "^3.0",
+        "yunwuxin/think-cron": "^3.0",
+        "itbdw/ip-database": "^3.0",
+        "whichbrowser/parser": "^2.1",
+        "workerman/gateway-worker": "^3.0",
+        "imactool/hikcloud": "^1.0",
+        "imactool/dahua-cloud": "^1.0",
+        "intervention/image": "^2.7",
+        "nesbot/carbon": "^2.62",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "picqer/php-barcode-generator": "^0.3.0",
+        "fastwhal/hik-device-gateway": "dev-master",
+        "ext-openssl": "*",
+        "ext-bcmath": "*"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^4.2",
+        "topthink/think-trace":"^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app"
+        },
+        "psr-0": {
+            "": "extend/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php think service:discover",
+            "@php think vendor:publish"
+        ]
+    },
+    "repositories": {
+    }
+}

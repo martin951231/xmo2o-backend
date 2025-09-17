@@ -1,0 +1,17 @@
+.img-view[data-v-52b59a11] {
+  z-index: 999999999;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.img-view .image[data-v-52b59a11] {
+  margin: 0 auto;
+}
+

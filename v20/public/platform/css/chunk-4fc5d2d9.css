@@ -1,0 +1,12 @@
+.bind_wx[data-v-3d666254] {
+  width: 100%;
+}
+.bind_wx .container[data-v-3d666254] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+

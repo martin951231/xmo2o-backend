@@ -1,0 +1,306 @@
+#app {}
+
+.van-nav-bar {
+    background-color: #FFA200 !important;
+    color: #fff;
+}
+
+.van-nav-bar__title {
+    color: #fff;
+}
+
+#app .home-header {
+    width: 100%;
+    height: 297px;
+    position: relative;
+}
+
+#app .home-header .bj {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    top: -6px;
+    z-index: -1;
+}
+
+#app .home-header .bj-1 {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    right: 0;
+    top: calc(env(safe-area-inset-top));
+    z-index: -1;
+}
+
+#app .van-hairline--bottom::after {
+    border-bottom-width: 0 !important;
+}
+
+.home-header {
+    /* padding-top: constant(safe-area-inset-top); */
+    padding-top: calc(20px + env(safe-area-inset-top))
+}
+
+.home-header .user-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 0 26px;
+}
+
+.home-header .user-box .left {
+    display: flex;
+}
+
+.home-header .user-box .left .user-info {
+    color: #fff;
+    margin-left: 20px;
+    font-size: 16px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.home-header .user-box .left .fans {
+    font-size: 12px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #F7F7F7;
+    margin-top: 4px;
+}
+
+/* 订单数样式 */
+.order-box {
+    display: flex;
+    justify-content: space-around;
+    padding: 24px 0;
+}
+
+.order-box .item {
+    text-align: center;
+}
+
+.order-box .item .total {
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.order-box .item .total-text {
+    font-size: 12px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #F9F9F9;
+}
+
+/* 今日收入以及余额 */
+.today-money-box {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #FFFFFF;
+    box-shadow: 0px 3px 21px 0px rgba(239, 239, 239, 0.15);
+    border-radius: 10px;
+    margin: 16px 10px;
+    padding: 20px 10px;
+}
+
+.today-money-box .line {
+    width: 1px;
+    height: 30px;
+    border: 1px solid #B2B2B2;
+}
+
+.today-money-box .item {
+    text-align: center;
+}
+
+.today-money-box .item .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.today-money-box .item .order-num {
+    font-size: 10px;
+    font-weight: 500;
+    color: #FE5050;
+    height: 16px;
+    line-height: 16px;
+}
+
+.today-money-box .item .total-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: #999999;
+}
+
+/* 轮播图样式 */
+.swiper-box {
+    box-shadow: 0px 3px 21px 0px rgba(239, 239, 239, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 10px;
+    position: relative;
+    top: -6px;
+}
+
+.swiper-box .imgs {
+    display: block;
+}
+
+/* 菜单样式 */
+.menu-box {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    padding-bottom: 0;
+    margin: 6px 10px;
+    background-color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 3px 21px 0px rgba(239, 239, 239, 0.15);
+}
+
+.menu-box .menu-item {
+    width: 25%;
+    margin-bottom: 20px;
+}
+.menu-box .menu-item .title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.agreement-box {
+    font-size: 14px;
+    font-weight: bold;
+    color: #999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;
+}
+
+.agreement-box .line {
+    margin: 0 16px;
+
+}
+
+/* 弹出层菜单样式 */
+.popup-menu {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-menu .trip {
+    background: #FFF6E7;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #333333;
+    padding: 4px 15px;
+    margin: 20px;
+}
+
+.flex-items-center {
+    display: flex;
+    align-items: center;
+}
+
+.popup-menu .menu-home-box {}
+
+.popup-menu .box {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.popup-menu .title {
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.popup-menu .title .edit-menu {
+    font-size: 13px;
+    font-weight: 500;
+    color: #FFA200;
+}
+
+.popup-menu .menu-home-box,
+.popup-menu-action {}
+
+.popup-menu .popup-menu-action {}
+
+.popup-menu .popup-menu-item {
+    width: 25%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.popup-menu .popup-menu-item .menu-icon {
+    display: inline-block;
+    position: relative;
+}
+
+.popup-menu .popup-menu-item .edit,
+.add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #fff;
+    padding: 4px;
+    font-weight: bold;
+    position: absolute;
+    top: -13px;
+    right: -12px;
+}
+
+.popup-menu .popup-menu-item .add {
+    font-size: 18px;
+    /* background-color: #FFA200; */
+}
+
+.popup-menu .popup-menu-item .menu-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333333;
+}
+
+.footer_btn {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin: 10px 0;
+}
+
+.footer_btn .cancel,
+.determine {
+    height: 44px;
+    border: 1px solid #D6D6D6;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45%;
+}
+
+.footer_btn .determine {
+    background: #FFA200;
+    color: #fff;
+    border: 1px solid #FFA200;
+}

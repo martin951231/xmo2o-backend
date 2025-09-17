@@ -1,0 +1,22 @@
+.form_item[data-v-6bcbfcc0] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 10px 0 20px 0;
+}
+.form_item .title[data-v-6bcbfcc0] {
+  width: 100px;
+  text-align: right;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+/*加上height和滚动属性就可以，滚动条样式是系统默认样式，可能不同*/
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options[data-v-6bcbfcc0] {
+  border-color: #ccc;
+  height: 125px;
+  overflow: auto;
+}
+

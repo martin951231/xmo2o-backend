@@ -1,0 +1,109 @@
+
+.imgname{
+    width: 100px;
+}
+.page_top{
+    background-color: #e6f7ff;
+    display: inline-block;
+    width: 100%;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+    color: #666666;
+}
+
+
+[data-v-1d392763] .form_con {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+[data-v-1d392763] .label_title {
+  width: 27%;
+  text-align: right;
+}
+[data-v-1d392763] .input_container {
+  width: 33%;
+}
+[data-v-1d392763] .label_title_three {
+  width: 23.7%;
+  text-align: right;
+}
+[data-v-1d392763] .input_container_three {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 77.3%;
+}
+[data-v-1d392763] .duration_item {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin-top: 5px;
+}
+[data-v-1d392763] .value_item {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+[data-v-1d392763] .value_item_txt {
+  font-size: 12px;
+  color: #999999;
+}
+[data-v-1d392763] .label_desc {
+  width: 55%;
+  font-size: 12px;
+  color: #999999;
+  line-height: 15px;
+  -webkit-transform: translateY(10px);
+          transform: translateY(10px);
+}
+[data-v-1d392763] .label_title_two {
+  width: 24%;
+  text-align: right;
+}
+[data-v-1d392763] .input_container_two {
+  width: 77%;
+  font-size: 12px;
+  color: #999999;
+  line-height: 15px;
+}
+[data-v-1d392763] .rule_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-1d392763] .rule_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-1d392763] .rule_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+

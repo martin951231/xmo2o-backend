@@ -1,0 +1,46 @@
+.count{    border: 2px solid #EE7732;  border-radius: 6px;  padding: 1px 6px;}
+.count_name{margin:0px 5px 0px 8px}
+.ui-nowrap.money{
+     font-size: 14px;
+     line-height: normal; }
+
+.ui-progress {
+    border-radius: 300px;
+    height: 15px;
+    background-color: #FDAEB9;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: unset;
+}
+.ui-progress span {
+    display: block;
+    background: #f23030;
+    height: 100%;
+    line-height: 15px;
+    color: #fff;
+    width: 0%;
+    font-size: unset;
+}
+.ui-btn-primary {
+    background-color: #f23030;
+    height: 26px;
+    line-height: 26px;
+    padding: 0px 10px
+
+}
+ .time {
+    font-size: .11rem;
+    border-radius: 3px;
+    padding: 2px;
+    background: #333;
+    color: #fff;
+}
+ .go_discount_time{
+     bottom:0px;
+     height:25px;
+     line-height:25px
+ }
+.ui-list-img-square {
+    width: 100px;
+    height: 100px;
+}

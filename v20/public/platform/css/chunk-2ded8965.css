@@ -1,0 +1,23 @@
+
+.container[data-v-d17c56a8]{
+  width: 100%;
+}
+.house_type[data-v-d17c56a8]{
+  height: 20px;
+  float: left;
+  width: 120px;
+  margin-left: 5px;
+}
+.radio[data-v-d17c56a8]{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  float: left;
+  margin-top: 5px;
+}
+.tips[data-v-d17c56a8]{
+  float: left;
+  height: 10px;
+  margin-left: 8px;
+}
+

@@ -1,0 +1,1 @@
+<include file="Public:header"/><li  class="upload_pic_li" style="float:left;list-style:none;">	<img src="{pigcms{$url}" style="width:700px;margin-right:5px;"></li>        <include file="Public:footer"/>

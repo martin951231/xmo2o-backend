@@ -1,0 +1,580 @@
+<html lang="zh-CN"><head>
+    <meta charset="utf-8">
+    <title>订单详情</title>
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link href="css/mui.picker.css" rel="stylesheet" />
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link href="css/pigcms.css" rel="stylesheet">
+    <style>
+        .spec_list table td {
+            text-align: center;
+        }
+        .spec_list table th {
+            text-align: center;
+            padding: 1px;
+            font-size: 14px;
+        }
+        .spec_list table tr {
+            border-bottom: #f1f1f1 1px solid;
+        }
+        .spec_list table {
+            margin: 12px 3%;
+        }
+        .plus_class {
+            position: fixed;
+            height: 60px;
+            width: 100%;
+            bottom: 0;
+            line-height: 60px;
+            background: #EFEFF4;
+        }
+        .mg_60 {
+            margin-bottom: 60px;
+        }
+        .plus_class div {
+            margin: 0 5%;
+            width: 90%;
+            padding: 10px 0;
+        }
+        .plus_class a.to_pay {
+            background: #ffa200;
+            border-radius: 5px;
+            margin-left: 1%;
+            display: inline-block;
+        }
+        .plus_class a {
+            margin-left: 5%;
+            width: 100%;
+            height: 40px;
+            color: #fff;
+            font-size: 16px;
+            line-height: 40px;
+            text-align: center;
+        }
+
+
+        .spec_list .flex {
+            display: flex;
+        }
+        .spec_list .flex_grow {
+            flex-grow: 1;
+            text-align: center
+        }
+
+        .spec_list .spec_val_name {
+            padding: 1px 0;
+        }
+        .spec_list .list_spec_name {
+            font-size: 14px;
+            line-height: 22px;
+            border-radius: 5px;
+            padding: 2px 5px;
+            margin-top: 2px;
+            color: #fff;
+            background: #f23030;
+        }
+        .spec_list .spec_val_name div {
+            font-size: 14px;
+            line-height: 22px;
+            color: #fff;
+            background: #f23030;
+        }
+        .spec_list .spec_price {
+            color: #ff4d45;
+            width: 100%;
+        }
+        .right {
+            float: right;
+        }
+        .clr {
+            zoom: 1;
+        }
+
+
+        .spec_buy_num .wrap .plus a {
+            width: 30px;
+            float: left;
+            height: 28px;
+            border: #e5e5e5 1px solid;
+            text-align: center;
+            color: #333333;
+            line-height: 28px;
+            font-size: 20px;
+            font-family: "Arial";
+        }
+        .spec_buy_num .wrap .plus input {
+            width: 70px;
+            text-align: center;
+            float: left;
+            border: #e5e5e5 1px solid;
+            border-left: none;
+            border-right: none;
+            height: 28px;
+            font-size: 14px;
+            border-radius: 0px;
+        }
+
+        .normal .wrap .plus a {
+            width: 30px;
+            float: left;
+            height: 28px;
+            border: #e5e5e5 1px solid;
+            text-align: center;
+            color: #333333;
+            line-height: 28px;
+            font-size: 20px;
+            font-family: "Arial";
+        }
+        .normal .wrap .plus input {
+            width: 70px;
+            text-align: center;
+            float: left;
+            border: #e5e5e5 1px solid;
+            border-left: none;
+            border-right: none;
+            height: 28px;
+            font-size: 14px;
+            border-radius: 0px;
+        }
+    </style>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title"><span class="market"><L_>套餐</L_></span><L_>订单详情</L_></h1>
+</header>
+<div class="mui-content" style="padding-bottom: 60px;background-color: #fff;">
+    <section class="g_details allHtml">
+
+    </section>
+</div>
+<nav class="plus_class">
+    <div>
+        <a href="javascript:;" class="to_pay"><L_>确定支付</L_></a>
+    </div>
+
+</nav>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/fastclick.js"></script>
+<script src="js/jRoll.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js?t=001"></script>
+<script id="pluscardLists" type="text/html">
+    {{# var data=d; }}
+    {{# console.log(data); }}
+    <div class="commod detail_list">
+        <input type="hidden" value="{{ data.order_id }}" name="order_id">
+        <div class="buy detail_list">
+            <div class="top clr">
+                <h2 class="fl">{{L_('购买信息')}}</h2>
+            </div>
+            <div class="user_list">
+                <ul>
+                    <li class="clr">
+                        <span class="fl">{{L_('项目名称')}}</span>
+                        <span class="fr">
+                                    {{ data.auth_info.name }}
+                                </span>
+                    </li>
+                    <li class="clr">
+                        <span class="fl">{{L_('套餐价格')}}</span>
+                        <span class="fr">{{  data.auth_info.price }}({{ data.config.Currency_txt }})</span>
+                    </li>
+                    <li class="clr">
+                        <span class="fl">{{L_('服务价格')}}</span>
+                        <span class="fr">{{  data.auth_info.price }}{{ data.config.Currency_txt }}/{{ data.auth_info.time_type_txt }}</span>
+                    </li>
+                    <li class="clr">
+                    <div class="mui-card-content normal" style="padding-top: 10px;">
+                        <span class="fl cas_left">{{L_('购买周期')}}</span>
+                        <div class="wrap right" style="padding-right:20px">
+                            <div class="plus clr" style="position:relative;">
+                                <a data-min_num="1" href="javascript:void(0)" class="jian" style="color: rgb(191, 191, 191);">-</a>
+                                <input class="buy_num" type="text" name="num"  data-min_unit="1" data-min_num="1" data-stock_num="1" value="1"/>
+                                <a data-min_num="1" href="javascript:void(0)" class="jia">+</a>
+                            </div>
+                        </div>
+                    </div>
+                    </li>
+
+<!--                    <li class="clr">-->
+<!--                        <span class="fl">{{L_('订单总额')}}</span>-->
+<!--                        <span class="fr">{{ data.auth_info.price }}</span>({{ data.config.Currency_txt }})-->
+<!--                    </li>-->
+                    <li class="clr">
+                        <span class="fl">{{L_('总计金额')}}</span>
+                        <span class="fr">
+							<span style="line-height: 26px;" class="total_price" data-price="{{data.auth_info.price}}" data-currency="{{data.config.Currency_txt}}">
+								{{  data.auth_info.price + data.config.Currency_txt}}
+							</span>
+						</span>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="pay_detail detail_list" style="clear: both;;margin-bottom: 60px;">
+                <div class="top clr">
+                    <h2 class="fl">{{L_('选择支付方式')}}</h2>
+                </div>
+                <div class="user_list">
+                    <ul>
+                        <li class="clr" style="padding: 5px 0;">
+                            <div class="mui-input-row mui-radio mui-left">
+                                <label style="width:100%;">
+                                    <input name="pay_type" value="" class="pay_type merchant_money" type="radio" checked="checked">
+                                    <span style="color: #159b76;"><span style="color: #428bca;font-size: 18px;">商家余额</span>({{ data.merchant['money'] }} {{ data.config['Currency_txt'] }})</span>
+                                </label>
+                            </div>
+                        </li>
+                        {{# if (data.pay_method) { }}
+                        {{# for (var i in data.pay_method) { }}
+                        {{# if (data.pay_method[i]) { }}
+                        <li class="clr" style="padding: 0;">
+                            <div class="mui-input-row mui-radio mui-left">
+                                <label style="width:100%;">
+                                    <input name="pay_type" value="{{ i }}" class="pay_type {{ i }}" type="radio" style="top: 12px;">
+                                    <span>
+															<img src="images/pay/weixinh5.gif" width="112" height="32" alt="{{data.pay_method[i]['name']}}" title="{{data.pay_method[i]['name']}}"/>
+														</span>
+                                </label>
+                            </div>
+                        </li>
+                        {{# } }}
+                        {{# } }}
+                        {{# } }}
+                    </ul>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</script>
+<script>
+    mui.init();
+    var ticket = common.getCache('ticket');
+    var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+    var menu_group = urlParam.menu_group;
+    var is_try = urlParam.is_try;
+    var change_money = urlParam.change_money;
+    var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+    var Currency_txt = '元';
+    var openid = urlParam.openid;
+    let merchantMoneyRemain = 0;//商家余额
+    let totalPrice = 0;
+
+    // 渲染数据
+    common.http('Merchantapp&a=auth_pay_check', {
+        'ticket': ticket,
+        'client': client,
+        'menu_group': menu_group,
+        'is_try' : is_try,
+        'change_money' : change_money,
+    }, function (data) {
+        merchantMoneyRemain = data.merchant.money;
+        totalPrice = data.auth_info.price;
+        Currency_txt = data.config['Currency_txt'];
+        laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+            $('.allHtml').html(html);
+            setTimeout(function () {
+                if (openid) {
+                    $('.weixin').attr('checked', true);
+                }
+            }, 500)
+        });
+    });
+    //            if(!openid && data.config['pay_weixinh5_open'] == '1'){
+    //            	location.href = window.location.protocol + '//' + requestDomain + '/wap.php?c=Packapp&a=bind&is_return=1&referer=' + encodeURI(location.href);
+    //            }
+
+    // });
+
+    // 确认支付订单
+    mui('.plus_class').on('tap','.to_pay',function(){
+        var pay_type = $('input[name="pay_type"]:checked').val();
+        console.log(pay_type);
+        if (pay_type=='weixin' && !openid) {
+            layer.open({
+                content: L_('微信支付需要先绑定微信？绑定后请重新点击确认支付！')
+                ,btn: [L_('前往'), L_('取消')]
+                ,yes: function(index){
+                    location.href = window.location.protocol + '//' + requestDomain + '/wap.php?c=Packapp&a=bind&is_return=1&referer=' + encodeURI(location.href);
+                    layer.close(index);
+                }
+            });
+        } else {
+            callpay();
+        }
+    });
+
+    //微信弹程支付
+    function callpay(){
+        var pay_type = $('input[name="pay_type"]:checked').val();
+        var order_id = $('input[name="order_id"]').val();
+        var num = $('input[name="num"]').val();
+        var money = totalPrice - merchantMoneyRemain;
+        console.log(order_id);
+        common.http('Merchantapp&a=auth_pay_success', {
+            'ticket': ticket,
+            'client': client,
+            'order_id':order_id,
+            'pay_type':pay_type,
+            'total_price' : totalPrice,
+            'num' : num,
+            'openid': openid
+        }, function (data) {
+            console.log(data);
+
+            if(pay_type == 'weixin' && !data.error){
+                layer.closeAll();
+                layer.open({
+                    type:1,
+                    content:'<div onclick="location.reload()" style="width:250px;top:50%;position:fixed;background:white;padding:20px 0;left:50%;margin-left:-125px;text-align:center;border-radius:10px;margin-top:-27px;">正在唤起微信支付，点击刷新</div>',
+                    shadeClose:false,
+                    success:function(){
+
+                    }
+                });
+                param =  data.weixin_param;
+                WeixinJSBridge.invoke("getBrandWCPayRequest",param,function(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    if(res.err_msg=="get_brand_wcpay_request:cancel"){
+                        setTimeout(function(){
+                            window.location.reload();
+                        },200);
+                        layer.open({type:2,content:'刷新页面中',shadeClose:false});
+                    }else if(res.err_msg=="get_brand_wcpay_request:ok"){
+                        setTimeout("window.location.href = '"+data.redirctUrl+"'",200);
+                        layer.open({type:2,content:'跳转加载中',shadeClose:false});
+                    }else{
+                        $("button.mj-submit").removeAttr("disabled");
+                        $("button.mj-submit").html("确认支付");
+                    }
+                    layer.closeAll();
+                });
+            } else if (data && data.error && data.msg) {
+                // mui.toast(data.msg);
+
+                if (data.jump) {
+                    var jump = data.jump;
+                    setTimeout(function () {
+                        if ('buy'==jump){
+                            var order_id=data.order_id;
+                            var goods_id=data.goods_id;
+                            openWindow({
+                                url:'market_detail.html?order_id='+order_id+'&goods_id='+goods_id+'&type=buy',
+                                id:'market_detail'
+                            });
+                        } else if ('market_index'==jump) {
+                            openWindow({
+                                url:'market_index.html',
+                                id:'market_index'
+                            });
+                        } else if ('mweb_url'==jump) {
+                            common.setCache('jump_url', data.url);
+                            common.setCache('total_money', data.total);
+                            common.setCache('h5_name', data.name);
+                            if(common.checkApp()){
+                                var new_mweb_url = (window.location.protocol == 'http:' ? 'http:' : 'https:' ) + '//'+requestDomain+ "/packapp/merchant/market_weixinh5.html?mweb_url=" + encodeURIComponent(data.url) +"&total_money=" + data.total + "&h5_name=" + encodeURIComponent(data.name);
+                                if(common.checkAndroidApp()){
+                                    window.pigcmspackapp.openBrowser(new_mweb_url);
+                                }else{
+                                    var iosHref = window.btoa(new_mweb_url);
+                                    iosHref = iosHref.replace('/','&');
+                                    common.iosFunction('openBrowser/'+iosHref);
+                                }
+                            } else {
+                                openWindow({
+                                    url:'market_weixinh5.html',
+                                    id:'market_weixinh5'
+                                });
+                            }
+                        }
+                    }, 800);
+                } else {
+                    var btnArray=[L_('否'),L_('是')];
+                    mui.confirm(L_('余额不足，是否前去充值？'), L_('充值提醒'), btnArray, function(e){
+                        if(e.index == 1){
+
+                            openWindow({
+                                url:'mer_recharge.html?money='+money,
+                                id:'mer_recharge'
+                            });
+                        }
+                    });
+                }
+            } else {
+                mui.toast('支付成功');
+
+                setTimeout(function () {
+                    openWindow({
+                        url:'auth_package_buy_record.html',
+                        id:'auth_package_buy_record'
+                    });
+                }, 1000);
+            }
+        });
+    }
+
+    //点击蒙版
+    mui('body').on('tap','.mui-backdrop',function(){
+        mui('#middlePopover').popover('hide');
+        mui('#payPopover').popover('hide');
+        mask.close();
+        $('body').css('overflow-y','scroll');
+    });
+
+    mui('body').on('tap','.plus a',function(e){
+        var index = $(this).data('index');
+        if (index) {
+            console.log('index',index);
+            var input_class = '.buy_index_'+index;
+            var plus_class = '.plus_'+index;
+            var num = parseInt($(input_class).val());
+            var min_num=$(input_class).data('min_num');
+            var stock_num = parseInt($(input_class).data('stock_num'));
+            var min_unit=$(input_class).data('min_unit');
+            console.log('min_unit', min_unit);
+            if ($(this).attr('class') == 'jia') {
+                var n = Math.ceil(min_num/min_unit);
+                if (min_num<=0) {
+                    n = 1;
+                }
+                if (min_unit == 1) {
+                    num ++;
+                } else if (parseInt(min_unit) > 0 && parseInt(num) == parseInt(min_num) && (min_unit * n>min_num)) {
+                    num += min_unit * n - min_num;
+                } else if (min_unit > 0) {
+                    num += min_unit;
+                } else {
+                    num ++;
+                }
+                //限购校验(最多购买数量)
+                if(typeof stock_num!='undefined' && !isNaN(stock_num) && stock_num>0){
+                    stock_num=parseInt(stock_num);
+                    if(num>stock_num){
+                        mui.toast('最多购买数为'+stock_num);
+                        return false;
+                    }
+                }
+            } else {
+                if (min_unit > 0 && num-min_unit < min_num) {
+                    num = min_num;
+                } else if (min_unit > 0) {
+                    num -= min_unit;
+                } else {
+                    num --;
+                }
+                //限购校验(最少购买数量)
+                if(typeof min_num!='undefined' && !isNaN(min_num) && min_num>0){
+                    min_num=parseInt(min_num);
+                    if(num<min_num){
+                        mui.toast('最少购买数为'+min_num);
+                        return false;
+                    }
+                }
+            }
+            if (num < 0) {
+                num = 0;
+            }
+            if (num >min_num) {
+                $(plus_class+" a.jian").css("color","#333333");
+            }else if(num==min_num){
+                $(plus_class+" a.jian").css("color","#bfbfbf");
+            }else{
+                $(plus_class+" a.jian").css("color","#bfbfbf");
+                return false;
+            }
+            $(plus_class+' input').val(num);
+            console.log('num',num);
+            buy_nums_info();
+            return;
+        }
+        var num = parseInt($('.plus input').val());
+        var min_num=$(this).data('min_num');
+        var min_unit = $('.plus input').data('min_unit');
+        var stock_num = $('.plus input').data('stock_num');
+        var currency = $('.total_price').data('currency');
+        if ($(this).attr('class') == 'jia') {
+            var n = Math.ceil(min_num/min_unit);
+            if (min_unit == 1) {
+                num ++;
+            } else if (min_unit > 0 && num == min_num) {
+                num += min_unit * n - min_num;
+            } else if (min_unit > 0) {
+                num += min_unit;
+            } else {
+                num ++;
+            }
+            $('.plus input').val(num)
+            // //限购校验(最多购买数量)
+            // if(typeof stock_num!='undefined' && !isNaN(stock_num) && stock_num>0){
+            //     stock_num=parseInt(stock_num);
+            //     if(num>stock_num){
+            //         mui.toast('最多购买数为'+stock_num);
+            //         return false;
+            //     }
+            // }
+        } else {
+            if (min_unit > 0 && num-min_unit < min_num) {
+                num = min_num;
+            } else if (min_unit > 0) {
+                num -= min_unit;
+            } else {
+                num --;
+            }
+            //限购校验(最少购买数量)
+            if(typeof min_num!='undefined' && !isNaN(min_num) && min_num>0){
+                min_num=parseInt(min_num);
+                if(num<min_num){
+                    mui.toast('最少购买数为'+min_num);
+                    return false;
+                }
+            }
+            $('.plus input').val(num)
+        }
+        var price = $('.total_price').data('price')
+        totalPrice = parseFloat(price * num).toFixed(2)
+        $('.total_price').text(totalPrice + currency)
+        if (num < 1) {
+            num = 1;
+        }
+        console.log('min_num',min_num);
+        if (num >min_num) {
+            $(".plus a.jian").css("color","#333333");
+        }else if(num==min_num){
+            $(".plus a.jian").css("color","#bfbfbf");
+        }else{
+            $(".plus a.jian").css("color","#bfbfbf");
+            return false;
+        }
+        $("input[name='buy_num']").val(num);
+    });
+
+
+    (function ($, doc) {
+        $.init();
+
+    })(mui, document);
+</script>
+
+</body></html>

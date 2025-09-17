@@ -1,0 +1,43 @@
+.padding-tp10[data-v-433847f8] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.modal_box_1[data-v-433847f8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.modal_box_1 .flex_text_box[data-v-433847f8] {
+  width: 50%;
+}
+.margin_top_10[data-v-433847f8] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-433847f8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.flex_text_box .text_1[data-v-433847f8] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+[data-v-433847f8] .ant-form-extra {
+  margin-left: 10px;
+  display: inline-block;
+}
+
+
+.select_position{
+  width: 150px !important;
+  margin-right: 10px !important;
+}
+

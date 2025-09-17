@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>店员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/pigcms.css" rel="stylesheet"/>
+         <style> 
+            .btn_submit{
+                width: 80%;
+                margin: 20px auto;
+            }
+            .btn_submit a{
+                width: 100%;
+                display: block;
+                height: 36px;
+                line-height: 36px;
+                text-align: center;
+                border:1px solid #2ecc71;
+                margin-top: 10px;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+            .btn_submit a.btn_ok{
+                background: #2ecc71;
+                color: #fff;
+            } 
+            .input_block input{
+                font-size: 14px;
+                height: 30px;
+                padding: 5px; 
+            }
+            .input_block{
+                width: 100%; 
+                border-bottom:1px solid #eee; 
+            }
+            .changPwd_box{
+                padding:10px;
+                background: #fff;
+                margin-top: 10px;
+            }
+            .changPwd_box .input_block:last-child{
+                border-bottom:none; 
+            }
+        </style>
+	</head>
+	<body>
+		<section id="fixed_top">
+			<section class="public pageSliderHide">
+				<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+				<div class="content"><L_>修改密码</L_></div> 
+			</section>		
+			<div class="h44"></div>
+        </section>
+        
+        <div class="changPwd_box">  
+             <div class="input_block">
+                 <input type="password" placeholder="请输入旧密码" class="old_password">
+             </div>
+             <div class="input_block">
+                 <input type="password" placeholder="请输入8~16位且包含字母、数字和特殊符号的新密码" class="news_pwd1">
+             </div>
+             <div class="input_block">
+                 <input type="password" placeholder="请再次输入新密码" class="news_pwd2">
+             </div> 
+        </div>
+        
+         <div class="btn_submit">
+            <a href="javascript:;" class="btn_ok"><l_>确认修改</l_></a> 
+        </div>
+        
+		 
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/changPwd.js"></script>
+	</body>
+</html>

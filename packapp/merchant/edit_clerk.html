@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>编辑店员</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+     <link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/app.css" /> 
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.css" /> 
+    <link rel="stylesheet" type="text/css" href="css/edit_clerk.css"/>
+</head>
+<style>
+	.shop_class .mui-card-content i{
+        width: 18%;
+    }
+</style>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <div class="mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	    <h1 class="mui-title"><L_>编辑店员</L_></h1>
+	</header>
+	<div class="mui-content">
+		<div class="content_style">
+			   	<div class="mui-card">
+			    	<div class="mui-card-content">
+						<span class="left_style"><L_>员工姓名</L_></span>
+						<input type="text" value="" class="name L_P" placeholder="请填写员工姓名" />
+					</div>
+					<div class="mui-card-content phone_country_type" id="phone_country_type" style="display:none">
+						<p>
+							<span class="left_style"><L_>手机区号</L_></span>
+							<span id="phone_country_type_click"><L_>区号</L_></span> 
+							<i class="mui-pull-right"></i>
+						</p>
+					</div>
+					<div class="mui-card-content">
+						<span class="left_style red_little"><L_>员工手机号</L_></span>
+						<input type="tel" placeholder="请填写员工手机号码" class="tel L_P" />
+					</div>
+					<div class="mui-card-content">
+						<span class="left_style"><L_>员工账号</L_></span>
+						<input type="text" placeholder="请填写员工账号" class="username L_P" />
+					</div>
+					<div class="mui-card-content">
+						<span class="left_style"><L_>登录密码</L_></span>
+						<input type="password" placeholder="不修改则不填写"  class="password L_P" />
+					</div>
+			    </div>
+		</div>
+		<div class="shop_class">
+			<div class="mui-card">
+				<!-- <div class="mui-card-header">
+					<p>
+						<span class="left_style"><L_>选择店铺</L_></span>
+						<b id="showUserPicker1"><span id="shop_class"><L_>请选择店铺分类</L_></span> <i class="mui-pull-right"></i></b>
+						<b id="edit" style="display:none;"></b>
+					</p>
+				</div> -->
+				<!--内容区-->
+				<div class="mui-card-content change">
+					<span class="left_style"><L_>能否修改订单价格</L_></span>
+					<i class="active add yes"> <b><sub></sub></b>  是</i> 
+					<i class="add no"><b><sub></sub></b> 否</i> 
+					<span id="change_desc" style="margin-left: 10px;font-size: 12px;color: #FF724C;"></span>
+					
+				</div>
+				<div class="mui-card-footer">
+					<p>
+						<span class="left_style"><L_>店员类型</L_></span>
+						<b id="showUserPicker"><span id="shop_clerk"><L_>请选择店员类型</L_></span> <i class="mui-pull-right"></i></b>
+					</p>
+					<span id="type_desc" style="margin-left: 10px;font-size: 12px;color: #FF724C;"></span>
+				</div>
+			</div>
+		</div>
+	 	<div style="padding-bottom: 60px;"></div>
+		<nav class="mui-bar mui-bar-tab">
+	       <a href="javascript:;"><L_>保存</L_></a>
+		</nav>
+	</div>
+	<script src="js/fastclick.js"></script>
+<script src="js/mui.js"></script>
+<!--筛选用到js-->
+<script src="js/mui.picker.js"></script> 
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var config = common.getCache('config',true);
+if(!config){
+	common.http('Merchantapp&a=config', {}, function(data){
+		common.setCache('config',data,true);
+		config=common.getCache('config');
+	});
+}
+if(config.international_phone == '1'){
+	$('.phone_country_type').show();
+}
+var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+var staff_id=$.getUrlParam('staff_id');
+var store_id=$.getUrlParam('store_id');
+var edit=$.getUrlParam('edit');
+// var stor_list=[];
+var clerk_type=[];
+var phone_country_type_arr=[];
+if(config.national_phone){
+	$.each(config.national_phone,function(i,val){
+		phone_country_type_arr.push({'value':val.code,'text':'+'+val.code+' '+val.national})
+	})
+}
+
+var select_clerk ='';
+var phone_country_type_txt='';
+function clerkTpe(lists){
+	$.each(lists,function(i,val){
+		var goods_id_list ={'value':'','text':''};
+		goods_id_list.text=val;
+		goods_id_list.value=i;
+		clerk_type.push(goods_id_list);
+	});
+}
+
+
+
+$('input').val('');
+if(edit==1){
+	$('.mui-title').text(L_('添加店员'));
+	
+	//选择店员类型
+	common.http('Merchantapp&a=staff_type', {'client':client}, function(data){
+		//console.log(data);
+		clerkTpe(data);	
+	});
+	mui('.mui-bar-tab').on('tap','a',function(e){
+		console.log(select_clerk);
+		var name=$('.name').val();
+		var tel=$('.tel').val();
+		var username=$('.username').val();
+		var password=$('.password').val();
+		var is_change=$('.change .yes').is('.active')?1:0;
+		var phone_country_type=phone_country_type_txt;
+		if(name==''){
+			mui.toast(L_('员工姓名必填'));
+		}else{
+			common.http('Merchantapp&a=staff_add', {'client':client,'staff_id':staff_id,'name':name,'tel':tel,'username':username,'password':password,'is_change':is_change,'store_id':store_id,'type':select_clerk,'phone_country_type':phone_country_type}, function(data){
+				console.log(data);
+				if(data.length==0){
+					mui.toast(L_('创建成功'));
+					if(common.checkApp()){
+						setTimeout(function(){
+							if(common.checkAndroidApp()){
+								window.pigcmspackapp.closewebview(2);
+							}else{
+								common.iosFunction('closewebview/2', {name:'closewebview', type: '2'});
+							}
+						},2000);
+					}else{
+						setTimeout(function(){
+							history.go(-1);
+							document.execCommand('Refresh');
+						},2000); 
+					}	 
+				}
+			});
+		}
+		
+	});
+}else{
+	//选择店铺
+	$('#showUserPicker1').hide();
+	//选择店员类型
+		common.http('Merchantapp&a=staff_type', {'client':client}, function(data){
+			//console.log(data);
+			clerkTpe(data);	
+			common.http('Merchantapp&a=staff_detail', {'client':client,'staff_id':staff_id,'store_id':store_id}, function(data){
+				//console.log(data);
+				$('.name').val(data.name);
+				$('.tel').val(data.tel);
+				$('.username').val(data.username);
+				$('#phone_country_type_click').html(data.phone_country_type);
+				
+				if(data.is_change=="0"){
+					$('.change .yes').removeClass('active');
+					$('.change .no').addClass('active');
+				}
+				
+				$.each(clerk_type,function(i,val){
+					if(val.value==data.type){	
+						$('#shop_clerk').text(val.text).css('color','#333');
+					}
+				});
+				store=data.store_id;
+				select_clerk=data.type;
+			});
+		});
+	mui('.mui-bar-tab').on('tap','a',function(e){
+		var name=$('.name').val();
+		var tel=$('.tel').val();
+		var username=$('.username').val();
+		var password=$('.password').val();
+		var is_change=$('.change .yes').is('.active')?1:0;
+		var phone_country_type=$('#phone_country_type_click').html();
+		if(name==''){
+			mui.toast(L_('员工姓名必填'));
+		}else{
+			common.http('Merchantapp&a=staff_edit', {'client':client,'staff_id':staff_id,'name':name,'tel':tel,'username':username,'password':password,'is_change':is_change,'store_id':store_id,'type':select_clerk,'phone_country_type':phone_country_type_txt}, function(data){
+				console.log(data);
+				if(data.length==0){
+					mui.toast(L_('修改成功'));
+					if(common.checkApp()){
+						setTimeout(function(){
+							if(common.checkAndroidApp()){
+								window.pigcmspackapp.closewebview(2);
+							}else{
+								common.iosFunction('closewebview/2', {name:'closewebview', type: '2'});
+							}
+						},2000);
+					}else{
+						setTimeout(function(){
+							history.go(-1);
+							document.execCommand('Refresh');
+						},2000); 
+					}	 
+				}
+			});
+		}
+
+	});
+}
+
+function shop_clerk_change(){
+	if (config.open_staff_power == 1) {
+		if (select_clerk==0) {
+			document.getElementById('type_desc').innerHTML = L_('* 该角色不具备线下零售结算、餐饮收银台结算、到店付结算、店铺管理的权限，但店员的其他权限均具备。');
+			document.getElementById('change_desc').innerHTML = L_('* 指是否具备修改快店在线订单的结算价权限。');
+		}else if(select_clerk==1){
+			document.getElementById('type_desc').innerHTML = L_('* 该角色不具备店铺管理的权限，但店员的其他权限均具备。');
+			document.getElementById('change_desc').innerHTML = L_('* 指是否具备修改线下零售、餐饮收银台、快店在线订单的结算价权限。');
+		}else if(select_clerk==2){
+			document.getElementById('type_desc').innerHTML = L_('* 该角色具备店员的所有权限。');
+			document.getElementById('change_desc').innerHTML = L_('* 指是否具备修改线下零售、餐饮收银台、快店在线订单的结算价权限。');
+		}
+	}
+}
+shop_clerk_change();;
+
+//筛选
+(function($, doc) {
+	$.init();
+	
+	//店员类型
+	mui('.mui-content').on('tap','#showUserPicker',function(e){
+		var userPicker = new $.PopPicker();
+		userPicker.setData(clerk_type);	
+		userPicker.pickers[0].setSelectedValue(select_clerk);
+		userPicker.show(function(items) {
+			document.getElementById('shop_clerk').innerHTML =items[0].text;
+			document.getElementById('shop_clerk').style.color='#535353';
+			select_clerk=items[0].value;
+			shop_clerk_change();
+
+		});
+		replace_html_lang();
+	});
+	
+	mui('.mui-content').on('tap','#phone_country_type',function(e){
+		var userPicker = new $.PopPicker();
+		userPicker.setData(phone_country_type_arr);	
+		userPicker.pickers[0].setSelectedValue(phone_country_type_txt);
+		userPicker.show(function(items) {
+			console.log(items)
+			document.getElementById('phone_country_type_click').innerHTML =items[0].text;
+			document.getElementById('phone_country_type_click').style.color='#535353';
+			phone_country_type_txt=items[0].value;
+		});
+		replace_html_lang();
+	});
+})(mui, document);
+
+mui('.mui-content').on('tap','.add',function(e){
+	$(this).addClass('active');
+	$(this).siblings('i').removeClass('active');
+	document.activeElement.blur();
+});	
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+
+.ant-form-item label {
+    width: 50px;
+}
+.ant-card-body {
+    padding: 1px;
+    zoom: 1;
+}
+.txt-green {
+  color: green;
+}
+.txt-red {
+    color: red;
+}
+
+
+.txt-green[data-v-fa05c2b6] {
+    color: #0fb70f;
+}
+.txt-red[data-v-fa05c2b6] {
+    color: red;
+}
+.txt-danren[data-v-fa05c2b6] {
+    color: blue;
+}
+.txt-duoren[data-v-fa05c2b6] {
+    color: purple;
+}
+.table-operator[data-v-fa05c2b6] {
+    margin-bottom: 10px;
+}
+
+

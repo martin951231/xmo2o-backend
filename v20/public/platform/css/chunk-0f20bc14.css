@@ -1,0 +1,110 @@
+.equipPoint[data-v-038ff991] {
+  width: 100vw;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.equipPoint .tip[data-v-038ff991] {
+  width: 55%;
+  padding: 0.625rem;
+  font-size: 0.16666667rem;
+  background-color: rgba(54, 79, 107, 0.9);
+  border-radius: 0.26041667rem;
+  margin-top: 30px;
+  color: #ffffff;
+}
+.equipPoint .tip .tip_two[data-v-038ff991] {
+  margin-top: 0.15625rem;
+}
+.equipPoint .btn_list[data-v-038ff991] {
+  width: 55%;
+  padding: 0.625rem 0;
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.equipPoint .btn_list .draw_point[data-v-038ff991] {
+  background-color: #409EFF;
+  padding: 0.52083333rem;
+  color: #ffffff;
+  border-radius: 0.26041667rem;
+  cursor: pointer;
+}
+.equipPoint .btn_list .edit_point[data-v-038ff991] {
+  background-color: #409EFF;
+  padding: 0.52083333rem;
+  color: #ffffff;
+  border-radius: 0.26041667rem;
+  margin-left: 1.5625rem;
+  cursor: pointer;
+}
+.equipPoint .btn_list .clear_point[data-v-038ff991] {
+  background-color: #FFFFFF;
+  padding: 0.390625rem 0.52083333rem;
+  color: #666666;
+  border-radius: 0.26041667rem;
+  border: 0.00520833rem solid #eee;
+  margin-left: 1.5625rem;
+  cursor: pointer;
+}
+.equipPoint .btn_list .delete_point[data-v-038ff991] {
+  background-color: #F56C6C;
+  padding: 0.52083333rem;
+  color: #ffffff;
+  border-radius: 0.26041667rem;
+  margin-left: 1.5625rem;
+  cursor: pointer;
+}
+.equipPoint .btn_list .confirm_point[data-v-038ff991] {
+  background-color: #409EFF;
+  padding: 0.52083333rem;
+  color: #ffffff;
+  border-radius: 0.26041667rem;
+  margin-left: 1.5625rem;
+  cursor: pointer;
+}
+.equipPoint .btn_list .cancel_edit[data-v-038ff991] {
+  background-color: #909399;
+  padding: 0.52083333rem;
+  color: #ffffff;
+  border-radius: 0.26041667rem;
+  margin-left: 1.5625rem;
+  cursor: pointer;
+}
+.equipPoint .btn_list .gray[data-v-038ff991] {
+  background-color: #999999;
+}
+.equipPoint .draw_canvas[data-v-038ff991] {
+  position: absolute;
+  width: 55%;
+  height: 73vh;
+  border-radius: 0.05208333rem;
+  -webkit-transform: translateY(198px);
+          transform: translateY(198px);
+  border: 0.00520833rem solid #409EFF;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.equipPoint .draw_canvas .back_image[data-v-038ff991] {
+  position: absolute;
+}
+.equipPoint .draw_canvas .my_canvas[data-v-038ff991] {
+  position: absolute;
+}
+

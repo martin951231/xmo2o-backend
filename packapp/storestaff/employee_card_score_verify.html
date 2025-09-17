@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8"/>
+        <title>店员中心</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover"/>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name='apple-touch-fullscreen' content='yes'/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="format-detection" content="address=no"/>
+        <link href="css/pigcms.css" rel="stylesheet"/>
+        <style>
+			.ce9{
+				color: red;
+			}
+			.rel{position:relative;}
+			
+			.tip{
+				text-align: right;
+			    margin-bottom: 10px;
+			    display: block;
+			    background: #fff;
+			    padding: 12px 15px;
+			    color: red;
+			}
+            .establish{ 
+                margin-top: 54px; 
+                margin-top: calc(54px + constant(safe-area-inset-top));
+                margin-top: calc(54px + env(safe-area-inset-top));
+            }
+			.establish .confirm{
+
+			    display: block;
+			    width: 80%;
+			    margin: 25px auto;
+
+			}
+    	</style>
+    </head>
+    <body>
+        <section class="public pageSliderHide">
+            <div class="return link-url" data-url-type="openLeftWindow" data-closewebview="true" data-url="back"></div>
+            <div class="content"><L_>核销积分</L_></div>
+        </section>
+        <section class="establish p40">
+			<div class="loop">
+					<ul>
+						<li class="clr">
+							<div class="fl tit"><L_>核销积分数量</L_></div>
+							<div class="m100">
+                                <input type="hidden" id="is_use_discount" value="0"/>
+                                <input type="hidden" id="old_total_price" />
+                                <input type="hidden" id="Currency_symbol" />
+                                <input type="text" id="score" placeholder="请输入积分数量"/>
+							</div>
+						</li>
+                        <li class="clr">
+                            <div class="fl tit"><L_>备注</L_></div>
+                            <div class="m100">
+                                <textarea id="remark" placeholder="请输入本单备注"></textarea>
+                            </div>
+                        </li>
+                        
+
+					</ul>
+				</div>
+				<button  class="confirm" id="confirmOrder"><L_>确定</L_></button>
+        </section> 
+        <div class="mask"></div>
+        <script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js?t=3"></script>
+		<script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+		  <script>
+		    // 初始化
+		    var vConsole = new VConsole();
+		  </script>
+		<script >
+			$(document).ready(function(){
+				var code = urlParam.code;
+				console.log(code)
+				$('#confirmOrder').click(function(){
+				console.log('orderForm')
+					var score = parseFloat($('#score').val());
+				console.log(score,'score')
+					var remark = $('#remark').val();
+				console.log(remark,'remark')
+					if(isNaN(score)){
+						motify.log('请输入积分数量');
+						return false;
+					}
+					var postData = {};
+					postData.code = code;
+					postData.score = score;
+					postData.remark = remark;
+
+				console.log(postData,'postData')
+					common.httpV20('/employee/storestaff.EmployeePayCode/deductions',postData , function (data) {
+				console.log(data,'data')
+		                motify.log('核销成功');
+		                setTimeout(function(){
+		                	// backHomePage();
+		                }, 2000)
+			        });
+				});
+			});
+
+		</script>
+    </body>
+</html>

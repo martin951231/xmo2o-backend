@@ -1,0 +1,14 @@
+.box-content[data-v-00f9b416] {
+  margin: 20px 0 20px 20px;
+  font-size: 14px;
+  color: #10aeff;
+}
+[data-v-00f9b416] .loading_quan {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center !important;
+      -ms-flex-pack: center !important;
+          justify-content: center !important;
+}
+

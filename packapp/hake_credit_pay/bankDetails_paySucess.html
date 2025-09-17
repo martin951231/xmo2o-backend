@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>添加银行卡</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/> 
+		<meta name="format-detection" content="address=no"/>   
+		<link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/pigcms.css" rel="stylesheet"/> 
+		<style>
+		.weui-dialog__bd{
+			text-align: center
+		}
+		</style>
+	</head>
+	<body> 
+		<div class=""> 
+            <div class="sucess_notice flex">
+                <div class="sucess_noticeFl">
+					<img src="images/safe_tip.png" style="width:60px;">
+				</div> 
+				<div class="sucess_noticeFr">
+					<img src="images/close2.png" class="close2"/>
+					<L_>您已验证成功，还差最后一步～ 请设置支付密码即可添加银行卡</L_>
+					
+				</div>
+			</div>
+		 	<p class="pwdTil center"><L_>请设置您的4位数字支付密码</L_></p>  
+		 	<div class="pwdInput center">
+				<div class="input_pwd">
+				   <span class="pwd_Txt" id="pwd_Txt0"></span>
+				   <span class="pwd_Txt" id="pwd_Txt1"></span> 
+				   <span class="pwd_Txt" id="pwd_Txt2"></span>
+				   <span class="pwd_Txt" id="pwd_Txt3"></span>
+				   <div class="clear"></div>  
+				</div>
+			   <input type="tel"  name="password" autofocus='autofocus' onkeyup="this.value=this.value.replace(/[^\d]/g,'');" id="password"  maxlength="4" oninput="if(value.length>4)value=value.slice(0,4)" />
+			</div> 
+		 </div> 
+		 <div class="bottmButton">
+		 	<button class="finsh_btn"><label><L_>下一步</L_></label><i class="iconfont">&#xe600;</i></button>
+		 </div> 
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		
+		<script src="scripts/common.js?8759"></script>
+		<script src="scripts/weui/weui.min.js?8759"></script>
+		<script src="scripts/work/changePassword.js"></script>  
+		<script>
+            common.removeCache('clickNum',true);
+            common.removeCache('frist_input_pwd',true); 
+			common.iosKeybordTop('number'); 
+			if(!common.checkIos()){ 
+				$('#password').focus(); 
+			}
+
+			$('.input_pwd').click(function(){
+				$('#password').focus();
+			}) 
+			
+			$('input[name="password"]').on('keyup',function(e){    
+				if($('#password').val() == ''){
+					$('.input_pwd .pwd_Txt').css('-webkit-text-security','none');
+				} 
+				var input_array=$(this).val().split(''); 
+				input_array.forEach(function( val, index ) {
+					$('.input_pwd #pwd_Txt'+index+'').text(input_array[index]); 
+					setTimeout(function(){ 
+						$('.input_pwd #pwd_Txt'+index+'').css('-webkit-text-security','disc');
+					},200)
+				})   
+				var _this = $(this);
+				var ev = e; 
+				keyupfun(_this,ev);  
+				if(input_array.length == 4){
+					$('.bottmButton label').addClass('red');
+				}else{
+					$('.bottmButton label').removeClass('red');
+				}
+			})  
+			function keyupfun(value,e){
+				var k = e.keyCode;
+				var val = e.key;
+				if(k == 8){ //8是backspace的keyCode
+					var input_array=$('input[name="password"]').val().split('');  
+					var len=input_array.length;
+					$('.input_pwd .pwd_Txt').text(''); 
+						input_array.forEach(function( val, index ) { 
+						$('.input_pwd #pwd_Txt'+index+'').text(input_array[index]); 
+					})   
+				}else{
+					return false;
+				}
+			}    
+		   
+			// 关闭上面传提示
+			$('.close2').click(function(){
+              $('.sucess_notice').hide();
+			})
+
+			var from = common.getCache('from',true);
+			common.setCache('clickNum',0,true);  
+            var clickNum = '';			
+			$('.bottmButton').click(function(){  
+				clickNum = common.getCache('clickNum',true);	
+				var numberPwd=$('#password').val(); 
+				if(clickNum == 0){
+					if($('.bottmButton label').hasClass('red')){
+						$('.pwdTil').text(L_('请再次输入你新的支付密码！'));
+						common.setCache('frist_input_pwd',numberPwd,true); 
+						$('.input_pwd .pwd_Txt').text('');
+						$('#password').val(''); 
+						$('.input_pwd .pwd_Txt').css('-webkit-text-security','none');
+						$('.bottmButton label').removeClass('red');
+						common.setCache('clickNum',1,true); 
+					} 
+				}else{
+					if($('.bottmButton label').hasClass('red')){  
+						var frist_input_pwd = common.getCache('frist_input_pwd',true); 
+						var order_id=common.getCache('order_id',true);
+						if(frist_input_pwd == numberPwd){
+							common.http('Hake_credit&a=set_new_pwd',{pay_pwd:numberPwd},function(data){   
+								   common.setCache('frist_input_pwd','',true);
+								   weui.confirm(L_('支付密码设置成功'), { 
+										buttons: [{
+											label: L_('知道了'), 
+											onClick: function(){   
+												if(from == 1){ //支付后绑卡  
+												    common.setCache('bindSucess',1);  
+													common.removeCache('order_id',true);
+													redirect_self("/packapp/my/shop_order.html?order_id=" + order_id);
+												}else{
+													history.go(-2);
+													common.setCache('resetPwd',0,true);
+													common.setCache('clickNum',0,true);
+													common.setCache('frist_input_pwd','',true);
+												} 
+											}
+										}]
+									}); 
+
+								},function(errData){  
+									weui.confirm(errData.errorMsg, {
+										buttons: [{
+											label: L_('重新输入'), 
+											type: 'primary',
+											onClick: function(){   
+												$('.pwdTil').text(L_('请设置您新的4位数字支付密码！')); 
+												common.setCache('clickNum',0,true);
+												$('.input_pwd .pwd_Txt').text('');
+												$('#password').val('');
+												$('.input_pwd .pwd_Txt').css('-webkit-text-security','none');
+												common.setCache('frist_input_pwd','',true); 
+											}
+										}, {
+											label: L_('取消'), 
+											type: 'gray',
+											onClick: function(){
+												common.setCache('clickNum',0,true);
+												common.setCache('frist_input_pwd','',true);
+												history.go(-1);
+											}
+										}]
+									});
+
+								});  
+						}else{
+							weui.confirm(L_('两次密码输入不相同！'), {
+								buttons: [{
+									label: L_('重新输入'), 
+									type: 'primary',
+									onClick: function(){   
+										$('.input_pwd .pwd_Txt').text('');
+										$('#password').val('');
+										$('.input_pwd .pwd_Txt').css('-webkit-text-security','none');
+									}
+								}, {
+									label: L_('取消'), 
+									type: 'gray',
+									onClick: function(){
+										common.setCache('clickNum',0,true);
+										common.setCache('frist_input_pwd','',true);
+										history.go(-1);
+									}
+								}]
+							});
+						}  
+						
+					}
+
+				}  
+			})  
+		</script> 
+	</body>
+</html>

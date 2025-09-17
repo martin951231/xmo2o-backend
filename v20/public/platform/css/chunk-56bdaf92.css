@@ -1,0 +1,139 @@
+.upload-img-container[data-v-a127712e] {
+  width: 102px;
+  height: 102px;
+}
+.file-upload[data-v-a127712e] .ant-upload-list-item-name {
+  color: #999999 !important;
+}
+
+.active[data-v-7df8037e] {
+  color: #1890ff;
+  border-right: 3px solid #1890ff;
+  background-color: #1890ff10;
+}
+.account-settings-info-main[data-v-7df8037e] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  overflow: auto;
+}
+.account-settings-info-main.mobile[data-v-7df8037e] {
+  display: block;
+}
+.account-settings-info-main.mobile .account-settings-info-left[data-v-7df8037e] {
+  border-right: unset;
+  border-bottom: 1px solid #e8e8e8;
+  width: 100%;
+  height: 50px;
+  overflow-x: auto;
+  overflow-y: scroll;
+}
+.account-settings-info-main.mobile .account-settings-info-right[data-v-7df8037e] {
+  padding: 20px 40px;
+}
+.account-settings-info-main .account-settings-info-left[data-v-7df8037e] {
+  border-right: 1px solid #e8e8e8;
+  width: 224px;
+}
+.account-settings-info-main .account-settings-info-right[data-v-7df8037e] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1;
+          flex: 1 1;
+  padding: 8px 40px;
+}
+.account-settings-info-main .account-settings-info-right .account-settings-info-title[data-v-7df8037e] {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  margin-bottom: 12px;
+}
+.account-settings-info-main .account-settings-info-right .account-settings-info-view[data-v-7df8037e] {
+  padding-top: 12px;
+}
+
+.page-header-wrapper-grid-content-main[data-v-0b709561] {
+  padding: 1.25rem;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+.page-header-wrapper-grid-content-main .account-center-avatarHolder[data-v-0b709561] {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.page-header-wrapper-grid-content-main .account-center-avatarHolder > .avatar[data-v-0b709561] {
+  margin: 0 auto;
+  width: 104px;
+  height: 104px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.page-header-wrapper-grid-content-main .account-center-avatarHolder > .avatar img[data-v-0b709561] {
+  height: 100%;
+  width: 100%;
+}
+.page-header-wrapper-grid-content-main .account-center-avatarHolder .username[data-v-0b709561] {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.page-header-wrapper-grid-content-main .account-center-detail p[data-v-0b709561] {
+  margin-bottom: 8px;
+  padding-left: 26px;
+  position: relative;
+}
+.page-header-wrapper-grid-content-main .account-center-detail i[data-v-0b709561] {
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 0;
+  top: 4px;
+  background: url(https://gw.alipayobjects.com/zos/rmsportal/pBjWzVAHnOOtAUvZmZfy.svg);
+}
+.page-header-wrapper-grid-content-main .account-center-detail .title[data-v-0b709561] {
+  background-position: 0 0;
+}
+.page-header-wrapper-grid-content-main .account-center-detail .group[data-v-0b709561] {
+  background-position: 0 -22px;
+}
+.page-header-wrapper-grid-content-main .account-center-detail .address[data-v-0b709561] {
+  background-position: 0 -44px;
+}
+.page-header-wrapper-grid-content-main .account-center-tags .ant-tag[data-v-0b709561] {
+  margin-bottom: 8px;
+}
+.page-header-wrapper-grid-content-main .account-center-team .members a[data-v-0b709561] {
+  display: block;
+  margin: 12px 0;
+  line-height: 24px;
+  height: 24px;
+}
+.page-header-wrapper-grid-content-main .account-center-team .members a .member[data-v-0b709561] {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 24px;
+  max-width: 100px;
+  vertical-align: top;
+  margin-left: 12px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  display: inline-block;
+}
+.page-header-wrapper-grid-content-main .account-center-team .members a:hover span[data-v-0b709561] {
+  color: #1890ff;
+}
+.page-header-wrapper-grid-content-main .tagsTitle[data-v-0b709561],
+.page-header-wrapper-grid-content-main .teamTitle[data-v-0b709561] {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 12px;
+}
+

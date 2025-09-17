@@ -1,0 +1,67 @@
+
+.item[data-v-0fa90114] {
+  -webkit-box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+.title[data-v-0fa90114] {
+  margin-left: 10px;
+  margin-right: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+.cr-primary.txt[data-v-0fa90114] {
+  font-weight: bold;
+  font-size: 22px;
+}
+.cr-primary.btn[data-v-0fa90114] {
+  border-color: #1890ff;
+  border-radius: 5px;
+}
+.meal[data-v-0fa90114] {
+  margin-top: 20px;
+  font-size: 16px;
+}
+.meal .detail[data-v-0fa90114] {
+  height: 48px;
+  overflow: hidden;
+  letter-spacing: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2; /*要显示的行数*/
+  -webkit-box-orient: vertical;
+  white-space: pre-line;
+}
+.meal .detail .type-name:last-child .plus[data-v-0fa90114] {
+  display: none;
+}
+.discount-icon[data-v-0fa90114] {
+  width: 0;
+  height: 0;
+  border: 60px solid transparent;
+  border-bottom: 60px solid #eaf5ff;
+  -webkit-transform: rotateZ(45deg);
+          transform: rotateZ(45deg);
+  position: absolute;
+  right: -60px;
+  top: -60px;
+}
+.discount-icon .txt[data-v-0fa90114] {
+  position: absolute;
+  top: 25px;
+  right: -23px;
+  font-size: 14px;
+}
+.pd10-0[data-v-0fa90114] {
+  padding: 10px 0;
+}
+

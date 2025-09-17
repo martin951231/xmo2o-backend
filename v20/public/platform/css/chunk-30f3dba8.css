@@ -1,0 +1,102 @@
+.BlockBox[data-v-b2c9e3e6] {
+  position: relative;
+  padding: 0.03125rem;
+}
+.BlockBox .left_1[data-v-b2c9e3e6] {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.BlockBox .right_1[data-v-b2c9e3e6] {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.BlockBox .left_2[data-v-b2c9e3e6] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.BlockBox .right_2[data-v-b2c9e3e6] {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.BlockBox .top_1[data-v-b2c9e3e6] {
+  position: absolute;
+  top: -0.015625rem;
+  left: 0;
+}
+.BlockBox .dot_1[data-v-b2c9e3e6] {
+  width: 0.02083333rem;
+  height: 0.02083333rem;
+  background: #33C8FF;
+  border-radius: 50%;
+  position: absolute;
+  top: 0.03125rem;
+  left: 0.03125rem;
+}
+.BlockBox .dot_2[data-v-b2c9e3e6] {
+  width: 0.02083333rem;
+  height: 0.02083333rem;
+  background: #33C8FF;
+  border-radius: 50%;
+  position: absolute;
+  top: 0.03125rem;
+  right: 0.03125rem;
+}
+.BlockBox .dot_3[data-v-b2c9e3e6] {
+  width: 0.02083333rem;
+  height: 0.02083333rem;
+  background: #33C8FF;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0.03125rem;
+  right: 0.03125rem;
+}
+.BlockBox .dot_4[data-v-b2c9e3e6] {
+  width: 0.02083333rem;
+  height: 0.02083333rem;
+  background: #33C8FF;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0.02604167rem;
+  left: 0.02604167rem;
+}
+.BlockBox .content_box[data-v-b2c9e3e6] {
+  width: 100%;
+  height: 100%;
+  background: rgba(7, 26, 51, 0.6);
+  border-style: solid;
+  border-width: 0.00520833rem;
+  border-image-source: linear-gradient(140deg, #1e437a 0%, #47b8ff 12%, #083a53 32%, #47b8ff 47%, #133c5f 70%, #47b8ff 87%, #1e437a 100%);
+  border-image-slice: 1;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.BlockBox .title_box[data-v-b2c9e3e6] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-top: 0.09375rem;
+}
+.BlockBox .title_box .title_icon[data-v-b2c9e3e6] {
+  width: 0.13541667rem;
+  height: 0.13541667rem;
+  display: block;
+}
+.BlockBox .title_box .title[data-v-b2c9e3e6] {
+  font-size: 0.10416667rem;
+  font-family: Microsoft JhengHei;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin-left: 0.05729167rem;
+}
+

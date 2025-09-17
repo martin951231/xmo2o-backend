@@ -1,0 +1,30 @@
+
+.content[data-v-a460b298] {
+  overflow: hidden;
+}
+.code-box[data-v-a460b298] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+}
+.code[data-v-a460b298] {
+  margin: 10px;
+}
+.code img[data-v-a460b298] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+.error-msg[data-v-a460b298] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+

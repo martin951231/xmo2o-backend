@@ -1,0 +1,43 @@
+
+.ant-card-input_park[data-v-0fea8e09] {
+    width: 300px;
+    margin-top: 15px;
+}
+.ant-card-span_park[data-v-0fea8e09] {
+    margin-right: 150px;
+    padding-left: 113px;
+    padding-top: 10px;
+}
+.ant-card-span1_park[data-v-0fea8e09] {
+    margin-right: 10px;
+}
+
+.lane_management[data-v-5a94cb02] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.lane_management .header_search[data-v-5a94cb02] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
+.lane_management .header_search .search_item[data-v-5a94cb02] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.lane_management .header_search .operation_btn[data-v-5a94cb02] {
+  margin-left: 20px;
+}
+.lane_management .table_content[data-v-5a94cb02] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

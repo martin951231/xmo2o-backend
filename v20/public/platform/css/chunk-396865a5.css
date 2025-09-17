@@ -1,0 +1,12 @@
+.order_compelete[data-v-a8cc480c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.order_compelete .ant-input-number[data-v-a8cc480c] {
+  width: 120px;
+}
+

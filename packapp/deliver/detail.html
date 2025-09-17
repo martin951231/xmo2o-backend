@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <title>配送员中心</title>
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name='apple-touch-fullscreen' content='yes'/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="address=no"/>
+    <link href="css/deliver.css" rel="stylesheet"/>
+    <style>
+        .acc span {
+            position: relative;
+            top: -40px;
+        }
+
+        .f14.c9.acc, .f16.c9.acc {
+            height: 55px;
+            padding-top: 5px;
+        }
+
+        .acc img {
+            width: 50px;
+            height: 50px;
+            margin: 0 3px;
+        }
+
+        .mask1 {
+            position: fixed;
+            z-index: 998;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, .8);
+        }
+
+        .add {
+            display: table;
+            font-family: Helvetica, arial, sans-serif;
+            pointer-events: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .section {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+		
+		.togher_name{
+			margin-top: 16px;
+			font-size: 14px;
+			margin-bottom: 6px;
+			font-weight: bold;
+			border-top: 1px solid #F1F1F1;
+			padding-top: 10px;
+		}
+		.togher_name:first-child{
+			border-top: none;
+			margin-top: 6px;
+		}
+    </style>
+</head>
+<body>
+<section id="fixed_top">
+    <section class="public pageSliderHide">
+        <div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+        <div class="content">
+            <L_>配送详情</L_>
+        </div>
+    </section>
+    <div class="h44"></div>
+</section>
+<div id="container">
+    <section class="details p10 openMap openUserMap" data-type="baidu" data-baidu_lng="" data-baidu_lat="">
+        <div class="details_top clearfix">
+            <h2 class="f16 c3">
+                <i id="supply-name">&nbsp;</i>
+                <span class="f14 c6"><a class="callPhone" id="supply-phone" data-data="" style="color:blue;">&nbsp;</a></span> 
+            </h2>
+            <div style="clear:both;"></div>
+            <p class="c6 f14"><i><L_>收货地址</L_>：</i><span id="supply-aim_site"></span></p>
+            <em><img src="images/dindxqt_11.png" width="23" height="27"/></em>
+        </div>
+    </section>
+    <script id="goodListTpl" type="text/html">
+        {{# for(var i = 0, len = d.length; i < len; i++){ }}
+        <li class="clr">
+            <dl>
+                <dd>{{ d[i].name }} <br/> <font style="font-size:11px;">{{ d[i].spec }}</font> </dd>
+				{{# if(d[i].num > 1){ }}
+					<dd class="on" style="color:red;font-weight:bold;"><i>x</i> {{ d[i].num }}</dd>
+				{{# }else{ }}
+					<dd class="on"><i>x</i> {{ d[i].num }}</dd>
+				{{# } }}
+                <dd class="rig"><span><i>{{ currency_symbol }}</i>{{ parseFloat(d[i].price) }}</span></dd>
+            </dl>
+        </li>
+        {{# } }}
+    </script>
+	<script id="goodListTogherTpl" type="text/html">
+        {{# for(var i = 0, len = d.length; i < len; i++){ }}
+			{{# if(d[i].name != ''){ }}
+				<li class="togher_name">{{ d[i].name }}</li>
+			{{# } }}
+			{{# for(var j = 0, jen = d[i].list.length; j < jen; j++){ }}
+				<li class="clr">
+					<dl>
+						<dd>{{ d[i].list[j].name }} <br/> <font style="font-size:11px;">{{ d[i].list[j].spec }}</font> </dd>
+						{{# if(d[i].list[j].num > 1){ }}
+							<dd class="on" style="color:red;font-weight:bold;"><i>x</i> {{ d[i].list[j].num }}</dd>
+						{{# }else{ }}
+							<dd class="on"><i>x</i> {{ d[i].list[j].num }}</dd>
+						{{# } }}
+						<!-- <dd class="rig"><span><i>{{ currency_symbol }}</i>{{ parseFloat(d[i].list[j].price) }}</span></dd> -->
+					</dl>
+				</li>
+			{{# } }}
+        {{# } }}
+    </script>
+    <script id="storeImageTpl" type="text/html">
+        <li class="clr">
+        {{# for(var i = 0, len = d.length; i < len; i++){ }}
+        
+                <image class="img_click" width="110px;" height="70px;" src=" {{ d[i] }}" />
+        
+        {{# } }}
+        </li>
+    </script>
+    <script id="cueFieldListTpl" type="text/html">
+        {{# for(var i = 0, len = d.length; i < len; i++){ }}
+        <li class="clr p10">
+            <div class="fl f16 c80">{{ d[i].title }}</div>
+            <div class="fr f14 c80">{{ d[i].txt }}</div>
+        </li>
+        {{# } }}
+    </script>
+    <section class="PsorderX" id="store_image_sec" style="display: none;">
+        <div class="Psorder">
+            <div class="Psorder_top p10">
+                <h2 class="f16 c3">
+                    <L_>店铺图片</L_>
+                </h2>
+            </div>
+            <div class="Psorder_end p10">
+                <ul id="store_image"></ul>
+            </div>
+        </div>
+    </section>
+    <section class="PsorderX">
+        <div class="Psorder">
+            <div class="Psorder_top p10">
+                <h2 class="f16 c3">
+                    <L_>订单详情</L_>
+                </h2>
+            </div>
+            <div class="Psorder_end p10">
+                <ul id="goodsList"></ul>
+            </div>
+        </div>
+        <div class="details_list">
+            <p class="c9 f14"><L_>数量</L_>：<span id="order-num"></span></p>
+            <!-- <p class="f16 red"><L_>实际支付</L_>：<span class="currency_symbol"></span><span id="order-price"></span></p> -->
+            <p class="f14 bur"><L_>支付方式</L_>： <span id="order-pay_type"></span></p>
+            <p class="f12 red"><L_>配送距离</L_><EN_></EN_><span id="supply-distance"></span><EN_></EN_><L_>公里</L_>，<L_>配送费</L_><span class="currency_symbol"></span><span id="supply-freight_charge"></span>（<L_>配送费收入</L_><span class="currency_symbol"></span><span id="supply-deliver_user_fee"></span>） </p>
+        </div>
+        <div class="Remarks clr p10">
+            <span class="fl c3 f16"><L_>备注</L_></span>
+            <div class="Remarks_rig" id="supply-note" data-default="无"></div>
+        </div>
+    </section>
+    <section class="Psorder information">
+        <div class="Psorder_top p10">
+            <h2 class="f16 c3">
+                <L_>订单信息</L_>
+            </h2>
+        </div>
+        <div class="information_end">
+            <ul>
+                <li class="clr p10" id="fetch_number_box">
+                    <div class="fl f16 c80">
+                        <L_>取单编号</L_>
+                    </div>
+                    <div class="fr f14 c80" id="supply-fetch_number"></div>
+                </li>
+                <li class="clr p10">
+                    <div class="fl f16 c80">
+                        <L_>订单编号</L_>
+                    </div>
+                    <div class="fr f14 c80" id="order-real_orderid"></div>
+                </li>
+                <li class="clr p10">
+                    <div class="fl f16 c80">
+                        <L_>下单时间</L_>
+                    </div>
+                    <div class="fr f14 c25" id="order-create_time"></div>
+                </li>
+                <li class="clr p10">
+                    <div class="fl f16 c80" id="supply-appoint_show">
+                        <L_>期望送达</L_>
+                    </div>
+                    <div class="fr f14 c25" id="supply-appoint_time"></div>
+                </li>
+                <li class="clr p10">
+                    <div class="fl f16 c80">
+                        <L_>送达时间</L_>
+                    </div>
+                    <div class="fr f14 c25" id="supply-end_time"></div>
+                </li>
+                <li class="clr p10">
+                    <div class="fl f16 c80">
+                        <L_>订单来源</L_>
+                    </div>
+                    <div class="fr f14 c80" id="supply-from_text"></div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="Psorder information" id="cue_field_box">
+        <div class="Psorder_top p10">
+            <h2 class="f16 c3">
+                <L_>分类填写字段</L_>
+            </h2>
+        </div>
+        <div class="information_end">
+            <ul id="cue_field_ul"></ul>
+        </div>
+    </section>
+
+    <section class="Psorder information Merchant" id="Merchant">
+        <div class="Psorder_top p10">
+            <h2 class="f16 c3">
+                <L_>商家信息</L_>
+            </h2>
+        </div>
+        <div class="information_end">
+            <ul>
+                <li class="clr p10">
+                    <div class="fl f16 c80">
+                        <L_>店铺名称</L_>
+                    </div>
+                    <div class="fr f14 c80" id="store-name"></div>
+                </li>
+                <li class="clr p10">
+                    <div class="fl f16 c80">
+                        <L_>店铺电话</L_>
+                    </div>
+                    <div class="fr f14 c80">
+                        <div id="store-phone" style="color:blue;padding:10px 0;" class="callPhone" data-data="phone"></div>
+                    </div>
+                </li>
+                <li class="clr p10 openMap openStoreMap" data-type="baidu" data-baidu_lng="" data-baidu_lat="">
+                    <div class="fl f16 c80"><L_>店铺地址</L_></div>
+                    <div class="fr f14 c80" id="store-adress"></div>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <section class="Psorder information Merchant" id="fromSource">
+        <div class="Psorder_top p10">
+            <h2 class="f16 c3">
+                <L_>来源信息</L_>
+            </h2>
+        </div>
+        <div class="information_end">
+            <ul>
+                <li class="clr p10 server_type1">
+                    <div class="fl f16 c80">
+                        <L_>联系人</L_>
+                    </div>
+                    <div class="fr f14 c80" id="order-start_adress_nickname"></div>
+                </li>
+                <li class="clr p10 server_type1">
+                    <div class="fl f16 c80">
+                        <L_>取货电话</L_>
+                    </div>
+                    <div class="fr f14 c80 callPhone" id="order-start_adress_phone" data-data="phone"
+                         style="color:blue;"></div>
+                </li>
+                <li class="clr p10 server_type1">
+                    <div class="fl f16 c80">
+                        <L_>取货地址</L_>
+                    </div>
+                    <div class="fr f14 c80" id="order-start_adress_name"></div>
+                </li>
+                <li class="clr p10 server_type2">
+                    <div class="fl f16 c80">
+                        <L_>购买地址</L_>
+                    </div>
+                    <div class="fr f14 c80" id="supply-from_site"></div>
+                </li>
+                <li class="clr p10 server_type3">
+                    <div class="fl f16 c80">
+                        <L_>购买地址</L_>
+                    </div>
+                    <div class="fr f14 c80">
+                        <L_>不限</L_>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
+<div class="sign_bottom Ps_bottom">
+    <a href="javascript:void(0);" class="a" id="eventBtn" style="display:none;"></a>
+	<a href="javascript:void(0);" id="cancel"  style="display:none;"><L_>扔回</L_></a>
+</div>
+<script src="scripts/jquery-1.8.3.min.js"></script>
+<script src="scripts/fastclick.js"></script>
+<script src="scripts/layer/layer.m.js"></script>
+<script src="scripts/work/common.js"></script>
+<script src="scripts/common.js?t=2"></script>
+<script src="scripts/work/detail.js?t=024"></script>
+<div class="mask1 hidden img_close">
+    <div class="add">
+        <div class="section">
+            <img class="img_close" src="" alt="" style="width: 100%;">
+        </div>
+    </div>
+</div>
+<script>
+    $('body').off('click', '.img_click').on('click', '.img_click', function (e) {
+        e.stopPropagation();
+        var sic = $(this).prop('src');
+        $('.mask1').removeClass('hidden');
+        $('.mask1 img').prop('src', sic);
+        $('.img_close').click(function (e) {
+            $('.mask1').addClass('hidden');
+        });
+    });
+</script>
+</body>
+</html>

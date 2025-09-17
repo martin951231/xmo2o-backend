@@ -1,0 +1,15 @@
+
+.file-list[data-v-076434ff]{
+    margin-top: 10px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+    cursor: pointer;
+}
+.file-list[data-v-076434ff]:hover{
+    background: #e6f7ff;
+}
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title>店铺商城</title>
+		<link href="css/mui.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/newMarketing_storeMarket.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+			<h1 class="mui-title"><L_>店铺商城</L_></h1>
+            <a class="mui-pull-right order-list" href="javascript:;" ><L_>购买记录</L_></a>
+		</header>
+        <div class="tab-wrap flex align-center justify-between">
+            <span class="flex-1 active text-cut" data-type="cat"><L_>分类店铺</L_></span>
+            <span class="flex-1 text-cut" data-type="package"><L_>套餐</L_></span>
+        </div>
+        
+		<div class="mui-content">
+			<div class="catStore">
+                <div class="cat-wrap">
+                    <div class="flex align-center justify-between cat-title-wrap">
+                        <span class="cat-title flex-1"><L_>全部分类</L_></span>
+                        <span class="mui-icon mui-icon-arrowdown"></span>
+                    </div>
+                    <div class="cat-list flex flex-wrap"></div>
+                </div>
+                <div class="catStore-list"></div>
+            </div>
+            <div class="package-list"></div>
+            <div class="empty" style="display:none;"><L_>暂无数据</L_></div>
+			<div class="pullup1" style="display:none;"><L_>没有更多数据</L_></div>
+		</div>
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/work/newMarketing_storeMarket.js" type="text/javascript" charset="utf-8"></script>
+		<script id="cardlist" type="text/html">
+            {{# for(var i = 0, len = d.length; i < len; i++){  }}
+               {{# 
+                    var item = d[i];
+                }} 
+                <div class="list-item flex">
+                    <div class="img-wrap flex align-center justify-center">
+                        <img src="{{item.cat_img}}" class="img"> </img>
+                        {{# if (item.discount_type && (item.discount_type == 1 || item.discount_type == 2)) { }}
+                            <span class="discount text-nowrap text-cut"><L_>优惠</L_></span>
+                        {{# } }}
+                    </div>
+                    <div class="flex-1 content">
+                        <div class="name text-wrap">{{item.name}}</div>
+                        {{# if (item.package_des) { }}
+                        <div class="package-detail text-wrap">{{item.package_detail}}</div>
+                        {{# } }}
+                        <div class="flex align-center justify-between price-wrap">
+                            <span class="price cr-orange">￥{{item.year_price}}<span class="">/<L_>年</L_></span> </span> 
+                            <span class="btn cr-orange text-nowrap" data-id="{{item.id}}"><L_>购买</L_></span> 
+                        </div>
+                    </div>
+                </div>
+            {{# } }}
+        </script>
+        <script id="catlist" type="text/html">
+            {{# for(var i = 0, len = d.length; i < len; i++){  }}
+                <div class="cat-item text-nowrap text-cut" data-id="{{d[i].value}}" data-name="{{d[i].label}}">{{d[i].label}}</div>
+            {{# } }}
+        </script>
+	</body>
+</html>

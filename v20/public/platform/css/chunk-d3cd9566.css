@@ -1,0 +1,42 @@
+
+[data-v-da36da78] .prepaid_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-da36da78] .prepaid_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-da36da78] .prepaid_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-da36da78] .prepaid_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+.first_item[data-v-da36da78] {
+  display: inline-block;
+}
+.other_item[data-v-da36da78] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: 98px;
+  margin-top: 12px;
+}
+.icon_1[data-v-da36da78] {
+  margin-left: 25px;
+  width: 30px;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid #999999;
+  cursor: pointer;
+}
+

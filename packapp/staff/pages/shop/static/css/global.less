@@ -1,0 +1,115 @@
+// 公共变量
+
+//外卖主颜色
+@buttonBlue: #61A0FF; 
+@buttonOrange: #FD9727;
+@buttonGray: #9FA4B9;
+@backgroundBlue: #E1ECFF;
+@backgroundGray:#EDEDED;
+@textRed:#FF3850;
+@textOrange:#F64C40;
+@tagRed: #FF4949;
+@tagYellow: #FBC553;
+@tagPuple:#A34FF9;
+@tagGreen:#36C6B4;
+@titleBlack:#3A3A3A;
+@textBlack:#333333;
+@textGray:#656565;
+
+// 字号
+@emphasizeSize: 18px;
+@titleSize: 16px;
+@normalSize: 14px;
+@descSize: 12px;
+
+// 字行高
+@titleLineHeight: 40px;
+@normalLineHeight: 30px;
+@descLineHeight: 24px;
+
+// 圆角
+@smallBorderRadius: 2px;
+@middleBorderRadius: 10px;
+@largeBorderRadius: 20px;
+
+.background-blue {
+	background: @backgroundBlue
+}
+.text-red {
+	color: @textRed
+}
+.text-orange {
+	color: @textOrange
+}
+.text-blue {
+	color: @buttonBlue;
+}
+
+.text-emphasize {
+	font-size: @emphasizeSize;
+	color: @textBlack;
+	font-weight: bold;
+}
+
+.tag {
+	border-radius: @smallBorderRadius;
+	padding: 0 4px;
+	height: 20px;
+	line-height: 20px;
+	vertical-align: middle;
+	color: #FFFFFF;
+}
+.btn {
+	border-radius: @smallBorderRadius;
+	padding: 0 8px;
+	height: 40px;
+	line-height: 40px;
+	vertical-align: middle;
+	color: #FFFFFF;
+	font-size: 16px;
+}
+
+.tag-orange {
+	background-color: @textOrange;
+	&:extend(.tag);
+}
+
+.tag-green {
+	background-color:@tagGreen;
+	&:extend(.tag);
+}
+
+.tag-blue {
+	background-color:@buttonBlue;
+	&:extend(.tag);
+}
+
+.tag-puple {
+	background-color:@tagPuple;
+	&:extend(.tag);
+}
+
+.tag-red {
+	background-color:@tagRed;
+	&:extend(.tag);
+}
+
+.tag-yellow {
+	background-color:@tagYellow;
+	&:extend(.tag);
+}
+
+.btn-blue {
+	background-color:@buttonBlue;
+	&:extend(.btn);
+}
+
+.btn-gray {
+	background-color:@buttonGray;
+	&:extend(.btn);
+}
+
+.btn-orange {
+	background-color:@buttonOrange;
+	&:extend(.btn);
+}

@@ -1,0 +1,17 @@
+$colors:(
+  "fff": #fff,
+  "ccc": #ccc,
+  "000": #000,
+  "999": #999,
+  "666": #666,
+  "333": #333
+);
+@each $colorKey,$color in $colors {
+  .cr-#{$colorKey}{
+    color: $color;
+  }
+}
+
+page {
+	background-color: #F8F8F8;
+}

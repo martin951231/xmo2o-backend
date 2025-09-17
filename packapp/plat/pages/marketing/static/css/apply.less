@@ -1,0 +1,134 @@
+.wrap{
+	width: 100%;
+	height: 100%;
+	min-height: 100vh;
+	background: #FFFFFF;
+	position: relative;
+	overflow: hidden;
+	padding: 80rpx 0;
+	box-sizing: border-box;
+	text-align: center;
+	
+	.fs-36{
+		font-size: 36rpx;
+	}
+	.fs-40{
+		font-size: 40rpx;
+	}
+	.fs-44{
+		font-size: 44rpx;
+	}
+	.fs-50{
+		font-size: 50rpx;
+	}
+	.fw{
+		font-weight: 500;
+	}
+	
+	.btn-wrap{
+		position: absolute;
+		bottom: 80rpx;
+		left: 55rpx;
+		right: 55rpx;
+		text-align: center;
+		.tips{
+			padding: 0 50rpx;
+			line-height: 1.8;
+			margin-bottom: 30rpx;
+		}
+		/deep/ .btn{
+			outline: none;
+			&::after{
+				border: none;
+			}
+			&.button-hover{
+				opacity: 0.9;
+			}
+		}
+	}
+	.have-qualified{
+		.img{
+			width: 60%;
+		}
+	}
+	.no-qualified{
+		padding-top: 100rpx;
+		.img{
+			width: 160rpx;
+		}
+		.tips{
+			font-weight: 500;
+			color: #CCCCCC;
+			margin-top: 80rpx;
+			margin-bottom: 30rpx;
+			font-size: 30rpx;
+		}
+		.apply-condition{
+			background: #F5F5F5;
+			border-radius: 50px;
+			margin: 0 80rpx;
+			font-size: 36rpx;
+			font-weight: 500;
+			color: #333333;
+			box-sizing: border-box;
+			padding: 30rpx;
+			word-break: break-all;
+			.iconfont{
+				color: #FF7713;
+				font-size: 40rpx;
+			}
+		}
+		.btn-wrap .btn{
+			background: #BBBBBB;
+		}
+	}
+	.apply-success{
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 0 60rpx 0;
+		box-sizing: border-box;
+		.img{
+			width: 340rpx;
+		}
+		.tips{
+			font-size: 40rpx;
+			font-weight: bold;
+			color: #FE5B4E;
+			margin-top: 40rpx;
+			padding-bottom: 200rpx;
+		}
+	}
+	/deep/ .uni-popup__wrapper.uni-custom.center .uni-popup__wrapper-box {
+		width: 90%;
+		max-width: 654rpx;
+	}
+	.popup-content{
+		.tips{
+			font-weight: 800;
+			color: #323232;
+			padding: 100rpx 20rpx;
+			text-align: center;
+			border-bottom: 1px solid #F5F5F5;
+		}
+		.popup-btn{
+			display: flex;
+				
+			.item{
+				flex: 1;
+				padding: 30rpx 20rpx;
+				font-size: 30rpx;
+				font-weight: bold;
+				&.cancel{
+					color: #999999;
+					border-right: 1px solid #F5F5F5;
+				}
+				.confirm{
+					
+				}
+			}
+		}
+	}
+}

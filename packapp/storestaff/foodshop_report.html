@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>店员中心</title>
+<meta name="viewport"
+	content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name='apple-touch-fullscreen' content='yes' />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="format-detection" content="address=no" /> 
+<link href="css/pigcms.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="css/css_whir.css">
+<script src="scripts/swiper-3.3.1.jquery.min.js"></script>
+<script src="scripts/work/foodshop_calll.js"></script>
+<style>
+	.elastic .Switch li.on {
+	    background: #2ecc71;
+	}
+	.Resersub input{
+	    background: #2ecc71;
+	}
+	.elastic .swiper-wrapper .on {
+	    border-bottom: #2ecc71 1px solid;
+	    color: #2ecc71;
+	}
+</style>
+</head>
+<body>
+	<section class="public">
+		<div class="return link-url" data-url-type="openLeftWindow" data-url="back" data-closewebview="true"></div>
+		<div class="content"><L_>日结账单</L_></div>
+	</section>
+
+	<section class="reserve stay">
+		<div class="top_44" style="position: fixed;top: 44px;left: 0;;right: 0;padding: 10px;background: #fff;line-height: 1.5;font-size:13px;color: #666;">
+			<div>账单开始时间：<span class="stime"></span></div>
+			<div>账单结束时间：<span class="etime"></span></div>
+			<div>消费单数：<span class="num"></span></div>
+			<div>消费人数：<span class="people_num line-10"></span></div>
+			<div>人均消费：<span class="per_capita_consumption"></span></div>
+		</div>
+		
+		<div class="entry" style="padding-top: 72px;">
+			<ul class="pay_type_report">
+			</ul>
+		</div>
+	</section>
+
+	<div class="seek prints">
+		<div class="within">
+			<h2><L_>打印菜单</L_></h2>
+			<div class="con">
+				<div class="img">
+					<img src="images/tct_04.jpg">
+				</div>
+				<div class="tit">
+					<p>
+						打印日结账单<span class="red"><L_>确定打印？</L_></span>
+					</p>
+				</div>
+				<div class="button">
+					<div class="clr p20">
+						<div class="fl close shut"><L_>关闭</L_></div>
+						<div class="fr ensure shut"><L_>确定打印</L_></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="del shut"></div>
+	</div>
+
+	<div class="mask"></div>
+	<div class="Mask"></div>
+
+	<div class="time_content" style="position: fixed;top: 0;left: 0;bottom: 0;right: 0;background: rgba(0, 0, 0, .6);z-index: 1000;display: none;">
+		<section class="elastic" style="height: 667px; overflow: hidden;">
+		<div class="swiper-container swiper-container2 swiper-container-horizontal">
+			<div class="swiper-wrapper">
+			</div>
+			<div class="swiper-button-prev"></div> 
+			<div class="swiper-button-next"></div> 
+		</div>
+		<div class="Switch" style="height: 557px;">
+		</div>
+		<div class="Resersub" style=""><input type="submit" value="确认选择" class=""></div>
+		</section>
+	</div>
+
+	<script src="scripts/jquery-1.8.3.min.js"></script>
+	<script src="scripts/fastclick.js"></script>
+	<script src="scripts/layer/layer.m.js"></script>
+	<script src="scripts/common.js"></script>
+	<script src="scripts/JRoll.js"></script>
+	<script src="scripts/work/foodshop_report.js"></script>
+	<script id="reportTpl" type="text/html">
+		{{# if(d.pay_type_report != null) { }} 
+		{{# for (var i in d.pay_type_report){ }}
+		<li>
+			<div class="top pitch clr">       
+				<div class="fl">{{d.pay_type_report[i].pay_type_name}}</div>     
+			</div>   
+			<div class="con">    
+				<div class="con_top"> 
+					<p>{{ L_('消费次数') }}：{{d.pay_type_report[i].num}}</p>     
+					<p>{{ L_('订单金额') }}：{{d.pay_type_report[i].total_price}}</p>     
+					<p>{{ L_('实付金额') }}：{{d.pay_type_report[i].money}}</p>
+				</div>
+			</div>
+			</div>
+		</li>
+		{{# } }}
+		{{# } }}
+		<li>      
+			<div class="top pitch clr">       
+				<div class="fl">{{ L_('优惠信息') }}</div>     
+			</div>   
+			<div class="con">    
+				<div class="con_top"> 
+					{{# for (var i in d.discount){ }}
+					<p>{{d.discount[i].name}}：{{d.discount[i].money}}</p>  
+					{{# } }}       
+				</div>
+			</div>          
+			<div class="click">
+				<dl>
+					<dd class="print">
+						<span>{{ L_('打印菜单') }}</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</script>
+</body>
+</html>

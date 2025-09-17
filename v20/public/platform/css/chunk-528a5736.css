@@ -1,0 +1,104 @@
+.community_environment[data-v-54fb9c1b] {
+  height: calc(15vh - 32px);
+  width: 100%;
+  padding-left: 20px;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+}
+.community_environment .bottom_title[data-v-54fb9c1b] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  position: absolute;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 99999;
+  right: -70px;
+  bottom: 0;
+}
+.community_environment .left_view[data-v-54fb9c1b] {
+  width: 33%;
+}
+.community_environment .left_view .view_item .top[data-v-54fb9c1b] {
+  display: -ms-flexbox;
+  display: flex;
+}
+.community_environment .left_view .view_item .top .top_icon[data-v-54fb9c1b] {
+  width: 12px;
+}
+.community_environment .left_view .view_item .top .top_icon img[data-v-54fb9c1b] {
+  width: 12px;
+}
+.community_environment .left_view .view_item .top .top_name[data-v-54fb9c1b] {
+  margin-left: 10px;
+  color: #fff;
+  font-size: 12px;
+}
+.community_environment .left_view .view_item .top .top_status[data-v-54fb9c1b] {
+  margin-left: 10px;
+  color: #23E195;
+  font-size: 12px;
+}
+.community_environment .left_view .view_item .bottom[data-v-54fb9c1b] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.community_environment .left_view .view_item .bottom .bottom_value[data-v-54fb9c1b] {
+  margin-left: 20px;
+  color: #D7CD3A;
+  font-size: 12px;
+}
+.community_environment .left_view .view_item .bottom .bottom_change_icon[data-v-54fb9c1b] {
+  width: 7px;
+  transform: translateY(-1px);
+}
+.community_environment .left_view .view_item .bottom .bottom_change_icon img[data-v-54fb9c1b] {
+  width: 7px;
+  margin-left: 10px;
+}
+.community_environment .right_view[data-v-54fb9c1b] {
+  width: 67%;
+  height: calc(100%);
+  overflow-y: scroll;
+  z-index: 99;
+}
+.community_environment .right_view[data-v-54fb9c1b]::-webkit-scrollbar {
+  width: 0;
+}
+.community_environment .right_view .chart_con[data-v-54fb9c1b] {
+  margin: 2px 0;
+}
+.community_environment .right_view .chart_con .chart_item[data-v-54fb9c1b] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin: 2px 0;
+}
+.community_environment .right_view .chart_con .chart_item .item_name[data-v-54fb9c1b] {
+  color: #ffffff;
+  font-size: 12px;
+  width: 70px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+.community_environment .right_view .chart_con .chart_item .item_value[data-v-54fb9c1b] {
+  margin-left: 10px;
+  width: 75%;
+  height: 12px;
+}
+.community_environment .right_view .chart_con .chart_item .item_value .rate_value[data-v-54fb9c1b] {
+  height: 100%;
+}
+

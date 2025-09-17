@@ -1,0 +1,114 @@
+.form_title[data-v-59ff8c12] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-59ff8c12] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-59ff8c12] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-59ff8c12] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  margin-right: 50px;
+}
+.form_item[data-v-59ff8c12] {
+  width: 49%;
+}
+[data-v-59ff8c12] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+.add_temporary[data-v-59ff8c12] {
+  width: 100%;
+}
+.form_content[data-v-59ff8c12] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.label_title[data-v-59ff8c12] {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 120px;
+  border-left: 6px solid skyblue;
+  margin-left: 10px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: 15px;
+  margin-bottom: 20px;
+}
+.pic_container[data-v-59ff8c12] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.pic_item[data-v-59ff8c12] {
+  width: 46%;
+}
+.pic_item img[data-v-59ff8c12] {
+  width: 100%;
+}
+
+.temporary_cars[data-v-3b391118] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.temporary_cars .header_search[data-v-3b391118] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
+.temporary_cars .header_search .search_item[data-v-3b391118] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.temporary_cars .header_search .operation_btn[data-v-3b391118] {
+  margin-left: 20px;
+}
+.temporary_cars .table_content[data-v-3b391118] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

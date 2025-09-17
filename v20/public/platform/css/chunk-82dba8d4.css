@@ -1,0 +1,38 @@
+.form_title[data-v-6879b3ab] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-6879b3ab] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-6879b3ab] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-6879b3ab] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+}
+.ant-form-item-control .a_radio[data-v-6879b3ab] {
+  display: block;
+  height: 15px;
+  line-height: 15px;
+}
+[data-v-6879b3ab] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+

@@ -1,0 +1,43 @@
+
+body {
+    background-color: #ffffff;
+    /* overflow: hidden; */
+}
+
+#app {
+    height: 100%;
+}
+
+.title {
+    color: #000000;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 10px;
+}
+.wallet {
+    margin: 10px;
+    height: 200px;
+    background: url(../images/wallet_bg.png) no-repeat;
+    background-size:100% 100%;
+    padding: 10px
+}
+
+.btn-tx {
+    display: inline-block;
+    padding: 8px;
+    background-color: #FDCB4E;
+    color:#333333;
+    border-radius: 12px;
+}
+
+.title-tag {
+    padding:0 2px;
+    background-color: #27A3F7;
+    margin-right: 5px;
+}
+.list {
+    /* height: calc(100% - 410px); */
+    /* overflow-y: scroll; */
+    /* margin-top: 70px; */
+    padding-bottom: 10px;
+}

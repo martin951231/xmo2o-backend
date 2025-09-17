@@ -1,0 +1,48 @@
+.color-picker[data-v-0f1938e4] {
+  margin: 10px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.color-picker .color-box[data-v-0f1938e4] {
+  z-index: 999;
+}
+.color-picker .color-box[data-v-0f1938e4] .colorBtn {
+  width: 80px;
+  height: 30px;
+  border: 1px solid #666666;
+}
+.color-picker .color-name[data-v-0f1938e4] {
+  display: inline-block;
+  margin: 0px 20px;
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.center[data-v-49edbfe4] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-bottom: 10px;
+}
+.textarea-wrapper[data-v-49edbfe4] {
+  position: relative;
+  display: block;
+}
+.textarea-wrapper .m-textarea[data-v-49edbfe4] {
+  padding: 8px 12px;
+  padding-bottom: 25px;
+  height: 100%;
+}
+.textarea-wrapper .m-count[data-v-49edbfe4] {
+  color: #808080;
+  position: absolute;
+  font-size: 12px;
+  bottom: 0px;
+  right: 12px;
+}
+

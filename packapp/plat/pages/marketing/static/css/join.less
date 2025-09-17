@@ -1,0 +1,38 @@
+.wrap{
+	background: #F7F9FE;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	
+	.form-wrap{
+		margin: 60rpx 40rpx;
+		height: calc(100% - 120rpx);
+		box-sizing: border-box;
+		background: #FFFFFF;
+		padding: 0 40rpx;
+		border-radius: 20rpx;
+		
+		.item {
+			border-bottom: 1px solid #F2F2F2;
+			padding-top: 60rpx;
+			.title{
+				font-size: 24rpx;
+				font-weight: 500;
+				color: #8F929A;
+				margin-bottom: 30rpx;
+			}
+			.input{
+				margin-bottom: 50rpx;
+			}
+		}
+		/deep/ .btn{
+			margin: 120rpx 40rpx 0;
+			&::after{
+				border: none;
+			}
+			&.button-hover{
+				opacity: 0.9;
+			}
+		}
+	}
+}

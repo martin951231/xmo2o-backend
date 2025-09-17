@@ -1,0 +1,21 @@
+
+.ant-upload-list-picture-card .ant-upload-list-item {
+  float: left;
+  width: 104px;
+  height: 104px;
+   margin: 8px 8px 0 0;
+}
+.ant-form-item label {
+  width: 50px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+

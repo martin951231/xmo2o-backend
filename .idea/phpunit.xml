@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PHPUnit">
+    <option name="directories">
+      <list>
+        <option value="$PROJECT_DIR$/cms/Lib/ORG/ali_nation_sms/mtdowling/jmespath.php/tests" />
+        <option value="$PROJECT_DIR$/cms/Lib/ORG/ali_nation_sms/clagiordano/weblibs-configmanager/tests" />
+      </list>
+    </option>
+  </component>
+</project>

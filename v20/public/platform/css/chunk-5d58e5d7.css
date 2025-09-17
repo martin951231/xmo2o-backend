@@ -1,0 +1,32 @@
+
+.main[data-v-7772cf73] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 10px;
+}
+.main div[data-v-7772cf73]{
+    padding: 2px auto;
+}
+.goods-image[data-v-7772cf73] {
+    width: 48px;
+    margin-right: 5px;
+    height: 48px;
+}
+.font_bold[data-v-7772cf73]{
+    font-weight: bold;
+}
+.red[data-v-7772cf73]{
+    color: red;
+}
+.blue[data-v-7772cf73]{
+    color: blue;
+}
+.avatar[data-v-7772cf73]{
+    width: 35px;
+    border-radius: 35px
+}
+.div-margin[data-v-7772cf73]{
+    margin-bottom: 5px;
+}
+

@@ -1,0 +1,102 @@
+.imgname[data-v-363c5cb4] {
+  width: 100px;
+}
+[data-v-363c5cb4] .project_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-363c5cb4] .project_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-363c5cb4] .project_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-363c5cb4] .project_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+[data-v-363c5cb4] .help-icon {
+  cursor: pointer;
+  width: 20px;
+  line-height: 20px;
+  border-radius: 10px;
+  background-color: #ddd;
+  display: inline-block;
+  text-align: center;
+}
+
+
+.imgname {
+  width: 100px;
+}
+
+.form_box[data-v-7d8b802f] {
+  margin-top: 10px;
+}
+.form_box[data-v-7d8b802f]:first-of-type {
+  margin-top: 0px;
+}
+.icon_1[data-v-7d8b802f] {
+  margin-left: 72px;
+  width: 30px;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid #999999;
+}
+.margin_top_10[data-v-7d8b802f] {
+  margin-top: 10px;
+}
+
+
+.imgname{
+    width: 100px;
+}
+.ruleListBox .ant-popover-placement-top{
+    left: 1210px !important;
+    top: 250px !important;
+    -webkit-transform-origin: 50% 103px !important;
+            transform-origin: 50% 103px !important;
+}
+.ant-popover-inner {
+    width: 225px;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15) \9;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15) \9;
+}
+
+.message-tips-box[data-v-5274e3ae] {
+  margin-bottom: 15px;
+}
+.message-suggestions-list-box[data-v-5274e3ae] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-5274e3ae] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-5274e3ae] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-5274e3ae] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-5274e3ae] {
+  padding: 20px;
+}
+.lbsf[data-v-5274e3ae] {
+  float: right;
+  margin-right: 24px;
+}
+

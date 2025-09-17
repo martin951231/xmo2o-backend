@@ -1,0 +1,896 @@
+{
+    "/::1f600::/": {
+        "code": "/::1f600::/",
+        "name": "Grinning Face",
+        "unified": "1f600",
+        "img_url": "/static/images/apple_emoji/1f600.png"
+    },
+    "/::1f603::/": {
+        "code": "/::1f603::/",
+        "name": "Smiling Face with Open Mouth",
+        "unified": "1f603",
+        "img_url": "/static/images/apple_emoji/1f603.png"
+    },
+    "/::1f604::/": {
+        "code": "/::1f604::/",
+        "name": "Smiling Face with Open Mouth and Smiling Eyes",
+        "unified": "1f604",
+        "img_url": "/static/images/apple_emoji/1f604.png"
+    },
+    "/::1f601::/": {
+        "code": "/::1f601::/",
+        "name": "Grinning Face with Smiling Eyes",
+        "unified": "1f601",
+        "img_url": "/static/images/apple_emoji/1f601.png"
+    },
+    "/::1f606::/": {
+        "code": "/::1f606::/",
+        "name": "Smiling Face with Open Mouth and Tightly-Closed Eyes",
+        "unified": "1f606",
+        "img_url": "/static/images/apple_emoji/1f606.png"
+    },
+    "/::1f605::/": {
+        "code": "/::1f605::/",
+        "name": "Smiling Face with Open Mouth and Cold Sweat",
+        "unified": "1f605",
+        "img_url": "/static/images/apple_emoji/1f605.png"
+    },
+    "/::1f923::/": {
+        "code": "/::1f923::/",
+        "name": "Rolling on the Floor Laughing",
+        "unified": "1f923",
+        "img_url": "/static/images/apple_emoji/1f923.png"
+    },
+    "/::1f602::/": {
+        "code": "/::1f602::/",
+        "name": "Face with Tears of Joy",
+        "unified": "1f602",
+        "img_url": "/static/images/apple_emoji/1f602.png"
+    },
+    "/::1f642::/": {
+        "code": "/::1f642::/",
+        "name": "Slightly Smiling Face",
+        "unified": "1f642",
+        "img_url": "/static/images/apple_emoji/1f642.png"
+    },
+    "/::1f643::/": {
+        "code": "/::1f643::/",
+        "name": "Upside-Down Face",
+        "unified": "1f643",
+        "img_url": "/static/images/apple_emoji/1f643.png"
+    },
+    "/::1f609::/": {
+        "code": "/::1f609::/",
+        "name": "Winking Face",
+        "unified": "1f609",
+        "img_url": "/static/images/apple_emoji/1f609.png"
+    },
+    "/::1f60a::/": {
+        "code": "/::1f60a::/",
+        "name": "Smiling Face with Smiling Eyes",
+        "unified": "1f60a",
+        "img_url": "/static/images/apple_emoji/1f60a.png"
+    },
+    "/::1f607::/": {
+        "code": "/::1f607::/",
+        "name": "Smiling Face with Halo",
+        "unified": "1f607",
+        "img_url": "/static/images/apple_emoji/1f607.png"
+    },
+    "/::1f970::/": {
+        "code": "/::1f970::/",
+        "name": "Smiling Face with Smiling Eyes and Three Hearts",
+        "unified": "1f970",
+        "img_url": "/static/images/apple_emoji/1f970.png"
+    },
+    "/::1f60d::/": {
+        "code": "/::1f60d::/",
+        "name": "Smiling Face with Heart-Shaped Eyes",
+        "unified": "1f60d",
+        "img_url": "/static/images/apple_emoji/1f60d.png"
+    },
+    "/::1f929::/": {
+        "code": "/::1f929::/",
+        "name": "Grinning Face with Star Eyes",
+        "unified": "1f929",
+        "img_url": "/static/images/apple_emoji/1f929.png"
+    },
+    "/::1f618::/": {
+        "code": "/::1f618::/",
+        "name": "Face Throwing a Kiss",
+        "unified": "1f618",
+        "img_url": "/static/images/apple_emoji/1f618.png"
+    },
+    "/::1f617::/": {
+        "code": "/::1f617::/",
+        "name": "Kissing Face",
+        "unified": "1f617",
+        "img_url": "/static/images/apple_emoji/1f617.png"
+    },
+    "/::263a-fe0f::/": {
+        "code": "/::263a-fe0f::/",
+        "name": "White Smiling Face",
+        "unified": "263a-fe0f",
+        "img_url": "/static/images/apple_emoji/263a-fe0f.png"
+    },
+    "/::1f61a::/": {
+        "code": "/::1f61a::/",
+        "name": "Kissing Face with Closed Eyes",
+        "unified": "1f61a",
+        "img_url": "/static/images/apple_emoji/1f61a.png"
+    },
+    "/::1f619::/": {
+        "code": "/::1f619::/",
+        "name": "Kissing Face with Smiling Eyes",
+        "unified": "1f619",
+        "img_url": "/static/images/apple_emoji/1f619.png"
+    },
+    "/::1f60b::/": {
+        "code": "/::1f60b::/",
+        "name": "Face Savouring Delicious Food",
+        "unified": "1f60b",
+        "img_url": "/static/images/apple_emoji/1f60b.png"
+    },
+    "/::1f61b::/": {
+        "code": "/::1f61b::/",
+        "name": "Face with Stuck-out Tongue",
+        "unified": "1f61b",
+        "img_url": "/static/images/apple_emoji/1f61b.png"
+    },
+    "/::1f61c::/": {
+        "code": "/::1f61c::/",
+        "name": "Face with Stuck-out Tongue and Winking Eye",
+        "unified": "1f61c",
+        "img_url": "/static/images/apple_emoji/1f61c.png"
+    },
+    "/::1f92a::/": {
+        "code": "/::1f92a::/",
+        "name": "Grinning Face with One Large and One Small Eye",
+        "unified": "1f92a",
+        "img_url": "/static/images/apple_emoji/1f92a.png"
+    },
+    "/::1f61d::/": {
+        "code": "/::1f61d::/",
+        "name": "Face with Stuck-out Tongue and Tightly-Closed Eyes",
+        "unified": "1f61d",
+        "img_url": "/static/images/apple_emoji/1f61d.png"
+    },
+    "/::1f911::/": {
+        "code": "/::1f911::/",
+        "name": "Money-Mouth Face",
+        "unified": "1f911",
+        "img_url": "/static/images/apple_emoji/1f911.png"
+    },
+    "/::1f917::/": {
+        "code": "/::1f917::/",
+        "name": "Hugging Face",
+        "unified": "1f917",
+        "img_url": "/static/images/apple_emoji/1f917.png"
+    },
+    "/::1f92d::/": {
+        "code": "/::1f92d::/",
+        "name": "Smiling Face with Smiling Eyes and Hand Covering Mouth",
+        "unified": "1f92d",
+        "img_url": "/static/images/apple_emoji/1f92d.png"
+    },
+    "/::1f92b::/": {
+        "code": "/::1f92b::/",
+        "name": "Face with Finger Covering Closed Lips",
+        "unified": "1f92b",
+        "img_url": "/static/images/apple_emoji/1f92b.png"
+    },
+    "/::1f914::/": {
+        "code": "/::1f914::/",
+        "name": "Thinking Face",
+        "unified": "1f914",
+        "img_url": "/static/images/apple_emoji/1f914.png"
+    },
+    "/::1f910::/": {
+        "code": "/::1f910::/",
+        "name": "Zipper-Mouth Face",
+        "unified": "1f910",
+        "img_url": "/static/images/apple_emoji/1f910.png"
+    },
+    "/::1f928::/": {
+        "code": "/::1f928::/",
+        "name": "Face with One Eyebrow Raised",
+        "unified": "1f928",
+        "img_url": "/static/images/apple_emoji/1f928.png"
+    },
+    "/::1f610::/": {
+        "code": "/::1f610::/",
+        "name": "Neutral Face",
+        "unified": "1f610",
+        "img_url": "/static/images/apple_emoji/1f610.png"
+    },
+    "/::1f611::/": {
+        "code": "/::1f611::/",
+        "name": "Expressionless Face",
+        "unified": "1f611",
+        "img_url": "/static/images/apple_emoji/1f611.png"
+    },
+    "/::1f636::/": {
+        "code": "/::1f636::/",
+        "name": "Face Without Mouth",
+        "unified": "1f636",
+        "img_url": "/static/images/apple_emoji/1f636.png"
+    },
+    "/::1f60f::/": {
+        "code": "/::1f60f::/",
+        "name": "Smirking Face",
+        "unified": "1f60f",
+        "img_url": "/static/images/apple_emoji/1f60f.png"
+    },
+    "/::1f612::/": {
+        "code": "/::1f612::/",
+        "name": "Unamused Face",
+        "unified": "1f612",
+        "img_url": "/static/images/apple_emoji/1f612.png"
+    },
+    "/::1f644::/": {
+        "code": "/::1f644::/",
+        "name": "Face with Rolling Eyes",
+        "unified": "1f644",
+        "img_url": "/static/images/apple_emoji/1f644.png"
+    },
+    "/::1f62c::/": {
+        "code": "/::1f62c::/",
+        "name": "Grimacing Face",
+        "unified": "1f62c",
+        "img_url": "/static/images/apple_emoji/1f62c.png"
+    },
+    "/::1f925::/": {
+        "code": "/::1f925::/",
+        "name": "Lying Face",
+        "unified": "1f925",
+        "img_url": "/static/images/apple_emoji/1f925.png"
+    },
+    "/::1f60c::/": {
+        "code": "/::1f60c::/",
+        "name": "Relieved Face",
+        "unified": "1f60c",
+        "img_url": "/static/images/apple_emoji/1f60c.png"
+    },
+    "/::1f614::/": {
+        "code": "/::1f614::/",
+        "name": "Pensive Face",
+        "unified": "1f614",
+        "img_url": "/static/images/apple_emoji/1f614.png"
+    },
+    "/::1f62a::/": {
+        "code": "/::1f62a::/",
+        "name": "Sleepy Face",
+        "unified": "1f62a",
+        "img_url": "/static/images/apple_emoji/1f62a.png"
+    },
+    "/::1f924::/": {
+        "code": "/::1f924::/",
+        "name": "Drooling Face",
+        "unified": "1f924",
+        "img_url": "/static/images/apple_emoji/1f924.png"
+    },
+    "/::1f634::/": {
+        "code": "/::1f634::/",
+        "name": "Sleeping Face",
+        "unified": "1f634",
+        "img_url": "/static/images/apple_emoji/1f634.png"
+    },
+    "/::1f637::/": {
+        "code": "/::1f637::/",
+        "name": "Face with Medical Mask",
+        "unified": "1f637",
+        "img_url": "/static/images/apple_emoji/1f637.png"
+    },
+    "/::1f912::/": {
+        "code": "/::1f912::/",
+        "name": "Face with Thermometer",
+        "unified": "1f912",
+        "img_url": "/static/images/apple_emoji/1f912.png"
+    },
+    "/::1f915::/": {
+        "code": "/::1f915::/",
+        "name": "Face with Head-Bandage",
+        "unified": "1f915",
+        "img_url": "/static/images/apple_emoji/1f915.png"
+    },
+    "/::1f922::/": {
+        "code": "/::1f922::/",
+        "name": "Nauseated Face",
+        "unified": "1f922",
+        "img_url": "/static/images/apple_emoji/1f922.png"
+    },
+    "/::1f92e::/": {
+        "code": "/::1f92e::/",
+        "name": "Face with Open Mouth Vomiting",
+        "unified": "1f92e",
+        "img_url": "/static/images/apple_emoji/1f92e.png"
+    },
+    "/::1f927::/": {
+        "code": "/::1f927::/",
+        "name": "Sneezing Face",
+        "unified": "1f927",
+        "img_url": "/static/images/apple_emoji/1f927.png"
+    },
+    "/::1f975::/": {
+        "code": "/::1f975::/",
+        "name": "Overheated Face",
+        "unified": "1f975",
+        "img_url": "/static/images/apple_emoji/1f975.png"
+    },
+    "/::1f976::/": {
+        "code": "/::1f976::/",
+        "name": "Freezing Face",
+        "unified": "1f976",
+        "img_url": "/static/images/apple_emoji/1f976.png"
+    },
+    "/::1f974::/": {
+        "code": "/::1f974::/",
+        "name": "Face with Uneven Eyes and Wavy Mouth",
+        "unified": "1f974",
+        "img_url": "/static/images/apple_emoji/1f974.png"
+    },
+    "/::1f635::/": {
+        "code": "/::1f635::/",
+        "name": "Dizzy Face",
+        "unified": "1f635",
+        "img_url": "/static/images/apple_emoji/1f635.png"
+    },
+    "/::1f92f::/": {
+        "code": "/::1f92f::/",
+        "name": "Shocked Face with Exploding Head",
+        "unified": "1f92f",
+        "img_url": "/static/images/apple_emoji/1f92f.png"
+    },
+    "/::1f920::/": {
+        "code": "/::1f920::/",
+        "name": "Face with Cowboy Hat",
+        "unified": "1f920",
+        "img_url": "/static/images/apple_emoji/1f920.png"
+    },
+    "/::1f973::/": {
+        "code": "/::1f973::/",
+        "name": "Face with Party Horn and Party Hat",
+        "unified": "1f973",
+        "img_url": "/static/images/apple_emoji/1f973.png"
+    },
+    "/::1f978::/": {
+        "code": "/::1f978::/",
+        "name": "Disguised Face",
+        "unified": "1f978",
+        "img_url": "/static/images/apple_emoji/1f978.png"
+    },
+    "/::1f60e::/": {
+        "code": "/::1f60e::/",
+        "name": "Smiling Face with Sunglasses",
+        "unified": "1f60e",
+        "img_url": "/static/images/apple_emoji/1f60e.png"
+    },
+    "/::1f913::/": {
+        "code": "/::1f913::/",
+        "name": "Nerd Face",
+        "unified": "1f913",
+        "img_url": "/static/images/apple_emoji/1f913.png"
+    },
+    "/::1f9d0::/": {
+        "code": "/::1f9d0::/",
+        "name": "Face with Monocle",
+        "unified": "1f9d0",
+        "img_url": "/static/images/apple_emoji/1f9d0.png"
+    },
+    "/::1f615::/": {
+        "code": "/::1f615::/",
+        "name": "Confused Face",
+        "unified": "1f615",
+        "img_url": "/static/images/apple_emoji/1f615.png"
+    },
+    "/::1f61f::/": {
+        "code": "/::1f61f::/",
+        "name": "Worried Face",
+        "unified": "1f61f",
+        "img_url": "/static/images/apple_emoji/1f61f.png"
+    },
+    "/::1f641::/": {
+        "code": "/::1f641::/",
+        "name": "Slightly Frowning Face",
+        "unified": "1f641",
+        "img_url": "/static/images/apple_emoji/1f641.png"
+    },
+    "/::2639-fe0f::/": {
+        "code": "/::2639-fe0f::/",
+        "name": "Frowning Face",
+        "unified": "2639-fe0f",
+        "img_url": "/static/images/apple_emoji/2639-fe0f.png"
+    },
+    "/::1f62e::/": {
+        "code": "/::1f62e::/",
+        "name": "Face with Open Mouth",
+        "unified": "1f62e",
+        "img_url": "/static/images/apple_emoji/1f62e.png"
+    },
+    "/::1f62f::/": {
+        "code": "/::1f62f::/",
+        "name": "Hushed Face",
+        "unified": "1f62f",
+        "img_url": "/static/images/apple_emoji/1f62f.png"
+    },
+    "/::1f632::/": {
+        "code": "/::1f632::/",
+        "name": "Astonished Face",
+        "unified": "1f632",
+        "img_url": "/static/images/apple_emoji/1f632.png"
+    },
+    "/::1f633::/": {
+        "code": "/::1f633::/",
+        "name": "Flushed Face",
+        "unified": "1f633",
+        "img_url": "/static/images/apple_emoji/1f633.png"
+    },
+    "/::1f97a::/": {
+        "code": "/::1f97a::/",
+        "name": "Face with Pleading Eyes",
+        "unified": "1f97a",
+        "img_url": "/static/images/apple_emoji/1f97a.png"
+    },
+    "/::1f626::/": {
+        "code": "/::1f626::/",
+        "name": "Frowning Face with Open Mouth",
+        "unified": "1f626",
+        "img_url": "/static/images/apple_emoji/1f626.png"
+    },
+    "/::1f627::/": {
+        "code": "/::1f627::/",
+        "name": "Anguished Face",
+        "unified": "1f627",
+        "img_url": "/static/images/apple_emoji/1f627.png"
+    },
+    "/::1f628::/": {
+        "code": "/::1f628::/",
+        "name": "Fearful Face",
+        "unified": "1f628",
+        "img_url": "/static/images/apple_emoji/1f628.png"
+    },
+    "/::1f630::/": {
+        "code": "/::1f630::/",
+        "name": "Face with Open Mouth and Cold Sweat",
+        "unified": "1f630",
+        "img_url": "/static/images/apple_emoji/1f630.png"
+    },
+    "/::1f625::/": {
+        "code": "/::1f625::/",
+        "name": "Disappointed but Relieved Face",
+        "unified": "1f625",
+        "img_url": "/static/images/apple_emoji/1f625.png"
+    },
+    "/::1f622::/": {
+        "code": "/::1f622::/",
+        "name": "Crying Face",
+        "unified": "1f622",
+        "img_url": "/static/images/apple_emoji/1f622.png"
+    },
+    "/::1f62d::/": {
+        "code": "/::1f62d::/",
+        "name": "Loudly Crying Face",
+        "unified": "1f62d",
+        "img_url": "/static/images/apple_emoji/1f62d.png"
+    },
+    "/::1f631::/": {
+        "code": "/::1f631::/",
+        "name": "Face Screaming in Fear",
+        "unified": "1f631",
+        "img_url": "/static/images/apple_emoji/1f631.png"
+    },
+    "/::1f616::/": {
+        "code": "/::1f616::/",
+        "name": "Confounded Face",
+        "unified": "1f616",
+        "img_url": "/static/images/apple_emoji/1f616.png"
+    },
+    "/::1f623::/": {
+        "code": "/::1f623::/",
+        "name": "Persevering Face",
+        "unified": "1f623",
+        "img_url": "/static/images/apple_emoji/1f623.png"
+    },
+    "/::1f61e::/": {
+        "code": "/::1f61e::/",
+        "name": "Disappointed Face",
+        "unified": "1f61e",
+        "img_url": "/static/images/apple_emoji/1f61e.png"
+    },
+    "/::1f613::/": {
+        "code": "/::1f613::/",
+        "name": "Face with Cold Sweat",
+        "unified": "1f613",
+        "img_url": "/static/images/apple_emoji/1f613.png"
+    },
+    "/::1f629::/": {
+        "code": "/::1f629::/",
+        "name": "Weary Face",
+        "unified": "1f629",
+        "img_url": "/static/images/apple_emoji/1f629.png"
+    },
+    "/::1f62b::/": {
+        "code": "/::1f62b::/",
+        "name": "Tired Face",
+        "unified": "1f62b",
+        "img_url": "/static/images/apple_emoji/1f62b.png"
+    },
+    "/::1f971::/": {
+        "code": "/::1f971::/",
+        "name": "Yawning Face",
+        "unified": "1f971",
+        "img_url": "/static/images/apple_emoji/1f971.png"
+    },
+    "/::1f624::/": {
+        "code": "/::1f624::/",
+        "name": "Face with Look of Triumph",
+        "unified": "1f624",
+        "img_url": "/static/images/apple_emoji/1f624.png"
+    },
+    "/::1f621::/": {
+        "code": "/::1f621::/",
+        "name": "Pouting Face",
+        "unified": "1f621",
+        "img_url": "/static/images/apple_emoji/1f621.png"
+    },
+    "/::1f620::/": {
+        "code": "/::1f620::/",
+        "name": "Angry Face",
+        "unified": "1f620",
+        "img_url": "/static/images/apple_emoji/1f620.png"
+    },
+    "/::1f92c::/": {
+        "code": "/::1f92c::/",
+        "name": "Serious Face with Symbols Covering Mouth",
+        "unified": "1f92c",
+        "img_url": "/static/images/apple_emoji/1f92c.png"
+    },
+    "/::1f608::/": {
+        "code": "/::1f608::/",
+        "name": "Smiling Face with Horns",
+        "unified": "1f608",
+        "img_url": "/static/images/apple_emoji/1f608.png"
+    },
+    "/::1f47f::/": {
+        "code": "/::1f47f::/",
+        "name": "Imp",
+        "unified": "1f47f",
+        "img_url": "/static/images/apple_emoji/1f47f.png"
+    },
+    "/::1f480::/": {
+        "code": "/::1f480::/",
+        "name": "Skull",
+        "unified": "1f480",
+        "img_url": "/static/images/apple_emoji/1f480.png"
+    },
+    "/::2620-fe0f::/": {
+        "code": "/::2620-fe0f::/",
+        "name": "Skull and Crossbones",
+        "unified": "2620-fe0f",
+        "img_url": "/static/images/apple_emoji/2620-fe0f.png"
+    },
+    "/::1f4a9::/": {
+        "code": "/::1f4a9::/",
+        "name": "Pile of Poo",
+        "unified": "1f4a9",
+        "img_url": "/static/images/apple_emoji/1f4a9.png"
+    },
+    "/::1f921::/": {
+        "code": "/::1f921::/",
+        "name": "Clown Face",
+        "unified": "1f921",
+        "img_url": "/static/images/apple_emoji/1f921.png"
+    },
+    "/::1f479::/": {
+        "code": "/::1f479::/",
+        "name": "Japanese Ogre",
+        "unified": "1f479",
+        "img_url": "/static/images/apple_emoji/1f479.png"
+    },
+    "/::1f47a::/": {
+        "code": "/::1f47a::/",
+        "name": "Japanese Goblin",
+        "unified": "1f47a",
+        "img_url": "/static/images/apple_emoji/1f47a.png"
+    },
+    "/::1f47b::/": {
+        "code": "/::1f47b::/",
+        "name": "Ghost",
+        "unified": "1f47b",
+        "img_url": "/static/images/apple_emoji/1f47b.png"
+    },
+    "/::1f47d::/": {
+        "code": "/::1f47d::/",
+        "name": "Extraterrestrial Alien",
+        "unified": "1f47d",
+        "img_url": "/static/images/apple_emoji/1f47d.png"
+    },
+    "/::1f47e::/": {
+        "code": "/::1f47e::/",
+        "name": "Alien Monster",
+        "unified": "1f47e",
+        "img_url": "/static/images/apple_emoji/1f47e.png"
+    },
+    "/::1f916::/": {
+        "code": "/::1f916::/",
+        "name": "Robot Face",
+        "unified": "1f916",
+        "img_url": "/static/images/apple_emoji/1f916.png"
+    },
+    "/::1f63a::/": {
+        "code": "/::1f63a::/",
+        "name": "Smiling Cat Face with Open Mouth",
+        "unified": "1f63a",
+        "img_url": "/static/images/apple_emoji/1f63a.png"
+    },
+    "/::1f638::/": {
+        "code": "/::1f638::/",
+        "name": "Grinning Cat Face with Smiling Eyes",
+        "unified": "1f638",
+        "img_url": "/static/images/apple_emoji/1f638.png"
+    },
+    "/::1f639::/": {
+        "code": "/::1f639::/",
+        "name": "Cat Face with Tears of Joy",
+        "unified": "1f639",
+        "img_url": "/static/images/apple_emoji/1f639.png"
+    },
+    "/::1f63b::/": {
+        "code": "/::1f63b::/",
+        "name": "Smiling Cat Face with Heart-Shaped Eyes",
+        "unified": "1f63b",
+        "img_url": "/static/images/apple_emoji/1f63b.png"
+    },
+    "/::1f63c::/": {
+        "code": "/::1f63c::/",
+        "name": "Cat Face with Wry Smile",
+        "unified": "1f63c",
+        "img_url": "/static/images/apple_emoji/1f63c.png"
+    },
+    "/::1f63d::/": {
+        "code": "/::1f63d::/",
+        "name": "Kissing Cat Face with Closed Eyes",
+        "unified": "1f63d",
+        "img_url": "/static/images/apple_emoji/1f63d.png"
+    },
+    "/::1f640::/": {
+        "code": "/::1f640::/",
+        "name": "Weary Cat Face",
+        "unified": "1f640",
+        "img_url": "/static/images/apple_emoji/1f640.png"
+    },
+    "/::1f63f::/": {
+        "code": "/::1f63f::/",
+        "name": "Crying Cat Face",
+        "unified": "1f63f",
+        "img_url": "/static/images/apple_emoji/1f63f.png"
+    },
+    "/::1f63e::/": {
+        "code": "/::1f63e::/",
+        "name": "Pouting Cat Face",
+        "unified": "1f63e",
+        "img_url": "/static/images/apple_emoji/1f63e.png"
+    },
+    "/::1f648::/": {
+        "code": "/::1f648::/",
+        "name": "See-No-Evil Monkey",
+        "unified": "1f648",
+        "img_url": "/static/images/apple_emoji/1f648.png"
+    },
+    "/::1f649::/": {
+        "code": "/::1f649::/",
+        "name": "Hear-No-Evil Monkey",
+        "unified": "1f649",
+        "img_url": "/static/images/apple_emoji/1f649.png"
+    },
+    "/::1f64a::/": {
+        "code": "/::1f64a::/",
+        "name": "Speak-No-Evil Monkey",
+        "unified": "1f64a",
+        "img_url": "/static/images/apple_emoji/1f64a.png"
+    },
+    "/::1f48c::/": {
+        "code": "/::1f48c::/",
+        "name": "Love Letter",
+        "unified": "1f48c",
+        "img_url": "/static/images/apple_emoji/1f48c.png"
+    },
+    "/::1f498::/": {
+        "code": "/::1f498::/",
+        "name": "Heart with Arrow",
+        "unified": "1f498",
+        "img_url": "/static/images/apple_emoji/1f498.png"
+    },
+    "/::1f49d::/": {
+        "code": "/::1f49d::/",
+        "name": "Heart with Ribbon",
+        "unified": "1f49d",
+        "img_url": "/static/images/apple_emoji/1f49d.png"
+    },
+    "/::1f496::/": {
+        "code": "/::1f496::/",
+        "name": "Sparkling Heart",
+        "unified": "1f496",
+        "img_url": "/static/images/apple_emoji/1f496.png"
+    },
+    "/::1f497::/": {
+        "code": "/::1f497::/",
+        "name": "Growing Heart",
+        "unified": "1f497",
+        "img_url": "/static/images/apple_emoji/1f497.png"
+    },
+    "/::1f493::/": {
+        "code": "/::1f493::/",
+        "name": "Beating Heart",
+        "unified": "1f493",
+        "img_url": "/static/images/apple_emoji/1f493.png"
+    },
+    "/::1f49e::/": {
+        "code": "/::1f49e::/",
+        "name": "Revolving Hearts",
+        "unified": "1f49e",
+        "img_url": "/static/images/apple_emoji/1f49e.png"
+    },
+    "/::1f495::/": {
+        "code": "/::1f495::/",
+        "name": "Two Hearts",
+        "unified": "1f495",
+        "img_url": "/static/images/apple_emoji/1f495.png"
+    },
+    "/::1f49f::/": {
+        "code": "/::1f49f::/",
+        "name": "Heart Decoration",
+        "unified": "1f49f",
+        "img_url": "/static/images/apple_emoji/1f49f.png"
+    },
+    "/::2763-fe0f::/": {
+        "code": "/::2763-fe0f::/",
+        "name": "Heart Exclamation",
+        "unified": "2763-fe0f",
+        "img_url": "/static/images/apple_emoji/2763-fe0f.png"
+    },
+    "/::1f494::/": {
+        "code": "/::1f494::/",
+        "name": "Broken Heart",
+        "unified": "1f494",
+        "img_url": "/static/images/apple_emoji/1f494.png"
+    },
+    "/::2764-fe0f::/": {
+        "code": "/::2764-fe0f::/",
+        "name": "Heavy Black Heart",
+        "unified": "2764-fe0f",
+        "img_url": "/static/images/apple_emoji/2764-fe0f.png"
+    },
+    "/::1f9e1::/": {
+        "code": "/::1f9e1::/",
+        "name": "Orange Heart",
+        "unified": "1f9e1",
+        "img_url": "/static/images/apple_emoji/1f9e1.png"
+    },
+    "/::1f49b::/": {
+        "code": "/::1f49b::/",
+        "name": "Yellow Heart",
+        "unified": "1f49b",
+        "img_url": "/static/images/apple_emoji/1f49b.png"
+    },
+    "/::1f49a::/": {
+        "code": "/::1f49a::/",
+        "name": "Green Heart",
+        "unified": "1f49a",
+        "img_url": "/static/images/apple_emoji/1f49a.png"
+    },
+    "/::1f499::/": {
+        "code": "/::1f499::/",
+        "name": "Blue Heart",
+        "unified": "1f499",
+        "img_url": "/static/images/apple_emoji/1f499.png"
+    },
+    "/::1f49c::/": {
+        "code": "/::1f49c::/",
+        "name": "Purple Heart",
+        "unified": "1f49c",
+        "img_url": "/static/images/apple_emoji/1f49c.png"
+    },
+    "/::1f90e::/": {
+        "code": "/::1f90e::/",
+        "name": "Brown Heart",
+        "unified": "1f90e",
+        "img_url": "/static/images/apple_emoji/1f90e.png"
+    },
+    "/::1f5a4::/": {
+        "code": "/::1f5a4::/",
+        "name": "Black Heart",
+        "unified": "1f5a4",
+        "img_url": "/static/images/apple_emoji/1f5a4.png"
+    },
+    "/::1f90d::/": {
+        "code": "/::1f90d::/",
+        "name": "White Heart",
+        "unified": "1f90d",
+        "img_url": "/static/images/apple_emoji/1f90d.png"
+    },
+    "/::1f48b::/": {
+        "code": "/::1f48b::/",
+        "name": "Kiss Mark",
+        "unified": "1f48b",
+        "img_url": "/static/images/apple_emoji/1f48b.png"
+    },
+    "/::1f4af::/": {
+        "code": "/::1f4af::/",
+        "name": "Hundred Points Symbol",
+        "unified": "1f4af",
+        "img_url": "/static/images/apple_emoji/1f4af.png"
+    },
+    "/::1f4a2::/": {
+        "code": "/::1f4a2::/",
+        "name": "Anger Symbol",
+        "unified": "1f4a2",
+        "img_url": "/static/images/apple_emoji/1f4a2.png"
+    },
+    "/::1f4a5::/": {
+        "code": "/::1f4a5::/",
+        "name": "Collision Symbol",
+        "unified": "1f4a5",
+        "img_url": "/static/images/apple_emoji/1f4a5.png"
+    },
+    "/::1f4ab::/": {
+        "code": "/::1f4ab::/",
+        "name": "Dizzy Symbol",
+        "unified": "1f4ab",
+        "img_url": "/static/images/apple_emoji/1f4ab.png"
+    },
+    "/::1f4a6::/": {
+        "code": "/::1f4a6::/",
+        "name": "Splashing Sweat Symbol",
+        "unified": "1f4a6",
+        "img_url": "/static/images/apple_emoji/1f4a6.png"
+    },
+    "/::1f4a8::/": {
+        "code": "/::1f4a8::/",
+        "name": "Dash Symbol",
+        "unified": "1f4a8",
+        "img_url": "/static/images/apple_emoji/1f4a8.png"
+    },
+    "/::1f573-fe0f::/": {
+        "code": "/::1f573-fe0f::/",
+        "name": "Hole",
+        "unified": "1f573-fe0f",
+        "img_url": "/static/images/apple_emoji/1f573-fe0f.png"
+    },
+    "/::1f4ac::/": {
+        "code": "/::1f4ac::/",
+        "name": "Speech Balloon",
+        "unified": "1f4ac",
+        "img_url": "/static/images/apple_emoji/1f4ac.png"
+    },
+    "/::1f441-fe0f-200d-1f5e8-fe0f::/": {
+        "code": "/::1f441-fe0f-200d-1f5e8-fe0f::/",
+        "name": "Eye in Speech Bubble",
+        "unified": "1f441-fe0f-200d-1f5e8-fe0f",
+        "img_url": "/static/images/apple_emoji/1f441-fe0f-200d-1f5e8-fe0f.png"
+    },
+    "/::1f5e8-fe0f::/": {
+        "code": "/::1f5e8-fe0f::/",
+        "name": "Left Speech Bubble",
+        "unified": "1f5e8-fe0f",
+        "img_url": "/static/images/apple_emoji/1f5e8-fe0f.png"
+    },
+    "/::1f5ef-fe0f::/": {
+        "code": "/::1f5ef-fe0f::/",
+        "name": "Right Anger Bubble",
+        "unified": "1f5ef-fe0f",
+        "img_url": "/static/images/apple_emoji/1f5ef-fe0f.png"
+    },
+    "/::1f4ad::/": {
+        "code": "/::1f4ad::/",
+        "name": "Thought Balloon",
+        "unified": "1f4ad",
+        "img_url": "/static/images/apple_emoji/1f4ad.png"
+    },
+    "/::1f4a4::/": {
+        "code": "/::1f4a4::/",
+        "name": "Sleeping Symbol",
+        "unified": "1f4a4",
+        "img_url": "/static/images/apple_emoji/1f4a4.png"
+    }
+}

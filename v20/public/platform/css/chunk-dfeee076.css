@@ -1,0 +1,150 @@
+.payConfirm_alert_wrapper[data-v-63d7b7bd] {
+  width: 100%;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.payConfirm_alert_wrapper .title_container[data-v-63d7b7bd] {
+  width: 100%;
+  height: 0.52083333rem;
+  background-color: #fafafa;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  box-sizing: border-box;
+  padding: 0 0.20833333rem;
+}
+.payConfirm_alert_wrapper .title_container .title_font[data-v-63d7b7bd] {
+  font-size: 0.16666667rem;
+  font-weight: bold;
+  color: #222222;
+}
+.payConfirm_alert_wrapper .title_container .leftempty_box[data-v-63d7b7bd] {
+  width: 0.10416667rem;
+  height: 0.10416667rem;
+}
+.payConfirm_alert_wrapper .title_container .closeicon[data-v-63d7b7bd] {
+  cursor: pointer;
+  width: 0.10416667rem;
+  height: 0.10416667rem;
+  display: -ms-flexbox;
+  display: flex;
+}
+.payConfirm_alert_wrapper .title_container .closeicon img[data-v-63d7b7bd] {
+  width: 100%;
+  height: 100%;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper[data-v-63d7b7bd] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  padding: 0 0.234375rem;
+  box-sizing: border-box;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content[data-v-63d7b7bd] {
+  width: 100%;
+  border: 0.01041667rem solid #f0f0f0;
+  margin-top: 0.15625rem;
+  border-bottom: 0px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  box-sizing: border-box;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content .bill_items[data-v-63d7b7bd] {
+  width: 100%;
+  height: 0.3125rem;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  border-bottom: 0.01041667rem solid #f0f0f0;
+  box-sizing: border-box;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content .bill_items .select_content[data-v-63d7b7bd] {
+  margin: 0 0.10416667rem;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content .bill_items .select_content .iconbox[data-v-63d7b7bd] {
+  width: 0.14583333rem;
+  height: 0.14583333rem;
+  display: -ms-flexbox;
+  display: flex;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content .bill_items .select_content .iconbox img[data-v-63d7b7bd] {
+  width: 100%;
+  height: 100%;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content .bill_items .select_content .no_select[data-v-63d7b7bd] {
+  width: 0.14583333rem;
+  height: 0.14583333rem;
+  border: 0.01041667rem solid #d8dada;
+  border-radius: 50%;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .billList_content .bill_items .billname[data-v-63d7b7bd] {
+  font-size: 0.125rem;
+  font-weight: 500;
+  color: #666666;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .selectall_content[data-v-63d7b7bd] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-top: 0.15625rem;
+  margin-bottom: 0.10416667rem;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .selectall_content .iconbox[data-v-63d7b7bd] {
+  width: 0.13541667rem;
+  height: 0.13541667rem;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 0 0.02604167rem;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .selectall_content .iconbox img[data-v-63d7b7bd] {
+  width: 100%;
+  height: 100%;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .selectall_content .select_all_border[data-v-63d7b7bd] {
+  width: 0.13541667rem;
+  height: 0.13541667rem;
+  background: #ffffff;
+  border: 0.01041667rem solid #ececec;
+  margin: 0 0.02604167rem;
+  border-radius: 0.02083333rem;
+}
+.payConfirm_alert_wrapper .alert_content_wrapper .selectall_content .select_all_text[data-v-63d7b7bd] {
+  font-size: 0.11458333rem;
+  font-weight: 500;
+  color: #9a9a9a;
+}
+.payConfirm_alert_wrapper .confirm_bar[data-v-63d7b7bd] {
+  cursor: pointer;
+  width: 100%;
+  height: 0.390625rem;
+  line-height: 0.390625rem;
+  text-align: center;
+  background-color: #00ccb4;
+  font-size: 0.14583333rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+

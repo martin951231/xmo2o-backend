@@ -1,0 +1,87 @@
+
+[data-v-05429713] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+[data-v-05429713] .ant-form-item-label > label::after {
+  display: none;
+}
+
+.owner_msg .label_con[data-v-0c3bef53] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-0c3bef53]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-0c3bef53] {
+  font-weight: bold;
+}
+.owner_msg .label_con .choose_con[data-v-0c3bef53] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.owner_msg .label_con[data-v-5351f0cb] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-5351f0cb]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-5351f0cb] {
+  font-weight: bold;
+}
+.owner_msg .label_con .checkbox_con[data-v-5351f0cb] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.user_label .label_con[data-v-cfc260c4] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.user_label .label_con[data-v-cfc260c4]:nth-child(1) {
+  margin-top: 0;
+}
+.user_label .label_con .title[data-v-cfc260c4] {
+  font-weight: bold;
+}
+.user_label .label_con .radio_con[data-v-cfc260c4] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+

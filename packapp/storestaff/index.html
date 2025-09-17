@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8" />
+	<title>店员中心</title>
+	<meta name="viewport"
+		content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name='apple-touch-fullscreen' content='yes' />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="format-detection" content="address=no" />
+	<link href="scripts/weui/weui.min.css" rel="stylesheet" />
+	<link href="css/pigcms.css" rel="stylesheet" />
+</head>
+<style>
+	#printerAdd .layermcont {
+		padding: 11px 15px !important;
+		border-bottom: 1px solid #eee;
+		font-size: 20px;
+	}
+
+	.bluetooth.active,
+	.noBluetooth.active {
+		color: #2ecc71;
+	}
+
+	.lock-back {
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.alap_box {
+		background: rgba(0, 0, 0, 0.6);
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		z-index: 9999;
+		display: none;
+	}
+
+	.alap_con {
+		position: absolute;
+		left: 10%;
+		top: 20%;
+		width: 80%;
+		margin: 0 auto;
+		background: #fff;
+		z-index: 9999;
+		padding: 20px;
+		box-sizing: border-box;
+		display: none;
+	}
+
+	.alap_con.show,
+	.alap_box.show {
+		display: block;
+	}
+
+	.btn_submit {
+		width: 80%;
+		margin: 0 auto;
+	}
+
+	.btn_submit a {
+		width: 100%;
+		display: block;
+		height: 36px;
+		line-height: 36px;
+		text-align: center;
+		border: 1px solid #FFA200;
+		margin-top: 10px;
+		border-radius: 8px;
+		font-size: 14px;
+	}
+
+	.btn_submit a.btn_ok {
+		background: #FFA200;
+		color: #fff;
+	}
+
+	.btn_submit a.btn_pass {
+		color: #FFA200;
+	}
+
+	.input_block input {
+		font-size: 14px;
+		height: 30px;
+		padding: 5px;
+	}
+
+	.input_block {
+		width: 100%;
+		border: 1px solid #ddd;
+		margin-top: 10px;
+	}
+
+	.cu-modal {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 999;
+		opacity: 0;
+		outline: 0;
+		text-align: center;
+		-ms-transform: scale(1.185);
+		transform: scale(1.185);
+		backface-visibility: hidden;
+		perspective: 1000px;
+		background: rgba(0, 0, 0, 0.6);
+		transition: all 0.3s ease-in-out 0s;
+		pointer-events: none;
+	}
+
+	.cu-modal::before {
+		content: "\200B";
+		display: inline-block;
+		height: 100%;
+		vertical-align: middle;
+	}
+
+	.cu-modal.show {
+		opacity: 1;
+		transition-duration: 0.3s;
+		-ms-transform: scale(1);
+		transform: scale(1);
+		overflow-x: hidden;
+		overflow-y: auto;
+		pointer-events: auto;
+	}
+
+	.cu-dialog {
+		padding: 20px 10px;
+		position: relative;
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: auto;
+		margin-right: auto;
+		width: 300px;
+		max-width: 100%;
+		background-color: #f8f8f8;
+		border-radius: 15px;
+		overflow: hidden;
+		box-sizing: border-box;
+	}
+
+	.text-bold {
+		font-weight: bold;
+	}
+
+	.group-combine-btn {
+		margin: 40px auto 0;
+		width: 120px;
+		padding: 0 10px;
+		height: 36px;
+		line-height: 36px;
+		text-align: center;
+		background: #2ecc71;
+		border-radius: 44px;
+		color: #ffffff;
+		box-sizing: border-box;
+		font-size: 14px;
+		font-weight: bold;
+	}
+
+	.text-wrap {
+		white-space: wrap;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
+
+	.group-pass {
+		margin-top: 10px;
+	}
+	.ellipsis-text-2{
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+	.active1{
+		background-color: #ffc220;
+	}
+	.active2{
+		background-color: #00af57;
+	}
+	.active3{
+		background-color: #d0d0d0;
+	}
+	.code-btn{
+		background-image: linear-gradient(90deg, #f4b93a, #f86e46);
+		color:#ffffff;
+		font-weight:bold;
+		line-height:25px;
+		width: 50%;
+		height:25px;
+		margin:0 auto;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin-bottom: 1rem;
+		border-radius: 20px;
+		font-size: 0.9rem;
+		margin-top:1rem;
+	}
+</style>
+
+<body>
+	<!-- 判断密码是不是123456的弹窗 -->
+	<div class="alap_box"></div>
+	<div class="alap_con">
+		<p>
+			<L_>您的登录密码是系统默认密码,为了账户安全，请您设置新的登录密码</L_>
+		</p>
+		<div class="input_block">
+			<input type="password" placeholder="请输入6位以上的新密码" class="news_pwd1" />
+		</div>
+		<div class="input_block">
+			<input type="password" placeholder="请再次输入新密码" class="news_pwd2" />
+		</div>
+		<div class="btn_submit">
+			<a href="javascript:;" class="btn_ok">
+				<L_>确认修改</L_>
+			</a>
+			<a href="javascript:;" class="btn_pass">
+				<L_>跳过</L_>
+			</a>
+		</div>
+	</div>
+	<!-- 判断密码是不是123456的弹窗 end -->
+	<section class="page hide" id="startBg">
+		<img src="bg.png" style="height:100%;width:100%;" />
+	</section>
+	<div class="tishi clr"><span>
+			<L_>当前有蓝牙打印机已断开，请先确认以免耽误正常打印</L_>
+		</span><i class="fr"></i></div>
+	<section class="page hide" id="cashierPage">
+
+		<section class="indexCashierTop clr">
+			<div class="fl left store" data-url="cashier_set.html" data-webview="true">
+				<div class="icon"></div>
+				<div class="text">
+					<L_>收银</L_>
+				</div>
+			</div>
+			<div class="fl center offline_shop" data-url="retail.html" data-webview="true">
+				<div class="icon"></div>
+				<div class="text">
+					<L_>零售</L_>
+				</div>
+			</div>
+			<div class="fl right" id="cashierScanCode">
+				<div class="icon"></div>
+				<div class="text">
+					<L_>扫一扫</L_>
+				</div>
+			</div>
+		</section>
+		<section class="indexCashierContanier clr">
+			<div class="fl left link-url groupBox" data-url="group_list.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_group.png" />
+					<p class="groupName"></p>
+					<div class="loader hide2 group_loader"><em></em></div>
+				</div>
+			</div>
+			<!-- 景区 -->
+			<div class="fl left link-url scenicBox" data-url="ticket_order_list.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_scenic.png" />
+					<p class="scenicName"></p>
+					<div class="loader hide2 scenic_loader"><em></em></div>
+				</div>
+			</div>
+			<!-- 新版外卖 -->
+			<div class="fl left link-url shopBox" data-url="shop.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_shop.png" />
+					<p class="shopName"></p>
+					<div class="loader hide2 shop_loader"><em></em></div>
+				</div>
+			</div>
+			<!-- 新版外卖 -->
+			<div class="fl left shopBoxNew">
+				<div class="pos">
+					<img src="images/cashier_shop.png" />
+					<p class="shopName"></p>
+					<div class="loader hide2 shop_loader"><em></em></div>
+				</div>
+			</div>
+			<!-- 商城 2018/11/20 -->
+			<div class="fl left link-url mallBox" data-url="mall.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_mall.png" />
+					<p class="mallName"></p>
+					<div class="loader hide2 mall_loader"><em></em></div>
+				</div>
+			</div>
+			<!-- 商城2.0 -->
+			<div class="fl left mall2Link">
+				<div class="pos">
+					<img src="images/cashier_mall.png"/>
+					<p class="mall2Name"></p>
+					<div class="loader hide2 mall_loader"><em></em></div>
+				</div>
+			</div>
+			<div class="fl left link-url mealBox" data-url="foodshop.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_food.png" />
+					<p class="mealName"></p>
+					<div class="loader hide2 meal_loader"><em></em></div>
+				</div>
+			</div>
+			<!-- 餐饮2.0 -->
+			<div class="fl left meal2Link">
+				<div class="pos">
+					<img src="images/cashier_food.png" />
+					<p class="meal2Name"></p>
+					<div class="loader hide2 meal_loader"><em></em></div>
+				</div>
+			</div>
+			<div class="fl left link-url appointBox" data-url="appoint.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_appoint.png" />
+					<p class="appointName"></p>
+					<div class="loader hide2 appoint_loader"><em></em></div>
+				</div>
+			</div>
+			<div class="fl left storeBox" data-url="store.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_buy_s.png" />
+					<p class="storeName"></p>
+					<div class="loader hide2 store_loader"><em></em></div>
+				</div>
+			</div>
+			<div class="fl left cashBox" data-url="cashier.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_pay_s.png" />
+					<p class="cashName"></p>
+				</div>
+			</div>
+			<div class="fl left store_qrcode" data-url="store_qrcode.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_code.png" />
+					<p>
+						<L_>台 卡</L_>
+					</p>
+				</div>
+			</div>
+			<div class="fl left link-url sub_card" style="display:none;" data-url="sub_card_order_list.html"
+				data-webview="true">
+				<div class="pos">
+					<img src="images/sub_card.png" />
+					<p>
+						<L_>免单</L_>
+					</p>
+				</div>
+			</div>
+			<div class="fl left printer" style="display:none;">
+				<div class="pos">
+					<img src="images/cashier_printer.png" />
+					<p>
+						<L_>打印参数</L_>
+					</p>
+				</div>
+			</div>
+			<div class="fl left printerAdd" style="display:none;">
+				<div class="pos">
+					<img src="images/cashier_printer.png" />
+					<p>
+						<L_>连接蓝牙打印</L_>
+					</p>
+				</div>
+			</div>
+			<div class="fl left openShopApp " style="display: none;">
+				<div class="pos">
+					<img src="images/shop1.png" />
+					<p>
+						<L_>店铺管理</L_>
+					</p>
+				</div>
+			</div>
+
+			<div class="fl left link-url couponList" data-url="couponList.html" data-webview="true">
+				<div class="pos">
+					<img src="images/coupon.png" />
+					<p>
+						<L_>优惠券</L_>
+					</p>
+				</div>
+			</div>
+            
+            <div class="fl left link-url memberCard" data-webview="true">
+                <div class="pos">
+                    <img src="images/memberCard.png" />
+                    <p>
+                        <L_>会员卡管理</L_>
+                    </p>
+                </div>
+            </div>
+
+			<div class="fl left link-url pointExchangeList" data-url="pointExchangeList.html" data-webview="true" id="pointExchangeList">
+				<div class="pos">
+					<img src="images/shop_jifen.png" />
+					<p>
+						<L_>积分兑换</L_>
+					</p>
+				</div>
+			</div>
+
+
+
+			<div class="fl left link-url workerCard" data-url="#" data-webview="true" style="display:none;">
+				<div class="pos">
+					<img src="images/workerCard.png" />
+					<p>
+						<L_>员工卡</L_>
+					</p>
+				</div>
+			</div>
+
+			<div class="fl left link-url lifeSport" data-url="sports.html" data-webview="true" style="display:none;">
+				<div class="pos">
+					<img src="images/sports.png" />
+					<p>
+						<L_>体 育</L_>
+					</p>
+				</div>
+			</div>
+
+			<div class="fl left link-url kf_link" data-webview="true">
+				<div class="pos">
+					<img src="images/kf_icon1.png" />
+					<p>
+						<L_>客 服</L_>
+					</p>
+				</div>
+			</div>
+
+			<div class="fl left link-url lifeScenic" data-url="scenic_consume.html" data-webview="true" style="display:none;">
+				<div class="pos">
+					<img src="images/scenic_new.png" />
+					<p>
+						<L_>景区</L_>
+					</p>
+				</div>
+			</div>
+			<!-- appoint_list.html -->
+			<div class="fl left link-url lifeMerchantActivity" data-url="merchantActivityList.html" data-webview="true" style="display:none;">
+				<div class="pos">
+					<img src="images/lifetools_appoint.png" />
+					<p>
+						<L_>商家活动</L_>
+					</p>
+				</div>
+			</div>
+
+			
+			<div class="fl left link-url daily_report" data-url="daily_report.html" data-webview="true" style="display:none;">
+				<div class="pos">
+					<img src="images/daily_report.png" />
+					<p>
+						<L_>日结报表</L_>
+					</p>
+				</div>
+			</div>
+			<div class="fl left link-url daily_report" data-url="internalCardStatistics.html" data-webview="true" style="display:none;">
+				<div class="pos">
+					<img src="images/internal_card_bill.png" />
+					<p>
+						<L_>一卡通统计</L_>
+					</p>
+				</div>
+			</div>
+
+			<div class="fl left link-url" data-url="setting.html" data-webview="true">
+				<div class="pos">
+					<img src="images/cashier_setting.png" />
+					<p>
+						<L_>设 置</L_>
+					</p>
+				</div>
+			</div>
+		</section>
+		<section class="indexCashierFooter">
+			<span id="footer_store_name"></span>
+			<span id="footer_staff_name"></span>
+		</section>
+	</section>
+	<section class="page hide" id="mainPage">
+		<section class="public pageSliderHide">
+			<div class="content">
+				<L_>店员中心</L_>
+			</div>
+		</section>
+		<section class="group">
+			<div class="tit pageSliderHide">
+				<h2><span id="staff_name"></span>
+					<L_>您好，欢迎登录店员中心！</L_>
+				</h2>
+			</div>
+			<div class="group_list">
+				<ul class="clr">
+					<li class="fl groupBox">
+						<a href="group_list.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/group.png" />
+								<p class="groupName"></p>
+								<div class="loader hide2 group_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<li class="fl shopBox">
+						<a href="shop.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/shop.png" />
+								<p class="shopName"></p>
+								<div class="loader hide2 shop_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<li class="fl shopBoxNew">
+						<a href="javascript:;" id="shopBoxNewLink">
+							<div class="pos">
+								<img src="images/app/shop.png" />
+								<p class="shopName"></p>
+								<div class="loader hide2 shop_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<!-- 商城2.0 -->
+					<li class="fl mall2Link">
+						<a href="javascript:;" id="mallBoxNewLink">
+							<div class="pos">
+								<img src="images/app/mall.png" />
+								<p class="mall2Name"></p>
+								<div class="loader hide2 mall_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<li class="fl mealBox">
+						<a href="foodshop.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/dining.png" />
+								<p class="mealName"></p>
+								<div class="loader hide2 meal_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<li class="fl appointBox">
+						<a href="appoint.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/appoint.png" />
+								<p class="appointName"></p>
+								<div class="loader hide2 appoint_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<li class="fl storeBox" data-url="store.html">
+						<a href="store.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/store.png" />
+								<p class="storeName"></p>
+								<div class="loader hide2 store_loader"><em></em></div>
+							</div>
+						</a>
+					</li>
+					<li class="fl cashBox">
+						<a href="cashier.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/cash.png" />
+								<p class="cashName"></p>
+							</div>
+						</a>
+					</li>
+
+					<li class="fl mallBox">
+						<a href="mall.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/mall.png" />
+								<p class="mallName">商城</p>
+							</div>
+						</a>
+					</li>
+
+					<li class="fl left link-url sub_card" style="display:none;">
+						<a href="sub_card_order_list.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/sub_card.png" />
+								<p>
+									<L_>免单</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+					<li class="fl store_qrcode  " data-url="store_qrcode.html">
+						<a href="store_qrcode.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/store_qrcode.png" />
+								<p>
+									<L_>台 卡</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+					<li class="fl printerAdd" style="display:none;">
+						<a href="javascript:;">
+							<div class="pos">
+								<img src="images/app/connect_bluetooth.png" />
+								<p>
+									<L_>连接蓝牙打印</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+					<li class="fl openShopApp" style="display:none;">
+						<a href="javascript:;">
+							<div class="pos">
+								<img src="images/app/store.png" />
+								<p>
+									<L_>店铺管理</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+					
+					<li class="fl ">
+						<a href="setting.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/setting.png" />
+								<p>
+									<L_>设 置</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+					<li class="fl scanQrcodeBox">
+						<a href="javascript:;" id="scanQrcode">
+							<div class="pos">
+								<img src="images/app/scan.png" />
+								<p>
+									<L_>扫 一 扫</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+					<li class="fl couponList">
+						<a href="couponList.html" data-webview="true">
+							<div class="pos">
+								<img src="images/app/coupon.png" />
+								<p>
+									<L_>优 惠 券</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+                    <li class="fl memberCard">
+						<a href="javascript:;" data-webview="true" id="memberCard">
+							<div class="pos">
+								<img src="images/app/coupon.png" />
+								<p>
+									<L_>会员卡管理</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+
+					<li class="fl pointExchangeList">
+						<a href="pointExchangeList.html" data-webview="true" id="pointExchangeList">
+							<div class="pos">
+								<img src="images/app/pointExchangeList.png" />
+								<p>
+									<L_>积分兑换</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+
+
+					<li class="fl">
+						<a href="javascript:;" id="loginout">
+							<div class="pos">
+								<img src="images/app/loginout.png" />
+								<p>
+									<L_>退 出</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+					<li class="fl ">
+						<a class="kf_linkOld">
+							<div class="pos">
+								<img src="images/app/kefu.png" />
+								<p>
+									<L_>客 服</L_>
+								</p>
+							</div>
+						</a>
+					</li>
+					<li class="fl hide" id="noScanShow"></li>
+					<li class="left icon"></li>
+					<li class="right icon"></li>
+					<li class="leftbot icon"></li>
+					<li class="rightbot icon"></li>
+				</ul>
+			</div>
+
+		</section>
+	</section>
+	<div id='printerAdd' style='display:none'>
+		<div class="layermbox layermbox0 layermshow" index="0">
+			<div class="laymshade"></div>
+			<div class="layermmain">
+				<div class="section">
+					<div class="layermchild layermanim" style='min-width: 65%;text-align:center'>
+						<div style='margin-top:15px;margin-bottom:10px;font-size:16px'>
+							<L_>连接蓝牙打印</L_>
+						</div>
+						<div style=' max-height: 184px; overflow-y: scroll;' id='kd_entry'>
+
+						</div>
+						<div class="layermcont noBluetooth" style='font-size:16px'>
+							<L_>暂不连接</L_>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="layermbox layermbox0 layermshow depositGoodsSuccess" index="0" style="display: none;">
+		<div class="laymshade"></div>
+		<div class="layermmain">
+			<div class="section">
+				<div class="layermchild layermanim" style='min-width: 65%;text-align:center;max-width: 80%;padding: 20px;'>
+					<img src="images/success.png">
+					<p style="font-size: 1.5rem;font-weight: bold;
+					color: #00AE77;
+					line-height: 42px;margin-bottom:20px">核销成功</p>
+					<div id="depositGoodsSuccessClose" style="border:1px solid #00AE77;color:#00AE77;font-weight:bold;line-height:25px;width: 80%;height:25px;margin-left: 10%;padding-top: 5px;padding-bottom: 5px;margin-bottom: 1rem;border-radius: 20px;font-size: 1.1rem;">
+						确定
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="layermbox layermbox0 layermshow depositGoodsFail" index="0"  style="display: none;">
+		<div class="laymshade"></div>
+		<div class="layermmain">
+			<div class="section">
+				<div class="layermchild layermanim" style='min-width: 65%;text-align:center;max-width: 80%;padding: 20px;'>
+					<img src="images/fail.png">
+					<p style="font-size: 1.5rem;font-weight: bold;
+					color: #FB6C2C;
+					line-height: 42px;margin-bottom:20px">核销失败</p>
+					<div id="depositGoodsFailClose" style="border:1px solid #FB6C2C;color:#FB6C2C;font-weight:bold;line-height:25px;width: 80%;height:25px;margin-left: 10%;padding-top: 5px;padding-bottom: 5px;margin-bottom: 1rem;border-radius: 20px;font-size: 1.1rem;">
+						确定
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="showDepositGoodsModal"></div>
+	<script id="showDepositGoods" type="text/html">
+		<div class="layermbox layermbox0 layermshow" index="0">
+			<div class="laymshade"></div>
+			<div class="layermmain">
+				<div class="section">
+					<div class="layermchild layermanim" style='min-width: 80%;text-align:center;max-width: 90%;'>
+						<div class="layermcont noBluetooth" >
+							<div style="display:inline-block;float:left;width:33%;"><img src="{{d.image}}" style="width:65px;height:65px;"></div>
+							<div style="display:inline-block;float:left;width:65%;text-align:left">
+								<h4>{{d.goods_name}}</h4>
+								<p>数量 <font style="color: #FF6000;">x{{d.real_num}}</font></p>
+								<p>{{d.start_time}}-{{d.end_time}}</p>
+							</div>
+							
+						</div>
+						<input type="hidden" value="{{d.id}}" data-max-num="{{d.real_num}}" class="deposit_goods_id"/>
+						<div style="text-align:left;clear: both;padding: 15px 25px;font-weight: bold;margin-bottom: 0.5rem;">
+							<div style="display: inline-flex;">需要核销数量</div>
+							<div class="Addsub" style="display: inline-flex;margin-left:70px">                     
+								<a href="javascript:void(0)" class="jian" style="display: inline;"></a> 
+								<input type="text" value="1"  data-max-num="{{d.real_num}}" class="deposit_goods_num" style="display: inline-block;">           
+								<a href="javascript:void(0)" class="jia"></a>                   
+							</div>
+						</div>
+						<div id="verifyDepositGoods" style="background:#2ecc71;color:#ffffff;font-weight:bold;line-height:25px;width: 80%;height:25px;margin-left: 10%;padding-top: 5px;padding-bottom: 5px;margin-bottom: 1rem;border-radius: 20px;font-size: 1.1rem;">
+							确认核销
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<!-- 城投预约扫码的核销弹框内容 -->
+	<div id="lifetools_appoint_popupBox"></div>
+	<!-- 扫码的核销商家优惠券弹框内容 -->
+	<div id="mercoupon_verifyBox"></div>
+	<script id="mercoupon_verify" type="text/html">
+		<div class="layermbox layermbox0 layermshow" index="0">
+			<div class="laymshade" style="background-color:rgba(0, 0, 0, 0.6)"></div>
+			<div class="layermmain">
+				<div class="section">
+					<div class="layermchild layermanim" style="min-width: 70%;text-align:center;max-width: 80%;border-top-left-radius: 0;border-top-right-radius: 0;">
+						<img src="./images/mercoupon_verify.png" style="position: absolute;top: 0;transform: translateY(-100%);left: 0;">
+						<div class="layermcont noBluetooth" style="text-align: text;padding: 20px 25px">
+							<div style="color: #333;font-size: 1rem;font-weight: bold;">{{d.discount_des}}</div>
+						</div>
+						<div style="text-align: left;margin: 0 25px;color: #999999;border-bottom: 1px dashed #efedee;padding-bottom: 20px;">
+							{{# if(d.discount_money){ }}
+							<div style="margin-bottom: 4px;display: flex;justify-content: space-between;">
+								<span>抵扣金额</span>
+								<span>{{d.discount_money}}</span>
+							</div>
+							{{# } }}
+							{{# if(d.limit_date){ }}
+							<div style="display: flex;justify-content: space-between;">
+								<span>到期时间</span>
+								<span>{{d.limit_date}}</span>
+							</div>
+							{{# } }}
+						</div>
+						<div data-code="{{d.verify_code}}" id="mercoupon_verify_Appointment" onclick="mercoupon_verify()" class="code-btn">核销</div>
+						<img onclick="mercouponClose()" style="position: absolute;bottom: -25%;left: 50%;transform: translateX(-50%); width: 30px;height: 30px;" src="./images/x033_fff.png" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	<script id="lifetools_appoint_popup" type="text/html">
+		<div class="layermbox layermbox0 layermshow" index="0">
+			<div class="laymshade"></div>
+			<div class="layermmain">
+				<div class="section">
+					<div class="layermchild layermanim" style='min-width: 80%;text-align:center;max-width: 90%;padding-top: 10px;'>
+						<img id="boxEnd" onclick="boxEnd()" style="position: absolute;right: 10px;top: 10px;width: 15px;height: 15px;" src="./images/end.png" alt="">
+						<div class="layermcont noBluetooth" style="display: flex;align-items: center;padding-bottom: 10px;">
+							<div style="display:inline-block;flex: 1; margin-right: 10px;position: relative;">
+								<img src="{{d.image_small}}" style="min-width:100px;border-radius: 8px;">
+								<span class="{{d.act_status == 0?'active1':d.act_status == 1?'active2':d.act_status == 2 || d.act_status == 3?'active3':''}}" style="border-radius: 2px 2px 2px 0;position: absolute;left: 0;font-size: 10px;width: 50%;color: #fff;text-align: center;line-height:16px;">{{d.act_status_txt}}</span>
+							</div>
+							<div style="display:inline-block;flex:3;text-align:left">
+								<h4 style="color: #1D1D1D;font-size: 16px;">{{d.title}}</h4>
+								<p class="ellipsis-text-2" style="color: #666666;font-size: 12px;">{{d.desc?d.desc:L_('无')}}</p>
+								<div style="color: #1D1D1D;font-size: 12px;display: flex;justify-content: space-between;">
+									<span>规格：{{d.sku_str?d.sku_str: L_('无')}}</span>
+									<span style="color:#FF0101;font-size: 14px;">￥{{d.price}}</span>
+								</div>
+								<div style="color: #00C36E;font-size: 12px;"><img style="width: 12px;height: 12px;" src="./images/lefttoolsTime.png" alt=""> 开始时间：{{d.start_time }}</div>
+								<div style="color: #9F9F9F;font-size: 12px;">{{d.address?d.address: L_('无')}}</div>
+							</div>
+						</div>
+						<div style="text-align:left;clear: both;max-height: 40vh;overflow-y: auto;margin-bottom: 1rem;border-top: 1px solid #F1F1F1;padding-top: 10px;">
+							{{# for(var i = 0, len = d.custom_form.length; i < len; i++){ }}
+								{{# if(d.custom_form[i].type !='image'){ }}
+								<div class="layermcont" style="padding: 5px 16px;color: #7D7D7D;display: flex;justify-content: space-between;font-size: 12px;">
+									<span data-mkey='{{i}}'>{{d.custom_form[i].title}}</span>
+									<span data-mkey='{{i}}'>{{d.custom_form[i].value[0]?d.custom_form[i].value[0]:L_('无')}}</span>
+								</div>
+								{{# } }}
+								{{# if(d.custom_form[i].type =='image' && d.custom_form[i].value.length>0){ }}
+								<div class="layermcont" style="padding: 5px 16px;color: #7D7D7D;font-size: 12px;">
+									<div data-mkey='{{i}}'>{{d.custom_form[i].title}}</div>
+									<div style="overflow-x: scroll;white-space: nowrap;margin-top: 4px;">
+										{{# for(let s = 0, len = d.custom_form[i].value.length; s < len; s++){ }}
+										<div style="width: 33%;display: inline-block;margin-right: 2px;">
+											<img style="max-height: 80px;min-height: 80px;width: 100%;" src="{{d.custom_form[i].value[s]}}" alt="">
+										</div>
+										{{# } }}
+									</div>
+								</div>
+								{{# } }}
+							{{# } }}
+						</div>
+						<div data-code="{{d.verify_code}}" id="writeAppointment" onclick="writeAppointment()" style="background:#00C36E;color:#ffffff;font-weight:bold;line-height:25px;width: 50%;height:25px;margin:0 auto;padding-top: 5px;padding-bottom: 5px;margin-bottom: 1rem;border-radius: 20px;font-size: 1.1rem;">核销</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<div class="cu-modal" id="groupCombineModal">
+	</div>
+	<script id="cardlist" type="text/html">
+			{{# for(var i = 0, len = d.length; i < len; i++){ }}
+			   {{#  var print_mobile_code=d[i].print_mobile_code }}
+			   {{#  var type=laytpl.mobileCode(print_mobile_code) }}
+			   {{# if(type){ }}
+				 <div class="layermcont bluetooth" data-code='{{d[i].print_bluetooth_code}}' data-mkey='{{d[i].mkey}}'>{{d[i].name}}</div>
+			   {{# } }}
+			{{# } }}
+		</script>
+
+	<!-- 团购优惠组合弹框 -->
+	<script id="groupCombine" type="text/html">
+			<div class="cu-dialog" id="groupCombineDialog">
+				<h3 class="text-bold text-wrap">{{d.title}}</h3>
+				<div class="text-wrap group-pass"><L_>消费码</L_><span>：{{d.group_pass}}</span></div>
+				<div class="group-combine-btn" id="groupCombineBtn" data-id="{{d.order_id}}"><L_>验证</L_></div>
+			</div>
+		</script>
+	<script src="scripts/jquery-1.8.3.min.js"></script>
+	<script src="scripts/weui/weui.min.js"></script>
+	<script src="scripts/fastclick.js"></script>
+	<script src="scripts/layer/layer.m.js"></script>
+	<script src="scripts/common.js?t=t8.3.8"></script>
+	<script src="scripts/work/index.js?t=t8.4.7"></script>
+	<!-- android=appbackmonitor -->
+
+</body>
+
+</html>

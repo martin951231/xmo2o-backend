@@ -1,0 +1,229 @@
+.orders_list li { 
+  padding: 0 10px;
+  position: relative
+}
+.orders_list{
+  margin: 30px 0
+}
+.orders_list li .time {
+  color: 999999;
+  font-size: 12px;
+  padding-left: 18px;
+  background: url({pigcms{$static_path}shop/images/2ddzt_03.png) left center no-repeat;
+  background-size: 11px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.orders_list li .p18 {
+  padding: 5px 0px 5px 22px;
+  position: relative;
+}
+.orders_list li .p18:before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  display: block;
+  border-radius: 100%;
+  background: #2ecc71;
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  margin-top: -4px;
+  z-index: 2;
+}
+.orders_list li .p18 .con {
+  background: #fff;
+  padding: 13px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 8px 2px #e3f0ec;
+  position: relative;
+}
+.orders_list li:after {
+  content: '';
+  height: 100%;
+  width: 1px;
+  background: #dcdcdc;
+  position: absolute;
+  left: 15px;
+  top: 0px;
+  z-index: 1;
+}
+.coupon_mask {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background: rgba(0,0,0,0.7);
+  z-index: 888;
+  width: 100%;
+  height: 100%;
+}
+.status_model {
+  overflow-y: scroll;
+  max-height: 75%;
+  min-height: 28%;
+  position: fixed;
+  z-index: 5000;
+  width: 80%;
+  max-width: 300px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  background-color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  overflow-x: hidden;
+}
+.orders_list li .p18 .con p {
+  color: #666666;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: justify;
+}
+.orders_list li .p18 .con h2 {
+  color: #2ecc71;
+  font-size: 14px;
+  font-weight: bold;
+  padding-bottom: 8px;
+}
+.close{
+  float: right;
+  padding-right: 13px;
+  padding-top: -5px;
+  font-size: 24px;
+  margin-top: 15px
+}
+
+.order-page .line_discount {
+  height: 35px;
+  line-height: 35px;
+  padding: 0 20px 0 15px;
+  background: #fff;
+  margin-bottom: 5px;
+}
+.vipMoney{
+  font-weight: bold;
+  margin: 0px 10px 0px 5px;
+  color:#777;
+  position:relative;
+}
+.vipMoney:after{
+  content: ' ';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 49%;
+  height: 1px;
+  border-top: 2px solid #bbb;
+}
+
+.delivery-progress{
+	padding: 12px 15px;
+    background: #fff;
+    margin-top: 15px;
+    color: #999;
+    font-size: 12px;
+}
+
+.delivery-progress .item{
+	margin-top: 16px;
+}
+
+.delivery-progress .red, .delivery-progress .item.is-delivery .delivery-time{
+	color: #ff4c29;
+}
+
+.delivery-progress .icon-right{
+	font-size: 12px;
+	vertical-align: middle;
+	margin-left: 5px;
+}
+
+.delivery-progress .txt{
+	width: 34px;
+	height: 34px;
+	line-height: 34px;
+	border-radius: 50%;
+	color: #fff;
+	text-align:center;
+	display: inline-block;
+	background: #ff4c29;
+	margin-right: 10px;
+	font-size: 14px;
+	font-weight: bold;
+	box-sizing: border-box;
+}
+
+.delivery-progress .progress-line{
+	position: absolute;
+	left: 15px;
+	background: #ff4c29;
+	width: 4px;
+	height: 10px;
+}
+
+.delivery-progress .static .txt{
+	background: #fff;
+	border: 3px solid #ccc;
+	color: #ccc;
+	line-height: 28px;
+}
+
+.delivery-progress .static .progress-line{
+	background: #ccc;
+}
+
+.delivery-progress .bottom{
+	bottom: -10px;
+}
+
+.delivery-progress .top{
+	top: -10px;
+}
+
+.delivery-progress .delay-btn{
+	margin-left: 20px;
+	background: #ff4c29;
+	color: #fff;
+	padding: 4px 8px;
+	border-radius: 3px;
+}
+
+.delivery-progress .desc{
+	width: calc(100% - 44px);
+	width:-webkit-calc(100% - 44px);
+}
+
+.delivery-progress .item.is-delayed{
+	color: #ccc;
+}
+
+.delivery-progress .item.is-delayed .txt{
+	background: #fff;
+	border: 3px dashed #ccc;
+	color: #ccc;
+	line-height: 28px;
+}
+
+.delivery-progress .item.is-delayed .delay-btn{
+	background: #ccc;
+	padding: 4px 14px;
+}
+
+.delivery-progress .item.is-delayed .progress-line{
+	background: #ccc;
+}
+
+.delivery-progress .item.is-delivery .delay-btn, .delivery-progress .item.static .check-detail, .delivery-progress .item.is-delayed .check-detail,
+.delivery-progress .progress-detail .item:first-child .top, .delivery-progress .progress-detail .item:last-child .bottom{
+	display: none;
+}
+
+.delivery-progress .progress-detail .item:first-child{
+	margin-top: 0;
+}
+
+.delivery-progress .item .delay_gray{
+    background: #ccc;
+    padding: 4px 14px;
+}

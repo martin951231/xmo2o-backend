@@ -1,0 +1,24 @@
+.detail_con[data-v-45aa56d1] {
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.detail_con .detail_item[data-v-45aa56d1] {
+  width: 49%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-top: 10px;
+}
+.detail_con .detail_item .label[data-v-45aa56d1] {
+  font-size: 14px;
+  color: #666;
+}
+.detail_con .detail_item .value[data-v-45aa56d1] {
+  font-size: 14px;
+  color: #999;
+}
+

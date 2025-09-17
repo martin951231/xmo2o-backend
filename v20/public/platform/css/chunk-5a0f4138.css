@@ -1,0 +1,48 @@
+.center[data-v-60169a58] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-bottom: 10px;
+}
+.textarea-wrapper[data-v-60169a58] {
+  position: relative;
+  display: block;
+}
+.textarea-wrapper .m-textarea[data-v-60169a58] {
+  padding: 8px 12px;
+  padding-bottom: 25px;
+  height: 100%;
+}
+.textarea-wrapper .m-count[data-v-60169a58] {
+  color: #808080;
+  position: absolute;
+  font-size: 12px;
+  bottom: 0px;
+  right: 12px;
+}
+.newBox[data-v-60169a58] {
+  height: 30vh;
+}
+.newBox .customFormWrap[data-v-60169a58] {
+  padding: 20px 20px 0 20px;
+  background: #fafafa;
+  box-sizing: border-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  border: 1px solid #ebeef5;
+}
+.flag[data-v-60169a58] {
+  margin-left: 2%;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.flag p[data-v-60169a58] {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+

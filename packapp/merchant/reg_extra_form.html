@@ -1,0 +1,487 @@
+
+<div id="app">
+    <!-- 表单 -->
+
+        <!-- 升级类型 -->
+        <van-field readonly clickable name="upgrade_type" label="升级类型" :value="upgradeData.text"
+                   right-icon="arrow-down" placeholder="请选择升级类型" @click="showUpgradePicker = true">
+        </van-field>
+        <!-- 自定义部分 -->
+        <template v-if="formList.length">
+            <template v-for="(formItem,index) of formList" :key="formItem.name">
+                <!-- 单行输入框  input-->
+                <van-field :required="formItem.required" v-if="formItem.type == 'input'" v-model="formItem.value"
+                           :name="formItem.name" :label="formItem.label" :placeholder="formItem.tips"
+                           @input="setFormValue($event, index)"
+                           :rules="[{ required: formItem.required, message: formItem.tips }]">
+                </van-field>
+                <!-- 身份证号  idcard-->
+                <van-field :required="formItem.required" v-if="formItem.type == 'idcard'" v-model="formItem.value"
+                           :name="formItem.name" :label="formItem.label" :placeholder="formItem.tips"
+                           @input="setFormValue($event, index)" :error-message="idMessage" maxlength="18"
+                           :formatter="idFormatter" format-trigger="onBlur"
+                           :rules="[{ required: formItem.required, message: formItem.tips }]">
+                </van-field>
+                <!-- 多行输入框  textarea-->
+                <van-field :required="formItem.required" v-if="formItem.type == 'textarea'" v-model="formItem.value"
+                           type="textarea" autosize rows="3" :name="formItem.name" :label="formItem.label"
+                           :placeholder="formItem.tips" @input="setFormValue($event, index)"
+                           :rules="[{ required: formItem.required, message: formItem.tips }]">
+                </van-field>
+                <!-- 日期选择 date -->
+                <van-field :required="formItem.required" v-if="formItem.type == 'date'" v-model="formItem.value"
+                           :name="formItem.name" :label="formItem.label" :placeholder="formItem.tips" readonly clickable
+                           @click="showPicker(index,'showDatePicker')" right-icon="arrow-down"
+                           :rules="[{ required: formItem.required, message: formItem.tips }]">
+                </van-field>
+                <!-- 选择器 select -->
+                <van-field :required="formItem.required" v-if="formItem.type == 'select'"
+                           v-model="formItem.valueTxt" :name="formItem.name" :label="formItem.label"
+                           right-icon="arrow-down" :placeholder="formItem.tips" readonly clickable
+                           @click="showPicker(index,'showSelectPicker')"
+                           :rules="[{ required: formItem.required, message: formItem.tips }]">
+                </van-field>
+                <!-- 图片上传 image -->
+                <van-field :required="formItem.required" v-if="formItem.type == 'image'" :name="formItem.name"
+                           :label="formItem.label" :rules="[{ required: formItem.required, message: formItem.tips }]">
+                    <template #input>
+                        <van-uploader v-model="formItem.value" multiple :max-count="formItem.max_count"
+                                      :after-read="(file,detail) => uploadImg(file,detail,index)"
+                                      @delete="(file,detail) => deleteImg(file,detail,index)">
+                        </van-uploader>
+
+                    </template>
+                </van-field>
+                <!-- 身份证正反面 idcard_image -->
+                <template v-if="formItem.type == 'idcard_image'">
+                    <van-field :required="formItem.required" :name="formItem.name" :label="formItem.label"
+                               :rules="[{ required: formItem.required, message: formItem.tips }]">
+                    </van-field>
+                    <!-- 正面 -->
+                    <div class="ic-img">
+                        <van-uploader :after-read="(file,detail) => uploadIdImg(file,detail,index, 'front')"
+                                      :max-count="1">
+                            <div class="upload" :style="'width:'+ imgBoxWidth +';height:'+ imgBoxWidth">
+                                <div class="img-con box-corner ">
+                                    <div class="img-box">
+                                        <img v-if="formItem.front" key="front_c" class="id-img"
+                                             :src="formItem.front" />
+                                        <img v-else class="up-img" key="front_i"
+                                             src="./images/auth_camera_icon.png" />
+                                    </div>
+                                </div>
+                                <div class="upload-tip"><span class="color-orange">点击</span>上传身份证<span
+                                        class="color-orange">正面</span>照片</div>
+                            </div>
+                        </van-uploader>
+                        <div class="upload" :style="'width:'+ imgBoxWidth +';height:'+ imgBoxWidth">
+                            <div class="img-con">
+                                <div class="img-box">
+                                    <img class="eg-img" src="./images/auth_face_icon.png" />
+                                </div>
+                            </div>
+                            <div class="upload-tip">正确示例：身份证正面</div>
+                        </div>
+                    </div>
+                    <!-- 反面 -->
+                    <div class="ic-img" style="margin-top: 10px;">
+                        <van-uploader :after-read="(file,detail) => uploadIdImg(file,detail,index,'back')"
+                                      :max-count="1">
+                            <div class="upload" :style="'width:'+ imgBoxWidth +';height:'+ imgBoxWidth">
+                                <div class="img-con box-corner ">
+                                    <div class="img-box">
+                                        <img v-if="formItem.back" key="back_c" class="id-img"
+                                             :src="formItem.back" />
+                                        <img v-else class="up-img" key="back_i"
+                                             src="./images/auth_camera_icon.png" />
+
+                                    </div>
+                                </div>
+                                <div class="upload-tip"><span class="color-orange">点击</span>上传身份证<span
+                                        class="color-orange">背面</span>照片
+                                </div>
+
+                            </div>
+                        </van-uploader>
+                        <div class="upload" :style="'width:'+ imgBoxWidth +';height:'+ imgBoxWidth">
+                            <div class="img-con">
+                                <div class="img-box">
+                                    <img class="eg-img" src="./images/auth_back_icon.png" />
+                                </div>
+                            </div>
+                            <div class="upload-tip">正确示例：身份证背面</div>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </template>
+        <div class="submit">
+            <van-button block :color="mainColor" native-type="submit">提交</van-button>
+        </div>
+
+    <!-- upgrade选择弹框 -->
+    <van-popup v-model="showUpgradePicker" round position="bottom">
+        <van-picker show-toolbar :columns="ajaxData.upgrade_list" @cancel="showUpgradePicker = false"
+                    @confirm="onUpgradeConfirm"></van-picker>
+    </van-popup>
+    <!-- 时间选择框 -->
+    <van-popup v-model="showDatePicker" position="bottom">
+        <van-datetime-picker v-model="date" type="date" @confirm="onDateConfirm" @cancel="showDatePicker = false" />
+    </van-popup>
+    <!-- 选择器弹框 -->
+    <van-popup v-model="showSelectPicker" position="bottom">
+        <van-picker show-toolbar :columns="columns" @confirm="onSelectConfirm" @cancel="showSelectPicker = false" />
+    </van-popup>
+</div>
+
+<script>
+    var _this = null;
+    var currentDate = new Date()
+    var app = new Vue({
+        el: '#app',
+        data: {
+            // 升级类型选择值
+            upgradeData: {
+                value: '',
+                text: '',
+                commission: 0,
+            },
+            // 是否显示升级类型选择弹框
+            showUpgradePicker: false,
+            // 从后端获取的数据
+            ajaxData: {},
+            mainColor: '',
+            currency: '￥',
+            formList: [],
+            currentIndex: -1,
+            // 显示时间选择框
+            showDatePicker: false,
+            date: currentDate,
+            // 显示选择器弹框
+            showSelectPicker: false,
+            columns: [],
+            // 身份证号
+            idPattern: /^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/,
+            idMessage: '',
+            idCorrect: false,
+            imgBoxWidth: '100px',
+        },
+        created() {
+            _this = this;
+            this.imgBoxWidth = (document.body.clientWidth - 50) / 2 + "px"
+            this.getFormData()
+        },
+        methods: {
+            getFormData() {
+                // ajax请求
+                var data = {
+                    currency: '￥', // 货币符号
+                    main_color: '#1FC5AE', // 主题色
+                    // 升级类型列表
+                    upgrade_list: [
+                        {
+                            value: '1', // 类型value
+                            text: 'upgrade1', // 类型显示文字
+                            commission: 10 // 佣金
+                        }, {
+                            value: '2',
+                            text: 'upgrade2',
+                            commission: 11
+                        }, {
+                            value: '3',
+                            text: 'upgrade3',
+                            commission: 0
+                        }, {
+                            value: '4',
+                            text: 'upgrade4',
+                            commission: 14
+                        }],
+                    // 自定义表单数据
+                    form_list: [
+                        {
+                            name: 'input_key', // 回传给后端的表单字段名
+                            type: 'input', // 类型
+                            label: '单行输入框', // 左侧文本
+                            required: true, // 是否必填
+                            value: '', // 值
+                        },
+                        {
+                            name: 'textarea_key',
+                            type: 'textarea',
+                            label: '多行文本',
+                            required: false,
+                            value: ''
+                        },
+                        {
+                            name: 'idcard_key',
+                            type: 'idcard',
+                            label: '身份证号',
+                            required: false,
+                            value: '',
+                        },
+                        {
+                            name: 'date_key',
+                            type: 'date',
+                            label: '日期',
+                            required: true,
+                            value: '',
+                        },
+                        {
+                            name: 'select_key',
+                            type: 'select',
+                            label: '下拉选择',
+                            required: true,
+                            value: '',
+                            list: [ // 选择列表
+                                {
+                                    value: '1',
+                                    text: '类型1',
+                                },
+                                {
+                                    value: '2',
+                                    text: '类型2',
+                                },
+                            ]
+                        },
+                        {
+                            name: 'image_key',
+                            type: 'image',
+                            label: '上传图片',
+                            required: false,
+                            max_count: 5,
+                            value: [],
+                        },
+                        {
+                            name: 'idcard_image_key',
+                            type: 'idcard_image',
+                            label: '身份证正反面',
+                            required: false,
+                            front: '', // 正面照
+                            back: '', // 反面照
+                        },
+                    ]
+                }
+                this.ajaxData = data;
+                // 请求回调数据的处理
+                this.currency = data.currency
+                this.mainColor = data.main_color
+                // 1 、upgrade类型默认选中 以下处理是选中第一个 不要就是没有默认选中
+                // if (data.upgrade_list && data.upgrade_list.length) {
+                //     this.upgradeData = data.upgrade_list[0]
+                // }
+                // 2、处理form表单
+                if (data.form_list && data.form_list.length) {
+                    this.formList = data.form_list.map(function (item) {
+                        item.valueTxt = ''
+                        item.tips = '请输入' + item.label
+                        if (item.type == 'select' || item.type == 'date') {
+                            item.tips = '请选择' + item.label
+                            if (item.type == 'select' && item.list && item.list.length) {
+                                item.list.map(function (i) {
+                                    if (i.value == item.value) {
+                                        item.valueTxt = i.text
+                                    }
+                                })
+                            }
+                        }
+                        return item
+                    })
+                }
+
+            },
+            // 提交表单
+            onSubmit(values) {
+                if (!this.idCorrect) {
+                    return;
+                }
+                console.log('表单', this.formList);
+                for (var i of this.formList) {
+                    if (i.valueTxt) {
+                        values[i.name] = i.value
+                    }
+                    if (i.type == 'idcard_image') {
+                        values[i.name] = {
+                            front: i.front,
+                            back: i.back,
+                        }
+                    }
+                }
+                values.upgrade_type = this.upgradeData.value
+                console.log('表单内所有的数据', values);
+            },
+            // 升级类型确认
+            onUpgradeConfirm(val) {
+                this.showUpgradePicker = false
+                this.upgradeData = val
+            },
+            // 选择日期
+            onDateConfirm(date) {
+                this.setFormValue(getTimeStrByDate(date), this.currentIndex)
+                this.showDatePicker = false
+                this.date = currentDate
+            },
+            onSelectConfirm(val) {
+                this.setFormValue(val.value, this.currentIndex, val.text)
+                this.showSelectPicker = false
+                this.columns = []
+            },
+            // 显示选择弹框
+            showPicker(index, type) {
+                this.currentIndex = index
+                this[type] = true
+                var item = this.formList[index]
+                if (item.list && item.list.length) {
+                    this.columns = item.list
+                }
+            },
+            // 设置表单值
+            setFormValue(val, index, text = '') {
+                var item = this.formList[index]
+                item.value = val
+                item.valueTxt = text
+                this.$set(this.formList, index, item)
+            },
+            // 校验身份证号
+            idFormatter(val) {
+                if (!this.idPattern.test(val) && val != '') {
+                    this.idMessage = "请输入正确的身份证号码~";
+                    this.idCorrect = false;
+                } else {
+                    this.idMessage = ''
+                    this.idCorrect = true
+                }
+                return val
+            },
+            // 上传图片
+            uploadImg(file, detail, index) {
+                // 调取上传接口
+                // 模拟 当前模拟获得的是file对象，实际根据接口回传地址做调整
+                var fileList = this.formList[index].value
+                this.setFormValue(fileList, index)
+            },
+            deleteImg(file, detail, index) {
+                var item = this.formList[index]
+                this.$set(this.formList, index, item)
+            },
+            uploadIdImg(file, detail, index, type) {
+                // 调取上传接口
+                var url = 'https://img.yzcdn.cn/vant/leaf.jpg' // 模拟上传后返回的url
+                var item = this.formList[index]
+                item[type] = url
+                this.$set(this.formList, index, item)
+            }
+        }
+    })
+    function getTimeStrByDate(date) {
+        var y = date.getFullYear();
+        var M = date.getMonth() + 1;
+        var d = date.getDate();
+        return y + '-' + (M < 10 ? ('0' + M) : M) + '-' + (d < 10 ? ('0' + d) : d);
+    }
+</script>
+<style>
+    html,
+    body,
+    #app {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+    }
+
+    .tips {
+        padding: 0px 15px;
+        line-height: 40px;
+        vertical-align: middle;
+        font-size: 12px;
+        color: #666666;
+        /* margin-bottom: 10px; */
+    }
+
+    .ic-img {
+        width: 100%;
+        padding: 0 15px;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ic-img .upload {
+        padding: 15px 10px;
+        box-sizing: border-box;
+        background-color: #FD874510;
+
+    }
+
+    .ic-img .upload .img-con {
+        width: 90%;
+        height: 75%;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .box-corner {
+        background: linear-gradient(to left, #FD8745, #FD8745) left top no-repeat,
+        linear-gradient(to bottom, #FD8745, #FD8745) left top no-repeat,
+        linear-gradient(to left, #FD8745, #FD8745) right top no-repeat,
+        linear-gradient(to bottom, #FD8745, #FD8745) right top no-repeat,
+        linear-gradient(to left, #FD8745, #FD8745) left bottom no-repeat,
+        linear-gradient(to bottom, #FD8745, #FD8745) left bottom no-repeat,
+        linear-gradient(to left, #FD8745, #FD8745) right bottom no-repeat,
+        linear-gradient(to left, #FD8745, #FD8745) right bottom no-repeat;
+        background-size: 2px 10px, 10px 2px, 2px 10px, 10px 2px;
+    }
+
+    .ic-img .upload .img-con .img-box {
+        width: 80%;
+        height: 70%;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ic-img .upload .img-con .img-box .up-img {
+        width: 35px;
+        height: 27px;
+    }
+
+    .ic-img .upload .img-con .img-box .id-img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .ic-img .upload .img-con .img-box .eg-img {
+        width: 80%;
+        height: 70%;
+    }
+
+    .upload-tip {
+        font-size: 12px;
+        color: #666666;
+        width: 100%;
+        text-align: center;
+        height: 25%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .color-orange {
+        color: #FD8745;
+        font-weight: bold;
+    }
+
+    .submit {
+        margin: 0 20px;
+        padding: 40px 0;
+    }
+
+    .line {
+        width: 100%;
+        height: 10px;
+        background-color: #f4f4f4;
+    }
+</style>

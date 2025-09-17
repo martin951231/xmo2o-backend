@@ -1,0 +1,138 @@
+.header-screen-box {}
+
+.header-screen-box .header-tabs {
+    padding-bottom: 10px;
+    background-color: #fff;
+}
+
+.comment {
+    margin: 10px;
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 10px;
+    padding: 10px 0;
+}
+
+.comment .comment-item {
+    background: #FFFFFF;
+    box-shadow: 0px 3px 21px 0px rgba(239, 239, 239, 0.15);
+    padding: 0 10px;
+    padding-bottom: 6px;
+    margin: 10px 10px 20px 10px;
+    overflow: hidden;
+    border-bottom: 1px solid #F1F1F1;
+}
+
+.comment .comment-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.comment .comment-item .user-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comment .comment-item .left {
+    display: flex;
+    align-items: center;
+}
+
+.comment .comment-item .right {
+    font-size: 12px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #999999;
+}
+
+.comment .comment-item .user-info {
+    margin-left: 6px;
+    font-size: 12px;
+}
+
+.comment .comment-item .user-info .title {
+    font-weight: 500;
+    color: #333333;
+}
+
+.comment .comment-item .user-info .time {
+    font-size: 10px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #999999;
+}
+
+.comment .comment-item .content .desc {
+    font-size: 12px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #444444;
+    line-height: 22px;
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+.comment .comment-item .content .img-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.comment .comment-item .content .img-list .imgs {
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.comment .comment-item .content .img-list .imgs:nth-child(3n) {
+    margin-right: 0;
+}
+
+.comment .comment-item .content .desc-tag {
+    background: #fff8e5;
+    border-radius: 6px;
+    padding: 2px 6px;
+    color: #FF981A;
+    display: inline-block;
+    font-size: 10px;
+    margin-bottom: 10px;
+}
+
+.comment .comment-item .content .desc-tag span {
+    margin: 0 3px;
+}
+
+.rate {
+    margin: 4px 0;
+}
+
+.store-info {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.store-info .store_score {
+    font-size: 30px;
+    color: #FF532A;
+    padding: 0;
+    margin: 0;
+}
+
+.store_deliver_score {
+    text-align: center;
+    font-size: 25px;
+    color: #333;
+    text-align: center;
+}
+.store-info .r{
+
+}
+.store_deliver_score .sum-txt{
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+}

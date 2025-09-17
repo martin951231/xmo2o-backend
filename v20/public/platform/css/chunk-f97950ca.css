@@ -1,0 +1,9 @@
+.scroll_content[data-v-9d05defe] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px)/3 - 60px);
+  overflow: scroll;
+}
+.scroll_content #charts_container_4[data-v-9d05defe] {
+  width: calc(100vw/4 - 10px);
+}
+

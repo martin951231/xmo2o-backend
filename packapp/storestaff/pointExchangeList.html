@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <title>积分兑换</title>
+    <meta name="viewport"
+        content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name='apple-touch-fullscreen' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
+    <link rel="stylesheet" href="css/vant@2.12.47.css" />
+    <link href="css/pigcms.css?t=1" rel="stylesheet"/>
+    <link href="css/mobiscroll.2.13.2.css" rel="stylesheet"/>
+    <script src="scripts/vue@2.6.14.min.js"></script>
+    <script src="scripts/vant@2.12.14.min.js"></script>
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/layer/layer.m.js"></script>
+</head>
+<style>
+    body {
+        background-color: #f5f4f9;
+    }
+
+    .box {
+        display: flex;
+        padding: 10px;
+        background-color: #fff;
+        margin: 10px;
+        border-radius: 6px;
+        position: relative;
+    }
+
+    .box .top_title {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        font-size: 12px;
+        color: #fff;
+        border-radius: 2px;
+        padding: 0 4px;
+        text-align: center;
+    }
+
+    .box .left {
+        margin-right: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+    .box .left-center {
+        position: relative;
+    }
+
+    .box .right {
+        flex: 1;
+    }
+
+    .box .right .h4 {
+        width: 150px;
+        font-size: 15px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .box .right .ms {
+        margin: 4px 0;
+        font-size: 11px;
+        display: flex;
+        flex-wrap: wrap;
+        color: #666;
+        margin-bottom: 6px;
+    }
+    .box .right .ms span{
+        width: 50%;
+        margin-bottom: 4px;
+    }
+    .box .right .btns{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .box .right .btns .btn{
+        font-size: 14px;
+        background-color: #2ecc71;
+        border-radius: 25px;
+        color: #fff;
+        padding: 4px 6px;
+    }
+    .box .right .btns .active{
+        color: #2ecc71 !important;
+    }
+    .van-nav-bar__title {
+        color: #fff;
+    }
+
+    .van-nav-bar .van-icon {
+        color: #fff;
+    }
+</style>
+
+<body>
+    <div id="app">
+        <van-nav-bar z-index="99" @click-left="toBack" :title="L_('积分兑换')" style="background-color: #2ecc71;" fixed
+            safe-area-inset-top="true" left-arrow>
+        </van-nav-bar>
+        <div style="padding-top: 46px;">
+            <van-sticky :offset-top="46">
+                <van-search v-model="params.key" show-action :placeholder="L_('请输入搜索关键词')" @search="onSearch">
+                    <template #action>
+                        <div @click="onListSearch">搜索</div>
+                      </template>
+                </van-search>
+            </van-sticky>
+        </div>
+        <van-list v-model="loading" :finished="finished" :finished-text="L_('没有更多了')" @load="onLoad">
+            <div class="box-list">
+                <div class="box" v-for="item in dataList" :key="item.appoint_id">
+                    <div class="left">
+                        <div class="left-center">
+                            <van-image width="90px" height="90px" fit="cover" :src="item.image"></van-image>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="h4">{{item.name}}</div>
+                        <div class="ms">
+                            <span style="width: 40%;">{{L_('积分')}}：{{item.points}}</span>
+                            <span>{{L_('数量')}}：{{item.num}}</span>
+                            <span  style="width: 40%;">{{L_('昵称')}}：{{item.nickname?item.nickname:L_('无')}}</span>
+                            <span>{{L_('手机号')}}：{{item.phone?item.phone:L_('无')}}</span>
+                            <span style="width: 100%;">{{L_('兑换时间')}}：{{item.create_time?item.create_time:L_('无')}}</span>
+                            <span style="width: 100%;">{{L_('核销店员')}}：{{item.staff_name?item.staff_name:L_('无')}}</span>
+                            <span style="width: 100%;">{{L_('核销时间')}}：{{item.use_time?item.use_time:L_('无')}}</span>
+                        </div>
+                        <div class="btns">
+                            <span v-if="item.status == 1" style="color: #ff9900;font-size: 12px;">{{L_('未兑换')}}</span>
+                            <span v-else-if="item.status == 2" class="active" style="font-size: 12px;">{{L_('已兑换')}}</span>
+                            <span v-else-if="item.status == 3"  style="color: #888;font-size: 12px;">{{L_('已过期')}}</span>
+                            <span v-if="item.status == 1" class="btn" @click="confirmExchange(item)">确定兑换</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </van-list>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/work/pointExchangeList.js?t=18"></script>
+</body>
+
+</html>

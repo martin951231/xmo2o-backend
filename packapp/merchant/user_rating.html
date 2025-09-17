@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>用户评价</title>
+    <link href="css/mui.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" href="css/vant/vant@2.12.47.css" />
+    <link rel="stylesheet" href="css/user_rating.css?t=2" />
+    <script src="js/vant/vue@2.6.14.min.js"></script>
+    <script src="js/vant/vant@2.12.14.min.js"></script>
+    <style>
+        .loading {
+            display: flex;
+            justify-content: center;
+            margin: 60px;
+        }
+
+        .van-nav-bar {
+            background-color: #ffa200 !important;
+            color: #fff;
+        }
+
+        .van-nav-bar__title {
+            color: #fff;
+        }
+
+        .van-nav-bar .van-icon {
+            color: #fff;
+        }
+        .merchant_reply_content{
+            background-color: #f0f2f5;
+            color: #333;
+            font-size: 12px;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" style="display: none;">
+        <van-nav-bar :title="L_('用户评价')" :safe-area-inset-top="true" :fixed="false" left-arrow
+            @click-left="onClickLeft"></van-nav-bar>
+        <div class="header-screen-box">
+            <div class="header-tabs">
+                <van-tabs v-model="tabsItem" :color="mainColor" :title-active-color="mainColor" @change="tabChange"
+                    title-inactive-color="#9A9A9A">
+                    <van-tab :title="item.title" v-for="item in tabsList" :key="item.order_type"></van-tab>
+                </van-tabs>
+            </div>
+            <div class="header-screen">
+                <van-dropdown-menu :active-color="mainColor">
+                    <van-dropdown-item v-model="screen1" :options="option1" @change="menuChange($event,'1')">
+                    </van-dropdown-item>
+                    <van-dropdown-item v-model="screen2" :options="option2" @change="menuChange($event,'2')">
+                    </van-dropdown-item>
+                    <van-dropdown-item v-model="screen3" :options="option3" @change="menuChange($event,'3')">
+                    </van-dropdown-item>
+                </van-dropdown-menu>
+            </div>
+        </div>
+        <van-list v-model="loading" :finished="finished" :finished-text="L_('没有更多了')" @load="onLoad">
+            <div class="store-info" v-if="pageData && order_type==3 && screen1">
+                <div class="store_score">{{pageData.store_score}}</div>
+                <div class="r">
+                    <van-rate v-model="pageData.store_score" :readonly="true" :size="18" color="#FFB604" void-icon="star"
+                        void-color="#e6e6e6" />
+                </div>
+                <div class="store_deliver_score">
+                    <div class="sum">{{pageData.store_deliver_score}}</div>
+                    <div class="sum-txt">
+                        <L>配送评分</L>
+                    </div>
+                </div>
+            </div>
+            <div class="comment" v-if="reply_list.length>0">
+                <div class="comment-item" v-for="(item,index) in reply_list" :key="item.order_id">
+                    <div class="user-box">
+                        <div class="left">
+                            <van-image round width="36px" height="36px" :src="item.avatar"></van-image>
+                            <div class="user-info">
+                                <div class="title">{{item.nickname}}</div>
+                                <div class="time">{{item.add_time_hi}}</div>
+                            </div>
+                        </div>
+                        <div class="right" @click="goUrl(item)">
+                            <span>
+                                <L>回复</L>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="rate">
+                        <van-rate v-model="item.score" :readonly="true" :size="12" color="#FFB604" void-icon="star"
+                            void-color="#e6e6e6" />
+                    </div>
+                    <div class="content">
+                        <div class="desc">{{item.comment}}</div>
+                        <div class="img-list"
+                            @click="lookImg(item,items,indexs)">
+                            <van-image v-for="(items,indexs) in item.reply_pic" :key="indexs" class="imgs" width="32%" height="100px" :src="items.image"></van-image>
+                        </div>
+                        <div class="desc-tag" v-if="item.goods && item.goods.length>0">
+                            <van-image class="imgs" width="10px" height="10px"
+                                :src="requestStaticDomain + '/static/merchant_index/zan.png'"
+                                style="margin-right: 2px;"></van-image>
+                            <span v-for="itemss in item.goods">{{itemss}}</span>
+                        </div>
+                    </div>
+                    <div class="merchant_reply_content" v-if="item.merchant_reply_content">{{L_('商家回复：') + item.merchant_reply_content}}</div>
+                </div>
+            </div>
+        </van-list>
+    </div>
+    <div class="loading">加载中...</div>
+</body>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/weui/weui.min.js"></script>
+<script src="js/common.js?t=2" type="text/javascript" charset="utf-8"></script>
+<script src="js/work/user_rating.js?t=5"></script>
+
+</html>

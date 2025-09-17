@@ -1,0 +1,36 @@
+.form_title[data-v-ab422172] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-ab422172] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-ab422172] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-ab422172] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+}
+[data-v-ab422172] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+[data-v-ab422172] .text-primary {
+  color: #2681f3 !important;
+}
+

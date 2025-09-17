@@ -1,0 +1,61 @@
+
+[data-v-91e5cad2] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+.upload_list .upload_item[data-v-91e5cad2] {
+  display: -ms-flexbox;
+  display: flex;
+  width: 460px;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-top: 3px;
+  cursor: pointer;
+}
+.upload_list .upload_item .left_file[data-v-91e5cad2] {
+  color: #18f;
+}
+.upload_list .upload_item .right_delete[data-v-91e5cad2] {
+  color: red;
+}
+
+.table_con[data-v-6fbea623] {
+  margin-top: 10px;
+}
+
+.set_con[data-v-2eeca693] {
+  padding: 20px;
+}
+.set_con .form_item[data-v-2eeca693] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.set_con .desc[data-v-2eeca693] {
+  color: #999;
+  margin-top: 7px;
+}
+
+.contract_manage[data-v-3cb0691f] {
+  padding: 20px;
+  background: #fff;
+  margin-top: 10px;
+}
+.contract_manage .top_search .form_con[data-v-3cb0691f] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  transform: translateX(-10px);
+}
+.contract_manage .top_search .form_con .form_item[data-v-3cb0691f] {
+  width: 150px;
+  margin-left: 10px;
+}
+.contract_manage .table_con[data-v-3cb0691f] {
+  margin-top: 10px;
+}
+

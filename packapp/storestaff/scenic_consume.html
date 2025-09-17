@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <title>店员中心</title>
+    <meta name="viewport"
+        content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name='apple-touch-fullscreen' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
+    <link href="css/pigcms.css?t=3" rel="stylesheet" />
+    <link href="css/mobiscroll.2.13.2.css" rel="stylesheet" />
+</head>
+<style>
+    .tabs-btn {
+        display: flex;
+        justify-content: center;
+        background-color: #fff;
+    }
+    .tabs-btn .btn{
+        color: #333;
+        width: 50%;
+        text-align: center;
+        padding: 10px 0;
+        position: relative;
+    }
+    .tabs-btn .active{
+        color: #2ecc71;
+    }
+    .tabs-btn .active::before{
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 2px;
+        background-color: #2ecc71;
+    }
+   .h130{
+        top: 44px;
+        top: calc(44px + constant(safe-area-inset-top));
+        top: calc(44px + env(safe-area-inset-top));
+        z-index: 2;
+   }
+</style>
+
+<body>
+    <section class="public pageSliderHide">
+        <div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+        <div style="text-align: center;font-size: 16px;">
+            <L_>景区核销记录</L_>
+        </div>
+    </section>
+    <div class="nav-height"></div>
+    <section class="h130">
+        <div class="cable">
+            <form id="searchForm" method="post">
+                <div class="cable_n cable_kd">
+                    <div class="input">
+                        <input type="search" id="find_value" placeholder="请输入关键词" />
+                    </div>
+                    <div class="select">
+                        <select id="ft" name="ft">
+                            <option value="oid" class="L_">订单号</option>
+                            <option value="xm" class="L_">门票名称</option>
+                            <option value="xm" class="L_">次卡名称</option>
+                            <option value="dh" class="L_">景区名称</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="fix">
+            <div class="kd_time clr">
+                <div class="pos fl">
+                    <input type="text" placeholder="开始时间" readonly="readonly" id="stime" class='datas' />
+                </div>
+                <div class="pos fr">
+                    <input type="text" placeholder="结束时间" readonly="readonly" id="etime" class='datas' />
+                </div>
+            </div>
+        </div>
+        <div class="fix tabs-btn" id="tabsBtn">
+            <div class="btn" id="admission">门票</div>
+            <!-- <div class="btn" id="Secondary">次卡</div> -->
+        </div>
+    </section>
+    <div class="h131"></div>
+    <section class="store" style="padding-top: 10px;">
+        <div class="entry kd_entry">
+            <ul></ul>
+        </div>
+    </section>
+    <div class="mask"></div>
+    <section class="since"></section>
+    <section class="stock"></section>
+    <div class="flat roof"></div>
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/fastclick.js"></script>
+    <script src="scripts/layer/layer.m.js"></script>
+    <script src="scripts/common.js?t=4"></script>
+    <script src="scripts/mobiscroll.2.13.2.js"></script>
+    <script src="scripts/work/scenic_consume.js?t=2"></script>
+    <script type="text/javascript">
+        console.log(shop_type);
+        shop_type = 2;
+    </script>
+
+    <script id="listTpl" type="text/html">
+        {{# for (var i = 0, len = d.length; i < len; i++){ }}
+        <li data-url="#" data-webview="true" id="order_{{d[i].order_id}}">
+            <div class="top clr">
+                <div class="fl">{{ L_('核销时间') }}：{{d[i].last_time}}</div>
+            </div>
+            <div class="con">
+                <div class="con_top">
+                    <h2>{{ L_('订单编号') }}：<span style="color:#e93e14;">{{d[i].real_orderid}}</span></h2>
+                    {{# if(d[i].username){ }}
+                    <h2>{{ L_('下 单 人') }}：{{d[i].username}} <a href="javascript:void(0);" class="pho callPhone"
+                            data-phone="{{d[i].userphone}}">{{d[i].userphone}}</a></h2>
+                    {{# } }}
+                    {{# if(d[i].title){ }}<p>{{ L_('景区名称') }}：{{d[i].title}} ({{d[i].ticket_title}}){{# } }}</p>
+                    {{# if(d[i].address){ }}<p>{{ L_('景区地址') }}：{{d[i].address}}{{# } }}</p>
+                    {{# if(d[i].title && scenicId=='Secondary'){ }}<p>{{ L_('次卡名称') }}：{{d[i].title}}{{# } }}</p>
+                    <p>{{ scenicId=='admission'?L_('核销金额'): L_('剩余次数')}}：<span class="red">{{ scenicId=='admission'?currency_symbol: '' }}{{scenicId=='admission'?d[i].price:d[i].all_num}}</span></p>
+                </div>
+                <div class="remark">
+                    <div class="source">{{ L_('订单来源') }}：{{d[i].order_from}}</div>
+                </div>
+            </div>
+        </li>
+        {{# } }}
+    </script>
+</body>
+
+</html>

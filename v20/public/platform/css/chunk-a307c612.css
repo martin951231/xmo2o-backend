@@ -1,0 +1,12 @@
+
+.iframe-container[data-v-5f9111dc] {
+    margin: 10px;
+    height: 97%;
+    height: calc(100% - 30px);
+}
+.iframe-style[data-v-5f9111dc] {
+    width: 100%;
+    /*height: 100%;*/
+    /*overflow-y: hidden;*/
+}
+

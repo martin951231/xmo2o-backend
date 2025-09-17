@@ -1,0 +1,66 @@
+.container_box[data-v-4986a778] {
+  position: relative;
+  height: 100%;
+}
+.container_box .btn[data-v-4986a778] {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  background-color: rgba(10, 141, 223, 0.5);
+  z-index: 999;
+  border-radius: 8px;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.container_box .btn_1[data-v-4986a778] {
+  position: fixed;
+  top: 50px;
+  left: 50px;
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  background-color: rgba(10, 141, 223, 0.5);
+  z-index: 999;
+  border-radius: 8px;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+.container_box[data-v-4986a778] .ant-modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container_box .workshopCanvas[data-v-4986a778] {
+  width: 100%;
+  height: 100%;
+  background-color: #c1c8df;
+  cursor: pointer;
+}
+.container_box .imgBox[data-v-4986a778] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  cursor: pointer;
+  z-index: 99;
+}
+.container_box .imgBox #myCanvas[data-v-4986a778] {
+  width: 100%;
+  height: 100%;
+}
+

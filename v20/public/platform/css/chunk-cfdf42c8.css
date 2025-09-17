@@ -1,0 +1,75 @@
+.wrap[data-v-1f34eb7d] {
+  width: 100%;
+  min-height: 100%;
+}
+.wrap .page-title[data-v-1f34eb7d] {
+  padding: 20px 30px;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000000;
+}
+.wrap .text-wrap[data-v-1f34eb7d] {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.wrap .text-nowrap[data-v-1f34eb7d] {
+  white-space: nowrap;
+}
+.wrap .content[data-v-1f34eb7d] {
+  margin: 20px 30px;
+}
+.wrap .content .ant-row-flex[data-v-1f34eb7d] {
+  margin-bottom: 18px;
+}
+.wrap .content[data-v-1f34eb7d] .ant-form-item {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.wrap .content[data-v-1f34eb7d] .ant-form-item /deep/ .ant-form-item-control-wrapper {
+  padding-right: 100px;
+  -ms-flex: 1;
+      flex: 1;
+  box-sizing: border-box;
+}
+.wrap .content[data-v-1f34eb7d] .ant-form-item /deep/ .ant-form-item-control-wrapper /deep/ .ant-form-item-children {
+  width: 100%;
+  display: inline-block;
+}
+.wrap .content[data-v-1f34eb7d] .ant-form-item /deep/ .ant-form-item-control-wrapper /deep/ .ant-form-item-children .ant-calendar-picker {
+  width: 100%;
+}
+.wrap .content[data-v-1f34eb7d] .ant-input-group {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.wrap .content[data-v-1f34eb7d] .ant-input-group .ant-select {
+  min-width: 116px;
+}
+.wrap .content .total-performance[data-v-1f34eb7d] {
+  margin: 20px 0;
+  padding: 0 30px;
+  width: 100%;
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
+}
+.wrap .content .total-performance .cr-f1[data-v-1f34eb7d] {
+  color: #f1f1f1;
+}
+.store[data-v-1f34eb7d] {
+  margin-bottom: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+.store[data-v-1f34eb7d]:last-child {
+  border-bottom: none;
+}
+

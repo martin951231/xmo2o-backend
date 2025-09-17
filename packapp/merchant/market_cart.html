@@ -1,0 +1,1085 @@
+<html lang="zh-CN"><head>
+		<meta charset="utf-8">
+		<title>购物车</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link href="css/mui.css" rel="stylesheet"/>
+     	<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<link href="css/pigcms.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/market_footer.css"/>
+	<style>
+		.spec_list table td {
+			text-align: center;
+		}
+		.spec_list table th {
+			text-align: center;
+			padding: 1px;
+			font-size: 14px;
+		}
+		.spec_list table tr {
+			border-bottom: #f1f1f1 1px solid;
+		}
+		.spec_list table {
+			margin: 12px 3%;
+		}
+		.plus_class {
+			position: fixed;
+			bottom: 50px;
+			left: 0px;
+			width: 100%;
+			line-height: 50px;
+			background: #fff;
+			z-index: 889;
+			border-top: #edebeb 1px solid;
+			border-bottom: #edebeb 1px solid;
+		}
+		.mg_50 {
+			margin-bottom: 50px;
+		}
+		.plus_class .carbot_n {
+			padding-left: 10px;
+			position: relative;
+		}
+		.plus_class .carbot_left {
+			width: 65%;
+			position: relative;
+		}
+		.plus_class .fl {
+			float: left;
+			display: inline;
+		}
+		.plus_class .carbot_left .close {
+			font-size: 15px;
+			color: #232326;
+		}
+		.plus_class .carbot_right {
+			width: 35%;
+			position: absolute;
+			right: 0px;
+			top: 0px;
+		}
+		.plus_class .carbot_right .close {
+			font-size: 15px;
+			color: #ffffff;
+			padding: 0 10%;
+			background: #f23030;
+		}
+		.plus_class .fr {
+			float: right;
+			display: inline;
+		}
+		.carbot_right .whole {
+			background: url(./images/del_09.png) center no-repeat;
+			background-size: 15px;
+			padding: 0 3%;
+			width: 28px;
+			height: 50px;
+			box-sizing: content-box;
+			border-left: #edebeb 1px solid;
+			color: #f23030;
+		}
+		.endcar {
+			padding-bottom: 110px;
+		}
+		.endcar li {
+			margin-top: 10px;
+		}
+		.endcar dt {
+			padding: 14px 10px;
+			background: #fff;
+			border-top: #edebeb 1px solid;
+			height: 45px;
+			line-height: 18px;
+			position: relative;
+		}
+		.endcar .fl {
+			float: left;
+			display: inline;
+		}
+		.endcar .piton span.on {
+			background: #f23030;
+			border: #f23030 1px solid;
+		}
+		.endcar .piton span {
+			display: block;
+			width: 22px;
+			height: 22px;
+			border: #999ba4 1px solid;
+			border-radius: 100%;
+			position: absolute;
+			top: 50%;
+			margin-top: -9px;
+			z-index: 99;
+		}
+		.endcar .piton span.on:after {
+			display: block;
+			content: "";
+			border-top: 1px solid #fff;
+			border-left: 1px solid #fff;
+			width: 6px;
+			height: 10px;
+			-webkit-transform: rotate(226deg);
+			position: absolute;
+			top: 3px;
+			left: 6px;
+		}
+		.endcar .p30 {
+			padding-left: 30px;
+			position: relative;
+		}
+		.endcar .title_msg {
+			line-height: 22px;
+		}
+
+		.endcar dt .p30 a {
+			color: #232326;
+			font-size: 15px;
+			display: inline-block;
+			position: relative;
+			padding-right: 20px;
+		}
+		.endcar dd {
+			background: #fff;
+			padding: 15px 10px;
+			position: relative;
+			z-index: 888;
+			border-bottom: #edebeb 1px solid;
+		}
+		.plus em, .piton span {
+			cursor: pointer;
+		}
+		.clr {
+			zoom: 1;
+		}
+		.endcar dd .p30 a {
+			display: block;
+		}
+		.endcar dd .img img {
+			border-radius: 5px;
+		}
+		.endcar img {
+			border: 0 none;
+			max-width: 100%;
+		}
+		.endcar dd .p102 {
+			padding-left: 102px;
+			line-height: 20px;
+			height: 62px;
+		}
+		.endcar dd .p102 .conceal {
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+		.endcar dd .p102 .cost {
+			line-height: 14px;
+		}
+		.endcar dd .p102 .cost .pricet {
+			color: #ff4d45;
+			font-size: 16px;
+			margin-top: 8px;
+		}
+		.clr:after {
+			visibility: hidden;
+			display: block;
+			content: " ";
+			clear: both;
+			height: 0;
+			line-height: 0;
+		}
+		.endcar dd .p30 .plus {
+			position: absolute;
+			right: 0px;
+			bottom: 0px;
+			z-index: 999;
+			line-height: 22px;
+		}
+		.endcar dd .p30 .plus em {
+			width: 30px;
+			float: left;
+			height: 25px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #232326;
+			font-size: 20px;
+			line-height: 25px;
+			font-family: "Arial";
+		}
+		.endcar dd .p30 .plus input {
+			width: 40px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 25px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+		.total {
+			line-height: 16px;
+		}
+		.spec_info {
+			line-height: 16px;
+		}
+		.total .total_top {
+			font-size: 14px;
+			color: #343434;
+		}
+		.total .total_top span {
+			font-size: 16px;
+			color: #ff4d45;
+		}
+
+		.spec_info table {
+			margin: 12px 0;
+		}
+		.spec_info table tr {
+			border-bottom: #f1f1f1 1px solid;
+		}
+		.spec_info table th {
+			text-align: center;
+			padding: 1px;
+			font-size: 14px;
+		}
+		.spec_info table td {
+			text-align: center;
+		}
+		.plus_class .discountMoney {
+			color: #06C1AF;
+			font-size: 16px;
+		}
+		.plus_class .discount_total_info {
+			margin-left: 5px;
+		}
+		.stroll {
+			background: #eeeeee;
+			position: fixed;
+			bottom: 48px;
+			top: 0px;
+			width: 100%;
+			z-index: 9999;
+			text-align: center;
+		}
+		.stroll_n {
+			position: absolute;
+			top: 50%;
+			margin-top: -100px;
+			width: 100%;
+		}
+		.stroll a {
+			display: inline-block;
+			border: #051b28 1px solid;
+			padding: 3px 20px;
+			font-size: 16px;
+			border-radius: 5px;
+		}
+		.endcar li#li_delivery {
+			margin-top: 10px;
+			background: white;
+		}
+		.endcar li#li_delivery {
+			 padding: 10px 15px;
+			 border-width: 0 0 1px;
+			 line-height: 24px;
+		 }
+		.endcar li a {
+			min-height: 24px;
+		}
+		.endcar a {
+			color: #323232;
+			outline-style: none;
+			text-decoration: none;
+		}
+		.endcar #li_delivery a strong {
+			width: 100%;
+		}
+		.endcar #li_delivery a > * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.showName, .showTel {
+			color: #666;
+		}
+		#li_delivery i {
+			display: inline-block;
+			width: 6px;
+			height: 11px;
+			background: url(images/33-1_03.png) center no-repeat;
+			background-size: contain;
+			margin-right: 10px;
+		}
+		#li_delivery strong, b {
+			font-weight: normal;
+		}
+		.w100 {
+			width: 100%;
+		}
+
+		. delivery_info{
+			margin-top: 10px;
+			background: white;
+			padding: 10px 15px;
+			border-width: 0 0 1px;
+			line-height: 24px;
+		}
+		.delivery_info i {
+			display: inline-block;
+			width: 6px;
+			height: 11px;
+			background: url(images/33-1_03.png) center no-repeat;
+			background-size: contain;
+			margin-right: 10px;
+		}
+		.delivery_info strong, b {
+			font-weight: normal;
+		}
+		.delivery_info a strong {
+			width: 100%;
+		}
+		.delivery_info a > * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+
+		.spec_info .flex {
+			display: flex !important;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			align-items: center;
+		}
+		.spec_info .flex_grow {
+			flex-grow: 1;
+			text-align: center
+		}
+
+		.spec_info .spec_val_name {
+			padding: 1px 0;
+		}
+		.spec_info .list_spec_name {
+			font-size: 14px;
+			line-height: 22px;
+			border-radius: 5px;
+			padding: 2px 5px;
+			margin-top: 2px;
+			color: #fff;
+			background: #ffa200;
+		}
+		.spec_info .spec_val_name div {
+			font-size: 14px;
+			line-height: 22px;
+			color: #fff;
+			background: #ffa200;
+		}
+		.spec_info .spec_price {
+			color: #ff4d45;
+			width: 100%;
+		}
+		.spec_info .spec_price_single {
+			color: #666;
+			width: 100%;
+		}
+
+
+
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		    <h1 class="mui-title"><L_>购物车</L_></h1>
+		</header>
+		<div class="mui-content">
+			<section class="g_details allHtml">
+
+			</section>
+
+			<section class="endcar">
+			</section>
+
+			<div class="stroll" style="display: none;">
+				<div class="stroll_n">
+					<img id="cart_img" src="./images/car.png" width="100" height="100">
+					<p class="p1">购物车快饿瘪了！</p>
+					<p class="p2">主人给我挑点东西吃吧！</p>
+					<a href="./market_list.html">逛一逛</a>
+				</div>
+			</div>
+		</div>
+
+		<nav class="plus_class">
+			<div class="carbot_n clr">
+				<div class="fl carbot_left clr" >
+					<div class="fl close" style="font-size: 12px;"><L_>合计</L_>:<span class="totalMoney" style="font-size: 14px;">￥0</span></div>
+					<div class="fl close discount_total_info" style="font-size: 12px;"><L_>优惠</L_>:<span class="discountMoney" style="font-size: 14px;">￥0</span></div>
+				</div>
+				<div class="fr carbot_right clr">
+					<div class="fr close true_pay"><L_>去结算</L_></div>
+					<div class="fr whole"></div>
+				</div>
+			</div>
+		</nav>
+
+
+		<nav class="mui-bar mui-bar-tab">
+			<div class="mui-tab-item market_home">
+				<span class="market-home"></span>
+				<span class="mui-tab-label"><L_>市场首页</L_></span>
+			</div>
+			<div class="mui-tab-item market_plus">
+				<span class="market-plus"></span>
+				<span class="mui-tab-label"><L_>分类</L_></span>
+			</div>
+			<div class="mui-tab-item market_take  mui-active">
+				<span class="market-take"></span>
+				<span class="mui-tab-label"><L_>购物车</L_></span>
+			</div>
+			<div class="mui-tab-item market_my">
+				<span class="market-my"></span>
+				<span class="mui-tab-label"><L_>我的</L_></span>
+			</div>
+		</nav>
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.js"></script>
+		<script src="js/mui.dtpicker.js"></script>
+		<script src="js/mui.poppicker.js"></script>
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/fastclick.js"></script>
+		<script src="js/jRoll.js"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js?t=001"></script>
+		<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+		<!-- android=appbackmonitor -->
+		
+		<script id="cartList" type="text/html">
+			{{# var data=d; }}
+			{{# if (data.cartList) { }}
+				<ul>
+					{{# for(var i in data.cartList) { }}
+						{{# if (data.cartList[i]) { }}
+							{{# if (data.is_type > 0 || (!data.is_pick && data.is_type!=1 && data.is_type!=2 && data.is_type!=3)) { }}
+								<li id="li_delivery">
+									{{# if (data.merchant_address) { }}
+										<a href="./my_address.html?type=market_cart&current_id={{data.address_id}}">
+											<strong>
+												<span class="showAddres address">{{data.merchant_address['province_txt']}} {{data.merchant_address['city_txt']}} {{data.merchant_address['area_txt']}} {{data.merchant_address.adress}} {{data.merchant_address['detail']}}</span><br>
+												<span class="showName username">{{data.merchant_address['name']}} </span>
+												<span class="showTel userphone">{{data.merchant_address['phone']}}</span>
+											</strong>
+											<div><i class="ico_arrow"></i></div>
+											<input type="hidden" id="province" value="{{data.merchant_address['province']}}">
+											<input type="hidden" id="city" value="{{data.merchant_address['city']}}">
+											<input type="hidden" id="area" value="{{data.merchant_address['area']}}">
+										</a>
+									{{# } else { }}
+										<a href="./my_address.html?type=market_cart&current_id=9">
+											<strong>
+												<span class="showAddres">请点击添加送货地址</span><br>
+												<span class="showName"></span>
+												<span class="showTel"></span>
+											</strong>
+											<div><i class="ico_arrow"></i></div>
+										</a>
+									{{# } }}
+
+								</li>
+							{{# } }}
+					        <div><img class="w100" style="display: block;" src="./images/wxapp_addaddress.png"></div>
+							<li>
+								<dl>
+									<dt>
+										<div class="fl piton">
+											<span data-sell_mer_id="{{data.cartList[i]['sell_mer_id']}}"></span>
+										</div>
+										<div class="p30 title_msg">
+											<a href="javascript:void(0);">{{data.cartList[i]['name']}}</a>
+										</div>
+									</dt>
+									{{# var cart_list=data.cartList[i]['cartlist']; }}
+									{{# for(var j in cart_list) { }}
+										{{# if (cart_list[j]) { }}
+											<dd class="c_{{cart_list[j]['cartid']}}_g_{{cart_list[j]['goods_id']}} goods" style="border-bottom:none;">
+												<div class="fl piton">
+													<span data-wholesale_discount="{{cart_list[j]['wholesale_discount']}}" data-money="{{cart_list[j]['money']}}" data-total_express_fee="{{cart_list[j]['total_express_fee']}}" data-discount_totalMoney="{{cart_list[j]['discount_totalMoney']}}" data-index_key="c_{{cart_list[j]['cartid']}}_g_{{cart_list[j]['goods_id']}}" data-goods_id="{{cart_list[j]['goods_id']}}" data-cart_id="{{cart_list[j]['cartid']}}"></span>
+												</div>
+												<div class="p30 clr">
+													<a href="./market_buy_detail.html?goods_id={{cart_list[j]['goods_id']}}">
+														<div class="img fl">
+															<img src="{{cart_list[j]['image']}}" width="92" height="92">
+														</div>
+														<div class="p102">
+															<div class="conceal">{{cart_list[j]['name']}}</div>
+															{{# if (!cart_list[j]['spec_list']) { }}
+																<div class="cost clr">
+																	<span class="fl pricet">
+																		{{data['config']['Currency_symbol']}}
+																		{{cart_list[j]['price']}}
+
+																		{{# if (!cart_list[j]['spec_list']) { }}
+																			<span style="color: #999;">×{{cart_list[j]['num']}}</span>
+																		{{# } }}
+																	</span>
+																</div>
+															{{# } }}
+														</div>
+													</a>
+												</div>
+											</dd>
+
+											{{# if (cart_list[j]['spec_list']) { }}
+												<dd class="c_{{cart_list[j]['cartid']}}_g_{{cart_list[j]['goods_id']}}" style="border-bottom:none;">
+													<div class="spec_info clr">
+
+														{{# var list=cart_list[j]['list']; }}
+														{{# for(var n in list) { }}
+															{{# if (list[n]) { }}
+																<div class="flex" >
+																	<div class="list_spec_name flex">
+																		{{# for(var m in list[n]['spec']) { }}
+																		{{# if (list[n]['spec'][m]) { }}
+																		<div class="spec_val_name">
+																			<div>
+																				{{# if (m>0) { }}
+																				/
+																				{{# } }}
+																				{{list[n]['spec'][m]['spec_val_name']}}
+																			</div>
+																		</div>
+																		{{# } }}
+																		{{# } }}
+																	</div>
+																	<div class="flex flex_grow">
+																		{{# if (d.is_vip && list[n]['vip_wholesale_price']>0) { }}
+																		<div class="spec_price_single">
+																			{{d.config['Currency_symbol']}}{{list[n]['vip_wholesale_price']}}
+																			<span style="color: #999;">×{{list[n]['stock_num']}}</span>
+																		</div>
+																		{{# } else { }}
+																		<div class="spec_price_single">
+																			{{d.config['Currency_symbol']}}{{list[n]['price']}}
+																			<span style="color: #999;">×{{list[n]['stock_num']}}</span>
+																		</div>
+																		{{# } }}
+																	</div>
+
+																	<div class="flex spec_buy_money">
+																		<div class="spec_price right">
+																			{{# if (data.is_vip && list[n]['vip_wholesale_price']>0) { }}
+																			{{d.config['Currency_symbol']}}{{ list[n]['stock_num'] * list[n]['vip_wholesale_price'] }}
+																			{{# } else { }}
+																			{{d.config['Currency_symbol']}}{{ list[n]['stock_num'] * list[n]['price'] }}
+																			{{# } }}
+																		</div>
+																	</div>
+																</div>
+															{{# } }}
+														{{# } }}
+
+													</div>
+												</dd>
+											{{# } }}
+											{{# if (cart_list[j].is_pick_in_store>0) { }}
+												<dd class="c_{{cart_list[j]['cartid']}}_g_{{cart_list[j]['goods_id']}}">
+													<div class="total clr">
+														<div class="fr total_top">运费：
+															<span id="this_express_fee_{{cart_list[j]['goods_id']}}">
+																{{data['config']['Currency_symbol']}}
+																{{cart_list[j]['total_express_fee']}}
+															</span>
+														</div>
+													</div>
+												</dd>
+											{{# } }}
+
+											{{# if (cart_list[j].is_pick_in_store==0) { }}
+												<div><img class="w100" style="display: block;" src="./images/wxapp_addaddress.png"></div>
+												<dd class="c_{{cart_list[j]['cartid']}}_g_{{cart_list[j]['goods_id']}} delivery_info li_delivery_{{cart_list[j]['cartid']}}">
+													{{# if (cart_list[j].pick_msg && cart_list[j].pick_msg['name']) { }}
+													<a href="./pick_address.html?type=market_cart&current_id={{data.address_id}}&cartid={{cart_list[j]['cartid']}}&pick_id={{cart_list[j]['pick_id']}}">
+														<strong>
+															<span class="showAddres address_{{cart_list[j]['cartid']">{{cart_list[j].pick_msg['area_info']['province']}} {{cart_list[j].pick_msg['area_info']['city']}} {{cart_list[j].pick_msg['area_info']['area']}} {{cart_list[j].pick_msg['name']}}</span><br>
+															<span class="showName username_{{cart_list[j]['cartid']">{{cart_list[j].pick_msg['name']}} </span>
+															<span class="showTel userphone_{{cart_list[j]['cartid']">{{cart_list[j].pick_msg['phone']}}</span>
+														</strong>
+														<div><i class="ico_arrow"></i></div>
+														<input type="hidden" id="province_{{cart_list[j]['cartid']" value="{{cart_list[j].pick_msg['province']}}">
+														<input type="hidden" id="city_{{cart_list[j]['cartid']" value="{{cart_list[j].pick_msg['city']}}">
+														<input type="hidden" id="area_{{cart_list[j]['cartid']" value="{{cart_list[j].pick_msg['area']}}">
+													</a>
+													{{# } else if (cart_list[j].pick_address) { }}
+														<a href="./pick_address.html?type=market_cart&current_id={{data.address_id}}&cartid={{cart_list[j]['cartid']}}">
+															<strong>
+																<span class="showAddres">请点击选择自提地址</span><br>
+															</strong>
+														</a>
+													{{# } else { }}
+													<a href="javascript:void(0);">
+														<strong>
+															<span class="showAddres">请联系商家添加自提地址</span><br>
+														</strong>
+													</a>
+													{{# } }}
+												</dd>
+											{{# } }}
+
+											<dd class="c_{{cart_list[j]['cartid']}}_g_{{cart_list[j]['goods_id']}}">
+												<div class="total clr">
+													{{# if (cart_list[j]['wholesale_discount']>0 && cart_list[j]['wholesale_discount']<10) { }}
+													<div class="fl" style="background-color: #F7511D;color: white;border-radius: 10px;padding: 1px 15px;">
+														{{L_('享受')}}<span class="discount_totalMoney">{{ cart_list[j]['wholesale_discount'] }}</span>{{L_('折优惠')}}
+													</div>
+													{{# } }}
+													<div class="fr total_top">商品小计：
+														<span id="this_total_{{cart_list[j]['goods_id']}}">
+															{{data['config']['Currency_symbol']}}
+															{{cart_list[j]['money']}}
+														</span>
+													</div>
+												</div>
+											</dd>
+										{{# } }}
+									{{# } }}
+								</dl>
+							</li>
+						{{# } }}
+					{{# } }}
+
+					<li>
+						<dl>
+							<dt style="height: 80px;">
+								<span class="fl" style="width: 25%;">
+									{{L_('备注说明')}}
+								</span>
+								<span class="fr" style="width: 75%;">
+										<textarea name="desc" class="desc input" rows="3" placeholder="请输入备注说明"></textarea>
+								</span>
+
+							</dt>
+						</dl>
+					</li>
+					<li>
+
+						<dl>
+							<dt style="height: 50px;">
+								<span class="fl" style="width: 100%;font-size: 18px;">
+									{{L_('选择支付方式')}}
+								</span>
+							</dt>
+							<dt style="height: auto;">
+								<ul>
+									<li class="clr" style="padding: 0;">
+										<div class="mui-input-row mui-radio mui-left">
+											<label style="width:100%;">
+											<input name="pay_type" value="" class="pay_type merchant_money" type="radio" checked="checked">
+											<span style="color: #159b76;"><span style="color: #428bca;font-size: 18px;">商家余额</span>({{ data.merchant['money'] }} {{ data.config['Currency_txt'] }})</span>
+											</label>
+										</div>
+									</li>
+									{{# if (data.pay_method) { }}
+									{{# for (var i in data.pay_method) { }}
+									{{# if (data.pay_method[i]) { }}
+									<li class="clr" style="padding: 0;">
+										<div class="mui-input-row mui-radio mui-left">
+											<label style="width:100%;">
+												<input name="pay_type" value="{{ i }}" class="pay_type {{ i }}" type="radio" style="top: 12px;">
+												<span>
+                                                    <img src="images/pay/weixinh5.gif" width="112" height="32" alt="{{data.pay_method[i]['name']}}" title="{{data.pay_method[i]['name']}}"/>
+                                                </span>
+											</label>
+										</div>
+									</li>
+									{{# } }}
+									{{# } }}
+									{{# } }}
+								</ul>
+							</dt>
+						</dl>
+					</li>
+				</ul>
+			{{# } }}
+		</script>
+
+		<script>
+            mui.init();
+            var ticket = common.getCache('ticket');
+            var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+            var order_id = $.getUrlParam('order_id');
+            var goods_id = $.getUrlParam('goods_id');
+            var current_id = $.getUrlParam('current_id');
+            var pick_id = $.getUrlParam('pick_id');
+            var cartid = $.getUrlParam('cartid');
+            var openid = $.getUrlParam('openid');
+            console.log('goods_id',goods_id);
+            var shopList = [];
+            var type = $.getUrlParam('type');
+            var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+            var fareTemplet = []; // 快递配送公司信息
+            var Currency_txt = '元';
+            var Currency_symbol = '￥';
+            var is_group = '';
+            var team_id = '';
+            var h=$(window).height();
+            var is_type=0;
+            var is_address=0;
+            $('#payPopover .mui-card').css({'height': 0.8*h, 'overflow-y': 'auto'});
+            console.log('order_id',order_id);
+			console.log('type',type);
+			if (common.checkIphoneXApp()) {
+					$('.plus_class').css('bottom', '84px');
+				}
+            // 渲染数据
+            common.http('Merchantapp&a=market_cart', {
+                'ticket': ticket,
+                'client': client,
+                'address_id': current_id,
+                'pick_id': pick_id,
+                'cartid': cartid
+            }, function (data) {
+                console.log('data',data);
+                Currency_txt = data.config['Currency_txt'];
+                Currency_symbol = data.config['Currency_symbol'];
+                is_type = data.is_type;
+                is_address = data.is_address;
+
+                $('.plus_class .discountMoney').html(data.config['Currency_symbol']+0);
+                $('.plus_class .totalMoney').html(data.config['Currency_symbol']+0);
+
+                if (data && data.is_cart) {
+                    $('.stroll').hide();
+                    laytpl(document.getElementById('cartList').innerHTML).render(data, function (html) {
+                        $('.endcar').html(html);
+                        setTimeout(function () {
+                            if (openid) {
+                                $('.weixin').attr('checked', true);
+                            }
+                        }, 500)
+                    });
+				} else {
+					$('.stroll').show();
+				}
+            });
+
+
+            $('.pay_type').change(function () {
+				//var item=$('input:radio[name="sex"]:checked').val();
+				// 或者
+				var item= $(this).val();
+				console.log('item', item);
+			});
+
+            // 结算
+            mui('body').on('tap', '.true_pay', function (e) {
+                var pay_type = $('input[name="pay_type"]:checked').val();
+                if (pay_type=='weixin' && !openid) {
+                    layer.open({
+                        content: L_('微信支付需要先绑定微信？绑定后请重新选择商品后点击去结算！')
+                        ,btn: [L_('前往'), L_('取消')]
+                        ,yes: function(index){
+                            location.href = window.location.protocol + '//' + requestDomain + '/wap.php?c=Packapp&a=bind&is_return=1&referer=' + encodeURI(location.href + '?t=01');
+                            layer.close(index);
+                        }
+                    });
+                } else {
+                    call_pay();
+				}
+            });
+
+            function call_pay() {
+                if ($('dd .piton span.on').size() < 1) {
+                    motify.log('请选择您要买单的商品！');
+                    return false;
+                }
+                var pay_type = $('input[name="pay_type"]:checked').val();
+                layer.open({
+                    content:'确认结算选中的商品吗！一旦确定会直接使用所选支付方式进行支付',
+                    btn:['确定','取消'],
+                    yes:function(index){
+                        layer.close(index);
+                        var cartids = [];
+                        $("dd .piton span.on").each(function(){
+                            var index_key = $(this).data('index_key'),cart_id = $(this).data('cart_id');
+                            if (index_key != null) {
+                                cartids.push(cart_id);
+                            }
+                        });
+                        var username = $('.username').html();
+                        var userphone = $('.userphone').html();
+                        var address = $('.address').html();
+                        var desc = $('.desc').val();
+                        if (!username && (is_type>0 || is_address>0)) {
+                            motify.log('请点击选择送货地址！');
+                            return false;
+                        }
+                        if (!userphone && (is_type>0 || is_address>0)) {
+                            motify.log('请点击选择送货地址！');
+                            return false;
+                        }
+                        if (!address && (is_type>0 || is_address>0)) {
+                            motify.log('请点击选择送货地址！');
+                            return false;
+                        }
+                        var province_id = $('#province').val();
+                        var city_id = $('#city').val();
+                        var area_id = $('#area').val();
+                        if ((!province_id || province_id <= 0) && (is_type>0 || is_address>0)) {
+                            mui.toast('请先选择地址');
+                            return false;
+                        }
+
+                        common.http('Merchantapp&a=goPay', {
+                            'ticket': ticket,
+                            'client': client,
+                            'cartids': cartids,
+                            'username': username,
+                            'userphone': userphone,
+                            'address': address,
+                            'desc': desc,
+                            'pay_type': pay_type,
+                            'province_id':province_id,
+                            'city_id':city_id,
+                            'area_id':area_id,
+                            'openid': openid,
+                            'is_type': is_type
+                        }, function (data) {
+                            console.log('data',data);
+                            if(pay_type == 'weixin' && !data.error){
+                                layer.closeAll();
+                                layer.open({
+                                    type:1,
+                                    content:'<div onclick="location.reload()" style="width:250px;top:50%;position:fixed;background:white;padding:20px 0;left:50%;margin-left:-125px;text-align:center;border-radius:10px;margin-top:-27px;">正在唤起微信支付，点击刷新</div>',
+                                    shadeClose:false,
+                                    success:function(){
+
+                                    }
+                                });
+                                param =  data.weixin_param;
+                                WeixinJSBridge.invoke("getBrandWCPayRequest",param,function(res){
+                                    WeixinJSBridge.log(res.err_msg);
+                                    if(res.err_msg=="get_brand_wcpay_request:cancel"){
+                                        setTimeout(function(){
+                                            window.location.reload();
+                                        },200);
+                                        layer.open({type:2,content:'刷新页面中',shadeClose:false});
+                                    }else if(res.err_msg=="get_brand_wcpay_request:ok"){
+                                        setTimeout("window.location.href = '"+data.redirctUrl+"'",200);
+                                        layer.open({type:2,content:'跳转加载中',shadeClose:false});
+                                    }else{
+                                        $("button.mj-submit").removeAttr("disabled");
+                                        $("button.mj-submit").html("确认支付");
+                                    }
+                                    layer.closeAll();
+                                });
+                            } else if (data && data.error && data.msg) {
+                                mui.toast(data.msg);
+                                if (data.jump) {
+                                    var jump = data.jump;
+                                    setTimeout(function () {
+                                        if ('mweb_url'==jump) {
+                                            common.setCache('jump_url', data.url);
+                                            common.setCache('total_money', data.total);
+                                            common.setCache('h5_name', data.name);
+                                            if(common.checkApp()){
+                                                var new_mweb_url = (window.location.protocol == 'http:' ? 'http:' : 'https:' ) + '//'+requestDomain+ "/packapp/merchant/market_weixinh5.html?mweb_url=" + encodeURIComponent(data.url) +"&total_money=" + data.total + "&h5_name=" + encodeURIComponent(data.name);
+                                                if(common.checkAndroidApp()){
+                                                    window.pigcmspackapp.openBrowser(new_mweb_url);
+                                                }else{
+                                                    var iosHref = window.btoa(new_mweb_url);
+                                                    iosHref = iosHref.replace('/','&');
+                                                    common.iosFunction('openBrowser/'+iosHref);
+                                                }
+                                            } else {
+                                                openWindow({
+                                                    url:'market_weixinh5.html',
+                                                    id:'market_weixinh5'
+                                                });
+                                            }
+                                        }
+                                    }, 800);
+                                }
+                            } else {
+                                mui.toast('支付成功');
+
+                                setTimeout(function () {
+                                    openWindow({
+                                        url:'my_buy_wholesale_order.html',
+                                        id:'my_buy_wholesale_order'
+                                    });
+                                }, 1000);
+                            }
+
+                        });
+                    },
+                    no:function(){
+                        console.log('取消！');
+                    }
+                });
+            }
+
+
+            //购物车选中 全选
+            mui('body').on('tap', 'dt .piton span', function (e) {
+                if ($(this).hasClass("on")) {
+                    $(this).removeClass("on");
+                    $(this).parents("dt").siblings("dd").find(".piton span").removeClass("on");
+                } else {
+                    $(this).addClass("on");
+                    $(this).parents("dt").siblings("dd").find(".piton span").addClass("on");
+                }
+                count_price();
+            });
+
+            //单个选择
+            mui('body').on('tap', 'dd .piton span', function (e) {
+                if ($(this).hasClass("on")) {
+                    $(this).removeClass("on");
+                    $(this).parents('li').find('dt span').removeClass("on");
+                } else {
+                    $(this).addClass("on");
+                    var is_all = true;
+                    $(this).parents('li').find('dd .piton span').each(function(){
+                        if (!$(this).hasClass("on")) {
+                            is_all = false;
+                        }
+                    });
+                    if (is_all) $(this).parents('li').find('dt span').addClass("on");
+                }
+                count_price();
+            });
+
+            mui('body').on('tap', '.whole', function (e) {
+                if ($('dd .piton span.on').size() < 1) {
+                    motify.log('请选择您要删除的商品！');
+                    return false;
+                } else {
+                    var flag=true;
+                    layer.open({
+                        content:'确认删除选中的商品！',
+                        btn:['确定','取消'],
+                        yes:function(index){
+                            $('dd .piton span.on').each(function(){
+                                var index_key = $(this).data('index_key'),cart_id = $(this).data('cart_id');
+                                console.log('index_key',index_key);
+                                if (index_key != null) {
+                                    $('.' + index_key).remove();
+
+                                    console.log('cart_id',cart_id);
+                                    common.http('Merchantapp&a=delCart', {
+                                        'ticket': ticket,
+                                        'client': client,
+                                        'cart_id': cart_id
+                                    }, function (data) {
+                                        console.log('delCart',data);
+                                        realod_info();
+                                        mui.toast('成功删除');
+                                    });
+                                }
+                            });
+                            // if ($('.endcar').find('.goods').size() > 0) {
+                            //     $('.stroll').hide();
+                            // } else {
+                            //     $('.stroll').show();
+                            // }
+                            layer.close(index);
+                        },
+                        no:function(){
+                            console.log('取消！');
+                        }
+                    });
+                    return false;
+                }
+            });
+
+            function count_price()
+            {
+                var totalCount = 0, totalMoney = 0, wholesale_discount=0, discount_totalMoney=0, total_express_fee = 0;
+                $("dd .piton span.on").each(function(){
+                    totalCount ++;
+                    totalMoney += parseFloat($(this).data('money'));
+                    if (wholesale_discount<=0 && parseFloat($(this).data('wholesale_discount'))) {
+                        wholesale_discount = parseFloat($(this).data('wholesale_discount'));
+                    }
+                    total_express_fee += parseFloat($(this).data('total_express_fee'));
+                });
+                console.log('totalMoney',totalMoney);
+                console.log('wholesale_discount',wholesale_discount);
+                console.log('total_express_fee',total_express_fee);
+                var discountMoney = 0;
+                if (parseFloat(wholesale_discount) > 0 && parseFloat(wholesale_discount) < 10) {
+                    discount_totalMoney = totalMoney * parseFloat(wholesale_discount) * 0.1;
+                    discountMoney = parseFloat(totalMoney).toFixed(2) - parseFloat(discount_totalMoney).toFixed(2)
+                } else {
+                    discount_totalMoney = totalMoney;
+                    discountMoney = 0;
+                }
+                console.log('discount_totalMoney',discount_totalMoney);
+                console.log('totalCount',totalCount);
+                if (total_express_fee > 0) {
+                    $('.totalMoney').html(Currency_symbol + parseFloat(parseFloat(discount_totalMoney).toFixed(2)) + '+' + total_express_fee);
+				} else {
+                    $('.totalMoney').html(Currency_symbol + parseFloat(parseFloat(discount_totalMoney).toFixed(2)));
+				}
+                $('.discountMoney').html(Currency_symbol + parseFloat(parseFloat(discountMoney).toFixed(2)));
+                return totalMoney;
+            }
+
+
+
+            (function ($, doc) {
+                $.init();
+                mui('.freight').on('tap', '#freight', function (e) {
+                    var userPicker = new $.PopPicker();
+                    userPicker.setData(fareTemplet);
+                    var that = this;
+                    userPicker.show(function (items) {
+                        that.children[0].innerHTML = items[0].text;
+                        that.children[0].style.color = "#333333";
+                        document.getElementById('freight_template').value = items[0].value;
+                        pindex = 1;
+                    }, false);
+
+                });
+
+            })(mui, document);
+            function realod_info(){
+                window.location.reload();
+            };
+
+
+            function clock(t){
+                var d=Math.floor(t/(24*3600));
+                var h=Math.floor((t-d*24*3600)/3600);
+                var m=Math.floor(t%3600/60);
+                var s=Math.floor(t%60);
+                var time_str='';
+                if(d>0){
+                    time_str+=d+'天';
+                }
+                if(time_str || h>0){
+                    time_str+=h+'{pigcms{:L_("小时")}';
+                }
+                if(time_str || m>0){
+                    time_str+=m+'{pigcms{:L_("分钟")}';
+                }
+                if(time_str || s>0){
+                    time_str+=s+'秒';
+                }
+                $('.pin_market_info .time_box').text('{pigcms{:L_("倒计时：")}'+time_str);
+            }
+
+
+		</script>
+
+</body></html>

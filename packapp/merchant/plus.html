@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<title>会员管理</title>
+	<link href="css/mui.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link rel="stylesheet" type="text/css" href="css/mui.picker.css" />
+	<link rel="stylesheet" type="text/css" href="css/plus.css?t=5" />
+</head>
+
+<body style="width:100%">
+	<header class="mui-bar mui-bar-nav  plus_man">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+		<h1 class="mui-title">
+			<L_>会员管理</L_>
+		</h1>
+		<i class="search_click"></i>
+		<b class="add_plus"></b>
+		<span class="recharge_record"></span>
+	</header>
+	<header class="mui-bar mui-bar-nav search_plus hidden">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<div id="search_class" class="search_class">
+			<span id="seach_key">
+				<L_>会员卡号</L_>
+			</span>
+			<b class="mui-pull-right"></b>
+		</div>
+		<div id="select_input" class="select_input">
+			<i></i>
+			<input type="text" class="L_P" placeholder="请输入搜索内容" />
+		</div>
+		<a href="#" class="search_btn">
+			<L_>搜索</L_>
+		</a>
+	</header>
+
+	<div class="mui-content">
+		<!--会员卡个数-->
+		<div class="fixed_header section-fixed-top">
+			<ul class="all_order mui-clearfix">
+				<li class="mui-pull-left">
+					<ul>
+						<li>0</li>
+						<li><span>
+								<L_>今日新增</L_>
+							</span></li>
+					</ul>
+				</li>
+				<li class="mui-pull-left">
+					<ul>
+						<li class="this_month">0</li>
+						<li><span>
+								<L_>本月新增</L_>
+							</span></li>
+					</ul>
+				</li>
+				<li class="mui-pull-left">
+					<ul>
+						<li class="all_counts">0</li>
+						<li><span>
+								<L_>全部会员</L_>
+							</span></li>
+					</ul>
+				</li>
+				<li class="mui-pull-left show_pluses">
+					<ul>
+						<li><span>
+								<L_>更多</L_>
+								<i class="right-icon"></i>
+							</span></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<!--渲染会员卡内容-->
+		<div class="allPluscard">
+		</div>
+
+
+	</div>
+	<!-- 上拉刷新 -->
+	<div class="pullup" style="display:none;">
+		<L_>上拉加载更多...</L_>
+	</div>
+	<div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt="">
+		<L_>正在加载</L_>
+	</div>
+	<div id="tabbar_margin_top" style="padding-bottom:60px;"></div>
+	<nav class="plus_class">
+		<div class="plus_class_box">
+			<div style="flex: 1;justify-content: space-around;display: flex;align-items: center;">
+				<a href="javascript:;" class="plus_grouping">
+					<img src="images/conpot.png" alt="">
+					<div><L_>分组管理</L_></div>
+				</a>
+				<a href="javascript:;" class="discount">
+					<img src="images/fz.png" alt="">
+					<div><L_>优惠券</L_></div>
+				</a>
+			</div>
+			<a href="javascript:;" class="edit_plus">
+				<L_>编辑会员卡</L_>
+			</a>
+		</div>
+	</nav>
+	<div style="padding-bottom:50px ;"></div>
+	<!--添加会员弹层-->
+	<style>
+		.mui-popover1 ul li {
+			margin-right: 15px;
+			border-color: #efefef;
+		}
+
+		.mui-popover1 ul li:last-child {
+			border: none;
+		}
+
+		.mui-popover1 ul li textarea {
+			border-color: #efefef;
+		}
+
+		.mui-scroll-wrapper.order_list {
+			height: 354px
+		}
+
+		.see_user .bottom {
+			padding: 0;
+			height: 45px;
+			line-height: 45px;
+			margin-top: 354px;
+			font-size: 0;
+		}
+
+		.see_user .bottom a {
+			width: 50%;
+			box-sizing: border-box;
+			border-radius: 0;
+		}
+
+		.see_user .bottom a.cancel {
+			margin: 0;
+		}
+	</style>
+	<div id="dialogs" style="display:none">
+		<div class="js_dialog" id="iosDialog1" style="opacity: 1;">
+			<div class="weui-mask"></div>
+			<div class="weui-dialog">
+				<div id="middlePopover1" class="mui-popover1" style="height: auto;">
+					<p><span>
+							<L_>新增会员</L_>
+						</span><i class="mui-pull-right"></i></p>
+					<ul class="" style="height: 350px;overflow: hidden;overflow-y: scroll;">
+						<li class="mui-clearfix"><span>
+								<L_>实体卡号</L_>
+							</span> <input type="tel" name="" id="" value="" placeholder="请输入实体卡号"
+								class="mui-pull-right L_P" /></li>
+						<li class="mui-clearfix"><span>
+									<L_>手机号</L_>
+								</span> <input type="number" name="" id="" value="" placeholder="请输入手机号"
+									class="mui-pull-right L_P" /></li>
+						<li class="mui-clearfix"><span>
+								<L_>会员卡余额初始值</L_>
+							</span> <input type="number" name="" id="" placeholder="请输入余额" class="mui-pull-right L_P" />
+						</li>
+						<li class="mui-clearfix"><span>
+								<L_>会员卡积分初始值</L_>
+							</span> <input type="number" name="" id="" placeholder="请输入积分" class="mui-pull-right L_P" />
+						</li>
+						<li class="mui-clearfix">
+							<span>
+								<L_>备注</L_>
+							</span>
+							<textarea placeholder="请输入备注" class="mui-pull-right L_P"></textarea>
+						</li>
+						<li class="mui-clearfix select_state1"><span>
+								<L_>状态</L_>
+							</span>
+							<p class="mui-pull-right" id="showUserPicker1"><span id="state">
+									<L_>正常</L_>
+								</span><b class="mui-pull-right"></b></p>
+						</li>
+					</ul>
+					<a class="new_card_confirm" href="javascript:;" style="width: 100%;margin: 0;;">
+						<L_>确定</L_>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--二维码弹层-->
+	<div id="middlePopover2" class="mui-popover mui-popover2">
+		<div class="see_ma"><span style="margin-left: 23px;">
+				<L_>微信扫码绑定会员</L_>
+			</span><i class="mui-pull-right"></i></div>
+		<p><img src="images/27-_07.png" /></p>
+	</div>
+	<!--查看用户分组弹层-->
+	<!--查看用户分组弹层-->
+	<div id="middlePopover3" class="mui-popover see_user">
+		<p><span>
+				<L_>查看详情</L_>
+			</span><i class="mui-pull-right"></i></p>
+		<div class="mui-content mui-scroll-wrapper order_list" id="pullrefresh">
+			<div class="mui-scroll" style="">
+				<!--数据列表-->
+				<div class="socll_btn">
+					<table border="" cellspacing="" cellpadding="">
+						<thead>
+							<tr>
+								<th>
+									<L_>会员名称</L_>
+								</th>
+								<th>
+									<L_>会员卡卡号</L_>
+								</th>
+								<th>
+									<L_>会员手机号</L_>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td></td>
+								<td></td>
+								<td><a href="tel:"></a></td>
+							</tr>
+						</tbody>
+					</table>
+					<h5>
+						<L_>会员卡信息</L_>
+					</h5>
+					<div class="mui-card">
+						<div class="mui-card-content">
+							<span class="left_style">
+								<L_>实体卡号</L_>
+							</span>
+							<ul>
+								<li><input class="card_num shiti_card L_P" type="number" placeholder="请输入实体卡号" /></li>
+							</ul>
+						</div>
+						<div class="mui-card-content">
+							<span class="left_style">
+								<L_>实体卡领取时间</L_>
+							</span>
+							<ul>
+								<li class="add_time"></li>
+							</ul>
+						</div>
+						<div class="mui-card-content">
+							<span class="left_style">
+								<L_>用户分组</L_>
+							</span>
+							<ul id="class_change">
+								<li><span id="user_class">
+										<L_>请选择分组</L_>
+									</span><b class="mui-pull-right"></b></li>
+							</ul>
+						</div>
+						<div class="mui-card-content">
+							<span class="left_style">
+								<L_>备注</L_>
+							</span>
+							<textarea placeholder="请输入备注" class="mui-pull-right L_P remark"></textarea>
+						</div>
+						<div class="mui-card-content">
+							<span class="left_style">
+								<L_>会员卡状态</L_>
+							</span>
+							<ul id="card_status">
+								<li><span id="card_status_text">
+										<L_>请选择状态</L_>
+									</span><b class="mui-pull-right"></b></li>
+							</ul>
+						</div>
+						<div class="mui-card-content integral">
+							<span class="left_style">
+								<L_>余额</L_>
+							</span>
+							<ul>
+								<li class="current_balance">当前余额￥0</li>
+								<li class="card_recharge" style="display: none;"><span id="balance" class="groups"><i
+											id="balance_text">
+											<L_>请选择</L_>
+										</i> <b class="mui-pull-right"></b></span><input type="number" class="L_P"
+										id="balance_val" value="0" placeholder="请输入金额" /> 元</li>
+							</ul>
+						</div>
+						<div class="mui-card-content integral">
+							<span class="left_style">
+								<L_>积分</L_>
+							</span>
+							<ul>
+								<li class="current_scorce">当前积分0</li>
+								<li><span id="integral" class="groups"><i id="integral_text">
+											<L_>请选择</L_>
+										</i> <b class="mui-pull-right"></b></span><input type="number" class="L_P"
+										name="" id="integral_val" value="0" placeholder="请输入积分数" /> 分</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="bottom">
+			<a href="javascript:void(0);" class="cancel">
+				<L_>取消</L_>
+			</a>
+			<a href="javascript:void(0);" class="determine">
+				<L_>确定</L_>
+			</a>
+		</div>
+	</div>
+
+	<div id="bg"></div>
+	<!-- 消费记录点击弹层 -->
+	<div id="middlePopover8" class="mui-popover mui-popover8">
+		<p><span>
+				<L_>消费记录</L_>
+			</span><i class="mui-pull-right"></i></p>
+		<div class="mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div class="all_cardsjilu">
+
+
+
+				</div>
+				<!-- 上拉刷新 -->
+				<div class="pullup1" style="display:none;">上拉加载更多...</div>
+				<div class="loading1" style="display:none;"><img src="images/xubox_loading2.gif" alt="">
+					<L_>正在加载</L_>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<!--会员更多按钮点击-->
+	<!--添加会员弹层-->
+	<div id="middlePopover7" class="mui-popover mui-popover7">
+		<p><span>
+				<L_>查看更多</L_>
+			</span><i class="mui-pull-right"></i></p>
+		<ul class="mui-clearfix add_pluses">
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>本周新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>本月新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>本季新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>本年新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>上周新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>上月新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>上季新增</L_>
+					</dd>
+				</dl>
+			</li>
+			<li class="mui-pull-left">
+				<dl>
+					<dt></dt>
+					<dd>
+						<L_>上年新增</L_>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+	<script src="js/fastclick.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.dtpicker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/work/plus.js?t=5" type="text/javascript" charset="utf-8"></script>
+	<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+	<!-- android=appbackmonitor -->
+	<script id="pluscardLists" type="text/html">
+		{{# for(var i = 0, len = d.data.length; i < len; i++){ }}
+		<div class="mui-card" data-id="{{d.data[i].id}}" data-index="{{i}}">
+
+
+			{{# if(d.data[i].add_time!=""){ }}
+			<div class="mui-card-header see_user_group">{{ L_('领卡时间') }}: {{d.data[i].add_time}}</div>
+
+			{{# } else { }}
+			<div class="mui-card-header see_user_group">{{ L_('领卡时间: 还未绑定') }}</div>
+			{{# } }}
+
+			<div class="mui-card-content see_user_group">
+				<ul class="mui-pull-left" style="display: flex;align-items: center;width:100%">
+					<div class="user-info" style="flex:1">
+						<div style="display: inline-block;">
+							{{# if(d.data[i].nickname!=""&&d.data[i].phone!=""){ }}
+							<li style="display: flex;align-items: center;">{{d.data[i].nickname}}
+								{{# if(d.data[i].status==1){ }}
+								<a href="javascript:;" class="normal status"
+									data-status="{{d.data[i].status}}">{{ L_('正常') }}</a>
+								{{# } else { }}
+								<a href="javascript:;" class="disalbled status"
+									data-status="{{d.data[i].status}}">{{ L_('禁止') }}</a>
+								{{# } }}
+							</li>
+							<li style="margin-top:10px"><span>{{d.data[i].phone}}</span></li>
+							{{# } else { }}
+							<li style="display: flex;align-items: center;">{{ L_('绑定后可见昵称和手机号') }}
+								{{# if(d.data[i].status==1){ }}
+								<a href="javascript:;" class="normal status"
+									data-status="{{d.data[i].status}}">{{ L_('正常') }}</a>
+								{{# } else { }}
+								<a href="javascript:;" class="disalbled status"
+									data-status="{{d.data[i].status}}">{{ L_('禁止') }}</a>
+								{{# } }}
+							</li>
+							{{# } }}
+						</div>
+					</div>
+					{{# if(d.data[i].phone){ }}
+					<div class="right-phone" data-phone="{{d.data[i].phone}}"><img src="../merchant/images/call-phone-red.png"
+							alt=""></div>
+					{{# } }}
+				</ul>
+
+			</div>
+			<div class="mui-card-footer see_user_group" style="color: #666;">
+				<ul>
+					<li class="mui-pull-left">{{ L_('会员卡余额') }}: <span>{{ d.data[i].card_money }}</span></li>
+					<li class="mui-pull-left">{{ L_('会员卡号') }}: {{d.data[i].id}}</li>
+					<li class="mui-pull-left">{{ L_('会员卡积分') }}: <span>{{d.data[i].card_score}}</span></li>
+					<li class="mui-pull-left physical_card">{{ L_('实体卡号') }}: {{d.data[i].physical_id}}</li>
+				</ul>
+			</div>
+			<a href="javascript:void(0);" data-id="{{d.data[i].id}}" class="records_jilu">{{ L_('消费记录') }}</a>
+			{{# if(d.data[i].uid==0){ }}
+			<div class="mui-card-footer scan_code">
+				<p><i></i>{{ L_('查看二维码(用户扫描后绑定)') }}</p>
+			</div>
+			{{# } }}
+
+		</div>
+		{{# } }}
+	</script>
+	<script id="recardsJilu" type="text/html">
+		{{# for(var i = 0, len = d.data.length; i < len; i++){ }}
+		<div class="mui-card">
+			<div class="mui-card-header">
+				<span>{{ L_('会员卡ID') }}: {{d.data[i].card_id}}</span>
+				<p>{{ L_('时间') }}: {{d.data[i].time}}</p>
+			</div>
+			<div class="mui-card-header">
+				{{# if(d.data[i].nickname==null){ }}
+				<span>{{ L_('暂无') }}</span>
+				{{# } else { }}
+				<span>{{d.data[i].nickname}}</span>
+				{{# } }}
+				{{# if(d.data[i].phone==null){ }}
+				<p>{{ L_('暂无') }}</p>
+				{{# } else { }}
+				<p>{{d.data[i].phone}}</p>
+				{{# } }}
+
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-clearfix">
+					<li class="mui-pull-left">
+						<dl>
+							<dt class="add">+{{d.data[i].money_add}}</dt>
+							<dd>{{ L_('金额增加(元)') }}</dd>
+						</dl>
+					</li>
+					<li class="mui-pull-left">
+						<dl>
+							<dt class="add">+{{d.data[i].score_add}}</dt>
+							<dd>{{ L_('积分增加(分)') }}</dd>
+						</dl>
+					</li>
+					<li class="mui-pull-left">
+						<dl>
+							<dt class="add">+{{d.data[i].coupon_add}}</dt>
+							<dd>{{ L_('优惠券增加(元)') }}</dd>
+						</dl>
+					</li>
+					<li class="mui-pull-left">
+						<dl>
+							<dt class="reduce">-{{d.data[i].money_use}}</dt>
+							<dd>{{ L_('金额减少(元)') }}</dd>
+						</dl>
+					</li>
+					<li class="mui-pull-left">
+						<dl>
+							<dt class="reduce">-{{d.data[i].score_use}}</dt>
+							<dd>{{ L_('积分减少(分)') }}</dd>
+						</dl>
+					</li>
+					<li class="mui-pull-left">
+						<dl>
+							<dt class="reduce">-{{d.data[i].coupon_use}}</dt>
+							<dd>{{ L_('优惠券减少(元)') }}</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+			<div class="mui-card-footer">
+				<p><span><i></i> {{ L_('详情') }}:</span> {{d.data[i].desc}}</p>
+			</div>
+		</div>
+		{{# } }}
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+.center[data-v-4bd29b61] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 10px;
+}
+.textarea-wrapper[data-v-4bd29b61] {
+  position: relative;
+  display: block;
+}
+.textarea-wrapper .m-textarea[data-v-4bd29b61] {
+  padding: 8px 12px;
+  padding-bottom: 25px;
+  height: 100%;
+}
+.textarea-wrapper .m-count[data-v-4bd29b61] {
+  color: #808080;
+  position: absolute;
+  font-size: 12px;
+  bottom: 0px;
+  right: 12px;
+}
+.newBox[data-v-4bd29b61] {
+  height: 15vh;
+}
+

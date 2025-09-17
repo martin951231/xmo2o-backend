@@ -1,0 +1,99 @@
+.form_title[data-v-8bad04d2] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-8bad04d2] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-8bad04d2] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-8bad04d2] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+  margin-right: 50px;
+}
+.form_item[data-v-8bad04d2] {
+  width: 49%;
+}
+[data-v-8bad04d2] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+.add_manual[data-v-8bad04d2] {
+  width: 100%;
+}
+.form_content[data-v-8bad04d2] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.label_title[data-v-8bad04d2] {
+  font-weight: bold;
+  display: -ms-flexbox;
+  display: flex;
+  width: 120px;
+  border-left: 6px solid skyblue;
+  margin-left: 10px;
+  -ms-flex-align: center;
+      align-items: center;
+  padding-left: 15px;
+  margin-bottom: 20px;
+}
+.pic_container[data-v-8bad04d2] {
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.pic_item[data-v-8bad04d2] {
+  width: 46%;
+}
+.pic_item img[data-v-8bad04d2] {
+  width: 100%;
+}
+
+.manual_open[data-v-e53030d8] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.manual_open .header_search[data-v-e53030d8] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
+.manual_open .header_search .search_item[data-v-e53030d8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.manual_open .header_search .operation_btn[data-v-e53030d8] {
+  margin-left: 20px;
+}
+.manual_open .table_content[data-v-e53030d8] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

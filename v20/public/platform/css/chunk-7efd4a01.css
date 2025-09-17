@@ -1,0 +1,25 @@
+.parking_lot[data-v-53b50a29] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.parking_lot .header_search[data-v-53b50a29] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  display: -ms-flexbox;
+  display: flex;
+}
+.parking_lot .header_search .search_item[data-v-53b50a29] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.parking_lot .table_content[data-v-53b50a29] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

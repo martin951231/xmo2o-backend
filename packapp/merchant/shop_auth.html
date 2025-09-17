@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN" manifest="appcache.manifest">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>店铺资质</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/imange-view.css"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.css" />
+    <link href="css/mui.picker.min.css" rel="stylesheet" />
+    <link href="css/mapqird.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/shop_manger_penci.css"/>
+    <style type="text/css">
+        .showImg{
+            width:100%;
+            height: 52px;
+        }
+        #shap_manger img{width:85px; height: 57px;}
+        .adress_detail{
+            max-height: 50px;
+            padding: 0px 5px 1px 3px;
+            color: #000;
+            min-height: 35px;
+            margin: 0 3%;
+            width: 94%;
+            font-size: 15px;
+        }
+        .adres_no_check:before{
+            font-family: Muiicons;
+            font-size: 28px;
+            font-weight: normal;
+            line-height: 1;
+            text-decoration: none;
+            color: #aaa;
+            border-radius: 0;
+            background: none;
+            -webkit-font-smoothing: antialiased;
+            content: '\e411';
+        }
+        .adres_check:before{
+            font-family: Muiicons;
+            font-size: 28px;
+            font-weight: normal;
+            line-height: 1;
+            text-decoration: none;
+            border-radius: 0;
+            background: none;
+            -webkit-font-smoothing: antialiased;
+            content: '\e441';
+            color: #FFA200;
+        }
+        .un_set{
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            white-space: unset !important;
+        }
+        .ad_name{
+            display: block !important;
+            white-space: unset !important;
+        }
+
+        .close_map .dot {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 19px;
+            height: 25px;
+            margin-top: -25px;
+            margin-left: -10px;
+            background: url(images/marker_red_sprite_ec1a2a9.png) 0 0 no-repeat;
+        }
+        #map_baidu .map_header{
+            position: relative;
+            height: 100%;
+        }
+        #map_baidu .map_header>header{
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            position: absolute;
+            z-index: 500;
+            top: 0;
+            width: 100%;
+
+        }
+        #map_baidu  .mui-icon {
+            font-size: 24px;
+            position: relative;
+            z-index: 20;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-left: -10px;
+            padding-right: 10px;
+            padding-left: 10px;
+            color: #fff;
+        }
+        .shop_class .mui-card-header i.mui_rg{
+            position: absolute;
+            right: 10px;
+            top:0px;
+
+        }
+        .overp{
+            overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block;
+        }
+        .fl{
+            float: left;
+        }
+        .fr{
+            float: right;
+        }
+        .clear{
+            clear: both
+        }
+        .alap{
+            background-color: rgba(0,0,0,0.8);
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top:0;
+            z-index: 99999999;
+            display: none;
+        }
+        .alap_con{
+            background: #fff;
+            width: 90%;
+            max-height:500px;
+            margin: 50px auto;
+            padding: 50px  0px 60px 10px;
+            position: relative;
+        }
+        .business_time1{
+            height: 400px;
+            overflow-y: scroll;
+            padding-bottom: 50px;
+        }
+        .shop_keep1{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 99999999;
+            margin-top: 10px;
+            display: inline-block;
+            width: 100%;
+            height: 50px;
+            background: #ffa200;
+            text-align: center;
+            line-height: 50px;
+            color: #fff;
+        }
+        .close_btn{
+            position: absolute;
+            right: 10px;
+            top:10px;
+        }
+        .business_time1  .time_show{
+            font-size:12px;
+            color: #FFA200;
+            padding-left: 10px;
+        }
+        .business_time1 .mui-card-content{
+            padding-top: 10px;
+        }
+        .business_time1	.timeManger{
+            padding-left: 10px;
+        }
+        .business_time1 .mui-pull-left{
+            padding: 0 2px;
+        }
+        .mui-backdrop{
+            z-index: 99899;
+        }
+        #map_Google{
+            display: none;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="maps" style="display:none"></div>
+<div id="shap_manger">
+    <header class="mui-bar mui-bar-nav">
+        <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="1"></div>
+        <h1 class="mui-title"><L_>店铺资质</L_></h1>
+    </header>
+    <div class="mui-content">
+        <div class="shop_introduce">
+            <div class="mui-card">
+                <div class="mui-card-header shop_name">
+                    <span style="width: 35%;color: red"><L_>状态：</L_><font id="authStatus"></font></span>
+                </div>
+                <div class="mui-card-header authReason">
+                    <span style="width: 35%;color: red"><L_>备注：</L_><font id="authReason"></font></span>
+                </div>
+                <div class="mui-card-header shop_name">
+                    <span style="width: 35%;" id="addressText2" ></span>
+                </div>
+                <div class="mui-card-footer">
+                    <span class="mui-pull-left open_photo"><L_>商家图片</L_> <i></i></span>
+                    <div class="mui-scroll-wrapper left_srcoll">
+                        <div class="mui-scroll showImg">
+                            <div class="mui-pull-left uload">
+                                <ul id="up_img">
+                                    <li class="up_img" >
+                                        <img src="images/17-8_03.png" alt="" />
+                                        <input type="file" accept="image/*" id="fileImage" name="imgFile"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="javascript:void(0);" class="shop_keep store_auth_save"><L_>保 存</L_></a>
+    </div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/work/shop_auth.js?t=1" type="text/javascript" charset="utf-8"></script>
+
+<script>
+
+
+ </script>
+</body>
+</html>

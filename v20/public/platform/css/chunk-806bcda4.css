@@ -1,0 +1,40 @@
+
+.imgname {
+  width: 100px;
+}
+
+.form_box[data-v-fdec7718] {
+  margin-top: 10px;
+}
+.form_box[data-v-fdec7718]:first-of-type {
+  margin-top: 0px;
+}
+.icon_1[data-v-fdec7718] {
+  margin-left: 72px;
+  width: 30px;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid #999999;
+}
+.margin_top_10[data-v-fdec7718] {
+  margin-top: 10px;
+}
+
+
+.page_top{
+    background-color: #e6f7ff;
+    display: inline-block;
+    width: 100%;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+    color: #666666;
+}
+

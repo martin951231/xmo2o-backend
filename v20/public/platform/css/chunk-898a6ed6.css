@@ -1,0 +1,52 @@
+
+.ant-upload-list-picture-card .ant-upload-list-item {
+  float: left;
+  width: 104px;
+  height: 104px;
+  margin: 8px 8px 0 0;
+}
+.ant-form-item label {
+  width: 50px !important;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+#components_layout_menus .ant-layout-content {
+          background-color: #fff;
+          padding-bottom: 5px;
+          border-bottom: 1px solid #eee;
+}
+#components_layout_menus .ant-layout-sider{
+      background-color: #fff;
+      width: 150px;
+      font-size: 25px;
+      display: inline-block;
+}
+#components_layout_menus .ant-layout{
+     min-height: 40px;
+     vertical-align: middle;
+     border-bottom: 1px solid #eee;
+     margin-bottom: 10px;
+}
+#components_layout_menus  .ant-layout-header{
+     background-color: #fff;
+}
+#components_layout_menus .ant-layout-footer{
+     background-color: #fff;
+}
+#components_layout_menus .sub2div{    margin-left: 35px;border-bottom: 1px solid #eee;}
+#components_layout_menus .sub1div label { font-size: 16px;padding-left: 2px; color: #2b7dbc;}
+#components_layout_menus .sub2div label{ font-size: 16px;padding-left: 2px;color: green;}
+#components_layout_menus .sub2div .sub2div_2div{margin-left: 35px;}
+#components_layout_menus .sub2div .sub2div_2div label{font-size: 14px;color: #000000a6}
+/deep/ textarea{
+    overflow-y: scroll !important;
+}
+

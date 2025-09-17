@@ -1,0 +1,125 @@
+.form_con[data-v-96377b4e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.form_con .form_item[data-v-96377b4e] {
+  width: 50%;
+}
+
+.deal_record[data-v-26c6e053] {
+  height: 55vh;
+  overflow-y: scroll;
+  margin: 10px 0;
+}
+.deal_record[data-v-26c6e053]::-webkit-scrollbar {
+  width: 0;
+}
+.deal_record .record_list[data-v-26c6e053] {
+  margin: 10px;
+  position: relative;
+  margin: 15px 30px;
+}
+.deal_record .record_list .flow_line[data-v-26c6e053] {
+  position: absolute;
+  width: 2px;
+  border: 0;
+  height: calc(100% + 10px);
+  background-color: #409EFF;
+  top: 14px;
+  left: -23px;
+}
+.deal_record .record_list .flow_icon_out[data-v-26c6e053] {
+  width: 15px;
+  height: 15px;
+  border-radius: 10px;
+  background-color: #409EFF;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: absolute;
+  left: -30px;
+  top: 3.5px;
+}
+.deal_record .record_list .flow_icon_out .flow_icon_in[data-v-26c6e053] {
+  width: 7px;
+  height: 7px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+.deal_record .record_list .props_list[data-v-26c6e053] {
+  width: 80%;
+}
+.deal_record .record_list .props_list .props_list[data-v-26c6e053] {
+  margin: 10px 0;
+}
+
+
+.statistical_data {
+    margin: 20px 20px;
+    padding: 14px 0;
+    text-align: center;
+    background-color: #eee;
+    font-size: 14px;
+}
+.statistical_fir_p {
+    font-size: 16px;
+}
+.statistical_data p {
+    margin: 0 0;
+}
+.tab_list {
+    padding: 14px 0;
+    text-align: center;
+    font-size: 14px;
+    border: 1px solid #ccc;
+}
+.chatRecord {
+    height: 500px;
+}
+
+
+[data-v-65489189] .ant-select-dropdown-menu-item {
+  height: 32px !important;
+}
+[data-v-65489189] .ant-modal-body {
+  padding: 0 12px !important;
+}
+
+.room_main[data-v-53ad93b0] {
+  background: #ffffff;
+  padding: 10px;
+  margin-top: 10px;
+}
+.top-box-padding[data-v-53ad93b0] {
+  border-bottom: 1px solid #ebedf0;
+  padding: 42px 24px 50px;
+}
+.status-color-ok[data-v-53ad93b0] {
+  color: green;
+  font-weight: bold;
+}
+.status-color-fail[data-v-53ad93b0] {
+  color: red;
+  font-weight: bold;
+}
+.search_con .search_item[data-v-53ad93b0] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+

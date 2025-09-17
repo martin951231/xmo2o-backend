@@ -1,0 +1,160 @@
+ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.mui-bar-nav{
+	background: #ffa200;
+	border-bottom: 1px solid #fff;
+}
+.mui-bar-nav h1{
+	color: #fff;
+}
+.mui-bar-nav a{
+	color: #61616D;
+}
+
+.center{
+	background: #FFFFFF;
+}
+.mui-table-view:after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 14px;
+    height: 1px;
+    content: '';
+    -webkit-transform: scaleY(.5);
+    transform: scaleY(.5);
+    background-color: #F1F1F1;
+}
+
+.mui-media img{
+	width: 71px;height: 71px;
+}
+.mui-media-body{
+	margin-left: 81px;
+}
+.mui-media-body p{
+	margin-top: 8px;
+}
+.mui-table-view-cell{
+	padding: 15px;
+}
+.mui-media-body p:first-child{
+	color: #333333;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.mui-media-body p:last-child{
+	width: 115px;
+	height: 21px;
+	font-size: 12px;
+	border: 1px solid #FFA200;
+	border-radius: 30px;
+	text-align: center;
+	color: #ffa200;
+	line-height: 21px;
+}
+.mui-media-body p i{
+	display: inline-block;
+	width: 12px;height: 11px;
+	background: url(../images/33-_06.png) center no-repeat;
+	background-size: contain;
+	vertical-align: middle;
+}
+
+/*打印机*/
+.mui-card{
+	margin: 10px 0;
+}
+.mui-card .mui-card-header{
+	padding: 0;
+	padding: 10px 0 10px 10px;
+	font-size: 15px;
+}
+
+.center .recom_end {
+	padding: 22px 15px;
+	background: url(../images/bj.jpg) center bottom #fff9d7;
+	background-repeat: repeat-x;
+	background-size: 6px 8px;
+}
+.center .recom_end .h2 {
+	line-height: 1;
+	padding-bottom: 12px;
+	border-bottom: #ee4629 1px solid;
+	font-size: 16px;
+	color: #ec4729;
+	font-weight: bold;
+	position: relative;
+	text-align: center;
+}
+.center .recom_end .h2:after {
+	content: '';
+	display: block;
+	border-bottom: #ee4629 1px solid;
+	position: absolute;
+	width: 100%;
+	bottom: -4px;
+	left: 0px;
+}
+.center .recom_end .con {
+	padding-top: 8px;
+}
+.center .recom_end .list_con .con_h2 {
+	font-size: 14px;
+	color: #5b542a;
+	font-weight: bold;
+	margin-top: 6px;
+	line-height: 22px;
+}
+.center .recom_end .list_con .p {
+	line-height: 18px;
+	color: #5b542a;
+	font-size: 12px;
+	padding-left: 20px;
+	text-align: justify;
+}
+.center .recom_top {
+	background: #ffffff;
+	padding: 18px 40px 10px 40px;
+	border-radius: 10px 10px 0 0;
+	text-align: center;
+	border-bottom: #ec4729 2px dashed;
+	position: relative;
+}
+.center .recom_top:before {
+	right: -12px;
+}
+.center .recom_top:after, .center .recom_top:before {
+	content: '';
+	display: block;
+	width: 24px;
+	height: 24px;
+	border-radius: 100%;
+	background: #ec4729;
+	position: absolute;
+	bottom: -12px;
+	z-index: 99;
+}
+.center .recom_top:after {
+	left: -12px;
+}
+.center .recom_top .h2 {
+	color: #ec4729;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 1;
+	padding-bottom: 12px;
+	border-bottom: #ec4729 dashed 1px;
+}
+.center .recom_top .con input.zm {
+	font-size: 24px;
+	color: #ec4729;
+	font-weight: bold;
+	line-height: 45px;
+	text-align: center;
+	border: none;
+}

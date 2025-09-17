@@ -1,0 +1,37 @@
+
+[data-v-bef16e5e] textarea {
+  overflow-y: scroll !important;
+}
+[data-v-bef16e5e] textarea::-webkit-scrollbar {
+  width: 0;
+}
+
+.intelligent_alart[data-v-0c5cbc7e] {
+  padding: 20px;
+  background-color: #fff;
+  height: 100%;
+}
+.intelligent_alart .top_search[data-v-0c5cbc7e] {
+  margin-top: 10px;
+}
+.intelligent_alart .top_search .form_con[data-v-0c5cbc7e] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.intelligent_alart .top_search .form_con .form_item[data-v-0c5cbc7e] {
+  width: 200px;
+  margin-left: 10px;
+}
+.intelligent_alart .bth_con[data-v-0c5cbc7e] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.intelligent_alart .table_con[data-v-0c5cbc7e] {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+

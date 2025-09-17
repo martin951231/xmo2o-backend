@@ -1,0 +1,26 @@
+.form-style[data-v-e9def19e] {
+  max-height: 60vh;
+  overflow: hidden;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+.form-style[data-v-e9def19e]::-webkit-scrollbar {
+  width: 4px;
+}
+.form-style[data-v-e9def19e]::-webkit-scrollbar-thumb {
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.form-style[data-v-e9def19e]::-webkit-scrollbar-track {
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+.login-form[data-v-e9def19e] {
+  padding: 20px 10px 0 10px;
+}
+.login-form .login-form-button[data-v-e9def19e] {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+}
+

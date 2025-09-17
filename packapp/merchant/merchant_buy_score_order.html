@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>购买信息</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/merchant_buy_score_order.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+		<h1 class="mui-title"><L_>购买信息</L_></h1>
+	</header>
+	<div class="mui-content">
+		<div class="mui-card">
+			<div class="mui-card-header">
+				<span class="left_style"><L_>平台积分</L_></span>
+				<span>&nbsp;&nbsp;</span>
+				<span id="platform_score_price" style="width: 50%;text-align: left;">0</span>
+				<span style="width: 50%;text-align: left;font-size: 14px;color: #404040;">( 1元购买积分数 )</span>
+			</div>
+			<div class="mui-card-header">
+				<span class="left_style"><L_>商家余额</L_></span>
+				<span>&nbsp;&nbsp;</span>
+				<span id="merchant_money" style="width: 100%;text-align: left;">￥0.00</span>
+			</div>
+
+			<div class="mui-card-header">
+				<span class="left_style"><L_>订单编号</L_></span>
+				<span>&nbsp;&nbsp;</span>
+				<span id="merchant_order" style="width: 100%;text-align: left;"></span>
+			</div>
+			<div class="mui-card-header">
+				<span class="left_style"><L_>对应积分数</L_></span>
+				<span>&nbsp;&nbsp;</span>
+				<span id="merchant_platform_score" style="width: 100%;text-align: left;">0</span>
+			</div>
+			<div class="mui-card-header">
+				<span class="left_style"><L_>总金额</L_></span>
+				<span>&nbsp;&nbsp;</span>
+				<span id="total_money" style="width: 100%;text-align: left;">0</span>
+			</div>
+		</div>
+		<div class="sign"><L_>确认购买</L_></div>
+	</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<!-- android=appbackmonitor -->
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    var client=common.getCache('client');
+    var merchant_order_id=common.getCache('merchant_order_id');
+    var merchant_type=common.getCache('merchant_type');
+    var merchant_buy_points = 0;
+    var merchant_money = 0;
+    $('input').val('');
+	common.http('Merchantapp&a=merchant_buy_score_order_check',{'client':client, 'order_id': merchant_order_id, 'type':merchant_type},function(data){
+	    var order_info = data.order_info; // 订单信息
+		var mer_info = data.mer_info; // 商户信息
+		var orderid = order_info.orderid; // 长订单编号
+        $('#merchant_order').text(orderid);
+        var  sore_count = order_info.sore_count; // 积分数量
+        $('#merchant_platform_score').text(sore_count);
+        var payment_money = order_info.payment_money; // 总金额
+        $('#total_money').text(payment_money);
+
+        merchant_buy_points = data.merchant_buy_points; // 积分价格
+        merchant_money = mer_info.money; // 商家余额
+        var money_info = '￥' + merchant_money;
+        $('#platform_score_price').text(merchant_buy_points);
+        $('#merchant_money').text(money_info);
+	});
+    $('#buy').bind('input',function(e){
+        var key = $.trim($(this).val());
+        console.log('merchant_buy_points', merchant_buy_points);
+        console.log('merchant_money', merchant_money);
+        console.log('key', key);
+    	if(Number(key) <= 0){
+            $('#merchant_platform_score').text(0);
+    		mui.toast('请填写大于0的购买金额');
+    	} else if(Number(key) > Number(merchant_money)) {
+            $(this).val('');
+            $('#merchant_platform_score').text(0);
+            mui.toast('填写金额不能大于商家余额');
+		} else{
+            var score = merchant_buy_points * key;
+            score = score.toFixed(2);
+            console.log('score', score);
+            $('#merchant_platform_score').text(score);
+    	}
+    	
+    });
+    $('.sign').click(function(e){
+    	if(Number(merchant_order_id) <= 0){
+    		mui.toast('错误单号');
+    	}else{
+            common.http('Merchantapp&a=go_pay_yue',{'client':client,'order_id':merchant_order_id},function(data){
+                console.log('data',data);
+                common.removeCache('merchant_order_id');
+                common.removeCache('merchant_type');
+                mui.toast('购买成功');
+                openWindow({
+                    url:'platform_score_record.html',
+                    id:'platform_score_record'
+                });
+            });
+    	}
+    });
+</script>
+</body>
+</html>

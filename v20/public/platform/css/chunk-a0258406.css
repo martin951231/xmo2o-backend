@@ -1,0 +1,29 @@
+
+.staff-order-list[data-v-75c25222] {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+.print[data-v-75c25222] .ant-checkbox-group {
+  width: 200px;
+}
+.print[data-v-75c25222] .ant-checkbox-group-item {
+  margin-bottom: 8px;
+}
+.detail-content[data-v-75c25222] .ant-drawer-body {
+  padding: 0;
+}
+.selectType[data-v-75c25222] .ant-select-selection__rendered {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-left: 5px;
+}
+

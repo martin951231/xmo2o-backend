@@ -1,0 +1,10 @@
+.form_con[data-v-25ad24f4] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.form_con .form_item[data-v-25ad24f4] {
+  width: 50%;
+}
+

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>我的余额</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/my_balance.css"/>
+    <style type="text/css">
+    	
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	    <h1 class="mui-title"><L_>我的余额</L_></h1>
+	</header>
+	<div class="mui-content">
+	    <div class="money mui-clearfix" id="merchant_money">
+	    	<b class="mui-pull-left"></b>
+	    	<div class="money-box">
+				<ul class="mui-pill-left">
+					<li class="all_qian">0</li>
+					<li><span>您的账户余额(<span id="fh">元</span>)</span></li>
+					<li><p class="mer_recharge" style="border: 1px solid #FFFFFF; width: 70px;color:#FFFFFF;margin-left:3px;border-radius: 3px;"><span style="color:#FFFFFF;margin-left:3px;">去充值 ></span></p></li>
+				</ul>
+				<ul class="mui-pill-left" id="chinaums_box" style="display: none;">
+					<li class="chinaums_money">0</li>
+					<li><span>银联可提现额度(<span id="fh">元</span>)</span></li>
+					<li><p class="appl_chinaums_withdraw" style="border: 1px solid #FFFFFF; width: 70px;color:#FFFFFF;margin-left:3px;border-radius: 3px;"><span style="color:#FFFFFF;margin-left:3px;">去提现 ></span></p></li>
+				</ul>
+			</div>
+	    </div>
+	    <div class="operation">
+	    	<ul class="mui-clearfix">
+	    		<li class="mui-pull-left apply_cash">
+	    			<ul>
+	    				<li><i></i></li>
+	    				<li><L_>申请提现</L_></li>
+	    				<li><L_>支持企业付款</L_></li>
+	    			</ul>
+	    		</li>
+	    		<li  class="mui-pull-left apply_record">
+	    			<ul>
+	    				<li><div></div></li>
+	    				<li><L_>提现记录</L_></li>
+	    				<li><L_>清晰详细</L_></li>
+	    			</ul>
+	    		</li>
+	    		<li  class="mui-pull-left record_jilu">
+	    			<ul>
+	    				<li><span></span></li>
+	    				<li><L_>收入记录</L_></li>
+	    				<li><L_>一目了然</L_></li>
+	    			</ul>
+	    		</li>
+				<!--li  class="mui-pull-left record_allinyun">
+	    			<ul>
+	    				<li><span></span></li>
+	    				<li><L_>云商通收入记录</L_></li>
+	    				<li><L_>一目了然</L_></li>
+	    			</ul>
+	    		</li>
+				
+	    		<li  class="mui-pull-left">
+	    			<b></b>
+	    			<ul>
+	    				<li><p></p></li>
+	    				<li><L_>购买系统服务</L_></li>
+	    				<li><L_>开发中</L_></li>
+	    			</ul>
+	    		</li-->
+
+	    	</ul>
+	    </div>
+	</div>
+	<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+      	mui.init();
+      	//申请提现点击
+      	var ticket = common.getCache('ticket');
+		//console.log(ticket);
+		var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+      	common.http('Merchantapp&a=merchant_money_info', {'ticket':ticket,'client':client}, function(data){
+			//console.log(data);
+			$('.all_qian').text(data.merchant_money);
+			$('#fh').text(data.fh);
+			if(data.chinaums_merno){
+				$('#chinaums_box').show();
+				$('.chinaums_money').text(data.chinaums_money_txt);
+				$('#merchant_money').css('padding','30px 0')
+			}
+		});
+      	mui('.mui-content').on('tap','.apply_cash',function(e){
+			common.http('Merchantapp&a=check_withdraw', {'ticket':ticket,'client':client}, function(data){
+				openWindow({
+					url:'black_figure.html',
+					id:'black_figure'
+				});
+			})
+      	});
+		//去银联提现
+		mui('.mui-content').on('tap','.appl_chinaums_withdraw',function(e){
+			openWindow({
+				url:'appl_chinaums_withdraw.html',
+				id:'appl_chinaums_withdraw'
+			});
+      	});
+      	//提现记录点击
+      	mui('.mui-content').on('tap','.apply_record',function(e){
+      		openWindow({
+      			url:'apply_record.html',
+      			id:'apply_record'
+      		});
+      	});
+      	//收入记录点击
+      	mui('.mui-content').on('tap','.record_jilu',function(e){
+      		openWindow({
+      			url:'record.html',
+      			id:'record'
+      		});
+      	});
+		
+		mui('.mui-content').on('tap','.record_allinyun',function(e){
+      		openWindow({
+      			url:'allinyun_money_list.html',
+      			id:'allinyun_money_list'
+      		});
+      	});
+      	function pageShowFunc(){
+	    location.reload(true);
+     }
+
+
+		//查询记录按钮点击
+		mui('.mui-content').on('tap','.mer_recharge',function(e){
+			openWindow({
+				url:'mer_recharge.html',
+				id:'mer_recharge'
+			});
+		});
+</script>
+</body>
+</html>

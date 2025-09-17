@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+    <title>新建活动</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link href="css/mui.poppicker.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/imange-view.css"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+    <link href="css/mui.picker.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/border.css"/>
+    <link href="css/dropload.css" rel="stylesheet"/>
+    <link href="css/cropper.min.css" rel="stylesheet"/>
+    <link href="css/main_1.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/edit_goods_discount.css"/>
+    <style type="text/css">
+        .price-input{
+            width: 80px !important;
+            border: 1px solid !important;
+            height: 29px !important;
+            line-height: 29px !important;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+        .delete{
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            position: absolute;
+            right: 4px;
+            top: -8px;
+        }
+        .select-goods-btn{
+            display: inline-block;
+            width: 90px;
+            border-radius: 4px;
+            padding: 2px 2px;
+            margin-right: 10px;
+        }
+        .goods-name{
+            display: inline-block;
+        }
+        .add-discount-btn{
+            border: 1px solid #FFA200;
+            color: #FFF;
+            background: #FFA200;
+            width: 126px;
+            padding: 4px 6px;
+            text-align: center;
+            display: inline;
+            margin-top: 20px;
+        }
+        .add-discount-container{
+            text-align: center;
+            padding-top: 14px;
+        }
+        .mui-switch.mui-active {
+                border-color: #FFA200;
+                background-color: #FFA200;
+            }
+            .mui-switch{
+                background: #f0f0f0;
+                margin-right: 5px;
+            }
+            .mui-switch:before {
+                font-size: 13px;
+                position: absolute;
+                top: 3px;
+                right: 11px;
+                content: '关闭';
+                text-transform: uppercase;
+                color: #999;
+            }
+
+            .mui-switch.mui-active:before {
+                right: auto;
+                left: 10px;
+                content: '开启';
+                color: #fff
+            }
+        .mui-card-content {
+            padding: 0px 5px;
+            border-bottom: 1px solid rgba(0,0,0,.1);
+        }
+    </style>
+</head>
+<body>
+<div class="show_modal"></div>
+<div>
+    <div id="createActivity" >
+        <header class="mui-bar mui-bar-nav">
+            <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="true"></div>
+            <h1 class="mui-title"><L_>新建活动</L_></h1>
+        </header>
+        <div class="mui-content">
+            <div class="content-container mui-card">
+                <!--活动名称-->
+                <div class="mui-card-content">
+                    <span class="left_style open_bianma">活动名称<span class="star">★</span></span>
+                    <input class="L_P name" style="width:75%;;border: none;font-size: 15px;" type="text" name="name" id="name" value="" placeholder="请输入活动名称">
+                </div>
+
+                <!--活动日期-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><L_>活动时间</L_><span class="star">★</span></div>
+                    <div class="right-container">
+                        <div class="flex-container">
+                            <div class="date-pick begin_time" name="startDate">
+                                <span id="begin_time" class='activity_start_date' style='flex:1;'><L_>开始日期</L_></span>
+                                <b></b>
+                            </div>
+                            <span style="margin:5px 10px">至</span>
+                            <div class="date-pick end_time" id="endDate" >
+                                <span id="end_time" class='activity_end_date' style='flex:1;'><L_>结束日期</L_></span>
+                                <b></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--库存类型-->
+                <div class="row-container">
+                    <div class='left_text stock_type'><L_>状态</L_></div>
+                    <div class="right-container">
+                        <div class="mui-switch status" data-switch="1" style="    float: right;">
+                            <div class="mui-switch-handle"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--活动商品-->
+
+                <div class=" activity_goods">
+                    <div class="goods-card">
+                    </div>
+                    <div class="add-discount-container">
+                        <div id="addDiscount" class="add-discount-btn">+ <L_>新建一级优惠</L_></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="mui-bar mui-bar-tab save-btn">
+            <a href="javascript:;"><L_>保存</L_></a>
+        </nav>
+    </div>
+
+    <!--选择商品-->
+    <div id="middlePopover" class="mui-popover" data-index="">
+        <div class="mui-card">
+            <!--页眉，放置标题-->
+            <div class="mui-card-header">
+                <p class="L_">选择您要添加的商品</p> <sub class="mui-pull-right"></sub>
+            </div>
+            <!--内容区-->
+            <div class="mui-card-content">
+            <!--搜索框-->
+                <div class="search-bar">
+                    <input type="search" class="mui-input-clear search-input" id="keywords" placeholder="请输入商品名称"/>
+                    <button type="button" id="searchGoods" class="L_ search-btn"><L_>搜索</L_></button>
+                </div>
+                <!-- table header-->
+                <div class="goods-table-row table-header">
+                    <span class="table-goods-name"><L_>商品名称</L_></span>
+                    <span class="table-goods-price"><L_>商品价格</L_></span>
+                    <span class="table-option"><L_>操作</L_></span>
+                </div>
+                <div class="mui-scroll-wrapper" style="overflow: hidden;">
+                    <div id="goodsListContainer" class="goodsList" style="padding-bottom: 10px" >
+                    </div>
+                </div>
+            </div>
+            <!--页脚-->
+            <div class="mui-card-footer">
+                <button type="button" class="L_"><L_>确 定</L_></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+
+<!--图片滚动-->
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script src="js/mui.picker.js"></script>
+<!--筛选用到js-->
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="js/dropload.js"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  src="js/iscroll-zoom.js"></script>
+<script type="text/javascript"  src="js/hammer.js"></script>
+<script type="text/javascript"  src="js/lrz.all.bundle.min.js"></script>
+<script type="text/javascript" src="js/jquery.photoClip.js"></script>
+<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/cropper.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-plugin-form.js" type="text/javascript" charset="utf-8"></script>
+<!--商品列表-->
+<script id="goodsList" type="text/html">
+{{# for(let i = 0, len = d.length; i < len; i++){ }}
+<div class="goods-table-row goods-info">
+    <span class="table-goods-name">{{d[i].name}}</span>
+    <span class="table-goods-price">￥{{d[i].price}}</span>
+    <span class="table-option mui-checkbox" data-goods-id="{{d[i].goods_id}}" data-goods-name="{{d[i].name}}">
+        <input name="radioGoods" type="radio">
+    </span>
+</div>
+{{# } }}
+</script>
+<!--活动商品卡片列表-->
+<script id="activityGoodsList" type="text/html">
+    {{# if(d.length>0){ }}
+    {{# for(let j = 0, len = d.length; j < len; j++){ }}
+        <div class="discount-goods" data-index="{{j}}">
+            <div class="row-container"style="border-bottom:none;padding: 15px 5px 0px 5px;">
+                <div class='left_text stock_type'><L_>优惠门槛</L_><span class="star">★</span></div>
+                <div class="right-container" style="position: relative;">
+                    <L_>满</L_>
+                    <input class="price-input" type="text" name="goods_price[]" value="{{d[j].price}}" placeholder="请输入优惠门槛"><L_>元</L_>
+                    {{# if(j>0){ }}
+                        <img class="delete" src="./images/activity_goods_delete.png">
+                    {{# } }}
+                </div>
+            </div>
+            <div class="row-container">
+                <div class='left_text stock_type'><L_>赠送商品</L_><span class="star">★</span></div>
+                <div class="right-container">
+                    <div id="selectGoods" class="select-goods-btn">+ <L_>选择商品</L_></div>
+                    <div class="goods-name">{{d[j].goods_name}}</div>
+                    <input type="hidden" name="give_goods_id[]" value="{{d[j].goods_id}}">
+                </div>
+            </div>
+        </div>
+    {{# } }}
+    {{# }else{ }}
+        <div class="discount-goods" data-index="0">
+            <div class="row-container"style="border-bottom:none;padding: 15px 5px 0px 5px;">
+                <div class='left_text stock_type'><L_>优惠门槛</L_><span class="star">★</span></div>
+                <div class="right-container" style="position: relative;">
+                    <L_>满</L_>
+                    <input class="price-input" type="text" name="goods_price[]" value="0" placeholder="请输入优惠门槛"><L_>元</L_>
+                </div>
+            </div>
+            <div class="row-container">
+                <div class='left_text stock_type'><L_>赠送商品</L_><span class="star">★</span></div>
+                <div class="right-container">
+                    <div id="selectGoods" class="select-goods-btn">+ <L_>选择商品</L_></div>
+                    <div class="goods-name"></div>
+                    <input type="hidden" name="give_goods_id[]" value="0">
+                </div>
+            </div>
+        </div>
+    {{# } }}
+</script>
+
+
+<script id="addActivityGoods" type="text/html">
+    <div class="discount-goods" data-index="{{d.goodsLen}}">
+        <div class="row-container"style="border-bottom:none;padding: 15px 5px 0px 5px;">
+            <div class='left_text stock_type'><L_>优惠门槛</L_><span class="star">★</span></div>
+            <div class="right-container" style="position: relative;">
+                <L_>满</L_>
+                <input class="price-input" type="text" name="goods_price[]" value="0" placeholder="请输入优惠门槛"><L_>元</L_>
+                <img class="delete" src="./images/activity_goods_delete.png">
+            </div>
+        </div>
+        <div class="row-container">
+            <div class='left_text stock_type'><L_>赠送商品</L_><span class="star">★</span></div>
+            <div class="right-container">
+                <div id="selectGoods" class="select-goods-btn">+ <L_>选择商品</L_></div>
+                <div class="goods-name"></div>
+                <input type="hidden" name="give_goods_id[]" value="0">
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    let mask = mui.createMask()
+    // let type = $.getUrlParam('type'); // add 为添加 edit 为编辑
+    let ticket = common.getCache('ticket');
+    let store_id = $.getUrlParam('store_id');
+    let id = $.getUrlParam('full_id');
+    let page = 1;
+    let deviceId = common.getDeviceId();
+    let keyword = '';
+    let goodsList = []; // 总的商品列表
+    let details = {};
+    if (id>0) {
+
+        $('.mui-title').html(L_('编辑活动'));
+        $('title').html(L_('编辑活动'));
+        getData();
+    }
+
+    // 选择日期
+    (function ($, doc) {
+
+        var date=new Date;
+        var y = date.getFullYear()
+
+      $('.begin_time')[0].addEventListener('tap', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = document.getElementById('begin_time').innerText;
+        // let optionsJson = '{"type":"time","value":"2012-01-01 '+timeValue+'"}';
+        let optionsJson = '{"type":"datetime","beginYear":'+(y)+',"beginMonth":1,"beginDay":1,"endYear":'+(y+1)+'}';
+        let options = JSON.parse(optionsJson);
+        let id = this.getAttribute('id');
+        let picker = new $.DtPicker(options);
+        picker.setSelectedValue(timeValue);
+        picker.show(function (rs) {
+          $('#begin_time')[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+
+      $('.end_time')[0].addEventListener('tap', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = document.getElementById('end_time').innerText;
+        let optionsJson = '{"type":"datetime","beginYear":'+(y)+',"endYear":'+(y+1)+'}';
+        let options = JSON.parse(optionsJson);
+        let id = this.getAttribute('id');
+        let picker = new $.DtPicker(options);
+        picker.setSelectedValue(timeValue);
+        picker.show(function (rs) {
+          $('#end_time')[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+    })(mui, document);
+
+    //接口
+    function getData () {
+      let params = {
+        store_id,
+        id,
+      };
+      common.http('WapMerchant&a=full_gift_detail', params, function (data) {
+        console.log(data);
+        details = data;
+        //赋值
+        $('.begin_time')[0].children[0].innerText = details.begin_time;
+        $('.end_time')[0].children[0].innerText = details.end_time;
+        $('#name').val(details.name);
+       
+       
+        if(details.is_open == 1) {
+            $('.status').addClass('mui-active');
+        }else {
+            $('.status').removeClass('mui-active');
+        }
+        //商品详情
+        laytpl(document.getElementById('activityGoodsList').innerHTML).render(details['setting'], function (html) {
+            $('.goods-card').html(html)
+        });
+      })
+    };
+
+
+    //点击小红点弹出遮罩层
+    mui('.mui-content').on('tap', '.status', function (e) {
+        e.stopPropagation();
+        if ($('.status').hasClass('mui-active')) {
+            $('.status').removeClass('mui-active')
+        }else{
+            $('.status').addClass('mui-active');
+        }
+     
+    });
+
+    //点击小红点弹出遮罩层
+    mui('.mui-content').on('tap', '.stock_type', function (e) {
+      e.stopPropagation();
+      $("input").blur();
+      mui.alert('每日库存即每天自动置满固定量的库存；总库存即固定的总库存，会不断减少，不会每天自动置满库存', function (e) {
+      });
+    });
+
+    //时间比较
+    function pareTime(start, end) {
+      let t1 = start.split(":");
+      let t2 = end.split(":");
+      let t11 = parseInt(t1[0]);
+      let t12 = parseInt(t1[1]);
+      let t21 = parseInt(t2[0]);
+      let t22 = parseInt(t2[1]);
+      if (t11 > t21) {
+        mui.toast('开始时间不能大于结束时间');
+        return false
+      } else if (t11 == t21) {
+        if (t12 > t22) {
+          mui.toast('开始时间不能大于结束时间');
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    };
+
+    //日期比较
+    function pareDate (start,end) {
+      if (start != '开始日期' && end != '结束日期') {
+        let today = new Date(new Date(new Date().toLocaleDateString()).getTime());
+        let s = new Date(start.replace(/-/g, "\/"));
+        let e = new Date(end.replace(/-/g, "\/"));
+       
+        if (s > e) {
+            mui.toast('开始日期不能大于结束日期');
+            return false;
+        }else {
+            return true;
+        }
+        
+      } else {
+        mui.toast('请选择活动开始日期和结束日期');
+        return false;
+      }
+    };
+
+    //点击选择商品
+    mui('body').on('tap', '.goods-card .discount-goods .select-goods-btn', function () {
+        var index = $(this).parents("div.discount-goods").attr("data-index");
+        console.log(index)
+        // var goodsNameObj = $(this).next("div").eq(0);
+        // console.log(goodsNameObj)
+        // var goodsIdObj = $(this).siblings("input[name='give_goods_id[]']").eq(0);
+
+      $('#keywords').val('');
+      keyword = '';
+      page = 1;
+      goodsList = []; // 商品列表重置为空数组
+      mui('#middlePopover').popover('show');
+      $("#middlePopover").attr("data-index",index)
+      $('body').css('overflow-y', 'hidden')
+      mask.show()
+      getGoodsList();
+      $('#goodsListContainer').css('transform','translate3d(0px, 0px, 0px) ');
+    });
+
+    //点击确定按妞
+    mui('.mui-card-footer').on('tap', 'button', function () {
+        var index = $("#middlePopover").attr("data-index");
+        let id = 0;
+        let resultIds;
+        $.each($('.goods-info>.table-option'), function (i, val) {
+            if ($(this).find('input').is(':checked')) {
+                id = $(this).attr('data-goods-id')
+                name = $(this).attr('data-goods-name');
+            }
+        });
+        var goodsNameObj = $("div[data-index="+index+"]").find(".goods-name")
+        var goodsIdObj = $("div[data-index="+index+"]").find("input[name='give_goods_id[]']")
+        goodsNameObj.html(name);
+        goodsIdObj.val(id);
+        mui('#middlePopover').popover('hide')
+        mask.close()
+        $('body').css('overflow-y', 'scroll')
+        return false;
+    });
+
+    mui('body').on('tap', '#addDiscount', function () {
+        var goodsLen = $('.discount-goods').length
+        laytpl(document.getElementById('addActivityGoods').innerHTML).render({goodsLen:goodsLen}, function (html) {
+            $('.goods-card').append(html)
+          });
+    });
+
+    //搜索商品
+    mui('#middlePopover').on('tap', '#searchGoods', function () {
+      keyword = $('#keywords').val();
+      page = 1;
+      $('#goodsListContainer').css('transform','translate3d(0px, 0px, 0px) ');
+      getGoodsList('search');
+    });
+    //上拉加载商品
+    mui.init({
+      pullRefresh : {
+        container:'.mui-scroll-wrapper',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+        up : {
+          height:50,//可选.默认50.触发上拉加载拖动距离
+          auto:false,//可选,默认false.自动上拉加载一次
+          callback : function () {
+            page++;
+            getGoodsList();
+          }
+        }
+      }
+    });
+
+    //点击蒙版
+    mui('body').on('tap', '.mui-backdrop', function () {
+      mui('#middlePopover').popover('hide')
+      mask.close()
+      $('body').css('overflow-y', 'scroll')
+    });
+
+    //点击关闭按钮
+    mui('#middlePopover').on('tap', 'sub', function () {
+      mui('#middlePopover').popover('hide')
+      mask.close()
+      $('body').css('overflow-y', 'scroll')
+    });
+
+    // 删除商品
+    mui('.goods-card').on('tap', '.discount-goods .delete', function () {
+        var delHtml = $(this).parents('div.discount-goods');
+        mui.confirm('您确认移除此商品吗?',function(e) {
+            delHtml.remove();
+        });
+    });
+
+    //渲染活动商品
+    function activityGoodsRender () {
+      console.log(checkedList);
+      if(checkedList.length) {
+        $('#selectGoods').addClass('.goods-more');
+      }
+      laytpl(document.getElementById('activityGoodsList').innerHTML).render(checkedList, function (html) {
+        $('.goods-card').html(html)
+      });
+    };
+
+    //点击保存按钮
+    mui('#createActivity').on('tap', '.save-btn', function () {
+      submitData();
+    });
+
+    // 2.提交数据
+    function submitData () {
+        let sf = true;
+        let name = $('#name').val();
+        let begin_time = $('#begin_time').html();
+        let end_time = $('#end_time').html();
+        var is_open=$('.status').is('.mui-active')?1:0;
+        let params = {
+            store_id,
+            name,
+            is_open,
+            id
+        };
+      
+        // 时间判断
+        if(pareDate(begin_time,end_time)) {
+            params.sdate = begin_time;
+            params.fdate = end_time;
+        }else {
+            sf = false;
+        }
+
+        var goods_price = [];
+        var give_goods_id = [];
+        $('.activity_goods .discount-goods').each(function(e){
+            var price = $(this).find("input[name='goods_price[]']").val();
+            var goods_id = $(this).find("input[name='give_goods_id[]']").val();
+            if (goods_id>0) {
+                goods_price.push(price)
+                give_goods_id.push(goods_id)
+            }
+        })
+
+        params.goods_price = goods_price;
+        params.give_goods_id = give_goods_id;
+   
+        if(sf) {
+            if(id>0){
+                var url = 'WapMerchant&a=full_gift_edit';
+            }else{
+                var url = 'WapMerchant&a=full_gift_add';
+            }
+            common.http(url, params, function (data) {
+                console.log(data);
+                if(data) {
+                  history.go(-1);
+                }
+            })
+        }
+    }
+
+    //接口
+    //1.商品信息
+    function getGoodsList (type) {
+      let params = {
+        ticket,
+        "Device-Id": deviceId,
+        store_id,
+        keyword,
+        page
+      };
+      common.http('WapMerchant&a=get_subsidiary_goods', params, function (data) {
+        // console.log(data);
+        let list = data;
+        list.map((item)=>{
+          item.selected = false;
+        })
+        if(type == 'search' || page == 1) {
+          goodsList = list;
+        }else {
+          goodsList = [...goodsList, ...list];
+        }
+        if(list.length == 0) {
+          document.getElementById('goodsListContainer').innerHTML='<div class="no-data">暂无数据</div>'
+          mui('.mui-scroll-wrapper').pullRefresh().endPullupToRefresh(true);
+        }else {
+          if(list.length < 10) {
+            mui('.mui-scroll-wrapper').pullRefresh().endPullupToRefresh(true);
+          }else {
+            mui('.mui-scroll-wrapper').pullRefresh().endPullupToRefresh(false);
+          }
+          // 渲染数据
+          laytpl(document.getElementById('goodsList').innerHTML).render(goodsList, function (html) {
+            $('.goodsList').html(html)
+          });
+        }
+      })
+    };
+
+</script>
+</body>
+</html>

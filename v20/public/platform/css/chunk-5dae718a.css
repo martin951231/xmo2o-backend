@@ -1,0 +1,55 @@
+
+.ant-form-item label[data-v-263dadee] {
+  width: 50px;
+}
+.tip-txt[data-v-263dadee] {
+  margin-left:4px;font-size: 12px;
+}
+p[data-v-263dadee] {
+  margin-top: 0;
+  margin-bottom: 1em;
+  margin-left: 30px;
+}
+.add-box-tip[data-v-263dadee] {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+.ant-card-head[data-v-263dadee] {
+  min-height: 48px;
+  margin-bottom: -1px;
+  padding: 0 24px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 16px;
+  background: transparent;
+   border-bottom: 0px solid #e8e8e8;
+  border-radius: 2px 2px 0 0;
+  zoom: 1;
+}
+.card-set[data-v-263dadee]{
+  margin-bottom: 15px;
+  margin-left: 24px;
+}
+.flex_1[data-v-263dadee] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.font_icon[data-v-263dadee] {
+  display: block;
+  color: red;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+

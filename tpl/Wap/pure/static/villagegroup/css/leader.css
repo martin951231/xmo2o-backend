@@ -1,0 +1,68 @@
+.leader-page{
+	text-align: center;
+}
+
+.address-box{
+	padding: 20px;
+}
+
+.address-box .near button{
+    outline: none;
+    background: #fff;
+	display: inline-block;
+	border: 1px solid #f7cd64;
+	color: #f7cd64;
+	height: 24px;
+	line-height: 24px;
+	padding: 0 12px;
+	border-radius: 12px;
+	margin: 10px 0 0 0;
+	font-size: 12px;
+}
+.address-box .near button:active{
+	border: 1px solid #f8dd9a;
+	color: #f8dd9a;
+}
+
+.leader-box{
+	padding: 30px 10px;
+	border:1px solid #efefef;
+	box-shadow: 0 5px 40px #e5e5e5;
+	border-radius: 5px;
+}
+
+.leader-box .avatar{
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	margin: 0 auto 10px;
+}
+
+.leader-box .distance span{
+	background: #fb2f13;
+	color: #fff;
+	height: 24px;
+	line-height: 24px;
+	padding: 0 15px;
+	border-radius: 12px;
+	display: inline-block;
+	font-size: 12px;
+}
+
+.leader-box .btn-box button{
+	margin: 0;
+    padding: 0;
+    border: 1px solid #df4029;
+    outline: none;
+    background: #fd542d;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 30px;
+    border-radius: 15px;
+}
+.leader-box .btn-box button:active{
+	border: 1px solid #df5c48;
+	background: #fb6c4b;
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>配送员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/deliver.css" rel="stylesheet"/>
+		<style>
+			.acc span{
+				position: relative;
+				top:-39px;
+			}
+			.f14.c9.acc{
+				height: 55px;
+				padding-top: 5px;
+				width: 100%;
+			}
+			.acc img{
+				width:50px;
+				height: 50px;
+				margin:0 3px;
+			}
+			.mask1{
+				position: fixed;
+			    z-index: 1000;
+			    top: 0;
+			    right: 0;
+			    bottom: 0;
+			    left: 0;
+			    background-color: rgba(0, 0, 0, .8);
+			     
+			}
+			.add{
+				display: table;
+	    		font-family: Helvetica, arial, sans-serif;
+	    		pointer-events: none;
+	    		position: fixed;
+			    left: 0;
+			    top: 0;
+			    width: 100%;
+			    height: 100%;
+			}
+			.hidden{
+				display: none;
+			}
+			 .section {
+			    display: table-cell;
+			    vertical-align: middle;
+			    text-align: center;
+			}
+	</style>
+	</head>
+	<body>
+		<section id="fixed_top">
+			<section class="public pageSliderHide">
+				<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+				<div class="content"><L_>待抢订单</L_></div>
+			</section>		
+			<div class="h44"></div>
+        </section>
+		<div class="Dgrab" id="container">
+			<div class="scroller" id="scroller">
+
+				<div id="scan_div" class="sign_bottom" style="background: none;margin-top: 4%">
+					<a href="javascript:void(0);">
+						<div id="grabScanOrder" style="margin-left: 18%;">
+							<img src="images/scan.png" style="height: 26px;margin: 7px;display: inline-block;width: 26px;float: left;"/>
+							<span style="display: inline-block;float: left"><L_>扫码收单</L_></span>
+						</div>
+					</a>
+				</div>
+
+				<div id="grab_list"></div>
+			</div>
+		</div>
+		<script id="replyListBoxTpl" type="text/html">
+			{{# for(var i = 0, len = d.length; i < len; i++){ }}
+			<section class="robbed supply_{{ d[i].supply_id }}" data-id="{{ d[i].supply_id }}">
+				<div class="Online c9 p10 f14 go_detail" data-spid="{{ d[i].supply_id }}" data-status="{{ d[i].status }}" style="cursor: pointer;">
+					<span><L_>订单编号</L_>：{{ d[i].real_orderid }}</span>
+					{{# if(d[i].pay_method == 1){ }}
+					<a href="javascript:;" class="fr cd p10"><L_>在线支付</L_></a>
+					{{# } else { }}
+					<a href="javascript:;" class="fr cd p10 on"><L_>货到付款</L_></a>
+					{{# } }}
+				</div>
+
+    {{# if (d[i].item == 3) { }}
+	<div class="Title m10 go_detail" data-spid="{{ d[i].supply_id }}" data-status="{{ d[i].status }}">
+        {{# if (d[i].server_type == 1) { }}
+        <p class="f14 c9">商品类型：{{ d[i].goods_name }}</p>
+        <p class="f14 c9">商品重量(千克)：{{ d[i].goods_weight }}</p>
+        <p class="f14 c9">商品价格：{{ d[i].goods_price }}</p>
+        {{# if (d[i].image.length > 0) { }}
+        <p class="f14 c9 acc"><span><L_>商品图片</L_>：</span> 
+            {{# for (var im in d[i].image) { }}
+        	<img class="img_click" src="{{ d[i].image[im] }}" alt="" >
+            {{# } }}
+   		</p>
+        {{# } }}
+        <div class="leaflets"><L_>帮送</L_></div>
+        {{# } else { }}
+        <p class="f14 c9"><L_>商品名称</L_>：{{ d[i].goods_name }}</p>
+		{{# if (d[i].goods_weight) { }}
+			<p class="f14 c9">商品重量(千克)：{{ d[i].goods_weight }}</p>
+		{{# } }}
+        <p class="f14 c9"><L_>商品估价</L_>：{{ currency_symbol }}{{ d[i].goods_price }}</p>
+        {{# if (d[i].image.length > 0) { }}
+        {{# if (d[i].store_name) { }}
+		<p class="f14 c9">{{ L_('店铺名称') }}：：{{ d[i].store_name }}</p>
+		{{# } }}
+
+		{{# if (d[i].store_phone) { }}
+		<p class="f14 c9 Namelist" style="padding: 0">{{ L_('店铺电话') }}：：<span class="c6"><a href="tel:{{ d[i].store_phone }}">{{ d[i].store_phone }}</span></p>
+		{{# } }}
+        <p class="f14 c9 acc"><span><L_>商品图片</L_>：</span> 
+            {{# for (var im in d[i].image) { }}
+        	<img class="img_click" src="{{ d[i].image[im] }}" alt="" >
+            {{# } }}
+   		</p>
+        {{# } }}
+        <div class="leaflets"><L_>帮买</L_></div>
+        {{# } }}
+		
+	</div>
+	<div class="delivery m10">
+        {{# if (d[i].from_site != '') { }}
+		<p class="f14 c6 on openMap clearfix" data-name="{{ d[i].store_name }}" data-address="{{ d[i].from_site }}" data-type="baidu" data-baidu_lng="{{ d[i].from_lnt }}" data-baidu_lat="{{ d[i].from_lat }}">
+			<span class="fl">{{ L_('取') }}</span>
+			<!--<em class="fl">{{ d[i].from_site }}</em>-->
+			{{# if (d[i].server_type == 3) { }}
+				<em class="fl"><L_>就近购买</L_></em>
+			{{# } else {}}
+				<em class="fl">{{ d[i].from_site }}</em>
+			{{# }}}
+			{{# if(d[i].store_distance != ''){ }}<i class="cd f12 fl">距离我{{ d[i].store_distance }}</i>{{# } }}
+		</p>
+        {{# } }}
+		<p class="f14 c6 on1 openMap clearfix" data-name="{{ d[i].name }}" data-address="{{ d[i].aim_site }}" data-type="baidu" data-baidu_lng="{{ d[i].aim_lnt }}" data-baidu_lat="{{ d[i].aim_lat }}">
+			<span class="fl">{{ L_('送') }}</span>
+			<em class="fl">{{ d[i].aim_site }}</em>
+			<i class="cd f14 fl"><L_>查看路线</L_></i>
+		</p>
+	</div>
+	<div class="Namelist p10 f14">
+		<h2 class="f15 c3">{{ d[i].name }} 
+			<span class="c6">
+			{{# if(d[i].virtual_phone.length>0 && d[i].virtual_phone_overtime==0){ }}
+					<a href="tel:{{ d[i].virtual_phone[0] }}">
+			{{# } else if (d[i].virtual_phone.length>0 && d[i].virtual_phone_overtime==1){ }}
+				<a>
+			{{# } else { }}
+				<a href="tel:{{ d[i].phone }}">
+			{{# } }}
+				{{# if (d[i].phone.length > 15) { }}
+					{{ d[i].phone.substring(0,15)  }}...
+				{{# } else { }}
+					{{ d[i].phone }}
+				{{# } }}
+
+				{{# if(d[i].virtual_phone_str){ }}
+					<span>
+						{{ d[i].virtual_phone_str }}
+					</span>
+				{{# } }}
+			</a>
+			</span>
+		</h2>
+        {{# if (d[i].server_type == 1) { }}
+		<p class="c9"><L_>取货时间</L_>：{{ d[i].server_time }}</p>
+        {{# } else { }}
+        <p class="c9">
+			{{# if(d[i].arrival_time_info){ }}
+			期望时间：{{ d[i].arrival_time_info }}
+			{{# } else { }}
+			期望{{ d[i].server_time }}分钟内能送达
+			{{# } }}
+		</p>
+        {{# } }}
+		<p class="red">额外小费：<i>{{ currency_symbol }}{{ parseFloat(d[i].tip_price) }}</i></p>
+		<p class="red">{{# if (parseInt(d[i].distance) > 0) { }}配送距离{{ d[i].distance }}公里，{{# } }}配送费{{# if (deliver_see_freight_charge==0) { }} - {{# }else{ }} {{ currency_symbol }}{{ d[i].freight_charge }} {{# } }}</p>
+	</div>
+    {{# } else { }}
+				<div class="Title m10 go_detail" data-spid="{{ d[i].supply_id }}" data-status="{{ d[i].status }}">
+					<h2 class="f16 c3">{{ d[i].store_name }}</h2>
+					<p class="f14 c9"><L_>期望送达</L_>：{{ d[i].appoint_time }}</p>
+				</div>
+				{{# if (d[i].store_image.length >0) { }}
+					<div class="delivery m10">
+						{{# for(var j = 0; j < d[i].store_image.length; j++){ }}
+							<image class="img_click" width="110px;" height="70px;" src="{{ d[i].store_image[j] }}"/>
+						{{# } }}
+					</div>
+				{{# } }}
+				<div class="delivery m10">
+					<p class="f14 c6 on openMap clearfix" data-name="[店铺] {{ d[i].store_name }}" data-address="{{ d[i].from_site }}" data-type="baidu" data-baidu_lng="{{ d[i].from_lnt }}" data-baidu_lat="{{ d[i].from_lat }}">
+						<span class="fl">{{ L_('取') }}</span>
+						<em class="fl">{{ d[i].from_site }}</em>
+					</p>
+					<p class="f14 c6 on1 openMap clearfix" data-name="[用户] {{ d[i].name }}" data-address="{{ d[i].aim_site }}" data-type="baidu" data-baidu_lng="{{ d[i].aim_lnt }}" data-baidu_lat="{{ d[i].aim_lat }}">
+						<span class="fl">{{ L_('送') }}</span>
+						<em class="fl">{{ d[i].aim_site }}</em>
+						<i class="cd f14 fr"><L_>地图查看</L_></i>
+					</p>
+				</div>
+				<div class="Namelist p10 f14 go_detail" data-spid="{{ d[i].supply_id }}" data-status="{{ d[i].status }}">
+					<h2 class="f15 c3">{{ d[i].name }} 
+						<span class="c6">
+						{{# if(d[i].virtual_phone.length>0 && d[i].virtual_phone_overtime==0){ }}
+								<a href="tel:{{ d[i].virtual_phone[0] }}">
+						{{# } else if (d[i].virtual_phone.length>0 && d[i].virtual_phone_overtime==1){ }}
+							<a>
+						{{# } else { }}
+							<a href="tel:{{ d[i].phone }}">
+						{{# } }}
+							{{# if (d[i].phone.length > 15) { }}
+								{{ d[i].phone.substring(0,15)  }}...
+							{{# } else { }}
+								{{ d[i].phone }}
+							{{# } }}
+
+							{{# if(d[i].virtual_phone_str){ }}
+								<span>
+									{{ d[i].virtual_phone_str }}
+								</span>
+							{{# } }}
+						</a>
+						</span>
+					</h2>
+					<p class="c9">{{ L_('下单时间') }}：{{ d[i].order_time }}</p>
+					<p class="red">{{ L_('应收现金') }}：<i>{{ currency_symbol }}{{ d[i].deliver_cash }}</i></p>
+					<!--<p class="red">配送距离{{ d[i].distance }}公里 ，配送费{{# if (deliver_see_freight_charge==0) { }} - {{# }else{ }} {{ currency_symbol }}{{ d[i].freight_charge }} {{# } }}</p>-->
+					<p class="red">{{# if (parseInt(d[i].distance) > 0) { }}{{ L_('配送距离') }} {{ d[i].distance }} {{ L_('公里') }}，{{# } }} {{ L_('配送费') }}：{{# if (deliver_see_freight_charge==0) { }} - {{# }else{ }} {{ currency_symbol }}{{ d[i].freight_charge }} {{# } }}</p>
+				</div>
+{{# } }}
+				<div class="sign_bottom">
+					<a href="javascript:void(0);" class="rob" data-spid="{{ d[i].supply_id }}"><L_>抢单</L_></a>
+				</div>
+			</section>
+			{{# } }}
+		</script>
+		<script src="https://api.map.baidu.com/api?v=2.0&ak=4c1bb2055e24296bbaef36574877b4e2"></script>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/work/common.js"></script>
+		<script src="scripts/common.js?t=02"></script>
+		<script src="scripts/weui/weui.min.js"></script>
+		<script src="scripts/work/grab.js?t111"></script>
+		<script src="scripts/work/scanOrder.js?t25456"></script>
+		
+		<audio controls="controls" preload="true" loop="loop" id="newOrderMp3" style="display:none;">
+			<source src="new_order.mp3" type="audio/mp3" />
+		</audio>
+		<div class="mask1 hidden img_close">
+			<div class="add">
+				<div class="section">
+					<img class="img_close" src="" alt="" style="width: 100%;">
+				</div>
+			</div>
+			
+		</div>
+		<script>
+
+		$('body').off('click','.img_click').on('click','.img_click',function(e){
+			  e.stopPropagation();
+			  var sic=$(this).prop('src');
+			  $('.mask1').removeClass('hidden');
+			  $('.mask1 img').prop('src',sic);
+			  $('.img_close').click(function(e){
+			  	  $('.mask1').addClass('hidden');
+			  });
+		});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,48 @@
+
+.flexs{display:flex;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: box;   }
+
+.container{width: 100%;height: 667px;background: #f4f4f4;position: relative;background: #f4f4f4;overflow: hidden;}
+
+.list-wrapper{overflow-y:auto;overflow-x: hidden;}
+.list .item{padding: 10px;}
+.list .item .left img{border-radius: 5px;width: 40px;height: 40px;display: block;margin-right: 10px;}
+.list .item .right{margin-top: -2px;position: relative;max-width: calc(100% - 100px);}
+.list .item .right .content{background: #fff;margin-top: 5px;padding: 10px;border-radius: 5px;}
+.list .item .right .arrow{position: absolute;top: 29px;left: -15px;width: 28px;}
+
+.list .item.my .left img{margin-left: 10px;margin-right: 0;}
+.list .item.my .right .arrow{left: auto;right: -15px;}
+.list .item.my .right .name{text-align: right;}
+.img_handle img{vertical-align: top;}
+
+.footer{position: absolute;bottom: 0;left: 0;right: 0;box-sizing: border-box;background: #fff;}
+#textarea {
+    display: block;
+    margin:0 auto;
+    overflow: hidden;
+    font-size: 14px;
+    height: 18px;
+    line-height: 20px;
+    padding:5px;
+    margin: 10px 68px 10px 50px;
+}
+textarea {
+    outline: 0 none;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+.footer .send{background: #51c332;border-radius: 5px;color: #fff;font-size: 14px;height: 32px;padding: 0 10px;margin: 10px;position: absolute;
+bottom: 0;right: 0;}
+
+.file-box{
+	height: 30px;
+    width: 30px;
+    margin: 0px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    padding: 10px;
+}
+#fileBtn{position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0;}
+.file-box .img{width: 100%;}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>一卡通</title>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" href="css/vant/vant@2.12.47.css" />
+    <script src="js/vant/vue@2.6.14.min.js"></script>
+    <script src="js/vant/vant@2.12.14.min.js"></script>
+    <link rel="stylesheet" href="css/internalCardStatistics.css?t=5" />
+</head>
+
+<body>
+    <section id="app" class="msg-list-page" style="display: none;">
+        <van-nav-bar z-index="99" :title="L_('一卡通统计')" fixed :placeholder="true" :safe-area-inset-top="true" left-arrow
+            @click-left="onClickLeft"></van-nav-bar>
+        <div class="header-box">
+            <van-tabs :color="mainColor" v-model="tabsActive" @change="tabsChange">
+                <van-tab :title="L_('交易记录')"></van-tab>
+                <van-tab :title="L_('结算记录')"></van-tab>
+            </van-tabs>
+            <div class="filter-box">
+                <div class="search-box">
+                    <van-search style="flex: 1;" v-model="params.keywords"
+                        :placeholder="tabsActive == 0?'请输入关键词':'请输入账单名称'" @search="search" @cancel="search" show-action>
+                        <template #action>
+                            <div @click="search">搜索</div>
+                        </template>
+                    </van-search>
+                    <select name="search_type" id="" v-if="tabsActive == 0" v-model="params.search_type">
+                        <option :value="item.value" v-for="item in searchType">{{item.label}}</option>
+                    </select>
+                </div>
+                <div class="select-box" v-if="tabsActive == 0">
+                    <div class="item">
+                        <span>{{L_('业务')}}：</span>
+                        <select name="order_type" id="" v-model="params.order_type">
+                            <option :value="index" v-for="(item,index) of businessType">{{item}}</option>
+                        </select>
+                    </div>
+                    <div class="item" style="flex: 1.5;">
+                        <span>{{L_('区域')}}：</span>
+                        <span class="date" @click="openArea" style="flex: 1;"
+                            :style="{color: areaName?'#333':''}">{{areaName?areaName:L_('请选择区域')}}</span>
+                        <van-icon name="close" @click="deleteArea" v-if="areaName"></van-icon>
+                    </div>
+                </div>
+                <div class="select-box" v-if="tabsActive == 0" style="margin-top: 10px;">
+                    <div class="item" style="flex: 1.5;">
+                        <span>{{L_('日期')}}：</span>
+                        <span class="date" @click="openDate" style="flex: 1;"
+                            :style="{color: date?'#333':''}">{{date?date:L_('请选择日期')}}</span>
+                        <van-icon name="close" @click="deleteDate" v-if="date"></van-icon>
+                    </div>
+                </div>
+                <div class="select-box" v-if="tabsActive == 1" style="margin-top: 10px;">
+                    <div class="item">
+                        <span>{{L_('筛选')}}：</span>
+                        <select name="type" id="" v-model="params.type">
+                            <option :value="item.value" v-for="item in tradeType">{{item.label}}</option>
+                        </select>
+                    </div>
+                    <div class="item">
+                        <input type="number" style="width: 60px;" class="input"
+                            v-model="params.min_money">&nbsp;-&nbsp;<input class="input" type="number"
+                            style="width: 60px;" v-model="params.max_money">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <van-list v-model="loading" :finished="finished" :finished-text="L_('没有更多了')" @load="onLoad">
+            <div class="box-list" v-if="tabsActive == 0">
+                <div class="item" v-for="(item,index) in dataList" :key="item.id" @click="goDetail(item)">
+                    <div class="add-time flex" style="justify-content: space-between;">
+                        <span>{{L_('下单时间') +'：'+ item.create_time}}</span>
+                        <span v-if="item.storestaff_name">{{L_('收银员') +'：'+ item.storestaff_name}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('序号')}}：</span>
+                        <span>{{index + 1}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('用户姓名')}}：</span>
+                        <span>{{item.nickname}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('手机号')}}：</span>
+                        <span>{{item.phone}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('订单号')}}：</span>
+                        <span>{{item.order_no}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('交易金额')}}：</span>
+                        <span>￥{{item.money}}</span>
+                    </div>
+                    <div class="desc" v-if="item.refund == 1">
+                        <span>{{L_('退款状态')}}：</span>
+                        <span>{{L_('已退款')}}</span>
+                    </div>
+                    <div class="footer" :style="{color: mainColor}">
+                        <span>{{item.store_name}}</span>
+                        <span>{{item.business_type_text}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box-list" v-else>
+                <div class="item" v-for="(item,index) in dataList" :key="item.id" @click="goDetail(item)"
+                    style="padding-top: 0;">
+                    <div class="desc">
+                        <span>{{L_('账单日期')}}：</span>
+                        <span>{{item.bill_date}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('交易金额')}}：</span>
+                        <span>{{item.pay_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('待结算金额')}}：</span>
+                        <span>{{item.wait_bill_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('已结算金额')}}：</span>
+                        <span>{{item.already_bill_money}}</span>
+                    </div>
+                    <div class="footer" :style="{color: '#999'}">
+                        <span>{{L_('生成日期')}}</span>
+                        <span>{{item.create_time}}</span>
+                    </div>
+                </div>
+            </div>
+        </van-list>
+        <van-calendar v-model="dateShow" type="range" @confirm="onDateConfirm" :color="mainColor" :min-date="minDate"></van-calendar>
+        <van-popup v-model="show" round position="bottom">
+            <van-cascader v-model="cascaderValue" title="请选择所在地区" :options="areaOptions" @close="show = false"
+                @finish="onAreaFinish" :field-names="{ text: 'area_name', value: 'area_id', children: 'children' }"
+                :active-color="mainColor">
+            </van-cascader>
+        </van-popup>
+    </section>
+
+    <div class="loading">加载中...</div>
+
+    <script src="js/mui.min.js"></script>
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/weui/weui.min.js"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/work/internalCardStatistics.js?t=6"></script>
+</body>
+
+</html>
