@@ -3,6 +3,7 @@ node_modules
 /dist
 /api
 /runtime
+v20/runtime
 /upload
 # local env files
 .env.local
