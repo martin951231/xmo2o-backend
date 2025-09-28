@@ -1,10 +1,10 @@
 .DS_Store
 node_modules
 /dist
-/api
-/runtime
-/v20/runtime
-/upload
+/api/
+/runtime/
+/v20/runtime/
+/upload/
 # local env files
 .env.local
 .env.*.local
