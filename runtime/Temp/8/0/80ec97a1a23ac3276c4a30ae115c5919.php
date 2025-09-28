@@ -1,3 +1,0 @@
-<?php
-//000000000000a:7:{i:33;a:2:{s:14:"application_id";s:2:"33";s:16:"application_type";s:1:"1";}i:29;a:2:{s:14:"application_id";s:2:"29";s:16:"application_type";s:1:"0";}i:45;a:2:{s:14:"application_id";s:2:"45";s:16:"application_type";s:1:"1";}i:23;a:2:{s:14:"application_id";s:2:"23";s:16:"application_type";s:1:"0";}i:2;a:2:{s:14:"application_id";s:1:"2";s:16:"application_type";s:1:"0";}i:3;a:2:{s:14:"application_id";s:1:"3";s:16:"application_type";s:1:"0";}i:14;a:2:{s:14:"application_id";s:2:"14";s:16:"application_type";s:1:"0";}}
-?>

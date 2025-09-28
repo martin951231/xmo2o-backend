@@ -1,1 +1,0 @@
-<?php	return array ( 0 => 'id', 1 => 'content', 2 => 'token', 3 => 'send_time', 4 => 'status', 5 => 'update_time', 6 => 'type', '_autoinc' => true, '_pk' => 'id', '_type' => array ( 'id' => 'int(10) unsigned', 'content' => 'text', 'token' => 'varchar(44)', 'send_time' => 'int(11)', 'status' => 'tinyint(4)', 'update_time' => 'int(10) unsigned', 'type' => 'tinyint(4)', ), );?>

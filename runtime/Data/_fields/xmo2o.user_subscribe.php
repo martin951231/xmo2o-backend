@@ -1,1 +1,0 @@
-<?php	return array ( 0 => 'id', 1 => 'uid', 2 => 'store_id', 3 => 'add_time', 4 => 'next_notice_time', '_autoinc' => true, '_pk' => 'id', '_type' => array ( 'id' => 'int(11) unsigned', 'uid' => 'int(11) unsigned', 'store_id' => 'int(11) unsigned', 'add_time' => 'int(11) unsigned', 'next_notice_time' => 'int(11) unsigned', ), );?>
