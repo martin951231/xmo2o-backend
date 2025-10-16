@@ -4,7 +4,7 @@
 namespace app\community\model\db;
 
 use think\Model;
-class ExpressPickUpLocation extends Model
+class CommonPickupPerson extends Model
 {
     /**
      * 获取地址详情
@@ -14,9 +14,14 @@ class ExpressPickUpLocation extends Model
      * @param bool $field
      * @return mixed
      */
-    public function getOne($where,$field=true)
+    public function getOne($where,$field=true,$order=null)
     {
-        $data = $this->where($where)->field($field)->find();
+        $data = $this->alias('p')
+            ->leftJoin('express_pick_up_location e','p.location_id = e.id')
+            ->where($where)
+            ->field($field)
+            ->order($order)
+            ->find();
         return $data;
     }
 
@@ -31,9 +36,11 @@ class ExpressPickUpLocation extends Model
     public function getList($where,$field,$order,$page,$limit)
     {
         $sql = $this->alias('p')
+            ->leftJoin('express_pick_up_location e','p.location_id = e.id')
             ->where($where)
             ->field($field)
             ->order($order);
+//            ->buildSql();
         if($page){
             $list = $sql->page($page,$limit)->select();
         }else{
@@ -50,8 +57,12 @@ class ExpressPickUpLocation extends Model
      * @param array $data
      * @return int|string
      */
-    public function getCount($where) {
-        $count =$this->where($where)->count();
+    public function getCount($where,$field) {
+        $count =$this->alias('p')
+            ->leftJoin('express_pick_up_location e','p.location_id = e.id')
+            ->where($where)
+            ->field($field)
+            ->count();
         return $count;
     }
 
@@ -77,20 +88,6 @@ class ExpressPickUpLocation extends Model
      * @return bool
      */
     public function saveOne($where=[],$data=[])
-    {
-        $res = $this->where($where)->save($data);
-        return $res;
-    }
-
-    /**
-     * 删除地址
-     * @author mashuaifei
-     * @date_time 2025/09/17
-     * @param array $where
-     * @param array $data
-     * @return bool
-     */
-    public function delOne($where=[])
     {
         $res = $this->where($where)->save($data);
         return $res;

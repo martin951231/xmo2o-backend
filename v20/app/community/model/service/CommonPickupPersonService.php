@@ -3,13 +3,13 @@
 namespace app\community\model\service;
 
 
-use app\community\model\db\ExpressPickUpLocation;
+use app\community\model\db\CommonPickupPerson;
 use token\Token;
 use app\traits\MeterDirectorNoticeHouseTraits;
 use think\Exception;
 use app\traits\CommonLogTraits;
 use app\traits\house\AdminLoginTraits;
-class ExpressPickupService
+class CommonPickupPersonService
 {
     use MeterDirectorNoticeHouseTraits;
     use CommonLogTraits;
@@ -25,9 +25,9 @@ class ExpressPickupService
      * @param string $order
      * @return mixed
      */
-    public function getExpressPickupLocationList($where=[],$field=true,$page=1,$limit=15,$order='p.id DESC')
+    public function getCommonPickupPersonList($where=[],$field=true,$page=1,$limit=15,$order='p.id DESC')
     {
-        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $db_express_pick_up_location = new CommonPickupPerson();
         $data = $db_express_pick_up_location->getList($where,$field,$order,$page,$limit);
         return $data;
     }
@@ -39,18 +39,25 @@ class ExpressPickupService
      * @param array $where
      * @return mixed
      */
-    public function getExpressPickupLocationCount($where=[])
+    public function getCommonPickupPersonCount($where=[],$field=true)
     {
-        $db_house_new_meter_project = new ExpressPickUpLocation();
-        $count = $db_house_new_meter_project->getCount($where);
+        $db_common_pickup_person = new CommonPickupPerson();
+        $count = $db_common_pickup_person->getCount($where,$field);
         return $count;
     }
 
-    public function getMeterProjectInfo($where=[],$field=true)
+    public function getCommonPickupPersonInfo($where=[], $field=true, $order='p.id DESC')
     {
-        $db_house_new_meter_project = new ExpressPickUpLocation();
-        $count = $db_house_new_meter_project->getFind($where,$field);
-        return $count;
+        $db_common_pickup_person = new CommonPickupPerson();
+        $res = $db_common_pickup_person->getOne($where, $field, $order);
+        return $res;
+    }
+
+    public function getDefaultRecipientList($where=[],$field=true,$page=1,$limit=100,$order='p.id DESC')
+    {
+        $db_common_pickup_person = new CommonPickupPerson();
+        $res = $db_common_pickup_person->getList($where, $field, $order , false, false);
+        return $res;
     }
 
     /**
@@ -62,7 +69,7 @@ class ExpressPickupService
      */
     public function addPickupLocation($data=[])
     {
-        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $db_express_pick_up_location = new CommonPickupPerson();
         $res = $db_express_pick_up_location->addOne($data);
         return $res;
     }
@@ -77,7 +84,7 @@ class ExpressPickupService
      */
     public function savePickupLocation($where=[],$data=[])
     {
-        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $db_express_pick_up_location = new CommonPickupPerson();
         $res = $db_express_pick_up_location->saveOne($where,$data);
         return $res;
     }
@@ -95,7 +102,7 @@ class ExpressPickupService
      */
     public function delPickupLocation($where=[],$field=true)
     {
-        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $db_express_pick_up_location = new CommonPickupPerson();
         $res = $db_express_pick_up_location->saveOne($where);
         return $res;
     }

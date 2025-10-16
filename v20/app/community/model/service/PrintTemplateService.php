@@ -49,6 +49,11 @@ class PrintTemplateService
                 'id' => 3,
                 'name' => '模板三',
                 'url' =>  cfg('site_url').'/static/images/house/print_template_3.png'
+            ],
+            [
+                'id' => 4,
+                'name' => '模板四',
+                'url' =>  cfg('site_url').'/static/images/house/print_template_4.png'
             ]
         ];
     }
@@ -163,6 +168,9 @@ class PrintTemplateService
         $data = $print_template->getListByPage($where,$field,$page,$limit);
         foreach ($data['list'] as &$value){
             switch ($value['type']){
+                case 4:
+                    $value['type_txt'] = '模板四';
+                    break;
                 case 3:
                     $value['type_txt'] = '模板三';
                     break;
@@ -520,6 +528,7 @@ class PrintTemplateService
                 'order_ids' => implode(',',$order_ids),
             ];
             $data['create_at']= time();
+            $data['update_at']= time();
             if($print_special==1){
                 $data['print_number']= 0;
                 $data['print_date']= $print_date;

@@ -508,6 +508,7 @@ class PropertyManagementService
                 $data['menu_list'][] = ['title'=>'在线客服','ico'=>$http.'chat.png','url'=>$kfUrl,'type'=>'kefu'];
             }
         }
+        $data['menu_list'][] = ['title' => '代取快递', 'ico' => $http . 'pack.png', 'url' => cfg('site_url') . '/packapp/community/pages/CommunityPages/expressPickup/pickupList','type'=>'express_pickup'];
         $unitRentalArr=array('id'=>'112041','module'=>'UnitRental','status'=>1,'show'=>1);
         $houseMenuNew=new HouseMenuNew();
         $unitRentalObj=$houseMenuNew->getOne($unitRentalArr);

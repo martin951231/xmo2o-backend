@@ -7,9 +7,9 @@ use think\Model;
 class ExpressPickUpLocation extends Model
 {
     /**
-     * 获取快递公司详情
-     * @author
-     * @date_time 2020/08/17 17:18
+     * 获取地址详情
+     * @author mashuaifei
+     * @date_time 2025/09/17
      * @param $where
      * @param bool $field
      * @return mixed
@@ -21,16 +21,15 @@ class ExpressPickUpLocation extends Model
     }
 
     /**
-     * 快递公司列表
-     * @author
-     * @date_time 2020/08/19 14:16
+     * 获取地址列表
+     * @author mashuaifei
+     * @date_time 2025/09/17
      * @param $where
-     * @param $field
+     * @param bool $field
      * @return mixed
      */
     public function getList($where,$field,$order,$page,$limit)
     {
-
         $sql = $this->alias('p')
             ->where($where)
             ->field($field)
@@ -43,4 +42,44 @@ class ExpressPickUpLocation extends Model
         //Cache::tag($this->cacheTag)->set($cachKey,$list,7200-mt_rand(10,30));
         return $list;
     }
+
+    /**
+     * 查询总数
+     * @author mashuaifei
+     * @date_time 2025/09/17
+     * @param array $data
+     * @return int|string
+     */
+    public function getCount($where) {
+        $count = $this->where($where)->count();
+        return $count;
+    }
+
+    /**
+     * 添加地址
+     * @author mashuaifei
+     * @date_time 2025/09/17
+     * @param array $data
+     * @return int|string
+     */
+    public function addOne($data=[])
+    {
+        $res = $this->insertGetId($data);
+        return $res;
+    }
+
+    /**
+     * 修改地址
+     * @author mashuaifei
+     * @date_time 2025/09/17
+     * @param array $where
+     * @param array $data
+     * @return bool
+     */
+    public function saveOne($where=[],$data=[])
+    {
+        $res = $this->where($where)->save($data);
+        return $res;
+    }
+
 }

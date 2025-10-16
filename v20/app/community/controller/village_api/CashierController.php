@@ -1886,6 +1886,7 @@ class CashierController extends CommunityBaseController
             $where[] = ['o.order_type','<>','non_motor_vehicle'];
 
             $where1 = '(`o`.`is_refund`=1 OR `o`.`refund_money`<`o`.`pay_money`)';
+//            $field='o.*,p.name as project_name,vuv.usernum';
             $field='o.*,p.name as project_name';
             
             $houseVillageCheckauthSetService =new HouseVillageCheckauthSetService();

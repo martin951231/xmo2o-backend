@@ -4,6 +4,7 @@ namespace app\community\model\service;
 
 
 use app\community\model\db\ExpressPickUpLocation;
+use app\community\model\db\ExpressApplication;
 use token\Token;
 use app\traits\MeterDirectorNoticeHouseTraits;
 use think\Exception;
@@ -15,9 +16,9 @@ class ExpressPickupService
     use CommonLogTraits;
     use AdminLoginTraits;
     /**
-     * 抄表项目列表
+     * 获取代取地址列表
      * @author
-     * @date_time 2021/07/09
+     * @date_time 2025-09-24
      * @param array $where
      * @param bool $field
      * @param int $page
@@ -33,54 +34,132 @@ class ExpressPickupService
     }
 
     /**
-     * 抄表项目列表数量
+     * 获取代取地址列表数量
      * @author
-     * @date_time 2021/07/09
+     * @date_time 2025-09-24
      * @param array $where
      * @return mixed
      */
     public function getExpressPickupLocationCount($where=[])
     {
-        $db_house_new_meter_project = new HouseNewChargeProject();
+        $db_house_new_meter_project = new ExpressPickUpLocation();
         $count = $db_house_new_meter_project->getCount($where);
         return $count;
     }
 
-    public function getMeterProjectInfo($where=[],$field=true)
-    {
-        $db_house_new_meter_project = new HouseNewChargeProject();
-        $count = $db_house_new_meter_project->getFind($where,$field);
-        return $count;
-    }
-
     /**
-     * 添加负责人
+     * 添加代取地址
      * @author
-     * @date_time 2021/07/09
+     * @date_time 2025-09-24
      * @param array $data
      * @return int|string
      */
-    public function addMeterDirector($data=[])
+    public function addPickupLocation($data=[])
     {
-        $db_house_new_meter_director = new HouseNewMeterDirector();
-        $res = $db_house_new_meter_director->addOne($data);
+        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $res = $db_express_pick_up_location->addOne($data);
         return $res;
     }
 
     /**
-     * 修改负责人信息
+     * 修改地址信息
      * @author
-     * @date_time 2021/07/09
+     * @date_time 2025-09-24
      * @param array $where
      * @param array $data
      * @return int|string
      */
-    public function saveMeterDirector($where=[],$data=[])
+    public function savePickupLocation($where=[],$data=[])
     {
-        $db_house_new_meter_director = new HouseNewMeterDirector();
-        $res = $db_house_new_meter_director->saveOne($where,$data);
+        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $res = $db_express_pick_up_location->saveOne($where,$data);
         return $res;
     }
+
+    /**
+     * 获取快递取件申请
+     * @author
+     * @date_time 2025-09-24
+     * @param array $data
+     * @return int|string
+     */
+    public function getExpressApplicationList( $where=[],$field=true,$page=1,$limit=10,$order='p.id DESC' )
+    {
+        $db_express_pick_up_location = new ExpressApplication();
+        $data = $db_express_pick_up_location->getList($where,$field,$order,$page,$limit);
+        return $data;
+    }
+
+    /**
+     * 获取快递取件申请总数
+     * @author
+     * @date_time 2025-09-24
+     * @param array $data
+     * @return int|string
+     */
+    public function getExpressApplicationCount($where = [])
+    {
+        $db_express_pick_up_application = new ExpressApplication();
+        $count = $db_express_pick_up_application->getCount($where);
+        return $count;
+    }
+
+    /**
+     * 获取快递取件申请详情
+     * @author
+     * @date_time 2025-09-24
+     * @param array $data
+     * @return int|string
+     */
+    public function getExpressApplicationDetail($where = [],$field=true)
+    {
+        $db_express_pick_up_application = new ExpressApplication();
+        $count = $db_express_pick_up_application->getOne($where,$field);
+        return $count;
+    }
+
+    /**
+     * 添加快递取件申请
+     * @author
+     * @date_time 2025-09-24
+     * @param array $data
+     * @return int|string
+     */
+    public function addPickupApplication($data=[])
+    {
+        $db_express_pick_up_location = new ExpressApplication();
+        $res = $db_express_pick_up_location->addOne($data);
+        return $res;
+    }
+
+    /**
+     * 保存快递取件申请
+     * @author
+     * @date_time 2025-09-24
+     * @param array $data
+     * @return int|string
+     */
+    public function savePickupApplication($where=[],$data=[])
+    {
+        $db_express_pick_up_location = new ExpressApplication();
+        $res = $db_express_pick_up_location->saveOne($where,$data);
+        return $res;
+    }
+
+    /**
+     * 修改快递取件申请
+     * @author
+     * @date_time 2025-09-24
+     * @param array $data
+     * @return int|string
+     */
+    public function updatePickupApplication($where=[],$data=[])
+    {
+        $db_express_pick_up_location = new ExpressApplication();
+        $res = $db_express_pick_up_location->updateAll($where,$data);
+        return $res;
+    }
+
 
     /**
      * 负责人详情
@@ -93,11 +172,11 @@ class ExpressPickupService
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getMeterDirectorInfo($where=[],$field=true)
+    public function delPickupLocation($where=[],$field=true)
     {
-        $db_house_new_meter_director = new HouseNewMeterDirector();
-        $data = $db_house_new_meter_director->getOne($where,$field);
-        return $data;
+        $db_express_pick_up_location = new ExpressPickUpLocation();
+        $res = $db_express_pick_up_location->saveOne($where);
+        return $res;
     }
 
 }

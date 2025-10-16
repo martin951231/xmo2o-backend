@@ -14,6 +14,7 @@ use app\community\model\db\HouseVillagePrintTemplate;
 use app\community\model\db\HouseWorker;
 use app\community\model\db\ParkPassage;
 use app\community\model\service\AreaStreetService;
+use app\community\model\service\ExpressPickupService;
 use app\community\model\service\HouseNewPorpertyService;
 use app\community\model\service\HousePropertyService;
 use app\community\model\service\HousePropertyVillageWorkerService;
@@ -391,6 +392,22 @@ class IndexController extends BaseController{
                 'type' => 'repair_order'
             ];
             $todo_info[] = $block_order;
+            // 快递代取
+            $service_express_pick_up = new ExpressPickupService();
+            $village_id = $this->login_info['village_id'];
+            $express_pickup_where = ['p.village_id' => $village_id,'p.status' => 1];
+            $express_pickup_count = $service_express_pick_up->getExpressApplicationCount( $express_pickup_where );
+            $express_pickup = [
+                'title' => '快递代取',
+                'tip' => $tip, // url 没有值时候的提示
+                'url' => $site_url . $base_url . 'pages/CommunityPages/expressPickup/pickupList',
+                'count' => $express_pickup_count,
+                'icon_img' => $site_url . $static_resources . 'images/property_app/express_to_be_reviewed.png?t=01',
+                'type' => 'express_pickup'
+            ];
+
+            $todo_info[] = $express_pickup;
+
 
             // 作废、退款审核 小区物业管理人员 增加（我的审批）入口
             if(5 == $this->login_role && $village_id >0){

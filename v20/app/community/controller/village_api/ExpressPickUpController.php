@@ -12,44 +12,30 @@ use app\community\model\db\HouseVillage;
 class ExpressPickUpController extends CommunityBaseController
 {
     /**
-     * 初始化
-     * @author
-     * @date_time 2021/07/09
+     * 代取地址列表
      * @return \json
-     */
-    public function getHouseVillageList()
-    {
-        $House_village	= new HouseVillage();
-        //	查询社区列表
-        $aHouseVillageList	=	$House_village->getList(['status' => 1]);
-        var_dump($aHouseVillageList);die;
-    }
-    /**
-     * 抄表列表
-     * @author lijie
-     * @date_time 2021/07/09
-     * @return \json
-     */
+     * @author mashuaifei
+     * * @date_time 2025/09/17
+ */
     public function getExpressPickupLocationList()
     {
         $village_id = $this->adminUser['village_id'];
+        $location = $this->request->post('location');
         $page = $this->request->post('page',1);
         $limit = $this->request->post('limit',10);
         $service_express_pick_up = new ExpressPickupService();
         $chargeType = ['water','electric','gas'];
-        $jz_wsxdsj_customized_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
-        if($jz_wsxdsj_customized_open){
-            array_push($chargeType,'new_nuanqifei');
-        }
-        $where[] = ['p.village_id','=',$village_id];
-        $where[] = ['p.status','=',1];
-//        $where[] = ['c.charge_type','in',$chargeType];
+//        $jz_wsxdsj_customized_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
+//        if($jz_wsxdsj_customized_open){
+//            array_push($chargeType,'new_nuanqifei');
+//        }
+        $where[] = ['village_id','=',$village_id];
+        $where[] = ['status','=',1];
         try{
-            $field = 'p.name as project_name,c.charge_number_name as subject_name,charge_type,p.id as project_id,p.subject_id,p.mday';
-            if($jz_wsxdsj_customized_open){
-                $field .= ',p.meter_use_v,p.reset_btn_show,p.sign_btn_show';
+            if( $location != '' ){
+                $where[] = ['location','like','%'.$location.'%'];
             }
-            $data = $service_express_pick_up->getExpressPickupLocationList($where,$field,$page,$limit,'p.id DESC')->toArray();
+            $data = $service_express_pick_up->getExpressPickupLocationList($where,true,$page,$limit,'p.id DESC')->toArray();
 
             $count = $service_express_pick_up->getExpressPickupLocationCount($where);
         }catch (\Exception $e){
@@ -66,5 +52,129 @@ class ExpressPickUpController extends CommunityBaseController
 
         return api_output(0,$res);
     }
+    /**
+     * 添加代取地址
+     * @return \json
+     * @author mashuaifei
+     * * @date_time 2025/09/17
+     */
+    public function saveExpressPickupLocation()
+    {
+        $current_action = $this->request->post('current_action');
+        $village_id = $current_action == 'edit' ? $this->request->post('village_id') : $this->adminUser['village_id'] ;
+        $location = $this->request->post('location');
+        $pickup_point_id = $this->request->post('id');
+        if( !$location ){
+            return api_output_error(1001,'请填写代取地址!');
+        }
+        if( !$village_id ){
+            return api_output_error(1002,'用户身份信息获取错误,请重新登录!');
+        }
+        $data = [];
+        $data['status'] = 1;
+        $data['location'] = $location;
+        if( $current_action == 'edit' ){
+            $data['update_by'] = $this->adminUser['user_name'];
+            $data['update_time'] = date('Y-m-d H:i:s');
+        }else{
+            $data['create_by'] = $this->adminUser['user_name'];
+            $data['create_time'] = date('Y-m-d H:i:s');
+        }
 
+        $data['village_id'] = $village_id;
+        $service_express_pick_up = new ExpressPickupService();
+
+        $exists = $service_express_pick_up->getExpressPickupLocationCount([
+            'status' => 1,
+            'village_id' => $data['village_id'],
+            'location'=>$data['location']
+        ]);
+
+        if( $exists > 0 ){
+            return api_output_error(1001,'代取地址已存在!');
+        }
+
+        try{
+            if( $current_action == 'edit' ){
+                $res = $service_express_pick_up->savePickupLocation([ 'id' => $pickup_point_id ],$data);
+            }else{
+                $res = $service_express_pick_up->addPickupLocation($data);
+            }
+        }catch (\Exception $e){
+            return api_output_error(-1,$e->getMessage());
+        }
+        if($res)
+            return api_output(0,[],'保存成功');
+        return api_output_error(1001,'服务异常');
+    }
+    public function delExpressPickupLocation()
+    {
+        $pickup_point_id = $this->request->post('id');
+        $service_express_pick_up = new ExpressPickupService();
+        if( !$pickup_point_id ){
+            return api_output_error(1001,'请选择要删除的地址!');
+        }
+        try{
+            $res = $service_express_pick_up->savePickupLocation([ 'id' => $pickup_point_id ],['status' => 0 ]);
+        }catch (\Exception $e){
+            return api_output_error(-1,$e->getMessage());
+        }
+        if($res)
+            return api_output(0,[],'删除成功');
+        return api_output_error(1001,'服务异常');
+    }
+
+    /**
+     * 代取申请列表
+     * @return \json
+     * @author mashuaifei
+     * * @date_time 2025/09/17
+     */
+    public function getExpressApplicationList()
+    {
+        $village_id = $this->adminUser['village_id'];
+        $location_id = $this->request->post('location_id');
+        $single_id = $this->request->post('single_id');
+        $floor_id = $this->request->post('floor_id');
+        $layer_id = $this->request->post('layer_id');
+        $room_id = $this->request->post('room_id');
+        $user_id = $this->request->post('user_id');
+        $user_id = $this->request->post('user_id');
+        $user_id = $this->request->post('user_id');
+        $recipient_name = $this->request->post('recipient_name');
+        $recipient_phone = $this->request->post('recipient_phone');
+        $status = $this->request->post('status');
+        $track_num = $this->request->post('track_num');
+        $pickup_code = $this->request->post('pickup_code');
+        $page = $this->request->post('page',1);
+        $limit = $this->request->post('limit',10);
+        $service_express_pick_up = new ExpressPickupService();
+        $where[] = ['p.village_id','=',$village_id];
+//        $where[] = ['p.status','=',1];
+        ( $status || $status === 0 ) && $where[] = ['p.status', '=', $status];
+        $location_id && $where[] = ['p.location_id', '=', $location_id];
+        $single_id && $where[] = ['p.single_id', '=', $single_id];
+        $floor_id && $where[] = ['p.floor_id', '=', $floor_id];
+        $layer_id && $where[] = ['p.layer_id', '=', $layer_id];
+        $room_id && $where[] = ['p.room_id', '=', $room_id];
+        $user_id && $where[] = ['p.user_id', '=', $user_id];
+        $recipient_name && $where[] = ['p.recipient_name', 'like', '%'.$recipient_name.'%'];
+        $recipient_phone && $where[] = ['p.recipient_phone', 'like', '%'.$recipient_phone.'%'];
+        $track_num && $where[] = ['p.track_num', 'like', '%'.$track_num.'%'];
+        $pickup_code && $where[] = ['p.pickup_code', 'like', '%'.$pickup_code.'%'];
+        $field = 'p.*,e.location';
+
+        try{
+            $data = $service_express_pick_up->getExpressApplicationList($where,$field,$page,$limit,'p.id DESC')->toArray();
+
+            $count = $service_express_pick_up->getExpressApplicationCount($where,$field);
+        }catch (\Exception $e){
+            return api_output_error(-1,$e->getMessage());
+        }
+        $res=array();
+        $res['total_limit'] = $limit;
+        $res['list'] = $data;
+        $res['count'] = $count;
+        return api_output(0,$res);
+    }
 }
