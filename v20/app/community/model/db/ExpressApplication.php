@@ -36,6 +36,7 @@ class ExpressApplication extends Model
             ->where($where)
             ->field($field)
             ->order($order);
+        $sql_str = $sql->buildSql();
         if ($page) {
             $list = $sql->page($page, $limit)->select();
         } else {

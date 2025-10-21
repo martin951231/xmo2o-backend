@@ -179,4 +179,19 @@ class ExpressPickupService
         return $res;
     }
 
+    /**
+     * 作废快递申请
+     * @author
+     * @date_time 2025-10-21
+     * @param array $where
+     * @param array $data
+     * @return int|string
+     */
+    public function ExpressPickupCancel($where=[],$data=[])
+    {
+        $db_express_pick_up_ = new ExpressApplication();
+        $res = $db_express_pick_up_->saveOne($where,$data);
+        return $res;
+    }
+
 }

@@ -173,19 +173,19 @@ class ExpressPickUpApiController extends CommunityBaseController
             return api_output_error(1002,'登录信息错误,请重新登录!');
         }
         $village_id = $this->request->post('village_id');
-        $location_id = $this->request->post('location_id');
+//        $location_id = $this->request->post('location_id');
         $user_id = $this->request->post('uid');
         $recipient_name = $this->request->post('recipient_name');
         $recipient_phone = $this->request->post('recipient_phone');
-        $search = $this->request->post('search');
+        $search_list = $this->request->post('search');
         $page = $this->request->post('pageIndex',1);
         $limit = $this->request->post('pageSize',10);
         $userInfo = $this->getUserinfo($pigcms_id);
         $service_express_pick_up = new ExpressPickupService();
 
         $where[] = ['p.village_id','=',$village_id];
-        $where[] = ['p.status','=',1];
-        $location_id && $where[] = ['p.location_id', '=', $location_id];
+        $where[] = ['p.status','<>',99];
+//        $location_id && $where[] = ['p.location_id', '=', $location_id];
 
         $userInfo['single_id'] && $where[] = ['p.single_id', '=', $userInfo['single_id']];
         $userInfo['floor_id'] && $where[] = ['p.floor_id', '=', $userInfo['floor_id']];
@@ -197,12 +197,27 @@ class ExpressPickUpApiController extends CommunityBaseController
         $recipient_phone && $where[] = ['p.recipient_phone', 'like', '%'.$recipient_phone.'%'];
         $field = 'p.*,e.location';
 
-        if( $search !== '' ){
-            $where[] = ['p.track_num|p.pickup_code|p.recipient_phone|p.recipient_name|e.location', 'like', '%'.$search.'%'];
+        if( $search_list['keyword'] != '' ){
+            $where[] = ['p.track_num|p.pickup_code|p.recipient_phone|p.recipient_name|e.location', 'like', '%'.trim( $search_list['keyword'] ).'%'];
         }
 
+        if( $search_list['date_start'] != '' ){
+            $where[] =  ['p.create_time', '>=', $search_list['date_start']];
+        }
+        if( $search_list['date_end'] != '' ){
+            $where[] =  ['p.create_time', '<=', $search_list['date_end']];
+        }
+        if( count( $search_list['locationId'] )  > 0 ){
+            $where[] =  ['p.location_id', 'in', $search_list['locationId']];
+        }
+//        var_dump($search_list['status']);die;
+
+        if( count( $search_list['status'] )  > 0 && !in_array( 'all', $search_list['status'] ) ){
+            $where[] =  ['p.status', 'in', $search_list['status']];
+        }
+        $order_where = $search_list['sort'] != '' ? 'p.create_time '. $search_list['sort']  : 'p.id DESC';
         try{
-            $data = $service_express_pick_up->getExpressApplicationList($where,$field,$page,$limit,'p.id DESC')->toArray();
+            $data = $service_express_pick_up->getExpressApplicationList($where,$field,$page,$limit,$order_where)->toArray();
 
             $count = $service_express_pick_up->getExpressApplicationCount($where);
         }catch (\Exception $e){
@@ -363,7 +378,7 @@ class ExpressPickUpApiController extends CommunityBaseController
 
     }
     /**
-     * 作废快递
+     * 删除快递
      * @return \json
      * @author mashuaifei
      * @date_time 2025/09/18
@@ -378,10 +393,10 @@ class ExpressPickUpApiController extends CommunityBaseController
         $pickup_app_id = $this->request->post('id');
         $service_express_pick_up = new ExpressPickupService();
         if( !$pickup_app_id ){
-            return api_output_error(1001,'请选择要作废的快递!');
+            return api_output_error(1001,'请选择要删除的快递!');
         }
         try{
-            $res = $service_express_pick_up->savePickupApplication([ 'id' => $pickup_app_id ],['status' => 0 ]);
+            $res = $service_express_pick_up->savePickupApplication([ 'id' => $pickup_app_id ],['status' => 99 ]);
         }catch (\Exception $e){
             return api_output_error(-1,$e->getMessage());
         }

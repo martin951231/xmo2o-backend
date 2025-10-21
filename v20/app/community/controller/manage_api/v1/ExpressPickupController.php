@@ -28,7 +28,7 @@ class ExpressPickupController extends BaseController
         $recipient_phone = $this->request->param('recipient_phone','');
         $status = $this->request->param('status','');
         $location_id = $this->request->param('location_id','');
-        $search = $this->request->param('search','');
+        $search_list = $this->request->param('search','');
         if(empty($villageId)){
             return api_output_error(1001,'登录信息有误, 请重新登录!');
         }
@@ -43,14 +43,30 @@ class ExpressPickupController extends BaseController
         $recipient_phone && $where[] = ['p.recipient_phone', 'like', '%'.$recipient_phone.'%'];
         ( $status || $status === 0 ) && $where[] = ['p.status', '=', $status];
         $location_id && $where[] = ['p.location_id', '=', $location_id];
-        if( $search !== '' ){
-             $where[] = ['p.track_num|p.pickup_code|p.recipient_phone|p.recipient_name|e.location', 'like', '%'.$search.'%'];
+        if( $search_list['keyword'] != '' ){
+            $where[] = ['p.track_num|p.pickup_code|p.recipient_phone|p.recipient_name|e.location', 'like', '%'.trim( $search_list['keyword'] ).'%'];
         }
+
+        if( $search_list['date_start'] != '' ){
+            $where[] =  ['p.create_time', '>=', $search_list['date_start']];
+        }
+        if( $search_list['date_end'] != '' ){
+            $where[] =  ['p.create_time', '<=', $search_list['date_end']];
+        }
+        if( count( $search_list['locationId'] )  > 0 ){
+            $where[] =  ['p.location_id', 'in', $search_list['locationId']];
+        }
+//        var_dump($search_list['status']);die;
+
+        if( count( $search_list['status'] )  > 0 && !in_array( 'all', $search_list['status'] ) ){
+            $where[] =  ['p.status', 'in', $search_list['status']];
+        }
+        $order_where = $search_list['sort'] != '' ? 'p.create_time '. $search_list['sort']  : 'p.id DESC';
 
         $field = 'p.*,e.location';
 
         try{
-            $data = $service_express_pick_up->getExpressApplicationList($where,$field,$page,$limit,'p.id DESC')->toArray();
+            $data = $service_express_pick_up->getExpressApplicationList($where,$field,$page,$limit,$order_where)->toArray();
 
             $count = $service_express_pick_up->getExpressApplicationCount($where);
         }catch (\Exception $e){
@@ -147,6 +163,85 @@ class ExpressPickupController extends BaseController
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }
+    }
+
+    /**
+     * 代取地址列表
+     * @return \json
+     * @author mashuaifei
+     * * @date_time 2025/09/17
+     */
+    public function getExpressPickupLocationList()
+    {
+//        $pigcms_id = $this->request->post('pigcms_id');
+//        if(!$pigcms_id)
+//        {
+//            return api_output_error(1002,'登录信息错误,请重新登录!');
+//        }
+        $village_id = $this->request->post('village_id');
+        $location = $this->request->post('location');
+        $page = $this->request->post('page',1);
+        $limit = $this->request->post('limit',10);
+        $service_express_pick_up = new ExpressPickupService();
+        $chargeType = ['water','electric','gas'];
+//        $jz_wsxdsj_customized_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
+//        if($jz_wsxdsj_customized_open){
+//            array_push($chargeType,'new_nuanqifei');
+//        }
+        $where[] = ['village_id','=',$village_id];
+        $where[] = ['status','=',1];
+        try{
+            if( $location != '' ){
+                $where[] = ['location','like','%'.$location.'%'];
+            }
+            $data = $service_express_pick_up->getExpressPickupLocationList($where,true,$page,$limit,'p.id DESC')->toArray();
+
+            $count = $service_express_pick_up->getExpressPickupLocationCount($where);
+        }catch (\Exception $e){
+            return api_output_error(-1,$e->getMessage());
+        }
+        $res=array();
+        $res['total_limit'] = $limit;
+        $res['list'] = $data;
+        $res['count'] = $count;
+
+//        $houseVillageService=new HouseVillageService();
+//        $res['role_addmeter']=$houseVillageService->checkPermissionMenu(112104,$this->adminUser,$this->login_role,$this->dismissPermissionRole);
+
+
+        return api_output(0,$res);
+    }
+
+    /**
+     * 作废代取快递
+     * @return \json
+     * @author mashuaifei
+     * * @date_time 2025/10/20
+     */
+    public function ExpressPickupCancel()
+    {
+        $village_id = $this->request->post('village_id');
+        $reason = $this->request->post('reason');
+        $id = $this->request->post('id');
+        if( $id == '' || $village_id == '' ){
+            return api_output_error(1002,'参数错误,请重试!');
+        }
+        $service_express_pick_up = new ExpressPickupService();
+        $where[] = ['village_id','=',$village_id];
+        $where[] = ['id','=',$id];
+        $where[] = ['status','=',1];
+        $data = [
+            'status'=>0,
+            'reason' => $reason
+        ];
+        try{
+            $result = $service_express_pick_up->ExpressPickupCancel($where,$data);
+        }catch (\Exception $e){
+            return api_output_error(-1,$e->getMessage());
+        }
+        $res=array();
+        $res['success'] = true;
+        return api_output(0,$res);
     }
 
 }
