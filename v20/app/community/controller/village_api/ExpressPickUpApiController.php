@@ -9,6 +9,7 @@ use app\community\model\service\CommonPickupPersonService;
 use app\community\model\service\ExpressPickupService;
 use app\community\controller\CommunityBaseController;
 use app\community\model\db\HouseVillage;
+use app\community\model\service\HouseVillageService;
 use app\community\model\service\HouseVillageUserBindService;
 use app\community\model\service\HouseVillageUserVacancyService;
 
@@ -305,6 +306,29 @@ class ExpressPickUpApiController extends CommunityBaseController
         $data['create_by'] = $userInfo['name'];
         $data['recipient_name'] = $this->request->post()['recipient_name'];
         $data['recipient_phone'] = $this->request->post()['recipient_phone'];
+
+        $service_express_pick_up = new ExpressPickupService();
+
+        $service_house_village = new HouseVillageService();
+        $service_house_village_info = $service_house_village->getHouseVillageInfo(['village_id' => $village_id],'express_person_average_entrust,express_project_daily_entrust');
+        $express_person_average_entrust = $service_house_village_info['express_person_average_entrust'];
+        $express_project_daily_entrust = $service_house_village_info['express_project_daily_entrust'];
+        //如果有限制, 则判断当前用户是否超过限制
+        if( $express_person_average_entrust > 0 || $express_project_daily_entrust > 0 ){
+            $where = [
+                'p.village_id' => $village_id,
+                'p.room_id' => $userInfo['room_id'],
+            ];
+            $count = $service_express_pick_up->getExpressApplicationCount($where);
+
+            if( $express_person_average_entrust > 0 && $count >= $express_person_average_entrust ){
+                return api_output_error(1001,'每户每天最多只能申请'.$express_person_average_entrust.'次!');
+            }
+            if( $express_project_daily_entrust > 0 && $count >= $express_project_daily_entrust ){
+                return api_output_error(1001,'每天最多只能申请'.$express_project_daily_entrust.'次!');
+            }
+        }
+
         if( !$recipient_info ){
             //如果当前收件人不存在, 则添加为默认收件人,返回收件人id, 并且把其余收件人设置为非默认
             //先把其他收件人设置为非默认
@@ -349,7 +373,6 @@ class ExpressPickUpApiController extends CommunityBaseController
             }
         }
 
-        $service_express_pick_up = new ExpressPickupService();
 
         try{
             if( $current_action == 'edit' ){

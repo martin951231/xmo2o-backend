@@ -400,9 +400,18 @@ class NewsAction extends BaseAction{
 			if(empty($_POST['description'])){
 				$this->error('内容必填！');
 			}
+            $imgs = $this->extractImageUrls( $_POST['description'] );
+            if( $_POST['show_mode'] == 2 && count( $imgs ) < 1 ){
+                $this->error('您选择的是单图模式，请上传图片！');
+            }
+            if( $_POST['show_mode'] == 3 && count( $imgs ) < 3 ){
+                $this->error('您选择的是多图模式，请最少上传3张图片！');
+            }
+            $_POST['img_list'] = implode('|||', $imgs);
 			$_POST['is_hot'] = intval($_POST['is_hot']);
 			$_POST['status'] = intval($_POST['status']);
-			$_POST['cat_id'] = intval($_POST['cat_id']);
+            $_POST['cat_id'] = intval($_POST['cat_id']);
+            $_POST['show_mode'] = intval($_POST['show_mode']);
             $_POST['is_device_show'] = intval($_POST['is_device_show']);
 			$_POST['content'] = $_POST['description'];
 			$_POST['village_id'] = $this->village_id;
@@ -492,7 +501,23 @@ class NewsAction extends BaseAction{
 			}
 		}
 	}
-	public function send_over(){
+
+    function extractImageUrls($htmlContent) {
+        $htmlContent = htmlspecialchars_decode($htmlContent);
+        // 正则表达式：匹配img标签中的src属性值
+        // 支持 src="url"、src='url'、src=url 三种格式
+        preg_match_all('/<img\b[^>]*\bsrc\s*=\s*(["\']?)(.*?)\1[^>]*>/is', $htmlContent, $matches);
+
+
+        if (!empty($matches[2])) {
+            $imgSrcs = $matches[2];
+        }
+
+        return $imgSrcs;
+    }
+
+
+    public function send_over(){
 		$this->display();
 	}
 	// 微信群发

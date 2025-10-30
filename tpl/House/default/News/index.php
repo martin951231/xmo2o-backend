@@ -37,7 +37,8 @@
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th width="40%">新闻标题</th>
+                                <th width="20%">新闻标题</th>
+                                <th width="20%">新闻副标题</th>
                                 <th width="10%">发布时间</th>
                                 <th width="10%">到期时间</th>
                                 <th width="10%">热门</th>
@@ -50,7 +51,8 @@
 								<if condition="$news_list">
                                     <volist name="news_list" id="vo">
 										<tr class="<if condition="$i%2 eq 0">odd<else/>even</if>">
-											<td><div class="tagDiv">{pigcms{$vo.title}</div></td>
+                                            <td><div class="tagDiv">{pigcms{$vo.title}</div></td>
+                                            <td><div class="tagDiv">{pigcms{$vo.child_title}</div></td>
 											<td><div class="tagDiv">{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</div></td>
                                 <td><div class="tagDiv"><if condition="$vo.end_time gt 0 ">{pigcms{$vo.end_time|date='Y-m-d H:i:s',###}<else />--</if></div></td>
 											<td><div class="shopNameDiv"><if condition="$vo.is_hot eq '1' ">是<else />否</if></div></td>

@@ -3750,7 +3750,7 @@ class HouseApiAction  extends BaseAction
             $arr['category_list'] = $category_list;
 
 
-            $cat_id = $cat_id ? $cat_id : '_99';
+            $cat_id = $cat_id ? $cat_id : '0';
 
             // 处理下
             $pigcms_id = I('pigcms_id');

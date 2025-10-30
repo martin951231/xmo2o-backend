@@ -23,6 +23,10 @@
 									<label class="col-sm-1"><label for="title">标题</label></label>
 									<input class="col-sm-2" size="80" name="title" id="title" type="text" value="{pigcms{$news_info['title']}"/>
 								</div>
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="child_title">副标题</label></label>
+                                    <input class="col-sm-2" size="80" name="child_title" id="child_title" type="text" value="{pigcms{$news_info['child_title']}"/>
+                                </div>
 								
 								<div class="form-group">
 									<label class="col-sm-1"><label for="title">选择分类</label></label>
@@ -106,7 +110,12 @@
 <!--                                    </div>-->
 <!--                                    </label>-->
 <!--                                </div>-->
-
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="title">展示模式</label></label>
+                                    <label><input  value="1" name="show_mode" type="radio" <if condition="$news_info['show_mode'] eq 1"> checked="checked" </if> />&nbsp;&nbsp;纯文字</label>&nbsp;&nbsp;&nbsp;
+                                    <label><input  value="2" name="show_mode" type="radio" <if condition="$news_info['show_mode'] eq 2"> checked="checked" </if> />&nbsp;&nbsp;单图模式</label>&nbsp;&nbsp;&nbsp;
+                                    <label><input  value="3" name="show_mode" type="radio" <if condition="$news_info['show_mode'] eq 3"> checked="checked" </if> />&nbsp;&nbsp;多图模式</label>&nbsp;&nbsp;&nbsp;
+                                </div>
 								<div class="form-group">
 									<label class="col-sm-1">状态</label>
 									<label><input  value="1" name="status" type="radio" <if condition="$news_info['status'] eq 1"> checked="checked" </if> />&nbsp;&nbsp;显示</label>
@@ -148,7 +157,7 @@ KindEditor.ready(function(K){
 				allowImageUpload : true,
 				filterMode: true,
 				items : [
-					'source', '|', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+					'source', '|', 'fontname', 'fontsize','formatblock','lineheight', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
 					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
 					'insertunorderedlist', '|', 'emoticons', 'image', 'wordpaste'
 				],

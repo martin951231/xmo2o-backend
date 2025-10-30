@@ -58,22 +58,25 @@ class House_village_newsModel extends Model{
     public function get_list_by_cid($cat_id, $floor_id=0,$news_id=false)
     {
         $where = array(
-            'status'=>1,
+            'a.status'=>1,
+            'b.cat_status'=>1,
         );
         if($cat_id == '_99'){
-            $where['type']=0;
+            $where['a.type']=0;
         }else{
-            $where['cat_id']=$cat_id;
+            if( $cat_id != '0' ){
+                $where['a.cat_id']=$cat_id;
+            }
         }
 
         if($news_id != false){
             $ids=implode(',',$news_id);
-            $where['_string'] = "((news_id in (".$ids.") and is_whole = 1) OR is_whole = 0 )";
+            $where['_string'] = "((a.news_id in (".$ids.") and a.is_whole = 1) OR a.is_whole = 0 )";
         }else{
-            $where['_string'] =' (is_whole = 0 )';
+            $where['_string'] =' (a.is_whole = 0 )';
         }
         //到期时间判断
-        $where['_string'].=' and ( (end_time = 0) or (end_time >= '.time().') )';
+        $where['_string'].=' and ( (a.end_time = 0) or (a.end_time >= '.time().') )';
         if ($floor_id>0) {
 //            $where['_string'] .= "FIND_IN_SET('$floor_id', floor_txt) OR floor_txt=''";
 //            $where['_string'] = " FIND_IN_SET('$floor_id', floor_txt) OR floor_txt='' OR floor_txt IS NULL OR floor_txt=0";
@@ -81,7 +84,14 @@ class House_village_newsModel extends Model{
             //$where['_string'] .= "floor_txt=''";
 //            $where['_string'] = "floor_txt='' OR floor_txt IS NULL OR floor_txt=0";
         }
-        $list = $this->field(true)->where($where)->order('`is_hot` DESC,`add_time` DESC')->select();
+
+        $list = $this
+            ->join('as a LEFT JOIN ' . C('DB_PREFIX') . 'house_village_news_category as b ON a.cat_id=b.cat_id')
+            ->field('a.*,b.cat_name')
+            ->where($where)
+            ->order('a.is_hot DESC,a.add_time DESC')
+//            ->buildSql();
+            ->select();
         return $list;
     }
 

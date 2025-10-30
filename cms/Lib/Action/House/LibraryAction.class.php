@@ -3756,7 +3756,12 @@ class LibraryAction extends BaseAction{
             }
             //2020/8/24 end 新增
             $condition_village['village_id'] = $village_id;
-            $set = array('express_send_price' => $_POST['express_send_price']);
+            $set = array(
+                'express_send_price' => $_POST['express_send_price'],
+                'express_person_average_entrust' => $_POST['express_person_average_entrust'],
+                'express_project_daily_entrust' => $_POST['express_project_daily_entrust'],
+            );
+
             $result = D('House_village')->where($condition_village)->data($set)->save();
             if($result !== false){
                 $this->success('设置成功！', U('set_send_price_config'));
