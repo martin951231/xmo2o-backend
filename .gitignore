@@ -5,9 +5,12 @@ node_modules
 /runtime/
 /v20/runtime/
 /upload/
+/source/plan/
+/source/plan/sub_plan/
 # local env files
 .env.local
 .env.*.local
+/v20/app/community/controller/manage_api/v1/my.cnf
 
 # Log files
 npm-debug.log*
