@@ -356,7 +356,7 @@ class HomePageController extends CommunityBaseController
         if ($street_id)
             $where['area_id'] = $street_id;
         $where['status'] = 1;
-        $field = 'title,add_time,cat_id,title_img,news_id,read_sum';
+        $field = 'title,child_title,show_mode,img_list,add_time,cat_id,title_img,news_id,read_sum';
         $data = $area_street_news_service->getNewsLists($where, $field, $page, $limit, 'is_hot DESC,news_id DESC');
         return api_output(0, $data);
     }

@@ -55,9 +55,10 @@ class House_village_newsModel extends Model{
     }
 
     /*得到分类下的新闻列表*/
-    public function get_list_by_cid($cat_id, $floor_id=0,$news_id=false)
+    public function get_list_by_cid($cat_id, $floor_id=0,$news_id=false,$village_id)
     {
         $where = array(
+            'a.village_id' => $village_id,
             'a.status'=>1,
             'b.cat_status'=>1,
         );

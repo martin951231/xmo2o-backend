@@ -24,7 +24,10 @@
 									<label class="col-sm-1"><label for="title">标题</label></label>
 									<input class="col-sm-2" size="80" name="title" id="title" type="text" value="{pigcms{$news_info['title']}" <if condition="$is_edit" >disabled</if>/>
 								</div>
-								
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="child_title">副标题</label></label>
+                                    <input class="col-sm-2" size="80" name="child_title" id="child_title" type="text" value="{pigcms{$news_info['child_title']}"/>
+                                </div>
 								<div class="form-group">
 									<label class="col-sm-1"><label for="title">选择分类</label></label>
 									<select name='cat_id' <if condition="$is_edit" >disabled</if>>
@@ -64,6 +67,12 @@
 									<label><input <if condition="$is_edit" >disabled</if> value="0" name="is_hot" type="radio" <if condition="$news_info['is_hot'] neq 1"> checked="checked" </if> />&nbsp;&nbsp;否</label>
 									<span class="form_tips">若设置为热门，则会靠前显示</span>
 								</div>
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="title">展示模式</label></label>
+                                    <label><input  value="1" name="show_mode" type="radio" <if condition="$news_info['show_mode'] eq 1"> checked="checked" </if> />&nbsp;&nbsp;纯文字</label>&nbsp;&nbsp;&nbsp;
+                                    <label><input  value="2" name="show_mode" type="radio" <if condition="$news_info['show_mode'] eq 2"> checked="checked" </if> />&nbsp;&nbsp;单图模式</label>&nbsp;&nbsp;&nbsp;
+                                    <label><input  value="3" name="show_mode" type="radio" <if condition="$news_info['show_mode'] eq 3"> checked="checked" </if> />&nbsp;&nbsp;多图模式</label>&nbsp;&nbsp;&nbsp;
+                                </div>
 <!--								<div class="form-group">-->
 <!--									<label class="col-sm-1">是否重要通知</label>-->
 <!--									<label><input  value="1" name="is_important_notice" type="radio" <if condition="$news_info['is_important_notice'] eq 1"> checked="checked" </if> />&nbsp;&nbsp;是</label>-->

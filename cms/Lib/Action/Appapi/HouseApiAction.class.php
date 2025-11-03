@@ -3776,7 +3776,7 @@ class HouseApiAction  extends BaseAction
                 }
             }
             $floor_id = 0;
-            $news_list = D('House_village_news')->get_list_by_cid($cat_id, $floor_id,$news_id);
+            $news_list = D('House_village_news')->get_list_by_cid($cat_id, $floor_id,$news_id,$village_id);
             foreach ($news_list as $k => &$v) {
                 $v['add_time'] = date('m-d H:i', $v['add_time']);
             }
