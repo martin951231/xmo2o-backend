@@ -832,3 +832,30 @@ function filter_exp(&$value){
         $value .= ' ';
     }
 }
+
+
+function pre_dump(...$vars) {
+    echo "<pre>";
+    // 循环处理所有传入的变量（支持多个参数）
+    foreach ($vars as $var) {
+        var_dump($var);
+    }
+    echo "</pre>";
+}
+
+/**
+ * 筛选数组中指定字段等于目标值的元素
+ * @param array $array 原数组（多维数组，每个元素为关联数组）
+ * @param string $field 要判断的字段名
+ * @param mixed $value 目标值
+ * @return array 筛选后的数组
+ */
+function filterArrayByField($array, $field, $value) {
+    // 1. 先过滤出符合条件的元素
+    $filtered = array_filter($array, function($item) use ($field, $value) {
+        return isset($item[$field]) && $item[$field] === $value;
+    });
+    
+    // 2. 重置索引（从0开始连续编号）
+    return array_values($filtered);
+}

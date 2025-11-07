@@ -3760,6 +3760,10 @@ class LibraryAction extends BaseAction{
                 'express_send_price' => $_POST['express_send_price'],
                 'express_person_average_entrust' => $_POST['express_person_average_entrust'],
                 'express_project_daily_entrust' => $_POST['express_project_daily_entrust'],
+                // 'express_project_startDate' => strtotime( $_POST['express_project_startDate'] ),
+                // 'express_project_endDate' => strtotime( $_POST['express_project_endDate'] ),
+                 'express_project_startDate' => $_POST['express_project_startDate'],
+                'express_project_endDate' => $_POST['express_project_endDate'],
             );
 
             $result = D('House_village')->where($condition_village)->data($set)->save();

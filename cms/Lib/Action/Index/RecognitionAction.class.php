@@ -72,6 +72,8 @@ class RecognitionAction extends BaseAction{
 			$qrcode_return = D('Recognition')->get_new_qrcode($type,$id);
 		}
 
+        $qrcode_return['qrcode'] = 'https://cloud.mrsqfw.com/upload/qrcode/xiaoming.png';
+
 		if($_GET['img']){
 			if($type == 'scan_get_score'){
 				echo '<html><head><style>*{margin:0;padding:0;}</style></head><body style="position:relative;width:100%;height:100%;overflow:hidden;"><div style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);text-align:center;"><img src="'.$qrcode_return['qrcode'].'"/><p style="font-size:30px;">长按识别二维码 关注公众号</p></div></body></html>';

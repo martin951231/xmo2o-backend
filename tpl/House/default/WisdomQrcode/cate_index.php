@@ -26,6 +26,11 @@
                 <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('qrcode_record_index')}'" >二维码记录</button>
                 <else/>
                 <button class="btn btn-success" style="margin-bottom: 10px" disabled>二维码记录</button>
+            </if>&nbsp;&nbsp;
+            <if condition="in_array(548,$house_session['menus'])">
+                <button class="btn btn-success" style="margin-bottom: 10px" onclick="inspection_record_detail('{pigcms{$vo}')" >巡检统计</button>
+                <else/>
+                <button class="btn btn-success" style="margin-bottom: 10px" disabled>巡检统计</button>
             </if>
             <div class="row">
 
@@ -40,7 +45,8 @@
                                     <th width="10%">记录内容管理</th>
                                     <th width="10%">负责人管理</th>
                                     <th width="10%">巡检定位记录</th>
-                                    <th width="15%">添加时间</th>
+<!--                                    <th width="15%">添加时间</th>-->
+                                    <!-- <th width="15%">巡检统计</th> -->
                                     <th class="button-column" width="15%">操作</th>
                                 </tr>
                             </thead>
@@ -87,7 +93,11 @@
                                 <td>
                                     <span style="color:lightseagreen; cursor:pointer" onclick="position_record('{pigcms{$vo.id}','{pigcms{$vo.cate_name}')">查看</span>
                                 </td>
-                                           	<td><div class="tagDiv">{pigcms{$vo.add_time|date="Y-m-d H:i:s",###}</div></td>
+<!--                                           	<td><div class="tagDiv">{pigcms{$vo.add_time|date="Y-m-d H:i:s",###}</div></td>-->
+<!--                                巡检记录-->
+                                <!-- <td>
+                                    <span style="color:lightseagreen; cursor:pointer" onclick="inspection_record_detail('{pigcms{$vo}')">查看</span>
+                                </td> -->
                                             <td class="button-column">
                                              <if condition="!isset($vo['from_type']) OR $vo['from_type'] neq 1">
 												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('cate_edit',array('id'=>$vo['id']))}">修改</a>&nbsp;
@@ -123,6 +133,17 @@ function position_record(cate_id,title) {
         title:'查看【'+title+'】记录',
         content: url,
         area: ['70%', '65%'],
+        maxmin: false
+    });
+}
+
+function inspection_record_detail(cate_id) {
+    var url = "{pigcms{:U('WisdomQrcode/inspection_record_detail')}"+"&cate_id=" + cate_id;
+    layer.open({
+        type: 2,
+        title:'查看巡检记录',
+        content: url,
+        area: ['80%', '90%'],
         maxmin: false
     });
 }
