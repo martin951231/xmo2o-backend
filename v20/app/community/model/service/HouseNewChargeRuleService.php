@@ -200,6 +200,7 @@ class HouseNewChargeRuleService
         if (isset($param['keyword']) && !empty($param['keyword'])) {
             $where[] = ['charge_name', 'like', '%' . $param['keyword'] . '%'];
         }
+        $where[] = ['status', '<>', 4];
         $order = 'id DESC';
         $selectdata=0;
         if(isset($param['type']) && $param['type'] == 'selectdata'){
