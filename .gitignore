@@ -7,6 +7,7 @@ node_modules
 /upload/
 /source/plan/
 /source/plan/sub_plan/
+/v20/public/platform/
 # local env files
 .env.local
 .env.*.local
