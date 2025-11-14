@@ -1635,7 +1635,7 @@ function webToMiniApp(path, extraParams) {
 			Object.assign(params, extraParams);
 		}
 		var open_miniapp_param = {
-			'appid': '__UNI__8799035',
+			'appid': config.staff_uni_appid ||'__UNI__8799035',
 			'path': path,
 			'arguments': JSON.stringify(params)
 		};

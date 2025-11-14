@@ -39,9 +39,14 @@ var common = {
 		if (typeof(url) == 'undefined') {
 			return false;
 		}
-		requestHttpUrl = requestUrl + url;
+		let requestHttpUrl = requestUrl + url;
 		if(!params){
 			params = {};
+		}
+		let v20_request = !!params.v20_request;
+		if(v20_request) {
+			requestHttpUrl = requestV20Url + url;
+			delete params.v20_request;
 		}
 		params.now_city = common.getCache('now_city');
 		params.now_lang = now_lang;
@@ -73,6 +78,11 @@ var common = {
 					loadingTip.hide();
 				}
 				if(res){
+					if(v20_request){
+						res.errorCode = res.status === 1000 ? '0' : res.status;
+						res.result = res.data
+						res.errorMsg = res.msg
+					}
 					if (res.errorCode == '0') {
 						sucFun(res.result);
 					} else if (errFun) {
@@ -824,6 +834,7 @@ if(!requestDomain || requestDomain == ''){
 	requestDomain = document.domain;
 }
 requestUrl = (window.location.protocol == 'http:' ? 'http:' : 'https:' ) + '//' + requestDomain + '/appapi.php?c=';
+requestV20Url = (window.location.protocol === 'http:' ? 'http:' : 'https:' ) + '//' + requestDomain + '/v20/public/index.php/';
 
 if(urlParam.now_city){
 	common.setCache('now_city',urlParam.now_city);

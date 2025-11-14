@@ -45,7 +45,7 @@ p{margin: 0;padding: 0;}
 .mui-card .mui-card-content a.mui-pull-right{
 	display: inline-block;
 	/*line-height: 84px;*/
-	padding: 6px 12px;
+	padding: 4px 8px;
 	color:#fff;
 	font-weight: 800;
 	border-radius: 5px;
@@ -53,15 +53,18 @@ p{margin: 0;padding: 0;}
 	font-size: 13px;
 }
 .mui-card .mui-card-content a.close{
-	background: #ffa200;
+	background: #a3a0a1;
 }
 .mui-card .mui-card-content a.open{
 	background: #24CB74;
 }
+.mui-card .mui-card-content a.edit{
+	background: #ffa200;
+}
 @media (min-width: 320px) {
 	.mui-card .mui-card-content img{
-		width: 120px;
-		height: 73px;
+		width: 100px;
+		height: 100px;
 		margin-right: 10px;
 	}
 	.mui-card .mui-card-content{
@@ -75,8 +78,8 @@ p{margin: 0;padding: 0;}
 }
 @media (min-width: 360px) {
 	.mui-card .mui-card-content img{
-		width: 160px;
-		height: 97px;
+		width: 100px;
+		height: 100px;
 		margin-right: 10px;
 	}
 	.mui-card .mui-card-content{

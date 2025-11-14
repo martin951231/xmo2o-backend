@@ -98,3 +98,6 @@
 .icon-bianji::before {
 	content: '\e7a1';
 }
+.icon-scan::before{
+	content: '\e68a';
+}

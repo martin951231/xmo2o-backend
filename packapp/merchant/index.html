@@ -128,6 +128,12 @@
                         <div class="order-num"></div>
                         <div class="total-text">{{L_('我的余额/元')}}</div>
                     </div>
+                    <div class="line" v-if="merchant_money_info.maiyatian_bind"></div>
+                    <div class="item" v-if="merchant_money_info.maiyatian_bind" @click="goUrl('maiyatian_money_records.html')">
+                        <div class="price">{{merchant_money_info.maiyatian_mer_money}}</div>
+                        <div class="order-num"></div>
+                        <div class="total-text">{{L_('麦芽田余额/元')}}</div>
+                    </div>
                 </div>
             </div>
             <!-- 轮播图 -->
@@ -230,8 +236,8 @@
 <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/weui/weui.min.js"></script>
-<script src="js/common.js?t=4" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js?t=43" type="text/javascript" charset="utf-8"></script>
 <script src="js/sortable.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/work/merchant_index.js?t=14"></script>
+<script src="js/work/merchant_index.js?t=147"></script>
 
 </html>

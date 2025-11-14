@@ -151,7 +151,7 @@ function indexData(DeliverUser){
 		if(typeof(is_google_map) == 'string' && is_google_map != "" && is_google_map.length > 5){ 
 			$.getScript('https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places&key='+is_google_map+'&callback=initialize_map');
 		}else{
-			$.getScript('https://api.map.baidu.com/api?v=2.0&ak=4c1bb2055e24296bbaef36574877b4e2&callback=initialize_map');
+			$.getScript('https://api.map.baidu.com/api?v=2.0&ak=' + baidu_map_key + '&callback=initialize_map');
 		}
 		locationEvent();
 		setInterval('locationEvent()',10000);	//10秒轮询上报一次

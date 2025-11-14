@@ -95,6 +95,15 @@ class Village_group_activityModel extends Model
             //得到默认活动的商品list
             $goodsModel = D("Village_group_goods");
             $return['goods_list'] = $goodsModel->get_goods($leader_id, 0, $now_activity_id, 1, 4, ['goods.is_new_user' => 0]);
+            foreach ($return['goods_list'] as $key => $value){
+                $goods_activity_info = D("Village_group_activity_goods")->getActivityInfo($value['goods_id'], 2);
+                if($goods_activity_info['activity_id'] == $now_activity_id){
+                    if($goods_activity_info && $goods_activity_info['buy_price'] < $value['price']){
+                        $return['goods_list'][$key]['old_price'] = $return['goods_list'][$key]['price'];
+                        $return['goods_list'][$key]['price'] = $goods_activity_info['buy_price'];
+                    }
+                }
+            }
         }
         return $return;
     }

@@ -640,15 +640,19 @@ function open_map(fun) {
 
 }
 function getPositionInfo(lat,lng){
-    if(config.tianditu_web_key){
-        $.post(`/v20/public/index.php/common/api.BaiduMap/reverseGeocoding`,{lng,lat,coordinate_type:'wgs84'},function(res){
-			if(res.status == 1000){
-				getPositionAdress(res.data)
-			}
-		})
-    }else{
-    $.getJSON('https://api.map.baidu.com/geocoder/v2/?ak=4c1bb2055e24296bbaef36574877b4e2&location='+lat+','+lng+'&output=json&pois=1&callback=getPositionAdress&json=?');
+    let params = {
+        lat,
+        lng
     }
+    if(config.tianditu_web_key){
+        params.coordinate_type == 'wgs84'
+        
+    }
+    $.post(`/v20/public/index.php/common/api.BaiduMap/reverseGeocoding`,params,function(res){
+        if(res.status == 1000){
+            getPositionAdress(res.data)
+        }
+    })
 }
 function localSearchResult(result){
     //根据返回类型解析搜索结果

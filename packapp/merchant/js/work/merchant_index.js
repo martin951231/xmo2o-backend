@@ -266,7 +266,12 @@ new Vue({
 
       //页面跳转
       if (item.path && !this.menuEdit) {
-        openWebviewUrl(requestStaticDomain + item.path);
+        //path包含了http则直接跳转
+        if (item.path.indexOf('http') !== -1) {
+          openWebviewUrl(item.path);
+        } else {
+          openWebviewUrl(requestStaticDomain + item.path);
+        }
       }
     },
     closed() {

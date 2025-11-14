@@ -51,11 +51,15 @@ common.http('Merchantapp&a=card_new_coupon_config',{'ticket':ticket,'client':cli
 
 //加载页面渲染指定店铺
 common.http('Merchantapp&a=merchant_money_info',{'ticket':ticket,'client':client,'type':'shop'},function(data){
-	// console.log(data);
 	var str='';
 	$.each(data.store_list,function(i,val){
-		str+='<li><i class="add_services active" data-id='+val.store_id+'></i>'+val.name+' </li>';
+		if(val.store_id > 0) {
+			str+='<li><i class="add_services active" data-id='+val.store_id+'></i>'+val.name+' </li>';
+		}
 	});
+	if(str == '') {
+		str = '<div style="height: 40px;line-height: 40px;">请先开启店铺</div>';
+	}
 	$('.change_shop').html(str);
 });
 $('.mui-content').off('click','.change_shop li').on('click','.change_shop li',function(e){

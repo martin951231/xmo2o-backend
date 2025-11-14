@@ -70,6 +70,7 @@
 				{{# } else if(d[i].appoint_status==0) { }}
 					<a  href="#" class="mui-pull-right cli_status open">{{ L_('开启') }}</a>
 				{{# } }}
+				<!-- <a href="#" class="mui-pull-right cli_status edit" style="margin-right: 3px;">{{ L_('编辑') }}</a> -->
 	    	</div>
 	    </div>	
 	{{# } }}
@@ -118,13 +119,23 @@ mui('.mui-content').on('tap','.cli_status',function(e){
 	var status=0;
 	var me=this;
 	var appoint_id=$(this).parents('.mui-card').attr('data-id');
-	if($(this).text()=="开启"){
-		status=1;
+
+	if ($(this).hasClass('open')) {
+		status = 1;
 		$(this).text('关闭').removeClass('open').addClass('close');
-	}else{
-		status=0;
+	} else if ($(this).hasClass('close')) {
+		status = 0;
 		$(this).text('开启').removeClass('close').addClass('open');
+	} else if ($(this).hasClass('edit')) {
+		openWindow({
+			url: 'booking_edit.html?appoint_id=' + appoint_id,
+			id: 'booking_edit'
+		});
+		return false;
+	} else {
+		return false;
 	}
+
 	common.http('Merchantapp&a=appoint_status',{'ticket':ticket,'client':client,'appoint_id':appoint_id,'appoint_status':status},function(data){
 		console.log(data);
 		if(data.length==0){

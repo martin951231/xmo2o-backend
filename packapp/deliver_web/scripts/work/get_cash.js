@@ -16,14 +16,29 @@ var app = new Vue({
 		account: "", //支付宝账号
 		isCanSubmit: true, // 限制重复点击
         currencyTxt: L_('元'),
-        currency: '￥'
+        currency: '￥',
+		bankCardShow: false,
+		showBankCardPicker: false,
+		showBankPopType: '',
+		pickerColumns: [],
+		form: {},
+		bankCardList: [],
+		bank_id: '',
+		area_list: [],
+		minimumWithdrawalAmount: 0, //最低提现金额
+		withdrawPlaceholder: "", //提现输入框提示语
 	},
 	created() {
 		_this = this;
 		this.getCashInfo();
 		getConfig(function (config) {
-			_this.typeList = config.withdraw_type;
 			_this.accountName = config.wechat_name;
+			_this.minimumWithdrawalAmount = (config.deliver_minimum_withdrawal_amount * 1);
+			if(_this.minimumWithdrawalAmount > 0){
+				_this.withdrawPlaceholder = L_("最低金额X1元",{X1:_this.minimumWithdrawalAmount})
+			}else{
+				_this.withdrawPlaceholder = L_("请输入提现金额")
+			}
 			if (_this.typeList.length) {
 				_this.cashType = _this.typeList[0].value;
 				_this.cashTypeTxt = _this.typeList[0].name;
@@ -44,6 +59,17 @@ var app = new Vue({
 					_this.allMoney = (data.money * 1).toFixed(2);
 					_this.cashMoney = (data.can_withdraw_money * 1).toFixed(2);
 					_this.rate = (data.service_charge_percent * 1).toFixed(2);
+					_this.bankCardList = data.bank_list
+					_this.area_list = data.area_list
+					_this.typeList = data.select_type.map(v => {
+						v.name = v.label;
+						return v
+					});
+					data.bank_list.forEach(v=>{
+						if(v.is_default == 1){
+							_this.bank_id = v.id
+						}
+					})
 				}
 			);
 		},
@@ -92,6 +118,10 @@ var app = new Vue({
 				this.$toast(L_("当前提现金额大于可提现金额"));
 				return;
 			}
+			if (Number(this.minimumWithdrawalAmount) > 0 && Number(this.inputMoney) < Number(this.minimumWithdrawalAmount)){
+				this.$toast(L_("最低提现金额为：X1元",{X1:this.minimumWithdrawalAmount}));
+				return;
+			}
 			var params = {
 				truename: this.name,
 				money: this.inputMoney,
@@ -105,6 +135,16 @@ var app = new Vue({
 					return;
 				}
 			}
+
+			if(this.cashType == 'bank'){
+				if(!this.bank_id){
+					this.$toast(L_("请选择银行卡"));
+					return
+				}
+				_this.goCash(params);
+				return
+			}
+
 			common.http(
 				"/deliver/User/isBind",
 				{ noTip: true, type: this.cashType },
@@ -128,6 +168,7 @@ var app = new Vue({
 			);
 		},
 		goCash(params) {
+			params.bank_id = this.bank_id;
 			if (!_this.isCanSubmit) {
 				return;
 			}
@@ -176,6 +217,119 @@ var app = new Vue({
 			oInput.style.display = "none";
 			oInput.blur();
 			this.$toast(L_("复制成功"));
+		},
+		addBankCard(){
+			this.form = {
+				province_id: '',
+				city_id: '',
+				province_name: '',
+				city_name: '',
+				is_default: 0,
+				account_name: '',
+				account: '',
+				remark: '',
+				branch: '',
+			}
+			this.bankCardShow = true;
+		},
+		editBankCard(item){
+			this.form = JSON.parse(JSON.stringify(item));
+			if(this.form.province_id){
+				const data = this.area_list.find(v=>v.value == this.form.province_id)
+				this.form.province_name = data.title || ''
+			}
+			if(this.form.city_id){
+				this.area_list.forEach(p=>{
+					p.children.forEach(c=>{
+						if(c.value == this.form.city_id){
+							this.form.city_name = c.title || ''
+						}
+					})
+				})
+			}
+			this.bankCardShow = true;
+		},
+		delBankCard(item){
+			vant.Dialog.confirm({
+				title: L_("提示"),
+				message: L_("确认删除吗？"),
+			  })
+			.then(() => {
+				common.http(
+					"/deliver/User/deleteBankCard",
+					{bank_id: item.id},
+					data=> {
+						setTimeout(()=>{
+							this.$toast(L_('删除成功'));
+						},150)
+						this.getBankCardList();
+					}
+				);
+			})
+		},
+		onSubmit(values){
+			this.form.bank_id = this.form.id || ''
+			common.http(
+				"/deliver/User/createBankCard",
+				this.form,
+				data=> {
+					this.bankCardShow = false;
+					setTimeout(()=>{
+						this.$toast(L_(this.form.bank_id?"编辑成功":'添加成功'));
+					},150)
+					this.getBankCardList();
+				}
+			);
+		},
+		onPickerConfirm(e){
+			this.form[this.showBankPopType] = e.value;
+			if(this.showBankPopType == 'province_id'){
+				this.form.province_name = e.text;
+			}
+			if(this.showBankPopType == 'city_id'){
+				this.form.city_name = e.text;
+			}
+			this.showBankCardPicker = false;
+		},
+		openBankCardPicker(type){
+			this.showBankPopType = type;
+			if(type == 'province_id'){
+				this.pickerColumns = this.area_list.map(v=>{
+					return {
+						text: v.title,
+						value: v.value
+					}
+				})
+			}
+			if(type == 'city_id'){
+				let arr = []
+				this.area_list.forEach(p=>{
+					if(p.value == this.form.province_id){
+						p.children.forEach(c=>{
+							arr.push({
+								text: c.title,
+								value: c.value
+							})
+						})
+					}
+				})
+				this.pickerColumns = arr
+			}
+			this.showBankCardPicker = true;
+		},
+		getBankCardList() {
+			common.http(
+				"/deliver/User/wallet",
+				{ },
+				function (data) {
+					_this.bankCardList = data.bank_list
+					data.bank_list.forEach(v=>{
+						if(v.is_default == 1){
+							_this.bank_id = v.id
+						}
+					})
+				}
+			);
 		},
 	},
 });

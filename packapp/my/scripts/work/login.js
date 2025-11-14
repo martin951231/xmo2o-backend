@@ -129,6 +129,8 @@ var app = new Vue({
         let from_type = ''
         if(this.referer.indexOf('parkingFeetwo') != -1){
             from_type = 'park_new'
+        }else if(urlParam.from_type){
+            from_type = urlParam.from_type
         }
         
         if (common.checkDouyin()) {

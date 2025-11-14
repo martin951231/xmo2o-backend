@@ -1303,6 +1303,7 @@ function getCommonConfig(){
 			common.setCache('iosBao',data.storestaff_ios_package_name);
 			common.setCache('ashop',data.shop_name);
 			common.setCache("lang_list", data.lang_config.lang_list, true);
+			common.setCache('jif',data.score_name);
 			get_lang_list(now_lang)
           },
           function (data) {
@@ -1314,7 +1315,7 @@ function getCommonConfig(){
 			common.setCache('androidBao',config.storestaff_android_package_name);
 			common.setCache('iosBao',config.storestaff_ios_package_name);
 			common.setCache('ashop',config.shop_name);
-
+			common.setCache('jif',config.score_name);
 			common.setCache("lang_list", config.lang_config.lang_list, true);
 			get_lang_list(now_lang)
 		}

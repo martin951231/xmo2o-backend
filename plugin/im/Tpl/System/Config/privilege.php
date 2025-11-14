@@ -76,7 +76,7 @@
                             <input type="checkbox" <if condition="empty($kefuParams) || $kefuParams['customer_unrespon_switch'] == 1">checked="" value="1"</if> name="customer_unrespon_switch" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">
                         </div>
                         <p class="notice">
-                            开启后，在设置的时间内客户没有新消息产生，系统将自动关闭会话，客户再发消息会触发重新分配；在自动关闭前2分钟，客户和客服都会收到即将关闭的提示语</p>
+                            开启后，在设置的时间内客户没有新消息产生，系统将自动关闭会话，客户再发消息会触发重新分配</p>
                     </div>
 
                     <div class="layui-form-item">
@@ -108,7 +108,7 @@
                                    lay-filter="switchTest"
                                    lay-text="ON|OFF" <if condition="empty($kefuParams) || $kefuParams['customer_unreceived_switch'] == 1">checked="" value="1"</if>>
                         </div>
-                        <p class="notice">开启后，在设置的时间内客服没有回复客户，系统将自动关闭会话，客户继续发消息会触发重新分配；在自动关闭前2分钟，客服与客户均会收到即将关闭的提示语</p>
+                        <p class="notice">开启后，在设置的时间内客服没有回复客户，系统将自动关闭会话，客户继续发消息会触发重新分配</p>
                     </div>
 
                     <div class="layui-form-item">

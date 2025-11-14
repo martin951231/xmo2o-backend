@@ -833,6 +833,26 @@ if(!is_google_map){
 }
 
 
+var baidu_map_key = common.getCache('baidu_map_key',true);
+if(!baidu_map_key){
+	$.ajax({
+		url:requestUrl+'Deliver&a=config',
+		data:{},
+		async:false,
+		success:function(data){
+            common.setCache('baidu_map_key',data.result.baidu_map_key,true);
+            if(data.result.baidu_map_key != '-1'){
+                baidu_map_key  = data.result.baidu_map_key;
+            }
+		}
+	});
+}else{
+    if(baidu_map_key == '-1'){
+        baidu_map_key  = '';
+    }
+}
+
+
 /*拨打电话事件*/
 $(document).on('click','.openMap',function() {
     var that = $(this);

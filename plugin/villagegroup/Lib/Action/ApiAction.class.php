@@ -408,6 +408,13 @@ class ApiAction extends BaseAction{
             $data[$key]['cart_nums'] = $goods_count[$value['goods_id']];
             $data[$key]['checked'] = $goods_check[$value['goods_id']];
             $data[$key]['packing_fee'] = $value['packing_fee'] > 0 ? ($value['packing_fee'] == intval($value['packing_fee']) ? intval($value['packing_fee']) : $value['packing_fee']) : 0;
+            $goods_activity_info = D("Village_group_activity_goods")->getActivityInfo($value['goods_id'], 2);
+            if($goods_activity_info && $goods_activity_info['start_time'] < time() && $goods_activity_info['end_time'] > time()){
+                if($goods_activity_info['buy_price'] < $value['price']){
+                    $data[$key]['old_price'] = $data[$key]['price'];
+                    $data[$key]['price'] = $value['price'] = $goods_activity_info['buy_price'];
+                }
+            }
             $output['all_nums'] += $goods_count[$value['goods_id']];
             if($goods_check[$value['goods_id']] == 1){
                 $output['all_money'] += ($value['price']+$value['packing_fee'])*$goods_count[$value['goods_id']];
@@ -490,6 +497,7 @@ class ApiAction extends BaseAction{
         $goods_detail['buy_status'] = 1;//是否可以购买 0=不可以 1=可以
         $goods_detail['buy_status_notips'] = '';//不可以买的原因
         $goods_activity_info = $activityGoodsModel->getActivityInfo($goods_id, 2);
+        $activity_price = -1;
         if($goods_detail['start_time'] > time()){
             $goods_detail['count_down_title'] = "距上架时间";//即将开始的商品有效期
             $goods_detail['advance_save'] = 1;//是预售
@@ -501,6 +509,9 @@ class ApiAction extends BaseAction{
         elseif($goods_activity_info){
             $goods_detail['count_down_title'] = "距活动结束";//正在开始的活动，距离结束
             $goods_detail['count_down'] = $goods_activity_info['end_time'] - time();
+            if($goods_detail['count_down'] > 0){
+                $activity_price = $goods_activity_info['buy_price'];
+            }
         }
         elseif($nostart = $activityGoodsModel->getNoStartActivityInfo($goods_id, 2)){
             $goods_detail['count_down_title'] = "距活动开始";//即将开始的活动
@@ -712,6 +723,10 @@ class ApiAction extends BaseAction{
             }
         }
 
+        if($activity_price > -1 && $output['goods_detail']['price'] > $activity_price){
+            $output['goods_detail']['old_price'] = $output['goods_detail']['price'];
+            $output['goods_detail']['price'] = $activity_price;
+        }
         $output['goods_detail']['price'] = floatval(getFormatNumber($output['goods_detail']['price']));
         $output['goods_detail']['old_price'] = floatval(getFormatNumber($output['goods_detail']['old_price']));
 
@@ -2639,6 +2654,14 @@ class ApiAction extends BaseAction{
                     }
                 }
             }
+
+            //积分抵扣不小于0.01元才算使用
+            if (bccomp($score_deducte, "0.01", 2) == -1) {
+                $score_can_use_count=0;
+                $score_deducte=0;
+                $use_score = 0;
+            }
+
             //可用积分
             $total_money = $total_money - $score_deducte; // 实际需要支付的金额 扣除积分抵扣金额
         }

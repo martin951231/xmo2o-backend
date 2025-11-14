@@ -419,19 +419,31 @@ class PaotuiAction extends BaseAction{
             if ($id) {
                 $config_time['service_delivery_fee'] = PD('Deliver_service_set')->getStoreDeliveryFee($id, $config_time['service_delivery_fee']);
             }
-            
         } else {
             // 获取对应时间信息
-//            $time_info = $this->publish_time_info($now_category['type']);
             $time_info = PD('Deliver_service_set')->publish_time_info($now_category['type'], $address_msg, true, $id);
-
-
             $config_time = $time_info['config_time'];
             $daysList = $time_info['daysList'];
             $timeList = $time_info['timeList'];
         }
-
-
+        //开启了运费模板
+        if (C('config.open_paotui_price_template') && in_array($now_category['type'], [2, 3])) {
+            try {
+                $from = $_POST['from'] ?? '';
+                $specialDelivery = intval($_POST['special_delivery']);
+                if ($now_category['type'] == 2) {
+                    //帮我买
+                    $business = 1;
+                } else if ($now_category['type'] == 3) {
+                    //帮我送
+                    $business = $from == 'merchant' ? 3 : 2;
+                }
+                $result = D('Paotui_price_template')->calFee($business, 1, 1, $specialDelivery,$_POST['mer_id']);
+                $baseFee = $result['basic_distance_price'];
+            } catch (\Exception $e) {
+                returnCodeError($e->getMessage());
+            }
+        }
 
         $datas['now_category'] = $now_category; //分类详情
 
@@ -478,6 +490,9 @@ class PaotuiAction extends BaseAction{
                 foreach ($dv['timeList'] as &$tv) {
                     $tv['discount_money'] = "0";
                     $tv['discount_id'] = "0";
+                    if(isset($baseFee)){
+                        $tv['delivery_fee'] = $baseFee;
+                    }
                     if ($discountList) {
                         $daytime = explode(':', $tv['time']);
                         $daytime = $daytime[0] * 3600 + $daytime[1] * 60;
@@ -549,8 +564,6 @@ class PaotuiAction extends BaseAction{
                 }
             }
         }
-
-
         returnCodeOk($datas);
     }
 
@@ -861,6 +874,11 @@ class PaotuiAction extends BaseAction{
         $weight_price = $compute_money['weight_price'];
         $total_price = $compute_money['total_price'];
         $tip_price = $_POST['tip_price'] ? $_POST['tip_price'] : 0;
+        //增值服务费用、名称、是否专送
+        $added_fee = $compute_money['added_fee'] ?? 0;
+        $added_fee_name = $compute_money['added_fee_name'] ?? '';
+        $added_fee_list = $compute_money['added_fee_list'] ?? [];
+        $special_delivery = isset($_POST['special_delivery']) ? intval($_POST['special_delivery']) : 0;
         $data['add_time'] = time();
 
         if ($is_third<0) {
@@ -937,7 +955,6 @@ class PaotuiAction extends BaseAction{
         }
 
         if($res){
-
             if ($coupon_id) {//使用优惠券
                 $hadpullData = M('System_coupon_hadpull')->where(['coupon_id' => $coupon_id, 'uid' => $this->_uid, 'is_use' => 0])->find();
                 if ($hadpullData) {
@@ -1005,6 +1022,12 @@ class PaotuiAction extends BaseAction{
                 $giveData['remarks'] = $this->filterEmoji2($_POST['remarks']);
             }
 
+            $giveData['added_fee'] =  $added_fee;
+            $giveData['added_fee_name'] =  $added_fee_name;
+            $giveData['added_fee_list'] =  json_encode($added_fee_list,JSON_UNESCAPED_UNICODE);
+            $giveData['special_delivery'] =  $special_delivery;
+            $giveData['from_mer_id'] = isset($_POST['mer_id']) ? intval($_POST['mer_id']) : 0;
+            $giveData['price_template_id'] = $compute_money['price_template_id'] ?? 0;
 
             $giveData['basic_distance_price'] =  $basic_distance_price;
             $giveData['distance_price'] =  $distance_price;
@@ -1299,6 +1322,11 @@ class PaotuiAction extends BaseAction{
         $distance_price = $compute_money['extra_distance_price'];
         $tip_price = $compute_money['tip_price'];
         $total_price = $compute_money['total_price'];
+        //增值服务费用、名称、是否专送
+        $added_fee = $compute_money['added_fee'] ?? 0;
+        $added_fee_name = $compute_money['added_fee_name'] ?? '';
+        $added_fee_list = $compute_money['added_fee_list'] ?? [];
+        $special_delivery = isset($_POST['special_delivery']) ? intval($_POST['special_delivery']) : 0;
 
         $data['add_time'] = time();
         $data['cid'] = $_POST['cid'];
@@ -1386,6 +1414,11 @@ class PaotuiAction extends BaseAction{
             $buyData['distance_price'] =  $distance_price;
             $buyData['tip_price'] =  $tip_price;
             $buyData['total_price'] =  $total_price;
+            $buyData['added_fee'] =  $added_fee;
+            $buyData['added_fee_name'] =  $added_fee_name;
+            $buyData['added_fee_list'] =  json_encode($added_fee_list,JSON_UNESCAPED_UNICODE);
+            $buyData['special_delivery'] =  $special_delivery;
+            $buyData['price_template_id'] = $compute_money['price_template_id'] ?? 0;
             if ($_POST['img']) {
                 $buyData['img'] =  $_POST['img'];
             } elseif ($img) {
@@ -1584,11 +1617,34 @@ class PaotuiAction extends BaseAction{
                 $discountList = array_values($discountList);
             }
         }
+
+        //开启了运费模板
+        if (C('config.open_paotui_price_template') && in_array($type, [2, 3])) {
+            try {
+                $from = $_POST['from'] ?? '';
+                $specialDelivery = intval($_POST['special_delivery']);
+                if ($type == 2) {
+                    //帮我买
+                    $business = 1;
+                } else if ($type == 3) {
+                    //帮我送
+                    $business = $from == 'merchant' ? 3 : 2;
+                }
+                $result = D('Paotui_price_template')->calFee($business, 1, 1, $specialDelivery,$_POST['mer_id']);
+                $baseFee = $result['basic_distance_price'];
+            } catch (\Exception $e) {
+                returnCodeError($e->getMessage());
+            }
+        }
+
         foreach ($time_info['timeList'] as &$dv) {
             if (!empty($dv)) {
                 foreach ($dv as &$tv) {
                     $tv['discount_money'] = "0";
                     $tv['discount_id'] = "0";
+                    if(isset($baseFee)){
+                        $tv['delivery_fee'] = $baseFee;
+                    }
                     if ($discountList) {
                         $daytime = explode(':', $tv['time']);
                         $daytime = $daytime[0] * 3600 + $daytime[1] * 60;
@@ -1942,8 +1998,6 @@ class PaotuiAction extends BaseAction{
                 );
                 $destance_sum = $this->distance_calculation($distance);
             }
-
-
             // 如果传入了时间值
             if ($_POST['time_info']) {
                 if (stripos(trim($_POST['time_info']),'(') || stripos(trim($_POST['time_info']),')')) {
@@ -2117,6 +2171,37 @@ class PaotuiAction extends BaseAction{
                     returnCodeError(L_('发货/送达地址经纬度信息错误！'));
                 }
             }
+        }
+
+        if (C('config.open_paotui_price_template') && in_array($now_category['type'], [2, 3])) {
+            try {
+                $from = $_POST['from'] ?? '';
+                $specialDelivery = intval($_POST['special_delivery']);
+                if ($now_category['type'] == 2) {
+                    //帮我买
+                    $business = 1;
+                } else if ($now_category['type'] == 3) {
+                    //帮我送
+                    $business = $from == 'merchant' ? 3 : 2;
+                }
+                $result = D('Paotui_price_template')->calFee($business, $destance_sum * 1000, $_POST['weight'], $specialDelivery,$_POST['mer_id']);
+                $basic_distance_price = $result['basic_distance_price'];
+                $distance_price = $result['extra_distance_price'];
+                $basic_weight_price = $result['basic_weight_price'];
+                $weight_price = $result['basic_weight_price'] + $result['extra_weight_price'];
+                $total = $distance_price + $basic_distance_price + $weight_price + $tip_price + $result['added_fee'];
+                $total_price = round_number($total, 2);
+                $msg['added_fee_name'] = $result['added_fee_name'];
+                $msg['added_fee'] = $result['added_fee'];
+                $msg['added_fee_list'] = $result['added_fee_list'];
+                $msg['price_template_id'] = $result['price_template_id'];
+            } catch (\Exception $e) {
+                returnCodeError($e->getMessage());
+            }
+        } else {
+            $msg['added_fee_name'] = '';
+            $msg['added_fee'] = 0;
+            $msg['added_fee_list'] = [];
         }
 
         $msg['old_price'] = floatval($total_price);

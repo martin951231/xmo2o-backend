@@ -115,7 +115,6 @@ class IndexAction extends BaseAction{
             $Model->rollback();
             fdump('==========投票添加失败================'.__LINE__, 'add_vote', true);
             fdump($vote_data, 'add_vote', true);
-            fdump(M('Plugin_vote'), 'add_vote', true);
             returnCode(4, [], '投票添加失败！');
         }
         // 以上是投票主体内容 pigcms_plugin_vote
@@ -189,7 +188,6 @@ class IndexAction extends BaseAction{
                 $Model->rollback();
                 fdump('==========投票区块添加失败================'.__LINE__, 'add_vote', true);
                 fdump($block, 'add_vote', true);
-                fdump($d_plugin_vote_block, 'add_vote', true);
                 returnCode(4, [], '投票添加失败！');
                 break;
             } elseif (3==intval($item['block_type']) || 4==intval($item['block_type']) && $option) {
@@ -226,7 +224,6 @@ class IndexAction extends BaseAction{
                     $Model->rollback();
                     fdump('==========投票区块添加失败================'.__LINE__, 'add_vote', true);
                     fdump($option_arr, 'add_vote', true);
-                    fdump($d_plugin_vote_option, 'add_vote', true);
                     returnCode(4, [], '投票添加失败！');
                     break;
                 }
@@ -401,7 +398,6 @@ class IndexAction extends BaseAction{
             $Model->rollback();
             fdump('==========投票修改失败================'.__LINE__, 'edit_vote', true);
             fdump($vote_data, 'edit_vote', true);
-            fdump(M('Plugin_vote'), 'edit_vote', true);
             returnCode(14, [], '投票修改失败！');
         }
         // 以上是投票主体内容 pigcms_plugin_vote
@@ -488,7 +484,6 @@ class IndexAction extends BaseAction{
                 $Model->rollback();
                 fdump('==========投票区块修改添加失败================'.__LINE__, 'edit_vote', true);
                 fdump($block, 'edit_vote', true);
-                fdump($d_plugin_vote_block, 'edit_vote', true);
                 returnCode(14, [], '投票修改失败！');
                 break;
             } elseif (3==intval($item['block_type']) || 4==intval($item['block_type']) && $option) {
@@ -504,29 +499,29 @@ class IndexAction extends BaseAction{
                         returnCode(3, [], '请填写选项名称！');
                         break;
                     }
-                    $option_data['option_type'] = intval($val['option_type']);
+                    $save_option_data=$option_data;
+                    $save_option_data['option_type'] = intval($val['option_type']);
                     if (0==intval($val['option_type']) && empty($val['option_name'])) {
-                        $option_data['option_name'] = '其他';
+                        $save_option_data['option_name'] = '其他';
                     } else {
-                        $option_data['option_name'] = trim($val['option_name']);
+                        $save_option_data['option_name'] = trim($val['option_name']);
                     }
-                    $option_data['last_time'] = $now_time;
+                    $save_option_data['last_time'] = $now_time;
                     // 如果存在选项id 单独进行修改 option_id
                     if (intval($val['option_id'])>0) {
-                        $option_data['option_id'] = intval($val['option_id']);
-                        $set_id = $d_plugin_vote_option->data($option_data)->save();
+                        $save_option_data['option_id'] = intval($val['option_id']);
+                        $set_id = $d_plugin_vote_option->data($save_option_data)->save();
                         $option_id_arr[] = intval($val['option_id']);
                         if (!$set_id) {
                             $Model->rollback();
                             fdump('==========投票选项修改失败================'.__LINE__, 'edit_vote', true);
-                            fdump($option_data, 'edit_vote', true);
-                            fdump($d_plugin_vote_option, 'edit_vote', true);
+                            fdump($save_option_data, 'edit_vote', true);
                             returnCode(14, [], '投票修改失败！');
                             break;
                         }
                     } else {
                         // 需要添加的统一记录
-                        $option_arr[] = $option_data;
+                        $option_arr[] = $save_option_data;
                     }
                 }
                 // 去除没有修改的选项
@@ -549,7 +544,6 @@ class IndexAction extends BaseAction{
                     $Model->rollback();
                     fdump('==========投票删除多余选项失败================'.__LINE__, 'edit_vote', true);
                     fdump($where_option, 'edit_vote', true);
-                    fdump($d_plugin_vote_option, 'edit_vote', true);
                     returnCode(14, [], '投票修改失败！');
                 } elseif (!empty($option_arr)) {
                     $add_id = $d_plugin_vote_option->addAll($option_arr);
@@ -557,7 +551,6 @@ class IndexAction extends BaseAction{
                         $Model->rollback();
                         fdump('==========投票选项修改失败================'.__LINE__, 'edit_vote', true);
                         fdump($option_arr, 'edit_vote', true);
-                        fdump($d_plugin_vote_option, 'edit_vote', true);
                         returnCode(14, [], '投票修改失败！');
                         break;
                     }
@@ -580,7 +573,6 @@ class IndexAction extends BaseAction{
             $Model->rollback();
             fdump('==========投票删除多余区块失败================'.__LINE__, 'edit_vote', true);
             fdump($where_block, 'edit_vote', true);
-            fdump($d_plugin_vote_block, 'edit_vote', true);
             returnCode(14, [], '投票修改失败！');
         }
 
