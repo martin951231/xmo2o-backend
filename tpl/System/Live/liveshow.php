@@ -81,7 +81,7 @@
 									<td>{pigcms{$vo.sort}</td>
 									<td class="textcenter">
 										<if condition="$vo.record_status eq 1 && !empty($vo['video_url'])">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/liveshow_replay',array('live_id'=>$vo['live_id'],'frame_show'=>true))}','查看直播详情',375,667,true,false,false,false,'detail',true);">回放</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/liveshow_replay',array('live_id'=>$vo['live_id'],'frame_show'=>true))}','查看直播详情',375,667,true,false,false,false,'detail',true);">回放</a>
 										</if>
                                         <if condition="$vo['status'] eq '1'">
                                             <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.live_id}" url="{pigcms{:U('Live/forbid_show')}">禁播</a>
@@ -89,7 +89,7 @@
 										<if condition="$vo['status'] eq '3' || $vo['status'] eq '2'">
 											<a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.live_id}" url="{pigcms{:U('Live/delete_show')}">删除</a>									
 										</if>
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/setup',array('live_id'=>$vo['live_id']))}','设置直播信息',520,250,true,false,false,editbtn,'add',true);">设置</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/setup',array('live_id'=>$vo['live_id']))}','设置直播信息',520,250,true,false,false,editbtn,'add',true);">设置</a>
 									</td>
 								</tr>
 							</volist>

@@ -8,7 +8,7 @@
 				<th width="15%">评论编号</th>
 				<td width="35%">{pigcms{$reply_detail.pigcms_id}</td>
 				<th width="15%">订单编号</th>
-				<td width="35%"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Group/order_edit',array('order_id'=>$reply_detail['order_id']))}','查看订单详情',600,460,true,false,false,false,'order_edit',true);">{pigcms{$reply_detail.order_id}</a></td>
+				<td width="35%"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Group/order_edit',array('order_id'=>$reply_detail['order_id']))}','查看订单详情',600,460,true,false,false,false,'order_edit',true);">{pigcms{$reply_detail.order_id}</a></td>
 			</tr>
 		</tr>
 		<tr>
@@ -16,7 +16,7 @@
 				<th width="15%">用户ID</th>
 				<td width="35%">{pigcms{$reply_detail.uid}</td>
 				<th width="15%">查看用户</th>
-				<td width="35%"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$reply_detail['uid']))}','查看用户信息',680,560,true,false,false,editbtn,'see_user',true);">查看用户信息</a></td>
+				<td width="35%"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$reply_detail['uid']))}','查看用户信息',680,560,true,false,false,editbtn,'see_user',true);">查看用户信息</a></td>
 			</tr>
 		</tr>
 		<tr>

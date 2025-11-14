@@ -320,6 +320,7 @@ display:none !important;
 <script type="text/javascript" src="{pigcms{$static_public}js/artdialog/jquery.artDialog.js"></script>
 <script type="text/javascript" src="{pigcms{$static_public}js/artdialog/iframeTools.js"></script>
 <script type="text/javascript" src="{pigcms{$static_public}js/layer/layer.js"></script>
+<script src="{pigcms{$static_path}js/common.js"></script>
 </head>
 <body class="embed-theme ng-scope">
     <header class="l-header ng-scope">
@@ -561,10 +562,10 @@ display:none !important;
 <script>
     var site_url = '{pigcms{$static_path}';
     function turn(url){
-        window.top.artiframe('/admin.php?g=System&c=Shop&a=order_detail&order_id='+url+'&frame_show=1','查看外卖订单详情',900,'90%',true,false,false,false,'detail',true);
+        window.o2oTop.artiframe('/admin.php?g=System&c=Shop&a=order_detail&order_id='+url+'&frame_show=1','查看外卖订单详情',900,'90%',true,false,false,false,'detail',true);
     }
     function turn_service(url){
-        window.top.artiframe('/admin.php?g=System&c=Service&a=offer_info&publish_id='+url+'&frame_show=1&frame=1','查看订单详情',900,'90%',true,false,false,false,'detail',true);
+        window.o2oTop.artiframe('/admin.php?g=System&c=Service&a=offer_info&publish_id='+url+'&frame_show=1&frame=1','查看订单详情',900,'90%',true,false,false,false,'detail',true);
     }
 	var deliver_model = '{pigcms{$deliver_model}';
 </script>
@@ -578,7 +579,7 @@ display:none !important;
     <script type="text/javascript"> var url = '/admin.php?c=Deliver&a=', areaUrl = '/admin.php?c=Area&a=', off_work_url = '/admin.php?c=Deliver&a=off_work', type = {pigcms{$_GET['type']|intval}, lat = {pigcms{$lat}, lng = {pigcms{$lng};</script>
     <script type="text/javascript" src="{pigcms{$static_path}js/desk_google_map.js?t=<?php echo time();?>"></script>
 <else />
-	<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+	<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
 	<script type="text/javascript"> var url = '/admin.php?c=Deliver&a=', areaUrl = '/admin.php?c=Area&a=', off_work_url = '/admin.php?c=Deliver&a=off_work', type = {pigcms{$_GET['type']|intval}, lat = {pigcms{$lat}, lng = {pigcms{$lng};</script>
 	<script type="text/javascript" src="{pigcms{$static_path}js/desk.js?t=<?php echo time();?>"></script>
 </if>

@@ -7,7 +7,7 @@
 				<i class="ace-icon fa fa-credit-card"></i>
 				<a href="{pigcms{:U('Card_new/index')}">{pigcms{:L_("会员卡")}</a>
 			</li>
-			<li class="active">{pigcms{:L_("会员卡优惠券")}</li>
+			<li class="active">{pigcms{:L_("优惠券管理")}</li>
 		</ul>
 	</div>
 	<!-- {pigcms{:L_("内容头部")} -->

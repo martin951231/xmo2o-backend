@@ -57,7 +57,7 @@
 								<td>{pigcms{$vo.business}</td>
 								<td>{pigcms{$vo.data_id}</td>
 								<td style="width: 700px;">{pigcms{$vo.content}</td>
-								<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Index/system_log_detail',array('log_id'=>$vo['id'],'frame_show'=>true))}','操作详情',900,'90%',true,false,false,false,'detail',true);">详情</a></td>
+								<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Index/system_log_detail',array('log_id'=>$vo['id'],'frame_show'=>true))}','操作详情',900,'90%',true,false,false,false,'detail',true);">详情</a></td>
 							</tr>
 							</volist>
 							<tr><td class="textcenter pagebar" colspan="13">{pigcms{$pagebar}</td></tr>

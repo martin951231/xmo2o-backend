@@ -11,8 +11,8 @@
                     </if>
 					<a href="{pigcms{:U('Deliver/reply')}">配送员评论列表</a>|
 					<a href="{pigcms{:U('Deliver/cancel')}">配送员扔回订单列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
-					<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
+					<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
                     <a href="{pigcms{:U('Deliver/merchant_user')}" class="on">商家配送员管理</a>
 				</ul>
 			</div>
@@ -88,7 +88,7 @@
         $.post(check_deliver_order_url, now_dom.attr('parameter'), function (result) {
             if (result.status == 1) {
                 var msg_txt = result.info;
-                window.top.art.dialog({
+                window.o2oTop.art.dialog({
                     icon: 'question',
                     title: '请确认',
                     id: 'msg' + Math.random(),

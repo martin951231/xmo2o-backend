@@ -38,7 +38,7 @@
                                         <td>{pigcms{$action_name}</td>
                                         <td>{pigcms{$vo.uid}</td>
                                         <td>{pigcms{$vo.log_number}</td>
-                                        <td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/userDetailsLog',array('uid'=>$vo['uid']))}','查看用户详情',450,320,true,false,false,addbtn,'add',true);">查看用户详情</a></td>
+                                        <td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/userDetailsLog',array('uid'=>$vo['uid']))}','查看用户详情',450,320,true,false,false,addbtn,'add',true);">查看用户详情</a></td>
                                         <td>
                                             <a href="javascript:void(0);" class="delete_row" parameter="log_id={pigcms{$vo.log_id}" url="{pigcms{:U('Useraction/del',array('status'=>3))}">删除</a>
                                         </td>

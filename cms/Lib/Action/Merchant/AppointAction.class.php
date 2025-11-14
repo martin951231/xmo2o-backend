@@ -1071,6 +1071,15 @@ class AppointAction extends BaseAction
                         'order_type'=>'appoint'
                     ]);
                 }
+
+                //记录轨迹
+                $recordContent['content'] = [[
+					'title' => '操作时间',
+					'value' => date('Y-m-d H:i:s'),
+					'type' => 'text'
+				]];
+                D('Appoint_order_records')->addOrderRecord($now_order['mer_id'], $now_order['order_id'], '商家中心完成订单', $recordContent);
+                
                 //小票打印start
                 $printHaddle = new PrintHaddle();
                 $printHaddle->printit($now_order['order_id'], 'appoint_order', 1);
@@ -1171,13 +1180,18 @@ class AppointAction extends BaseAction
                     }
                 }
             }
-//            $cue_list = $service_address_info;
         }
-        $worker_where['merchant_worker_id'] = $appoint_visit_order_info['merchant_worker_id'];
+        $worker_where['merchant_worker_id'] = $now_order['merchant_worker_id'];
         $worker_field = array('merchant_worker_id', 'name', 'mobile');
         $merchant_workers_info = $database_merchant_workers->appoint_worker_info($worker_where, $worker_field);
         $this->assign('merchant_workers_info', $merchant_workers_info);
 
+	    //技师列表start
+	    $where['merchant_store_id'] = $now_order['store_id'];
+	    $where['status'] = 1;
+	    $worker_list = $database_merchant_workers->where($where)->getField('merchant_worker_id,name');
+	    $this->assign('worker_list', $worker_list);
+		
         //上门预约工作人员信息end
         $now_supply = $database_appoint_supply->where(array('order_id'=>$now_order['order_id']))->find();
         if($now_supply){

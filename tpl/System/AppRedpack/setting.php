@@ -103,10 +103,10 @@
 			function check(){
 				
 				if($('#config_redpack_max_money').val()<$('#config_redpack_min_money').val()){
-					window.top.msg(0,'红包最大金额不能比红包最小金额小',true,5);
+					window.o2oTop.msg(0,'红包最大金额不能比红包最小金额小',true,5);
 					return false;
 				}else if($('#config_redpack_max_money').val()==0){
-					window.top.msg(0,'红包最大金额不能为0',true,5);
+					window.o2oTop.msg(0,'红包最大金额不能为0',true,5);
 					return false;
 				}else{
 					return true;//不写此返回值也行，此时就直接提交了

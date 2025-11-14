@@ -3,8 +3,8 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('AISearch/index')}" class="on">关键词列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('AISearch/add')}','添加关键词',700,250,true,false,false,addbtn,'add',true);">添加热门搜索词</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('AISearch/batchAdd')}','批量添加热门搜索词',700,250,true,false,false,addbtn,'add',true);">批量添加热门搜索词</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('AISearch/add')}','添加关键词',700,250,true,false,false,addbtn,'add',true);">添加热门搜索词</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('AISearch/batchAdd')}','批量添加热门搜索词',700,250,true,false,false,addbtn,'add',true);">批量添加热门搜索词</a>
 				</ul>
 			</div>
 			<table class="search_table" width="100%">
@@ -48,7 +48,7 @@
                                             </if>
 										</td>
 										<td>{pigcms{$vo.update_time}</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('AISearch/add',array('id'=>$vo['id']))}','编辑关键词',700,250,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('AISearch/del')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('AISearch/add',array('id'=>$vo['id']))}','编辑关键词',700,250,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('AISearch/del')}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="8">{pigcms{$pagebar}</td></tr>

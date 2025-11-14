@@ -218,7 +218,7 @@
     }
 
     function addSendCouponActivity(){
-        window.top.artiframe('{pigcms{:U('capture_store_goods')}','抓取店铺最新商品数据',800,600,true,false,false,addbtn,'capture_store_goods',true);
+        window.o2oTop.artiframe('{pigcms{:U('capture_store_goods')}','抓取店铺最新商品数据',800,600,true,false,false,addbtn,'capture_store_goods',true);
     }
     function setLose(id) {
         if(confirm('{pigcms{:L_("确定把该活动设为失效？")}')){

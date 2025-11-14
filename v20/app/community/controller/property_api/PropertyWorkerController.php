@@ -252,4 +252,48 @@ class PropertyWorkerController extends CommunityBaseController
             return api_output_error(-1, $e->getMessage());
         }
     }
+
+
+    public function getVillageKeepersList()
+    {
+        $village_ids = $this->request->param('village_ids', ''); //小区ids
+        $property_id = $this->adminUser['property_id'];
+        if ($property_id < 1) {
+            return api_output(1002, [], '登录超时！');
+        }
+        try {
+            $where = array(
+                ['village_id', 'in', $village_ids],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+                ['work_arr', '<>', ''],
+            );
+            $housekeepers = (new KefuService())->getHousekeepersList($where);
+            return api_output(0, $housekeepers);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function getVillageSingleListByWid()
+    {
+        $village_ids = $this->request->param('village_ids', ''); //小区ids
+        $property_id = $this->adminUser['property_id'];
+        if ($property_id < 1) {
+            return api_output(1002, [], '登录超时！');
+        }
+        $wids = $this->request->param('wids', '');
+
+        try {
+            $where = array(
+                ['village_id', 'in', $village_ids],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+            );
+            $singleList = (new KefuService())->getVillageSingleListByWid($where,$wids);
+            return api_output(0, $singleList);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
 }

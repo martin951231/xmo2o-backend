@@ -200,7 +200,7 @@ class TransactionSummaryController extends CommunityBaseController{
             }
             $where[] = ['o.order_type','<>','non_motor_vehicle'];
             $where1 = '`o`.`refund_money`<`o`.`pay_money`';
-            $field='o.*,p.name as project_name,n.charge_number_name';
+            $field='o.*,p.name as project_name,n.charge_number_name,r.charge_name';
             $order='o.room_id DESC,o.position_id DESC,o.project_id DESC';
             try{
                 $service_house_new_cashier = new HouseNewCashierService();
@@ -676,24 +676,82 @@ class TransactionSummaryController extends CommunityBaseController{
             return api_output_error(-1, $e->getMessage());
         }
     }
+    
+    public function getVillageKeepersList()
+    {
+        $village_id = $this->adminUser['village_id'];
+        $property_id = $this->adminUser['property_id'];
+        if ($village_id < 1) {
+            return api_output(1002, [], '登录超时，请先去登录！');
+        }
+        try {
+            $where = array(
+                ['village_id', '=', $village_id],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+                ['work_arr', '<>', ''],
+            );
+            $housekeepers = (new KefuService())->getHousekeepersList($where);
+            return api_output(0, $housekeepers);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+    
+    public function getVillageSingleListByWid()
+    {
+        $village_id = $this->adminUser['village_id'];
+        $property_id = $this->adminUser['property_id'];
+        $wids = $this->request->param('wids', '');
+        if ($village_id < 1) {
+            return api_output(1002, [], '登录超时，请先去登录！');
+        }
+        try {
+            $where = array(
+                ['village_id', '=', $village_id],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+            );
+            $singleList = (new KefuService())->getVillageSingleListByWid($where,$wids);
+            return api_output(0, $singleList);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+    
     public function getVillageRoomFeeRateList(){
         $village_id = $this->adminUser['village_id'];
         $property_id = $this->adminUser['property_id'];
         if (empty($village_id)) {
             return api_output(1002, [], '登录超时，请先去登录！');
         }
+        $single_ids = $this->request->param('single_ids', '');
+        $wids = $this->request->param('wids', '');
         $w_singles = $this->request->param('w_singles', '');
         $year_v = $this->request->param('year_v', 0,'intval');
         if($year_v<1){
             $year_v=date('Y');
         }
         $singleArr=array();
+        /*
         if($w_singles){
             foreach ($w_singles as $tvv){
                 $tmpArr=explode('_',$tvv);
                 $singleArr[]=$tmpArr['1'];
             }
             $singleArr=array_unique($singleArr,SORT_NUMERIC);
+        }
+        */
+        if(!empty($single_ids)){
+            $singleArr=array_unique($single_ids);
+        }else if(!empty($wids)){
+            $where = array(
+                ['village_id', '=', $village_id],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+            );
+            $singleList = (new KefuService())->getVillageSingleListByWid($where,$wids);
+            $singleArr=$singleList['single_ids'];
         }
         try {
             $houseNewTransactionSummaryService = new HouseNewTransactionSummaryService();
@@ -714,16 +772,31 @@ class TransactionSummaryController extends CommunityBaseController{
         $w_singles = $this->request->param('w_singles', '');
         $year_v = $this->request->param('year_v', 0,'intval');
         $is_split = $this->request->param('is_split', 0 ,'intval');
+        $single_ids = $this->request->param('single_ids', '');
+        $wids = $this->request->param('wids', '');
         if($year_v<1){
             $year_v=date('Y');
         }
         $singleArr=array();
+        /*
         if($w_singles){
             foreach ($w_singles as $tvv){
                 $tmpArr=explode('_',$tvv);
                 $singleArr[]=$tmpArr['1'];
             }
             $singleArr=array_unique($singleArr,SORT_NUMERIC);
+        }
+        */
+        if(!empty($single_ids)){
+            $singleArr=array_unique($single_ids);
+        }else if(!empty($wids)){
+            $where = array(
+                ['village_id', '=', $village_id],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+            );
+            $singleList = (new KefuService())->getVillageSingleListByWid($where,$wids);
+            $singleArr=$singleList['single_ids'];
         }
         try {
             $houseNewTransactionSummaryService = new HouseNewTransactionSummaryService();

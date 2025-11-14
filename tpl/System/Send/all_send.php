@@ -68,7 +68,7 @@
 											<a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.pigcms_id}" url="{pigcms{:U('Send/send_all_del')}">删除</a> | 
 											<a href="{pigcms{:U('Send/add_all_send',array('id'=>$vo['pigcms_id'],'edit'=>0))}" >查看群发内容</a>
 											<if condition="$vo.sended eq 1">  |  
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Send/send_user_log',array('log_id'=>$vo['pigcms_id']))}','查看群发记录',800,600,true,false,false,false,'',false);">查看群发记录</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Send/send_user_log',array('log_id'=>$vo['pigcms_id']))}','查看群发记录',800,600,true,false,false,false,'',false);">查看群发记录</a>
 											</if>
 										</td>
 									</tr>

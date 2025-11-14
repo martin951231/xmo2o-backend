@@ -302,7 +302,8 @@ class ClassifynewAction extends BaseAction
                     if ($cid) {
                         $wherestrQuery .= ' AND ((`c`.`cid`='.$cid.') OR (`c`.' . $where['fd'] . ' LIKE "%' . $where['vv'] . '%"))';
                     } else {
-                        $wherestrQuery .= ' AND `c`.' . $where['fd'] . ' LIKE "%' . $where['vv'] . '%"';
+                        //$wherestrQuery .= ' AND `c`.' . $where['fd'] . ' LIKE "%' . $where['vv'] . '%"';
+                        $wherestrQuery .= ' AND (`c`.input4 LIKE "%' . $where['vv'] . '%" OR `c`.`input1` LIKE "%' . $where['vv'] . '%" OR `c`.`input2` LIKE "%' . $where['vv'] . '%"  OR `c`.`input3` LIKE "%' . $where['vv'] . '%")';
                     }
                 }
             }

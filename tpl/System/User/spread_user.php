@@ -93,7 +93,7 @@
 										<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 2" /><font color="red">未审核</font><else /><font color="red">禁用</font></if></td>
 										<if condition="$config.open_user_spread eq 1 "><td class="textcenter"><a href="<php>if($vo['spread_count']>0){</php> {pigcms{:U('User/spread_user',array('action'=>'spread_user','openid'=>$vo['openid'],'from_uid'=>$_GET['from_uid'],'lvl'=>$_GET['lvl'],'uid'=>$vo['uid']))}<php>}else{</php>javascript:void(0)<php>}</php>" >{pigcms{$vo['spread_count']}个推广用户</a></td></if>
 										<if condition="$config.open_user_spread eq 1 "><td class="textcenter">{pigcms{$config['Currency_symbol']}{pigcms{$vo['spread_money']}</td></if>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);"><if condition="$vo['status'] eq 2">审核<else />编辑</if></a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);"><if condition="$vo['status'] eq 2">审核<else />编辑</if></a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="11">{pigcms{$page}</td></tr>

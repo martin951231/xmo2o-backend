@@ -32,8 +32,8 @@
 									<td>{pigcms{$vo.name}</td>
 									<td>{pigcms{$vo.phone}</td>
 									<td>{pigcms{$vo.cate_apply_time|date="Y-m-d H:i:s",###}</td>
-									<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/show_category',array('store_id'=>$vo['store_id']))}','查看详情',550,450,true,false,false,'','detail',true);">查看详情</a></td>
-									<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/show_category',array('store_id'=>$vo['store_id'],'apply'=>1))}','查看详情',550,450,true,false,false,'','detail',true);">查看详情</a></td>
+									<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/show_category',array('store_id'=>$vo['store_id']))}','查看详情',550,450,true,false,false,'','detail',true);">查看详情</a></td>
+									<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/show_category',array('store_id'=>$vo['store_id'],'apply'=>1))}','查看详情',550,450,true,false,false,'','detail',true);">查看详情</a></td>
 									<td class="textcenter">
 										<a href="javascript:void(0);" onclick="do_apply({pigcms{$vo['store_id']},'1')">审核通过</a>|
 										<a href="javascript:void(0);" onclick="do_apply({pigcms{$vo['store_id']},'0')">拒绝</a>

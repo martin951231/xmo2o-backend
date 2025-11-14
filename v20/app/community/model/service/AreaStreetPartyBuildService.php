@@ -89,7 +89,51 @@ class AreaStreetPartyBuildService
         }
         return $data;
     }
+    public function getPartyBuildJoinCategoryLists($where,$field=true,$page=1,$limit=20,$order='pb.is_hot,pb.build_id DESC',$from='front')
+    {
+        $data = $this->db_area_street_party_build->getListsJoinCategory($where,$field,$page,$limit,$order);
+        if($data){
+            $site_url = cfg('site_url');
+            $static_resources = static_resources(true);
+            $db_area_street_party_build = new AreaStreetPartyBuildCategory();
+            foreach ($data as $k=>$v){
+                $data[$k]['add_time'] = date('Y-m-d',$v['add_time']);
+                if($v['is_notice'] == 0) {
+                    $data[$k]['is_notice_txt'] = '否';
+                } else {
+                    $data[$k]['is_notice_txt'] = '是';
+                }
+                if (isset($v['title_img']) && $v['title_img']) {
+                    if (strpos($v['title_img'],'/v20/') !== false) {
+                        $data[$k]['title_img'] = cfg('site_url') . $v['title_img'];
+                    } else {
+                        $data[$k]['title_img'] = replace_file_domain($v['title_img']);
+                    }
+                } else {
+                    $data[$k]['title_img'] =  $site_url . $static_resources . 'images/meeting.png';
+                }
+                if (isset($v['cat_id'])) {
+                    $where_cat = [];
+                    $where_cat[] = ['cat_id','=',$v['cat_id']];
+                    $cat_info = $db_area_street_party_build->getOne($where_cat,'cat_name');
+                    if ($cat_info && $cat_info['cat_name']) {
+                        $data[$k]['cat_name'] = $cat_info['cat_name'];
+                    } else {
+                        $data[$k]['cat_name'] = '无';
+                    }
+                }
 
+                $this->db_area_street_party_build->incReadNum(['build_id'=>$v['build_id']]);
+            }
+        }
+        if($from == 'end'){
+            $count = $this->db_area_street_party_build->getJoinCategoryCount($where);
+            $res['list'] = $data;
+            $res['count'] = $count;
+            return $res;
+        }
+        return $data;
+    }
     /**
      * 编辑党内资讯
      * @author lijie
@@ -245,11 +289,11 @@ class AreaStreetPartyBuildService
         if($data){
             foreach ($data as $k=>$v){
                 $data[$k]['add_time'] = date('Y-m-d',$v['add_time']);
+                $data[$k]['avatar'] = $v['avatar'] ? replace_file_domain($v['avatar']):'';
             }
         }
         if($from == 'end'){
-            $con['build_id'] = $where[1][0];
-            $count = $this->db_area_street_party_build_reply->getCount($con);
+            $count = $this->db_area_street_party_build_reply->getCount($where);
             $switch = $this->db_area_street_config->getFind(['area_id'=>$street_id],'party_build_switch');
             $res['list'] = $data;
             $res['count'] = $count;

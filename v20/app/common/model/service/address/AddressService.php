@@ -299,8 +299,13 @@ class AddressService
             if (!empty($arr['adress_id'])) {
                 //编辑
                 $where = [
-                    'adress_id' => $arr['adress_id']
+                    'adress_id' => $arr['adress_id'],
+                    'uid' => $arr['uid'],
                 ];
+                $check_addr = $addOredit->getAdress(true, $where);
+                if(!$check_addr){
+                    throw new \think\Exception('地址不存在！');
+                }
                 $result = $addOredit->edit1($where, $arr);
             } else {
                 //保存

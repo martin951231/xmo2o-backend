@@ -39,13 +39,13 @@
 		</div>
 		<script type="text/javascript">
 			$(function(){
-				var coupon = window.top.getTopIframe().get_selected_coupon();
+				var coupon = window.o2oTop.getTopIframe().get_selected_coupon();
 				for(var i in coupon){
 					$('.coupon-'+coupon[i]).val('已选择').prop('disabled',true);
 				}
 				$('.select_row').click(function(){
 					$(this).val('已选择').prop('disabled',true);
-					window.top.getTopIframe().select_coupon($(this).data('id'),$(this).data('name'),$(this).data('discount'),$(this).data('order_money'));
+					window.o2oTop.getTopIframe().select_coupon($(this).data('id'),$(this).data('name'),$(this).data('discount'),$(this).data('order_money'));
 				});
 			});
 		</script>

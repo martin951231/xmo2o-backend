@@ -4,7 +4,7 @@
 				<ul>
 					<a href="{pigcms{:U('Systemnews/index')}">平台快报</a>
 					<a href="{pigcms{:U('Systemnews/news',array('category_id'=>$_GET['category_id']))}" class="on">快报分类-{pigcms{$category_name}</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Systemnews/add_news',array('category_id'=>$_GET['category_id']))}','添加平台快报',800,500,true,false,false,addbtn,'add',true);">添加平台快报</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Systemnews/add_news',array('category_id'=>$_GET['category_id']))}','添加平台快报',800,500,true,false,false,addbtn,'add',true);">添加平台快报</a>
 				</ul>
 			</div>
 			
@@ -65,7 +65,7 @@
 										<td>{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}</td>
 										<td>{pigcms{$vo.sort}</td>
 										<td><if condition="$vo['status'] eq 1"><font color="green">启用</font><else/><font color="red">禁用</font></if></td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Systemnews/edit_news',array('id'=>$vo['id'],'frame_show'=>true))}','查看内容',1000,640,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Systemnews/edit_news',array('id'=>$vo['id']))}','编辑快报',800,500,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Systemnews/del',array('id'=>$vo['id']))}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Systemnews/edit_news',array('id'=>$vo['id'],'frame_show'=>true))}','查看内容',1000,640,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Systemnews/edit_news',array('id'=>$vo['id']))}','编辑快报',800,500,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Systemnews/del',array('id'=>$vo['id']))}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="9">{pigcms{$pagebar}</td></tr>

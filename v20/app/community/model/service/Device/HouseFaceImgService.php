@@ -124,20 +124,30 @@ class HouseFaceImgService
                 $v['bind_type'] = $manageAppLoginService->user_bind_relatives_type_arr[$v['relatives_type']] ?? '';
             }
             $v['add_face_time'] = $v['add_face_time'] ? date('Y-m-d H:i:s',$v['add_face_time']) : '';
+            $v['img_url']='';
+            $v['add_time']='';
             //查询最新的图片
             $newImg = $houseFaceImg->where([
                 ['status','in',[0,3]],
-                ['uid','=',$v['uid']],
+                ['bind_pigcms_id','=',$v['pigcms_id']],
             ])->whereRaw('LENGTH(img_url) > 0')->order('id desc')->field('status,img_url,add_time')->find();
-            if (3==$newImg['status']) {
-                // 加密的图片解密
-                $newImg['img_url'] = $wordencryption->text_decrypt($newImg['img_url']);
+            if((empty($newImg) || $newImg->isEmpty()) && $v['uid']>0){
+                $newImg = $houseFaceImg->where([
+                    ['status','in',[0,3]],
+                    ['uid','=',$v['uid']],
+                ])->whereRaw('LENGTH(img_url) > 0')->order('id desc')->field('status,img_url,add_time')->find();
             }
-            $v['img_url'] = $newImg['img_url'] ? replace_file_domain($newImg['img_url']) : '';
-//            $v['img_url_small'] = $v['img_url'] ? thumb($v['img_url'], 96, 96, 'fill') : '';
+            if(!empty($newImg) && !$newImg->isEmpty()){
+                if (3==$newImg['status']) {
+                    // 加密的图片解密
+                    $newImg['img_url'] = $wordencryption->text_decrypt($newImg['img_url']);
+                    $v['img_url'] = $newImg['img_url'] ? replace_file_domain($newImg['img_url']) : '';
+                }
+                $v['add_time'] = $newImg['add_time'] ?? '';
+                $v['add_time'] = $v['add_time'] ? date('Y-m-d H:i:s',$v['add_time']) : '';
+            }
+
             $address = $houseVillageService->getSingleFloorRoom($v['single_id'],$v['floor_id'],$v['layer_id'],$v['vacancy_id'],$param['village_id']);
-            $v['add_time'] = $newImg['add_time'] ?? '';
-            $v['add_time'] = $v['add_time'] ? date('Y-m-d H:i:s',$v['add_time']) : '';
             
             $v['address'] = !empty($address) ? $address : $v['address'];
             if(!$v['add_face_time'] && !$v['img_url']){
@@ -146,7 +156,7 @@ class HouseFaceImgService
                 $v['face_img_reason'] = $v['face_img_status']==2 ? $v['face_img_reason'] : '';
                 $v['face_img_reason_short'] = mb_strlen($v['face_img_reason']) > 10 ? (mb_substr($v['face_img_reason'],0,10).'...') : $v['face_img_reason'];
             }
-            unset($v['single_id'],$v['floor_id'],$v['layer_id'],$v['vacancy_id'],$v['type'],$v['relatives_type'],$v['uid']);
+            //unset($v['single_id'],$v['floor_id'],$v['layer_id'],$v['vacancy_id'],$v['type'],$v['relatives_type'],$v['uid']);
         }
         $list['role_add_face'] = 1;
         $list['role_show_log'] = 1;

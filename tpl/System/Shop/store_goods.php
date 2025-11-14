@@ -86,7 +86,7 @@
                             <td>{pigcms{$vo.audit_content}</td>
                             <td>{pigcms{$vo.last_time}</td>
                             <td class="textcenter">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('/merchant.php?g=Merchant&c=Shop&a=goods_edit&is_audit=1&goods_id={pigcms{$vo.goods_id}&store_id={pigcms{$vo.store_id}&mer_id={pigcms{$vo.mer_id}','查看商品信息',1100,600,true,false,false,closebtn,'detail',true);"><if condition="$vo.audit_status eq 0">审核<else/>重新审核</if></a>
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/merchant.php?g=Merchant&c=Shop&a=goods_edit&is_audit=1&goods_id={pigcms{$vo.goods_id}&store_id={pigcms{$vo.store_id}&mer_id={pigcms{$vo.mer_id}','查看商品信息',1100,600,true,false,false,closebtn,'detail',true);"><if condition="$vo.audit_status eq 0">审核<else/>重新审核</if></a>
                             </td>
                         </tr>
                     </volist>

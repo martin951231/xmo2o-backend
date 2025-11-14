@@ -365,8 +365,16 @@ class FenrunAction extends BaseAction{
 
 
 			if($_POST['bank_id']){
+                $bank_where = [
+                    'pay_id' => $this->user_session['uid'],
+                    'id'=>$_POST['bank_id'],
+                ];
+                $bank = M('User_withdraw_account_list')->where($bank_where)->find();
+                if(!$bank){
+                    $this->error_tips(L_('银行卡不存在/已删除！'));
+                }
 				$url  = U('bank_list');
-				$result = M('User_withdraw_account_list')->where(array('id'=>$_POST['bank_id']))->save($data_companypay);
+				$result = M('User_withdraw_account_list')->where($bank_where)->save($data_companypay);
 				if($result){
 					$aid = $_POST['bank_id'];
 				}else{
@@ -398,6 +406,7 @@ class FenrunAction extends BaseAction{
 		}else{
 			if($_GET['bank_id']){
 				$where['id'] =  $_GET['bank_id'];
+                $where['pay_id']   = $this->user_session['uid'];
 				$bank = M('User_withdraw_account_list')->where($where)->find();
 				$this->assign('bank',$bank);
 			}
@@ -451,8 +460,12 @@ class FenrunAction extends BaseAction{
 
 	public function delete_bank_account(){
 		$where['id'] = $_GET['bank_id'];
+        $where['pay_id'] = $this->user_session['uid'];
+        $bank = M('User_withdraw_account_list')->where($where)->find();
+        if(!$bank){
+            $this->error_tips(L_('银行卡不存在/已删除！'));
+        }
 		if($this->config['open_allinyun']==1){
-			$bank = M('User_withdraw_account_list')->where($where)->find();
 			import('@.ORG.AccountDeposit.AccountDeposit');
 			$deposit = new AccountDeposit('Allinyun');
 			$allyun = $deposit->getDeposit();

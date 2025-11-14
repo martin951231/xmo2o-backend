@@ -23,6 +23,7 @@ use app\community\model\service\HouseAdminService;
 use app\community\model\service\PowerService;
 use app\community\model\service\PropertyFrameworkService;
 use app\community\model\service\HousePropertyVillageWorkerService;
+use app\common\model\service\config\ConfigCustomizationService;
 use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use think\facade\Cache;
@@ -180,7 +181,37 @@ class HouseWorkerController extends CommunityBaseController
         }
         return api_output(0, $list);
     }
-
+    public function getAllWorker2List()
+    {
+        $village_id = $this->adminUser['village_id'];
+        $serviceHouseWorker = new HouseWorkerService();
+        $whereArr = array(['village_id', '=', $village_id], ['is_del', '=', 0],['xtype','=',2],['relation_id','>',0]);
+        $whereArr[] = ['status', 'in', array(0, 1)];
+        try {
+            $fieldStr = 'relation_id as opt_id,phone,name';
+            $datas = $serviceHouseWorker->getAllWorkerList($whereArr, $fieldStr);
+            /*
+            $roleArr = array(
+                ['type' => 303, 'name' => '物业总管理员'],
+                ['type' => 304, 'name' => '物业普通管理员'],
+                ['type' => 104, 'name' => '系统管理员'],
+                ['type' => 105, 'name' => '系统管理员'],
+            );
+            */
+            $datas[]=array('opt_id'=>'pf_opt','phone'=>'','name'=>'平台缴费');
+            $datas[]=array('opt_id'=>'user_opt','phone'=>'','name'=>'自助缴费');
+            $list=array('list'=>$datas);
+            $list['func_yumenlao_special']=0;
+            $configCustomizationService= new ConfigCustomizationService();
+            $is_func_yumenlao_special=$configCustomizationService->getFuncYumenLaoSpecial();
+            if($is_func_yumenlao_special){
+                $list['func_yumenlao_special']=1;
+            }
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+        return api_output(0, $list);
+    }
     //检查是否有相关权限
     function checkPermissionMenu($pid = 0)
     {

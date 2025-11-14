@@ -15,6 +15,7 @@ use app\foodshop\model\service\order\DiningOrderService;
 use app\group\model\service\order\GroupOrderService;
 use app\merchant\model\service\MerchantMoneyListService;
 use app\mall\model\service\MallOrderService;
+use Carbon\Carbon;
 use think\facade\Db;
 
 class UserSpreadListService
@@ -460,7 +461,13 @@ class UserSpreadListService
         }
 
         // 查询推广用户已获得佣金信息
-        $user_spread_list = (new UserSpreadListService())->getOne(array('uid'=>$nowUserSpread['spread_uid'],'get_uid'=>$nowUser['uid'],'is_rand'=>1,'status' => array('neq',2)));
+        $checkWhere = [
+            ['uid','=',$nowUserSpread['spread_uid']],
+            ['get_uid','=',$nowUser['uid']],
+            ['is_rand','=',1],
+            ['status','<>',2]
+        ];
+        $user_spread_list = (new UserSpreadListService())->getOne($checkWhere);
         if ($user_spread_list) {
             // 获得过奖励 直接返回
             $return['error_code'] = 1;
@@ -876,6 +883,13 @@ class UserSpreadListService
     public function addSpreadList($orderInfo){
         $spreadTotalMoney = 0;// 可参与分佣的总金额
         $spreadType = $orderInfo['order_type'] ?? '';// 订单类型
+        //每一层佣金金额，格式
+        // [
+        //     'level1' => 0, // 一级佣金金额
+        //     'level2' => 0, // 二级佣金金额
+        //     'level3' => 0, // 三级佣金金额
+        // ]
+        $levelMoney = $orderInfo['level_money'] ?? [];
 
         // 用户信息
         $userMod = new UserService();
@@ -888,11 +902,20 @@ class UserSpreadListService
             $spreadTotalMoney = $orderInfo['system_balance'] + $orderInfo['pay_money']+ $orderInfo['system_score_money'] + $orderInfo['system_coupon_price'] + $orderInfo['merchant_balance_pay'];
             $percent = $percent = (new PercentRateService())->getPercentRate($orderInfo['mer_id'],$orderInfo['order_type'],$spreadTotalMoney,'',$orderInfo['store_id'], true);
             $spreadTotalMoney = $spreadTotalMoney*$percent/100;
+        } else if (isset($orderInfo['spread_total_money'])) {
+            $spreadTotalMoney = $orderInfo['spread_total_money'];
         }else{
             $spreadTotalMoney = $orderInfo['system_balance'] +$orderInfo['pay_money'];
         }
         
         if(!empty($nowUser['openid'])&&cfg('open_user_spread') && (!cfg('open_spread_appoint_user') || ($nowUser['can_spread']==1 && !cfg('open_spread_only_once'))) && (cfg('spread_money_limit')==0 || cfg('spread_money_limit')<=$spreadTotalMoney) && !cfg('open_spread_rand')){
+
+            //商城商品支持单品设置推广佣金，afterPay中已经计算每一层级的佣金，这里只需要添加到用户分佣表即可
+            if ($levelMoney && $spreadType == 'mall') {
+                return $this->userToSpread($orderInfo['uid'], 'mall', $orderInfo['order_id'], $orderInfo['real_orderid'], $levelMoney['level1'] ?? 0, $levelMoney['level2'] ?? 0, $levelMoney['level3'] ?? 0);
+            }
+
+            
             // 获得分佣比例
             $spreadRate = (new PercentRateService())->getUserSpreadRate($orderInfo['mer_id'],$spreadType);
 
@@ -1125,7 +1148,7 @@ class UserSpreadListService
         }elseif(!empty($nowUser['openid'])&&cfg('open_spread_rand')){
             /* 开启三级推广随机一级推广奖励功能，唯一次奖励 */
             //一级推广用户
-            $spread_res = $this->spreadUserOnlyOnce($spreadType,$nowUser,$orderInfo);
+            $spread_res = $this->spreadRandOnlyOnce($spreadType,$nowUser,$orderInfo);
         }elseif(!empty($nowUser['openid'])&&cfg('open_spread_appoint_user') && $nowUser['can_spread']==1 && cfg('open_spread_only_once')&&(cfg('spread_money_limit')==0 || cfg('spread_money_limit')<=$spreadTotalMoney)){
             /* 开启指定用户享受三级推广功能且开启唯一次奖励 */
             //一级推广用户
@@ -1319,5 +1342,52 @@ class UserSpreadListService
             }
         }
         return ;
+    }
+
+    //结算佣金计划任务，每分钟执行一次，只针对商城订单用户推广佣金结算，其他业务如果需要自行添加适配
+    public function spreadToCompleteTask()
+    {
+        $tm = time();
+        $finishStatus = [30, 31, 32, 33, 40];
+        $refundStatus = [50, 51, 52, 70];
+        $refundLimitDays = cfg('mall_order_service_comment_time');
+        $where = [
+            ['sp.order_type', '=', 'mall'],
+            ['sp.order_id', '>', 0],
+            ['sp.status', '=', 0],
+            ['sp.add_time', '>', Carbon::now()->subMonth(3)->timestamp],
+            ['o.status', 'in', array_merge($finishStatus, $refundStatus)],
+        ];
+        $field = 'sp.*,o.status AS order_status,o.express_style AS order_express_style';
+        $orders =  $this->userSpreadListObj->alias('sp')
+            ->join('mall_order o', 'o.order_id=sp.order_id')
+            ->field($field)
+            ->where($where)
+            ->limit(30)
+            ->select()
+            ->toArray();
+        if (empty($orders)) {
+            return false;
+        }
+        foreach ($orders as $o) {
+            //订单全额退款了，佣金记录标记已退款，不结算
+            if (in_array($o['order_status'],  $refundStatus)) {
+                $this->updateThis(['pigcms_id' => $o['pigcms_id']], ['status' => 2]);
+                continue;
+            }
+
+            if ($o['order_express_style'] == 3) {
+                //自提订单，没有售后。订单完成就结算
+                if (in_array($o['order_status'],  $finishStatus)) {
+                    $this->spreadToComplete($o['order_type'], $o['order_id']);
+                }
+            } else {
+                //非自提订单，超出了售后期才结算
+                if (in_array($o['order_status'],  $finishStatus) && $o['add_time'] + ($refundLimitDays * 24 * 60 * 60) < $tm) {
+                    $this->spreadToComplete($o['order_type'], $o['order_id']);
+                }
+            }
+        }
+        return true;
     }
 }

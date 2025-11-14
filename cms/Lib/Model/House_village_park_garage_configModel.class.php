@@ -34,7 +34,7 @@ class House_village_park_garage_configModel extends Model
         if(!empty($configWhere)){
             $configGarageWhere=$configWhere;
             if($garage_id>0){
-                $configGarageWhere[]=array('garage_id','=',$garage_id);
+                $configGarageWhere['garage_id']=$garage_id;
             }
             $parkConfigInfo=$this->where($configGarageWhere)->field($field)->order($orderby)->find();
         }

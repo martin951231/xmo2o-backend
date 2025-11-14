@@ -183,7 +183,126 @@ class House_village_user_labelModel extends Model
         }
         return true;
     }
-
+    public function updateUserTagAttr($pigcms_id=0,$user_tag_arr=array(),$village_id=0){
+        $user_label = array();
+        $party_type=0;
+        $uid=0;
+        if($user_tag_arr && isset($user_tag_arr['uid'])){
+            $uid=$user_tag_arr['uid'];
+        }
+        if($user_tag_arr && isset($user_tag_arr['user_political_str'])){
+            $user_political_affiliation=0;
+            foreach ($this->user_political_affiliation_arr as $kky=>$vv){
+                if($vv==$user_tag_arr['user_political_str']){
+                    $user_political_affiliation=$kky;
+                }
+            }
+            $user_label['user_political_affiliation'] = $user_political_affiliation;
+            if($user_political_affiliation==1){
+                $user_label['party_type'] =2;
+                $party_type=2;
+                if(isset($user_tag_arr['party_type_str']) && $user_tag_arr['party_type_str']=='是'){
+                    $user_label['party_type'] = 1;
+                    $party_type=1;
+                }
+            }
+        }
+        if($user_tag_arr && isset($user_tag_arr['user_special_groups'])){
+            $user_label['user_special_groups']='';
+            if($user_tag_arr['user_special_groups']){
+                $user_special_groups=str_replace('，',',',$user_tag_arr['user_special_groups']);
+                $user_special_groups=str_replace(' ','',$user_special_groups);
+                $tmpArr=explode(',',$user_special_groups);
+                $user_special_groups_arr=array();
+                foreach ($this->user_special_groups_arr as $kky=>$vv){
+                    if(in_array($vv,$tmpArr)){
+                        $user_special_groups_arr[]=$kky;
+                    }
+                }
+                $user_special_groups_arr=array_unique($user_special_groups_arr);
+                sort($user_special_groups_arr);
+                $user_label['user_special_groups']= implode(',', $user_special_groups_arr);
+            }
+        }
+        if($user_tag_arr && isset($user_tag_arr['user_focus_groups'])){
+            $user_label['user_focus_groups']='';
+            if($user_tag_arr['user_focus_groups']){
+                $user_focus_groups=str_replace('，',',',$user_tag_arr['user_focus_groups']);
+                $user_focus_groups=str_replace(' ','',$user_focus_groups);
+                $tmpArr=explode(',',$user_focus_groups);
+                $user_focus_groups_arr=array();
+                foreach ($this->user_focus_groups_arr as $kky=>$vv){
+                    if(in_array($vv,$tmpArr)){
+                        $user_focus_groups_arr[]=$kky;
+                    }
+                }
+                $user_focus_groups_arr=array_unique($user_focus_groups_arr);
+                sort($user_focus_groups_arr);
+                $user_label['user_focus_groups']= implode(',', $user_focus_groups_arr);
+            }
+        }
+        if($user_tag_arr && isset($user_tag_arr['user_vulnerable_groups'])){
+            $user_label['user_vulnerable_groups']='';
+            if($user_tag_arr['user_vulnerable_groups']){
+                $user_vulnerable_groups=str_replace('，',',',$user_tag_arr['user_vulnerable_groups']);
+                $user_vulnerable_groups=str_replace(' ','',$user_vulnerable_groups);
+                $tmpArr=explode(',',$user_vulnerable_groups);
+                $user_vulnerable_groups_arr=array();
+                foreach ($this->user_vulnerable_groups_arr as $kky=>$vv){
+                    if(in_array($vv,$tmpArr)){
+                        $user_vulnerable_groups_arr[]=$kky;
+                    }
+                }
+                $user_vulnerable_groups_arr=array_unique($user_vulnerable_groups_arr);
+                sort($user_vulnerable_groups_arr);
+                $user_label['user_vulnerable_groups']= implode(',', $user_vulnerable_groups_arr);
+            }
+        }
+        $nowtime=time();
+        $house_village_user_label=M('House_village_user_label');
+        $street_party_bind_user=M('Street_party_bind_user');
+        if($pigcms_id>0 && !empty($user_label)){
+            $user_label_id = $house_village_user_label->where(array('bind_id'=>$pigcms_id))->getField('id');
+            if ($user_label_id) {
+                $user_label['last_time'] = $nowtime;
+                $house_village_user_label->where(array('id'=>$user_label_id))->data($user_label)->save();
+            }  else {
+                $user_label['bind_id'] = $pigcms_id;
+                $user_label['add_time'] = $nowtime;
+                $house_village_user_label->data($user_label)->add();
+            }
+            $user_party_id=0;
+            $area_street_party_branch=M('Area_street_party_branch');
+            $villageInfo= M('House_village')->where(array('village_id'=>$village_id))->field('street_id')->find();
+            if($user_tag_arr && isset($user_tag_arr['user_party_str']) && $villageInfo && $villageInfo['street_id']>0){
+                $party_where=[];
+                $party_where['status'] = ['neq','-1'];
+                $party_where['street_id'] = $villageInfo['street_id'];
+                $party_where['name'] = trim($user_tag_arr['user_party_str']);
+                $street_party_branch = $area_street_party_branch->where($party_where)->field('id,name')->find();
+                if($street_party_branch && $street_party_branch['id']){
+                    $user_party_id=$street_party_branch['id'];
+                }
+            }
+            if($party_type > 0 && $uid>0){
+                $party_bind_user = $street_party_bind_user->where(['uid'=>$uid])->field('id,party_id')->find();
+                if(empty($party_bind_user))
+                {
+                    $party_data = [
+                        'uid'=>$uid,
+                        'party_id'=>$user_party_id,
+                        'create_time'=>$nowtime
+                    ];
+                    $street_party_bind_user->data($party_data)->add();
+                }else {
+                    if ($party_bind_user['party_id'] != $user_party_id) {
+                        $street_party_bind_user->where(['id' => $party_bind_user['id']])->data(['party_id' => $user_party_id])->save();
+                    }
+                }
+            }
+        }
+        return true;
+    }
     //todo 获取小区自定义标签数据
     public function getVillageCustomLabel($village_id,$cat_function){
 	    $house_village_label_cat=M('House_village_label_cat');

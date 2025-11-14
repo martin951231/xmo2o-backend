@@ -225,14 +225,15 @@ class HouseNewChargeRuleService
             if(!is_array($list) && is_object($list)){
                 $list=$list->toArray();
             }
+            $configCustomizationService= new ConfigCustomizationService();
+            $isfuncKaidalaicnSpecial=$configCustomizationService->getfuncKaidalaicnSpecial();
+            $isAihorseCustomized=$configCustomizationService->getAihorseCustomizedJudge();
             if($selectdata==1){
                 foreach ($list as &$rv) {
                     if ($rv['status'] == 4) {
                         $rv['charge_name'] = $rv['charge_name'] . '(已删除)';
                     }
                 }
-                $configCustomizationService= new ConfigCustomizationService();
-                $isfuncKaidalaicnSpecial=$configCustomizationService->getfuncKaidalaicnSpecial();
                 if($isfuncKaidalaicnSpecial) {
                     $whereArr = array(['village_id', '=', 0], ['subject_id', '=', 0], ['status', '=', 5], ['from_type', 'in', ['red_reversal', 'append_money']]);
                     if(isset($param['charge_project_id']) && !empty($param['charge_project_id'])){
@@ -309,6 +310,9 @@ class HouseNewChargeRuleService
                 if($this->hasMeijuWuyeCustomized() && in_array($v['charge_type'],array('public_water','public_electric')) && $charge_valid_time<$nowtime){
                     $v['rule_to_order_btn']=1;
                 }elseif ($v['project_type']==1 && !in_array($v['charge_type'],$not_project_rule_to_order_charge_type) && $charge_valid_time<$nowtime){
+                    $v['project_rule_to_order_btn']=1;
+                }
+                if($isAihorseCustomized && $v['charge_type']=='park_new' && $v['fees_type']==4){
                     $v['project_rule_to_order_btn']=1;
                 }
                 $v['fees_type_status'] = $v['fees_type'];
@@ -2447,6 +2451,7 @@ class HouseNewChargeRuleService
         unset($extra['single_data']);
         $extra['ruleInfo'] = $ruleInfo;
         $single_data = array();
+        /*
         if (isset($datas['single_data']) && !empty($datas['single_data'])) {
             foreach ($datas['single_data'] as $vv) {
                 if (is_array($vv) && isset($vv['single_id']) && isset($single_data[$vv['single_id']])) {
@@ -2470,12 +2475,14 @@ class HouseNewChargeRuleService
                 throw new \think\Exception("请选择需要操作的楼栋数据！");
             }
         }
+        */
         $db_bind = new HouseNewChargeStandardBind();
         $fieldStr = '*';
         $houseNewPayOrderService = new HouseNewPayOrderService();
         $count = 0;
         $standard_bind_count=0;
-        if ($single_data) {
+
+        if (false && $single_data) {
             foreach ($single_data as $skey => $svv) {
                 $whereArr = array();
                 $whereArr[] = array('village_id', '=', $datas['village_id']);
@@ -2508,10 +2515,17 @@ class HouseNewChargeRuleService
                 }
             }
         } else {
+            $bind_type=1;
+
             $whereArr = array();
             $whereArr[] = array('village_id', '=', $datas['village_id']);
             $whereArr[] = array('rule_id', '=', $datas['rule_id']);
-            $whereArr[] = array('single_id', '>', 0);
+            if(isset($extra['charge_type']) && $extra['charge_type']=='park_new'){
+                $bind_type=2;
+                $whereArr[] = array('position_id', '>', 0);
+            }else{
+                $whereArr[] = array('single_id', '>', 0);
+            }
             $whereArr[] = array('is_del', '=', 1);
             $standard_bind_obj = $db_bind->getLists1($whereArr, $fieldStr);
             $standard_bind = array();
@@ -2523,7 +2537,11 @@ class HouseNewChargeRuleService
             if (!empty($standard_bind)) {
                 foreach ($standard_bind as $bindV) {
                     $standard_bind_count++;
-                    $is_allow = $this->checkChargeValid($bindV['project_id'], $bindV['rule_id'], $bindV['vacancy_id'], 1);
+                    $bind_id_tmp=$bindV['vacancy_id']>0 ? $bindV['vacancy_id']:$bindV['position_id'];
+                    if($bind_type==2){
+                        $bind_id_tmp=$bindV['position_id'];
+                    }
+                    $is_allow = $this->checkChargeValid($bindV['project_id'], $bindV['rule_id'], $bind_id_tmp, $bind_type);
                     if (!$is_allow) {
                         fdump_api(['bindV' => $bindV, 'msg' => '当前收费标准未生效'], '000createNewPayOrder', 1);
                         continue;
@@ -2537,7 +2555,7 @@ class HouseNewChargeRuleService
             }
         }
         
-        return array('ordercount'=>$count,'standard_bind_count'=>$standard_bind_count);
+        return array('ordercount'=>$count,'standard_bind_count'=>$standard_bind_count,'status'=>0);
     }
     /**
      * 删除收费标准绑定
@@ -3268,6 +3286,7 @@ class HouseNewChargeRuleService
                 $data['park_charge_id'] = $id;
             }
             elseif ($param['fees_type']==4){
+                /*
                 if (!empty($param['give_cycle_type'])&&!empty($param['give_cycle_datetype'])) {
                     $data11 = array(
                         'type' => 2,
@@ -3281,6 +3300,7 @@ class HouseNewChargeRuleService
                     );
                     $this->HouseNewChargePrepaid->addFind($data11);
                 }
+                */
                 $data['unit_price'] = abs($param['charge_price']);
                 $data['charge_price'] = abs($param['charge_price']);
                 $data['rate'] = (intval($param['rate']) == 0) ? 1 : intval($param['rate']);
@@ -3415,11 +3435,13 @@ class HouseNewChargeRuleService
                 $data['park_charge_id'] = $ruleInfo['park_charge_id'];
             }
             elseif ($param['fees_type']==4){
-                if (!empty($param['give_cycle_type'])&&!empty($param['give_cycle_datetype'])){
+                /*
+                if (!empty($param['give_cycle_type'])&&!empty($param['give_cycle_datetype']) && $ruleInfo && isset($ruleInfo['id'])){
                     $prepaid_info=$this->HouseNewChargePrepaid->getFind(['charge_rule_id'=>$ruleInfo['id']]);
                     if (empty($prepaid_info)){
                         $data1=array(
                             'type'=>2,
+                            'charge_rule_id'=>$ruleInfo['id'],
                             'cycle'=>1,
                             'village_id' => $param['village_id'],
                             'cycle_param'=>0,
@@ -3433,6 +3455,7 @@ class HouseNewChargeRuleService
                         $data1=array(
                             'type'=>2,
                             'cycle'=>1,
+                            'charge_rule_id'=>$ruleInfo['id'],
                             'cycle_param'=>0,
                             'give_cycle_type'=>$param['give_cycle_type'],
                             'give_cycle_datetype'=>$param['give_cycle_datetype'],
@@ -3442,6 +3465,7 @@ class HouseNewChargeRuleService
                         $this->HouseNewChargePrepaid->editFind(['charge_rule_id'=>$ruleInfo['id']],$data1);
                     }
                 }
+                */
                 if (empty($param['park_charge_id'])){
                     $data['park_charge_id']=1;
                 }else{

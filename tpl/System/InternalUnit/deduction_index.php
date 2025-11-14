@@ -26,7 +26,7 @@
                             <input type="submit" style="margin-right:20px;" value="查询" class="button"/>
 
                             <a href="javascript:void(0)" onclick="exportData()" class="button" style="float:right;margin-right: 10px;">导出Excel</a>
-                            <a href="javascript:void(0);" class="button" style="float:right;margin-right: 10px;" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/deductionAdd', ['id' => $vo['id']])}','添加支出记录',780,400,true,false,false,addbtn,'add',true);">添加支出</a>
+                            <a href="javascript:void(0);" class="button" style="float:right;margin-right: 10px;" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/deductionAdd', ['id' => $vo['id']])}','添加支出记录',780,400,true,false,false,addbtn,'add',true);">添加支出</a>
 
                         </form>
 					</td>

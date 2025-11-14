@@ -211,7 +211,7 @@
             <th width="15%">一卡通</th>
             <td width="85%" colspan="3"><div style="height:30px;line-height:24px;">
                     <div style="height:30px;line-height:24px;">
-                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/user_card_list',array('uid'=>$now_user['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">会员卡数量:{pigcms{$now_user.user_card_count}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>会员卡可用余额: ￥{pigcms{$now_user.user_card_balance_count|floatval=###}</span>
+                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/user_card_list',array('uid'=>$now_user['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">会员卡数量:{pigcms{$now_user.user_card_count}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>会员卡可用余额: ￥{pigcms{$now_user.user_card_balance_count|floatval=###}</span>
                     </div>
                 </div></td>
             </tr>
@@ -305,9 +305,9 @@
 					<th width="15%">记录表</th>
 					<td width="85%" colspan="3">
 						<div style="height:30px;line-height:24px;">
-							<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/money_list',array('uid'=>$now_user['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">余额记录</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/score_list',array('uid'=>$now_user['uid']))}','{pigcms{$config.score_name}记录列表',680,560,true,false,false,null,'score_list',true);">{pigcms{$config.score_name}记录</a>
+							<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/money_list',array('uid'=>$now_user['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">余额记录</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/score_list',array('uid'=>$now_user['uid']))}','{pigcms{$config.score_name}记录列表',680,560,true,false,false,null,'score_list',true);">{pigcms{$config.score_name}记录</a>
 							<if condition="$now_user['user_card_count'] gt 0">
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/transaction_records',array('uid'=>$now_user['uid']))}','余额记录',680,560,true,false,false,null,'money_list',true);">一卡通余额</a>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/transaction_records',array('uid'=>$now_user['uid']))}','余额记录',680,560,true,false,false,null,'money_list',true);">一卡通余额</a>
 							</if>
 						</div>
 					</td>

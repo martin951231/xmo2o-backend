@@ -25,8 +25,8 @@ function show_provincess(){
 			$('#choose_pca').prepend(area_dom);
 			show_cityss(result.id,result.name,0);
 		}else{
-			window.top.msg(0,result.info,true);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -61,8 +61,8 @@ function show_cityss(id,name,type){
 			$('#choose_pca').prepend(area_dom);
 			show_areass(result.id,result.name,0);
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -100,8 +100,8 @@ function show_areass(id,name,type){
 				$('#choose_cityss').after(area_dom);
 				show_streetss(result.id,result.name,0);
 			}else{
-				window.top.msg(0,result.info,true,5);
-				window.top.closeiframe();
+				window.o2oTop.msg(0,result.info,true,5);
+				window.o2oTop.closeiframe();
 			}
 		});
 	}
@@ -131,8 +131,8 @@ function show_streetss(id,name,type){
 			area_dom += '</select>';
 			$('#choose_areass').after(area_dom);
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 	});
 }

@@ -2,8 +2,8 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('circle/cateAdd')}','添加分类{pigcms{$now_type_str}',450,160,true,false,false,addbtn,'add',true);">添加新分类</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('circle/circleAdd')}','添加分类{pigcms{$now_type_str}',550,260,true,false,false,addbtn,'add',true);">添加圈子</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('circle/cateAdd')}','添加分类{pigcms{$now_type_str}',450,160,true,false,false,addbtn,'add',true);">添加新分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('circle/circleAdd')}','添加分类{pigcms{$now_type_str}',550,260,true,false,false,addbtn,'add',true);">添加圈子</a>
 				</ul>
 			</div>
 			
@@ -35,7 +35,7 @@
 										<td>
                                         <if condition="$vo['status'] eq 1"><font color="red">已禁用</font><elseif condition="$vo['status'] eq 0"/><font color="green">已启用</font></if>
 										</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/editcateory',array('id'=>$vo['id'],'name'=>$vo['name']))}','编辑分类信息',480,240,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/delcateory')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/editcateory',array('id'=>$vo['id'],'name'=>$vo['name']))}','编辑分类信息',480,240,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/delcateory')}">删除</a></td>
 										
 									</tr>
 									<volist name="mycircle" id="vo1">
@@ -49,7 +49,7 @@
 										<td>
 										<if condition="$vo1['status'] eq 1"><font color="red">已禁用</font><elseif condition="$vo1['status'] eq 0"/><font color="green">已启用</font></if>
 										</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/editCircle',array('id'=>$vo1['id']))}','编辑圈子信息',480,240,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo1.id}" url="{pigcms{:U('Circle/delCircle')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/editCircle',array('id'=>$vo1['id']))}','编辑圈子信息',480,240,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo1.id}" url="{pigcms{:U('Circle/delCircle')}">删除</a></td>
 									</tr>
 									</if>
 									</volist>

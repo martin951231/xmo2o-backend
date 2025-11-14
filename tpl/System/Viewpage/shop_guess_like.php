@@ -71,7 +71,7 @@
 	<script>
 		function test(){
                 parent.addIframe('外卖发现好菜-自定义分类','diy_category_2','{pigcms{:U('Diy_category/index',['type'=>2])}');
-                window.top.closeiframe();
+                window.o2oTop.closeiframe();
         }
 		var _selected_goods = '{pigcms{$goods_ids}';
 		function select_goods(){

@@ -123,7 +123,7 @@
                     <span class="cb-enable"><label class="cb-enable <if condition="$sub_card['use_area'] eq 0 AND isset($sub_card) OR !isset($sub_card)">selected</if>"><span>全区域可用</span><input type="radio" name="use_area" value="0" <if condition="$sub_card['use_area'] eq 0 AND isset($sub_card) OR !isset($sub_card)">checked="checked"</if> /></label></span>
                     <span class="cb-disable"><label class="cb-disable <if condition="$sub_card['use_area'] eq 1 AND isset($sub_card)">selected</if>"><span>指定区域可用</span><input type="radio" name="use_area" value="1" <if condition="$sub_card['use_area'] eq 1 AND isset($sub_card)">checked="checked"</if>/></label></span>
 					
-					<a  href="javascript:void(0);" class="edit_area" onclick="window.top.artiframe('{pigcms{:U('Sub_card/edit_area',array('sub_cardid'=>$sub_card['id']))}','编辑区域',600,400,true,false,false,null,'edit_area',true);" style="color:blue;margin-left:5px;<if condition="$sub_card.use_area eq 0 OR !isset($sub_card)">display:none;</if>">编辑区域</a>
+					<a  href="javascript:void(0);" class="edit_area" onclick="window.o2oTop.artiframe('{pigcms{:U('Sub_card/edit_area',array('sub_cardid'=>$sub_card['id']))}','编辑区域',600,400,true,false,false,null,'edit_area',true);" style="color:blue;margin-left:5px;<if condition="$sub_card.use_area eq 0 OR !isset($sub_card)">display:none;</if>">编辑区域</a>
                 </td>
 			</tr>
 			</if>
@@ -204,7 +204,7 @@
 	<script type="text/javascript">
 	 $(function(){
 			$('#reset').click(function(){
-				 window.top.art.dialog({id:'add_sub_card'}).close();
+				 window.o2oTop.art.dialog({id:'add_sub_card'}).close();
 			});
 			$('input[name="use_time_type"]').click(function(){
 				if($(this).val()==1){

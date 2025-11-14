@@ -84,7 +84,7 @@
 				<th width="15%">记录表</th>
 				<td width="85%" colspan="3">
 					<div style="height:30px;line-height:24px;">
-						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/money_list',array('uid'=>$now_user['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">余额记录</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/score_list',array('uid'=>$now_user['uid']))}','{pigcms{$config['score_name']}记录列表',680,560,true,false,false,null,'score_list',true);">{pigcms{$config['score_name']}记录</a>
+						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/money_list',array('uid'=>$now_user['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">余额记录</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/score_list',array('uid'=>$now_user['uid']))}','{pigcms{$config['score_name']}记录列表',680,560,true,false,false,null,'score_list',true);">{pigcms{$config['score_name']}记录</a>
 					</div>
 				</td>
 			</tr>

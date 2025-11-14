@@ -8,7 +8,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td width="100">
-						<input type="button" value="添加团长" class="button" onclick="window.top.artiframe('{pigcms{:U('add_header')}','添加团长',580,400,true,false,false,addbtn,'add',true);"/>
+						<input type="button" value="添加团长" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_header')}','添加团长',580,400,true,false,false,addbtn,'add',true);"/>
 					</td>
 					<td>
 						<form action="{pigcms{:U('Village_group/header_list')}" method="get">
@@ -98,7 +98,7 @@
 										<td>{pigcms{$vo.pick_name}</td>
 										<td>{pigcms{$vo.pick_addr}</td>
 										</if>
-										<td class="textcenter"><a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_header',array('id'=>$vo['id']))}','编辑团长',580,400,true,false,false,editbtn,'edit',true);">编辑</a> | <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Village_group/del_leader')}">删除</a>
+										<td class="textcenter"><a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_header',array('id'=>$vo['id']))}','编辑团长',580,400,true,false,false,editbtn,'edit',true);">编辑</a> | <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Village_group/del_leader')}">删除</a>
 										
 										</td>
 									</tr>

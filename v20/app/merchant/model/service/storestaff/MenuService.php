@@ -170,7 +170,7 @@ class MenuService
             'domain' => $siteUrl,
         ];
         $appData = [
-            'appid' => '__UNI__8799035',
+            'appid' => cfg('staff_uni_appid'),
             'path' => '',
             'arguments' => json_encode($params, JSON_UNESCAPED_SLASHES),
         ];
@@ -258,7 +258,7 @@ class MenuService
                     'domain' => $siteUrl,
                 ];
                 $tempMenu['app_data'] = [
-                    'appid' => '__UNI__8799035',
+                    'appid' => cfg('staff_uni_appid'),
                     'path' => 'pages/foodshop/index/index',
                     'arguments' => json_encode($params, JSON_UNESCAPED_SLASHES),
                 ];
@@ -293,7 +293,7 @@ class MenuService
                     'domain' => $siteUrl,
                 ];
                 $tempMenu['app_data'] = [
-                    'appid' => '__UNI__8799035',
+                    'appid' => cfg('staff_uni_appid'),
                     'path' => 'pages/shop/order/order',
                     'arguments' => json_encode($params, JSON_UNESCAPED_SLASHES),
                 ];
@@ -354,7 +354,7 @@ class MenuService
                         'domain' => $siteUrl,
                     ];
                     $tempMenu['app_data'] = [
-                        'appid' => '__UNI__8799035',
+                        'appid' => cfg('staff_uni_appid'),
                         'path' => 'pages/mall/index/index',
                         'arguments' => json_encode($params, JSON_UNESCAPED_SLASHES),
                     ];
@@ -695,6 +695,20 @@ class MenuService
                 ];
             }
         }
+
+        if($isPc){
+            $menuList[] = [
+                'name' => L_('优惠券核销'),
+                'url' => '/v20/public/platform/#/storestaff/storestaff.coupon_verifiy/Index/CouponVerifiy',
+                "url_type" => 'url', // 跳转类型 app-app原生, miniapp-小程序, url-网址，scan-扫一扫
+                "business_type" =>  'village_park', // 业务类型
+                'image' => cfg('site_url') . '/v20/public/static/storestaff/images/index/coupon_verification.png',
+                'need_perfect_store' => false, //是否需要完善店铺信息
+                'image_type' => 'local', // 图片类型 local-本地 url-远程
+            ];
+        }
+        
+
         return $menuList;
     }
 

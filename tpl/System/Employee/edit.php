@@ -181,7 +181,7 @@
 <script type="text/javascript" src="./static/js/artdialog/iframeTools.js"></script>
 <script>
     $('#choose_color_box1').click(function(){
-        window.top.showTopColorPanel('Openedit',0,$(this).height(),$(this).offset().left,'choose_color1')
+        window.o2oTop.showTopColorPanel('Openedit',0,$(this).height(),$(this).offset().left,'choose_color1')
     });
     function addLink(domid,iskeyword){
         art.dialog.data('domid', domid);

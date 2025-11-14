@@ -337,7 +337,6 @@ class MerchantMenuService
             ];
         }
         $menuList = $this->merchantMenuModel->getMenuList($where, $order);
-        // var_dump($this->merchantMenuModel->getLastSql());
         if (!$menuList) {
             return [];
         }

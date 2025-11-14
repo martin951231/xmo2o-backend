@@ -45,8 +45,8 @@
 									<td><if condition="$vo['is_authentication'] eq 1"><font color="green">需实名</font><else/><font color="gray">不需实名</font></if></td>
 									<td><if condition="$vo['package_status'] eq 1"><font color="green">启用</font><elseif condition="$vo['package_status'] eq 2"/><font color="gray">关闭</font><elseif condition="$vo['order_status'] eq 4"/><font color="green">已完成</font><else/><font color="red">送货中</font></if></td>
 									<td>
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('crow_show',array('package_id'=>$vo['package_id'],'frame_show'=>true))}','查看详细信息',600,400,true,false,false,false,'detail',true);">查看</a>
-										| <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['user_id'],'ask'=>1,'ask_id'=>$vo['package_id']))}','查看用户余额',600,400,true,false,false,false,'detail',true);">用户余额</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('crow_show',array('package_id'=>$vo['package_id'],'frame_show'=>true))}','查看详细信息',600,400,true,false,false,false,'detail',true);">查看</a>
+										| <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['user_id'],'ask'=>1,'ask_id'=>$vo['package_id']))}','查看用户余额',600,400,true,false,false,false,'detail',true);">用户余额</a>
 										<if condition="$vo['order_id']">| <a href="{pigcms{:U('crow_order',array('package_id'=>$vo['package_id']))}">订单</a></if>
 									</td>
 								</tr>

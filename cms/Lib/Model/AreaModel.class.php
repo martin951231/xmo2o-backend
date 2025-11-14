@@ -517,13 +517,11 @@ class AreaModel extends Model
 		$http = new Http();
 			
 		$map_config = C('config.map_config');
-//        fdump_api(['cityMatching489' => $map_config],'address/cityMatching',true);
 		if(!$map_config || $map_config == 'baidu'){
 			$url = 'http://api.map.baidu.com/reverse_geocoding/v3/?output=json&extensions_poi=1&ak=' . C('config.baidu_map_ak') . '&location=' . $lat . ',' . $lng;
 			
 			$result = $http->curlGet($url);
 			$result = json_decode($result, true);
-//            fdump_api([$url,$result],'address/areaModelCityMatching',true);
 			if (isset($result['status']) && $result['status'] == 210 && !empty($result['message'])) {
 			    return ['error' => 1, 'message' => $result['message']];
             }
@@ -621,9 +619,6 @@ class AreaModel extends Model
 			$url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lng.'&key='.C('config.google_map_ak').'&language=en';
 			$geocode_result = $http->curlGet($url);
 			$geocode_result = json_decode($geocode_result, true);
-			
-//			fdump($url,'cityMatching_result',true);
-//			fdump($geocode_result,'cityMatching_result',true);
 			if ($geocode_result['results']) {
 				//用第一个位置检索城市信息
 				import('@.ORG.longlat');
@@ -733,7 +728,6 @@ class AreaModel extends Model
 					}
 				}
 			}
-//			fdump($now_city,'cityMatching_result',true);
 		}
 		if ($now_city['area_info'] && '贵州' == $now_city['area_info']['province_name'] && '六盘水' == $now_city['area_info']['city_name'] && '盘县' == $now_city['area_info']['area_name']) {
             // 贵州六盘水盘县 替换成  贵州六盘水盘州

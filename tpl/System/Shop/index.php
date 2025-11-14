@@ -6,7 +6,7 @@
 					<if condition="$category">
 					<a href="{pigcms{:U('Shop/index',array('parentid'=>$category['cat_id']))}" class="on">{pigcms{$category.cat_name} - 子分类列表</a>|
 					</if>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/cat_add', array('parentid' => $parentid))}','添加分类',650,450,true,false,false,addbtn,'add',true);">添加<if condition="$category">子<else />主</if>分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/cat_add', array('parentid' => $parentid))}','添加分类',650,450,true,false,false,addbtn,'add',true);">添加<if condition="$category">子<else />主</if>分类</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -47,11 +47,11 @@
 										<if condition="empty($parentid)">
 											<td><a href="{pigcms{:U('Shop/index',array('parentid'=>$vo['cat_id']))}">查看子分类</a></td>
 										<else/>
-											<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('cue_field',array('cat_id'=>$vo['cat_id']))}','表单填写项',580,420,true,false,false,false,'detail',true);">表单填写项</a></td>
+											<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('cue_field',array('cat_id'=>$vo['cat_id']))}','表单填写项',580,420,true,false,false,false,'detail',true);">表单填写项</a></td>
 										</if>
 										<td><if condition="$vo['cat_status'] eq 1"><font color="green">启用</font><elseif condition="$vo['cat_status'] eq 2"/><font color="red">待审核</font><else/><font color="red">关闭</font></if></td>
 										<td><if condition="$vo['show_method'] eq 0"><font color="green">不显示</font><elseif condition="$vo['show_method'] eq 1"/><font color="red">正常显示</font><else/><font color="red">靠后显示</font></if></td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/cat_edit',array('cat_id'=>$vo['cat_id'],'frame_show'=>true))}','查看分类信息',650,450,true,false,false,false,'detail',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/cat_edit',array('cat_id'=>$vo['cat_id'], 'parentid'=>$vo['cat_fid']))}','编辑分类信息',650,450,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Shop/cat_del')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/cat_edit',array('cat_id'=>$vo['cat_id'],'frame_show'=>true))}','查看分类信息',650,450,true,false,false,false,'detail',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/cat_edit',array('cat_id'=>$vo['cat_id'], 'parentid'=>$vo['cat_fid']))}','编辑分类信息',650,450,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Shop/cat_del')}">删除</a></td>
 									</tr>
 								</volist>
 							<else/>

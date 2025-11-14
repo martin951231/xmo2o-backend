@@ -4,12 +4,12 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('User/levellist')}" class="on">等级管理</a>
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/addlevel')}','添加一个等级',1100,600,true,false,false,addbtn,'add',true);" style="margin-left:20px;">添加等级</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/addlevel')}','添加一个等级',1100,600,true,false,false,addbtn,'add',true);" style="margin-left:20px;">添加等级</a>
             <if condition="$config.open_recharge_level eq 1">
                 <a href="{pigcms{:U('User/recharge_level')}">充值获得等级</a>
             </if>
             <a href="{pigcms{:U('User/activation_code_list')}">激活码管理</a>
-            <a href="{pigcms{:U('User/open_user_level_log')}">平台会员开通记录</a>
+            <a href="{pigcms{:U('User/open_user_level_log')}">SYSTEM_USER_LEVEL_LIST_1</a>
         </ul>
     </div>
     <!--<table class="search_table" width="100%">
@@ -70,7 +70,7 @@
                             </td>
                             <td><if condition="$vo['type'] eq 1">商品按{pigcms{$vo['boon']/10}折优惠<elseif condition="$vo['type'] eq 2" />商品价格立减{pigcms{$vo.boon}{pigcms{$config['Currency_txt']}<else />无</if></td>
                             <if condition="$config['level_balance']"><td><if condition="$vo.validity gt 0">{pigcms{$vo.validity}天<else />永久有效</if></td></if>
-                            <td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/addlevel',array('lid'=>$vo['id']))}','编辑等级信息',1100,600,true,false,false,editbtn,'edit',true);">编 辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="lid={pigcms{$vo['id']}" url="/admin.php?g=System&c=User&a=dellevel">删除</a></td>
+                            <td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/addlevel',array('lid'=>$vo['id']))}','编辑等级信息',1100,600,true,false,false,editbtn,'edit',true);">编 辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="lid={pigcms{$vo['id']}" url="/admin.php?g=System&c=User&a=dellevel">删除</a></td>
                         </tr>
                     </volist>
                     <tr><td class="textcenter pagebar" colspan="7">{pigcms{$pagebar}</td></tr>

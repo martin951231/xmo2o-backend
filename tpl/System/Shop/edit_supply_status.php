@@ -22,18 +22,18 @@ var supply_id = "{pigcms{$supply_id}";
         $(function () {
             $("#change").bind("change", function () {
                 if (this.value == "0") {
-                    window.top.art.dialog({
+                    window.o2oTop.art.dialog({
                         lock: true,
                         content: '修改为配送失败后，则该配送将终止，且将会对用户自动退款，修改后将不可恢复，请谨慎操作！',
                         ok: function () {
                             $.get("{pigcms{:U('Deliver/change_status')}", {supply_id: supply_id,status: 0}, function (response) {
                                 if (response.error_code) {
-                                    window.top.msg(0, response.msg);
+                                    window.o2oTop.msg(0, response.msg);
                                 } else {
-                                    window.top.msg(1, response.msg, true);
+                                    window.o2oTop.msg(1, response.msg, true);
                                     if(parent.nowTab){
                                         parent.frames[parent.nowTab].location.reload();
-                                        window.top.closeiframe();
+                                        window.o2oTop.closeiframe();
                                     }else{
                                         parent.location.reload();
                                     }
@@ -46,18 +46,18 @@ var supply_id = "{pigcms{$supply_id}";
                         }
                     });
                 } else if(this.value == "5") {
-                    window.top.art.dialog({
+                    window.o2oTop.art.dialog({
                         lock: true,
                         content: '您确定要将该配送订单修改成配送完成吗？修改后相应的订单状态变成已消费！',
                         ok: function () {
                             $.get("{pigcms{:U('Deliver/change_status')}", {supply_id: supply_id,status: 5}, function (response) {
                                 if (response.error_code) {
-                                    window.top.msg(0, response.msg);
+                                    window.o2oTop.msg(0, response.msg);
                                 } else {
-                                    window.top.msg(1, response.msg, true);
+                                    window.o2oTop.msg(1, response.msg, true);
                                     if(parent.nowTab){
                                         parent.frames[parent.nowTab].location.reload();
-                                        window.top.closeiframe();
+                                        window.o2oTop.closeiframe();
                                     }else{
                                         parent.location.reload();
                                     }
@@ -69,18 +69,18 @@ var supply_id = "{pigcms{$supply_id}";
                         }
                     });
                 }else{
-                    window.top.art.dialog({
+                    window.o2oTop.art.dialog({
                         lock: true,
                         content: '您确定要将该配送订单修改成配送中吗？修改后将不可恢复，请谨慎操作！',
                         ok: function () {
                             $.get("{pigcms{:U('Deliver/change_status')}", {supply_id: supply_id,status: 4}, function (response) {
                                 if (response.error_code) {
-                                    window.top.msg(0, response.msg);
+                                    window.o2oTop.msg(0, response.msg);
                                 } else {
-                                    window.top.msg(1, response.msg, true);
+                                    window.o2oTop.msg(1, response.msg, true);
                                     if(parent.nowTab){
                                         parent.frames[parent.nowTab].location.reload();
-                                        window.top.closeiframe();
+                                        window.o2oTop.closeiframe();
                                     }else{
                                         parent.location.reload();
                                     }

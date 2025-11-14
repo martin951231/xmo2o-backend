@@ -3,8 +3,8 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('FilterWord/index')}" class="on">敏感词列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('FilterWord/add_word')}','添加敏感词',400,120,true,false,false,addbtn,'edit',true);">添加敏感词</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('FilterWord/mutil_add')}','批量添加敏感词',680,560,true,false,false,addbtn,'edit',true);">批量添加敏感词</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('FilterWord/add_word')}','添加敏感词',400,120,true,false,false,addbtn,'edit',true);">添加敏感词</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('FilterWord/mutil_add')}','批量添加敏感词',680,560,true,false,false,addbtn,'edit',true);">批量添加敏感词</a>
 				
 				</ul>
 			</div>
@@ -48,7 +48,7 @@
 									
 										<td class="textcenter">
 										
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('FilterWord/edit_word',array('id'=>$vo['id']))}','编辑敏感词信息',400,120,true,false,false,editbtn,'add',true);">编辑</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('FilterWord/edit_word',array('id'=>$vo['id']))}','编辑敏感词信息',400,120,true,false,false,editbtn,'add',true);">编辑</a>
 										<a href="javascript:void(0);" class="delete_row" parameter="id=10" url="{pigcms{:U('FilterWord/del_word',array('id'=>$vo['id']))}">删除</a>
 
 									</tr>

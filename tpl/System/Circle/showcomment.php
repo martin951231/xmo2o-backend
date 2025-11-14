@@ -34,7 +34,7 @@
 									    <td class="textcenter">
 										<if condition="$vo['status'] eq 1">隐藏<else/>显示</if> 
 										</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/editcomment',array('id'=>$vo['id']))}','编辑评论',850,300,true,false,false,editbtn,'edit',true);">编辑评论</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/delcomment')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/editcomment',array('id'=>$vo['id']))}','编辑评论',850,300,true,false,false,editbtn,'edit',true);">编辑评论</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/delcomment')}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="8">{pigcms{$pagebar}</td></tr>

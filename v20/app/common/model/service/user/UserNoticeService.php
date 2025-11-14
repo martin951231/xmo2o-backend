@@ -40,6 +40,7 @@ class UserNoticeService
             $v['new_time'] = $v['new_time'] > strtotime(date('Y-m-d')) ? date('H:i',$v['new_time']) : date('Y-m-d',$v['new_time']);
             $v['link'] = '';
             if($v['type'] > 0){
+                $originContent = $v['content'];
                 $v['content'] = json_decode($v['content']);
                 if(isset($v['content']->type) && $v['content']->type == 'image'){
                     $v['content'] = '[图片]';
@@ -50,13 +51,21 @@ class UserNoticeService
                 }elseif(isset($v['content']->type) && $v['content']->type == 'video'){
                     $v['content'] = '[视频]';
                 }else{
-                    $v['content'] = '[消息]';
+                    $v['content'] = $originContent?:'[消息]';
                 }
                 if($v['type'] == 4){//分类审核结果
                     $v['title'] = cfg('classify_name').'通知';
                     $v['img'] = cfg('site_url').'/static/user-notice/reject.png';
                     $v['link'] ='';
-                }else
+                } else if ($v['type'] == 8) {//问卷调查
+	                $v['title'] = '问卷调查';
+	                $v['img'] = cfg('site_url') . '/static/user-notice/survey.png';
+	                $v['link'] = '';
+                } else if ($v['type'] == 9) {//商家优惠券
+	                $v['title'] = '商家优惠券';
+	                $v['img'] = cfg('site_url') . '/static/user-notice/mer_coupon.png';
+	                $v['link'] = get_base_url('/pages/coupon/myCoupon');
+                } else
                 if($v['type'] == 2){//平台客服
                     $toUser = (new UserNotice())->where(['uid'=>$param['uid'],'type'=>2])->order('id desc')->value('kefu_id');
                     $v['title'] = '平台客服';
@@ -160,6 +169,9 @@ class UserNoticeService
             }elseif($v['business'] == 'scenic'){
                 $name = $v['tools_id'] ? (new LifeTools())->where('tools_id',$v['tools_id'])->value('title') : '';
                 $img = $v['tools_id'] ? (new LifeTools())->where('tools_id',$v['tools_id'])->value('cover_image') : '';
+            }elseif($v['business'] == 'survey'){
+	            $name = '问卷调查';
+	            $img = cfg('site_url').'/static/user-notice/survey.png';
             }
             $appointId = 0;
             if(in_array($v['business'],['group','village_group','appoint'])){
@@ -249,6 +261,9 @@ class UserNoticeService
             case 'scenic':
                 $link = get_base_url('pages/lifeTools/order/orderDetail?order_id='.$orderId);
                 break;
+			case 'survey':
+                $link = get_base_url('pages/activity/questionnaire/form?form_id='.$orderId);
+                break;
         }
         return $link;
     }
@@ -278,6 +293,9 @@ class UserNoticeService
             case 'scenic':
                 $icon = rtrim(cfg('site_url'),'/').'/static/user-notice/scenic.png';
                 break;
+	        case 'survey':
+		        $icon = rtrim(cfg('site_url'),'/').'/static/user-notice/survey.png';
+		        break;
         }
         return $icon;
     }
@@ -292,8 +310,15 @@ class UserNoticeService
         $addData = [];
         $addData['type'] = $param['type'];
         $addData['create_time'] = time();
-        $addData['uid'] = $param['uid']??0;
-        $where = [];
+
+	    $addData['mer_id'] = $param['mer_id'] ?? 0;
+	    $addData['title'] = $param['title'] ?? '';
+	    $addData['content'] = $param['content'] ?? '';
+	    $addData['business'] = $param['business'] ?? '';
+	    $addData['order_id'] = $param['order_id'] ?? 0;
+	    $addData['uid'] = $param['uid'] ?? 0;
+		
+	    $where = [];
         if($param['type'] == 0){//订单状态
             $addData['business'] = $param['business'];
             $addData['order_id'] = $param['order_id'];
@@ -344,7 +369,7 @@ class UserNoticeService
                 }
             }
             if(!$userNoticeTypeId){//创建消息板块
-                $isTop = $param['type']==0 ? 1 : 0;
+                $isTop = in_array($param['type'],[0, 8]) ? 1 : 0;
                 $update = (new UserNoticeType())->insert([
                     'type'=>$param['type'],
                     'store_id'=>$param['store_id']??0,
@@ -365,7 +390,6 @@ class UserNoticeService
             }
             if(!$update){
                 fdump_api((new UserNoticeType())->getLastSql(),'userNoticeError',1);
-//                throw new \think\Exception('编辑消息板块信息失败');
             }
             Db::commit();
             fdump_api([$param,'成功'],'userNoticeError',1);

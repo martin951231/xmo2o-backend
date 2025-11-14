@@ -25,11 +25,11 @@ class Service_offerModel extends Model{
         $offer_id = $this->data($offer_data)->add();
         if($offer_id){
             $now_user = D('User')->get_user($publishInfo['uid']);
-            if ($now_user['openid']) {
+            if ($now_user && $now_user['openid']) {
                 $model = new templateNews(C('config.wechat_appid'), C('config.wechat_appsecret'));
                 $href = C('config.site_url') . '/wap.php?g=Wap&c=Service&a=price_list&publish_id=' . $publish_id;
                 // 帮买帮送修改  待办事项通知 模板 为 订单状态更新 模板
-                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'first' => $now_user['nickname'] . L_('您好！'), 'OrderSn' => $publishInfo['order_sn'], 'OrderStatus' =>L_('您发布的需求配送员已接单，请查看。'), 'remark' => date('Y.m.d H:i:s')));
+                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'OrderStatus' => C('config.service_alias_name'), 'OrderSn' => $publishInfo['order_sn'], 'first' =>L_('您发布的需求配送员已接单，请查看。'), 'remark' => date('Y.m.d H:i:s')));
             }
             // 进行极光App推送
             if ($now_user) {
@@ -138,7 +138,7 @@ class Service_offerModel extends Model{
                 $model = new templateNews(C('config.wechat_appid'), C('config.wechat_appsecret'));
                 $href = C('config.site_url') . '/wap.php?g=Wap&c=Service&a=price_list&publish_id=' . $publish_id;
                 // 帮买帮送修改  待办事项通知 模板 为 订单状态更新 模板
-                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'first' => $now_user['nickname'] . L_('您好！'), 'OrderSn' => $publishInfo['order_sn'], 'OrderStatus' =>L_('您发布的需求').$remarks.L_('，请查看。'), 'remark' => date('Y.m.d H:i:s')));
+                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'OrderStatus' => C('config.service_alias_name'), 'OrderSn' => $publishInfo['order_sn'], 'first' =>L_('您发布的需求').$remarks.L_('，请查看。'), 'remark' => date('Y.m.d H:i:s')));
 //                $aaaa = '您发布的需求'.$remarks.'，请查看。';
             }
             // 进行极光App推送
@@ -242,6 +242,12 @@ class Service_offerModel extends Model{
 					$params['create_time'] = date('Y-m-d H:i:s');
 					fdump_sql($params,'deliver_user_paotui_finish');
                 }
+	            invoke_v20_service('\app\maiyatian\service\MaiyatianPushService/saveDeliveryChange', [
+					'publish_id' => $publish_id,
+		            'params' => [
+						'status' => 'DONE',
+		            ]
+	            ]);
             }
 
 			return true;

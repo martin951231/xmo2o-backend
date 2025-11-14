@@ -674,7 +674,7 @@ class NewPropertyAction extends BaseAction{
             $room_counts = 0;
         }
 
-        $user_counts =  D('House_village_user_bind')->where(array('type'=>['in', [0,3]],'vacancy_id'=>['gt',0], 'village_id'=>array('in',$village_arr),'status'=>1))->count();
+        $user_counts =  D('House_village_user_bind')->where(array('type'=>['in', [0,1,3]],'vacancy_id'=>['gt',0], 'village_id'=>array('in',$village_arr),'status'=>1))->count();
         if (!$user_counts) {
             $user_counts = 0;
         }

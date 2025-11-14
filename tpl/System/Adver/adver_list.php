@@ -38,7 +38,7 @@
 							<input class="input_radio" type="radio" name="app_index_center_four_show_type" value="2" <php>if(C('config.app_index_center_four_show_type')==2){</php>checked="checked"<php>}</php>/>
 							<span>9宫格</span>
 						<label>
-                        <a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Viewpage/image_show')}','示例图',1000,800,true,false,false,'','show',true);" style="color:blue">示例图</a>
+                        <a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Viewpage/image_show')}','示例图',1000,800,true,false,false,'','show',true);" style="color:blue">示例图</a>
 					</div>
 
 				   <div class="btn" style="display: none;"> 
@@ -55,7 +55,7 @@
 					<a href="{pigcms{:U('Adver/index')}">广告分类列表</a>|
 				</if>
 				<a href="{pigcms{:U('Adver/adver_list',$_GET)}" class="on">{pigcms{$now_category.cat_name} - 广告列表</a>|
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Adver/adver_add',array('cat_id'=>$now_category['cat_id'],'from_page'=>$_GET['from_page'],'shop_id'=>$shop_id,'cat_key'=>$_GET['cat_key']))}','添加广告',800,600,true,false,false,addbtn,'add',true);">添加广告</a>
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Adver/adver_add',array('cat_id'=>$now_category['cat_id'],'from_page'=>$_GET['from_page'],'shop_id'=>$shop_id,'cat_key'=>$_GET['cat_key']))}','添加广告',800,600,true,false,false,addbtn,'add',true);">添加广告</a>
 			</ul>
 		</div>
 		<div class="page_tips">广告建议尺寸：{pigcms{:str_replace(' ','&nbsp;',$now_category['size_info'])}</div>
@@ -132,7 +132,7 @@
 										<font color="red">关闭</font>
 									</if>
                                     </td>
-									<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Adver/adver_edit',array('id'=>$vo['id'],'frame_show'=>true,'from_page'=>$_GET['from_page']))}','查看广告信息',800,600,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Adver/adver_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page']))}','编辑广告信息',800,600,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Adver/adver_del')}">删除</a></td>
+									<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Adver/adver_edit',array('id'=>$vo['id'],'frame_show'=>true,'from_page'=>$_GET['from_page']))}','查看广告信息',800,600,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Adver/adver_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page']))}','编辑广告信息',800,600,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Adver/adver_del')}">删除</a></td>
 								</tr>
 							</volist>
 						<else/>

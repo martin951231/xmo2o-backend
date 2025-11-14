@@ -11,7 +11,7 @@
 				<td><input type="text" class="input fl" name="sub_name" size="20" value="{pigcms{$now_adver.sub_name}" placeholder="请输入副标题" validate="required:true"/></td>
 			</tr>
 			<if condition="($many_city eq 1 AND !in_array($now_category['cat_key'],array('wap_gift_adver','levelad'))) OR C('customization.open_view_multi_city') eq 1">
-                <if condition="$is_area_many_city neq 1 ">
+                <if condition="(C('customization.open_view_multi_city') neq 1) || (C('customization.open_view_multi_city') eq 1 && $is_area_many_city neq 1)">
                     <tr id="adver_currency">
                         <th width="15%">通用广告</th>
                         <td width="35%" class="radio_box">
@@ -22,9 +22,9 @@
                             </if>
                         </td>
                     </tr>
-                <else/>
+                 <else/>
                     <input id="no" type="hidden" name="currency" value="2" checked="checked" />
-                </if>
+                </if> 
             <if condition="C('customization.open_view_multi_city') neq 1">
 				<tr id="adver_region" <if condition="$now_adver['city_id'] eq 0 or $is_area_many_city eq 1">style="display:none;"</if>>
 					<th width="15%">所在区域</th>

@@ -86,7 +86,7 @@
                             <td>{pigcms{$vo.sms_send}</td>
                             <td>{pigcms{$vo.sms_remain}</td>
                             <td class="textcenter">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/sms_note',array('id'=>$vo['village_id']))}','查看详情',1200,800,true,false,false,'','add',true);">查看详情</a>
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/sms_note',array('id'=>$vo['village_id']))}','查看详情',1200,800,true,false,false,'','add',true);">查看详情</a>
                             </td>
                         </tr>
                     </volist>

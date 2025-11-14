@@ -2193,8 +2193,6 @@ class StoreAction extends BaseAction{
 		if($service_address_info){
 			$cue_list = $service_address_info;
 		}
-
-
 		$worker_where['merchant_worker_id'] = $appoint_visit_order_info['merchant_worker_id'];
 		$worker_field=array('merchant_worker_id','name','mobile');
 		$merchant_workers_info = $database_merchant_workers->appoint_worker_info($worker_where,$worker_field);
@@ -2358,12 +2356,13 @@ class StoreAction extends BaseAction{
 
 		$database_appoint_visit_order_info = D('Appoint_visit_order_info');
 		$database_appoint_order = D('Appoint_order');
-		$Map['appoint_order_id'] = $order_id;
 		$_data['merchant_worker_id'] = $merchant_worker_id ? $merchant_worker_id : 0;
 		$where['order_id'] = $order_id;
+		$appointOrder = $database_appoint_order->where($where)->find();
+		if($appointOrder['service_status']){
+			exit(json_encode(['status' => 0, 'msg' => L_('当前订单技师已服务')]));
+		}
 		$database_appoint_order->where($where)->data($_data)->save();
-
-
 		$insert_id = $database_appoint_visit_order_info->where($where)->data($_data)->save();
 		if($insert_id){
             $now_order = $database_appoint_order->where(array('order_id'=>$order_id))->find();
@@ -2429,7 +2428,19 @@ class StoreAction extends BaseAction{
 				$supply_where['order_id'] = $now_order['order_id'];
 				$database_appoint_supply->where($supply_where)->data($supply_data)->save();
 			}
-
+			$recordContent['content'] = [
+				[
+					'title' => '服务人员名称',
+					'value' => $now_worker['name'],
+					'type'  => 'text'
+				],
+				[
+					'title' => '服务人员手机号',
+					'value' => $now_worker['mobile'],
+					'type'  => 'text'
+				],
+			];
+			D('Appoint_order_records')->addOrderRecord($now_order['mer_id'], $now_order['order_id'], '分配服务人员', $recordContent);
 			exit(json_encode(array('status'=>1,'msg'=>L_('订单分配成功！'))));
 		}else{
 			exit(json_encode(array('status'=>0,'msg'=>L_('订单分配失败！'))));
@@ -5006,7 +5017,7 @@ class StoreAction extends BaseAction{
 			$data['order_from']=1;
 		}
 		if($this->staff_session['pick_addr_ids']){
-            $data['is_check'] = "((`o.is_pick_in_store` <> 2) OR (`o.is_pick_in_store` = 2 AND FIND_IN_SET(`o.pick_id`,'".$this->staff_session['pick_addr_ids']."')))";
+            $data['is_check'] = "((o.is_pick_in_store <> 2) OR (o.is_pick_in_store = 2 AND FIND_IN_SET(o.pick_id,'".$this->staff_session['pick_addr_ids']."')))";
         }
         $this->assign('list', D('Shop_order')->order_count($data));
         $this->assign('shop_type',$shop_type);
@@ -14101,7 +14112,7 @@ class StoreAction extends BaseAction{
                     }
                 }
             }
-
+			D('Shop_order_refund')->recoverLackWeightMoney($order_id, $refund_id);
 			exit(json_encode(array('errcode' => 0, 'msg' => 'ok')));
 		} else {
 			D('Shop_refund_log')->add(array('refund_id' => $refund_id, 'status' => 2, 'dateline' => time(), 'note' => $reply_content));

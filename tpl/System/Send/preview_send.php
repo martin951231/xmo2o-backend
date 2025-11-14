@@ -54,9 +54,9 @@ function send(openid){
 	$.post("{pigcms{:U('Send/preview_send')}", {openid:openid,send_id:send_id}, function(data, textStatus, xhr) {
 		
 		if(!data.status){
-			window.top.msg(0,data.info,true,3);
+			window.o2oTop.msg(0,data.info,true,3);
 		}else{
-			window.top.msg(1,data.info,true,3);
+			window.o2oTop.msg(1,data.info,true,3);
 		}
 		
 	},'json');

@@ -382,13 +382,10 @@ class ConfigService {
             }
             foreach ($config_list as $pigcms_key => &$pigcms_value) {
                 if ($has_tab) {
-                    $pigcms_value['name'] ? $pigcms_value['name'] : '基本设置';
+                    $pigcms_value['name'] = $pigcms_value['name'] ?: '基本设置';
                 }
-
                 foreach ($pigcms_value['list'] as $key => &$value) {
                     $tmp_type_arr = explode('&', $value['type']);
-
-//                    $type_arr = array();
                     foreach ($tmp_type_arr as $k => $v) {
                         $tmp_value = explode('=', $v);
                         if($tmp_value[0] == 'value') {

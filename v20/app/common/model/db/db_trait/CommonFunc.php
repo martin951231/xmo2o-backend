@@ -17,10 +17,9 @@ trait CommonFunc{
     }
 
     public function getSome($where = [], $field = true,$order=true,$page=0,$limit=0){
-//    	$result = $this->field($field)->where($where)->order($order)->limit($page,$limit)->select();
-//    	return $result;
 
-        $sql = $this->field($field)->where($where)->order($order);
+        $sql = $this->field($field)->where($where);
+	    $order !== true && $sql = $sql->order($order);//优化排序
         if($limit)
         {
             $sql->limit($page,$limit);

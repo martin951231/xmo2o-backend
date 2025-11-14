@@ -81,6 +81,12 @@
                 <th width="80">代理商佣金比例</th>
                 <td><input type="text" class="input fl inputwidth" name="commission_rate" value="" size="10" value="0" validate="number:true,maxlength:6,min:0,max:100" tips="请填写一个百分比数字，不需要增加%"/></td>
             </tr>
+            <if condition="in_array($_GET['type'],[1,2,3])">
+                <tr>
+                    <th width="100">国家区域编码</th>
+                    <td><input type="text" class="input fl inputwidth" name="adcode" value="" validate="required:true,number:true" tips="请填写国家区域编码"/></td>
+                </tr>
+            </if>
             <if condition="in_array($_GET['type'],[2,3])">
                 <tr>
                     <th width="80">佣金结算关系</th>
@@ -218,7 +224,7 @@
             <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,drawing&key={pigcms{$config.google_map_ak}&language=en"></script>
             <script type="text/javascript" src="{pigcms{$static_path}js/map_google.js"></script>
             <else />
-            <script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+            <script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
             <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
             <script type="text/javascript">var polygonMap = 1;</script>
             <script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=3"></script>

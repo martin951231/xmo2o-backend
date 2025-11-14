@@ -7,7 +7,7 @@
 					<else/>
 					<a href="{pigcms{:U('Live/show_category')}" class="on">直播分类</a>|
 					</notempty>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/add_liveshow_category', ['fid'=>$_GET['fid']])}','添加分类',800,460,true,false,false,addbtn,'add',true);">添加分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/add_liveshow_category', ['fid'=>$_GET['fid']])}','添加分类',800,460,true,false,false,addbtn,'add',true);">添加分类</a>
 				</ul>
 			</div>
 			
@@ -45,7 +45,7 @@
 										<td><a href="{pigcms{:U('Live/show_category',array('fid'=>$vo['id']))}">查看下级</a></td>
 										</empty>
 										<td>{pigcms{$vo.orderby}</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/edit_liveshow_category',array('id'=>$vo['id']))}','编辑分类',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Live/del_liveshow_category',array('id'=>$vo['id']))}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/edit_liveshow_category',array('id'=>$vo['id']))}','编辑分类',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Live/del_liveshow_category',array('id'=>$vo['id']))}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="9">{pigcms{$pagebar}</td></tr>

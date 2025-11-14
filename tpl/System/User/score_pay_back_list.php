@@ -60,7 +60,7 @@
 										<td><if condition="$vo.type eq 1"><font color="green">+<elseif condition="$vo.type eq 2" /><font color="red">-<elseif condition="$vo.type eq 3" /><font color="red">-</if>{pigcms{$vo.score|floatval}</font></td>
 										<td>{pigcms{$vo.desc}</td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a>
 										</td>
 										<td>
 											{pigcms{$vo['time']|date='Y-m-d H:i:s',###}<br/>

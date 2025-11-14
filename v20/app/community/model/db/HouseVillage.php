@@ -113,7 +113,7 @@ class HouseVillage extends Model{
      * @param bool $field
      * @return array
     **/
-    public function getInfo($where,$field=true)
+    public function getInfo($where,$field='*')
     {
         $info = $this->where($where)->field($field)->find();
         return $info;

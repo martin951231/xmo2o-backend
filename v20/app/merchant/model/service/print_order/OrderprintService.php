@@ -219,6 +219,8 @@ class OrderprintService {
             return L_("云打印机");
         }elseif($print['print_type'] == 6){
             return L_("手持POS终端");
+        }elseif($print['print_type'] == 7){
+            return L_("大趋云打印机");
         }
         return L_("未知打印机类型");
     }

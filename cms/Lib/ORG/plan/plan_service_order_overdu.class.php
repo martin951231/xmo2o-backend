@@ -2,7 +2,11 @@
 
 class plan_service_order_overdu extends plan_base{
 	public function runTask(){
-		$list = D('Service_user_publish')->where(array('status'=>2,'catgory_type'=>array('neq',1)))->limit(5)->select();
+		$list = D('Service_user_publish')->where([
+			'status'=>2,
+			'catgory_type'=>['neq',1],
+			'third_type' => ['neq', 'maiyatian']
+		])->limit(5)->select();
         foreach ($list as $key => $value) {
 			$this->keepThread();
             $catInfo = D('Service_category')->where(array('cid'=>$value['cid']))->find();
@@ -51,7 +55,6 @@ class plan_service_order_overdu extends plan_base{
                             $lowfeepay->key = $mer_juhe['key'];
                             $plat_info['is_own'] =1 ;
                         }
-
                     }
                     $go_refund_param= $lowfeepay->refund($plat_info);
                     $data_plat_order['order_id'] = $plat_info['order_id'];

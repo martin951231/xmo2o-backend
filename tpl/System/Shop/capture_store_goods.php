@@ -53,7 +53,7 @@ $(function(){
 		art.dialog.open("{pigcms{:U('Shop/store_list')}",{
 			init: function(){
 				var iframe = this.iframe.contentWindow;
-				window.top.art.dialog.data('iframe_handle',iframe);
+				window.o2oTop.art.dialog.data('iframe_handle',iframe);
 			},
 			id: 'select_store',
 			title:'选择店铺',
@@ -120,7 +120,7 @@ $(function(){
 		art.dialog.open(url, {
 	        init: function(){
 	            var iframe = this.iframe.contentWindow;
-	            window.top.art.dialog.data('iframe_handle', iframe);
+	            window.o2oTop.art.dialog.data('iframe_handle', iframe);
 	        },
 	        id: null,
 	        title: '',

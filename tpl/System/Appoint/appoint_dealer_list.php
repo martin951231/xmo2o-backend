@@ -44,7 +44,7 @@
 											用户昵称：{pigcms{$vo.nickname}<br/>
 											手机号：{pigcms{$vo.phone}
 										</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','查看服务详情',680,560,true,false,false,false,'detail',true);">查看用户信息</a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','查看服务详情',680,560,true,false,false,false,'detail',true);">查看用户信息</a></td>
 										<td>
 											<if condition="$vo['paid'] eq 0"><span style="color:red">未支付</span>
 											<elseif condition="$vo['paid'] eq 1" /><span style="color:green">已支付</span>
@@ -80,11 +80,11 @@
                                             </if>
                                         </td>
 										<td class="textcenter">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看服务详情',660,490,true,false,false,false,'detail',true);">查看详情</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看服务详情',660,490,true,false,false,false,'detail',true);">查看详情</a>
 											<if condition='!$vo["is_del"]'>
-											&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/allot_merchant',array('order_id'=>$vo['order_id']))}','分配订单',660,200,true,false,false,editbtn,'add',true);">分配订单</a>
+											&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/allot_merchant',array('order_id'=>$vo['order_id']))}','分配订单',660,200,true,false,false,editbtn,'add',true);">分配订单</a>
 											</if>
-									  		<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/product_detail',array('appoint_id'=>$vo['appoint_id']))}','编辑预约信息',480,<if condition="$vo['appoint_id']">240<else/>340</if>,true,false,false,editbtn,'edit',true);">编辑</a> -->
+									  		<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/product_detail',array('appoint_id'=>$vo['appoint_id']))}','编辑预约信息',480,<if condition="$vo['appoint_id']">240<else/>340</if>,true,false,false,editbtn,'edit',true);">编辑</a> -->
 									  	</td>
 									</tr>
 								</volist>

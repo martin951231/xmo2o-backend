@@ -22,10 +22,10 @@
 									<tr>
 										<td>{pigcms{$vo.pigcms_id}</td>
 										<td>{pigcms{$vo.name}</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Send/txtinfo',array('id'=>$vo['c_id']))}','内容详情',560,350,true,false,false,editbtn,'add',true);">内容详情</a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Send/txtinfo',array('id'=>$vo['c_id']))}','内容详情',560,350,true,false,false,editbtn,'add',true);">内容详情</a></td>
 										<td>
 											<if condition="$vo['status'] eq 1">
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Send/info',array('id'=>$vo['pigcms_id']))}','发送对象',560,350,true,false,false,editbtn,'add',true);">对象列表</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Send/info',array('id'=>$vo['pigcms_id']))}','发送对象',560,350,true,false,false,editbtn,'add',true);">对象列表</a>
 											<else />
 											{pigcms{$from_type[$vo['type']]}
 											</if>

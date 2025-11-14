@@ -2318,6 +2318,7 @@ class PayAction extends BaseAction{
 
         //$pay_method['allinpay']['config']['is_own'] = 1;
 
+        $this->assign('pay_money',$pay_money);
         if (empty($go_pay_param['error'])) {
             if (!empty($go_pay_param['url'])) {
                 $this->assign('url', $go_pay_param['url']);

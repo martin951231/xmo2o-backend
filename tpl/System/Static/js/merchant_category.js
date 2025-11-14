@@ -20,8 +20,8 @@ function show_category(){
 //			$('#choose_cityarea').prepend(area_dom);
 //			show_city(result.id,result.name,0);
 		}else{
-			window.top.msg(0,result.info,true);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -53,8 +53,8 @@ function show_category_two(cat_id,cat_name,type){
 //			$('#choose_cityarea').prepend(area_dom);
 //			show_area(result.id,result.name,0);
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 	});
 }

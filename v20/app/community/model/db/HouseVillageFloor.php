@@ -69,12 +69,12 @@ class HouseVillageFloor extends Model{
      * @param $field
      * @return mixed
      */
-    public function floorSingleName($where,$field)
+    public function floorSingleName($where,$field='*',$order='s.id desc')
     {
         $data = $this->alias('f')
             ->leftJoin('house_village_single s','s.id = f.single_id')
             ->where($where)
-            ->field($field)
+            ->field($field)->order($order)
             ->select();
         return $data;
     }

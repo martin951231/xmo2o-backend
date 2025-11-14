@@ -20,7 +20,7 @@ class ClassifyUserInputController
      * @param string $method
      * @return array|mixed
      */
-    private function validateParameter($method = 'post',array $params = [], string $scenario = '') : array
+    protected function validateParameter($method = 'post',array $params = [], string $scenario = '') : array
     {
         empty($params) && $params = input($method.'.');
         $validate = validate(ClassifyValidate::class);

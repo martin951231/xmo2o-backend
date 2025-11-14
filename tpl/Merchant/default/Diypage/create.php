@@ -120,7 +120,7 @@
 	<div style="display:none;" id="edit_data" page-name="{pigcms{$now_page.page_name}" page-id="{pigcms{$now_page.page_id}" page-desc="{pigcms{$now_page.page_desc}" bgcolor="{pigcms{$now_page.bgcolor}" menu_bgcolor="{pigcms{$now_page.menu_bgcolor}"></div>
 	<div style="display:none;" id="edit_custom" custom-field='{pigcms{:json_encode($now_page_custom, JSON_UNESCAPED_UNICODE|JSON_HEX_APOS)}'></div>
 </if>
-<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
 <link rel="stylesheet" href="./tpl/System/Static/css/custom-ui.css"/>
 <link rel="stylesheet" href="{pigcms{$static_path}diypage/css/customField.css?t=1"/>
 <link rel="stylesheet" href="{pigcms{$static_path}diypage/css/pc-1.css?t=1"/>

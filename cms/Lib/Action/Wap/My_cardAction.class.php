@@ -74,7 +74,8 @@ class My_cardAction extends BaseAction
                 $user_card_data = [
                     'card_id' => $now_card['card_id'],
                     'mer_id' => $_GET['mer_id'],
-                    'uid' => $this->now_user['uid']
+                    'uid' => $this->now_user['uid'],
+                    'time'=>time()
                 ];
                 $card_user_id = D('Card_userlist')->add($user_card_data);
             }else{

@@ -270,7 +270,7 @@ class NewPayService
         if( $pay_type==42 && $uid<=0){
             throw new \think\Exception("业主住户余额支付错误。");
         }
-        if( $pay_type==42 && $uid>0 && $yuanjino2o_customized_func<1){
+        if( $pay_type==42 && $uid>0){
             $db_village_user_money_list=new VillageUserMoneyList();
             $user_moneyObj=$db_village_user_money_list->getOne(['uid'=>$uid,'business_id'=>$village_id,'business_type'=>1],'*');
             $user_money=array();
@@ -381,11 +381,15 @@ class NewPayService
         $orderData['is_online'] = 0;
         $orderData['update_time'] = time();
         $orderData['remark'] = $remark; // 也同步到子订单
-
         if (!empty($role_id)){
             $orderData['role_id'] = $role_id;
         }
-
+        if (!empty($param) && isset($param['login_role'])){
+            $orderData['login_role'] = $param['login_role'];
+        }
+        if (!empty($param) && isset($param['role_name'])){
+            $orderData['role_name'] = $param['role_name'];
+        }
         if(!empty($extra_data) && is_array($extra_data)){
             $orderData['extra_data']=json_encode($extra_data,JSON_UNESCAPED_UNICODE);
         }
@@ -1118,9 +1122,17 @@ class NewPayService
         $total_money = 0;
         $pay_money = 0;
         $orderData['summary_id'] = $summary_id;
+        /*
         if(isset($param['role_id']) && $param['role_id']>0){
             $orderData['role_id'] = $param['role_id'];
         }
+        if (!empty($param) && isset($param['login_role'])){
+            $orderData['login_role'] = $param['login_role'];
+        }
+        if (!empty($param) && isset($param['role_name'])){
+            $orderData['role_name'] = $param['role_name'];
+        }
+        */
         $orderData['is_paid'] = 2;
         $deposit_money=$param['deposit_money'];
         $rule_order_discount = array();
@@ -1442,7 +1454,7 @@ class NewPayService
             $save_summary_order['village_balance']=$summary_order_info['pay_money'];
         }
         $configCustomizationService= new ConfigCustomizationService();
-        
+        $village_id=$summary_order_info['village_id'];
         $score_deducte=0;  //积分抵扣的钱
         $score_used_count=0; //抵扣掉的积分
         if($other_data && isset($other_data['user_score_deducte']) && $other_data['user_score_deducte']>0){
@@ -1451,12 +1463,13 @@ class NewPayService
             $save_summary_order['score_percent']=$other_data['user_score_use_percent'];
             $score_deducte=$other_data['user_score_deducte'];  //积分抵扣的钱
             $score_used_count=$other_data['score_used_count']; //抵扣掉的积分
+            $scoreParam=array('order_type'=>'village_order_pay','score_type'=>21,'order_id'=>$summary_id,'house_type'=>1,'village_id'=>$village_id);
             $getIntegralPool=$configCustomizationService->getIntegralPool();
             if($getIntegralPool){
                 //积分池扣分，积分扣除规则：积分使用总和占积分总和的百分比，用百分比乘每个人的积分，最后计算总和，如果总和小于积分使用总和，由积分最高的人承担差值
-                $use_result = $this->userIntegralPool($summary_order_info['room_id'],$other_data['score_used_count'],$summary_order_info['order_no'],0,$summary_order_info['pay_uid']);
+                $use_result = $this->userIntegralPool($summary_order_info['room_id'],$other_data['score_used_count'],$summary_order_info['order_no'],0,$summary_order_info['pay_uid'],$scoreParam);
             }else{
-                $use_result = (new UserService())->userScore($summary_order_info['pay_uid'], $other_data['score_used_count'], L_("物业缴费 ，扣除X1 ，订单编号X2", array( "X1" => cfg('score_name'), "X2" => $summary_order_info['order_no'])));
+                $use_result = (new UserService())->userScore($summary_order_info['pay_uid'], $other_data['score_used_count'], L_("物业缴费 ，扣除X1 ，订单编号X2", array( "X1" => cfg('score_name'), "X2" => $summary_order_info['order_no'])),2,$scoreParam);
             }
             if ($use_result && $use_result['error_code']) {
                 return array('error_code'=>1,'msg'=>'积分扣除失败！'.$use_result['msg']);
@@ -1508,8 +1521,11 @@ class NewPayService
         if($yuanJino2oCustomize){
             $is_old_park_position=true;
         }
+        $isAihorseCustomizedJudge=$configCustomizationService->getAihorseCustomizedJudge();
+        if($isAihorseCustomizedJudge){
+            $is_old_park_position=true;
+        }
         $order_list=$order_list->toArray();
-        $village_id=$summary_order_info['village_id'];
         $messageDatas=array();
         $messageDatas['property_id']=$summary_order_info['property_id'];
         $messageDatas['pay_money']=round($summary_order_info['pay_money'],2);
@@ -2166,7 +2182,7 @@ class NewPayService
                     }
                 }
                  /*** 车位到期时间 老版的和新版的冲突了 去掉老版的统一用新版的  有的客服坚持要这个功能*/
-                if($is_old_park_position && ($v['order_type'] == 'park' || $v['order_type'] == 'parking_management')){
+                if($is_old_park_position && $v['order_type'] == 'park' ){
                     fdump_api([$v['position_id'],$v['order_type'],$v['village_id']],'children_position_log_0803',1);
                     if((!isset($v['f_order_id'])||$v['f_order_id']<1) && $v['position_id']){
                         try {
@@ -2215,6 +2231,35 @@ class NewPayService
 
             if (isset($v['from']) && $v['from'] == 4) {
                 $worksOrderPayOrderIds[] = $v['order_id'];
+            }
+            if ($v['order_type_flag'] == 'easymeter_order' && isset($v['third_meter_code']) && $v['third_meter_code'] ) {
+                $nbLotEasyMeterApiService=new \app\community\model\service\Device\NbLotEasyMeterApiService($v['village_id']);
+                $retOpenMeter=$nbLotEasyMeterApiService->meterOpenUse($v['third_meter_code'],$v['room_id']);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $v['third_meter_code'], 'order_id' => $v['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/offlineAfterPay', 1);
+            }elseif ($v['order_type_flag'] == 'jisheyunmeter_order' && isset($v['third_meter_code']) && $v['third_meter_code'] ){
+                $jiSheYunMeterApiService=new \app\community\model\service\Device\JiSheYunMeterApiService($v['village_id']);
+                $meter_type=1;
+                if($v['order_type']=='electric'){
+                    $meter_type=2;
+                }
+                $retOpenMeter= $jiSheYunMeterApiService->meterOpenUse($v['third_meter_id'],$meter_type,$v['third_meter_code'],$v['room_id']);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $v['third_meter_code'], 'order_id' => $v['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/offlineAfterPay', 1);
+            }else if($v['order_type_flag']=='lingyinmeter_order' && isset($v['third_meter_code']) && $v['third_meter_code']){
+                $lingYinPfMeterApiService=new \app\community\model\service\Device\LingYinPfMeterApiService($v['village_id']);
+                $meter_type=1;
+                if($v['order_type']=='electric'){
+                    $meter_type=2;
+                }
+                $retOpenMeter=$lingYinPfMeterApiService->meterOpenUse($v['third_meter_code'],$v['room_id'],$meter_type);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $v['third_meter_code'], 'order_id' => $v['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/offlineAfterPay', 1);
+            }else if($v['order_type_flag']=='bomingmeter_order' && isset($v['third_meter_code']) && $v['third_meter_code']){
+                $boMingPfMeterApiService=new \app\community\model\service\Device\BoMingPfMeterApiService($v['village_id']);
+                $meter_type=1;
+                if($v['order_type']=='electric'){
+                    $meter_type=2;
+                }
+                $retOpenMeter=$boMingPfMeterApiService->meterOpenUse($v['third_meter_code'],$v['room_id'],$meter_type);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $v['third_meter_code'], 'order_id' => $v['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/offlineAfterPay', 1);
             }
             if($pay_order_info_id>0){
                 $pay_db = new PayOrderInfo;
@@ -2784,6 +2829,10 @@ class NewPayService
         if($yuanJino2oCustomize){
             $is_old_park_position=true;
         }
+        $isAihorseCustomizedJudge=$configCustomizationService->getAihorseCustomizedJudge();
+        if($isAihorseCustomizedJudge){
+            $is_old_park_position=true;
+        }
         $only_order_id    = 0;
         $car_number_arr   = [];// 车牌
         $car_stay_time    = 0;//  车辆停留时长 单位秒S
@@ -2873,8 +2922,12 @@ class NewPayService
             }
             if (isset($order_list[$key+1])){
                 //实际线上支付的金额
-                $tmp_pay_money=$extra['paid_money']*($now_order['pay_money']/$cashier_order['pay_money'])*100;
-                $pay_money=round($tmp_pay_money);
+                $tmp_pay_money=$extra['paid_money']*($now_order['pay_money']/$cashier_order['pay_money']);
+                $pay_money=$tmp_pay_money *100;
+                $pay_money=round($pay_money);
+                
+                $tmp_pay_money=round($tmp_pay_money,2);
+                
                 //实际积分抵扣的金额
                 $score_deducte=round_number($extra['current_score_deducte']*($now_order['pay_money']/$cashier_order['pay_money']),2);
                 //实际余额支付的金额
@@ -2886,6 +2939,23 @@ class NewPayService
                 $score_used_count=round($score_used_count_tmp,2);
                 $offline_pay_money_tmp=round_number($offline_pay_money*($now_order['pay_money']/$cashier_order['pay_money']),2);
                 $totle_money=$totle_money+$pay_money;
+                
+                $tmp_order_pay_money=$tmp_pay_money+$system_balance+$village_balance+$score_deducte;
+                $tmp_order_pay_money=round($tmp_order_pay_money,2);
+
+                if($tmp_order_pay_money!=$now_order['pay_money']){
+                    if($score_deducte>0){
+                        $score_deducte=$now_order['pay_money']-($tmp_pay_money+$system_balance+$village_balance);
+                        $score_deducte=round($score_deducte,2);
+                    }elseif ($system_balance>0){
+                        $system_balance=$now_order['pay_money']-($tmp_pay_money+$village_balance+$score_deducte);
+                        $system_balance=round($system_balance,2);
+                    }elseif ( $village_balance>0){
+                        $village_balance=$now_order['pay_money']-($tmp_pay_money+$system_balance+$score_deducte);
+                        $village_balance=round($village_balance,2);
+                    }
+                }
+                
                 $totle_score_deducte=$totle_score_deducte+$score_deducte;
                 $totle_system_balance=$totle_system_balance+$system_balance;
                 $totle_village_balance=$totle_village_balance+$village_balance;
@@ -3229,7 +3299,7 @@ class NewPayService
                                 }
                                     */
                             }
-                        }elseif($park_sys_type=='D3'){
+                        }elseif($park_sys_type=='D3' || $park_sys_type=='A11' || $park_sys_type=='HXT85'){
                             $res_park=$db_house_village_parking_car->editHouseVillageParkingCar(['car_id'=>$v['car_id']],$park_set);
                             fdump_api(['line' => __LINE__, 'res_park' => $res_park, 'park_position_set' => $park_position_set, 'position_id' => $parking_position['position_id']], 'after_pay/newPayServiceLog', 1);
                                 /*
@@ -3614,7 +3684,7 @@ class NewPayService
                         ];
                         $toPark = invoke_cms_model('cms/Lib/Model/ParkService\payNoticeToPark',$data_park_d1);
                     }
-                    elseif ($park_sys_type=='D3'){
+                    elseif ($park_sys_type=='D3' || $park_sys_type=='HXT85'){
                         fdump_api(['line' => __LINE__, 'house_village_parking_temp' => $house_village_parking_temp], 'after_pay/newPayServiceLog', 1);
                         if($house_village_parking_temp){
                             fdump_api(['line' => __LINE__, 'now_order' => $now_order, 'car_number' => $car_number], 'after_pay/newPayServiceLog', 1);
@@ -4177,7 +4247,7 @@ class NewPayService
                         $spec = date('Y-m-d',$service_start_time) . '至' . date('Y-m-d',$service_end_time);
                     }
                     /**** 车位到期时间 老版的和新版的冲突了 去掉老版的统一用新版的 有的老客户坚持要*/
-                    if($is_old_park_position && ($now_order['order_type'] == 'park' || $now_order['order_type'] == 'parking_management')){
+                    if($is_old_park_position && $now_order['order_type'] == 'park'){
                         if($now_order['position_id']){
                             try {
                                 $service_house_village_parking->editParkingPosition(['position_id'=>$now_order['position_id']],['end_time'=>$service_end_time]);
@@ -4258,7 +4328,6 @@ class NewPayService
             */
             if($rule_discount_rate>0 && $rule_discount_info && $rule_discount_info['diy_type']==1){
                 $pay_amount_discount_tmp=$date_order['pay_money']*$rule_discount_rate;
-                $date_order['pay_amount_points'] = $pay_amount_discount_tmp;
                 $date_order['pay_money']=$pay_amount_discount_tmp/100;
                 $date_order['pay_money']=round($date_order['pay_money'],2);
             }
@@ -4282,6 +4351,36 @@ class NewPayService
                     $customizeMeterWaterReadingService->openUserWaterElectricUse($now_order['village_id'],$now_order['room_id'],$now_order['order_type_flag']);
                 }
             }
+            if ($now_order['order_type_flag'] == 'easymeter_order' && isset($now_order['third_meter_code']) &&$now_order['third_meter_code'] ) {
+                $nbLotEasyMeterApiService=new \app\community\model\service\Device\NbLotEasyMeterApiService($now_order['village_id']);
+                $retOpenMeter=$nbLotEasyMeterApiService->meterOpenUse($now_order['third_meter_code'],$now_order['room_id']);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $now_order['third_meter_code'], 'order_id' => $now_order['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/newPayServiceLog', 1);
+            }elseif ($now_order['order_type_flag'] == 'jisheyunmeter_order' && isset($now_order['third_meter_code']) && $now_order['third_meter_code'] ){
+                $jiSheYunMeterApiService=new \app\community\model\service\Device\JiSheYunMeterApiService($now_order['village_id']);
+                $meter_type=1;
+                if($now_order['order_type']=='electric'){
+                    $meter_type=2;
+                }
+                $retOpenMeter= $jiSheYunMeterApiService->meterOpenUse($now_order['third_meter_id'],$meter_type,$now_order['third_meter_code'],$now_order['room_id']);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $now_order['third_meter_code'], 'order_id' => $now_order['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/newPayServiceLog', 1);
+            }else if($now_order['order_type_flag']=='lingyinmeter_order' && isset($now_order['third_meter_code']) && $now_order['third_meter_code']){
+                $lingYinPfMeterApiService=new \app\community\model\service\Device\LingYinPfMeterApiService($now_order['village_id']);
+                $meter_type=1;
+                if($now_order['order_type']=='electric'){
+                    $meter_type=2;
+                }
+                $retOpenMeter=$lingYinPfMeterApiService->meterOpenUse($now_order['third_meter_code'],$now_order['room_id'],$meter_type);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $now_order['third_meter_code'], 'order_id' => $now_order['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/newPayServiceLog', 1);
+            }else if($now_order['order_type_flag']=='bomingmeter_order' && isset($now_order['third_meter_code']) && $now_order['third_meter_code']){
+                $lingYinPfMeterApiService=new \app\community\model\service\Device\LingYinPfMeterApiService($now_order['village_id']);
+                $meter_type=1;
+                if($now_order['order_type']=='electric'){
+                    $meter_type=2;
+                }
+                $retOpenMeter=$lingYinPfMeterApiService->meterOpenUse($now_order['third_meter_code'],$now_order['room_id'],$meter_type);
+                fdump_api(['line' . __LINE__,'third_meter_code' => $now_order['third_meter_code'], 'order_id' => $now_order['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/newPayServiceLog', 1);
+            }
+            
             if ($now_order['deposit_money']>0){
                 $db_house_new_deposit_log=new HouseNewDepositLog();
                 $deposit_info=$db_house_new_deposit_log->get_one(['order_id'=>$now_order['order_id'],'type'=>2]);
@@ -4465,27 +4564,29 @@ class NewPayService
             if ($buyer['score_count'] < $scoreUsedCount&&ceil($buyer['score_count'])>=$scoreUsedCount){
                 $scoreUsedCount=$buyer['score_count'];
             }
+            $scoreParam=array('order_type'=>'village_order_pay','score_type'=>21,'order_id'=>$summary_id,'house_type'=>1,'village_id'=>$village_id);
             $getIntegralPool=(new ConfigCustomizationService())->getIntegralPool();
             if($getIntegralPool){
                 //积分池扣分，积分扣除规则：积分使用总和占积分总和的百分比，用百分比乘每个人的积分，最后计算总和，如果总和小于积分使用总和，由积分最高的人承担差值
-                $use_result = $this->userIntegralPool($cashier_order['room_id'],$scoreUsedCount,$cashier_order['order_no'],$score_can_get,$cashier_order['pay_uid']);
+                $use_result = $this->userIntegralPool($cashier_order['room_id'],$scoreUsedCount,$cashier_order['order_no'],$score_can_get,$cashier_order['pay_uid'],$scoreParam);
             }else{
-                $use_result = (new UserService())->userScore($cashier_order['pay_uid'], $scoreUsedCount, L_("物业缴费 ，扣除X1 ，订单编号X2", array( "X1" => cfg('score_name'), "X2" => $cashier_order['order_no'])));
+                $use_result = (new UserService())->userScore($cashier_order['pay_uid'], $scoreUsedCount, L_("物业缴费 ，扣除X1 ，订单编号X2", array( "X1" => cfg('score_name'), "X2" => $cashier_order['order_no'])),2,$scoreParam);
             }
             if ($use_result['error_code']) {
                 throw new \Exception($use_result['msg'], 1003);
             }
         }
         // 积分获得
+        $scoreParam=array('order_type'=>'village_order_pay','score_type'=>20,'order_id'=>$summary_id,'house_type'=>1,'village_id'=>$village_id);
         if ($cashier_order['score_can_get']>0) { // 使用了积分
             $score_can_get = $cashier_order['score_can_get'];
-            $service_user->addScore($cashier_order['pay_uid'],$score_can_get,'缴纳社区收银台缴费获得积分');
+            $service_user->addScore($cashier_order['pay_uid'],$score_can_get,'缴纳社区收银台缴费获得积分',0,$scoreParam);
             fdump_api(['支付回调' => __LINE__,'获得积分' => $score_can_get],'after_pay/newPayServiceLog',1);
         }else{
             $user = $service_user->getUser($cashier_order['pay_uid'],'uid');
             $score = $this->get_score($plat_order_id,$user,false);
             $score_can_get = $score['score_can_get'];
-            $service_user->addScore($cashier_order['pay_uid'],$score_can_get,'缴纳社区收银台缴费获得积分');
+            $service_user->addScore($cashier_order['pay_uid'],$score_can_get,'缴纳社区收银台缴费获得积分',0,$scoreParam);
             fdump_api(['支付回调' => __LINE__,'score'=>$score,'获得积分' => $score_can_get],'after_pay/newPayServiceLog',1);
         }
         
@@ -5068,6 +5169,9 @@ class NewPayService
         if($yuanJino2oCustomize){
             $is_old_park_position=true;
         }
+        if($is_aihorse_customized){
+            $is_old_park_position=true;
+        }
         $oder_pay_type=$pay_type;
         if($pay_type==42){
             /***PC收银台住户余额支付****/
@@ -5122,6 +5226,15 @@ class NewPayService
         $updateData['offline_pay_type'] = $offline_pay_type;
         $updateData['update_time'] = time();
         $updateData['remark'] = $remark;
+        if (!empty($param) && isset($param['role_id'])){
+            $updateData['role_id'] = $param['role_id'];
+        }
+        if (!empty($param) && isset($param['login_role'])){
+            $updateData['login_role'] = $param['login_role'];
+        }
+        if (!empty($param) && isset($param['role_name'])){
+            $updateData['role_name'] = $param['role_name'];
+        }
         if(!empty($param['extra_data']) && is_array($param['extra_data'])){
             $updateData['extra_data']=json_encode($param['extra_data'],JSON_UNESCAPED_UNICODE);
         }
@@ -5424,7 +5537,7 @@ class NewPayService
                     $updateData['service_end_time'] = $value['service_end_time'];
                 }else{
                     /***车位到期时间 老版的和新版的冲突了 去掉老版的统一用新版的   有的老用户坚持要**/
-                    if($is_old_park_position && ($value['order_type'] == 'park' || $value['order_type'] == 'parking_management')){
+                    if($is_old_park_position && $value['order_type'] == 'park'){
                         if($value['position_id']){
                             try{    
                                 $service_house_village_parking->editParkingPosition(['position_id'=>$value['position_id']],['end_time'=>$service_end_time]);
@@ -5952,6 +6065,11 @@ class NewPayService
                 $whereTmpxArr=array(['summary_id','=',$summary_id],['order_id','not in',$summaryExtraDataOrders]);
                 $service_house_new_cashier->saveOrder($whereTmpxArr,array('summary_id'=>0));
             }
+            $orderData['role_id'] = 0;
+            $orderData['login_role'] =0;
+            /*
+            $orderData['role_name'] = '';
+            */
         }else{
             $summary_id = $service_house_new_cashier->addOrderSummary($summaryData);
         }
@@ -5965,6 +6083,7 @@ class NewPayService
         $orderData['pay_bind_name'] = $pay_user_info['name'];
         $orderData['pay_bind_id'] = $pigcms_id_pay;
         $orderData['pay_bind_phone'] = $pay_user_info['phone'];
+
         $db_house_village = new HouseVillage();
         $village_info = $db_house_village->getOne($village_id,'property_id');
         $property_id = $village_info['property_id'];
@@ -6100,7 +6219,6 @@ class NewPayService
         }elseif ($app_type == 'wxapp'){
             $plat_order['is_mobile_pay'] = 2;
         }
-
         
         $plat_id = $service_plat_order->addPlatOrder($plat_order);
         $service_house_new_cashier->saveOrderSummary(['summary_id'=>$summary_id],['deposit_money'=>$param['deposit_money'],'total_money'=>$total_money,'pay_money'=>$pay_money]);
@@ -6641,6 +6759,12 @@ class NewPayService
         $db_house_new_order_log = new HouseNewOrderLog();
         $service_house_village_user_bind = new HouseVillageUserBindService();
         $service_house_village_parking = new HouseVillageParkingService();
+        $configCustomizationService=new ConfigCustomizationService();
+        $isAihorseCustomizedJudge=$configCustomizationService->getAihorseCustomizedJudge();
+        $is_old_park_position=false;
+        if($isAihorseCustomizedJudge){
+            $is_old_park_position=true;
+        }
         $rule_info = $service_house_new_charge_rule->getCallInfo(['r.id'=>$now_order['rule_id']],'n.charge_type,r.*,p.type');
         if($rule_info['type'] == 2){
             if($now_order['position_id']){
@@ -6733,8 +6857,8 @@ class NewPayService
                 ],['property_endtime'=>$service_end_time]);
                 $spec = date('Y-m-d',$service_start_time) . '至' . date('Y-m-d',$service_end_time);
             }
-            /***车位到期时间 老版的和新版的冲突了 去掉老版的统一用新版的
-            if($now_order['order_type'] == 'park' || $now_order['order_type'] == 'parking_management'){
+            /***车位到期时间 老版的和新版的冲突了 去掉老版的统一用新版的***/
+            if($is_old_park_position && $now_order['order_type'] == 'park'){
                 if($now_order['position_id']){
                     try{    
                         $service_house_village_parking->editParkingPosition(['position_id'=>$now_order['position_id']],['end_time'=>$service_end_time]);
@@ -6744,7 +6868,7 @@ class NewPayService
                     }
                 }
             }
-            **/
+            
             if($now_order['order_type'] == 'property'){
                 try {
                     $userList = $service_house_village_user_bind->getList([['vacancy_id','=',$now_order['room_id']], ['status','=',1]], 'uid, pigcms_id');
@@ -6789,7 +6913,7 @@ class NewPayService
      * @param $payUid 支付本次订单的用户id
      * @return array|bool[]
      */
-    public function userIntegralPool($roomId,$scoreUse,$orderNo,$scoreCanGet,$payUid)
+    public function userIntegralPool($roomId,$scoreUse,$orderNo,$scoreCanGet,$payUid,$scoreParam=array())
     {
         $return = [
             'error_code'=>false
@@ -6846,7 +6970,7 @@ class NewPayService
                 continue;
             }
             //挨个扣除积分
-            $userScore = (new UserService())->userScore($uid, $scoreUserUse, L_("物业缴费 ，扣除X1 ，订单编号X2", array( "X1" => cfg('score_name'), "X2" => $orderNo)));
+            $userScore = (new UserService())->userScore($uid, $scoreUserUse, L_("物业缴费 ，扣除X1 ，订单编号X2", array( "X1" => cfg('score_name'), "X2" => $orderNo)),2,$scoreParam);
             if ($userScore['error_code']) {
                 $return = array('error_code' => true, 'msg' => $userScore['msg']);
             }

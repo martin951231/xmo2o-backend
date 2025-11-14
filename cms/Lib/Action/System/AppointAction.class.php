@@ -71,7 +71,7 @@ class AppointAction extends BaseAction{
 			$condition_now_appoint_category['cat_id'] = intval($_POST['cat_id']);
 			$now_category = $database_appoint_category->field(true)->where($condition_now_appoint_category)->find();
 
-			$modifyField = $_POST['field'] ?? 'cue_field';
+			$modifyField = $_POST['field'] ?: 'cue_field';
 			if(!empty($now_category[$modifyField ])){
 				$cue_field = unserialize($now_category[$modifyField ]);
 				foreach($cue_field as $key=>$value){
@@ -110,7 +110,7 @@ class AppointAction extends BaseAction{
 			$condition_now_group_category['cat_id'] = intval($_POST['cat_id']);
 			$now_category = $database_group_category->field(true)->where($condition_now_group_category)->find();
 
-			$modifyField = $_POST['field'] ?? 'cue_field';
+			$modifyField = $_POST['field'] ?: 'cue_field';
 			
 			if(!empty($now_category[$modifyField])){
 				$cue_field = unserialize($now_category[$modifyField]);

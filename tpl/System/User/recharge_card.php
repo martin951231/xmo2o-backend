@@ -14,7 +14,7 @@
 								<option value="card_price" <if condition="$_GET['searchtype'] eq 'card_price'">selected="selected"</if>>面值</option>
 							</select>
 							<input type="submit" value="查询" class="button"/>
-							<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/recharge_card_edit')}','添加',550,400,true,false,false,addbtn,'add',true);" style="margin-left:20px;" class="button">添加{pigcms{$config['recharge_card_alias_name']|default='充值卡'}</a>
+							<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/recharge_card_edit')}','添加',550,400,true,false,false,addbtn,'add',true);" style="margin-left:20px;" class="button">添加{pigcms{$config['recharge_card_alias_name']|default='充值卡'}</a>
 						</form>
 
 					</td>
@@ -91,7 +91,7 @@
 											</span>
 										</td>
 										<td class="textcenter">
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/recharge_card_edit',array('card_id'=>$vo['card_id']))}','编辑',580,320,true,false,false,editbtn,'edit',true);">编辑</a>|
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/recharge_card_edit',array('card_id'=>$vo['card_id']))}','编辑',580,320,true,false,false,editbtn,'edit',true);">编辑</a>|
 											<a href="{pigcms{:U('User/recharge_card_del',array('card_id'=>$vo['card_id']))}" class="del">删除</a>
 										</td>
 									</tr>

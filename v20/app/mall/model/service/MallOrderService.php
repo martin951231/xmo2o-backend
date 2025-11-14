@@ -5883,7 +5883,7 @@ class MallOrderService
      * @param int $prepare_type 预售订单，1：未付尾款 2:已付尾款
      * @throws Exception
      */
-    public function merchantAddMoney($orderId, $periodic_count = 0, $prepare_type = 2)
+    public function merchantAddMoney($orderId, $periodic_count = 0, $prepare_type = 2, $getSystemTakeMoney = false)
     {
         try {
             $nowOrder = $this->getOne($orderId);
@@ -6027,9 +6027,10 @@ class MallOrderService
                 }
             }
 
+            $orderInfo['get_system_take_money'] = $getSystemTakeMoney;
             $merchantMoneyListService = new MerchantMoneyListService();
-            $merchantMoneyListService->addMoney($orderInfo);
-            $result = ['status' => 0];
+            $res = $merchantMoneyListService->addMoney($orderInfo);
+            $result = ['status' => 0, 'res' => $res];
 
         } catch (\Exception $e) {
             $result = ['status' => 1003, 'error_msg' => $e->getMessage()];
@@ -7169,6 +7170,16 @@ class MallOrderService
                 throw_exception('订单状态异常');
         }
         
+        return true;
+    }
+
+    public function checkOrderAuth($order,$login_uid){
+        if(!$order || empty($order['order'])){
+            throw new \think\Exception('订单不存在！');
+        }
+        if($order['order']['uid'] != $login_uid){
+            throw new \think\Exception('无权操作！');
+        }
         return true;
     }
 }

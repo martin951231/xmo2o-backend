@@ -6,7 +6,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Sub_card/index')}" class="on">免单套餐列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Sub_card/add')}','添加免单',800,500,true,false,false,addbtn,'add_sub_card',true);">添加免单</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Sub_card/add')}','添加免单',800,500,true,false,false,addbtn,'add_sub_card',true);">添加免单</a>
 					<a href="{pigcms{:U('Sub_card/order_list')}" >免单订单列表</a>	
 				</ul>
 			</div>
@@ -102,7 +102,7 @@
 										<td><if condition="$vo.join_num gt 0">{pigcms{$vo.join_num}<else />0</if></td>
 										<td><if condition="$vo.buy_time_type eq 1">{pigcms{$vo.start_time|date='Y-m-d',###} 到 {pigcms{$vo.end_time|date='Y-m-d',###}<else />无限时</if></td>
 										<td><if condition="$vo.use_time_type eq 1">{pigcms{$vo.effective_days}天<else />永久有效</if></td>
-										<td><if condition="$vo.use_area eq 1"><a href="javascript:void(0);" class="edit_area" onclick="window.top.artiframe('{pigcms{:U('Sub_card/edit_area',array('sub_cardid'=>$vo['id']))}','编辑区域',600,400,true,false,false,null,'edit_area',true);"> 指定区域</a><else />全部区域</if></td>
+										<td><if condition="$vo.use_area eq 1"><a href="javascript:void(0);" class="edit_area" onclick="window.o2oTop.artiframe('{pigcms{:U('Sub_card/edit_area',array('sub_cardid'=>$vo['id']))}','编辑区域',600,400,true,false,false,null,'edit_area',true);"> 指定区域</a><else />全部区域</if></td>
 										<td>{pigcms{$vo.percent}</td>
 										<td>
 										<if condition="$vo.status eq 0">
@@ -124,7 +124,7 @@
 										
 										<td class="textcenter">
 										
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Sub_card/add',array('id'=>$vo['id']))}','编辑免单信息',800,500,true,false,false,editbtn,'add_sub_card',true);">编辑</a> |
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Sub_card/add',array('id'=>$vo['id']))}','编辑免单信息',800,500,true,false,false,editbtn,'add_sub_card',true);">编辑</a> |
 										<a href="{pigcms{:U('Sub_card/check_list',array('id'=>$vo['id']))}">审核列表</a>
 										 |
 										<a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Sub_card/del')}">删除</a>
@@ -160,7 +160,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看渠道二维码',

@@ -72,7 +72,7 @@
                                             <td><a href="{pigcms{:U('Area/area_city_street',array('type'=>1,'pid'=>$vo['area_id'],'from' => $_GET['from']))}">进入下级</a></td>
                                         </if>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/add_area_street',array('area_type'=>$vo['area_type'],'area_id'=>$vo['area_id']))}','查看',850,650,true,false,false,false,'city_region_edit',true);">查看</a> 
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/add_area_street',array('area_type'=>$vo['area_type'],'area_id'=>$vo['area_id']))}','查看',850,650,true,false,false,false,'city_region_edit',true);">查看</a> 
 						
 										</td>
 									</tr>

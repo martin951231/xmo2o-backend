@@ -12,13 +12,12 @@ class InvokeController extends CommonBaseController
 {
     /**
      * Author: hengtingmei
-     * @param 传参
      * $func=>方法名
      * $params=[
      * 参数1=》参数值 ,
      * 参数2=》参数值
      * ]
-     * @return array
+     * @return \think\response\Json
      */
     public function index()
     {

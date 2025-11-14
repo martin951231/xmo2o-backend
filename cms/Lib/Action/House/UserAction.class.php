@@ -4595,7 +4595,6 @@ class UserAction extends BaseAction
                 $this->error('该房间信息不存在！');
             }
             //处理未缴费订单==>郭先森
-
             $res = $database_house_village_user_bind->where($condition)->find();
             if($res){
                 $park['type']= $gas['type']= $electric['type']= $water['type']=$data['type'] = 1;
@@ -4650,7 +4649,7 @@ class UserAction extends BaseAction
                     M('House_village_user_paylist')->data($park)->add();
                 }*/
             }
-
+            
             // 合并标签
             $label_arr = array_merge([$_POST['political_outlook']],(array)$_POST['special_population'],(array)$_POST['key_population'],(array)$_POST['care_object']);
             $label_ids = implode(',', $label_arr);
@@ -4667,6 +4666,7 @@ class UserAction extends BaseAction
             //todo 信息标注编辑-添加
             D('House_village_user_label')->saveUserLabelMethod($user_label_arr);
             //没有修改房间表 house_village_user_vacancy
+            
             if ($database_house_village_user_bind->where($condition)->data($_POST)->save()) {
                 //处理自定义资料
                 $database_house_village_user_bind->where($condition)->data($data_post_list)->save();
@@ -4696,10 +4696,6 @@ class UserAction extends BaseAction
                 set_time_limit(0);
                 ini_set('memory_limit', '2048M');
                 D('House_face_img')->house_user_face_device_info($user_info['uid'],$_POST['pigcms_id']);
-                // 修改信息，进行同步
-//                D('House_village_face_door')->modify_user($_POST['pigcms_id']);
-//
-//                D('Face_door_a5_service')->synDevice($_POST['pigcms_id']);
                 $device5Count = D('House_face_device')->where(['device_type'=>['in',[5,6],'is_del'=> 0]])->count();
                 if ($device5Count && intval($_POST['property_endtime'])<intval(time())) {
                     // 如果物业截止时间小于当前  单独同步下
@@ -4728,10 +4724,9 @@ class UserAction extends BaseAction
 
                 //todo 轨迹信息 用户编辑
                D('House_user_trajectory_log')->addLog(4,$this->village_id,0,$res['uid'],$res['pigcms_id'],2,'更新了人员数据','后台更新了人员数据');
-
                 //todo 用户同步写入属性表记录
                 invoke_v20_service('\app\community\model\service\TaskReleaseService/userAttributeRecord', ['pigcms_id'=>$_POST['pigcms_id'],'field'=>$data_post]);
-                
+
                 $hik_info_vision_i_community_app_key=C('config.hik_info_vision_i_community_app_key');
                 $hik_info_vision_i_community_app_secret=C('config.hik_info_vision_i_community_app_secret');
                 if($hik_info_vision_i_community_app_key && $hik_info_vision_i_community_app_secret){
@@ -4740,7 +4735,6 @@ class UserAction extends BaseAction
                 if(!empty($_POST['iframe'])) {
                     $this->success('修改成功');
                 }
-
                 // 绑定车辆信息
                 if($_POST['car_id']){
                     // 获取已绑定信息
@@ -4770,7 +4764,11 @@ class UserAction extends BaseAction
                     invoke_v20_service('\app\community\model\service\CloudIntercomService/saveUsernmvCard',[$_POST['pigcms_id'],$nmv_card]);
                 }
                 if($this->huizhisq && $_POST['ic_card']){ // 门禁卡
-                    invoke_v20_service('\app\community\model\service\CloudIntercomService/sendIcCardToDevice',[$_POST['ic_card'],1]);
+                    try {
+                        invoke_v20_service('\app\community\model\service\CloudIntercomService/sendIcCardToDevice',[$_POST['ic_card'],1]);
+                    }catch (\Exception $ee){
+                        fdump_api(['执行错误' => $ee->getMessage(), 'line' => __LINE__, 'param' => $param, 'errline' => $ee->getLine(), 'file' => $ee->getFile()], 'edit_sendIcCardToDevice');
+                    }
                 }
                 $models = '\app\common\model\service\CommonSystemLogService/addLaterLogInQueue';
                 $logData=array('tbname'=>'人车房管理-人员管理','table'=>'house_village_user_bind','client'=>'小区后台','trigger_path'=>'业主列表->编辑','trigger_type'=>'update','village_id'=>$this->village_id,'property_id'=>0);
@@ -4780,6 +4778,7 @@ class UserAction extends BaseAction
                 $logData['oldData']=$user_info;
                 $param=array('logData'=>$logData);
                 $result = invoke_v20_service($models, $param);
+
                 $this->success('修改成功', U('User/index',array('page'=>$page)));
                 exit;
             }
@@ -5827,8 +5826,10 @@ class UserAction extends BaseAction
                     'is_close'=>0
                 );
                 $dataList = D('House_village_data_config')->where($where_data_config)->order('sort desc')->select();
-
+                $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+                $house_village_user_label_serve= D('House_village_user_label');
                 if ($is_new_charge) {
+                    $errKey = 'O';
                     if ($upload->upload()) {
                         $uploadList = $upload->getUploadFileInfo();
                         require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel/IOFactory.php';
@@ -5841,14 +5842,26 @@ class UserAction extends BaseAction
                         unlink($path);    //删除物业上传的excel表格
                         $database_user = D('User');
                         $error_arr = array();
+                        $A1Tips='';
                         if (!empty($result) && is_array($result) && count($result)>1) {
+                            $headerArr=$result[1];
                             unset($result[1]);
+                            $err_index = 2;
+                            if($is_func_cloudmrsqfw_special){
+                                $errKey = 'AI';
+                                $A1Tips=$headerArr['A'];
+                                $headerArr=$result[2];
+                                unset($result[2]);
+                                $err_index = 3;
+                            }else{
+                                $A1Tips='';
+                            }
                             $last_user_id = 0;
                             $err_msg = '';
-                            $errKey = 'O';
+                            $house_village_user_bind_serve=D('House_village_user_bind');
                             $errArrKey = 0;// 错误数据键值
                             foreach ($result as $kk => $vv) {
-                                if (array_sum($vv) == 0) {
+                                if (array_sum($vv) == 0 ||(strpos($vv['A'],'业主名')!==false && strpos($vv['B'],'手机号')!==false && strpos($vv['C'],'所属楼栋')!==false && strpos($vv['D'],'所属单元')!==false)) {
                                     continue;
                                 }
                                 if ($vv['A'] === null && $vv['B'] === null && $vv['C'] === null && $vv['D'] === null && $vv['E'] === null && $vv['F'] === null && $vv['G'] === null) continue;
@@ -5965,19 +5978,101 @@ class UserAction extends BaseAction
                                     $errArrKey++;
                                     continue;
                                 }
+
+                                $id_card = trim($vv['G'])?trim($vv['G']):'';
+                                if($id_card && !is_idcard($id_card)){
+                                    $vv[$errKey] = '身份证数据错误，不是正确的身份证号';
+                                    $error_arr[$errArrKey] = $vv;
+                                    $errArrKey++;
+                                }
+                                $ic_card = trim($vv['H'])?trim($vv['H']):'';
+                                $idCard=idCardAnalysis($id_card);
+                                $authenticationArr=array();
+                                if($idCard && isset($idCard['birthday'])){
+                                    $authenticationArr['birthday']=$idCard['birthday'];
+                                }
+                                if($idCard && isset($idCard['sex'])){
+                                    $authenticationArr['sex']=$idCard['sex'];
+                                }
+                                /*
+                                $id_card_data=D('House_village_user_bind')->id_card_data($id_card,$dataList);
+                                if($id_card_data['error']){
+                                    $tmpdata['authentication_field']=$id_card_data['data'];
+                                }
+                                */
+                                $tmpdata['name'] = htmlspecialchars(str_replace(array(' ', PHP_EOL, "\t"), '', $name), ENT_QUOTES);
+                                $tmpdata['phone'] = htmlspecialchars(trim($phone), ENT_QUOTES);
+                                $tmpdata['id_card'] = $id_card;
+                                $tmpdata['ic_card'] = $ic_card;
+                                $memo = htmlspecialchars(trim($vv['L']), ENT_QUOTES);
+                                $tmpdata['memo'] = $memo;
+                                $user = array();
+                                if ($tmpdata['phone']) {
+                                    $user = D('User')->where(array('phone' => $tmpdata['phone']))->find();
+                                }
+                                if (empty($user) && $tmpdata['phone']) {
+                                    $user_add = [];
+                                    $user_add['phone'] = $tmpdata['phone'];
+                                    if ($tmpdata['name']) {
+                                        $user_add['nickname'] = $tmpdata['name'];
+                                    }
+                                    $user_add['source'] = 'houseautoreg';
+                                    $reg_result = D('User')->autoreg($user_add);
+                                    $uid = $reg_result['uid'];
+                                    $user['uid'] = $uid;
+
+                                }
+                                $tmpdata['uid'] = $user['uid'] ? intval($user['uid']) : 0;
+                                
+                                $user_tag_arr=array('user_political_str'=>'','party_type_str'=>'','user_party_str'=>'','user_special_groups'=>'','user_focus_groups'=>'','user_vulnerable_groups'=>'','uid'=>$tmpdata['uid']);
+                                if($is_func_cloudmrsqfw_special){
+                                    $user_tag_arr['user_political_str'] = htmlspecialchars(trim($vv['O']), ENT_QUOTES);
+                                    $user_tag_arr['party_type_str'] = htmlspecialchars(trim($vv['P']), ENT_QUOTES);
+                                    $user_tag_arr['user_party_str'] = htmlspecialchars(trim($vv['Q']), ENT_QUOTES);
+                                    $user_tag_arr['user_special_groups'] = htmlspecialchars(trim($vv['R']), ENT_QUOTES);
+                                    $user_tag_arr['user_focus_groups'] = htmlspecialchars(trim($vv['S']), ENT_QUOTES);
+                                    $user_tag_arr['user_vulnerable_groups'] = htmlspecialchars(trim($vv['T']), ENT_QUOTES);
+                                    $systemConfigAttr=array('sex'=>'','birthday'=>'','nation'=>'','native_place'=>'','nationality'=>'','household_register'=>'','marriage_status'=>'','edcation'=>'','emergent_person'=>'','person_phone'=>'','job'=>'','unit_nature'=>'','job_address'=>'');
+                                    $systemConfigAttr['sex'] = htmlspecialchars(trim($vv['U']), ENT_QUOTES);
+                                    $systemConfigAttr['birthday'] = htmlspecialchars(trim($vv['V']), ENT_QUOTES);
+                                    $systemConfigAttr['nation'] = htmlspecialchars(trim($vv['W']), ENT_QUOTES);
+                                    $systemConfigAttr['native_place'] = htmlspecialchars(trim($vv['X']), ENT_QUOTES);
+                                    $systemConfigAttr['nationality'] = htmlspecialchars(trim($vv['Y']), ENT_QUOTES);
+                                    $systemConfigAttr['household_register'] = htmlspecialchars(trim($vv['Z']), ENT_QUOTES);
+                                    $systemConfigAttr['marriage_status'] = htmlspecialchars(trim($vv['AA']), ENT_QUOTES);
+                                    $systemConfigAttr['edcation'] = htmlspecialchars(trim($vv['AB']), ENT_QUOTES);
+                                    $systemConfigAttr['emergent_person'] = htmlspecialchars(trim($vv['AC']), ENT_QUOTES);
+                                    $systemConfigAttr['person_phone'] = htmlspecialchars(trim($vv['AD']), ENT_QUOTES);
+                                    $systemConfigAttr['job'] = htmlspecialchars(trim($vv['AE']), ENT_QUOTES);
+                                    $systemConfigAttr['unit_nature'] = htmlspecialchars(trim($vv['AF']), ENT_QUOTES);
+                                    $systemConfigAttr['job_address'] = htmlspecialchars(trim($vv['AG']), ENT_QUOTES);
+                                    $authenticationArr=array_merge($systemConfigAttr,$authenticationArr);
+                                }
+                                $updateUserArr=array('name'=>$name,'id_card'=>$id_card,'room_id'=>$room_info['pigcms_id'],'ic_card'=>$ic_card,'memo'=>$memo,'property_id'=>$this->house_session['property_id'],'authentication_field'=>'','authenticationArr'=>$authenticationArr,'user_tag_arr'=>$user_tag_arr,'systemConfigAttr'=>$dataList);
                                 $whereRoomOwner = [
                                     'status' => 1,
                                     'vacancy_id' => $room_info['pigcms_id'],
                                     'type' => ['in', [0,3]],
                                 ];
-                                $roomOwnerId = D('House_village_user_bind')->where($whereRoomOwner)->getField('pigcms_id');
-                                if ($roomOwnerId) {
-                                    $vv[$errKey] = '房间已绑定业主!';
+                                $bind_pigcms_id=0;
+                                $user_bind = D('House_village_user_bind')->where($whereRoomOwner)->field('pigcms_id,authentication_field')->find();
+                                if ($user_bind && $user_bind['pigcms_id']) {
+                                    $updateUserArr['authentication_field']=$user_bind['authentication_field'] ? unserialize($user_bind['authentication_field']):'';
+                                    $errMsg='房间已绑定业主！'.$user_bind['pigcms_id'];
+                                    if($is_func_cloudmrsqfw_special) {
+                                        $house_village_user_bind_serve->updateUserBindInfo($user_bind['pigcms_id'], $updateUserArr, $this->village_id);
+                                        $errMsg='房间已绑定业主,数据已更新！'.$user_bind['pigcms_id'];
+                                    }
+                                    $bind_pigcms_id=$user_bind['pigcms_id'];
+                                    $vv[$errKey] =$errMsg;
                                     $error_arr[$errArrKey] = $vv;
                                     $errArrKey++;
                                     continue;
                                 }
-                                
+                                if($authenticationArr){
+                                    $authentication_field_arr=$house_village_user_bind_serve->get_authentication_field($authenticationArr,$dataList);
+                                    $tmpdata['authentication_field']=$authentication_field_arr ? serialize($authentication_field_arr):'';
+                                }
                                 $tmpdata['usernum'] = $room_info['usernum'];
                                 $replace_info = D('House_village_user_bind')->field('pigcms_id,status,usernum')->where(array('usernum' => $tmpdata['usernum'],'village_id'=>$village_id))->find();
                                 if ($replace_info && 0 == $replace_info['status']) {
@@ -5986,16 +6081,14 @@ class UserAction extends BaseAction
                                     $set_data = [];
                                     $set_data['usernum'] = $usernum;
                                     D('House_village_user_bind')->where(['pigcms_id' => $replace_info['pigcms_id']])->data($set_data)->save();
-                                } elseif ($replace_info && in_array($replace_info['status'], [1, 2])) {
+                                } elseif (false && $replace_info && in_array($replace_info['status'], [1, 2])) {
                                     $err_msg = '业主名为' . $name . ' 已存在！物业编号重复';
                                     $vv[$errKey] = $err_msg;
                                     $error_arr[$errArrKey] = $vv;
                                     $errArrKey++;
                                     continue;
                                 }
-
-                                $tmpdata['name'] = htmlspecialchars(str_replace(array(' ', PHP_EOL, "\t"), '', $name), ENT_QUOTES);
-                                $tmpdata['phone'] = htmlspecialchars(trim($phone), ENT_QUOTES);
+                                
                                 $tmpdata['layer_num'] = $layer_name;
                                 $tmpdata['apply_time'] = time();
                                 $tmpdata['adopt_time'] = time();
@@ -6004,28 +6097,9 @@ class UserAction extends BaseAction
                                 $tmpdata['address'] = $single_name . $floor_name . '#' . $room_addrss;
                                 $tmpdata['floor_id'] = $house_village_floor_info['floor_id'];
                                 $tmpdata['single_id'] = $single['id'];
-
                                 $tmpdata['single_id'] = $house_village_floor_info['single_id'] ? $house_village_floor_info['single_id'] : $single['id'];
-
-
                                 $tmpdata['village_id'] = $village_id;
-
-
-                                $id_card = trim($vv['G'])?trim($vv['G']):'';
-                                if($id_card && !is_idcard($id_card)){
-                                    $vv[$errKey] = '身份证错误（注意，实际数据是录入了只是身份证没有录入）！';
-                                    $error_arr[$errArrKey] = $vv;
-                                    $id_card = '';
-                                }
-                                $ic_card = trim($vv['H'])?trim($vv['H']):'';
-
-                                $id_card_data=D('House_village_user_bind')->id_card_data($id_card,$dataList);
-                                if($id_card_data['error']){
-                                    $tmpdata['authentication_field']=$id_card_data['data'];
-                                }
-                                $tmpdata['id_card'] = $id_card;
-                                $tmpdata['ic_card'] = $ic_card;
-
+                                
                                 $cars = trim($vv['I'])?trim($vv['I']):'';
                                 $carInfos = [];
                                 $carsNumArr=array();
@@ -6108,35 +6182,7 @@ class UserAction extends BaseAction
                                         }
                                     }
                                 }
-                                if ($memo = htmlspecialchars(trim($vv['L']), ENT_QUOTES)) {
-                                    $tmpdata['memo'] = $memo;
-                                }
-
-                                if ($tmpdata['phone']) {
-                                    $user = D('User')->where(array('phone' => $tmpdata['phone']))->find();
-                                } else {
-                                    $user = array();
-                                }
-                                if (empty($user)) {
-                                    $user_add = [];
-                                    if ($tmpdata['phone']) {
-                                        $user_add['phone'] = $tmpdata['phone'];
-                                    }
-                                    if ($tmpdata['name']) {
-                                        $user_add['nickname'] = $tmpdata['name'];
-                                    }
-                                    if ($user_add) {
-                                        $user_add['source'] = 'houseautoreg';
-                                        $reg_result = D('User')->autoreg($user_add);
-                                        $uid = $reg_result['uid'];
-                                        $user['uid'] = $uid;
-                                    }
-                                }
-
-                                $tmpdata['uid'] = $user['uid'] ? intval($user['uid']) : 0;
-
                                 $tmpdata['add_time'] = time();
-
                                 $tmpdata['vacancy_id'] = $room_info['pigcms_id'];
                                 if ($room_info['housesize'] > 0.00) {
                                     $tmpdata['housesize'] = round($room_info['housesize'], 2);
@@ -6174,6 +6220,10 @@ class UserAction extends BaseAction
                                     }
                                     $error_arr[$errArrKey] = $vv;
                                 } else {
+                                    $bind_pigcms_id=$last_user_id;
+                                    if($is_func_cloudmrsqfw_special) {
+                                        $house_village_user_label_serve->updateUserTagAttr($bind_pigcms_id, $user_tag_arr, $this->village_id);
+                                    }
                                     $arr = array();
                                     $arr['param'] = serialize(array('bind_id' =>$last_user_id,'type'=>'user'));
                                     $arr['plan_time'] = time()+60;
@@ -6300,40 +6350,39 @@ class UserAction extends BaseAction
                                 $objExcel->setActiveSheetIndex($i);
                                 $objExcel->getActiveSheet()->setTitle($title);
                                 $objActSheet = $objExcel->getActiveSheet();
-                                $objActSheet->setCellValue('A1', '业主名');
-                                $objActSheet->setCellValue('B1', '手机号');
-                                $objActSheet->setCellValue('C1', '所属楼栋');
-                                $objActSheet->setCellValue('D1', '所属单元');
-                                $objActSheet->setCellValue('E1', '所属楼层');
-                                $objActSheet->setCellValue('F1', '房间号');
-                                $objActSheet->setCellValue('G1', '身份证号');
-                                $objActSheet->setCellValue('H1', 'IC卡号');
-                                $objActSheet->setCellValue('I1', '车辆');
-                                $objActSheet->setCellValue('J1', '车库');
-                                $objActSheet->setCellValue('K1', '车位');
-                                $objActSheet->setCellValue('L1', '备注');
-                                $objActSheet->setCellValue('M1', '缴费开始时间');
-                                $objActSheet->setCellValue('N1', '缴费结束时间');
-                                $objActSheet->setCellValue($errKey.'1', '失败信息');
-                                $index = 2;
+                                $cell_list = range('A', 'T');
+                                if($is_func_cloudmrsqfw_special){
+                                    $cell_list = range('A', 'Z');
+                                    $cell_list=array_merge($cell_list,['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK']);
+                                }
+                                foreach ($cell_list as $cell) {
+                                    $objActSheet->getColumnDimension($cell)->setWidth(30);
+                                }
+                                $objActSheet->getDefaultRowDimension()->setRowHeight(22); //设置默认行高
+                                if($A1Tips){
+                                    $objActSheet->setCellValue('A1',$A1Tips );
+                                    $columnCell='A1:S1';
+                                    if($is_func_cloudmrsqfw_special){
+                                        $columnCell='A1:AK1';
+                                    }
+                                    $objActSheet->mergeCells($columnCell);
+                                    $objActSheet->getStyle($columnCell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                                    $objActSheet->getRowDimension(1)->setRowHeight(30); // 固定高度
+                                }
+                                $header_index=$err_index-1;
+                                $header_index=$header_index<1 ? 1:$header_index;
+                                foreach ($headerArr as $kk=>$vv){
+                                    $objActSheet->setCellValue($kk.$header_index, $vv);
+                                }
+                                $objActSheet->setCellValue($errKey.$header_index, '失败信息');
+                               
                                 $error_arr = array_values($error_arr);
                                 foreach ($error_arr as $value) {
-                                    $objActSheet->setCellValueExplicit('A' . $index, $value['A']);
-                                    $objActSheet->setCellValueExplicit('B' . $index, $value['B']);
-                                    $objActSheet->setCellValueExplicit('C' . $index, $value['C']);
-                                    $objActSheet->setCellValueExplicit('D' . $index, $value['D']);
-                                    $objActSheet->setCellValueExplicit('E' . $index, $value['E']);
-                                    $objActSheet->setCellValueExplicit('F' . $index, $value['F']);
-                                    $objActSheet->setCellValueExplicit('G' . $index, $value['G']);
-                                    $objActSheet->setCellValueExplicit('H' . $index, $value['H']);
-                                    $objActSheet->setCellValueExplicit('I' . $index, $value['I']);
-                                    $objActSheet->setCellValueExplicit('J' . $index, $value['J']);
-                                    $objActSheet->setCellValueExplicit('K' . $index, $value['K']);
-                                    $objActSheet->setCellValueExplicit('L' . $index, $value['L']);
-                                    $objActSheet->setCellValueExplicit('M' . $index, $value['M']);
-                                    $objActSheet->setCellValueExplicit('N' . $index, $value['N']);
-                                    $objActSheet->setCellValueExplicit($errKey . $index, $value[$errKey]);
-                                    $index++;
+                                    foreach ($headerArr as $kk=>$vv){
+                                        $objActSheet->setCellValueExplicit($kk . $err_index, $value[$kk]);
+                                    }
+                                    $objActSheet->setCellValueExplicit($errKey . $err_index, $value[$errKey]);
+                                    $err_index++;
                                 }
 
                                 //输出
@@ -7298,6 +7347,7 @@ class UserAction extends BaseAction
         $upload->imageClassPath = '';
         $upload->thumbPrefix = '';
         $upload->saveRule = 'uniqid';
+        $where_village=array();
         $where_village['village_id'] = $this->village_id;
         $property_id = D('House_village')->where($where_village)->getField('property_id');
         $where_data_config = array(
@@ -7318,23 +7368,28 @@ class UserAction extends BaseAction
             $result = $excelObj->getActiveSheet()->toArray(null, true, true, true);
             unlink($path);    //删除物业上传的excel表格
             $database_user = D('User');
+            $village_id = $this->village_id;
+            $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+            $house_village_user_label_serve= D('House_village_user_label');
+            $house_village_user_bind_serve=D('House_village_user_bind');
             $error_arr = array();
             $bind_type= 1;
             $last_user_id = 0;
             $err_msg = '';
-            $errKey ='K' ;
+            $errKey = $is_func_cloudmrsqfw_special ? 'AC':'J';
             $errArrKey = 0;// 错误数据键值
             $xtitle = '导入亲属';
             if($xtype == 'user_tenant'){
                 $bind_type=2;
-                $errKey='J';
+                $errKey= $is_func_cloudmrsqfw_special ? 'AB':'J';
                 $xtitle = '导入租客';
             }
-            $village_id = $this->village_id;
+            $A1Tips='';
             if (!empty($result) && is_array($result) && count($result) > 2) {
+                $A1Tips=$result[1]['A'];
                 unset($result[1]);
+                $headerArr=$result[2];
                 unset($result[2]);
-
                 foreach ($result as $kk => $vv) {
                     if (array_sum($vv) == 0) {
                         continue;
@@ -7352,7 +7407,7 @@ class UserAction extends BaseAction
                         continue;
                     }
                     $phone = trim($vv['B']);
-                    if (!preg_match('/^1[0-9]{10}$/', $phone)) {
+                    if (empty($phone) || !preg_match('/^1[0-9]{10}$/', $phone)) {
                         $vv[$errKey] = '请填写正确的手机号！';
                         $error_arr[$errArrKey] = $vv;
                         $errArrKey++;
@@ -7453,7 +7508,7 @@ class UserAction extends BaseAction
                         'vacancy_id' => $room_info['pigcms_id'],
                         'type' => ['in', [0, 3]],
                     ];
-                    $roomOwnerUser = D('House_village_user_bind')->where($whereRoomOwner)->field('*')->find();;
+                    $roomOwnerUser = D('House_village_user_bind')->where($whereRoomOwner)->field('*')->find();
                     if (empty($roomOwnerUser)) {
                         $vv[$errKey] = '此房间没有绑定业主!';
                         $error_arr[$errArrKey] = $vv;
@@ -7464,7 +7519,7 @@ class UserAction extends BaseAction
                     $tmpdata['usernum'] = $room_info['pigcms_id'] . '_' . time() . '_' . rand(1000, 9999);
 
                     $tmpdata['name'] = htmlspecialchars(str_replace(array(' ', PHP_EOL, "\t"), '', $name), ENT_QUOTES);
-                    $tmpdata['phone'] = htmlspecialchars(trim($phone), ENT_QUOTES);
+                    $tmpdata['phone'] = htmlspecialchars($phone, ENT_QUOTES);
                     $tmpdata['layer_num'] = $layer_name;
                     $tmpdata['apply_time'] = time();
                     $tmpdata['adopt_time'] = time();
@@ -7478,21 +7533,37 @@ class UserAction extends BaseAction
 
                     $id_card = trim($vv['G']) ? trim($vv['G']) : '';
                     if ($id_card && !is_idcard($id_card)) {
-                        $vv[$errKey] = '身份证错误（注意，实际数据是录入了只是身份证没有录入）！';
+                        $vv[$errKey] = '身份证数据错误，不是正确的身份证号';
                         $error_arr[$errArrKey] = $vv;
-                        $id_card = '';
+                        $errArrKey++;
                     }
-                    $ic_card = trim($vv['H']) ? trim($vv['H']) : '';
-                    $id_card_data = D('House_village_user_bind')->id_card_data($id_card, $dataList);
-                    if ($id_card_data['error']) {
-                        $tmpdata['authentication_field'] = $id_card_data['data'];
+                    $idCard=idCardAnalysis($id_card);
+                    $authenticationArr=array();
+                    if($idCard && isset($idCard['birthday'])){
+                        $authenticationArr['birthday']=$idCard['birthday'];
+                    }
+                    if($idCard && isset($idCard['sex'])){
+                        $authenticationArr['sex']=$idCard['sex'];
                     }
                     $tmpdata['id_card'] = $id_card;
+                    
+                    $ic_card = trim($vv['H']) ? trim($vv['H']) : '';
                     $tmpdata['ic_card'] = $ic_card;
-
-                    $party_name = trim($vv['I']) ? trim($vv['I']) : '';  //政治面貌 党员，团员，群众
-
-                    $relatives_type_str = trim($vv['J']) ? trim($vv['J']) : '';   //亲属关系  配偶，父母，子女，亲朋好友
+                    
+                    $relatives_type_str='';
+                    $letter_next='';
+                    $bind_type=1;
+                    $bind_type_str='家属';
+                    if ($xtype == 'user_relatives') {
+                        $relatives_type_str = trim($vv['I']) ? trim($vv['I']) : '';   //亲属关系  配偶，父母，子女，亲朋好友
+                        $party_name = trim($vv['J']) ? trim($vv['J']) : '';  //政治面貌 党员，团员，群众
+                        $letter_next='K';
+                    }else{
+                        $bind_type=2;  //租客
+                        $bind_type_str='租客';
+                        $party_name = trim($vv['I']) ? trim($vv['I']) : '';  //政治面貌 党员，团员，群众
+                        $letter_next='J';
+                    }
                     switch ($relatives_type_str){
                         case '配偶':
                             $tmpdata['relatives_type']=1;
@@ -7510,27 +7581,85 @@ class UserAction extends BaseAction
                             $tmpdata['relatives_type']=4;
                             break;
                     }
+
                     $user = array();
                     if ($tmpdata['phone']) {
                         $user = D('User')->where(array('phone' => $tmpdata['phone']))->order('uid desc')->find();
                     }
-                    if (empty($user)) {
+                    if (empty($user) && $tmpdata['phone']) {
                         $user_add = [];
-                        if ($tmpdata['phone']) {
-                            $user_add['phone'] = $tmpdata['phone'];
-                        }
+                        $user_add['phone'] = $tmpdata['phone'];
                         if ($tmpdata['name']) {
                             $user_add['nickname'] = $tmpdata['name'];
                         }
-                        if ($user_add) {
-                            $user_add['source'] = 'houseautoreg';
-                            $reg_result = D('User')->autoreg($user_add);
-                            $uid = $reg_result['uid'];
-                            $user['uid'] = $uid;
-                        }
+                        $user_add['source'] = 'houseautoreg';
+                        $reg_result = D('User')->autoreg($user_add);
+                        $uid = $reg_result['uid'];
+                        $user['uid'] = $uid;
                     }
-
                     $tmpdata['uid'] = $user['uid'] ? intval($user['uid']) : 0;
+                    $user_tag_arr=array('user_political_str'=>$party_name,'party_type_str'=>'','user_party_str'=>'','user_special_groups'=>'','user_focus_groups'=>'','user_vulnerable_groups'=>'','uid'=>$tmpdata['uid']);
+                    if($is_func_cloudmrsqfw_special){
+                        $user_tag_arr['party_type_str'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $user_tag_arr['user_party_str'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $user_tag_arr['user_special_groups'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $user_tag_arr['user_focus_groups'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $user_tag_arr['user_vulnerable_groups'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $systemConfigAttr=array('sex'=>'','birthday'=>'','nation'=>'','native_place'=>'','nationality'=>'','household_register'=>'','marriage_status'=>'','edcation'=>'','emergent_person'=>'','person_phone'=>'','job'=>'','unit_nature'=>'','job_address'=>'');
+                        $letter_next++;
+                        $systemConfigAttr['sex'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['birthday'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['nation'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['native_place'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['nationality'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['household_register'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['marriage_status'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['edcation'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['emergent_person'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['person_phone'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['job'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['unit_nature'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $letter_next++;
+                        $systemConfigAttr['job_address'] = htmlspecialchars(trim($vv[$letter_next]), ENT_QUOTES);
+                        $authenticationArr=array_merge($systemConfigAttr,$authenticationArr);
+                    }
+                    $updateUserArr=array('name'=>$tmpdata['name'],'id_card'=>$id_card,'room_id'=>$room_info['pigcms_id'],'ic_card'=>$ic_card,'property_id'=>$this->house_session['property_id'],'authentication_field'=>'','authenticationArr'=>$authenticationArr,'user_tag_arr'=>$user_tag_arr,'systemConfigAttr'=>$dataList);
+                    $whereRoomBind = [
+                        'status' => array('in',[1,2]),
+                        'vacancy_id' => $room_info['pigcms_id'],
+                        'phone'=>$phone,
+                        'type' => $bind_type,
+                    ];
+                    $bind_pigcms_id=0;
+                    $user_bind = D('House_village_user_bind')->where($whereRoomBind)->field('pigcms_id,authentication_field')->find();
+                    if ($user_bind && $user_bind['pigcms_id']) {
+                        $updateUserArr['authentication_field']=$user_bind['authentication_field'] ? unserialize($user_bind['authentication_field']):'';
+                        $errMsg='此房间已绑定了手机号是'.$phone.'的'.$bind_type_str.'!'.$user_bind['pigcms_id'];
+                        if($is_func_cloudmrsqfw_special) {
+                            $house_village_user_bind_serve->updateUserBindInfo($user_bind['pigcms_id'], $updateUserArr, $this->village_id);
+                            $errMsg='此房间已绑定了手机号是'.$phone.'的'.$bind_type_str.',数据已更新！'.$user_bind['pigcms_id'];
+                        }
+                        $bind_pigcms_id=$user_bind['pigcms_id'];
+                        $vv[$errKey] = $errMsg;
+                        $error_arr[$errArrKey] = $vv;
+                        $errArrKey++;
+                        continue;
+                    }
 
                     $tmpdata['add_time'] = time();
 
@@ -7538,7 +7667,10 @@ class UserAction extends BaseAction
                     if ($room_info['housesize'] > 0.00) {
                         $tmpdata['housesize'] = round($room_info['housesize'], 2);
                     }
-
+                    if($authenticationArr){
+                        $authentication_field_arr=$house_village_user_bind_serve->get_authentication_field($authenticationArr,$dataList);
+                        $tmpdata['authentication_field']=$authentication_field_arr ? serialize($authentication_field_arr):'';
+                    }
                     $last_user_id = D('House_village_user_bind')->data($tmpdata)->add();
                     if (!$last_user_id) {
                         $err_msg = '姓名为' . $vv['A'] . ' 导入失败！';
@@ -7549,30 +7681,35 @@ class UserAction extends BaseAction
                         }
                         $error_arr[$errArrKey] = $vv;
                     } else {
-                        $user_political_affiliation=0;
-                        switch ($party_name){
-                            case '党员':
-                                $user_political_affiliation=1;
-                                break;
-                            case '团员':
-                                $user_political_affiliation=2;
-                                break;
-                            case '群众':
-                                $user_political_affiliation=3;
-                                break;
-                            default:
-                                $user_political_affiliation=0;
-                                break;
+                        if($is_func_cloudmrsqfw_special){
+                            $house_village_user_label_serve->updateUserTagAttr($last_user_id, $user_tag_arr, $this->village_id);
+                        }else{
+                            $user_political_affiliation=0;
+                            switch ($party_name){
+                                case '党员':
+                                    $user_political_affiliation=1;
+                                    break;
+                                case '团员':
+                                    $user_political_affiliation=2;
+                                    break;
+                                case '群众':
+                                    $user_political_affiliation=3;
+                                    break;
+                                default:
+                                    $user_political_affiliation=0;
+                                    break;
+                            }
+                            if($user_political_affiliation>0){
+                                $user_label_arr=[
+                                    'user_political_affiliation'=>$user_political_affiliation,
+                                    'party_type'=>2,
+                                    'pigcms_id'=>$last_user_id,
+                                    'uid'=> $tmpdata['uid'],
+                                ];
+                                $house_village_user_label_serve->saveUserLabelMethod($user_label_arr);
+                            }
                         }
-                        if($user_political_affiliation>0){
-                            $user_label_arr=[
-                                'user_political_affiliation'=>$user_political_affiliation,
-                                'party_type'=>2,
-                                'pigcms_id'=>$last_user_id,
-                                'uid'=> $tmpdata['uid'],
-                            ];
-                            D('House_village_user_label')->saveUserLabelMethod($user_label_arr);
-                        }
+
                         /**
                          * $arr = array();
                          * $arr['param'] = serialize(array('bind_id' =>$last_user_id,'type'=>'user'));
@@ -7621,42 +7758,34 @@ class UserAction extends BaseAction
                     $objExcel->setActiveSheetIndex($i);
                     $objExcel->getActiveSheet()->setTitle($title);
                     $objActSheet = $objExcel->getActiveSheet();
-                    $objActSheet->setCellValue('A2', '姓名(必填)');
-                    $objActSheet->setCellValue('B2', '手机号(必填)');
-                    $objActSheet->setCellValue('C2', '楼栋名称(必填)');
-                    $objActSheet->setCellValue('D2', '单元名称(必填)');
-                    $objActSheet->setCellValue('E2', '楼层名称(必填)');
-                    $objActSheet->setCellValue('F2', '房间号(必填)');
-                    $objActSheet->setCellValue('G2', '身份证号(选填)');
-                    $objActSheet->setCellValue('H2', 'IC卡号(选填)');
-                    $objActSheet->setCellValue('I2', '政治面貌(选填)');
-                    if ($xtype == 'user_relatives') {
-                        $objActSheet->setCellValue('J2', '亲属关系(必填)');
+                    
+                    foreach ($headerArr as $cell=>$vv) {
+                        $objActSheet->getColumnDimension($cell)->setWidth(30);
                     }
-                    $objActSheet->setCellValue($errKey . '1', '失败信息');
+                    $objActSheet->getDefaultRowDimension()->setRowHeight(22); //设置默认行高
+                    if($A1Tips){
+                        $objActSheet->setCellValue('A1',$A1Tips );
+                        $columnCell='A1:K1';
+                        if($is_func_cloudmrsqfw_special){
+                            $columnCell='A1:AC1';
+                        }
+                        $objActSheet->mergeCells($columnCell);
+                        $objActSheet->getStyle($columnCell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                        $objActSheet->getRowDimension(1)->setRowHeight(30); // 固定高度
+                    }
+                    foreach ($headerArr as $kk=>$vv){
+                        $objActSheet->setCellValue($kk.'2', $vv);
+                    }
+                    $objActSheet->setCellValue($errKey . '2', '失败信息');
                     $index = 3;
-                    $cell_list = range('A', 'K');
-                    foreach ($cell_list as $cell) {
-                        $objActSheet->getColumnDimension($cell)->setWidth(25);
-                    }
                     $error_arr = array_values($error_arr);
                     foreach ($error_arr as $value) {
-                        $objActSheet->setCellValueExplicit('A' . $index, $value['A']);
-                        $objActSheet->setCellValueExplicit('B' . $index, $value['B']);
-                        $objActSheet->setCellValueExplicit('C' . $index, $value['C']);
-                        $objActSheet->setCellValueExplicit('D' . $index, $value['D']);
-                        $objActSheet->setCellValueExplicit('E' . $index, $value['E']);
-                        $objActSheet->setCellValueExplicit('F' . $index, $value['F']);
-                        $objActSheet->setCellValueExplicit('G' . $index, $value['G']);
-                        $objActSheet->setCellValueExplicit('H' . $index, $value['H']);
-                        $objActSheet->setCellValueExplicit('I' . $index, $value['I']);
-                        if ($xtype == 'user_relatives') {
-                            $objActSheet->setCellValueExplicit('J' . $index, $value['J']);
+                        foreach ($headerArr as $kk=>$vv){
+                            $objActSheet->setCellValueExplicit($kk . $index, $value[$kk]);
                         }
                         $objActSheet->setCellValueExplicit($errKey . $index, $value[$errKey]);
                         $index++;
                     }
-
                     //输出
                     $objWriter = new PHPExcel_Writer_Excel5($objExcel);
                     ob_end_clean();
@@ -7691,13 +7820,12 @@ class UserAction extends BaseAction
             $this->error('非法请求！');
         }
         require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel.php';
-        $is_new_charge = D('House_village')->checkNewCharge($this->house_session['property_id']);
         $user_list = array();
 
-        $title = '导入亲属模板';
+        $xtitle = '导入亲属模板';
         $tips='所有单元格请设置成文本格式后填写内容。政治面貌填写（党员，团员，群众），亲属关系填写（配偶，父母，子女，亲朋好友）';
         if ($xtype == 'user_tenant') {
-            $title = '导入租客模板';
+            $xtitle = '导入租客模板';
             $user_list[] = array(
                 '端木华菲', '18965000156', '5栋', '2', '8层', '2',
                 '342417191008176337', '123457', '群众'
@@ -7706,29 +7834,35 @@ class UserAction extends BaseAction
         } else {
             $user_list[] = array(
                 '慕容嫣紫', '19765201867', '7栋', '2', '17层', '1701',
-                '342417190008156539', '123456', '党员', '配偶'
+                '342417190008156539', '123456', '配偶', '党员'
             );
         }
         $objExcel = new PHPExcel();
         $objProps = $objExcel->getProperties();
         // 设置文档基本属性
-        $objProps->setCreator($title);
-        $objProps->setTitle($title);
-        $objProps->setSubject($title);
-        $objProps->setDescription($title);
+        $objProps->setCreator($xtitle);
+        $objProps->setTitle($xtitle);
+        $objProps->setSubject($xtitle);
+        $objProps->setDescription($xtitle);
 
 
         $objExcel->createSheet();
-        $objExcel->setActiveSheetIndex(0);
+        $objExcel->setActiveSheetIndex(1);
 
-        $objExcel->getActiveSheet()->setTitle($title);
+        $objExcel->getActiveSheet()->setTitle($xtitle);
         $objActSheet = $objExcel->getActiveSheet();
-        $objActSheet->getDefaultRowDimension()->setRowHeight(20); //设置默认行高
+        $objActSheet->getDefaultRowDimension()->setRowHeight(22); //设置默认行高
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+        $columnCell='A1:K1';
+        if($is_func_cloudmrsqfw_special){
+            $tips='所有单元格请设置成文本格式后填写内容。政治面貌填写（党员,团员,群众）,社区党员组织关系是当党员是社区党员时填写才有效。特殊人群请填写（刑满释放,社区矫正,重点青少年,吸毒,艾滋病,精神病）多个值用,分隔，重点人群请填写（服刑人员,非法组织,上访人员）多个值用,分隔，关怀群体请填写（低保,残疾人,空巢,失独老人,孤寡老人,退役军人,留守儿童）多个值用,分隔。性别请填写（男,女），籍贯请填写从网站后台系统设置=》城市区域里面的省市名称例如(安徽,合肥)中间用,分隔，婚姻状况请填写（未婚,已婚,离婚,丧偶），教育水平请填写（无,初中及以下,高中或中专,大专,本科,硕士,博士,其他），单位性质请填写（国有企业,民营企业,外商独资,中外合资,港澳台企业,政府机关,事业单位,非营利性组织,自主创业,其他），国籍默认请不填或者填中国，其他值从业主编辑=》业主资料里找，民族请填写（汉族,满族,蒙古族,回族,藏族,维吾尔族,苗族,彝族,壮族,布依族,侗族,瑶族,白族,土家族,哈尼族,哈萨克族,傣族,黎族,傈僳族,佤族,畲族,高山族,拉祜族,水族,东乡族,纳西族,景颇族,柯尔克孜族,土族,达斡尔族,仫佬族,羌族,布朗族,撒拉族,毛南族,仡佬族,锡伯族,阿昌族,普米族,朝鲜族,塔吉克族,怒族,乌孜别克族,俄罗斯族,鄂温克族,德昂族,保安族,裕固族,京族,塔塔尔族,独龙族,鄂伦春族,赫哲族,门巴族,珞巴族,基诺族）';
+            $columnCell='A1:AD1';
+        }
         $objActSheet->setCellValue('A1',$tips );
-        
-        $objActSheet->mergeCells('A1:K1');
-        $objActSheet->getStyle('A1:K1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objActSheet->mergeCells($columnCell);
+        $objActSheet->getStyle($columnCell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
         $objActSheet->getRowDimension(1)->setRowHeight(30); // 固定高度
+
         $objActSheet->setCellValue('A2', '姓名(必填)');
         $objActSheet->setCellValue('B2', '手机号(必填)');
         $objActSheet->setCellValue('C2', '楼栋名称(必填)');
@@ -7737,17 +7871,71 @@ class UserAction extends BaseAction
         $objActSheet->setCellValue('F2', '房间号(必填)');
         $objActSheet->setCellValue('G2', '身份证号(选填)');
         $objActSheet->setCellValue('H2', 'IC卡号(选填)');
-        $objActSheet->setCellValue('I2', '政治面貌(选填)');
+        $nextletter='';
         if ($xtype == 'user_relatives') {
-            $objActSheet->setCellValue('J2', '亲属关系(必填)');
+            $objActSheet->setCellValue('I2', '亲属关系(必填)');
+            $objActSheet->setCellValue('J2', '政治面貌');
+            $nextletter='K';
+        }else{
+            $objActSheet->setCellValue('I2', '政治面貌');
+            $nextletter='J';
         }
+        $cell_list = range('A', 'K');
+        if($is_func_cloudmrsqfw_special){
+            $cell_list = range('A', 'Z');
+            $cell_list=array_merge($cell_list,['AA','AB','AC','AD']);
+        }
+        foreach ($cell_list as $cell) {
+            $objActSheet->getColumnDimension($cell)->setWidth(30);
+        }
+        if($is_func_cloudmrsqfw_special){
+            $objActSheet->setCellValue($nextletter.'2', '社区党员（是或否）');
+            $user_list[0][]='否';
+            $nextletter++;
+            $objActSheet->setCellValue($nextletter.'2', '社区党员组织关系');
+            $user_list[0][]='';
+            $nextletter++;
+            $objActSheet->setCellValue($nextletter.'2', '特殊人群');
+            $user_list[0][]='社区矫正,重点青少年';
+            $nextletter++;
+            $objActSheet->setCellValue($nextletter.'2', '重点人群');
+            $user_list[0][]='非法组织';
+            $nextletter++;
+            $objActSheet->setCellValue($nextletter.'2', '关怀群体');
+            $user_list[0][]='残疾人,空巢,孤寡老人,退役军人,留守儿童';
+            $objActSheet->getColumnDimension($nextletter)->setWidth(50);
+            $property_id=$this->house_session['property_id'];
+            $dataList = M('House_village_data_config')->where(array('property_id'=>$property_id,'is_system'=>1))->order('sort desc')->select();
+            if($dataList){
+                $systemConfigAttr=array('sex'=>'男','birthday'=>'1992-03-21','nation'=>'满族','native_place'=>'安徽,滁州','nationality'=>'中国','household_register'=>'南谯区乌衣镇康泰路与大同路交叉口','marriage_status'=>'离婚','edcation'=>'本科','emergent_person'=>'皇甫涛','person_phone'=>'13212345593','job'=>'','unit_nature'=>'其他','job_address'=>'');
+                $nextletter++;
+                foreach ($dataList as $kk=>$vv){
+                    $kkey=trim($vv['key']);
+                    if(!isset($systemConfigAttr[$kkey])){
+                        continue;
+                    }
+                    if(in_array($kkey,['birthday','sex','nation','marriage_status','edcation','nationality'])){
+                        $objActSheet->getColumnDimension($nextletter)->setWidth(20);
+                    }elseif (in_array($kkey,['household_register'])){
+                        $objActSheet->getColumnDimension($nextletter)->setWidth(40);
+                    }
+                    $user_list[0][]=$systemConfigAttr[$kkey];
+                    $title=trim($vv['title']);
+                    $objActSheet->setCellValue($nextletter.'2', $title);
+                    $nextletter++;
+                }
+            }
+        }
+        
         if (!empty($user_list)) {
             $index = 3;
-            $cell_list = range('A', 'K');
-            foreach ($cell_list as $cell) {
-                $objActSheet->getColumnDimension($cell)->setWidth(25);
-            }
             foreach ($user_list as $value) {
+                $letter='A';
+                foreach ($value as $vStr) {
+                    $objActSheet->setCellValueExplicit($letter. $index, $vStr);
+                    $letter++;
+                }
+                /*
                 $objActSheet->setCellValueExplicit('A' . $index, $value[0]);
                 $objActSheet->setCellValueExplicit('B' . $index, $value[1]);
                 $objActSheet->setCellValueExplicit('C' . $index, $value[2]);
@@ -7756,10 +7944,13 @@ class UserAction extends BaseAction
                 $objActSheet->setCellValueExplicit('F' . $index, $value[5]);
                 $objActSheet->setCellValueExplicit('G' . $index, $value[6]);
                 $objActSheet->setCellValueExplicit('H' . $index, $value[7]);
-                $objActSheet->setCellValueExplicit('I' . $index, $value[8]);
                 if ($xtype == 'user_relatives') {
+                    $objActSheet->setCellValueExplicit('I' . $index, $value[8]);
                     $objActSheet->setCellValueExplicit('J' . $index, $value[9]);
+                }else{
+                    $objActSheet->setCellValueExplicit('I' . $index, $value[8]);
                 }
+                */
                 $index++;
             }
         }
@@ -7774,7 +7965,7 @@ class UserAction extends BaseAction
         header("Content-Type:application/vnd.ms-execl");
         header("Content-Type:application/octet-stream");
         header("Content-Type:application/download");
-        header('Content-Disposition:attachment;filename="' . $title . '_' . date("Y-m-d h:i:sa", time()) . '.xls"');
+        header('Content-Disposition:attachment;filename="' . $xtitle . '_' . date("Y-m-d h:i:sa", time()) . '.xls"');
         header("Content-Transfer-Encoding:binary");
         $objWriter->save('php://output');
         exit();

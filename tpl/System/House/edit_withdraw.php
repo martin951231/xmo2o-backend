@@ -67,7 +67,7 @@
 		});
 		$(function(){
 			$('#reset').click(function(){
-				 window.top.art.dialog({id:'order_edit'}).close();
+				 window.o2oTop.art.dialog({id:'order_edit'}).close();
 			});
 		})
 	</script>

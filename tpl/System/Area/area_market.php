@@ -5,7 +5,7 @@
 					<a href="{pigcms{:U('Area/index')}" <if condition="$_GET['type'] eq 1">class="on"</if>>根列表</a>|
 					<a href="{pigcms{:U('Area/index',array('type'=>'4','pid'=>$now_area['area_pid']))}">上一级</a>
 					<a href="{pigcms{:U('Area/area_market',array('pid'=>$area_id))}" class="on">商场列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/add_market',array('area_id'=>$area_id))}','添加商场',600,360,true,false,false,addbtn,'store_add',true);">添加商场</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/add_market',array('area_id'=>$area_id))}','添加商场',600,360,true,false,false,addbtn,'store_add',true);">添加商场</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -54,7 +54,7 @@
 										<td><img style="width:50px;height:50px;" src="{pigcms{$vo.img}" /></td>
 										<td style="width:300px;">{pigcms{$vo.introduce}</td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/edit_market',array('market_id'=>$vo['market_id'],'area_id'=>$vo['area_id']))}','编辑商场',600,360,true,false,false,editbtn,'store_add',true);">编辑</a> |
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/edit_market',array('market_id'=>$vo['market_id'],'area_id'=>$vo['area_id']))}','编辑商场',600,360,true,false,false,editbtn,'store_add',true);">编辑</a> |
 											<a href="javascript:void(0);" class="delete_row" parameter="market_id={pigcms{$vo.market_id}" url="{pigcms{:U('Area/del_market')}">删除</a>
 										</td>
 									</tr>

@@ -42,7 +42,7 @@
 										<td>{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</td>
 										<td><if condition="$vo['status']"><font color="green">启用</font><else/><font color="red">关闭</font></if></td>
 										<td><if condition="$vo['is_fake']"><font color="green">是</font><else/><font color="red">否</font></if></td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Express/edit',array('id'=>$vo['id'],'frame_show'=>true))}','查看详细信息',520,470,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Express/edit',array('id'=>$vo['id']))}','编辑快递公司信息',520,550,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Express/del')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Express/edit',array('id'=>$vo['id'],'frame_show'=>true))}','查看详细信息',520,470,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Express/edit',array('id'=>$vo['id']))}','编辑快递公司信息',520,550,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Express/del')}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="12">{pigcms{$pagebar}</td></tr>

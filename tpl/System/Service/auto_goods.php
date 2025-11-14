@@ -6,9 +6,9 @@
 			<a href="{pigcms{:U('Service/auto_goods',array('cid'=>$cid))}" class="on">{pigcms{$now_category.name} - 商品列表</a>|
 
 			<if condition="$now_category['type'] eq 0">
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/auto_goods_add', array('cid'=>$cid))}','添加商品',580,450,true,false,false,addbtn,'add',true);">添加商品</a>
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/auto_goods_add', array('cid'=>$cid))}','添加商品',580,450,true,false,false,addbtn,'add',true);">添加商品</a>
 			<else/>
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/auto_store_add', array('cid'=>$cid))}','添加店铺',700,550,true,false,false,null,'add',true,function (argument) {
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/auto_store_add', array('cid'=>$cid))}','添加店铺',700,550,true,false,false,null,'add',true,function (argument) {
 					window.location.reload();
 				});">添加店铺</a>
 			</if>
@@ -75,7 +75,7 @@
 
 								<td class="textcenter">
 									<if condition="$now_category['type'] eq 0">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/auto_goods_add',array('id'=>$vo['id']))}','编辑分类信息',580,450,true,false,false,editbtn,'add',true);">编辑</a> | 
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/auto_goods_add',array('id'=>$vo['id']))}','编辑分类信息',580,450,true,false,false,editbtn,'add',true);">编辑</a> | 
 									</if>
 									<a href="javascript:void(0);" class="delete_row" tip="操作后会删除该内容且不能恢复！" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Service/auto_goods_del')}">删除</a>
 								</td>

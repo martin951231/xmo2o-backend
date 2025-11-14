@@ -18,10 +18,10 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td>
-                        <input type="button" value="添加广告" class="button" onclick="window.top.artiframe('{pigcms{:U('house_adver_add',array('source'=>$_GET[\'source\'],'is_platform'=>$is_platform))}','添加广告   ',1010,595,true,false,false,addbtn,'add',true,'refreshPage');"/>
+                        <input type="button" value="添加广告" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('house_adver_add',array('source'=>$_GET[\'source\'],'is_platform'=>$is_platform))}','添加广告   ',1010,595,true,false,false,addbtn,'add',true,'refreshPage');"/>
 
                         <if condition="$jz_open eq 1 && $checkSetUrl">
-                            <input type="button" value="广告审核设置" class="button" onclick="window.top.artiframe('{pigcms{$checkSetUrl}','小区广告审核设置   ',1010,595,true,false,false,false,'set',false);"/>
+                            <input type="button" value="广告审核设置" class="button" onclick="window.o2oTop.artiframe('{pigcms{$checkSetUrl}','小区广告审核设置   ',1010,595,true,false,false,false,'set',false);"/>
                         </if>
                     </td>
 <!--					<td>-->
@@ -91,13 +91,13 @@
                                     </if>
                                     <td class="textcenter">
                                         <if condition="$vo['isCheck']">
-                                            <a style="color: #26dbf3;" href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_adver_check',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'is_platform'=>$is_platform))}','审核广告信息',1010,595,true,false,false,editbtn,'add',true);">审核</a>
+                                            <a style="color: #26dbf3;" href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_adver_check',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'is_platform'=>$is_platform))}','审核广告信息',1010,595,true,false,false,editbtn,'add',true);">审核</a>
                                         </if>
                                         <if condition="$vo['lookCheck']">
-                                            <a style="color: #26ABF3FF;" href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_adver_check',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'look'=>1,'is_platform'=>$is_platform))}','审核广告信息',1010,595,true,false,false,false,'look',true);">查看</a>
+                                            <a style="color: #26ABF3FF;" href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_adver_check',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'look'=>1,'is_platform'=>$is_platform))}','审核广告信息',1010,595,true,false,false,false,'look',true);">查看</a>
                                         </if>
                                         <if condition="$vo['isEdit']">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_adver_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'is_platform'=>$is_platform))}','编辑广告信息',1010,595,true,false,false,editbtn,'add',true);">编辑</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_adver_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'is_platform'=>$is_platform))}','编辑广告信息',1010,595,true,false,false,editbtn,'add',true);">编辑</a>
                                             |
                                         </if>
                                         <if condition="$vo['isDelete']">
@@ -105,7 +105,7 @@
                                             |
                                         </if>
                                         <if condition="$_GET['source'] neq 1 && $vo['isStatistic']">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_nav_count',array('id'=>$vo['id']))}','统计分析',1010,595,true,false,false,false,'add',true);">统计分析</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_nav_count',array('id'=>$vo['id']))}','统计分析',1010,595,true,false,false,false,'add',true);">统计分析</a>
                                         </if>
                                     </td>
 

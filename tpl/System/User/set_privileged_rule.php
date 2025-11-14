@@ -3,10 +3,10 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('User/index')}">用户列表</a>
-					<a href="{pigcms{:U('User/label_index')}">用户标签管理</a>
-					<a href="{pigcms{:U('User/privileged_user')}">特权用户</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/privileged_import')}','导入特权用户',600,600,true,false,false,closebtn,'lang_add',true);">导入特权用户</a>
+					<a href="{pigcms{:U('User/index')}">SYSTEM_USER_PRIVILEGED_RULE_1</a>
+					<a href="{pigcms{:U('User/label_index')}">SYSTEM_USER_PRIVILEGED_RULE_2</a>
+					<a href="{pigcms{:U('User/privileged_user')}">SYSTEM_USER_PRIVILEGED_RULE_3</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/privileged_import')}','SYSTEM_USER_PRIVILEGED_RULE_4',600,600,true,false,false,closebtn,'lang_add',true);">SYSTEM_USER_PRIVILEGED_RULE_4</a>
 					<a href="{pigcms{:U('User/set_privileged_rule')}" class="on">设置特权派发规则</a>
 				</ul>
 			</div>

@@ -2,7 +2,7 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('circle/cateAdd')}','添加{pigcms{$now_type_str}',450,320,true,false,false,addbtn,'add',true);">添加新的动态</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('circle/cateAdd')}','添加{pigcms{$now_type_str}',450,320,true,false,false,addbtn,'add',true);">添加新的动态</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">

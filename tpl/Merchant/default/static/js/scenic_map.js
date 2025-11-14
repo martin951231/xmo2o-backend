@@ -1,7 +1,7 @@
 $(function(){
 	window.HOST_TYPE='2';
 	var local = null;
-	$.getScript("https://api.map.baidu.com/getscript?v=2.0&ak=4c1bb2055e24296bbaef36574877b4e2&s=1",function(){
+	$.getScript("https://api.map.baidu.com/getscript?v=2.0&ak={pigcms{$config.baidu_map_ak_web}&s=1",function(){
 		var map = null;
 		var oPoint = new BMap.Point(116.331398,39.897445);
 		var marker = new BMap.Marker(oPoint);

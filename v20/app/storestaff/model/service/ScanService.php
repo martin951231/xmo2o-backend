@@ -77,7 +77,7 @@ class ScanService {
                         'domain' => cfg('site_url'),
                     ];
                     $returnArr['app_data'] = [
-                        'appid' => '__UNI__8799035',
+                        'appid' => cfg('staff_uni_appid'),
                         'path' => 'pages/shop/order/orderSearch',
                         'arguments' => json_encode($params),
                     ];
@@ -247,7 +247,7 @@ class ScanService {
                         'domain' => cfg('site_url'),
                     ];
                     $returnArr['app_data'] = [
-                        'appid' => '__UNI__8799035',
+                        'appid' => cfg('staff_uni_appid'),
                         'path' => 'pages/mall/order/orderDetail?order_id=' . $orderInfo[0]['order_id'],
                         'arguments' => json_encode($params),
                     ];
@@ -517,7 +517,33 @@ class ScanService {
                     } else {
                         if(isset($parseUrl['is_group_combine']) && $parseUrl['is_group_combine'] == 1 && isset($parseUrl['order_id'])){
                             // 团购优惠组合 跳至团购列表进行处理
-                            $returnArr['url'] = cfg('site_url').'/packapp/storestaff/group_list.html?group_pass=' . $parseUrl['id'] . '&from=scan&order_id=' . $parseUrl['order_id'];
+                            $params = [
+                                'group_pass' => $parseUrl['id'],
+                                'real_orderid' => $parseUrl['order_id'],
+                                'mer_id' => $staffUser['mer_id'],
+                                'store_id' => $staffUser['store_id'],
+                            ];
+                            $searchRs = invoke_cms_model('Group_combine_activity/getActivityOrderBySearch', [$params]);
+                            $groupCombine = $searchRs['retval'] ?? [];
+                            $groupCombineData = $groupCombine['data'] ?? [];
+                            if (isset($groupCombine['error']) && $groupCombine['error'] == 0 && !empty($groupCombineData)) {
+                                //standard_pop  标准弹窗
+                                $returnArr["operate_type"] = 'standard_pop';
+                                $returnArr["operate_title"] = '团购优惠组合';
+                                $returnArr["pop_data"]  =  [
+                                    ['title' => '名称', 'value' => $groupCombineData['title'] ?? ''],
+                                    ['title' => '消费码', 'value' => $groupCombineData['group_pass'] ?? ''],
+                                ];
+                                $returnArr['confirm_data'] = json_encode([
+                                    'order_id' => $groupCombineData['order_id'] ?? 0,
+                                ], JSON_UNESCAPED_UNICODE);
+                                $returnArr['confirm_url'] = '/appapi.php?c=Storestaff&a=group_combine_verify';
+                                $returnArr['confirm_btn'] = '核销';
+                            } else {
+                                throw new \Exception(L_('未查询到相关订单'));
+                            }
+
+                            //$returnArr['url'] = cfg('site_url').'/packapp/storestaff/group_list.html?group_pass=' . $parseUrl['id'] . '&from=scan&order_id=' . $parseUrl['order_id'];
                         }elseif ($parseUrl['a'] == 'group_qrcode' && isset($parseUrl['order_id'])) {
                             $returnArr['url'] = cfg('site_url').'/packapp/storestaff/group_detail.html?order_id=' . $parseUrl['order_id'] . '&from=scan';
                         }

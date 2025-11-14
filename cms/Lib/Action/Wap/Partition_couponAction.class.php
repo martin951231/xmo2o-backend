@@ -312,10 +312,12 @@ class Partition_couponAction extends BaseAction{
             $arr['time_type'] = 0;
             $arr['unique_id'] = 'partition_coupon_hadpull_check';
             $arr['rand_number'] = mt_rand(1, max(C('config.sub_process_num'), 3));
-            M('process_sub_plan')->data($arr)->add();
+            //M('process_sub_plan')->data($arr)->add();
 
             $process = true;
-            $i=0;
+            //$i=0;
+            //不要循环遍历了，直接去查询
+            $i = 50;
             while($process){
                 $check_info = $check_db->where(array('id'=>$check_id))->find();
                 if($check_info['status']==1){//成功

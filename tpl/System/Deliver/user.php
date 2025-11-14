@@ -11,8 +11,8 @@
                     </if>
 					<a href="{pigcms{:U('Deliver/reply')}">配送员评论列表</a>|
 					<a href="{pigcms{:U('Deliver/cancel')}">配送员扔回订单列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
-					<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
+					<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
                     <if condition="$show_merchant_user eq 1">
                     <a href="{pigcms{:U('Deliver/merchant_user')}">商家配送员管理</a>
                     </if>
@@ -89,7 +89,11 @@
 										<td>{pigcms{$vo.uid}</td>
                                         <th><php>echo $vo['register_type'] == 0?'后台创建':'主动申请';</php></th>
 										<td>{pigcms{$vo.sort|intval}</td>
-										<td>{pigcms{$vo.name}</td>
+										<td>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/user_edit',array('uid'=>$vo['uid']))}','编辑配送员',860,560,true,false,false,editbtn,'edit',true);">
+											{pigcms{$vo.name}
+											</a>
+										</td>
 										<td>{pigcms{$vo.phone|phone_demo_show}</td>
 										<td>{pigcms{$vo.site}</td>
 										<td>
@@ -112,13 +116,15 @@
                                         <td class="textcenter">{pigcms{$vo.money}</td>
 										<td class="textcenter">
 											<if condition="$system_session['level']==2 OR in_array('258',$menus)">
-											<a style="width: 60px;" class="" href="{pigcms{:U('Deliver/count_log',array('uid'=>$vo['uid']))}">历史记录统计</a> | </if>
+											<a style="width: 60px;" class="" href="{pigcms{:U('Deliver/count_log',array('uid'=>$vo['uid']))}">配送量统计</a> | </if>
 											<if condition="$system_session['level']==2 OR in_array('259',$menus)">
-											<a style="width: 60px;" class="" href="{pigcms{:U('Deliver/log_list',array('uid'=>$vo['uid']))}">查看配送记录</a> | </if> 
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/user_login_log',array('uid'=>$vo['uid']))}','配送员登录日志',680,560,true,false,false,null,'user_login_log',true);">登录日志</a> | 
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/deliverClockRecords',array('uid'=>$vo['uid']))}','配送员打卡日志',680,560,true,false,false,null,'user_login_log',true);">打卡日志</a> | 
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/user_edit',array('uid'=>$vo['uid']))}','编辑配送员',860,560,true,false,false,editbtn,'edit',true);">编辑</a> | 
+											<a style="width: 60px;" class="" href="{pigcms{:U('Deliver/log_list',array('uid'=>$vo['uid']))}">配送记录</a> | </if> 
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/user_login_log',array('uid'=>$vo['uid']))}','登录日志',680,560,true,false,false,null,'user_login_log',true);">登录日志</a> | 
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/deliverClockRecords',array('uid'=>$vo['uid']))}','打卡日志',680,560,true,false,false,null,'user_login_log',true);">打卡日志</a> | 
 											<a href="javascript:void(0);" class="delete_row" parameter="uid={pigcms{$vo.uid}" url="{pigcms{:U('Deliver/del')}">删除</a>
+											<if condition="C('config.open_paotui_price_template') eq 1">
+												 | <a href="javascript:void(0);" onclick="window.top.artiframe('/v20/public/platform/#/dialog/paotui.platform/RiderCommissionSetting?uid={pigcms{$vo.uid}','骑手【{pigcms{$vo.name}】跑腿佣金设置',1000,700,false,false,false,'','',false);">跑腿佣金设置</a> 
+											</if>
 										</td>
 									</tr>
 								</volist>

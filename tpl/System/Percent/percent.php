@@ -321,15 +321,15 @@
 						// dataType:'json',
 						// data:$('#myform').serialize(),
 						// beforeSend:function () {
-							// window.top.msg(2,'表单提交中，请稍等...',true,360);
+							// window.o2oTop.msg(2,'表单提交中，请稍等...',true,360);
 						// },
 						// success:function (data) {
 							// if(data.status == 1){
-								// window.top.msg(1,data.info,true);
-								// window.top.main_refresh();
-								// window.top.closeiframe();
+								// window.o2oTop.msg(1,data.info,true);
+								// window.o2oTop.main_refresh();
+								// window.o2oTop.closeiframe();
 							// }else{
-								// window.top.msg(0,data.info,true);
+								// window.o2oTop.msg(0,data.info,true);
 							// }
 						// }
 					// });

@@ -1,6 +1,7 @@
 <?php
 
 namespace app\common\model\db;
+use app\appoint\model\db\AppointSupply;
 use think\Model;
 class AppointOrder extends Model {
     
@@ -19,6 +20,11 @@ class AppointOrder extends Model {
     {
         return $this->belongsTo(User::class, 'uid', 'uid');
     }
+
+	public function supply()
+	{
+		return $this->hasOne(AppointSupply::class, 'order_id', 'order_id');
+	}
     
 	public function category()
 	{
@@ -57,6 +63,16 @@ class AppointOrder extends Model {
         }
         return '';
     }
-    
-    
+
+	public function getAppointTypeTextAttr($value, $data): string
+	{
+		$text = [
+			0 => '到店',
+			1 => '上门',
+		];
+		if(isset($data['appoint_type'])){
+			return $text[$data['appoint_type']];
+		}
+		return '';
+	}
 }

@@ -9,7 +9,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('System/Forum/forum_list')}" class="on">论坛精选帖子</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('System/Forum/forum_add')}','添加',900,600,true,false,false,addbtn,'add',true);">添加</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('System/Forum/forum_add')}','添加',900,600,true,false,false,addbtn,'add',true);">添加</a>
         </ul>
     </div>
     <table class="search_table" width="100%">
@@ -54,7 +54,7 @@
                             </td>
                             <td class="textcenter">
                                 <a href="javascript:void(0);" class="push" data-id="{pigcms{$vo.id}">一键推送</a> |
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('System/Forum/forum_edit',array('id'=>$vo['id']))}','编辑',900,600,true,false,false,editbtn,'add',true);">编辑</a> |
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('System/Forum/forum_edit',array('id'=>$vo['id']))}','编辑',900,600,true,false,false,editbtn,'add',true);">编辑</a> |
                                 <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('System/Forum/forum_del')}">删除</a></td>
                         </tr>
                     </volist>

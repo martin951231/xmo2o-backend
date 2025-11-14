@@ -7,7 +7,7 @@
 			<link rel="shortcut icon" href="{pigcms{$config.site_favicon}"/>
 		</if>
 		<title>后台管理 - {pigcms{$config.site_name}</title>
-		<script type="text/javascript">if(self!=top){window.top.location.href = "{pigcms{:U('Index/index')}";}var selected_module="{pigcms{:strval($_GET['module'])}",selected_action="{pigcms{:strval($_GET['action'])}",selected_url="{pigcms{:urldecode(strval(htmlspecialchars_decode($_GET['url'])))}";</script>
+		<script type="text/javascript">if(self!=top){window.o2oTop.location.href = "{pigcms{:U('Index/index')}";}var selected_module="{pigcms{:strval($_GET['module'])}",selected_action="{pigcms{:strval($_GET['action'])}",selected_url="{pigcms{:urldecode(strval(htmlspecialchars_decode($_GET['url'])))}";</script>
 		<script type="text/javascript" src="{pigcms{:C('JQUERY_FILE')}"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}js/artdialog/jquery.artDialog.js"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}js/artdialog/iframeTools.js"></script>
@@ -202,12 +202,12 @@
 				$('#MainBox').css('margin-right','0px');
 			})
 			$("#git_pull").click(function(){
-				window.top.msg(2,'正在请求中,请稍等...',true,100);
+				window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 				$.get("{pigcms{:U('Index/git_pull')}",function(data){
 					if(data.error_code){
-						window.top.msg(0,data.msg,true,60);
+						window.o2oTop.msg(0,data.msg,true,60);
 					}else{
-						window.top.msg(1,data.msg,true,6);
+						window.o2oTop.msg(1,data.msg,true,6);
 					}
 				},'json');
 			})

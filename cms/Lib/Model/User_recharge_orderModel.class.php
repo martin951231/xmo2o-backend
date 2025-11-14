@@ -322,6 +322,7 @@ class User_recharge_orderModel extends Model{
 
                         fdump_api(['update_ret' => $update_ret, 'saveBalanceArr' => $saveBalanceArr], 'user_recharge_order/after_pay_log', 1);
                     }
+                    $isAihorseCustomized = D('Config_customization')->getIsAihorseCustomized();
                     if (!empty($update_ret)) {
                         $log_data = [
                             'uid' => $now_order['uid'],
@@ -365,6 +366,8 @@ class User_recharge_orderModel extends Model{
                         $rr= invoke_v20_service('\app\community\model\service\HouseNewCashierService/userUnpaidOrder', ['village_id'=>$data_user_recharge_order['business_id'],'pigcms_id'=>$data_user_recharge_order['bind_id'],'xtype'=>'hot_water_balance']);
                     }else if($opt_money_type=='electric_balance'){
                         $rr= invoke_v20_service('\app\community\model\service\HouseNewCashierService/userUnpaidOrder', ['village_id'=>$data_user_recharge_order['business_id'],'pigcms_id'=>$data_user_recharge_order['bind_id'],'xtype'=>'electric_balance']);
+                    }else if($isAihorseCustomized){
+                        $rr= invoke_v20_service('\app\community\model\service\HouseNewCashierService/userUnpaidOrder', ['village_id'=>$data_user_recharge_order['business_id'],'pigcms_id'=>$data_user_recharge_order['bind_id'],'xtype'=>'checkUserMeterOrderToPay']);
                     }
                 }
                 $tmp_order = [];

@@ -53,7 +53,7 @@
 				<td colspan="2">
 					<if condition="$coupon['sync_wx'] eq 1"><span>是</span><else /><span>否</span></if>
 					&nbsp;&nbsp;
-					<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Coupon/show')}','微信卡券示例图',300,500,true,false,false,'','show',true);" style="color:blue">微信卡券示例图</a>
+					<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/show')}','微信卡券示例图',300,500,true,false,false,'','show',true);" style="color:blue">微信卡券示例图</a>
 				</td>
 				
 			</tr>
@@ -330,7 +330,7 @@
 					<option value="0">增加</option>
 					<option value="1">减少</option>
 				</select>
-				<input type="text" class="input fl" style="margin-left:4px;" name="num_add" value=""  autocomplete="off" validate="digits:true,min:1">已经被领了{pigcms{$coupon.had_pull}张 <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Coupon/coupon_add_log',array('coupon_id'=>$coupon['coupon_id']))}','优惠券增加减少记录',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">增加减少记录</a>
+				<input type="text" class="input fl" style="margin-left:4px;" name="num_add" value=""  autocomplete="off" validate="digits:true,min:1">已经被领了{pigcms{$coupon.had_pull}张 <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/coupon_add_log',array('coupon_id'=>$coupon['coupon_id']))}','优惠券增加减少记录',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">增加减少记录</a>
 				</td>
 			</tr>
 			
@@ -355,6 +355,12 @@
 				<if condition="$coupon.is_discount eq 1">是<else />否</if>
 				</td>
 			</tr>
+            <!-- <tr class="store_direct_verification">
+            <td width="100">是否支持店铺直接核销：</td>
+            <td>
+                <if condition="$coupon.store_direct_verification eq 1">是<else />否</if>
+            </td>
+            </tr> -->
 			<if condition="$coupon.is_discount eq 1">
 			<tr>
 				<td width="100">折扣：</td>
@@ -373,7 +379,7 @@
 
             <if condition="$coupon['cate_name_origin'] eq 'shop' OR $coupon['cate_name_origin'] eq 'mall'">
             <tr>
-                <td width="100">平台补贴金额</td>
+                <td width="100">SYSTEM_COUPON_EDIT_1</td>
                 <td><input type="text" class="input fl" name="plat_money" value="{pigcms{$coupon.plat_money}" size="10" placeholder="大于等于0" validate="maxlength:10" tips="平台承担的金额与商家承担的金额的和等于优惠的金额，如果两个都不填写的话，由平台全部承担 开启百分比时需填写百分比 例0.5"/></td>
             </tr>
             <tr>

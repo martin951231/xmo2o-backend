@@ -63,4 +63,38 @@ class AtlasArticleCollectService {
         }
         return ['msg' =>$sucessMsg ];
     }
+
+    /**
+     * 获得用户收藏图文数量
+     * @param array $where
+     * @return int
+     */
+    public function getCount($where)
+    {
+        $count = $this->atlasArticleCollectModel->alias('c')
+            ->join('atlas_article a', 'a.id = c.article_id')
+            ->where($where)
+            ->count();
+        return $count;
+    }
+
+    //获取图文收藏列表
+    public function getCollectList($where, $field = true, $order = ['c.id' => 'DESC'], $page = 1, $pageSize = 10)
+    {
+        $lists = $this->atlasArticleCollectModel->alias('c')
+            ->join('atlas_article a', 'a.id = c.article_id')
+            ->where($where)
+            ->field($field)
+            ->order($order)
+            ->page($page, $pageSize)
+            ->select()
+            ->each(function ($item) {
+                if (isset($item['pic'])) {
+                    $item['pic'] =  replace_file_domain($item['pic']);
+                }
+                return $item;
+            })
+            ->toArray();
+        return $lists;
+    }
 }

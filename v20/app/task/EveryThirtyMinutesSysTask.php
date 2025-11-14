@@ -18,9 +18,12 @@ class EveryThirtyMinutesSysTask extends Task
 
 	public function execute()
 	{
-		//同步外卖店铺评分
 		try {
+			//同步外卖店铺评分
 			(new \app\common\model\service\MerchantStoreShopService())->syncShopScore();
+
+			//同步商场猜你喜欢
+			(new \app\building\service\ShoppingMallService())->syncMallGuessYouLikeTask();
 		} catch (\Exception $e) {
 			//就这样了，下次同步呗
 		}

@@ -3,7 +3,7 @@
 	<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Deliver/level_list')}" class="on">等级管理</a>|
-			<a href="javascript:void(0);"  onclick="window.top.artiframe('{pigcms{:U('level_add')}','添加等级',800,560,true,false,false,editbtn,'edit',true);">添加等级</a>
+			<a href="javascript:void(0);"  onclick="window.o2oTop.artiframe('{pigcms{:U('level_add')}','添加等级',800,560,true,false,false,editbtn,'edit',true);">添加等级</a>
 			<a href="{pigcms{:U('Deliver/config_level')}">等级配置</a>|
 			<a href="{pigcms{:U('Deliver/level_rule_list')}">等级规则配置</a>
 		</ul>
@@ -40,7 +40,7 @@
 								<td>{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}</td>
 								
 								<td class="textcenter">
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/level_edit',array('pigcms_id'=>$vo['pigcms_id']))}','编辑等级信息',800,560,true,false,false,editbtn,'edit',true);">编辑</a> | 
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/level_edit',array('pigcms_id'=>$vo['pigcms_id']))}','编辑等级信息',800,560,true,false,false,editbtn,'edit',true);">编辑</a> | 
 									<a href="javascript:void(0);" class="delete_row" parameter="pigcms_id={pigcms{$vo.pigcms_id}" url="{pigcms{:U('Deliver/level_del')}">删除</a>
 								</td>
 							</tr>

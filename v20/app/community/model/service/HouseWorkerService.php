@@ -244,7 +244,15 @@ class HouseWorkerService
             } 
         return $dataArr;
     }
-    
+    public function  getAllWorkerList($whereArr,$field='*'){
+        $list =array();
+        $dbHouseWorker = new HouseWorker();
+        $res = $dbHouseWorker->getWorkLists($whereArr, $field,'wid desc', 0);
+        if (!empty($res) && !$res->isEmpty()) {
+            $list=$res->toArray();
+        }
+        return $list;
+    }
     //更新数据
     public function updateHouseWorker($where = array(), $updateArr = array(), $now_worker = array())
     {

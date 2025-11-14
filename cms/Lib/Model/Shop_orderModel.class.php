@@ -1972,7 +1972,7 @@ class Shop_orderModel extends Model
             }
         }
         if($lack_weight_money_all > 0){
-            $add_result = D('User')->add_money($order['uid'],$lack_weight_money_all,L_('称重商品重量不足部分订单退款，增加余额.订单编号'.$order['real_orderid']));
+            $add_result = D('User')->add_money($order['uid'],$lack_weight_money_all,'订单称重商品重量不足部分退款，增加用户余额.订单编号：'.$order['real_orderid'], 18, $order['order_id']);//18 shop_order
             if($add_result['error_code']==1){
                 fdump_sql($add_result,'lack_weight_refund');
             }

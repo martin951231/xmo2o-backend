@@ -117,7 +117,7 @@
                             </td>
                             <td>{pigcms{$vo.remark}</td>
 
-<!--                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);"><if condition="$vo['status'] eq 2">审核<else />编辑</if></a></td>-->
+<!--                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);"><if condition="$vo['status'] eq 2">审核<else />编辑</if></a></td>-->
                         </tr>
                     </volist>
                     <tr><td class="textcenter pagebar" colspan="12">{pigcms{$pagebar}</td></tr>

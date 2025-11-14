@@ -183,14 +183,14 @@ class StorageController extends CommunityBaseController{
         if(intval(cfg('cockpit'))){
             return $this->userBalanceChange_old();
         }
-        $pigcms_id = $this->request->param('uid',0,'intval');
+        $uid = $this->request->param('uid',0,'intval');
         $status = $this->request->param('status',0,'intval');  //1增加 2减少
         $price = $this->request->param('price','','trim');
         $remarks = $this->request->param('remarks','','trim');
         $opt_money_type=$this->request->param('opt_money_type','','trim');
         $off_pay_type=$this->request->param('off_pay_type',0,'intval');  //线下支付方式
         $village_id =  $this->adminUser['village_id'];
-        if (!$pigcms_id){
+        if (!$uid){
             return api_output(1001,[],'缺少必要参数');
         }
         if(empty($status)){
@@ -215,7 +215,7 @@ class StorageController extends CommunityBaseController{
         }
         try{
             $system_remarks=(new StorageService())->getRoleData($this->_uid,$this->login_role,$this->adminUser);
-            $ret = (new StorageService())->userBalanceChange($pigcms_id,$status,$price,$system_remarks['remarks'],$remarks,0,$village_id,$opt_money_type,$extra_data);
+            $ret = (new StorageService())->userBalanceChange($uid,$status,$price,$system_remarks['remarks'],$remarks,0,$village_id,$opt_money_type,$extra_data);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }

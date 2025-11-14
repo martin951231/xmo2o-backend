@@ -123,7 +123,7 @@ class Merchant_store_shopModel extends Model
 				if($where['search_type'] == 'barcode'){
 					$condition_where .= " AND `s`.`status` = 1 AND (`g`.`number`='{$where['key']}')";
 				}else{
-					$condition_where .= " AND `s`.`status` = 1 AND (`s`.`"._field("name")."` LIKE '%{$where['key']}%' OR `g`.`name` LIKE '%{$where['key']}%')";
+					$condition_where .= " AND `s`.`status` = 1 AND (`s`.`"._field("name")."` LIKE '%{$where['key']}%' OR `m`.`search_keywords` LIKE '%{$where['key']}%' OR `g`.`name` LIKE '%{$where['key']}%')";
 				}
 			} else {
 				$condition_where .= " AND `s`.`"._field("name")."` LIKE '%{$where['key']}%'";
@@ -278,64 +278,53 @@ class Merchant_store_shopModel extends Model
         }
         
         //根据分类查找对应的店铺ID
-        // if ($cat_fid || $cat_id) {
-            if ($cat_fid && $cat_id) {
-                $relation = D('Shop_category_relation')->where(array('cat_fid' => $cat_fid, 'cat_id' => $cat_id))->select();
-            } elseif ($cat_fid) {
-                if($checkTime){
-                    $cateWhere = sprintf("cat_fid=" . $cat_fid . " AND (effect_date_type = 1 OR (start_date <= '%s' AND end_date >= '%s' AND FIND_IN_SET(%d,week))) AND (effect_time_type = 1 OR (start_time <= '%s' AND end_time >= '%s'))", $today, $today, $week, $time, $time);
-                    $showCateIds = D('Shop_category')->where($cateWhere)->getField('cat_id', true);
-                    if ($showCateIds) {
-                        $relation = D('Shop_category_relation')->where(array('cat_id' => ['IN', $showCateIds]))->select();
-                    } else {
-                        $relation = [];
-                    }
-                }else{
-                    $relation = D('Shop_category_relation')->where(array('cat_fid' => $cat_fid))->select();
-                }
-            } elseif($cat_id) {
-                $relation = D('Shop_category_relation')->where(array('cat_id' => $cat_id))->select();
-            } else {
-                // 全部分类下没有分类的店铺不显示
-                if ($checkTime) {
-                    $cateWhere = sprintf("(effect_date_type = 1 OR (start_date <= '%s' AND end_date >= '%s' AND FIND_IN_SET(%d,week))) AND (effect_time_type = 1 OR (start_time <= '%s' AND end_time >= '%s'))", $today, $today, $week, $time, $time);
-                    $showCateIds = D('Shop_category')->where($cateWhere)->getField('cat_id', true);
-                    if ($showCateIds) {
-                        $relation = D('Shop_category_relation')->where(array('cat_id' => ['IN', $showCateIds]))->select();
-                    } else {
-                        $relation = [];
-                    }
+        if ($cat_fid && $cat_id) {
+            $relation = D('Shop_category_relation')->where(array('cat_fid' => $cat_fid, 'cat_id' => $cat_id))->select();
+        } elseif ($cat_fid) {
+            if($checkTime){
+                $cateWhere = sprintf("cat_fid=" . $cat_fid . " AND (effect_date_type = 1 OR (start_date <= '%s' AND end_date >= '%s' AND FIND_IN_SET(%d,week))) AND (effect_time_type = 1 OR (start_time <= '%s' AND end_time >= '%s'))", $today, $today, $week, $time, $time);
+                $showCateIds = D('Shop_category')->where($cateWhere)->getField('cat_id', true);
+                if ($showCateIds) {
+                    $relation = D('Shop_category_relation')->where(array('cat_id' => ['IN', $showCateIds]))->select();
                 } else {
-                    $relation = D('Shop_category_relation')->select();
+                    $relation = [];
                 }
+            }else{
+                $relation = D('Shop_category_relation')->where(array('cat_fid' => $cat_fid))->select();
             }
-            $store_ids = array();
-            foreach ($relation as $r) {
-                if (! in_array($r['store_id'], $store_ids)) {
-                    $store_ids[] = $r['store_id'];
+        } elseif($cat_id) {
+            $relation = D('Shop_category_relation')->where(array('cat_id' => $cat_id))->select();
+        } else {
+            // 全部分类下没有分类的店铺不显示
+            if ($checkTime) {
+                $cateWhere = sprintf("(effect_date_type = 1 OR (start_date <= '%s' AND end_date >= '%s' AND FIND_IN_SET(%d,week))) AND (effect_time_type = 1 OR (start_time <= '%s' AND end_time >= '%s'))", $today, $today, $week, $time, $time);
+                $showCateIds = D('Shop_category')->where($cateWhere)->getField('cat_id', true);
+                if ($showCateIds) {
+                    $relation = D('Shop_category_relation')->where(array('cat_id' => ['IN', $showCateIds]))->select();
+                } else {
+                    $relation = [];
                 }
-            }
-            if ($store_ids) {
-
-                if ($where['store_ids']) {//店铺id的条件
-                    if(!is_array($where['store_ids'])){
-                        $where['store_ids'] = explode(',',$where['store_ids']);
-                    }
-                    $store_ids = array_intersect($store_ids, $where['store_ids']);
-                }
-                if($store_ids){
-                    $condition_where .= ' AND s.store_id IN (' . implode(',', $store_ids) . ')';
-
-                }else{
-                    return array(
-                        'shop_list' => null,
-                        'pagebar' => null,
-                        'total' => 0,
-                        'next_page' => 0
-                    );
-                }
-
             } else {
+                $relation = D('Shop_category_relation')->select();
+            }
+        }
+        $store_ids = array();
+        foreach ($relation as $r) {
+            if (! in_array($r['store_id'], $store_ids)) {
+                $store_ids[] = $r['store_id'];
+            }
+        }
+        if ($store_ids) {
+            if ($where['store_ids']) {//店铺id的条件
+                if(!is_array($where['store_ids'])){
+                    $where['store_ids'] = explode(',',$where['store_ids']);
+                }
+                $store_ids = array_intersect($store_ids, $where['store_ids']);
+            }
+            if($store_ids){
+                $condition_where .= ' AND s.store_id IN (' . implode(',', $store_ids) . ')';
+
+            }else{
                 return array(
                     'shop_list' => null,
                     'pagebar' => null,
@@ -343,7 +332,14 @@ class Merchant_store_shopModel extends Model
                     'next_page' => 0
                 );
             }
-        // }
+        } else {
+            return array(
+                'shop_list' => null,
+                'pagebar' => null,
+                'total' => 0,
+                'next_page' => 0
+            );
+        }
 
 		//没有告知取多少条，则统计。否则不统计，影响效率
 		if(empty($limit)){
@@ -401,8 +397,6 @@ class Merchant_store_shopModel extends Model
 			$star = 0;
 			$pagesize = $limit;
 		}
- 
-        
         if ($is_search) {
             $sql = "SELECT {$condition_field} FROM " . C('DB_PREFIX') ._view("merchant_store"). " AS s";
             $sql .= " INNER JOIN " . C('DB_PREFIX') ._view("merchant_store_shop"). " AS m ON m.store_id=s.store_id";
@@ -529,7 +523,7 @@ class Merchant_store_shopModel extends Model
 			
 			//兼容商品有情况搜索不出来时，店铺展示出来的问题
 			foreach($res as $key => $value){
-				if(empty($value['goods_list']) && stripos($value['name'],$where['key']) === false){
+				if(empty($value['goods_list']) && stripos($value['name'],$where['key']) === false && stripos($value['search_keywords'],$where['key']) === false){
 					unset($res[$key]);
 				}
 			}
@@ -559,8 +553,6 @@ class Merchant_store_shopModel extends Model
         $ids = array();
         $store_ids = array();
         $latLng = array();
-        $list = array();
-
         $default_language = C('config.default_language');//默认语言
         foreach ($res as $kr => $r) {
             if (! in_array($r['circle_id'], $ids)) {

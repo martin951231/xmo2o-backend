@@ -3,7 +3,7 @@
 	<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Service/auto_goodsname')}">分类列表</a>|
-			<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/auto_cat_add')}','添加主分类',580,450,true,false,false,addbtn,'add',true);">添加分类</a>|
+			<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/auto_cat_add')}','添加主分类',580,450,true,false,false,addbtn,'add',true);">添加分类</a>|
 			<a href="{pigcms{:U('Service/auto_store_order_list')}" class="on"> 指定商家订单查询</a>
 		</ul>
 	</div>
@@ -119,7 +119,7 @@
 								<td>{pigcms{$vo.delivery_fee_total}</td>
 								<td>{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</td>
 								<td class="textcenter">
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/offer_info',array('offer_id'=>$vo['offer_id'],'frame_show'=>true))}','查看订单信息',600,600,true,false,false,false,'detail',true);">查看</a>
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/offer_info',array('offer_id'=>$vo['offer_id'],'frame_show'=>true))}','查看订单信息',600,600,true,false,false,false,'detail',true);">查看</a>
 								</td>
 							</tr>
 						</volist>

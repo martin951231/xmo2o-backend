@@ -94,7 +94,7 @@
                                     <td>{pigcms{$vo.last_time}</td>
                                     </if>
 									<td class="textcenter">
-                                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id'],'frame_show'=>true,'is_status'=>1))}','查看商品信息',600,560,true,false,false,closebtn,'detail',true);"><if condition="$vo.status eq 0">审核<else/>重新审核</if></a>
+                                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id'],'frame_show'=>true,'is_status'=>1))}','查看商品信息',600,560,true,false,false,closebtn,'detail',true);"><if condition="$vo.status eq 0">审核<else/>重新审核</if></a>
 									</td>
 								</tr>
 							</volist>

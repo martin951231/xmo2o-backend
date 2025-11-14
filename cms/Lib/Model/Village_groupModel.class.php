@@ -2881,6 +2881,13 @@ class Village_groupModel extends Model{
                 'status' => 2
             );
             M('Village_group_order')->where(array('order_id'=>$order['order_id']))->save($set_data);
+
+            //验证消费完成了，更新下pigcms_system_order表
+            $sys_data = array();
+            $sys_data['status'] = 2;
+            $sys_data['system_status'] = 2;
+            $sys_data['last_time'] = time();
+            D('System_order')->save_order_info('village_group',$order['order_id'],$sys_data);
         }
         // 改变对应周期购最新期数
         if ($order['village_group_type']==1 && $order['newest_delivery_periods']<$order['delivery_periods']){

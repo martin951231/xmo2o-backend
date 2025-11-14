@@ -494,7 +494,7 @@ class UserAction extends BaseAction
             }
             $title = array_filter($data[1]);//表格标题
             //验证标题的正确性
-            $must = ['A'=>'州', 'B'=>'城市', 'C'=>'手机号码'];
+            $must = ['A'=>'省份', 'B'=>'城市', 'C'=>'手机号码'];
             if(!empty(array_diff_assoc($title,$must))){
                 $this->ajaxReturn(array(),'表格标题不正确！无法执行导入',2);
             }

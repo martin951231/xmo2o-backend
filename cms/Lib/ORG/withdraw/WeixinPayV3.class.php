@@ -130,14 +130,46 @@ class WeixinPayV3
         if (!empty($data['code']) || (!empty($data['state'] && !in_array($data['state'], ['ACCEPTED', 'PROCESSING', 'WAIT_USER_CONFIRM', 'TRANSFERING'])))) {
             $result['error']                  = true;
             $result['result_code']            = 'FAILURE';
-            $result['result']['err_code_des'] = L_(self::ERROR_CODE_MSG[strtoupper($data['code'] ?? $data['state'])] ?? '请求异常！');
+            $result['result']['err_code_des'] = !empty($data['message']) ? $data['message'] :(L_(self::ERROR_CODE_MSG[strtoupper($data['code'] ?? $data['state'])] ?? '请求异常！'));
         } else {
             $result['result_code'] = 'SUCCESS';
         }
 
         return $result;
     }
+	public function getScenePostData($sceneId, $data): array
+	{
+		switch ($sceneId) {
+			case '1005'://佣金报酬
+				$postData = [//转账场景报备信息
+					[
+						"info_type" => '岗位类型',//信息类型
+						"info_content" => $data['job_type'] ?? '商家',//信息内容
+					],
+					[
+						"info_type" => '报酬说明',//信息类型
+						"info_content" => $data['remark'] ?? '申请发放' . ($data['money'] / 100) . '元（' . $this->wechat_name . '）',//信息内容
+					]
+				];
+				break;
+			case '1010'://二手回收
+				$postData =  [//转账场景报备信息
+					[
+						"info_type" => '回收商品名称',//信息类型
+						"info_content" => '商品回收打款',//信息内容
+					],
+				];
+				break;
+			default:
+				$postData = [];
+				break;
+		}
+		return $postData;
+				
+	}
+	
 
+    //文档：https://pay.weixin.qq.com/doc/v3/merchant/4012716434
     public function withdrawalTransfer($data): array
     {
         $originData = $data;
@@ -146,37 +178,42 @@ class WeixinPayV3
         $reqUrl = $this->base_url . '/v3/fund-app/mch-transfer/transfer-bills';
         $postData = [];
         $this->requestMethod = 'POST';
-        if (
-            empty($this->appid)
-            || empty($this->mchid)
-            || empty($this->appkey)
-            || empty(C('config.withdraw_weixin_client_cert'))
-            || empty(C('config.withdraw_weixin_client_key'))
-            || empty(C('config.withdraw_weixin_apiv3'))
-        ) {
-            $result['result']['err_code_des'] = '暂未配置微信提现支付信息，请至系统设置--付款管理--微信提现tab页中配置';
-            return $result;
-        }
+	    try {
+		    if (
+			    empty($this->appid)
+			    || empty($this->mchid)
+			    || empty($this->appkey)
+			    || empty(C('config.withdraw_weixin_client_cert'))
+			    || empty(C('config.withdraw_weixin_client_key'))
+			    || empty(C('config.withdraw_weixin_apiv3'))
+		    ) {
+			    throw new \Exception('暂未配置微信提现支付信息，请至系统设置--付款管理--微信提现tab页中配置');
+		    }
+		    $sceneId = C('config.withdraw_weixin_apiv3_transfer_scene_id');
+		    if (empty($sceneId)) {
+			    throw new \Exception('暂未配置微信提现场景ID，请至系统设置中配置');
+		    }
+		    $scenePostData = $this->getScenePostData($sceneId, $data);
+		    if (empty($scenePostData)) {
+			    throw new \Exception('提现场景ID暂未适配');
+		    }
+	    } catch (\Exception $e) {
+		    $result['error'] = true;
+		    $result['result_code'] = 'FAILURE';
+		    $result['result']['err_code_des'] = $e->getMessage();
+		    return $result;
+	    }
         try {
             $this->certificates();
             $postData = [
                 "appid" => $this->appid,//直连商户的appid
                 "out_bill_no" => $data['partner_trade_no'],//商户单号
-                "transfer_scene_id" => C('config.withdraw_weixin_apiv3_transfer_scene_id'),//转账场景ID
+                "transfer_scene_id" => $sceneId,//转账场景ID
                 "openid" => $data['openid'],//收款用户OpenID
                 "transfer_amount" => intval($data['money']),//转账金额
                 "transfer_remark" => '微信提现' . ($data['money'] / 100) . '元（' . $this->wechat_name . '）',//转账备注
                 'notify_url' => C('config.site_url') . '/source/weixin_withdraw_notify.php',//回调地址
-                "transfer_scene_report_infos" => [//转账场景报备信息
-                    [
-                        "info_type" => '岗位类型',//信息类型
-                        "info_content" => $data['job_type'] ?? '商家',//信息内容
-                    ],
-                    [
-                        "info_type" => '报酬说明',//信息类型
-                        "info_content" => $data['remark'] ?? '申请发放' . ($data['money'] / 100) . '元（' . $this->wechat_name . '）',//信息内容
-                    ]
-                ]
+                "transfer_scene_report_infos" => $scenePostData,//转账场景报备信息
             ];
             if (bcdiv($data['money'], '100', 2) > 1) {
                 $postData['user_name'] = $this->getEncrypt(trim($data['name']));//收款用户姓名 1元以下不实名校验

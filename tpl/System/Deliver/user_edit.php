@@ -10,12 +10,12 @@
     .show-select-value .list .item{padding: 2px 10px}
     .show-select-value .list .item:hover{background: #1686ef;color: #fff;}
 </style>
-	<div id="nav" class="mainnav_title">
+	<!-- <div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Deliver/user_edit')}&uid={pigcms{$_GET['uid']}&frame={pigcms{$_GET['frame']}" class="on">配送员详细信息</a>|
-			<!-- <a href="{pigcms{:U('Deliver/user_registry')}&uid={pigcms{$_GET['uid']}&frame={pigcms{$_GET['frame']}">注册信息</a> -->
+			<a href="{pigcms{:U('Deliver/user_registry')}&uid={pigcms{$_GET['uid']}&frame={pigcms{$_GET['frame']}">注册信息</a>
 		</ul>
-	</div>
+	</div> -->
 	<form id="myform" method="post" action="{pigcms{:U('Deliver/user_edit')}" frame="true" refresh="true">
 		<input type="hidden" name="uid" value="{pigcms{$now_user.uid}"/>
 		<table cellpadding="0" cellspacing="0" class="frame_form" width="100%">
@@ -115,7 +115,7 @@
 				<th width="15%">配送员等级积分</th>
 				<td width="35%"><input type="text" class="input fl" name="score" value="{pigcms{$now_user.score}" />
 				<p style="line-height: 4px;margin-bottom: 20px;">当前等级：{pigcms{$now_user.level_name}</p>
-				<a href="javascript:void(0);" style="border: 1px solid #ccc;padding: 4px;" onclick="window.top.artiframe('{pigcms{:U('Deliver/user_score_log',array('uid'=>$now_user['uid']))}','积分变动日志',680,560,true,false,false,null,'user_score_log',true);">积分变动日志</a></td>
+				<a href="javascript:void(0);" style="border: 1px solid #ccc;padding: 4px;" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/user_score_log',array('uid'=>$now_user['uid']))}','积分变动日志',680,560,true,false,false,null,'user_score_log',true);">积分变动日志</a></td>
 			</tr>
 			</if>
 			<tr>
@@ -283,7 +283,7 @@
             <script type="text/javascript" src="{pigcms{$static_path}js/map_google.js?t=1111"></script>
             <else />
             <!--<script type="text/javascript" src="{pigcms{$static_path}js/area.js"></script>-->
-            <script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+            <script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
             <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
             <script type="text/javascript">var polygonMap = 1;</script>
             <script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=3"></script>

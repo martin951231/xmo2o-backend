@@ -233,47 +233,6 @@ class MeituanAction extends BaseAction
         exit(json_encode(array('data' => 'OK')));
     }
     
-    public function orderRefund()
-    {
-        $content = $_REQUEST;
-        
-        $storeId = $content['ePoiId'];
-        
-        $sign = $content['sign'];
-        unset($content['sign']);
-        
-        $mySign = $this->generate_signature($content);
-        
-        if ($sign != $mySign) {
-            exit(json_encode(array('data' => 'OK')));
-        }
-        if (empty($content['orderRefund'])) {
-            exit(json_encode(array('data' => 'OK')));
-        }
-        $store = M('Merchant_store')->field(true)->where(array('store_id' => $storeId))->find();
-        if (empty($store)) {
-            exit(json_encode(array('data' => 'OK')));
-        }
-        $data = json_decode($content['orderRefund'], true);
-        if (empty($data)) exit(json_encode(array('data' => 'OK')));
-        
-        $where = array('platform_id' => $data['orderId'], 'platform' => 2, 'store_id' => $storeId);
-        if ($oldOrder = M('Shop_order')->field(true)->where($where)->find()) {
-            
-            $savaData = array('status' => 4);
-            $savaData['cancel_reason'] = $data['reason'];
-            
-            $notifyType['apply'] = '发起退款';
-            $notifyType['agree'] = '确认退款';
-            $notifyType['reject'] = '驳回退款';
-            $notifyType['cancelRefund'] = '用户取消退款申请';
-            $notifyType['cancelRefundComplaint'] = '取消退款申诉';
-            //$savaData['cancel_reason'] = $data['reason'] . ':' . $data['notifyType'];
-            M('Shop_order')->where($where)->save($savaData);
-        }
-        exit(json_encode(array('data' => 'OK')));
-    }
-    
     public function privacy()
     {
         $content = $_REQUEST;

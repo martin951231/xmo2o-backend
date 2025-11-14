@@ -302,4 +302,39 @@ class MerchantStoreStaffService
         }
         return $staff;
     }
+
+    //发送商城订单消息
+    public function sendMallOrderMessage($order)
+    {
+        $where = [
+            ['store_id', '=', $order['store_id']],
+            ['is_notice', '=', 0],
+            ['last_time', '>', 0],
+            ['client', '=', 0],
+            ['openid', '<>', ''],
+        ];
+
+        $staffs = $this->getStaffListByCondition($where);
+        if (empty($staffs)) {
+            return;
+        }
+        foreach ($staffs as $staff) {
+            if (empty($staff)) {
+                continue;
+            }
+            $href = sprintf(cfg('site_url') . "/packapp/staff/#/pages/mall/order/orderDetail?order_id=%d", $order['order_id']);
+            $msgData = [
+                'href' => $href,
+                'wecha_id' => $staff['openid'],
+                'new_info' => [
+                    'tempKey' => 44716,
+                    'thing12' => L_("新订单提醒"),
+                    'phrase2' => cfg('mall_alias_name_new'),
+                    'time13' => date("Y-m-d H:i:s", time()),
+                    'thing11' => $order['order_no'],
+                ]
+            ];
+            (new \app\common\model\service\weixin\TemplateNewsService())->sendTempMsg('OPENTM400166399', $msgData, $order['mer_id']);
+        }
+    }
 }

@@ -19,7 +19,7 @@ class LiveBroadcastController extends ApiBaseController
      * @param string $scenario
      * @return array
      */
-    private function validateParameter($method = 'post',array $params = [], string $scenario = '') : array
+	protected function validateParameter(string $method = 'post', array $params = [], string $scenario = '') : array
     {
         empty($params) && $params = input($method.'.');
         $validate = validate(LiveGoodsValidate::class);

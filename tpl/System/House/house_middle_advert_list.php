@@ -14,7 +14,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td>
-						<input type="button" value="添加广告" class="button" onclick="window.top.artiframe('{pigcms{:U('house_middle_advert_add',array('source'=>$_GET['source'],'is_platform'=>$is_platform))}','添加中间栏轮播广告   ',1010,595,true,false,false,addbtn,'add',true,'refreshPage');"/>
+						<input type="button" value="添加广告" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('house_middle_advert_add',array('source'=>$_GET['source'],'is_platform'=>$is_platform))}','添加中间栏轮播广告   ',1010,595,true,false,false,addbtn,'add',true,'refreshPage');"/>
 						
 					</td>
 				</tr>
@@ -72,10 +72,10 @@
                                     </td>
                                     </if>
 									<td class="textcenter">
-                                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_middle_adver_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'is_platform'=>$is_platform))}','编辑广告信息',1010,595,true,false,false,editbtn,'add',true,'refreshPage');">编辑</a> |
+                                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_middle_adver_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page'],'source'=>$_GET['source'],'is_platform'=>$is_platform))}','编辑广告信息',1010,595,true,false,false,editbtn,'add',true,'refreshPage');">编辑</a> |
                                         <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/house_adver_del')}">删除</a>
                                         <if condition="$_GET['source'] neq 1">|
-                                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_nav_count',array('id'=>$vo['id']))}','统计分析',1010,595,true,false,false,false,'add',true);">统计分析</a>
+                                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_nav_count',array('id'=>$vo['id']))}','统计分析',1010,595,true,false,false,false,'add',true);">统计分析</a>
                                         </if>
                                     </td>
 								</tr>

@@ -73,7 +73,7 @@
 					<span class="cb-enable"><label class="cb-enable "><span>是</span><input type="radio" name="sync_wx" value="1" /></label></span>
 					<span class="cb-disable"><label class="cb-disable selected"><span>否</span><input type="radio" name="sync_wx" value="0" checked="checked" /></label></span>
 					&nbsp;&nbsp;
-					<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Coupon/show')}','微信卡券示例图',680,620,true,false,false,'','show',true);" style="color:blue">微信卡券示例图</a>
+					<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/show')}','微信卡券示例图',680,620,true,false,false,'','show',true);" style="color:blue">微信卡券示例图</a>
 				</td>
 			</tr>
 			<tr class="wx_coupon">
@@ -342,15 +342,21 @@
 				<td>0~10之间的数字，支持一位小数！8代表8折，8.5代表85折</td>
 			</tr>
 			</if>
+            <!-- <tr class="store_direct_verification" <if condition="$coupon['is_discount']">style="display:none"</if>>
+            <td width="100">是否支持店铺直接核销：</td>
+            <td>
+                <span class="cb-enable"><label class="cb-enable <if condition="$coupon['store_direct_verification'] eq 1"> selected</if>"><span>是</span><input type="radio" name="store_direct_verification" value="1" <if condition="$coupon['store_direct_verification'] eq 1"> checked="checked"</if>/></label></span>
+                <span class="cb-disable"><label class="cb-disable <if condition="$coupon['store_direct_verification'] eq 0"> selected</if>"><span>否</span><input type="radio" name="store_direct_verification" value="0" <if condition="$coupon['store_direct_verification'] eq 0"> checked="checked"</if>/></label></span>
+            </td>
+            </tr> -->
 			<tr class="money">
 				<td width="100">优惠金额：</td>
 				<td colspan="2">
 					<input type="text" class="input fl" name="discount" value="" autocomplete="off" validate="required:true,number:true,min:0.01"/>
 				</td>
 			</tr>
-
             <tr class="plat_money">
-                <td width="100">平台补贴金额：</td>
+                <td width="100">SYSTEM_COUPON_ADD_1：</td>
                 <td><input type="text" class="input fl" name="plat_money" value="" size="10" placeholder="大于等于0" validate="maxlength:10" tips="平台承担的金额与商家承担的金额的和等于优惠的金额，如果两个都不填写的话，由平台全部承担 开启百分比时需填写百分比 例0.5"/></td>
             </tr>
             <tr class="merchant_money">

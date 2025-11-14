@@ -451,7 +451,7 @@ class Merchant_store_staffModel extends Model
                     	if($staff['app_version'] < 30200){
                         	$js_url = C('config.config_site_url') . '/packapp/storestaff/shop.html';
                     	}else{
-                    		$js_url = 'miniapp://__UNI__8799035&pages/shop/order/order?tab_status=new';
+                    		$js_url = 'miniapp://'.C('config.staff_uni_appid').'&pages/shop/order/order?tab_status=new';
                     	}
                     }
                     

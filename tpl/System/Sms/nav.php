@@ -18,5 +18,9 @@
 		<if condition="!$all_new_version || $all_new_version['village_manager']">
 			<a href="{pigcms{:U('Sms/VillageManergeApp')}" <if condition="ACTION_NAME eq 'VillageManergeApp'">class="on"</if>>社区管理APP版本配置</a>
 		</if>
+
+		<if condition="!$all_new_version || $all_new_version['app_cash_storestaff']">
+			<a href="{pigcms{:U('Sms/pcStorestaffApp')}" <if condition="ACTION_NAME eq 'pcStorestaffApp'">class="on"</if>>台式收银机店员版本</a>
+		</if>
 	</ul>
 </div>

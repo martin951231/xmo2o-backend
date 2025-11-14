@@ -5,6 +5,7 @@ use app\community\model\db\HouseVillagePileRefundOrder;
 
 class ChargingAction extends BaseAction
 {
+    /*
     public $device_type = [
         0 => array(
             'device_type' => 2,
@@ -19,8 +20,15 @@ class ChargingAction extends BaseAction
             'device_type' => 21,
             'name' => '艾特充-充电桩'
         ),
-    ];//默认定制充电桩类型为D2
-
+    ];
+    //默认定制充电桩类型为D2
+    */
+    public $device_type = [
+        0 => array(
+            'device_type' => 2,
+            'name' => 'A1智能-充电桩'
+        ),
+    ];
     //艾特充-充电桩
     private $userId = 237;
     private $url = 'http://ap3204.haokuaichong.cn/outeruser';
@@ -1008,7 +1016,8 @@ class ChargingAction extends BaseAction
             $order_list[$k]['equipment_name'] = M('House_village_pile_equipment')->where(['id'=>$v['equipment_id']])->getField('equipment_name');
             if($v['pay_type'] == 10){
                 $order_list[$k]['pay_time_txt'] = '--';
-                $order_list[$k]['nickname'] = substr($v['card_num'],22,10);
+               // $order_list[$k]['nickname'] = substr($v['card_num'],22,10);
+                $order_list[$k]['nickname'] = '--';
                 $order_list[$k]['phone'] = '--';
             }
             else{

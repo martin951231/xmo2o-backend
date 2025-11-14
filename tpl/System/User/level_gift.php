@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('User/level_gift')}" class="on">礼包管理</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/level_gift_add')}','添加礼包',800,650,true,false,false,addbtn,'add',true);" style="margin-left:20px;">添加礼包</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/level_gift_add')}','添加礼包',800,650,true,false,false,addbtn,'add',true);" style="margin-left:20px;">添加礼包</a>
                     <a href="{pigcms{:U('User/level_gift_order')}">礼包领取记录</a>
 				</ul>
 			</div>
@@ -58,7 +58,7 @@
                                         <td><if condition="$vo['gift_status'] eq 1">开启<elseif condition="$vo['gift_status'] eq 2"/>关闭<else/>删除</if></td>
 
                                         <td>{pigcms{$vo['add_time']|date='Y-m-d H:i:s',###}</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/level_gift_add',array('gift_id'=>$vo['gift_id']))}','编辑礼包信息',650,500,true,false,false,editbtn,'edit',true);">编 辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="gift_id={pigcms{$vo['gift_id']}" url="/admin.php?g=System&c=User&a=del_level_gift">删除</a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/level_gift_add',array('gift_id'=>$vo['gift_id']))}','编辑礼包信息',650,500,true,false,false,editbtn,'edit',true);">编 辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="gift_id={pigcms{$vo['gift_id']}" url="/admin.php?g=System&c=User&a=del_level_gift">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="7">{pigcms{$pagebar}</td></tr>

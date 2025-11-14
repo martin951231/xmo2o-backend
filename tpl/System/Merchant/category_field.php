@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('category_field',array('cat_id'=>$now_category['cat_id']))}" class="on">字段列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('category_field_add',array('cat_id'=>$now_category['cat_id']))}','添加字段',480,360,true,false,false,addbtn,'add',true);">添加字段</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('category_field_add',array('cat_id'=>$now_category['cat_id']))}','添加字段',480,360,true,false,false,addbtn,'add',true);">添加字段</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">

@@ -75,8 +75,15 @@
 								</div>
 								
 								<div class="form-group">
+									<label class="tiplabel">{pigcms{:L_("是否支持店铺直接核销")}</label>
+				                        <if condition="$coupon.store_direct_verification">
+											是
+										<else/>
+											否
+										</if>
+				                    </div>
 									<label class="col-sm-1">{pigcms{:L_("使用平台")}</label>
-									{pigcms{$coupon.platform}
+									<pigcms{$coupon.platform}</p>
 								</div>
 								
 								<div class="form-group">

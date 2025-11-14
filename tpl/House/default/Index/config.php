@@ -173,7 +173,7 @@
                                 <a href="#door_docking" data-toggle="tab">人脸门禁管理</a>
                             </li>
                         	</if>
-                            <if condition="C('config.customized_meter_reading')">
+                            <if condition="C('config.customized_meter_reading') OR $isYumenLaoSpecialMeter">
                             <li>
                                 <a href="#auto_meter" data-toggle="tab">自动抄表设置</a>
                             </li>
@@ -250,7 +250,7 @@
                                         <option value="19" <if condition="$village_info['meter_time'] eq '19'">selected="selected"</if> >19</option>
                                         <option value="20" <if condition="$village_info['meter_time'] eq '20'">selected="selected"</if> >20</option>
                                         <option value="21" <if condition="$village_info['meter_time'] eq '21'">selected="selected"</if> >21</option>
-                                        <option value="22" <if condition="$village_info['meter_time'] eq '20'">selected="selected"</if> >22</option>
+                                        <option value="22" <if condition="$village_info['meter_time'] eq '22'">selected="selected"</if> >22</option>
                                         <option value="23" <if condition="$village_info['meter_time'] eq '23'">selected="selected"</if> >23</option>
                                         <option value="24" <if condition="$village_info['meter_time'] eq '24'">selected="selected"</if> >24</option>
                                         <option value="25" <if condition="$village_info['meter_time'] eq '25'">selected="selected"</if> >25</option>
@@ -283,7 +283,7 @@
                                         <option value="19" <if condition="$village_info['meter_time'] eq '19'">selected="selected"</if> >19:00</option>
                                         <option value="20" <if condition="$village_info['meter_time'] eq '20'">selected="selected"</if> >20:00</option>
                                         <option value="21" <if condition="$village_info['meter_time'] eq '21'">selected="selected"</if> >21:00</option>
-                                        <option value="22" <if condition="$village_info['meter_time'] eq '20'">selected="selected"</if> >22:00</option>
+                                        <option value="22" <if condition="$village_info['meter_time'] eq '22'">selected="selected"</if> >22:00</option>
                                         <option value="23" <if condition="$village_info['meter_time'] eq '23'">selected="selected"</if> >23:00</option>
                                     </select>
                                     <span>电表设备自动进行抄表并扣除用户费用</span>
@@ -296,7 +296,69 @@
                                 </div>
 
                             </div>
+                            <elseif condition="$isYumenLaoSpecialMeter" />
+                                <div class="tab-pane" id="auto_meter">
+                                    <div class="form-group">
+                                        <label class="col-sm-2"><label for="has_index_nav">自动抄表扣费日期设置</label></label>
+                                        <span>每</span>
+                                        <select name="meter_type" id="meter_type" style="width: 100px">
+                                            <option value="1" <if condition="$village_info['meter_type'] eq 1">selected="selected"</if> >月</option>
+                                        </select>
+                                        <select name="meter_day" id="meter_day" style="width: 100px">
+                                            <option value="01" <if condition="$village_info['meter_time'] eq '01'">selected="selected"</if> >01</option>
+                                            <option value="02" <if condition="$village_info['meter_time'] eq '02'">selected="selected"</if> >02</option>
+                                            <option value="03" <if condition="$village_info['meter_time'] eq '03'">selected="selected"</if> >03</option>
+                                            <option value="04" <if condition="$village_info['meter_time'] eq '04'">selected="selected"</if> >04</option>
+                                            <option value="05" <if condition="$village_info['meter_time'] eq '05'">selected="selected"</if> >05</option>
+                                            <option value="06" <if condition="$village_info['meter_time'] eq '06'">selected="selected"</if> >06</option>
+                                            <option value="07" <if condition="$village_info['meter_time'] eq '07'">selected="selected"</if> >07</option>
+                                            <option value="08" <if condition="$village_info['meter_time'] eq '08'">selected="selected"</if> >08</option>
+                                            <option value="09" <if condition="$village_info['meter_time'] eq '09'">selected="selected"</if> >09</option>
+                                            <option value="10" <if condition="$village_info['meter_time'] eq '10'">selected="selected"</if> >10</option>
+                                            <option value="11" <if condition="$village_info['meter_time'] eq '11'">selected="selected"</if> >11</option>
+                                            <option value="12" <if condition="$village_info['meter_time'] eq '12'">selected="selected"</if> >12</option>
+                                            <option value="13" <if condition="$village_info['meter_time'] eq '13'">selected="selected"</if> >13</option>
+                                            <option value="14" <if condition="$village_info['meter_time'] eq '14'">selected="selected"</if> >14</option>
+                                            <option value="15" <if condition="$village_info['meter_time'] eq '15'">selected="selected"</if> >15</option>
+                                            <option value="16" <if condition="$village_info['meter_time'] eq '16'">selected="selected"</if> >16</option>
+                                            <option value="17" <if condition="$village_info['meter_time'] eq '17'">selected="selected"</if> >17</option>
+                                            <option value="18" <if condition="$village_info['meter_time'] eq '18'">selected="selected"</if> >18</option>
+                                            <option value="19" <if condition="$village_info['meter_time'] eq '19'">selected="selected"</if> >19</option>
+                                            <option value="20" <if condition="$village_info['meter_time'] eq '20'">selected="selected"</if> >20</option>
+                                            <option value="21" <if condition="$village_info['meter_time'] eq '21'">selected="selected"</if> >21</option>
+                                            <option value="22" <if condition="$village_info['meter_time'] eq '22'">selected="selected"</if> >22</option>
+                                            <option value="23" <if condition="$village_info['meter_time'] eq '23'">selected="selected"</if> >23</option>
+                                            <option value="24" <if condition="$village_info['meter_time'] eq '24'">selected="selected"</if> >24</option>
+                                            <option value="25" <if condition="$village_info['meter_time'] eq '25'">selected="selected"</if> >25</option>
+                                            <option value="26" <if condition="$village_info['meter_time'] eq '26'">selected="selected"</if> >26</option>
+                                            <option value="27" <if condition="$village_info['meter_time'] eq '27'">selected="selected"</if> >27</option>
+                                            <option value="28" <if condition="$village_info['meter_time'] eq '28'">selected="selected"</if> >28</option>
+                                            <option value="29" <if condition="$village_info['meter_time'] eq '29'">selected="selected"</if> >29</option>
+                                            <option value="30" <if condition="$village_info['meter_time'] eq '30'">selected="selected"</if> >30</option>
+                                        </select>
+                                        <span>水电表设备自动进行抄表并生成待缴账单，如果用户的余额足够并自动扣除用户余额缴费</span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-2"><label for="has_index_nav">自动停水或停电设置</label></label>
+                                        <span>自动抄表 &nbsp;&nbsp;<input type="number" max="30" min="0" name="meter_nopayorder_date"  placeholder="请输入时间" value="{pigcms{$village_info['meter_nopayorder_date']}" type="text" style="width: 150px;height: 30px;" />天后</span>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">待缴账单还未交费的，自动断水断电（水费、电费待缴账单还未缴纳的，实施停水或停电，缴费后自动回复用水、用电）0表示不会自动断水断电</span>
+                                    </div>
+                                    <!--
+                                    <p>以下是对接表设置</p>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label class="col-sm-2"><label for="has_index_nav">泰安轻松表计对接URL</label></label>
+									      <input class="col-sm-4" size="20" name="meter_apiset[easymeter][base_url]" id="meter_apiset_easymeter_base_url" type="text" value="{pigcms{$meter_apiset.easymeter.base_url}"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2"><label for="has_index_nav">泰安轻松表计对接KEY</label></label>
+									     <input class="col-sm-4" size="20" name="meter_apiset[easymeter][key]" id="meter_apiset_easymeter_base_key" type="text" value="{pigcms{$meter_apiset.easymeter.key}"/>
+                                    </div>
+                                    --->
+                                </div>
                             </if>
+
 							<div class="tab-pane active" id="basicinfo">
 								<!--<div class="form-group">
 									<label class="col-sm-1"><label for="name">物业名称</label></label>
@@ -1651,7 +1713,7 @@
 		</div>
 	</div>
 </div>
-<div id="modal-table" class="modal fade" tabindex="-1" style="display:block;">
+<div id="modal-table" class="modal fade map-modal" tabindex="-1" style="display:block;">
 	<div class="modal-dialog" style="width:80%;">
 		<div class="modal-content" style="width:100%;">
 			<div class="modal-header no-padding" style="width:100%;">
@@ -1685,8 +1747,14 @@ var choose_provincess="{pigcms{:U('Area/ajax_province')}",choose_cityss="{pigcms
 var choose_street="{pigcms{:U('Area/ajax_street')}",choose_community="{pigcms{:U('Area/ajax_community')}";
 </script>
 <script type="text/javascript" src="{pigcms{$static_public}js/area_street.js?t=06"></script>
-<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
-<script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=03"></script>
+<if condition="$config['tianditu_web_key']">
+    <script src="https://api.tianditu.gov.cn/api?v=4.0&tk={pigcms{$config.tianditu_web_key}" type="text/javascript"></script>
+    <script src="/tpl/Static/js/coordinate.js"></script>
+	<script type="text/javascript" src="{pigcms{$static_path}js/tianditu_map.js"></script>
+<else />
+    <script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
+    <script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=03"></script>
+</if>
 
 <style>
     .tips {

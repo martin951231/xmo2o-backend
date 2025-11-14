@@ -56,7 +56,7 @@
 		</div>
 		<script type="text/javascript">
 			$(function(){
-				var topIframe = window.top.getTopIframe()
+				var topIframe = window.o2oTop.getTopIframe()
 				var product = topIframe.get_selected_product();
 				for(var i in product){
 					$('.product-'+product[i]).val('已选择').prop('disabled',true);

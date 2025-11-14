@@ -2,11 +2,13 @@
 
 namespace app\building\model;
 
+use app\building\service\ShoppingMallBuildingService;
 use think\facade\Db;
 use think\Model;
 
 class ShoppingMall extends Model
 {
+	const SELF_MALL = 1;//1 系统创建
     public function getStatusTextAttr($value, $data)
     {
         $status = [0 => '关闭', 1 => '开启'];
@@ -20,8 +22,18 @@ class ShoppingMall extends Model
         if (!empty($params['name'])) {
             $where[] = ['name', 'like', '%' . $params['name'] . '%'];
         }
+		
+		if (!empty($params['mall_ids'])) {
+            $where[] = ['id', 'IN', $params['mall_ids']];
+        }
 
-        $lists = $this->where($where)->paginate($params['page_size'] ?? 10);
+        $lists = $this->where($where)->paginate($params['page_size'] ?? 10)->each(function ($item) {
+            $page = 'pages/shoppingMall/index?mall_id=' . $item->id;
+            $item->h5_url = get_base_url($page);
+            $item->h5_qrcode = cfg('site_url') . '/index.php?g=Index&c=Recognition&a=get_own_qrcode&qrCon=' . urlencode($item->h5_url);
+            $item->wxapp_qrcode = cfg('site_url') . '/index.php?g=Index&c=Recognition_wxapp&a=create_page_qrcode&page=' . urlencode($page);
+            return $item;
+        });
 
         return $lists;
     }
@@ -39,22 +51,29 @@ class ShoppingMall extends Model
 
     public function getDetail($id)
     {
-        $mall = $this->where('id', $id)->append(['status_text'])->find()->toArray();
+        $mall = $this->where('id', $id)->append(['status_text'])->findOrEmpty()->toArray();
         return $mall;
     }
 
     public function getBindStoreLists($params)
     {
-        $fields = 's.name AS store_name,s.status,s.building,s.floor,s.room';
+        $fields = 's.store_id,s.name AS store_name,s.status,s.building,s.floor,s.room,s.building_id,s.floor_id,s.room_id';
         $where = [
-            ['m.id', '=', $params['id']],
+            ['m.id', '=', $params['mall_id']],
             ['s.status', '<>', 4]
         ];
+        if (!empty($params['store_name'])) {
+            $where[] = ['s.name', 'like', '%' . $params['store_name'] . '%'];
+        }
         $lists = Db::name('merchant_store')->alias('s')->join('shopping_mall m', 's.mall_id = m.id')
             ->where($where)
             ->field($fields)
-            ->paginate($params['page_size'] ?? 10);
+            ->paginate($params['page_size'] ?? 10)
+            ->toArray();
 
+        $mall_building = (new ShoppingMallBuildingService())->getBuilding($params['mall_id']);
+        $lists['building'] = $mall_building['building'] ?? [];
+        $lists['mall_is_self'] = $mall_building['mall_is_self'] ?? 0;
         return $lists;
     }
 

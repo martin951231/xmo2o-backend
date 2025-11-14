@@ -10,15 +10,18 @@ class plan_village_group_order_outtime extends plan_base
 		$where['add_time'] = array('lt',$now_time-(C('config.village_group_order_unpaid_timeout')?C('config.village_group_order_unpaid_timeout')*60:1800));
         $list=M('Village_group_order')->where($where)->order('order_id DESC')->limit(30)->select();
         if(!empty($list)){
+            $order_ids = [];
             foreach ($list as $k=>$v){
                 $where1=['real_orderid'=>$v['real_orderid'],'type'=>'village_group'];
                 M('System_order')->where($where1)->setField('system_status',5);
 
                 //下单后减库存，未支付订单回滚库存
                 D('Village_group_order')->rollbackStockByOrderId($v['order_id']);
+                $order_ids[]= $v['order_id'];
             }
+            $where['order_id'] = ['in', $order_ids];
+            M('Village_group_order')->where($where)->setField('status', 10);
         }
-		M('Village_group_order')->where($where)->setField('status',10);
 
 
 		$condition['_string'] = "end_time > 0 AND end_time+86400 <{$now_time} AND status <> 4 AND status <> 3";

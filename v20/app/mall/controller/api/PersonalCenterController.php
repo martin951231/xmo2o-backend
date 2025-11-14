@@ -26,7 +26,7 @@ class PersonalCenterController extends BaseController
 
             //关闭用户余额
             $arr['hide_user_money'] = false;
-            if (cfg('open_ushow_user_moneyser_money') != 1 && isset($arr['now_money']) && $arr['now_money'] == 0) {
+            if (cfg('open_user_money') != 1 && isset($arr['now_money']) && $arr['now_money'] <= 0) {
                 $arr['hide_user_money'] = true;
             }
             return api_output(0, $arr, 'success');

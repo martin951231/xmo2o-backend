@@ -173,6 +173,7 @@ class MapAction extends BaseAction{
 						'lng' => $lonlatArr[0],
 						'address' => $value['name'],
 						'adress'=> $value['name'],
+						'detail_address' => $value['address'],
 						'district'=>'',
 						'place_id'=>'',
 					);
@@ -186,7 +187,9 @@ class MapAction extends BaseAction{
             $hasLocation = true;
         }
         $city_limit = $_POST['city_limit'] ? $_POST['city_limit'] : true;
-		if($hasLocation){
+		if($area_name){
+			$url = 'http://api.map.baidu.com/place/v2/search?query='.urlencode($query).'&region='.urlencode($area_name).'&ak='.$this->config['baidu_map_ak'].'&city_limit='.$city_limit.'&output=json&page_size=20&scope=1';
+		}else if($hasLocation){
             $url = 'http://api.map.baidu.com/place/v2/suggestion?query='.urlencode($query).'&region='.urlencode($area_name).'&ak='.$this->config['baidu_map_ak'].'&city_limit='.$city_limit.'&output=json&page_size=20&location='.$_POST['lat'].','.$_POST['lng'];
 		}else{
             $url = 'http://api.map.baidu.com/place/v2/search?query='.urlencode($query).'&region='.urlencode($area_name).'&ak='.$this->config['baidu_map_ak'].'&city_limit='.$city_limit.'&output=json&page_size=20&scope=1';
@@ -198,7 +201,7 @@ class MapAction extends BaseAction{
 			$result = json_decode($result,true);
 			if($result['status'] == 0){
                 if($hasLocation){
-                    $result['results'] = $result['result'];
+					$result['results'] = $result['results'] ?? $result['result'];
                 }
 				$return = array();
 				if($result['results']){
@@ -206,18 +209,20 @@ class MapAction extends BaseAction{
 						if(empty($value['location']['lng'])){
 							continue;
 						}
-						$tmpInfo = array(
-							'name'=>$value['name'],
-							'address_name'=>$value['name'],
-							'lat'=>$value['location']['lat'],
-							'long'=>$value['location']['lng'],
-							'lng'=>$value['location']['lng'],
-							'adress'=>$hasLocation ? $value['city'].$value['district'] : $value['address'],
-							'address'=>$hasLocation ? $value['city'].$value['district'] : $value['address'],
-							'district'=>$hasLocation ? $value['district'] : $value['area'],
-							'place_id'=>'',
-						);
-                        is_null($tmpInfo['adress']) && $tmpInfo['adress'] = $tmpInfo['address_name'];
+						$address = $hasLocation ? $value['city'].$value['area'] : $value['address'];
+						$tmpInfo = [
+							'name' => $value['name'],
+							'address_name' => $value['name'],
+							'lat' => $value['location']['lat'],
+							'long' => $value['location']['lng'],
+							'lng' => $value['location']['lng'],
+							'adress' => $address,
+							'address' => $address,
+							'district' => $value['area'],
+							'detail_address' => $value['address'],
+							'place_id' => '',
+						];
+						is_null($tmpInfo['adress']) && $tmpInfo['adress'] = $tmpInfo['address_name'];
                         is_null($tmpInfo['address']) && $tmpInfo['address'] = $tmpInfo['address_name'];
                         is_null($tmpInfo['district']) && $tmpInfo['district'] = '';
 						$tmpInfoName = str_replace($query,'&^&'.$query.'&^&',$tmpInfo['name']);
@@ -246,11 +251,13 @@ class MapAction extends BaseAction{
 				//百度地图解析失败，则判断是否配置了天地图
 				if (C('config.tianditu_key')) {
 					//先走天地图解析
-					if($hasLocation){
+					if ($area_name) {
+						$result = Tianditu::searchAroundResultWithArea($query, $area_name, C('config.tianditu_key'), 0, 20);
+					} else if ($hasLocation) {
 						list($_POST['lng'], $_POST['lat']) = Coordinate::bd09ToWgs84($_POST['lng'], $_POST['lat']);
 						$result = Tianditu::searchAround($query, $_POST['lng'] . ',' . $_POST['lat'], C('config.tianditu_key'), 10000, 0, 20);
-					}else{
-						$result = Tianditu::searchAroundResultWithArea($query, $area_name, C('config.tianditu_key'), 0, 20);
+					} else {
+						$result = [];
 					}
 					
 					$return = array();
@@ -266,6 +273,7 @@ class MapAction extends BaseAction{
 								'lng' => $lonlatArr[0],
 								'address' => $value['name'],
 								'adress'=> $value['name'],
+								'detail_address' => $value['address'],
 								'district'=>'',
 								'place_id'=>'',
 							);

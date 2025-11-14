@@ -56,7 +56,7 @@
 									<tr>
 										<td>{pigcms{$vo.id}</td>
 										<td>{pigcms{$vo.mer_id}</td>
-										<td>{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></td>
+										<td>{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></td>
 										<td>{pigcms{$vo.phone}</td>
 										<td>{pigcms{$vo.lottery_time|date='Y-m-d',###} </td>
 										<td><if condition="$vo.award_time gt 0">{pigcms{$vo.award_time|date='Y-m-d',###} </if></td>
@@ -89,7 +89,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看渠道二维码',

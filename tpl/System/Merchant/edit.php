@@ -732,7 +732,7 @@
                         <tr>
                             <th width="160">抽成设置</th>
                             <td>
-                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit_percent',array('mer_id'=>$merchant['mer_id'],'type'=>'merchant'))}','编辑商家抽成比例',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">设置商家抽成比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit_percent',array('mer_id'=>$merchant['mer_id'],'type'=>'merchant'))}','编辑商家抽成比例',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">设置商家抽成比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
                         </tr>
                     <php>}</php>
 				</if>
@@ -751,7 +751,7 @@
 					<th width="160">聚合支付</th>
 					<td>
 
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/juhepay',array('mer_id'=>$merchant['mer_id']))}','编辑商家聚合支付',400,200,true,false,false,null,'edit_juhe',true);" style="color:blue">编辑商家聚合支付</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/juhepay',array('mer_id'=>$merchant['mer_id']))}','编辑商家聚合支付',400,200,true,false,false,null,'edit_juhe',true);" style="color:blue">编辑商家聚合支付</a>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					</td>
 
@@ -762,7 +762,7 @@
 					<th width="160">weikebaba信息</th>
 					<td>
 
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/weikebaba',array('mer_id'=>$merchant['mer_id']))}','编辑weikebaba商家信息',400,300,true,false,false,null,'edit_weikebaba',true);" style="color:blue">编辑商家weikebaba信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/weikebaba',array('mer_id'=>$merchant['mer_id']))}','编辑weikebaba商家信息',400,300,true,false,false,null,'edit_weikebaba',true);" style="color:blue">编辑商家weikebaba信息</a>&nbsp;&nbsp;&nbsp;&nbsp;
 				
 					</td>
 
@@ -772,42 +772,42 @@
 					<th width="160">分佣设置</th>
 					<td>
 
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit_rate',array('mer_id'=>$merchant['mer_id']))}','编辑商家推广分佣比例',800,560,true,false,false,null,'edit_rate',true);" style="color:blue">设置商家推广分佣比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit_rate',array('mer_id'=>$merchant['mer_id']))}','编辑商家推广分佣比例',800,560,true,false,false,null,'edit_rate',true);" style="color:blue">设置商家推广分佣比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
 					<if condition="$config.close_system_spread neq 1">
-						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit_user_rate',array('mer_id'=>$merchant['mer_id']))}','用户分佣设置',800,560,true,false,false,null,'edit_user_rate',true);" style="color:blue">设置用户分佣比例</a>
+						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit_user_rate',array('mer_id'=>$merchant['mer_id']))}','用户分佣设置',800,560,true,false,false,null,'edit_user_rate',true);" style="color:blue">设置用户分佣比例</a>
 					</if>
 					</td>
 
 				</tr>
 				<tr>
 					<th width="160">线上&线下支付设置</th>
-					<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit_offline',array('mer_id'=>$merchant['mer_id']))}','设置线下支付',800,560,true,false,false,null,'edit_offline',true);" style="color:blue">设置线上&线下支付</a></td>
+					<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit_offline',array('mer_id'=>$merchant['mer_id']))}','设置线下支付',800,560,true,false,false,null,'edit_offline',true);" style="color:blue">设置线上&线下支付</a></td>
 				</tr>
 				<tr>
 					<th width="160">{pigcms{$config.score_name}使用设置</th>
-					<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit_score',array('mer_id'=>$merchant['mer_id']))}','设置不同业务{pigcms{$config.score_name}最大使用数量',800,560,true,false,false,null,'edit_score',true);" style="color:blue">设置不同业务{pigcms{$config.score_name}使用数量</a></td>
+					<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit_score',array('mer_id'=>$merchant['mer_id']))}','设置不同业务{pigcms{$config.score_name}最大使用数量',800,560,true,false,false,null,'edit_score',true);" style="color:blue">设置不同业务{pigcms{$config.score_name}使用数量</a></td>
 				</tr>
 				<tr>
 					<th width="160">商家权限设置</th>
-					<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/menu',array('mer_id'=>$merchant['mer_id']))}','设置商家使用权限',800,600,true,false,false,null,'menu',true);" style="color:blue">设置商家使用权限</a><td>
+					<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/menu',array('mer_id'=>$merchant['mer_id']))}','设置商家使用权限',800,600,true,false,false,null,'menu',true);" style="color:blue">设置商家使用权限</a><td>
 				</tr>
 				<if condition="$config['is_open_merchant_foodshop_discount'] eq 1">
 				<tr>
 					<th width="160">商家餐饮折扣设置</th>
-					<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/m_discount',array('mer_id'=>$merchant['mer_id']))}','设置商家餐饮折扣',700,500,true,false,false,null,'m_discount',true);" style="color:blue">设置商家餐饮折扣</a><td>
+					<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/m_discount',array('mer_id'=>$merchant['mer_id']))}','设置商家餐饮折扣',700,500,true,false,false,null,'m_discount',true);" style="color:blue">设置商家餐饮折扣</a><td>
 				</tr>
 				</if>
 				<if condition="$config['mer_card_union'] eq 1">
 				<tr>
 					<th width="160">商家会员卡联盟设置</th>
-					<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/mer_card_union',array('mer_id'=>$merchant['mer_id']))}','商家会员卡联盟设置',700,500,true,false,false,null,'mer_card_union',true);" style="color:blue">商家会员卡联盟设置</a><td>
+					<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/mer_card_union',array('mer_id'=>$merchant['mer_id']))}','商家会员卡联盟设置',700,500,true,false,false,null,'mer_card_union',true);" style="color:blue">商家会员卡联盟设置</a><td>
 				</tr>
 				</if>
 
 				<if condition="C('customization.area_commisson_mer_set') eq 1">
 				<tr>
 					<th width="160">区域代理商佣金设置</th>
-					<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/areaCommission',array('mer_id'=>$merchant['mer_id'],'type'=>'merchant'))}','区域代理商佣金设置',700,500,true,false,false,null,'areaCommission',true);" style="color:blue">区域代理商佣金设置</a><td>
+					<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/areaCommission',array('mer_id'=>$merchant['mer_id'],'type'=>'merchant'))}','区域代理商佣金设置',700,500,true,false,false,null,'areaCommission',true);" style="color:blue">区域代理商佣金设置</a><td>
 				</tr>
 				</if>
 

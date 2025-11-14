@@ -33,7 +33,7 @@
 				<div class="form-group default_tpl">
 					<div class="group-title">
 						<span class="name">热门搜索词</span>
-						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/renovation_hot_mall', array('parentid' => $category['cat_id']))}','添加搜索词',660,350,true,false,false,addbtn,'add',true);"  class="btn fitment2">装修</a>
+						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/renovation_hot_mall', array('parentid' => $category['cat_id']))}','添加搜索词',660,350,true,false,false,addbtn,'add',true);"  class="btn fitment2">装修</a>
 					</div>
 					<div class="group-content">频道页专属热门搜索词</div>
 				</div>
@@ -222,7 +222,7 @@
 				if($(this).data('target')){
 					top.addIframe(_this.siblings('.name').text(),_this.data('page_id'),_this.data('url'));
 				}else{
-					window.top.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true,
+					window.o2oTop.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true,
 					function(){
 						if (_this.data('refresh')=="1") {
 							window.location.reload();
@@ -237,7 +237,7 @@
 			// 	if($(this).data('target')){
 			// 		top.addIframe(_this.siblings('.name').text(),_this.data('page_id'),_this.data('url'));
 			// 	}else{
-			// 		window.top.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),660,400,true,false,false,false,'viewpage',true,
+			// 		window.o2oTop.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),660,400,true,false,false,false,'viewpage',true,
 			// 		function(){
 			// 			if (_this.data('refresh')=="1") {
 			// 				window.location.reload();

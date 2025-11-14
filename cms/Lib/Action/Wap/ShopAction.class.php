@@ -4135,13 +4135,13 @@ class ShopAction extends BaseAction
         }
         
         if(strpos($customer_money,'.') !== false){
-        	$customer_money = floor($customer_money)/100;
+        	$customer_money = ceil($customer_money)/100;
         }
         else{
         	$customer_money = $customer_money/100;
         }
         if ($order['is_open_membership_card'] == 1 && $order['membership_card_price'] > 0) {
-            $customer_money -= $order['membership_card_price'];
+            $customer_money = bcsub($customer_money,$order['membership_card_price'],2);
         }
         
         //去除已退款金额
@@ -4395,7 +4395,7 @@ class ShopAction extends BaseAction
         }
         
         if (strpos($customer_money, '.') !== false) {
-            $customer_money = floor($customer_money) / 100;
+            $customer_money = ceil($customer_money) / 100;
         } else {
             $customer_money = $customer_money / 100;
         }

@@ -142,6 +142,7 @@ class HouseNewParkingService
         'D5'=>'D5智慧停车',
         'D7'=>'D7智慧停车',
         'A11'=>'A11智慧停车',
+        'HXT85'=>'华夏T85智慧停车',
     ];
     public function get_park_sys_type() {
         $park_sys_type = [];
@@ -435,6 +436,15 @@ class HouseNewParkingService
     }
 
     public function getParkConfig(){
+        $configCustomizationService=new ConfigCustomizationService();
+        $isHxt85=$configCustomizationService->getFuncParkDevHxt85Customized();
+        if($isHxt85){
+            $this->park_sys_type[]=[
+                'park_sys_type'     => 'HXT85',
+                'name'              => '华夏T85智慧停车',
+                'park_sys_type_box' => 0
+            ];
+        }
         return $this->park_sys_type;
     }
 
@@ -1569,7 +1579,8 @@ class HouseNewParkingService
      */
     public function getPositionInfo($data){
         $db_house_village_parking_position=new HouseVillageParkingPosition();
-        $position_info_obj=$db_house_village_parking_position->getOne(['pp.position_id'=>$data['position_id']],'pp.*,pg.garage_num,bp.user_id,ub.name,ub.phone');
+        $db_house_village_bind_position = new HouseVillageBindPosition();
+        $position_info_obj=$db_house_village_parking_position->getOne(['pp.position_id'=>$data['position_id']],'pp.*,pg.garage_num,bp.user_id,ub.name,ub.phone,ub.status as bind_status');
         $position_info=array();
         if (!empty($position_info_obj) && !$position_info_obj->isEmpty()){
             $position_info=$position_info_obj->toArray();
@@ -1583,6 +1594,15 @@ class HouseNewParkingService
             }
         }else{
             throw new \think\Exception("车位数据已经不存在了！");
+        }
+        if($position_info['bind_status']==4){
+             //已删除了
+            $user_id=$position_info['user_id'];
+            $position_info['user_id']=0;
+            $position_info['name']='';
+            $position_info['phone']='';
+            $whereDel=array(['position_id','=',$data['position_id']],['user_id','=',$user_id]);
+             $db_house_village_bind_position->delOne($whereDel);
         }
         $houseVillageParkGarageConfigService= new HouseVillageParkGarageConfigService();
         $garage_id=$position_info['garage_id'];
@@ -1836,7 +1856,7 @@ class HouseNewParkingService
                     $garage_list[$gkk]['parking_car_type_arr']=array();
                     if (!empty($house_village_park_config)){
                         $garage_list[$gkk]['park_sys_type']=$house_village_park_config['park_sys_type'];
-                        if ($house_village_park_config['park_sys_type'] == 'D3') {
+                        if ($house_village_park_config['park_sys_type'] == 'D3' || $house_village_park_config['park_sys_type'] == 'HXT85') {
                             $parking_car_type_arr =$this->parking_d3_car_type_arr;
                         } elseif ($house_village_park_config['park_sys_type'] == 'D7') {
                             $parking_car_type_arr =$this->parking_d7_car_type_arr;
@@ -2047,7 +2067,7 @@ class HouseNewParkingService
         }
         if (in_array('D7', $park_sys_type_arr)) {
             $parking_car_type_arr = $this->parking_d7_car_type_arr;
-        } else if (in_array('D3', $park_sys_type_arr)) {
+        } else if (in_array('D3', $park_sys_type_arr) || in_array('HXT85', $park_sys_type_arr)) {
             $parking_car_type_arr = $this->parking_d3_car_type_arr;
         } else if (in_array('A11', $park_sys_type_arr)) {
             $parking_car_type_arr = $this->parking_a11_car_type_arr;
@@ -2136,8 +2156,8 @@ class HouseNewParkingService
         $garage_id=isset($data['garage_id']) ? $data['garage_id']:0;
         $house_village_park_config=$houseVillageParkGarageConfigService->getVillageParkConfig($garage_id,$data['village_id']);
         // 如果添加了到期时间 且 到期时间大于当前时间 且开启了智慧停车功能  同步至设备
-        $park_versions = $house_village_park_config['park_versions'];
-        $is_park_month_type = $house_village_park_config['is_park_month_type'];
+        $park_versions = $house_village_park_config ? $house_village_park_config['park_versions']:0;
+        $is_park_month_type =$house_village_park_config ? $house_village_park_config['is_park_month_type']:0;
         if ($data['binding_type']==2){
             $user_bind= $db_house_village_user_bind->getSumBills([ 'village_id' =>$data['village_id'], 'pigcms_id' => $data['pigcms_id'], 'type' =>  [0, 1, 2, 3], 'status' => 1],'pigcms_id,vacancy_id,uid,name,phone');
             if (empty($user_bind)) {
@@ -2193,6 +2213,7 @@ class HouseNewParkingService
         }
         $result = $db_house_village_parking_car->addHouseVillageParkingCar($data);
         if ($result){
+            $car_id=$result;
             $garage_info = $db_house_village_ParkIng_garage->getOne(['garage_id' => $garage_id, 'status' => 1]);
             if ($garage_info && isset($garage_info['third_park_key']) && !empty($garage_info['third_park_key'])) {
                 $queueData=array('village_id'=>$data['village_id'],'car_id'=>$result,'park_key'=>$garage_info['third_park_key'],'opt_type'=>'update_third_ai_park_car');
@@ -2271,10 +2292,13 @@ class HouseNewParkingService
                 $db_house_village_parking_position->saveOne(['position_id' => $data['car_position_id'],'village_id' => $data['village_id']],$park_position_set);
             }
             */
-            if($house_village_park_config['park_sys_type'] == 'D6'){
+            if($house_village_park_config && $house_village_park_config['park_sys_type'] == 'D6'){
                 (new D6Service())->d6synVehicle($data['village_id'],$result);
-            }elseif ($house_village_park_config['park_sys_type'] == 'A11'){
+            }elseif ($house_village_park_config && $house_village_park_config['park_sys_type'] == 'A11'){
                 $this->assembleEditCarMethod($data);
+            }elseif (!empty($car_position_ids) && $house_village_park_config && $house_village_park_config['park_sys_type'] == 'HTX85'){
+                $parkDevInfoHandleService=  new \app\community\model\service\Park\ParkDevInfoHandleService();
+                $parkDevInfoHandleService->batchMonthCarToDev($data['village_id'],$car_id);
             }
         }
         return $result;
@@ -2399,8 +2423,8 @@ class HouseNewParkingService
         $house_village_park_config=$houseVillageParkGarageConfigService->getVillageParkConfig($garage_ids,$data['village_id'],'park_versions desc');
         
         // 如果添加了到期时间 且 到期时间大于当前时间 且开启了智慧停车功能  同步至设备
-        $park_versions = $house_village_park_config['park_versions'];
-        $is_park_month_type = $house_village_park_config['is_park_month_type'];
+        $park_versions =$house_village_park_config ?  $house_village_park_config['park_versions']:0;
+        $is_park_month_type =$house_village_park_config ? $house_village_park_config['is_park_month_type']:0;
         $village_user_bind=array();
         if ($data['binding_type']==2){
             $user_bind= $db_house_village_user_bind->getSumBills([ 'village_id' =>$data['village_id'], 'pigcms_id' => $data['pigcms_id'], 'type' => [0, 1, 2, 3], 'status' => 1],'pigcms_id,vacancy_id,uid,name,phone');
@@ -2608,11 +2632,14 @@ class HouseNewParkingService
             }
         }
         fdump_api(['data'=>$data,'house_village_park_config'=>$house_village_park_config], '00editCar', 1);
-        if($res['examine_status']==1||$data['examine_status']==1){
+        if($house_village_park_config && ($res['examine_status']==1||$data['examine_status']==1)){
             if($house_village_park_config['park_sys_type'] == 'D6'){
                 (new D6Service())->d6synVehicle($data['village_id'],$data['car_id']);
             }elseif ($house_village_park_config['park_sys_type'] == 'A11'){
                 $this->assembleEditCarMethod($data);
+            }elseif (!empty($car_position_ids) && $house_village_park_config['park_sys_type'] == 'HTX85'){
+                $parkDevInfoHandleService=  new \app\community\model\service\Park\ParkDevInfoHandleService();
+                $parkDevInfoHandleService->batchMonthCarToDev($data['village_id'],$data['car_id']);
             }
         }
         $parseInfo = $this->traitPaseTokenRequestWhoim(request()->log_uid,request()->log_extends);
@@ -3147,7 +3174,7 @@ class HouseNewParkingService
                 }
                 if (!empty($v['parking_car_type'])&&$house_village_park_config['park_sys_type']=='A11'&&$v['parking_car_type']<=21){
                     $v['parking_car_type']=$this->parking_a11_car_type_arr[$v['parking_car_type']];
-                }elseif(!empty($v['parking_car_type'])&&$house_village_park_config['park_sys_type']=='D3'){
+                }elseif(!empty($v['parking_car_type'])&&($house_village_park_config['park_sys_type']=='D3'||$house_village_park_config['park_sys_type']=='HXT85')){
                     $v['parking_car_type']=isset($this->parking_d3_car_type_arr[$v['parking_car_type']]) ? $this->parking_d3_car_type_arr[$v['parking_car_type']]:'--';
                 }else{
                     $parking_car_type_arr =$this->parking_car_type_arr;
@@ -3211,7 +3238,7 @@ class HouseNewParkingService
                 throw new \think\Exception("通道编号不能为空");
             }
         }
-        if ($village_park_config['park_sys_type']=='D3'||$village_park_config['park_sys_type']=='A11'){
+        if (in_array($village_park_config['park_sys_type'],array('D3','A11','HXT85'))){
             $where_http=[
                 ['village_id','=',$data['village_id']],
                 ['device_number','=',$data['device_number']],
@@ -3253,6 +3280,8 @@ class HouseNewParkingService
         $data1['passage_name'] =  $data['passage_name'];
         $data1['channel_number'] = $data['channel_number'];
         $data1['device_number'] = $data['device_number'];
+        $data1['long']=0;
+        $data1['lat']=0;
         if (!empty($data['long_lat'])){
             $long_lat = explode(',', $data['long_lat']);
             $data1['long'] = $long_lat[0];
@@ -3379,6 +3408,8 @@ class HouseNewParkingService
         $data1['passage_name'] =  $data['passage_name'];
         $data1['channel_number'] = $data['channel_number'];
         $data1['device_number'] = $data['device_number'];
+        $data1['long']=0;
+        $data1['lat']=0;
         if (!empty($data['long_lat'])){
             $long_lat = explode(',', $data['long_lat']);
             $data1['long'] = $long_lat[0];
@@ -3906,7 +3937,6 @@ class HouseNewParkingService
    public function getFreeCar($data){
        $db_house_village_park_free=new HouseVillageParkFree();
        $where['village_id'] = $data['village_id'];
-      //$where['park_sys_type'] = 'D3';
        if (!empty($data['park_type'])){
            $where['park_type'] = $data['park_type'];
        }
@@ -4096,7 +4126,7 @@ class HouseNewParkingService
         $db_park_passage_type = new ParkPassageType();
         $where['village_id'] = $data['village_id'];
         $where['id'] = $data['id'];
-        $list = $db_park_passage->getFind($where);
+        $list = $db_park_passage->getFind($where,'*');
         if ($list && !$list->isEmpty()) {
             $list = $list->toArray();
         }
@@ -4104,6 +4134,8 @@ class HouseNewParkingService
         if (isset($list['garage_id']) && $list['garage_id'] > 0) {
             $garage_id = $list['garage_id'];
         }
+        $list['lat']=$list['lat'] ? $list['lat']:'';
+        $list['long']=$list['long'] ? $list['long']:'';
         if(isset($list['device_port']) && $list['device_port']<1){
             $list['device_port']='';
         }
@@ -4248,7 +4280,7 @@ class HouseNewParkingService
                 }
                 $park_sys_type = isset($village_park_config['park_sys_type']) ? trim($village_park_config['park_sys_type']) : '';
 
-                if (($park_sys_type == 'D3' || $park_sys_type == 'A11') && $heartTime > 1) {
+                if (in_array($park_sys_type,array('D3','A11','HXT85')) && $heartTime > 1) {
                     if ($heartTime + $this->last_heart_time < time()) {
                         $log_where = [
                             ['village_id', '=', $data['village_id']],
@@ -4268,7 +4300,7 @@ class HouseNewParkingService
                 }
 
                 $is_button_show=false;
-                if(in_array($village_park_config['park_sys_type'],['D3','A11']) && $v['status'] == 1){
+                if(in_array($village_park_config['park_sys_type'],['D3','A11','HXT85']) && $v['status'] == 1){
                     $is_button_show=true;
                 }
                 $v['show_ewm_btn']=$is_button_show;
@@ -4322,7 +4354,7 @@ class HouseNewParkingService
         }else{
             $spread=2;
         }
-        if (in_array($passage_info['park_sys_type'],['D3','D7','A11'])&&$passage_info['passage_direction']==1){
+        if (in_array($passage_info['park_sys_type'],['D3','D7','A11','HXT85'])&&$passage_info['passage_direction']==1){
             $qrcode_key=$qrcode_url1.'&channel_id='.$passage_info['channel_number'].'&passage_id='.$passage_info['id'].'&garage_id='.$passage_info['garage_id'];
         }else{
             $qrcode_key=$qrcode_url.'?channel_id='.$passage_info['channel_number'].'&spread='.$spread.'&village_id='.$data['village_id'].'&passage_id='.$passage_info['id'].'&garage_id='.$passage_info['garage_id'];
@@ -6460,8 +6492,9 @@ class HouseNewParkingService
                 }
             }
             $info['accessTime']=date('Y-m-d H:i:s',$info['accessTime']);
-
+            $info['totalMoney']= $info['total'];
         }
+        
         return $info;
     }
 
@@ -6597,7 +6630,24 @@ class HouseNewParkingService
         $data1['park_sys_type']='';
         return $data1;
     }
-    
+    public function  getGarageInfo($passageWhere=array(),$village_id=0,$garage_id,$field='garage_num'){
+        if($garage_id>0){
+            $houseVillageParkingGarage=new HouseVillageParkingGarage();
+            $whereArr=array('garage_id'=>$garage_id);
+            $parkingGarage=$houseVillageParkingGarage->getOne($whereArr,$field);
+            if($parkingGarage && !$parkingGarage->isEmpty()){
+                $garageArr=$parkingGarage->toArray();
+                if($field=='garage_num' && $garageArr && isset($garageArr['garage_num'])){
+                    return $garageArr['garage_num'];
+                }
+                return $garageArr;
+            }
+            return array();
+        }else{
+            $passageWhere[]=array('village_id','=',$village_id);
+            return $this->getGarageByParkPassage($passageWhere,$field);
+        }
+    }
     public function getGarageByParkPassage($passageWhere=array(),$field='garage_num'){
         $garageArr=array();
         $parkPassageParkPassage=new ParkPassage();
@@ -7623,7 +7673,7 @@ class HouseNewParkingService
                         $parking_car_type_arr=$this->parking_car_type_arr;
                         if($village_park_config['park_sys_type']=='A11'){
                             $parking_car_type_arr=$this->parking_a11_car_type_arr;
-                        }elseif ($village_park_config['park_sys_type']=='D3'){
+                        }elseif ($village_park_config['park_sys_type']=='D3' || $village_park_config['park_sys_type']=='HXT85' ){
                             $parking_car_type_arr=$this->parking_d3_car_type_arr;
 
                         }else if($village_park_config['park_sys_type']=='D7'){
@@ -7691,7 +7741,7 @@ class HouseNewParkingService
                             $parking_car_type_arr=$this->parking_car_type_arr;
                             if($village_park_config['park_sys_type']=='A11'){
                                 $parking_car_type_arr=$this->parking_a11_car_type_arr;
-                            }elseif ($village_park_config['park_sys_type']=='D3'){
+                            }elseif ($village_park_config['park_sys_type']=='D3' || $village_park_config['park_sys_type']=='HXT85' ){
                                 $parking_car_type_arr=$this->parking_d3_car_type_arr;
 
                             }else if($village_park_config['park_sys_type']=='D7'){
@@ -7763,7 +7813,7 @@ class HouseNewParkingService
                             $parking_car_type_arr=$this->parking_car_type_arr;
                             if($village_park_config['park_sys_type']=='A11'){
                                 $parking_car_type_arr=$this->parking_a11_car_type_arr;
-                            }elseif ($village_park_config['park_sys_type']=='D3'){
+                            }elseif ($village_park_config['park_sys_type']=='D3' || $village_park_config['park_sys_type']=='HXT85' ){
                                 $parking_car_type_arr=$this->parking_d3_car_type_arr;
 
                             }else if($village_park_config['park_sys_type']=='D7'){
@@ -7855,6 +7905,7 @@ class HouseNewParkingService
         $houseVillageUserBindDb= new HouseVillageUserBind();
         $where[] = [ 'pp.position_pattern','=', $data['position_pattern']];
         $where[] = [ 'pp.village_id','=', $data['village_id']];
+        $where[] = [ 'pp.position_type','<', 3];
         $village_id=$data['village_id'];
         if (!empty($data['garage_id'])){
             $where[] = [ 'pp.garage_id','=', $data['garage_id']];
@@ -8093,7 +8144,7 @@ class HouseNewParkingService
                     $parking_car_type_arr=$this->parking_car_type_arr;
                     if($village_park_config['park_sys_type']=='A11'){
                         $parking_car_type_arr=$this->parking_a11_car_type_arr;
-                    }elseif ($village_park_config['park_sys_type']=='D3'){
+                    }elseif ($village_park_config['park_sys_type']=='D3' || $village_park_config['park_sys_type']=='HXT85' ){
                         $parking_car_type_arr=$this->parking_d3_car_type_arr;
 
                     }else if($village_park_config['park_sys_type']=='D7'){
@@ -8128,7 +8179,7 @@ class HouseNewParkingService
 		$parking_car_type_arr = [];
         $houseVillageParkGarageConfigService= new HouseVillageParkGarageConfigService();
         $house_village_park_config=$houseVillageParkGarageConfigService->getVillageParkConfig($garage_id,$village_id);
-		if ($house_village_park_config['park_sys_type'] == 'D3') {
+		if ($house_village_park_config['park_sys_type'] == 'D3'||$house_village_park_config['park_sys_type'] == 'HXT85') {
 			$parking_car_type_arr =$this->parking_d3_car_type_arr;
 		} elseif ($house_village_park_config['park_sys_type'] == 'D7') {
 			$parking_car_type_arr =$this->parking_d7_car_type_arr;
@@ -9153,7 +9204,7 @@ class HouseNewParkingService
             return $retGate;
         }
         
-        if (in_array($park_sys_type,['D3','A11'])){
+        if (in_array($park_sys_type,['D3','A11','HXT85'])){
             if (!empty($passage_info)){
                 $where='';
                 if ($passage_info['passage_direction'] == 1) {
@@ -9184,6 +9235,7 @@ class HouseNewParkingService
                     (new CarHandleGetInfoService())->commonExceptionOutHandle($commonData, $passage_info);
                     $park_log_data = [];
                     $park_log_data['open_type'] = 3;
+                    $park_log_data['car_number'] = $data['car_number'];  //有车牌心跳时会产生进出 记录
                     $park_log_data['channel_id'] = $passage_info['device_number'];
                     $park_log_data['park_type'] = $passage_info['passage_direction'] == 1 ? 1 : 2;
                     $park_log_data['add_time'] = time();
@@ -9479,6 +9531,7 @@ class HouseNewParkingService
                             }
                         }
                         $park_log_data = [];
+                        $park_log_data['car_number'] = '';
                         $park_log_data['open_type'] = 3;
                         $park_log_data['channel_id'] = $passage_info['device_number'];
                         $park_log_data['park_type'] = $passage_info['passage_direction'] == 1 ? 1 : 2;
@@ -9504,12 +9557,12 @@ class HouseNewParkingService
                     $park_log_data['park_type'] = $log_info['park_type'];
                     $park_log_data['add_time'] = time();
                 } else {
+                    $park_log_data['car_number'] = '';
                     $park_log_data['channel_id'] = $passage_info['device_number'];
                     $park_log_data['park_type'] = $passage_info['passage_direction'] == 1 ? 1 : 2;
                     $park_log_data['add_time'] = time();
                 }
                 $res = $db_park_open_log->add($park_log_data);
-                fdump_api([$res, $park_log_data], 'open_gate_list_0519', 1);
             }
         }
         return $res;
@@ -9808,9 +9861,6 @@ class HouseNewParkingService
         ];
         return $data;
     }
-
-
-
     /**
      * D3一键同步白名单
      * @author:zhubaodi
@@ -10113,34 +10163,7 @@ class HouseNewParkingService
         $parent_position_List=$db_house_village_parking_position->getList($where1,'position_id,position_num');
         return $parent_position_List;
     }
-
-    public function test(){
-        $db_house_village_car_access_record=new HouseVillageCarAccessRecord();
-        $car_access_record=[
-            'accessBigImage' => '/upload/park_log/20220523/6337f49c-2e9e2f8d/20220523095019_image_big_川RM0678.jpg',
-            'channel_id' => 54,
-            'channel_number' => 2,
-            'channel_name' => '天悦府一期地下入口',
-            'business_type' => 0,
-            'business_id' => 33,
-            'car_number' => '川RM0678',
-            'accessType' => 1,
-            'accessTime' => 1653270619,
-            'accessMode' => 9,
-            'park_sys_type' => 'D3',
-            'user_name' => '',
-            'user_phone' => '',
-            'is_out' => 0,
-            'park_id' => 33,
-            'park_name' => '天悦府一期',
-            'order_id' => '20220523095019238',
-            'update_time' => 1653270619,
-        ];
-        $record_id = $db_house_village_car_access_record->addOne($car_access_record);
-        return $record_id;
-    }
-
-
+    
     /**
      * 查询数据统计页面显示页签
      * @author:zhubaodi
@@ -10162,7 +10185,7 @@ class HouseNewParkingService
         $d7Config = $houseVillageParkGarageConfigService->getVillageParkConfigByWhere($whereArr);
         $whereArr = array();
         $whereArr[] = array('village_id', '=', $village_id);
-        $whereArr[] = array('park_sys_type', 'in', array('D3', 'A11'));
+        $whereArr[] = array('park_sys_type', 'in', array('D3', 'A11','HXT85'));
         $d3Config = $houseVillageParkGarageConfigService->getVillageParkConfigByWhere($whereArr);
         if (!empty($d7Config) ) {
             $data['manualOpen'] = false;
@@ -10849,7 +10872,11 @@ class HouseNewParkingService
         $db_park_passage=new ParkPassage();
         $db_park_passage_type=new ParkPassageType();
         $houseVillageParkGarageConfigService = new HouseVillageParkGarageConfigService();
-        $park_config=$houseVillageParkGarageConfigService->getVillageParkConfig(0,$data['village_id']);
+        $garage_id=0;
+        if(isset($data['garage_id']) && $data['garage_id']){
+            $garage_id=$data['garage_id'];
+        }
+        $park_config=$houseVillageParkGarageConfigService->getVillageParkConfig($garage_id,$data['village_id']);
         if (empty($park_config)){
             throw new \think\Exception("请先设置停车相关配置");
         }
@@ -11046,6 +11073,342 @@ class HouseNewParkingService
         return ['num'=>$count,'position_bind_info'=>$position_bind_info,'position_bind_car'=>$position_bind_car];
     }
 
+    public function getParkCarAccessImg($record = array())
+    {
+        $imgArr = array('small_image' => '', 'big_image' => '', '_small_image' => '', '_big_image' => '');
+        if (!empty($record['accessImage'])) {
+            if (stripos($record['accessImage'], 'http://') !== false || stripos($record['accessImage'], 'https://') !== false) {
+                $imgArr['small_image'] = $record['accessImage'];
+            } else {
+                $accessImageArr = explode('/upload/', $record['accessImage']);
+                $imgArr['small_image'] = '/upload/' . $accessImageArr['1'];
+                $imgArr['small_image'] = replace_file_domain($imgArr['small_image']);
+            }
+        }
+        if (!empty($record['accessBigImage'])) {
+            if (stripos($record['accessBigImage'], 'http://') !== false || stripos($record['accessBigImage'], 'https://') !== false) {
+                $imgArr['big_image'] = $record['accessBigImage'];
+            } else {
+                $accessImageArr = explode('/upload/', $record['accessBigImage']);
+                $imgArr['big_image'] = '/upload/' . $accessImageArr['1'];
+                $imgArr['big_image'] = replace_file_domain($imgArr['big_image']);
+            }
+        }
+        if (!empty($record['_accessImage'])) {
+            if (stripos($record['_accessImage'], 'http://') !== false || stripos($record['_accessImage'], 'https://') !== false) {
+                $imgArr['_small_image'] = $record['_accessImage'];
+            } else {
+                $accessImageArr = explode('/upload/', $record['_accessImage']);
+                $imgArr['_small_image'] = '/upload/' . $accessImageArr['1'];
+                $imgArr['_small_image'] = replace_file_domain($imgArr['_small_image']);
+            }
+        }
+        if (!empty($record['_accessBigImage'])) {
+            if (stripos($record['accessBigImage'], 'http://') !== false || stripos($record['_accessBigImage'], 'https://') !== false) {
+                $imgArr['_big_image'] = $record['_accessBigImage'];
+            } else {
+                $accessImageArr = explode('/upload/', $record['_accessBigImage']);
+                $imgArr['_big_image'] = '/upload/' . $accessImageArr['1'];
+                $imgArr['_big_image'] = replace_file_domain($imgArr['_big_image']);
+            }
+        }
+        return $imgArr;
+    }
+    
+    public function getParkCarAccessRecords($where=array(),$data=array())
+    {
+        $db_house_village_car_access_record = new HouseVillageCarAccessRecord();
+        $count = $db_house_village_car_access_record->getCounts($where);
+        $sum_field_total='b.total';
+        $sum_field_prepayTotal='b.prepayTotal';
+        $date_type=$data['date_type'];  // 1进场 2出场
+        $orderby='b.accessTime DESC, b.total DESC,b.record_id DESC';
+        if($date_type==2){
+            $sum_field_total='a.total';
+            $sum_field_prepayTotal='a.prepayTotal';
+            $orderby='a.accessTime DESC, a.total DESC,a.record_id DESC';
+        }
+        $allTotalMoney = $db_house_village_car_access_record->getSums($where, $sum_field_total);
+        $allTotalMoney1 = $db_house_village_car_access_record->getSums($where, $sum_field_prepayTotal);
+        $allTotalMoney += $allTotalMoney1;
+        if ($allTotalMoney > 0) {
+            $allTotalMoney = round($allTotalMoney, 2);
+        } else {
+            $allTotalMoney = 0;
+        }
+        $fieldStr = 'a.record_id,a.business_id,a.car_number,a.accessType,a.accessTime,a.accessImage,a.accessBigImage,a.channel_id,a.channel_number,a.channel_name,a.accessMode,a.park_sys_type,a.park_id,a.uid,a.user_name,a.user_phone,a.total,a.prepayTotal,a.order_id,a.exception_type,a.position_id,a.position_num,a.garage_id';
+        $fieldStr .=',b.record_id as _record_id,b.business_id as _business_id,b.car_number as _car_number,b.accessType as _accessType,b.accessTime as _accessTime,b.accessImage as _accessImage,b.accessBigImage as _accessBigImage,b.channel_id as _channel_id,b.channel_number as _channel_number,b.channel_name as _channel_name,b.accessMode as _accessMode';
+        $fieldStr .=',b.park_sys_type as _park_sys_type,b.park_id as _park_id,b.uid as _uid,b.user_name as _user_name,b.user_phone as _user_phone,b.total as _total,b.prepayTotal as _prepayTotal,b.order_id as _order_id,b.exception_type as _exception_type,b.position_id as _position_id,b.position_num as _position_num,b.garage_id as _garage_id';
+        
+        $listObj = $db_house_village_car_access_record->getOutList($where, $fieldStr, $data['page'], $data['limit'],$orderby);
+        $list = '';
+        if ($listObj && !$listObj->isEmpty()) {
+            $list = $listObj->toArray();
+        }
+        $newList=array();
+        if ($list) {
+            $villageArr=array();
+            $garageArr=array();
+            $passageArr=array();
+            $houseVillageDb = new HouseVillage();
+            $db_park_passage = new ParkPassage();
+            foreach ($list as $val) {
+                $tmpArr=array();
+                $tmpArr['car_number']=$val['car_number'];
+                $tmpArr['garage_id']=0;
+                $tmpArr['garage_name']='';
+                $tmpArr['position_id']=0;
+                $tmpArr['position_num']='';
+                $tmpArr['position_num']='';
+                $tmpArr['device_number']='';
+                $tmpArr['channel_number']='';	 
+                $tmpArr['channel_name']='';
+                $tmpArr['out_device_number']='';
+                $tmpArr['out_channel_number']='';
+                $tmpArr['out_channel_name']='';
+                $tmpArr['park_sys_type']=$val['park_sys_type'];
+                $tmpArr['exception_type'] = 0;
+                $tmpArr['out_exception_type'] = 0;
+                $tmpArr['out_pay_money']=0;
+                $tmpArr['park_time']=0;
+                $tmpArr['park_time_str']='';
+                $tmpArr['small_image']='';
+                $tmpArr['big_image']='';
+                $tmpArr['out_small_image']='';
+                $tmpArr['out_big_image']='';
+                $tmpArr['access_time']=0;
+                $tmpArr['out_access_time']=0;
+                $tmpArr['order_id']='';
+                $tmpArr['out_order_id']='';
+                $tmpArr['user_name']='';
+                $tmpArr['user_phone']='';
+                if($date_type==2){
+                    //出场记录
+                    $tmpArr['record_id']=$val['_record_id'] ? $val['_record_id']:0;
+                    $tmpArr['position_id']=$val['_position_id'] ? $val['_position_id']:0;
+                    $tmpArr['position_num']=$val['_position_num'] ? $val['_position_num']:'';
+                    $tmpArr['out_record_id']=$val['record_id'];
+                    $tmpArr['device_number']='';
+                    $tmpArr['channel_number']=$val['_channel_number'] ? $val['_channel_number']:0;
+                    $tmpArr['channel_name']=$val['_channel_name'] ? $val['_channel_name']:'';
+                    $tmpArr['exception_type'] = $val['_exception_type']>0 ? 1 : 0;
+                    $tmpArr['out_exception_type'] = $val['exception_type']>0 ? 1 : 0;
+                    $tmpArr['access_time']=0;
+                    $tmpArr['out_access_time']=$val['accessTime'];
+                    $tmpArr['access_time']=$val['_accessTime'] >0 ? $val['_accessTime']:0;
+                    $tmpArr['order_id']=$val['_order_id'];
+                    $tmpArr['out_order_id']=$val['order_id'];
+                    if($val['_channel_id']>0){
+                        //进场通道
+                        if(isset($passageArr[$val['_channel_id']])){
+                            $tmpArr['device_number']=$passageArr[$val['_channel_id']]['device_number'] ? $passageArr[$val['_channel_id']]['device_number'] :'';
+                            $tmpArr['channel_number']=$passageArr[$val['_channel_id']]['channel_number'] ? $passageArr[$val['_channel_id']]['channel_number']:0;
+                            $tmpArr['channel_name']=$passageArr[$val['_channel_id']]['passage_name'] ? $passageArr[$val['_channel_id']]['passage_name']:'';
+                            $tmpArr['park_sys_type']=$tmpArr['park_sys_type'] ? $tmpArr['park_sys_type']:$passageArr[$val['_channel_id']]['park_sys_type'];
+                        }else{
+                            $wherePassage=array(['id','=',$val['_channel_id']]);
+                            $park_passage_obj = $db_park_passage->getFind($wherePassage,'park_sys_type,passage_name,device_number,channel_number');
+                            if($park_passage_obj && !$park_passage_obj->isEmpty()){
+                                $tmpArr['device_number']=$park_passage_obj['device_number'] ? $park_passage_obj['device_number'] :'';
+                                $tmpArr['channel_number']=$park_passage_obj['channel_number'] ? $park_passage_obj['channel_number']:0;
+                                $tmpArr['channel_name']=$park_passage_obj['passage_name'] ? $park_passage_obj['passage_name']:'';
+                                $tmpArr['park_sys_type']=$tmpArr['park_sys_type'] ? $tmpArr['park_sys_type']:$park_passage_obj['park_sys_type'];
+                                $passageArr[$val['_channel_id']]=$park_passage_obj->toArray();
+                            }
+                        }
+                    }
+                    
+                    $tmpArr['out_device_number']='';
+                    $tmpArr['out_channel_number']=$val['channel_number'];
+                    $tmpArr['out_channel_name']=$val['channel_name'];
+                    if($val['channel_id']>0) {
+                        //出场通道
+                        if (isset($passageArr[$val['channel_id']])) {
+                            $tmpArr['out_device_number'] = $passageArr[$val['channel_id']]['device_number'] ? $passageArr[$val['channel_id']]['device_number'] : '';
+                            $tmpArr['out_channel_number'] = $passageArr[$val['channel_id']]['channel_number'] ? $passageArr[$val['channel_id']]['channel_number'] : 0;
+                            $tmpArr['out_channel_name'] = $passageArr[$val['channel_id']]['passage_name'] ? $passageArr[$val['channel_id']]['passage_name'] : '';
+                            $tmpArr['park_sys_type'] = $tmpArr['park_sys_type'] ? $tmpArr['park_sys_type'] : $passageArr[$val['channel_id']]['park_sys_type'];
+                        } else {
+                            $wherePassage = array(['id', '=', $val['channel_id']]);
+                            $park_passage_obj = $db_park_passage->getFind($wherePassage, 'park_sys_type,passage_name,device_number,channel_number');
+                            if ($park_passage_obj && !$park_passage_obj->isEmpty()) {
+                                $tmpArr['out_device_number'] = $park_passage_obj['device_number'] ? $park_passage_obj['device_number'] : '';
+                                $tmpArr['out_channel_number'] = $park_passage_obj['channel_number'] ? $park_passage_obj['channel_number'] : 0;
+                                $tmpArr['out_channel_name'] = $park_passage_obj['passage_name'] ? $park_passage_obj['passage_name'] : '';
+                                $tmpArr['park_sys_type'] = $tmpArr['park_sys_type'] ? $tmpArr['park_sys_type'] : $park_passage_obj['park_sys_type'];
+                                $passageArr[$val['channel_id']] = $park_passage_obj->toArray();
+                            }
+                        }
+                    }
+                    $total = $val['total'] ? $val['total'] : 0;
+                    $prepayTotal = $val['prepayTotal'] ? $val['prepayTotal'] : 0;
+                    $tmpArr['out_pay_money'] = $total + $prepayTotal;
+                    $tmpArr['out_pay_money']=round($tmpArr['out_pay_money'],2);
+                    if ( $val['accessTime']>0 &&  $val['_accessTime']>0) {
+                        $park_time = $val['accessTime'] - $val['_accessTime'];
+                        $tmpArr['park_time'] = $park_time > 0 ? $park_time : 0;
+                    }
+                    $imgTmp=$this->getParkCarAccessImg($val);
+                    $tmpArr['small_image']=$imgTmp['_small_image'];
+                    $tmpArr['big_image']=$imgTmp['_big_image'];
+                    $tmpArr['out_small_image']=$imgTmp['small_image'];
+                    $tmpArr['out_big_image']=$imgTmp['big_image'];
+
+                    $tmpArr['user_name']=$val['_user_name'];
+                    $tmpArr['user_phone']=$val['_user_phone'];
+                    if($val['user_name']){
+                        $tmpArr['user_name']=$val['user_name'];
+                    }
+                    if($val['user_phone']){
+                        $tmpArr['user_phone']=$val['user_phone'];
+                    }
+                }else{
+                    //进场记录
+                    $tmpArr['record_id']=$val['record_id'];
+                    $tmpArr['position_id']=$val['position_id'];
+                    $tmpArr['position_num']=$val['position_num'];
+                    $tmpArr['out_record_id']=$val['_record_id'] ? $val['_record_id']:0;
+                    $tmpArr['device_number']='';
+                    $tmpArr['channel_number']=$val['channel_number']; 
+                    $tmpArr['channel_name']=$val['channel_name'];
+                    $tmpArr['exception_type'] = $val['exception_type']>0 ? 1 : 0;
+                    $tmpArr['out_exception_type'] = $val['_exception_type']>0 ? 1 : 0;
+                    $tmpArr['access_time']=$val['accessTime'];
+                    $tmpArr['out_access_time']=$val['_accessTime'] >0 ? $val['_accessTime']:0;
+                    $tmpArr['order_id']=$val['order_id'];
+                    $tmpArr['out_order_id']=$val['_order_id'];
+                    if($val['channel_id']>0) {
+                        //进场通道
+                        if (isset($passageArr[$val['channel_id']])) {
+                            $tmpArr['device_number'] = $passageArr[$val['channel_id']]['device_number'] ? $passageArr[$val['channel_id']]['device_number'] : '';
+                            $tmpArr['channel_number'] = $passageArr[$val['channel_id']]['channel_number'] ? $passageArr[$val['channel_id']]['channel_number'] : 0;
+                            $tmpArr['channel_name'] = $passageArr[$val['channel_id']]['passage_name'] ? $passageArr[$val['channel_id']]['passage_name'] : '';
+                            $tmpArr['park_sys_type'] = $tmpArr['park_sys_type'] ? $tmpArr['park_sys_type'] : $passageArr[$val['channel_id']]['park_sys_type'];
+                        } else {
+                            $wherePassage = array(['id', '=', $val['channel_id']]);
+                            $park_passage_obj = $db_park_passage->getFind($wherePassage, 'park_sys_type,passage_name,device_number,channel_number');
+                            if ($park_passage_obj && !$park_passage_obj->isEmpty()) {
+                                $tmpArr['device_number'] = $park_passage_obj['device_number'] ? $park_passage_obj['device_number'] : '';
+                                $tmpArr['channel_number'] = $park_passage_obj['channel_number'] ? $park_passage_obj['channel_number'] : 0;
+                                $tmpArr['channel_name'] = $park_passage_obj['passage_name'] ? $park_passage_obj['passage_name'] : '';
+                                $tmpArr['park_sys_type'] = $tmpArr['park_sys_type'] ? $tmpArr['park_sys_type'] : $park_passage_obj['park_sys_type'];
+                                $passageArr[$val['channel_id']] = $park_passage_obj->toArray();
+                            }
+                        }
+                    }
+                    
+                    $tmpArr['out_device_number']='';
+                    $tmpArr['out_channel_number']=$val['_channel_number'] ? $val['_channel_number']:0;
+                    $tmpArr['out_channel_name']=$val['_channel_name'] ? $val['_channel_name']:'';
+                    if($val['_channel_id']>0) {
+                        //出场通道
+                        if (isset($passageArr[$val['_channel_id']])) {
+                            $tmpArr['out_device_number'] = $passageArr[$val['_channel_id']]['device_number'] ? $passageArr[$val['_channel_id']]['device_number'] : '';
+                            $tmpArr['out_channel_number'] = $passageArr[$val['_channel_id']]['channel_number'] ? $passageArr[$val['_channel_id']]['channel_number'] : 0;
+                            $tmpArr['out_channel_name'] = $passageArr[$val['_channel_id']]['passage_name'] ? $passageArr[$val['_channel_id']]['passage_name'] : '';
+                            $tmpArr['park_sys_type'] = $tmpArr['park_sys_type'] ? $tmpArr['park_sys_type'] : $passageArr[$val['_channel_id']]['park_sys_type'];
+                        } else {
+                            $wherePassage = array(['id', '=', $val['_channel_id']]);
+                            $park_passage_obj = $db_park_passage->getFind($wherePassage, 'park_sys_type,passage_name,device_number,channel_number');
+                            if ($park_passage_obj && !$park_passage_obj->isEmpty()) {
+                                $tmpArr['out_device_number'] = $park_passage_obj['device_number'] ? $park_passage_obj['device_number'] : '';
+                                $tmpArr['out_channel_number'] = $park_passage_obj['channel_number'] ? $park_passage_obj['channel_number'] : 0;
+                                $tmpArr['out_channel_name'] = $park_passage_obj['passage_name'] ? $park_passage_obj['passage_name'] : '';
+                                $tmpArr['park_sys_type'] = $tmpArr['park_sys_type'] ? $tmpArr['park_sys_type'] : $park_passage_obj['park_sys_type'];
+                                $passageArr[$val['_channel_id']] = $park_passage_obj->toArray();
+                            }
+                        }
+                    }
+                    $total = $val['_total'] ? $val['_total'] : 0;
+                    $prepayTotal = $val['_prepayTotal'] ? $val['_prepayTotal'] : 0;
+                    $tmpArr['out_pay_money'] = $total + $prepayTotal;
+                    $tmpArr['out_pay_money']=round($tmpArr['out_pay_money'],2);
+                    if ($val['accessTime']>0 &&  $val['_accessTime']>0) {
+                        $park_time = $val['_accessTime'] - $val['accessTime'];
+                        $tmpArr['park_time'] = $park_time > 0 ? $park_time : 0;
+                    }
+
+                    $imgTmp=$this->getParkCarAccessImg($val);
+                    $tmpArr['small_image']=$imgTmp['small_image'];
+                    $tmpArr['big_image']=$imgTmp['big_image'];
+                    $tmpArr['out_small_image']=$imgTmp['_small_image'];
+                    $tmpArr['out_big_image']=$imgTmp['_big_image'];
+
+                    $tmpArr['user_name']=$val['user_name'];
+                    $tmpArr['user_phone']=$val['user_phone'];
+                    if($val['_user_name']){
+                        $tmpArr['user_name']=$val['_user_name'];
+                    }
+                    if($val['_user_phone']){
+                        $tmpArr['user_phone']=$val['_user_phone'];
+                    }
+                }
+                
+                if($val['garage_id']>0){
+                    $tmpArr['garage_id']=$val['garage_id'];
+                }else if($val['_garage_id']>0){
+                    $tmpArr['garage_id']=$val['_garage_id'];
+                }
+                $village_id= intval($val['park_id']);
+                $whereArr = array();
+                if (!empty($val['channel_id'])) {
+                    $whereArr[] = array('id', '=', $val['channel_id']);
+                } else if (!empty($val['channel_number'])) {
+                    $whereArr[] = array('channel_number', '=', $val['channel_number']);
+                }
+                if($tmpArr['garage_id']>0 && isset($garageArr[$tmpArr['garage_id']])){
+                    $tmpArr['garage_name'] = $garageArr[$tmpArr['garage_id']];
+                }else{
+                    $garage_num = $this->getGarageInfo($whereArr,$village_id,$tmpArr['garage_id']);
+                    if ($garage_num) {
+                        $tmpArr['garage_name'] = $garage_num;
+                        if($tmpArr['garage_id']){
+                            $garageArr[$tmpArr['garage_id']]=$garage_num;
+                        }
+                    }
+                }
+
+                $tmpArr['village_id']=$village_id;
+                $tmpArr['village_name']='';
+                $tmpArr['village_address']='';
+                $tmpArr['property_id']='';
+                
+                if ($village_id > 0) {
+                    if (isset($villageArr[$village_id])) {
+                        $tmpArr['village_name'] = $villageArr[$village_id]['village_name'];
+                        $tmpArr['village_address'] = $villageArr[$village_id]['village_address'];
+                        $tmpArr['property_id'] = $villageArr[$village_id]['property_id'];
+                    } else {
+                        $houseVillageObj = $houseVillageDb->getInfo(array('village_id' => $village_id), 'village_id,village_name,village_address,property_id');
+                        if ($houseVillageObj && !$houseVillageObj->isEmpty()) {
+                            $tmpArr['village_name'] = $houseVillageObj['village_name'];
+                            $tmpArr['village_address'] = $houseVillageObj['village_address'];
+                            $tmpArr['property_id'] = $houseVillageObj['property_id'];
+                            $villageArr[$village_id] = $houseVillageObj->toArray();
+                        }
+                    }
+                }
+                
+                if ($tmpArr['park_time']>0) {
+                    $hours = intval($tmpArr['park_time'] / 3600);
+                    $minter = ceil(($tmpArr['park_time'] - $hours * 3600) / 60);
+                    if ($tmpArr['park_time'] >= 3600) {
+                        $tmpArr['park_time_str'] = $hours . '小时' . $minter . '分钟';
+                    } else {
+                        $tmpArr['park_time_str'] = $minter . '分钟';
+                    }
+                }
+                ksort($tmpArr);
+                $newList[]=$tmpArr;
+            }
+        }
+        $data1 = [];
+        $data1['list'] = $newList ? $newList:array();
+        $data1['total_limit'] = $data['limit'];
+        $data1['count'] = $count;
+        $data1['all_pay_money'] = $allTotalMoney;
+        return $data1;
+    }
     public function delCarAccessRecordTask(){
         fdump_api(['xtime'=>time()], '00delCarAccessRecordTask',true);
         $houseVillageCarAccessRecord= new HouseVillageCarAccessRecord();

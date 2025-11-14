@@ -24,7 +24,8 @@ class Scrcu{
 			'openId' => $openId,
 			'frontEndUrl' => C('config.site_url').'/index.php?c=LowFeePayNotice&a=scrcu_back_notice&order_type='.$order_type.'&order_id='.$order_no,
 			'subOrderAmt' => getFormatNumber($money*100),
-			'paymentWay' => '03'
+			'paymentWay' => '03',
+			'subMerIdParent'=>'',
 		];
 
 		if($scrcu_mer_no){
@@ -80,6 +81,7 @@ class Scrcu{
 			'merId' => C("config.scrcu_mid"),
 			'wxAppId' => C("config.pay_wxapp_appid"),
 			'frontEndUrl' => C('config.site_url').'/index.php?c=LowFeePayNotice&a=scrcu_back_notice&order_type='.$order_type.'&order_id='.$order_no,
+			'subMerIdParent'=>'',
 		];
 
 

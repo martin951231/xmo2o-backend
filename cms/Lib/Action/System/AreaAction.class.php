@@ -834,6 +834,10 @@ class AreaAction extends BaseAction
         if (empty($now_area)) {
             $this->frame_error_tips('数据库中没有查询到该信息！');
         }
+	    $now_area['edit_commission'] = true;
+		if($this->system_session['level'] == 1 && $this->system_session['area_id'] == $_GET['area_id']) {//区域管理员不可修改自己的佣金比例
+			$now_area['edit_commission'] = false;
+		}
         $this->assign('now_area', $now_area);
         $this->assign('cat_list', $this->circle_category());
         $this->display();
@@ -905,6 +909,9 @@ class AreaAction extends BaseAction
 
                 }
             }
+	        if($this->system_session['level'] == 1 && $this->system_session['area_id'] == $_POST['area_id']) {//区域管理员不可修改自己的佣金比例
+		        unset($_POST['commission_rate']);
+	        }
             if ($database_area->data($_POST)->save() !== FALSE) {
                 //import('ORG.Util.Dir');
                 //Dir::delDirnotself('./runtime');

@@ -21,8 +21,8 @@ function show_province(){
             $('#choose_city_info').prepend(area_dom);
             show_city(result.id,result.name,0);
         }else{
-            window.top.msg(0,result.info,true);
-            window.top.closeiframe();
+            window.o2oTop.msg(0,result.info,true);
+            window.o2oTop.closeiframe();
         }
     });
 }
@@ -55,8 +55,8 @@ function show_city(id,name,type){
             $('#choose_city_info').prepend(area_dom);
             show_area(result.id,result.name,0);
         }else{
-            window.top.msg(0,result.info,true,5);
-            window.top.closeiframe();
+            window.o2oTop.msg(0,result.info,true,5);
+            window.o2oTop.closeiframe();
         }
     });
 }
@@ -100,8 +100,8 @@ function show_area(id,name,type){
 
             // }
         }else{
-            window.top.msg(0,result.info,true,5);
-            window.top.closeiframe();
+            window.o2oTop.msg(0,result.info,true,5);
+            window.o2oTop.closeiframe();
         }
     });
 }
@@ -125,8 +125,8 @@ function show_street(id,name,type){
                 $('#choose_city_info').prepend(area_dom);
             }
         }else{
-            window.top.msg(0,result.info,true,5);
-            window.top.closeiframe();
+            window.o2oTop.msg(0,result.info,true,5);
+            window.o2oTop.closeiframe();
         }
     });
 }
@@ -151,8 +151,8 @@ function show_circle(id,name,type){
                 $('#choose_city_info').prepend(area_dom);
             }
         }else{
-//			window.top.msg(0,result.info,true,5);
-//			window.top.closeiframe();
+//			window.o2oTop.msg(0,result.info,true,5);
+//			window.o2oTop.closeiframe();
             alert(result.info);
         }
     });

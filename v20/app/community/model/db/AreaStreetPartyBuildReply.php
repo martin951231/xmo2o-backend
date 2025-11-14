@@ -52,7 +52,7 @@ class AreaStreetPartyBuildReply extends Model
      */
     public function getCount($where)
     {
-        $count = $this->where($where)->count();
+        $count = $this->alias('r')->where($where)->count();
         return $count;
     }
 

@@ -51,7 +51,7 @@
                             <td>{pigcms{$vo.phone}</td>
                             <td class="textcenter">
                                 <if condition="$vo.is_his eq 1">
-                                <a href="javascript:void(0);" onclick="window.top.iframeDrawer({
+                                <a href="javascript:void(0);" onclick="window.o2oTop.iframeDrawer({
                                     url: '/v20/public/platform/#/merchant/platform/HistoricalContracts?mer_id={pigcms{$vo['mer_id']}',
                                     title: '历史合同',
                                     id: '1',

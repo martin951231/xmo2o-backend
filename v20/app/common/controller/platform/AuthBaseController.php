@@ -7,48 +7,72 @@ namespace app\common\controller\platform;
 
 use app\common\controller\CommonBaseController;
 use app\common\model\service\admin_user\AdminUserService as AdminUserService;
-class AuthBaseController extends CommonBaseController{
-    /**
-     * 控制器登录用户信息
-     * @var array
-     */
-    public $systemUser;
+use app\http\exceptions\ParametersException;
+use think\helper\Str;
 
-    /**
-     * 控制器登录用户uid
-     * @var int
-     */
-    public $_uid;
+class AuthBaseController extends CommonBaseController
+{
+	protected $validateClass;
+	/**
+	 * 控制器登录用户信息
+	 * @var array
+	 */
+	public $systemUser;
 
-    public function initialize()
-    {
-        parent::initialize();
+	/**
+	 * 控制器登录用户uid
+	 * @var int
+	 */
+	public $_uid;
 
-        // 验证登录
-        $this->checkLogin();
+	public function initialize()
+	{
+		parent::initialize();
 
-        $userId = intval($this->request->log_uid);
-        // 获得用户信息
-        $userService = new AdminUserService();
-        $user = $userService->getUserRole($userId);
+		// 验证登录
+		$this->checkLogin();
 
-        // 用户id
-        $this->_uid = $userId;
+		$userId = intval($this->request->log_uid);
+		// 获得用户信息
+		$userService = new AdminUserService();
+		$user = $userService->getUserRole($userId);
 
-        // 用户信息
-        $this->systemUser = $user;
+		// 用户id
+		$this->_uid = $userId;
 
-        request()->systemUser =  $this->systemUser;
-    }
+		// 用户信息
+		$this->systemUser = $user;
 
-    /**
-     * 验证登录
-     * @var int
-     */
-    private function checkLogin(){
-    	$log_uid = request()->log_uid ?? 0;
-    	if(empty($log_uid)){
-    		throw new \think\Exception("未登录", 1002);
-    	}
-    }
+		request()->systemUser = $this->systemUser;
+	}
+
+	/**
+	 * 验证登录
+	 * @var int
+	 */
+	private function checkLogin()
+	{
+		$log_uid = request()->log_uid ?? 0;
+		if (empty($log_uid)) {
+			throw new \think\Exception("未登录", 1002);
+		}
+	}
+
+	/**
+	 * 参数验证
+	 * @param string $scenario
+	 * @param array $params
+	 * @param string $method
+	 * @return array|mixed
+	 */
+	protected function validateParameter(array $params = [], string $scenario = '', string $method = 'post'): array
+	{
+		empty($params) && $params = input($method . '.');
+		$validate = validate($this->validateClass);
+		if (!$validate->scene($scenario ?: Str::snake(request()->action()))->check($params)) {
+			throw_exception(L_($validate->getError()), ParametersException::class);
+		}
+
+		return $params;
+	}
 }

@@ -9,7 +9,7 @@
 			<table class="search_table" width="80%">
 				<tr>
 					<td>
-						<input type="button" value="添加活动" class="button" onclick="window.top.artiframe('{pigcms{:U('add_activity')}','添加活动','600px','600px',true,false,false,addbtn,'add',true);"/>
+						<input type="button" value="添加活动" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_activity')}','添加活动',720,480,true,false,false,addbtn,'add',true);"/>
 					</td>
 			
 					<td>
@@ -77,13 +77,13 @@
 										<td>{pigcms{$vo.end_datetime}</td>
 										<td><span style="color:{pigcms{$vo.font_color}">{pigcms{$vo.status_txt}</span></td>
 										<td class="textcenter">
-										<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_activity',array('activity_id'=>$vo['activity_id']))}','编辑','600px','80%',true,false,false,editbtn,'add',true);">编辑</a>  | <a href="{pigcms{:U('activity_goods',['activity_id'=>$vo['activity_id']])}">商品管理</a>
+										<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_activity',array('activity_id'=>$vo['activity_id']))}','编辑',720,480,true,false,false,editbtn,'add',true);">编辑</a>  | <a href="{pigcms{:U('activity_goods',['activity_id'=>$vo['activity_id']])}">商品管理</a>
 										</td>
 									</tr>
 								</volist>
-								<tr><td class="textcenter pagebar" colspan="7">{pigcms{$pagebar}</td></tr>
+								<tr><td class="textcenter pagebar" colspan="10">{pigcms{$pagebar}</td></tr>
 							<else/>
-								<tr><td class="textcenter red" colspan="7">列表为空！</td></tr>
+								<tr><td class="textcenter red" colspan="10">列表为空！</td></tr>
 							</if>
 						</tbody>
 					</table>

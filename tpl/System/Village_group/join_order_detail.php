@@ -115,7 +115,7 @@
         <th colspan="4">{pigcms{$order['real_orderid']}</th>
     </tr>
 
-    <if condition="$order.pay_info.orderid neq '0'">
+    <if condition="$order['pay_info']['orderid']">
     <tr>
         <th colspan="1">流水号</th>
         <th colspan="4">plat_{pigcms{$order['pay_info']['orderid']}</th>

@@ -59,8 +59,10 @@ class SmsAction extends BaseAction
 			'apkVersionName' => $appObj->getVersionName(),
 			'apkVersionCode' => $appObj->getVersionCode(),
 		);
-		
-		if(stripos($arr['apkName'],'com.tencent.') !== 0 && stripos($arr['apkName'],'com.stub.StubApp') !== 0){
+
+        //是否加固
+        $reinforce = $_POST['reinforce']??1;
+		if($reinforce == 1 && stripos($arr['apkName'],'com.tencent.') !== 0 && stripos($arr['apkName'],'com.stub.StubApp') !== 0){
 			$this->error('APK包没有加壳，无法提交');
 		}
 		$this->success($arr);
@@ -858,6 +860,52 @@ class SmsAction extends BaseAction
                 $res = M('Ali_sms_template')->where(array('id'=>$_GET['id']))->find();
                 $this->assign('sms',$res);
             }
+            $this->display();
+        }
+    }
+
+    public function pcStorestaffApp(){
+        $config = D("Appapi_app_config");
+        if (IS_POST) {
+
+            $columns = array();
+            $columns['pc_staff_android_v'] = I("android_version", '');
+            $columns['pc_staff_android_url'] = htmlspecialchars_decode($_POST['android_download_url']);
+            $columns['pc_staff_android_vcode'] = I("android_version_code", '');
+            $columns['pc_staff_android_vdesc'] = I("android_version_desc", '');
+			$columns['pc_staff_android_package_name'] = I("storestaff_android_package_name", '');
+			
+			
+			$android_version_code = $config->where(array('var'=>'pc_staff_android_vcode'))->getField('value');
+			if($_POST['uploadApk'] && $columns['pc_staff_android_vcode'] <= $android_version_code){
+				$this->error('安卓APP版本号必须比原来大，原来的版本号为 '.$android_version_code);
+			}
+			
+            foreach ($columns as $key=>$val) {
+                $result=$config->where(array('var'=>$key))->data(array('value'=>$val))->save();
+                if($result === 0){
+                    $date['var'] = $key;
+                    $date['value'] = $val;
+                    $date['sort'] = 0;
+                    $config->data($date)->add();
+                }
+            }
+			$config->remove();
+			//删除缓存
+			D('Config')->clearDataCacheDir('system_config');
+            $this->success("修改成功");
+        } else {
+            $vars = array('pc_staff_android_v', 'pc_staff_android_url', 'pc_staff_android_vcode', 'pc_staff_android_vdesc', 'pc_staff_android_package_name');
+            $data = $config->where(['var' => ['IN', $vars]])->select();
+            $return = array();
+            foreach ($data as $val) {
+                $return[$val['var']] = $val['value'];
+            }
+            $this->assign($return);
+			
+			$app_pack = new app_pack();
+			$new_version_arr = $app_pack->getNewVersion();
+			$this->assign('all_new_version', $new_version_arr);
             $this->display();
         }
     }

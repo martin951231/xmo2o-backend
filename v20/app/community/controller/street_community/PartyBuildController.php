@@ -281,7 +281,7 @@ class PartyBuildController extends CommunityBaseController
         }
         $area_street_party_build_service = new AreaStreetPartyBuildService();
         $where[] = ['r.build_id','=',$build_id];
-        $where[] = ['r.status','in','1,3'];
+        $where[] = ['r.status','in',[1,3]];
         $data = $area_street_party_build_service->getPartyBuildReplyLists($where,'r.*,u.nickname',$page,10,'','end',$street_id);
         $data['build_id'] = $build_id;
         return api_output(0,$data);
@@ -325,6 +325,7 @@ class PartyBuildController extends CommunityBaseController
         }
         $area_street_party_build_service = new AreaStreetPartyBuildService();
         $where['pigcms_id'] = $pigcms_id;
+        unset($data['system_type']);
         $res = $area_street_party_build_service->savePartyBuildReply($where,$data);
         if($res)
             return api_output(0,'','成功');

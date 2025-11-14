@@ -41,9 +41,7 @@
 										<td>{pigcms{$vo.area_name}</td>
 										<td>
 											<select class="deliver_model" data-city_id="{pigcms{$vo.area_id}">
-												<if condition="!isset($config['is_hark_system'])">
-													<option value="0" <if condition="$vo['deliver_model'] eq 0">selected="selected"</if>>配送员抢单</option>
-												</if>
+												<option value="0" <if condition="$vo['deliver_model'] eq 0">selected="selected"</if>>配送员抢单</option>
 												<option value="1" <if condition="$vo['deliver_model'] eq 1">selected="selected"</if>>手动调度</option>
 												<option value="2" <if condition="$vo['deliver_model'] eq 2">selected="selected"</if>>智能调度</option>
 											</select>
@@ -63,7 +61,7 @@
 												}
 											</php>
 											&nbsp;&nbsp;
-											<a style="padding: 5px 10px;vertical-align:center;cursor:pointer;border: 1px solid #ddd;border-radius: 2px" href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/setting',array('area_id' => $vo['area_id']))}','调度模式设置',800,300,true,false,false,editbtn,'edit',true);">去设置</a>
+											<a style="padding: 5px 10px;vertical-align:center;cursor:pointer;border: 1px solid #ddd;border-radius: 2px" href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/setting',array('area_id' => $vo['area_id']))}','调度模式设置',800,300,true,false,false,editbtn,'edit',true);">去设置</a>
 										</td>
 									</tr>
 								</volist>

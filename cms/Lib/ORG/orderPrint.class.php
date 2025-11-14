@@ -1,6 +1,6 @@
 <?php
 
-use v20\extend\printer\Trenditiot;
+use printer\Trenditiot;
 
 class orderPrint
 {

@@ -955,12 +955,12 @@ class UserController extends BaseController
     public function checkTimeout()
     {
         $username = $this->request->param('username', '', 'trim');
-        $chatid = $this->request->param('chat_id', '', 'trim');
-        if (!$username || !$chatid) {
+        $chatId = $this->request->param('chat_id', '', 'trim');
+
+        if (!$username) {
             return api_output_error(1001, '参数有误');
         }
-
-        $result = (new ImConversation())->checkReplyTimeout($username, $chatid);
+        $result = (new ImConversation())->checkReplyTimeout($username, $chatId);
         return api_output(0, $result);
     }
 

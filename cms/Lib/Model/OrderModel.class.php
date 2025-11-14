@@ -7364,6 +7364,15 @@ class OrderModel extends Model
                     $where['o.real_orderid'] = $param['keyword'];
                     $condition_where .= " AND o.real_orderid={$param['keyword']}";
                     break;
+                case 'orderid': //支付流水号
+					$order_id = 0;
+					$payment_money_order = D('Payment_money_order')->where(['order_type' => 'plat', 'orderid' => trim($_GET['keyword'])])->find();
+					if ($payment_money_order) {
+						$order_id = D('Plat_order')->where(['order_id' => $payment_money_order['order_id'], 'business_type' => 'village_group'])->getField('business_id');
+					}
+                    $where['o.order_id'] = $order_id;
+                    $condition_where .= " AND o.order_id={$order_id}";
+					break;
 
             }
 
@@ -7771,7 +7780,7 @@ class OrderModel extends Model
 
         $objExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
         $objExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
-        $objExcel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+        $objExcel->getActiveSheet()->getColumnDimension('C')->setWidth(0);
         $objExcel->getActiveSheet()->getColumnDimension('D')->setWidth(20);
         $objExcel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
         $objExcel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
@@ -7783,7 +7792,7 @@ class OrderModel extends Model
 
         $objActSheet->setCellValue('A1', L_('商品ID'));
         $objActSheet->setCellValue('B1', L_('商品名称'));
-        $objActSheet->setCellValue('C1', L_('商家团购ID'));
+        //$objActSheet->setCellValue('C1', L_('商家团购ID'));
         $objActSheet->setCellValue('D1', L_('商家信息'));
         $objActSheet->setCellValue('E1', L_('进货价'));
         $objActSheet->setCellValue('F1', L_('进货总价'));
@@ -7946,7 +7955,7 @@ class OrderModel extends Model
             $now_merchant = D('Merchant')->get_info($val['mer_id']);
             $objActSheet->setCellValueExplicit('A' . $index, $val['goods_id']);
             $objActSheet->setCellValueExplicit('B' . $index, $val['name']);
-            $objActSheet->setCellValueExplicit('C' . $index, $val['group_id']);
+            //$objActSheet->setCellValueExplicit('C' . $index, $val['group_id']);
             $objActSheet->setCellValueExplicit('D' . $index, $now_merchant['name'] . '/' . $now_merchant['phone']);
             $objActSheet->setCellValueExplicit('E' . $index, round_number($val['purchase_price'], 2));
             $objActSheet->setCellValueExplicit('F' . $index, round_number($val['all_purchase_price'], 2));
@@ -8012,7 +8021,7 @@ class OrderModel extends Model
 //          $sql='SELECT o.order_id,o.real_orderid,o.uid,o.status,o.start_uid,o.total_money ,o.pay_time,o.pay_type ,d.name as goods_name,d.price as goods_price,d.purchase_price,d.num,d.mer_id,p.system_balance,p.paid ,p.pay_money,p.system_score_money from pigcms_village_group_order as o left join '
 //                  .C('DB_PREFIX').'village_group_order_detail as d on o.order_id=d.order_id left join '.C('DB_PREFIX')."plat_order p on p.business_id=o.order_id AND p.business_type='village_group' "
 //                  ." where ".$condition_where .' order by o.order_id DESC limit '.($i*1000).',1000';
-            $list = M('Village_group_order_detail')->field('o.note,o.delivery_periods,o.newest_delivery_periods,o.pick_addr,o.pick_name,o.pick_phone,d.increase_price,d.area_price,d.village_group_type,d.send_time as d_send_time,d.real_send_time,d.service_time,d.date_num,d.is_delay,d.delay_time,d.delay_user,d.name,o.real_orderid,d.name,o.order_id,o.pay_time,o.status,d.status as deliver_status,o.start_uid,d.goods_id,d.price,d.purchase_price,d.num,u.uid,u.phone,u.nickname,g.start_time,g.end_time,g.send_time,g.get_time')
+            $list = M('Village_group_order_detail')->field('o.note,o.delivery_periods,o.newest_delivery_periods,o.pick_addr,o.pick_name,o.pick_phone,d.increase_price,d.area_price,d.village_group_type,d.send_time as d_send_time,d.real_send_time,d.service_time,d.date_num,d.is_delay,d.delay_time,d.delay_user,d.name,o.real_orderid,d.name,o.order_id,o.pay_time,o.status,d.status as deliver_status,o.start_uid,d.goods_id,d.price,d.purchase_price,d.num,u.uid,u.phone,u.nickname,g.start_time,g.end_time,g.send_time,g.get_time,m.name as merchant_name')
                 ->join('as d left join ' . C('DB_PREFIX') . 'village_group_goods as g ON g.goods_id=d.goods_id left join ' . C('DB_PREFIX') . 'village_group_order o ON o.order_id= d.order_id  left join ' . C('DB_PREFIX') . 'user AS u ON u.uid=o.uid left join '.C('DB_PREFIX').'merchant m ON g.mer_id=m.mer_id')
                 ->where($where)->order('o.order_id DESC')->limit((($i - 1) * 1000) . ',1000')->select();
 

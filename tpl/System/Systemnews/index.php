@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Systemnews/index')}" class="on">平台快报</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Systemnews/add_category')}','添加平台快报分类',800,460,true,false,false,addbtn,'add',true);">添加平台快报分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Systemnews/add_category')}','添加平台快报分类',800,460,true,false,false,addbtn,'add',true);">添加平台快报分类</a>
 				</ul>
 			</div>
 			
@@ -39,7 +39,7 @@
 										<td><a href="{pigcms{:U('Systemnews/news',array('category_id'=>$vo['id']))}">查看内容</a></td>
 										<td>{pigcms{$vo.sort}</td>
 										<td><if condition="$vo['status'] eq 1"><font color="green">启用</font><else/><font color="red">禁止</font></if></td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Systemnews/edit_category',array('id'=>$vo['id']))}','编辑快报',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="category_id={pigcms{$vo.id}" url="{pigcms{:U('Systemnews/del',array('category_id'=>$vo['id']))}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Systemnews/edit_category',array('id'=>$vo['id']))}','编辑快报',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="category_id={pigcms{$vo.id}" url="{pigcms{:U('Systemnews/del',array('category_id'=>$vo['id']))}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="9">{pigcms{$pagebar}</td></tr>

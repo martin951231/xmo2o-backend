@@ -28,13 +28,13 @@ class AdminMenuController extends CommunityBaseController{
         $systemMenu = $systemMenuService->formartMenuList([],$adminUser);
         if(isset($adminUser['street_worker']) && !empty($adminUser['street_worker']) && !empty($adminUser['street_worker']['menus'])){
             $menus=explode(',',$adminUser['street_worker']['menus']);
-			$ignoreMenu=array('street_17_3','street_17_8','street_19_2','street_17_6','street_4_7');
             if(!empty($menus)){
                 $newSystemMenu=array();
+                $ignoreMenu=array('street_17_3','street_17_8','street_19_2','street_17_6','street_4_7');
                 foreach ($systemMenu as $smu){
                     if($smu['name']==='street_index'){
                         $newSystemMenu[]=$smu;
-                    }else if(in_array($smu['id'],$menus)|| in_array($smu['id'],$ignoreMenu)){
+                    }else if(in_array($smu['id'],$menus) || in_array($smu['id'],$ignoreMenu)){
                         $newSystemMenu[]=$smu;
                     }
                 }

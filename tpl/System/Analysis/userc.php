@@ -139,7 +139,7 @@
 													});
 													if(!send['begin_time']==''&&!send['end_time']==''){
 														if(send['begin_time']>send['end_time']){
-															window.top.msg(0,"结束时间应大于开始时间",true);
+															window.o2oTop.msg(0,"结束时间应大于开始时间",true);
 														}else{
 															if(send.funcName=='villagebasec'){
 																send.type = send.village_id;
@@ -159,7 +159,7 @@
 															ajaxsend(send.funcName,send.areaid,send.type,$('.year .on').html(),month_value);
 														}else{
 																
-															window.top.msg(0,"时间段不能为空",true);
+															window.o2oTop.msg(0,"时间段不能为空",true);
 														}
 													}
 													
@@ -371,7 +371,7 @@
                                                     });
                                                 }
                                                 function tips(){
-                                                    window.top.msg(0,"向下没有数据了",true);
+                                                    window.o2oTop.msg(0,"向下没有数据了",true);
                                                 }
                                                 function charting(chartXml,title,at_where,prefix){
                                                     var chart_sex = new FusionCharts("{pigcms{$static_public}fushionCharts/Pie3D.swf", "ChartId", "600", "400", "0", "1");

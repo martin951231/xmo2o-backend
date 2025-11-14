@@ -89,7 +89,7 @@ class MallActivityDetail extends Model
 
 
         //找出活动商品列表
-        $field = "s.activity_id,s.goods_id,m.price,m.name,m.image,msku.sort,m.score_percent,m.goods_type";
+        $field = "s.activity_id,s.goods_id,m.price,m.name,m.image,msku.sort,m.score_percent,m.goods_type,msku.is_first";
         $return = $this->alias('s')
             ->leftJoin('mall_goods' . ' m', 's.goods_id = m.goods_id')
             ->leftJoin('pigcms_mall_activity' . ' ma', 's.activity_id = ma.id')

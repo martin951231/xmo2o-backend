@@ -1,9 +1,14 @@
 <?php
 namespace app\common\model\service\coupon;
 use app\appoint\model\db\Appoint;
+use app\common\model\db\CardNewCoupon;
+use app\common\model\db\CardNewCouponHadpull;
 use app\common\model\db\MerchantStore;
+use app\common\model\db\SystemCoupon;
+use app\common\model\db\SystemCouponHadpull;
 use app\common\model\db\User;
 use app\common\model\service\user\UserService;
+use app\mall\model\service\MallStaffCartService;
 use SystemSendCouponActivityModel;
 
 class CouponService
@@ -307,5 +312,98 @@ class CouponService
         }catch (\Exception $e){
             throw new \think\Exception(L_($e->getMessage()));
         }
+    }
+
+    /**
+     * 获取核销券二维码，条形码
+     * @param $params
+     * @return array|null
+     * @throws \think\Exception
+     */
+    public function getCodeInfo($params)
+    {
+        $type = $params["type"];
+        $coupon_id = $params["coupon_id"];
+        $user_had_id = $params["user_had_id"];
+        $uid = $params["uid"];
+        if ($type == 'offline_enjoy_coupon') {
+            $had_coupon = (new EnjoyUserCoupon())->where(['id' => $user_had_id, 'coupon_id' => 0])->findOrEmpty()->toArray();
+            if (!$had_coupon) {
+                throw new \think\Exception(L_('优惠券不存在'));
+            }
+            $code = $had_coupon['str_mid'];
+            //生成二维码
+            $qrCode = (new MallStaffCartService())->getQrCode($code, $code, 'offline_enjoy_coupon');
+            $coupon_price_txt = '立减' . $had_coupon['dec_value'] . '元';
+            $data = [
+                'qrCode' => $qrCode,
+                'barCode' => '',
+                'date_txt' => date('Y年m月d日', strtotime($had_coupon['start_date'])) . '-' . date('Y年m月d日', strtotime($had_coupon['end_date'])),
+                'coupon_name' => $had_coupon['coupon_name'],
+                'coupon_price_txt' => $coupon_price_txt,
+                'code' => $code,
+                'has_code' => 1,
+            ];
+            return $data;
+        }
+        if ($type == 'system') {
+            $had_mode = new SystemCouponHadpull();
+            $coupon_mode = new SystemCoupon();
+        } else {
+            $had_mode = new CardNewCouponHadpull();
+            $coupon_mode = new CardNewCoupon();
+        }
+        $coupon = $coupon_mode->where(['coupon_id' => $coupon_id])->findOrEmpty()->toArray();
+        $had_coupon = $had_mode->where(['coupon_id' => $coupon_id, 'id' => $user_had_id, 'uid' => $uid])->findOrEmpty()->toArray();
+        if (!$coupon) {
+            throw new \think\Exception(L_('优惠券不存在'));
+        }
+        if (!$had_coupon || $coupon['store_direct_verification'] != 1) {
+            return ['has_code' => 0];
+        }
+        $data = null;
+        if ($coupon['store_direct_verification']) {
+            $code = $had_coupon['code'];
+            if (!$code) {
+                //生成序列号
+                $code = ($type == 'system' ? 'S' : 'M') . $had_coupon['id'] . date('ymd') . substr(microtime(), 2, 9 - strlen($had_coupon['id']));
+                $had_mode->where(['id' => $user_had_id])->save(['code' => $code]);
+            }
+            //生成二维码
+            $qrCode = (new MallStaffCartService())->getQrCode($code, $code, 'coupon');
+            //生成条形码
+            $barCode = $this->getBarCode($code, $code);
+            if ($coupon['is_discount']) {
+                $coupon_price_txt = '打' . $coupon['discount_value'] . '折';
+            } else {
+                $coupon_price_txt = '立减' . $coupon['discount'] . '元' . ($coupon['order_money'] ? '(满' . $coupon['order_money'] . '可用)' : '');
+            }
+            $data = [
+                'qrCode' => $qrCode,
+                'barCode' => $barCode,
+                'date_txt' => date('Y年m月d日', $had_coupon['receive_time']) . '-' . date('Y年m月d日', $coupon['end_time']),
+                'coupon_name' => $coupon['name'],
+                'coupon_price_txt' => $coupon_price_txt,
+                'code' => $code,
+                'has_code' => 1,
+            ];
+        }
+        return $data;
+    }
+
+    /**
+     * 获取条形码
+     */
+    private function getBarCode($code, $text, $folder = 'coupon')
+    {
+        $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
+        $base64Image = base64_encode($generator->getBarcode($text, $generator::TYPE_CODE_128, 1, 100));
+        $path = request()->server('DOCUMENT_ROOT') . '/runtime/' . $folder . '/barcode/';
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+        $base64Image = 'data:image/png;base64,' . $base64Image;
+        base64_to_img($path, $code, $base64Image, 'png');
+        return cfg('site_url') . '/runtime/' . $folder . '/barcode/' . $code . '.png';
     }
 }

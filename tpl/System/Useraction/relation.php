@@ -3,7 +3,7 @@
             <div id="nav" class="mainnav_title">
                 <ul>
                     <a href="{pigcms{:U('Useraction/index')}">用户行为管理</a>>><a>分类和分组关系</a>|
-                    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/add',array('action_id'=>$_GET['action_id'],'type'=>2))}','添加分组和分类关系',450,320,true,false,false,addbtn,'add',true);">添加分组和分类关系</a>|
+                    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/add',array('action_id'=>$_GET['action_id'],'type'=>2))}','添加分组和分类关系',450,320,true,false,false,addbtn,'add',true);">添加分组和分类关系</a>|
                     <a href="{pigcms{:U('Useraction/userLog',array('status'=>2,'action_id'=>$_GET['action_id'],'action_name'=>$action_name))}">查看分组所有用户</a>|
                     <a href="{pigcms{:U('Useraction/massGroup')}">创建群发</a>
                 </ul>
@@ -40,7 +40,7 @@
                                         <td>{pigcms{$vo.cat_id}</td>
                                         <td><a href="{pigcms{:U('Useraction/userLog',array('status'=>1,'rela_id'=>$vo['rela_id'],'action_name'=>$action_name,'action_id'=>$_GET['action_id']))}">查看分组用户</a></td>
                                         <td>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/edit',array('type'=>2,'rela_id'=>$vo['rela_id']))}','编辑行为分类',450,320,true,false,false,editbtn,'add',true);">编辑</a> | 
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/edit',array('type'=>2,'rela_id'=>$vo['rela_id']))}','编辑行为分类',450,320,true,false,false,editbtn,'add',true);">编辑</a> | 
                                             <a href="javascript:void(0);" class="delete_row" parameter="rela_id={pigcms{$vo.rela_id}" url="{pigcms{:U('Useraction/del',array('status'=>2))}">删除</a>
                                         </td>
                                     </tr>

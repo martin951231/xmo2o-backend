@@ -952,9 +952,9 @@ class LoginAction extends BaseAction{
 						if ($this->config['spread_user_give_type'] == 0 || $this->config['spread_user_give_type'] == 2) {
 							$spread_give_money = $now_level['spread_user_give_moeny']>0?$now_level['spread_user_give_moeny']:$this->config['spread_give_money'];
 
-							D('User')->add_money($spread_user['uid'],  $spread_give_money, '推荐新用户注册平台赠送余额');
+							//D('User')->add_money($spread_user['uid'],  $spread_give_money, '推荐新用户注册平台赠送余额');
 
-							D('Scroll_msg')->add_msg('spread_reg',$this->now_user['uid'],'用户'.str_replace_name($spread_user['nickname']).'于'.date('Y-m-d H:i',$_SERVER['REQUEST_TIME']).'推荐新用户注册获赠平台余额'.$spread_give_money.C('config.Currency_txt'));
+							//D('Scroll_msg')->add_msg('spread_reg',$this->now_user['uid'],'用户'.str_replace_name($spread_user['nickname']).'于'.date('Y-m-d H:i',$_SERVER['REQUEST_TIME']).'推荐新用户注册获赠平台余额'.$spread_give_money.C('config.Currency_txt'));
 						}
 
 						if ($this->config['spread_user_give_type'] == 1 || $this->config['spread_user_give_type'] == 2) {

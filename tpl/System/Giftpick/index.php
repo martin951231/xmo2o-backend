@@ -113,7 +113,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'操作',

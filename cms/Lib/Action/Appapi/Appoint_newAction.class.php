@@ -1849,6 +1849,7 @@ class Appoint_newAction extends BaseAction{
 				'is_del' => 0,
 		        'service_status' => 0,
 		        'is_apply_refund' => 0,
+		        'paid' => ['in', [0, 1]],
 		        'order_time' => ['between',[time()-24*3600, time()]]
 	        ])->find();
 			if($noServiceAppointOrder) {
@@ -2765,7 +2766,7 @@ class Appoint_newAction extends BaseAction{
                 'btn_tip' => '', // 提交时候需要进行拦截的提示
                 'btn_border_color' => '#FF574A', //按钮边框颜色
             ];
-            $btn[] = [
+            $refundBtn = [
                 'is_btn' => 1, // 是否显示评论按钮 -1 显示-不跳转不请求借口  1 直接跳转  2 请求接口
                 'btn_url' => $site_url."/wap.php?c=Appoint&a=refund&order_id={$order_id}", // 对应跳转或者请求借口
                 'btn_param' => [], // 传参值
@@ -2774,6 +2775,10 @@ class Appoint_newAction extends BaseAction{
                 'font_color' => '#333333', // 文字颜色
                 'btn_tip' => '', // 提交时候需要进行拦截的提示
             ];
+	        $timeLimit = intval(C('config.order_refund_time_limit')) ;
+	        if (!$timeLimit || $now_order['verify_time'] + $timeLimit * 3600 * 24 > time()) {
+		        $btn[] = $refundBtn;
+	        }
         }
         elseif ($now_order['paid']==3) {
             $btn[] = [

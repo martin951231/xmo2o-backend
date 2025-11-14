@@ -199,7 +199,7 @@
 			
 			$('.fitment').click(function(){
 				var _this = $(this);
-				window.top.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true);
+				window.o2oTop.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true);
 			});
 
 			$('.page-style .item').click(function(){

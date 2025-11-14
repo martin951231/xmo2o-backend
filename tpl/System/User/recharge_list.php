@@ -72,13 +72,13 @@
 
 										<td>用户名：{pigcms{$vo.nickname}</td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a>
 										</td>
 										<td>
 											下单时间：{pigcms{$vo['add_time']|date='Y-m-d H:i:s',###}<br/>
 											<if condition="$vo['paid']">付款时间：{pigcms{$vo['pay_time']|date='Y-m-d H:i:s',###}</if>
 										</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/order_detail',array('order_id'=>$vo['order_id']))}','查看充值订单详情',800,560,true,false,false,false,'order_edit',true);">查看详情</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/order_detail',array('order_id'=>$vo['order_id']))}','查看充值订单详情',800,560,true,false,false,false,'order_edit',true);">查看详情</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="6">{pigcms{$pagebar}</td></tr>

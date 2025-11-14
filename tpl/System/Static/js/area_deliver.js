@@ -22,8 +22,8 @@ function show_provincess(){
 			$('#choose_city_for_deliver').prepend(area_dom);
 			show_cityss(result.id,result.name,0);
 		}else{
-			window.top.msg(0,result.info,true);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -73,8 +73,8 @@ function show_cityss(id,name,type){
 				'shop_main_page_center_type':result.shop_main_page_center_type,
 			}
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -125,8 +125,8 @@ function show_areass(id,name,type){
 				'shop_main_page_center_type':result.shop_main_page_center_type,
 			}
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -173,8 +173,8 @@ function show_street(id,name,type){
 				'shop_main_page_center_type':result.shop_main_page_center_type,
 			}
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 	});
 }

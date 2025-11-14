@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Activity/index')}" class="on">活动列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Activity/add')}','创建活动',680,400,true,false,false,addbtn,'add',true);">创建活动</a>|
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Activity/add')}','创建活动',680,400,true,false,false,addbtn,'add',true);">创建活动</a>|
 					<a href="{pigcms{:U('Config/index',array('galias'=>'activity','header'=>'Activity/header'))}">活动配置</a>
 				</ul>
 			</div>
@@ -48,7 +48,7 @@
 										<td>{pigcms{$vo.end_time|date='Y-m-d H:i',###}</td>
 										<td><a href="{pigcms{:U('Activity/activity_list',array('id'=>$vo['activity_id']))}">活动列表</a></td>
 										<if condition="$system_session['level'] eq 2 || $system_session['level'] eq 0">
-											<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Activity/edit',array('id'=>$vo['activity_id']))}','编辑活动分类',480,370,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="category_id={pigcms{$vo.activity_id}" url="{pigcms{:U('Activity/del')}" tip="删除活动分类，子分类也会删除！">删除</a></td>
+											<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Activity/edit',array('id'=>$vo['activity_id']))}','编辑活动分类',480,370,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="category_id={pigcms{$vo.activity_id}" url="{pigcms{:U('Activity/del')}" tip="删除活动分类，子分类也会删除！">删除</a></td>
 										</if>
 									</tr>
 								</volist>

@@ -13,7 +13,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('House/maintenan_list')}" class="on">运维管理人员列表</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/maintenan_add')}','添加人员',800,450,true,false,false,addbtn,'add',true);">添加人员</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/maintenan_add')}','添加人员',800,450,true,false,false,addbtn,'add',true);">添加人员</a>
         </ul>
     </div>
     <form name="myform" id="myform" action="" method="post">
@@ -54,7 +54,7 @@
                                 </if>
                             </td>
                             <td>
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/maintenan_log',array('id'=>$vo['id'],'frame_show'=>true))}','查看报警信息',900,500,true,false,false,false,'add',true);">报警信息</a>
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/maintenan_log',array('id'=>$vo['id'],'frame_show'=>true))}','查看报警信息',900,500,true,false,false,false,'add',true);">报警信息</a>
                                 </td>
                             <td class="textcenter">
                                 <if condition="!empty($vo['openid'])">
@@ -62,7 +62,7 @@
                                         <a class="label label-warning cancel" title="取消微信绑定" data-wid="{pigcms{$vo['id']}" <if condition="empty($vo['openid'])">style="display:none"</if> style="color: #FF9900">取消微信绑定</a> |
                                     </span>
                                 </if>
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/maintenan_edit',array('id'=>$vo['id']))}','编辑人员',800,450,true,false,false,editbtn,'add',true);">编辑</a> |
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/maintenan_edit',array('id'=>$vo['id']))}','编辑人员',800,450,true,false,false,editbtn,'add',true);">编辑</a> |
                                 <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/maintenan_del')}">删除</a>
                             </td>
                         </tr>
@@ -83,7 +83,7 @@
             test = art.dialog.open($(this).attr('href'),{
                 init: function(){
                     var iframe = this.iframe.contentWindow;
-                    window.top.art.dialog.data('iframe_handle',iframe);
+                    window.o2oTop.art.dialog.data('iframe_handle',iframe);
                 },
                 id: 'handle',
                 title:'扫描二维码绑定微信号',

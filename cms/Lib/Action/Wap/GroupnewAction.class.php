@@ -1470,7 +1470,7 @@ class GroupnewAction extends BaseAction{
         $this->assign($store_return);
 		$this->display();
 	}
-	public function eticket(){
+	public function eticket($self = 0){
         if(empty($this->user_session)){
             $this->error_tips('请先进行登录！');
         }
@@ -1488,13 +1488,13 @@ class GroupnewAction extends BaseAction{
 
         $now_order['order_type'] = 'group';
         $laste_order_info=D('Tmp_orderid')->get_laste_order_info($now_order['order_type'],$now_order['order_id']);
-        if(!$now_order['paid'] && !empty($laste_order_info)) {
-            if ($laste_order_info['pay_type']=='weixin') {
-                $redirctUrl = C('config.site_url') . '/wap.php?g=Wap&c=Pay&a=weixin_back&order_type='.$now_order['order_type'].'&order_id=' . $laste_order_info['orderid'];
-                file_get_contents($redirctUrl);
-                $now_order = D('Group_order')->get_order_detail_by_id($own_uid, intval($_GET['order_id']), true);
-            }
-        }
+//        if(!$now_order['paid'] && !empty($laste_order_info)) {
+//            if ($laste_order_info['pay_type']=='weixin') {
+//                $redirctUrl = C('config.site_url') . '/wap.php?g=Wap&c=Pay&a=weixin_back&order_type='.$now_order['order_type'].'&order_id=' . $laste_order_info['orderid'];
+//                file_get_contents($redirctUrl);
+//                $now_order = D('Group_order')->get_order_detail_by_id($own_uid, intval($_GET['order_id']), true);
+//            }
+//        }
         $now_group = D('Group')->get_group_by_groupId($now_order['group_id'],'hits-setInc');
         if($now_order['is_group_combine']){
             //获取商品id
@@ -1552,7 +1552,6 @@ class GroupnewAction extends BaseAction{
         if(($now_order['pass_array'] || ($now_order['pass_num'] && $now_order['pass_num']>1) || (C('config.baodi_ticket_url') && $now_order['custom_product_id']))&&!in_array($type,array(1,2))){
             $pass_ids = 1;
             $pass_array = D('Group_pass_relation')->get_pass_array($now_order['order_id']);
-            //$pass_array = sortArray($pass_array, 'status');
         } else if ($now_order['group_pass']) {
             $pass_ids = 2;
             $pass_array = array(
@@ -1646,7 +1645,6 @@ class GroupnewAction extends BaseAction{
             $group_pass = $now_order['group_pass'];
         }
         if(isset($_GET['path']) && $_GET['path']=="coupon" && $now_order['group_pass']){
-            //$group_pass = $_GET['key_id']?$pass_array[$_GET['key_id']]['group_pass']:$group_pass;
             $now_order['real_orderid']= $now_order['real_orderid'].'_'.$this->user_session['uid']."_".$group_pass."_".$now_order['order_id']."_".$_GET['own_id'];
         }
 
@@ -1677,8 +1675,9 @@ class GroupnewAction extends BaseAction{
         $this->assign('now_order', $now_order);
         $this->assign('now_group', $now_group);
         $this->assign('owner',$this->user_session['uid']);
-
-        $this->display();
+		if(empty($self)) {
+			$this->display();
+		}
 	}
     public function order_detail(){
         if(empty($this->user_session)){
@@ -1736,7 +1735,6 @@ class GroupnewAction extends BaseAction{
             $now_order['status_txt'] = '未消费';
         }
 
-
         $uid = $this->user_session['uid'];
         $group_share_num = D('Group_share_relation')->get_share_num($uid,$now_order['order_id']);
         $is_shared = D('Group_share_relation')->check_share($uid,$now_order['order_id']);
@@ -1745,6 +1743,7 @@ class GroupnewAction extends BaseAction{
             $v = preg_replace('/,/','/',$v);
         }
         $now_group['pic'] = $pic;
+        $show_group_pass = 1; //用于判断拼团订单是否可以展示二维码，拼团成功订单才展示二维码
         if($now_group['pin_num']>0 && $now_order['single_buy']==0 && $now_order['status']<3 && $now_order['paid']){
             $my_group_join = D('Group_start')->get_group_start_by_order_id($now_order['order_id']);
             if(empty($my_group_join)&&$now_order['paid']==1){
@@ -1793,6 +1792,9 @@ class GroupnewAction extends BaseAction{
             //$this->assign('effective_time',$effective_time);
             $this->assign('buyer',$buyer);
             $this->assign('my_group_join',$my_group_join);
+            if($my_group_join['status'] != 1){
+                $show_group_pass = 0;
+            }
         }else {
             if ($now_group['group_share_num'] == 0 && $now_group['open_now_num'] == 0 && $now_group['open_num'] == 0) {
                 M('Group_order')->where(array('order_id' => $now_order['order_id']))->save(array('is_share_group' => 2));
@@ -1812,6 +1814,7 @@ class GroupnewAction extends BaseAction{
                 $this->assign('share_user', $share_user);
             }
         }
+        $this->assign('show_group_pass', $show_group_pass);
         //$now_order['coupon_price'] = D('Group_order')->get_coupon_info($now_order['order_id']);
         //$has_pay = $now_order['wx_cheap']+$now_order['merchant_balance']+$now_order['balance_pay']+$now_order['score_deducte']+$now_order['coupon_price']+$now_order['payment_money'];
 
@@ -1913,9 +1916,6 @@ class GroupnewAction extends BaseAction{
         if($combine = M('Group_booking_appoint_order')->where(['order_id'=>$now_order['order_id']])->find()){
             $now_group['deadline_time'] = $combine['book_end_time'];
         }
-
-        
-
         // 查看是否可取消
         $canCancel = true;
         if($now_group['cancel_type'] == 0){// 不可取消
@@ -1962,7 +1962,8 @@ class GroupnewAction extends BaseAction{
             $redemption_code_list = D('Group_redemption_code')->where(['order_id'=>$now_order['order_id']])->getField('code',true);
         }
         $this->assign('redemption_code_list',$redemption_code_list);
-        $this->display();
+		$this->eticket(1);
+        $this->display('order_detail');
     }
     /**
      * 获取团购浏览购买分享信息

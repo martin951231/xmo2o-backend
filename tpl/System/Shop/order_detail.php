@@ -576,11 +576,11 @@
 <!--				<input type="button" value="登录店员后台" class="button" onclick="window.open('/admin.php?c=Merchant&a=storestaff_login&store_id={pigcms{$order.store_id}')"/>-->
 <!--			</eq>-->
 			</if>
-            <a href="javascript:void(0);" style="margin-left: 25px;" class="button" onclick="window.top.artiframe('{pigcms{:U('Shop/order_detail_log',array('order_id'=>$order['order_id'],'frame_show'=>true))}','查看订单日志',720,520,true,false,false,false,'order_detail_log',true);">查看订单日志</a>
+            <a href="javascript:void(0);" style="margin-left: 25px;" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/order_detail_log',array('order_id'=>$order['order_id'],'frame_show'=>true))}','查看订单日志',720,520,true,false,false,false,'order_detail_log',true);">查看订单日志</a>
 
             <if condition="$config['open_system_refund'] eq 1 AND (in_array('374', explode(',',$system_session['menus'])) OR $system_session['account'] == 'admin')">
-            	<a href="javascript:void(0);" class="button" onclick="window.top.artiframe('{pigcms{:U('Shop/system_refund',array('order_id' => $order['order_id']))}','手动退款',680,450,true,false,false,editbtn,'edit',true);">手动退款</a>
-            	<a href="javascript:void(0);" style="margin-left: 25px;" class="button" onclick="window.top.artiframe('{pigcms{:U('Shop/system_refund_list',array('order_id'=>$order['order_id'],'frame_show'=>true))}','手动退款记录','50%','70%',true,false,false,false,'system_refund_list',true);">手动退款记录</a>
+            	<a href="javascript:void(0);" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/system_refund',array('order_id' => $order['order_id']))}','手动退款',680,450,true,false,false,editbtn,'edit',true);">手动退款</a>
+            	<a href="javascript:void(0);" style="margin-left: 25px;" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/system_refund_list',array('order_id'=>$order['order_id'],'frame_show'=>true))}','手动退款记录','50%','70%',true,false,false,false,'system_refund_list',true);">手动退款记录</a>
         	</if>
 		</th>
 	</tr>

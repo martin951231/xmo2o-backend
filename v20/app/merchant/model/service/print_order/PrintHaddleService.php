@@ -57,6 +57,9 @@ class PrintHaddleService {
                 // 商米打印机 有线打印机
                 $formatStr['print_data'] = $formatArr;
                 $formatStr = json_encode($formatStr, JSON_UNESCAPED_UNICODE);
+            }if ($print['print_type'] == 7) {
+                // 大趋智能小票打印机
+                $formatStr = $this->getPrintStringForTrenditiot($formatArr);
             }else{ 
                 $formatStr = $this->printArrayToString($formatArr);
             }
@@ -133,6 +136,50 @@ class PrintHaddleService {
                 
                 $temp_str .="\n" . $value['text'];
                 // $temp_str .= chr(10) . $value['text'];                
+            }
+        }
+        return $temp_str;
+    }
+
+    //大趋智能小票打印机排版
+    public function getPrintStringForTrenditiot($content)
+    {
+        if (!$content) {
+            return '';
+        }
+        $temp_str = '';
+        foreach ($content as $value) {
+            if ($value['type'] == 'text') {
+                $bolder = 0;
+                $height = 1;
+                $width = 1;
+                if ($value['bold']) {
+                    // 字体加粗
+                    $bolder = 1;
+                }
+                switch ($value['size']) {
+                    case 'middle':
+                        //$width = 2;
+                        break;
+                    case 'big':
+                        $height = 2;
+                        //$width = 2;
+                        break;
+                }
+
+                $fontText = "<font# bolder={$bolder} height={$height} width={$width}>" . trim($value['text']) . "</font#>";
+
+                if ($value['align'] == 'center') {
+                    // 文本居中
+                    $value['text'] = "<C>" . $fontText . "</C><BR>";
+                } elseif ($value['align'] == 'right') {
+                    // 文本居右
+                    $value['text'] = "<RIGHT>" . $fontText . "</RIGHT><BR>";
+                } else {
+                    // 默认文本居左
+                    $value['text'] = "<LEFT>" . $fontText . "</LEFT><BR>";
+                }
+                $temp_str .= $value['text'];
             }
         }
         return $temp_str;

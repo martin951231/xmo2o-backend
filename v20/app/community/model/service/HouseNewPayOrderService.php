@@ -129,7 +129,8 @@ class HouseNewPayOrderService
         $housesize = 0;
         $heating_size=0;
         $billable_size=0;
-        if ($charge_standard_bind_info['vacancy_id']) {
+        $car_number='';
+        if ($charge_standard_bind_info['vacancy_id'] && $info['charge_type']!='park_new') {
             //使用房子的 未入住状态来判断
             $whereArrTmp = array();
             $whereArrTmp[] = array('pigcms_id', '=', $charge_standard_bind_info['vacancy_id']);
@@ -156,16 +157,7 @@ class HouseNewPayOrderService
             }
             $projectBindInfo = $service_house_new_charge_rule->getBindDetail(['project_id' => $info['charge_project_id'], 'rule_id' => $info['id'], 'vacancy_id' => $charge_standard_bind_info['vacancy_id']]);
         } else {
-            $service_house_village_parking = new HouseVillageParkingService();
-            $carInfo = $service_house_village_parking->getCar(['car_position_id' => $charge_standard_bind_info['position_id']]);
-            if ($carInfo) {
-                $carInfo = $carInfo->toArray();
-            }
-            if (empty($carInfo)) {
-                $not_house_rate = $info['not_house_rate'];
-            } else {
-                $not_house_rate = 100;
-            }
+            $not_house_rate = 100;
         }
         if ($charge_standard_bind_info['position_id']) {
             $projectBindInfo = $service_house_new_charge_rule->getBindDetail(['project_id' => $info['charge_project_id'], 'rule_id' => $info['id'], 'position_id' => $charge_standard_bind_info['position_id']]);
@@ -210,8 +202,6 @@ class HouseNewPayOrderService
             }
             $postData['total_money'] = $info['charge_price'] * $not_house_rate / 100 * $custom_value * $info['rate'] * $cycle;
         }
-        
-
         
         $rule_digit = -1;
         if (isset($info['rule_digit']) && $info['rule_digit'] > -1 && $info['rule_digit'] < 5) {
@@ -258,7 +248,7 @@ class HouseNewPayOrderService
             $postData['number'] = $custom_number;
         }
         $postData['from'] = 1;
-        if ($info['type'] == 2) {
+        if ($info['type'] == 2  && $info['charge_type']!='park_new') {
             $postData['service_month_num'] = $cycle;
             $projectInfo = $this->getProjectInfo(['id' => $info['charge_project_id']], 'subject_id');
             $numberInfo = $this->getNumberInfo(['id' => $projectInfo['subject_id']], 'charge_type');
@@ -404,34 +394,85 @@ class HouseNewPayOrderService
         if ($charge_standard_bind_info['position_id']) {
             $service_house_village_parking = new HouseVillageParkingService();
             $postData['position_id'] = $charge_standard_bind_info['position_id'];
+            $parkingPosition = $service_house_village_parking->getOneParkingPosition(array('position_id'=>$postData['position_id']));
+            if(empty($parkingPosition)){
+                $retArr['status'] = 1001;
+                $retArr['msg'] = '车位已经不存在了！';
+                return $retArr;
+            }
             $user_info = $this->getRoomUserBindByPosition($charge_standard_bind_info['position_id'], $charge_standard_bind_info['village_id']);
-            if ($user_info && !$user_info->isEmpty()) {
+            if ($user_info && isset($user_info['pigcms_id'])) {
                 $postData['pigcms_id'] = $user_info['pigcms_id'];
                 $postData['name'] = $user_info['name'];
                 $postData['uid'] = $user_info['uid'];
                 $postData['phone'] = $user_info['phone'];
                 $postData['room_id'] = $user_info['vacancy_id'];
+            }elseif($info['fees_type'] == 4){
+                $retArr['status'] = 1001;
+                $retArr['msg'] = '车位【'.$parkingPosition['position_num'].'】未绑定业主！';
+                return $retArr;
             }
-            if ($info['fees_type'] == 4) {
-                $car_info = $service_house_village_parking->getCar(['car_position_id' => $postData['position_id']], 'car_id,province,car_number,end_time');
+            if($info['fees_type'] == 4){
+                $whereP=array();
+                $whereP[] = ['village_id','=',$charge_standard_bind_info['village_id']];
+                $whereP[] = ['project_id','=',$postData['project_id']];
+                $whereP[] = ['is_discard','=',1];
+                $whereP[] = ['is_paid','=',2];
+                $whereP[] = ['position_id','=',$charge_standard_bind_info['position_id']];
+                $whereP[] = ['car_type','=','month_type'];
+
+                $field='order_id,summary_id,order_type,room_id,position_id,project_id,rule_id,village_id,service_start_time,service_end_time,add_time,service_time_handle,refund_type';
+                $order_info = $db_house_new_pay_order->get_one($whereP, $field,'order_id DESC');
+                if($order_info && !is_array($order_info)){
+                    $retArr['status'] = 1001;
+                    $retArr['msg'] = '该标准此车位【'.$parkingPosition['position_num'].'】已经有待缴账单存在！';
+                    return $retArr;
+                }
+                $whereRaw='(car_position_id ='.$postData['position_id'] .' OR FIND_IN_SET('.$postData['position_id'].',bind_position_ids))';
+                $car_info= $service_house_village_parking->getOneCar(['car_position_id'=>$postData['position_id']],$whereRaw,'car_id,province,car_number,end_time');
                 $postData['car_type'] = 'month_type';
                 $postData['is_prepare'] = 2;
-                $postData['car_number'] = !empty($car_info) ? $car_info['province'] . $car_info['car_number'] : '';
-                $postData['car_id'] = !empty($car_info) ? $car_info['car_id'] : 0;
-                $postData['service_month_num'] = $cycle ? $cycle : 1;
-                $postData['service_start_time'] = $car_info['end_time'] > time() ? ($car_info['end_time'] + 1) : strtotime(date('Y-m-d 00:00:00'));
-                if ($info['bill_create_set'] == 1) {
-                    $postData['service_end_time'] = $postData['service_start_time'] + 86400 * $cycle - 1;
-                } elseif ($info['bill_create_set'] == 2) {
-                    //todo 判断是不是按照自然月来生成订单
-                    if (cfg('open_natural_month') == 1) {
-                        $postData['service_end_time'] = strtotime("+$cycle month", $postData['service_start_time']) - 1;
-                    } else {
-                        $cycle = $cycle * 30;
-                        $postData['service_end_time'] = strtotime("+$cycle day", $postData['service_start_time']) - 1;
+                $dateStr=date('Y-m-d').' 00:00:01';
+                $parking_end_time=strtotime($dateStr);
+                if($car_info && !is_array($car_info) && is_object($car_info)){
+                    $car_info = $car_info->toArray();
+                    $postData['car_number'] = !empty($car_info['car_number']) ? $car_info['province'].$car_info['car_number']:'';
+                    $postData['car_id'] = $car_info['car_id'];
+                    if($car_info['end_time']>$parking_end_time){
+                        $parking_end_time=$car_info['end_time']+100;
                     }
-                } else {
-                    $postData['service_end_time'] = strtotime("+$cycle year", $postData['service_start_time']) - 1;
+                }
+                $postData['service_month_num'] =$cycle?$cycle:1 ;
+                if($parkingPosition && isset($parkingPosition['position_id'])){
+                    if($parkingPosition['end_time']>$parking_end_time){
+                        $parking_end_time=$parkingPosition['end_time']+100;
+                    }
+                    $postData['parking_lot']=$parkingPosition['position_num'];
+                }
+                $parking_end_time_date=date('Y-m-d',$parking_end_time);
+                $parking_end_time_to_start=strtotime($parking_end_time_date);
+                $postData['service_start_time'] =$parking_end_time_to_start;
+                if($info['bill_create_set'] == 1){
+                    $postData['service_end_time'] = $postData['service_start_time']+86400*$cycle-1;
+                }elseif ($info['bill_create_set'] == 2){
+                    //todo 判断是不是按照自然月来生成订单
+                    if(cfg('open_natural_month') == 1){
+                        $start_d=date('d',$postData['service_start_time']);
+                        $tmp_service_end_time=strtotime("+$cycle month",$postData['service_start_time']);
+                        $end_d=date('d',$tmp_service_end_time);
+                        $end_date='';
+                        if($start_d!=$end_d){
+                            $end_date=date('Y-m',$tmp_service_end_time).'-01 00:00:00';
+                            $end_date_time=strtotime($end_date);
+                            $tmp_service_end_time=$end_date_time;
+                        }
+                        $postData['service_end_time'] = $tmp_service_end_time-1;
+                    }else{
+                        $cycle = $cycle*30;
+                        $postData['service_end_time'] = strtotime("+$cycle day",$postData['service_start_time'])-1;
+                    }
+                }else{
+                    $postData['service_end_time'] = strtotime("+$cycle year",$postData['service_start_time'])-1;
                 }
             }
         }

@@ -24,7 +24,7 @@
 								<option value="0" <if condition="$_GET['status'] eq 0 AND isset($_GET['status'])">selected="selected"</if>>关闭</option>
 							</select>
 							<input type="submit" value="查询" class="button"/>　
-							<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('User/recharge_discount_add',array('id'=>$vo['id']))}','添加充值优惠规则',700,500,true,false,false,editbtn,'edit',true);" class="button" style="float:right;margin-right: 10px;">添加充值优惠规则</a>
+							<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('User/recharge_discount_add',array('id'=>$vo['id']))}','添加充值优惠规则',700,500,true,false,false,editbtn,'edit',true);" class="button" style="float:right;margin-right: 10px;">添加充值优惠规则</a>
 						</form>
 					</td>
 				</tr>
@@ -61,7 +61,7 @@
 											<font color="red">关闭</font>
 											</if></td>
 										<td class="textcenter">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/recharge_discount_add',array('discount_id'=>$vo['discount_id']))}','编辑',800,560,true,false,false,editbtn,'order_edit',true);">编辑</a></td>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/recharge_discount_add',array('discount_id'=>$vo['discount_id']))}','编辑',800,560,true,false,false,editbtn,'order_edit',true);">编辑</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="6">{pigcms{$pagebar}</td></tr>

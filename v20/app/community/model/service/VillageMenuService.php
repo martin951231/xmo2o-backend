@@ -81,8 +81,6 @@ class VillageMenuService
         $where_menus[]=['id','not in',$notInArrId];
 
         $house_menu_list = $db_house_menu_new->getList($where_menus,true,'fid ASC,sort desc,id ASC');
-
-
         if (!empty($house_menu_list)) {
             $house_menu_list = $house_menu_list->toArray();
             fdump_api($house_menu_list, '$house_menu_list');

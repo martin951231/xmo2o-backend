@@ -148,7 +148,7 @@
 				<th width="80">权限</th>
 				<td>
 					
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Index/menu',array('admin_id'=>$admin['id']))}','设置管理员使用权限',700,500,true,false,false,editbtn,'menu',true);" style="color:blue">设置管理员使用权限</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Index/menu',array('admin_id'=>$admin['id']))}','设置管理员使用权限',700,500,true,false,false,editbtn,'menu',true);" style="color:blue">设置管理员使用权限</a>
 					
 				</td>
 				

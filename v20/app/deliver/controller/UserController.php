@@ -521,6 +521,49 @@ class UserController extends ApiBaseController
     }
 
     /**
+     * 添加银行卡
+     */
+    public function createBankCard()
+    {
+        $this->checkLogin();
+        $params = [
+            'uid' => $this->request->log_uid,
+            'account_name' => input('account_name', '', 'trim,string'),
+            'account' => input('account', '', 'trim,string'),
+            'remark' => input('remark', '', 'trim,string'),
+            'province_id' => input('province_id', 0, 'trim,intval'),
+            'city_id' => input('city_id', 0, 'trim,intval'),
+            'branch' => input('branch', '', 'trim,string'),
+            'is_default' => input('is_default', 0, 'trim,intval'),
+            'bank_id' => input('bank_id', 0, 'trim,intval'),
+        ];
+        try {
+            $rs = (new DeliverUserService())->createBankCard($params);
+            return api_output(0, $rs);
+        } catch (\Throwable $th) {
+            return api_output(1003, [], $th->getMessage());
+        }
+    }
+
+    /**
+     * 删除银行卡
+     */
+    public function deleteBankCard()
+    {
+        $this->checkLogin();
+        $params = [
+            'uid' => $this->request->log_uid,
+            'bank_id' => input('bank_id', 0, 'trim,intval'),
+        ];
+        try {
+            $rs = (new DeliverUserService())->deleteBankCard($params);
+            return api_output(0, $rs);
+        } catch (\Throwable $th) {
+            return api_output(1003, [], $th->getMessage());
+        }
+    }
+
+    /**
      * 收入明细
      * @author: 张涛
      * @date: 2020/12/2
@@ -558,6 +601,7 @@ class UserController extends ApiBaseController
             $param['money'] = $this->request->param('money', 0);
             $param['type'] = $this->request->param('type', '', 'trim');
             $param['account'] = $this->request->param('account', '', 'trim');
+            $param['bank_id'] = $this->request->param('bank_id', 0, 'trim,intval');
             Cache::set($lockKey, 1, 30);
             (new DeliverUserService())->applyWithdraw($this->request->log_uid, $param);
             Cache::delete($lockKey);

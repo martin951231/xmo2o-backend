@@ -81,6 +81,7 @@ scrollView.y{
 .flex-zTopBottom {-webkit-box-direction: normal;-webkit-box-orient: vertical;-moz-flex-direction: column;-webkit-flex-direction: column;flex-direction: column;}
 .flex-shink0{-webkit-box-flex: 0;-moz-flex-shrink: 0;-webkit-flex-shrink: 0;flex-shrink: 0;}
 .flex-grow1{-webkit-box-flex: 1.0;-moz-flex-grow: 1;-webkit-flex-grow: 1;flex-grow: 1;}
+.flex-1{flex: 1;}
 
 .page{
 	position:absolute;

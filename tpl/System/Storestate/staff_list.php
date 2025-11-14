@@ -25,7 +25,7 @@
 						<td class="textcenter"><if condition="$vo.is_login eq '1'">登录中<else /><font color="red">未登录</font></if></td>
 						<td class="textcenter"><if condition="$vo.is_notice eq '1'"><font color="red">不接收</font><else />接单</if></td>
 						<td class="textcenter"><if condition="$vo.pingpang eq '1'">正常<else /><font color="red">异常</font></if></td>
-						<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Storestate/staff_log',array('staff_id'=>$vo['id'],'account'=>$vo['username']))}','查看{pigcms{$vo.username}登录日志',850,560,true,false,false,'','show',true);">查看登录日志</a></td>
+						<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Storestate/staff_log',array('staff_id'=>$vo['id'],'account'=>$vo['username']))}','查看{pigcms{$vo.username}登录日志',850,560,true,false,false,'','show',true);">查看登录日志</a></td>
 					</tr>
 				</volist>
 			<else />

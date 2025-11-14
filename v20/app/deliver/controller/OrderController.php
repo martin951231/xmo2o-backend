@@ -3,6 +3,7 @@
 namespace app\deliver\controller;
 
 
+use app\deliver\model\db\DeliverUser;
 use app\deliver\model\service\DeliverSupplyService;
 use app\deliver\model\service\DeliverUserService;
 
@@ -91,9 +92,14 @@ class OrderController extends ApiBaseController
             return api_output(1001, [], L_('参数有误'));
         }
         try {
+	        $user = DeliverUser::where('uid', $uid)->find();
+			if(empty((float)$user['now_lng']) || empty((float)$user['now_lat'])) {
+				throw new \Exception('当前位置未定位,请先开启定位后再操作');
+			}
             (new DeliverUserService())->updateDeliverStatus($uid, $supplyId, $action, $transferToUid);
             return api_output(0, []);
         } catch (\Throwable $th) {
+			fdump_api([input(), $th->getMessage(), $th->getTraceAsString()], 'deliver/error'.$action, 1);
             return api_output($th->getCode() ? $th->getCode() : 1003, [], $th->getMessage());
         }
     }

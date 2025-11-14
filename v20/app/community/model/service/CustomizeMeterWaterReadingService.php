@@ -258,6 +258,7 @@ class CustomizeMeterWaterReadingService
         if(!(int)cfg('customized_meter_reading')){
             return true;
         }
+        set_time_limit(0);
         $dayKey = date('H');
         $dlineday = date("Y-m-d");
         $startdaytime = time()-86400;
@@ -272,7 +273,7 @@ class CustomizeMeterWaterReadingService
         $data=[];
         $charge_type='water';
         $nowDay=date('Ymd');
-        foreach ($result['data'] as $v){
+        foreach ($result['data'] as $kk=>$v){
             $v['watermeter']=trim($v['watermeter']);
             $vacancy_num=$this->HouseVillageVacancyNum->getVillageFind([
                 ['a.water_number|a.heat_water_number','=',$v['watermeter']],
@@ -383,11 +384,9 @@ class CustomizeMeterWaterReadingService
                 'watermeter'=>$v['watermeter']
             ];
             fdump_api(['符合的$param组装数据前=='.__LINE__, 'param' => $param],'customize_water/getMeterWaterReading_data'.$dayKey,1);
-            $data[]=$this->assembleMethod($param,$isexceptional);
-        }
-        if($data){
-            fdump_api(['符合的数据集=='.__LINE__, 'data' => $data],'customize_water/getMeterWaterReading_data'.$dayKey,1);
-            $this->ProcessSubPlan->addAll($data);
+            $dataTmp=$this->assembleMethod($param,$isexceptional);
+            $inset_id=$this->ProcessSubPlan->add($dataTmp);
+            fdump_api([__LINE__, 'kk'=>$kk,'inset_id' => $inset_id],'customize_water/getMeterWaterReading_data'.$dayKey,1);
         }
         return true;
     }

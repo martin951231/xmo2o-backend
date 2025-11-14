@@ -3,10 +3,10 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('House/property')}" class="on">物业列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/property_add')}','添加物业',650,500,true,false,false,addbtn,'add',true);">添加物业</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/property_import')}','导入物业',450,150,true,false,false,importbtn,'add',true);">导入物业</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/property_add')}','添加物业',650,500,true,false,false,addbtn,'add',true);">添加物业</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/property_import')}','导入物业',450,150,true,false,false,importbtn,'add',true);">导入物业</a>
 <!--					<if condition="$config['buy_sms'] eq 1">-->
-<!--						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/sms_add_all')}','添加短信',520,350,true,false,false,addbtn,'add',true);">添加短信</a>-->
+<!--						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/sms_add_all')}','添加短信',520,350,true,false,false,addbtn,'add',true);">添加短信</a>-->
 <!--					</if>-->
 						<!-- <a href="{pigcms{:U('House/door_notice_map')}" target="_blank" >{pigcms{$config['house_name']}开门状态监控</a> -->
 				</ul>
@@ -121,7 +121,7 @@
 
 										<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 3"/><font color="red" title="等待管理员审核通过">待审核</font><elseif condition="$vo['status'] eq 0"/><font color="red" title="等待{pigcms{$config['house_name']}管理员登录<?php echo D('House_village')->getHouseAlias('house_name')?:'小区'?>后台完善信息">待完善信息</font><else/><font color="red">禁止</font></if></td>
 
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/property_edit',array('id'=>$vo['id']))}','编辑物业信息',800,650,true,false,false,editbtn,'edit',true);">编辑</a>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/property_edit',array('id'=>$vo['id']))}','编辑物业信息',800,650,true,false,false,editbtn,'edit',true);">编辑</a>
 <!--                                            &nbsp;|&nbsp;<a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/del_property')}">删除</a>-->
                                         </td>
 									</tr>
@@ -139,7 +139,7 @@
         <script>
             function packageOrderDetail(order_id) {
                 var url = "{pigcms{:U('House/package_order')}&order_id="+order_id;
-                window.top.artiframe(url,'物业服务详情',500,650,true,false,false,false,'detail',true);
+                window.o2oTop.artiframe(url,'物业服务详情',500,650,true,false,false,false,'detail',true);
             }
 
 

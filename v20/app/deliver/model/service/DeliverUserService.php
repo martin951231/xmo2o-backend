@@ -10,6 +10,7 @@ use app\deliver\model\db\DeliverSupply;
 use app\deliver\model\db\DeliverUser;
 use app\deliver\model\db\DeliverUserMoneyLog;
 use app\deliver\model\db\DeliverUserWithdraw;
+use app\deliver\model\db\UserWithdrawAccountList;
 use app\mall\model\service\MallOrderService;
 use app\merchant\model\service\MerchantStoreService;
 use app\paotui\model\db\ServiceUserPublish;
@@ -379,9 +380,26 @@ class DeliverUserService
                 if ($v['type'] == 0 && $v['status'] == 1 && isset($areaConfig[$v['city_id']]) && $v['create_time'] + $areaConfig[$v['city_id']] * 60 < $tm) {
                     unset($items[$k]);
                 }
-//                elseif($v['type'] == 0 && isset($areaDeliverConfig[$v['city_id']]) && $areaDeliverConfig[$v['city_id']] > 0 && $v['get_type'] == 0){//禁止抢单的城市的订单不出现
-//                    unset($items[$k]);
-//                }
+                //                elseif($v['type'] == 0 && isset($areaDeliverConfig[$v['city_id']]) && $areaDeliverConfig[$v['city_id']] > 0 && $v['get_type'] == 0){//禁止抢单的城市的订单不出现
+                //                    unset($items[$k]);
+                //                }
+                //判断跑腿单是否来自商家中心，而且商家是否绑定了骑手
+                if (cfg('open_paotui_price_template') && $v['item'] == 3 && $v['mer_id'] > 0) {
+                    $poolIds = Db::name('paotui_grab_pool_merchant')->alias('m')
+                        ->join('paotui_grab_pool p', 'p.id = m.pool_id')
+                        ->where('p.status', 1)
+                        ->where('m.mer_id', $v['mer_id'])
+                        ->column('p.id');
+                    if ($poolIds) {
+                        //商家绑定了配送池，则只能配送池里的骑手才能抢单，其他骑手不允许抢单
+                        $isBind = Db::name('paotui_grab_pool_deliver')->whereIn('pool_id', $poolIds)->where('deliver_uid', $uid)->find();
+                        if (empty($isBind)) {
+                            unset($items[$k]);
+                        }
+                    } else {
+                        //商家没绑定配送池，走原逻辑抢单
+                    }
+                }
             }
             $count = count($items);
 
@@ -534,7 +552,6 @@ class DeliverUserService
                 break;
             default:
                 throw new Exception(L_('非法action'));
-                break;
         }
         return true;
     }
@@ -1559,6 +1576,10 @@ class DeliverUserService
      */
     public function reportLocation($uid, $lat, $lng)
     {
+		if(empty((float)$lat) || empty((float)$lng)) {
+			fdump_api([$uid, $lat, $lng], 'deliver/reportLocation', 1);
+			return;
+		}
         $data = [
             'uid' => $uid,
             'lng' => $lng,
@@ -1625,12 +1646,137 @@ class DeliverUserService
         if (empty($user)) {
             throw new Exception(L_('配送员不存在'));
         }
+        //银行卡列表
+        $bank_list = (new UserWithdrawAccountList())->field('*')->where([['from', '=', 2], ['type', '=', 0], ['pay_id', '=', $uid]])->select()->toArray();
+        foreach ($bank_list as &$item){
+            $item['remark_info'] = '【' . $item['remark'] . '】' . $item['account'] . ($item['is_default'] ? '【默认】' : '');
+        }
+        $select_type = [];
+        if(cfg('open_deliver_wallet')){
+            if(cfg('company_weixin_pay')){
+                $select_type[] =  [
+                    'label' => L_('微信'),
+                    'value' => 'wechat',
+                ];
+            }
+            if(cfg('company_alipay_pay')){
+                $select_type[] =  [
+                    'label' => L_('支付宝'),
+                    'value' => 'alipay',
+                ];
+            }
+            if(cfg('company_bank_pay')){
+                $select_type[] =  [
+                    'label' => L_('银行卡'),
+                    'value' => 'bank',
+                ];
+            }
+            $open_deliver_wallet = cfg('open_deliver_wallet');
+            if($user['user_type'] && $open_deliver_wallet == 1){ //未开启简直配送员提现
+                $select_type = [];
+            }
+            if(!$user['user_type'] && $open_deliver_wallet == 2){ //未开启全职配送员提现
+                $select_type = [];
+            }
+        }
+        //获取省份
+        $area_list = (new AreaService())->getSelectProvinceAndCity(['area_id'=>0]);
+        foreach ($area_list as &$item){
+            if(!empty($item['children'])){
+                foreach ($item['children'] as &$val){
+                    $val['value'] = explode('-', $val['value'])[1];
+                }
+            }
+        }
         return [
             'money' => get_format_number($user->money),
             'tip_money' => get_format_number($user->tip_money),
             'can_withdraw_money' => get_format_number($user->money),
-            'service_charge_percent' => cfg('company_pay_user_percent')
+            'service_charge_percent' => cfg('company_pay_user_percent'),
+            'bank_list' => $bank_list ?: [],
+            'select_type' => $select_type,
+            'area_list' => $area_list,
         ];
+    }
+
+    /**
+     * 添加银行卡
+     * @param $params
+     * @return bool
+     * @throws Exception
+     */
+    public function createBankCard($params){
+        if(empty($params['account'])){
+            throw new \think\Exception(L_('银行卡号不能为空'));
+        }
+        if(empty($params['account_name'])){
+            throw new \think\Exception(L_('持卡人姓名不能为空'));
+        }
+        
+        if(!$params['province_id'] && $params['city_id']){
+            throw new \think\Exception(L_('请选择开户行省、市信息！'));
+        }
+        
+        $province_info = (new Area())->where(['area_id'=>$params['province_id'],'area_type'=>1,'is_open'=>1])->findOrEmpty()->toArray();
+        if(!$province_info){
+            throw new \think\Exception(L_('省份有误！'));
+        }
+        $city_info = (new Area())->where(['area_id'=>$params['city_id'],'area_type'=>2,'is_open'=>1])->findOrEmpty()->toArray();
+        if(!$city_info){
+            throw new \think\Exception(L_('城市有误！'));
+        }
+        
+        $data_companypay['from']     = 2;
+        $data_companypay['type']     = 0;
+        $data_companypay['pay_id']   = $params['uid'];
+        $data_companypay['account_name'] = $params['account_name'];
+        $data_companypay['account'] = $params['account'];
+        $data_companypay['is_default'] = $params['is_default'];
+        $data_companypay['add_time'] = time();
+        $data_companypay['remark']    = $params['remark'];
+        $data_companypay['province_id']  = $params['province_id'];
+        $data_companypay['city_id']    = $params['city_id'];
+        $data_companypay['branch']    = $params['branch'];
+
+        Db::startTrans();
+        try {
+            if ($data_companypay['is_default']) {
+                (new UserWithdrawAccountList())->where(['pay_id' => $params['uid'], 'from' => 2, 'type' => 0])->save(['is_default' => 0]);
+            }
+            if ($params['bank_id']) {
+                (new UserWithdrawAccountList())->where(array('id' => $params['bank_id']))->save($data_companypay);
+            } else {
+                (new UserWithdrawAccountList())->save($data_companypay);
+            }
+            Db::commit();
+        }catch (\Exception $e){
+            Db::rollback();
+            throw new \think\Exception($e->getMessage());
+        }
+        return true;
+    }
+
+    /**
+     * 删除银行卡
+     * @param $params
+     * @return bool
+     * @throws Exception
+     */
+    public function deleteBankCard($params){
+        $uid = $params['uid'];
+        $bank_id = $params['bank_id'];
+        $where = [
+            'from' => 2,
+            'type' => 0,
+            'id'   => $bank_id,
+            'pay_id'   => $uid,
+        ];
+        try {
+            (new UserWithdrawAccountList())->where($where)->delete();
+        }catch (\Exception $e){
+            throw new \think\Exception($e->getMessage());
+        }
+        return true;
     }
 
     /**
@@ -1682,14 +1828,15 @@ class DeliverUserService
         $money = $param['money'] ?? 0;
         $type = $param['type'] ?? '';
         $account = $param['account'] ?? '';
-        $typeNames = ['alipay' => L_('支付宝'), 'wechat' => L_('微信')];
+        $bank_id = $param['bank_id'] ?? 0;
+        $typeNames = ['alipay' => L_('支付宝'), 'wechat' => L_('微信'), 'bank' => L_('银行卡')];
         if (empty($trueName)) {
             throw new Exception(L_('提现人真实姓名不能为空'));
         }
         if ($money < 0.01) {
             throw new Exception('提现金额不能小于0.01元');
         }
-        if (empty($type) || !in_array($type, ['alipay', 'wechat'])) {
+        if (empty($type) || !in_array($type, ['alipay', 'wechat', 'bank'])) {
             throw new Exception(L_('提现方式非法'));
         }
         $deliverUserMod = new DeliverUser();
@@ -1702,10 +1849,34 @@ class DeliverUserService
             throw new Exception(L_('禁止提现'));
         }
 
-        $user = (new \app\common\model\db\User())->where('phone', '=', $deliverUser['phone'])->findOrEmpty()->toArray();
-        if (empty($user)) {
-            throw new Exception(L_('配送员未关联用户，禁止提现'));
+        $deliver_minimum_withdrawal_amount = cfg('deliver_minimum_withdrawal_amount') ?: 0;
+        if ($deliver_minimum_withdrawal_amount > 0 && $money < $deliver_minimum_withdrawal_amount) {
+            throw new Exception(L_('最低提现金额为：X1X2', ['X1' => cfg('deliver_minimum_withdrawal_amount'), 'X2' => cfg('Currency_txt')]));
         }
+        $remark = '';
+        $user_money_desc = L_("提现至X1", ['X1' => $typeNames[$type]]);
+        if($type == 'bank'){
+            $bank_info = (new UserWithdrawAccountList())->where(['from' => 2, 'pay_id' => $uid, 'id' => $bank_id])->findOrEmpty()->toArray();
+            if (empty($bank_info['account']) || empty($bank_info['account_name']) || empty($bank_info['remark'])) {
+                throw new Exception(L_('银行账号不全！'));
+            }
+            $account = $bank_info['account'];
+            $remark = '开户名：' . $bank_info['account_name'] . ',开户行：' . $bank_info['remark'];
+            if($bank_info['province_id']){
+                $province = (new Area())->where(['area_id' => $bank_info['province_id']])->value('area_name');
+                $city = (new Area())->where(['area_id' => $bank_info['city_id']])->value('area_name');
+
+                $remark .= '，' . L_('开户省市：') . $province . $city . '，' . L_('开户网点：') . $bank_info['branch'];
+            }
+
+            $user_money_desc .= L_("，账号：X1X2，姓名：X3", [ 'X1' => $bank_info['remark'], 'X2' => $bank_info['account'], 'X3' => $bank_info['account_name']]);
+        }else{
+            $user = (new \app\common\model\db\User())->where('phone', '=', $deliverUser['phone'])->findOrEmpty()->toArray();
+            if (empty($user)) {
+                throw new Exception(L_('配送员未关联用户，禁止提现'));
+            }
+        }
+        $user_money_desc .= L_("-审核中");
 
         if ($money > $deliverUser['money']) {
             throw new Exception(L_('余额不足'));
@@ -1722,9 +1893,10 @@ class DeliverUserService
             'account' => $account,
             'apply_time' => time(),
             'status' => 0,
-            'tip_money' => $deliverUser['tip_money'] > $money ? $money : $deliverUser['tip_money']
+            'tip_money' => $deliverUser['tip_money'] > $money ? $money : $deliverUser['tip_money'],
+            'remark' => $remark,
         ];
-        $data['log_id'] = $this->useMoney($uid, $money, L_('提现至X1-审核中', ['X1' => $typeNames[$type]]), 3, 'withdraw', 0);
+        $data['log_id'] = $this->useMoney($uid, $money, $user_money_desc, 3, 'withdraw', 0);
 
         $percent = cfg('company_pay_user_percent');
         
@@ -1840,6 +2012,33 @@ class DeliverUserService
 					// 修改状态
                     $this->handleWithDrawAfter($withdrawData['deliver_withdraw_id'],1,['reason'=>L_('实时提现')]);
                     (new \app\common\model\service\companypay\CompanypayService())->updateThis(['pigcms_id'=>$payId],['status'=>1]);
+                }
+            } else if ($type == 'bank') {
+                $withdrawData = [
+                    'type' => 'deliver',
+                    'pay_type' => 0,
+                    'pay_id' => $uid,
+                    'account' => $account,
+                    'name' => $trueName,
+                    'truename' => $trueName,
+                    'remark' => $remark,
+                    'phone' => $deliverUser['phone'],
+                    'money' => bcmul($money * ((100 - $percent) / 100), 100),
+                    'old_money' => $money * 100,
+                    'desc' => "用户提现对账订单|配送员ID " . $uid . " |转账 " . $money . cfg('Currency_txt') . "",
+                    'status' => 0,
+                    'add_time' => time(),
+                    'deliver_withdraw_id' => $withdrawId
+                ];
+                if ($percent > 0) {
+                    $withdrawData['desc'] .= '|手续费 ' . round((($withdrawData['old_money'] - $withdrawData['money']) / 100), 2) . ' 比例 ' . $percent . '%';
+                }
+
+                // 插入提现记录
+                $withdrawId = Db::name('withdraw_list')->insertGetId($withdrawData);
+                if(!$withdrawId){
+                    Db::rollback();// 回滚事务
+                    throw new Exception(L_('申请失败！'));
                 }
             }
             

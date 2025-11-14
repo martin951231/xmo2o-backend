@@ -14,4 +14,14 @@ class HouseServicesHousekeeper extends Model
         $data = $this->where($where)->field($field)->select();
         return $data;
     }
+
+    public function getListAndRaw($where=[],$field='*',$whereRaw='')
+    {
+        $sql = $this->where($where);
+        if ($whereRaw) {
+            $sql = $sql->whereRaw($whereRaw);
+        }
+        $data = $sql->field($field)->select();
+        return $data;
+    }
 }

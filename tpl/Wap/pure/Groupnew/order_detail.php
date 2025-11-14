@@ -10,56 +10,198 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 		<meta name="format-detection" content="telephone=no"/>
 		<meta name="format-detection" content="address=no"/>
-		<link rel="stylesheet" type="text/css" href="{pigcms{$static_path}groupnew/css/base.css?t={pigcms{:time()}"/>
 		<link rel="stylesheet" type="text/css" href="{pigcms{$static_path}groupnew/css/search.css?t={pigcms{:time()}"/>
 		<link rel="stylesheet" type="text/css" href="{pigcms{$static_path}groupnew/css/order_detail.css?t={pigcms{:time()}"/>
+
+        <link rel="stylesheet" type="text/css" href="{pigcms{$static_public}jqueryweui/swiper.css" />
+        <link rel="stylesheet" type="text/css" href="{pigcms{$static_public}jqueryweui/weui.css" />
+        <link rel="stylesheet" type="text/css" href="{pigcms{$static_public}jqueryweui/jquery-weui.min.css" />
+        <link rel="stylesheet" type="text/css" href="{pigcms{$static_path}groupnew/css/base.css?t={pigcms{:time()}" />
+        <script type="text/javascript">
+            var main_color = "{pigcms{$config.mobile_head_color}"
+        </script>
 	</head>
 	<body>
 		<div class="pageBg"></div>
-		<scrollView class="page y two_category" id="two_category_page">
+		<scrollView class="page y two_category">
 			<div class="container">
 				<div class="order-detail">
-					<div class="store-name link newWin" data-url="{pigcms{:U('merchant',array('mer_id'=>$now_merchant['mer_id'],'page_num'=>$page_num))}">
-						<img src="{pigcms{$now_merchant.img}"/><span>{pigcms{$now_merchant.name}</span>
-					</div>
-					<div class="flex flex-justify goods-detail link newWin" data-url="{pigcms{$detail_url}">
-						<img class="flex-shink0" src="{pigcms{:thumb_img($now_order['list_pic'],240,240,'fill')}"/>
-						<div class="flex flex-zTopBottom flex-justify desc-box ">
-							<div class="title">{pigcms{$now_group.name} <if condition="$now_group['s_name'] AND $now_group['name'] " >|</if> {pigcms{$now_group.s_name}</div>
-                            <if condition="$now_order['specifications_info'] && $now_order['specifications_info']['specifications_name']">
-                                <div class="small-gray">款式：{pigcms{$now_order['specifications_info']['specifications_name']}</div>
+                     <!-- 头部商品信息模块 -->
+                    <div class="main-box" style="padding: 14px 0;">
+                        <if condition="$now_merchant">
+                            <div class="store-name link newWin" data-url="{pigcms{:U('merchant',array('mer_id'=>$now_merchant['mer_id'],'page_num'=>$page_num))}">
+                                <img src="{pigcms{$now_merchant.img}"/><span>{pigcms{$now_merchant.name}</span>
+                            </div>
+                        <else/>
+                            <div class="store-name link newWin"">
+                                <img src="{pigcms{$now_order.banner_img}"/><span>{pigcms{$now_order.name}</span>
+                            </div>
+                        </if>
+                        
+                        <div class="flex goods-detail link newWin" data-url="{pigcms{$detail_url}">
+                            <img class="flex-shink0" src="{pigcms{:thumb_img($now_order['list_pic'] ?? $now_order['image'],240,240,'fill')}" style="object-fit: cover;"/>
+                            <div class="flex flex-zTopBottom flex-justify desc-box flex-1">
+                                <if condition="$now_group['name']">
+                                    <div class="title">{pigcms{$now_group.name} <if condition="$now_group['s_name'] AND $now_group['name'] " >|</if> {pigcms{$now_group.s_name}</div>
                                 <else/>
-                                <p class="small-gray">{pigcms{$now_group.intro}</p>
-                            </if>
-						</div>
-						<div class="flex-shink0 flex flex-zTopBottom flex-justify num-box">
-							<div>
-								<div class="now-price">{pigcms{$config['Currency_symbol']}{pigcms{$now_order.price}</div>
-                                <if condition="$now_order['specifications_info']">
-                                    <div class="small-gray old-price">{pigcms{$config['Currency_symbol']}{pigcms{$now_order['specifications_info']['old_price']}</div>
-                                <elseif condition="$now_group['old_price'] gt $now_group['price'] "/>
-                                    <div class="small-gray old-price">{pigcms{$config['Currency_symbol']}{pigcms{$now_group.old_price}</div>
+                                    <div class="title">{pigcms{$now_order.name}</div>
                                 </if>
-							</div>
-							<div class="small-gray">×{pigcms{$now_order.num}</div>
-						</div>
-					</div>
-                    <div class="other-info-box">
-                    
-                        <if condition="$now_order['status'] neq 4">
-                            <div class="flex flex-justify line">
-                                <span class="left">{pigcms{$config.group_alias_name}有效期</span>
-                                <span class="right">{pigcms{$now_group.deadline_time|date='Y-m-d H:i:s',###}</span>
+                                <div class="flex flex-justify flex-align" style="margin: 4px 0;">
+                                    <div class="flex flex-align">
+                                        <div class="now-price flex" style="align-items: baseline;">
+                                            <span style="font-weight: 400;font-size: 12px">{pigcms{$config['Currency_symbol']}</span>
+                                            <span class="now-price">{pigcms{$now_order.price}</span>
+                                        </div>  
+                                        <div>
+                                            <if condition="$now_order['specifications_info']">
+                                                <span class="small-gray old-price">{pigcms{$config['Currency_symbol']}{pigcms{$now_order['specifications_info']['old_price']}</span>
+                                            <elseif condition="$now_group['old_price'] gt $now_group['price'] "/>
+                                                <span class="small-gray old-price">{pigcms{$config['Currency_symbol']}{pigcms{$now_group.old_price}</span>
+                                            </if>
+                                        </div>
+                                    </div>
+                                    <span class="small-gray">×{pigcms{$now_order.num}</span>
+                                </div>
+                                <if condition="$now_order['specifications_info'] && $now_order['specifications_info']['specifications_name']">
+                                    <div class="small-gray">款式：{pigcms{$now_order['specifications_info']['specifications_name']}</div>
+                                    <else/>
+                                    <p class="small-gray">{pigcms{$now_group.intro}</p>
+                                </if>
                             </div>
-                        </if>
-                        <if condition="$now_group.no_refund eq 0 AND $now_group.before_effective_time gt 0 AND $now_group.tuan_type eq 0">
-                            <div class="flex flex-justify line">
-                                <span class="left">{pigcms{$config.group_alias_name}退款有效期</span>
-                                <span class="right">{pigcms{$config.group_alias_name}有效期{pigcms{$now_group.before_effective_time}<if condition="$now_group['effective_time_type'] eq 1">天<else/>小时</if>前可退</span>
-                            </div>
-                        </if>
+                        </div>
                     </div>
 
+                    <if condition="$pass_array">
+                        <div class="eticket-box main-box">
+                            <div class="qcode-box">
+                                <!-- Swiper -->
+                                <div class="swiper-container qcode-swiper">
+                                    <div class="swiper-wrapper">
+                                        <volist name="pass_array" id="item">
+                                            <div class="swiper-slide" data-group_pass="{pigcms{$item['group_pass']}">
+                                                <div class="qcode-detail">
+                                                    <div class="qcode-img <if condition="$item['status'] gt 0 || $show_group_pass neq 1">disable</if>">
+                                                        <if condition="$item['give_status'] eq 0">
+                                                            <!-- 团购券转赠成功遮罩 -->
+                                                            <div class="qcode-img-mask">已转赠成功</div>
+                                                        </if>
+                                                        <if condition="$item['status'] gt 0">
+                                                            <div class="qcode-success">
+                                                                <img src="{pigcms{$static_path}groupnew/images/success.png" alt="">
+                                                            </div>
+                                                        </if>
+                                                    </div>
+                                                    <div class="other-box">
+                                                        <div class="desc" style="font-weight: bold;font-size: 16px;color: #333333;margin-bottom:5px">
+                                                            <if condition="$item['status'] eq 2">
+                                                                已退款
+                                                                <elseif condition="$item['status'] eq 1" />
+                                                                已核销
+                                                                <else />
+                                                                未核销
+                                                            </if>
+                                                        </div>
+                                                        <div class="number">{pigcms{$item['group_pass']}</div>
+                                                        <div class="coupon-gift">
+                                                            <if condition="$now_group['is_give'] eq 1 && $give_submit_show eq 1">
+                                                                <button class="btn">转赠</button>
+                                                            </if>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                        <if condition="$now_order['is_group_combine']">
+                                                            <div class="qcode-info">
+                                                                <div class="desc">已核销次数 <span>{pigcms{$item['used_count']}</span></div>
+                                                                <div class="desc">未核销次数<span>{pigcms{$item['no_use_count']}</span></div>
+                                                            </div>
+                                                            <elseif condition="$item['verify_time']" />
+                                                            <div class="qcode-info">
+                                                                <div class="desc">核销时间<span>{pigcms{:date('Y-m-d H:i:s',$item['verify_time'])}</span></div>
+                                                                <div class="desc">核销人员<span>{pigcms{$item['staff_name']}</span></div>   
+                                                            </div>
+                                                        </if>
+                                                    
+                                                    <if condition="$item['status'] eq 3">
+                                                        <div class="qcode-mask">
+                                                            <img src="{pigcms{$static_path}groupnew/images/out-time.png" />
+                                                        </div>
+                                                        <elseif condition="$item['status'] eq 1" />
+                                                        <div class="qcode-mask">
+                                                            <img src="{pigcms{$static_path}groupnew/images/out-use.png" />
+                                                        </div>
+                                                    </if>
+                                                </div>
+                                            </div>
+                                        </volist>
+                                    </div>
+                                    <if condition="count($pass_array) gt 1">
+                                        <!-- Add Pagination -->
+                                        <div class="swiper-pagination"></div>
+                                        <!-- Add Arrows -->
+                                        <div class="swiper-button-next"></div>
+                                        <div class="swiper-button-prev"></div>
+                                    </if>
+                                </div>
+                            </div>
+                            <if condition="$now_group && $now_group['cue_arr']">
+                                <div class="use-desc">
+                                    <div class="use-title">使用须知</div>
+                                    <ul>
+                                        <volist name="now_group['cue_arr']" id="item">
+                                            <li>
+                                                <b>{pigcms{$item['key']}：</b>{pigcms{$item['value']}
+                                            </li>
+                                        </volist>
+                                    </ul>
+                                </div>
+                            </if>
+                        </div>
+                    </if>
+
+                    <if condition="$now_group['store_list']">
+                        <div class="main-box">
+                            <div class="storeList">
+                                <div class="title">适用店铺</div>
+                                <volist name="now_group['store_list']" id="vo" key="k">
+                                    <div class="item <if condition="$k gt 2">hide</if> <if condition="$k gt count($now_group['store_list'])-1">last</if>">
+                                        <div class="flex">
+                                            <div class="flex-1">
+                                                <div class="storeName"><span class="name">{pigcms{$vo.name}</span><if condition="strip_tags($vo['work_time']) neq '-'"><span class="clock">{pigcms{$vo.work_time}</span></if></div>
+                                                <div class="storeAddress">{pigcms{$vo.adress}</div>
+                                            </div>
+                                            <div class="phoneNavi">
+                                                <div style="background-image: url({pigcms{$static_path}groupnew/images/phone.png);" class="phone" data-phone="{pigcms{$vo.phone}"></div>
+                                                <div style="border-right: 1px solid #F1F1F1;width:1px;height:22px;margin: 0 12px"></div>
+                                                <div style="background-image: url({pigcms{$static_path}groupnew/images/navi.png);" class="navi" data-lng="{pigcms{$vo.long}" data-lat="{pigcms{$vo.lat}" data-name="{pigcms{$vo.name}" data-address="{pigcms{$vo.adress}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </volist>
+                                <if condition="COUNT($now_group['store_list']) gt 2">
+                                    <div class="more iconfont down">&#xe608; &nbsp;展开</div>
+                                    <div class="more iconfont up hide">&#xe607; &nbsp;收起</div>
+                                </if>
+                            </div>
+                        </div>
+                    </if>
+
+                <div class="main-box" style="padding: 14px 0 !important;">
+                    <if condition="$now_order['status'] neq 4 || $now_group.no_refund eq 0 AND $now_group.before_effective_time gt 0 AND $now_group.tuan_type eq 0">
+                        <div class="other-info-box" style="padding-top: 0;">
+                            <if condition="$now_order['status'] neq 4">
+                                <div class="flex flex-justify line">
+                                    <span class="left">{pigcms{$config.group_alias_name}有效期</span>
+                                    <span class="right">{pigcms{$now_group.deadline_time|date='Y-m-d H:i:s',###}</span>
+                                </div>
+                            </if>
+                            <if condition="$now_group.no_refund eq 0 AND $now_group.before_effective_time gt 0 AND $now_group.tuan_type eq 0">
+                                <div class="flex flex-justify line">
+                                    <span class="left">{pigcms{$config.group_alias_name}退款有效期</span>
+                                    <span class="right">{pigcms{$config.group_alias_name}有效期{pigcms{$now_group.before_effective_time}<if condition="$now_group['effective_time_type'] eq 1">天<else/>小时</if>前可退</span>
+                                </div>
+                            </if>
+                        </div>
+                    </if>
                     <if condition="$now_order['tuan_type'] == 2 && $now_order['paid'] && $now_order['status'] lt 3">
                         <div class="other-info-box">
                         <if condition="$now_order['is_pick_in_store'] == 0">
@@ -230,14 +372,18 @@
                         <if condition="$now_order['status'] eq 3 OR $now_order['status'] eq 6">
                             <div class="flex flex-justify line">
                                 <span class="left">已退款总金额</span>
-                                <span class="right"><font style="font-weight: bold;color: red;">{pigcms{$now_order['refund_total']}</font>{pigcms{$config['Currency_txt']}<if condition="$now_order['refund_fee'] gt 0">(手续费：{pigcms{$now_order['refund_fee']})</if></span>
+                                <span class="right"><font style="font-weight: bold;color: red;">
+                                    {pigcms{$now_order['refund_total']}</font>{pigcms{$config['Currency_txt']}
+                                    <if condition="$now_order['refund_fee'] gt 0">(手续费：{pigcms{$now_order['refund_fee']})</if>
+                                </span>
                             </div>
 
                             <if condition="$pass_info && $pass_info['total_pass_num'] gt 0">
-
                                 <div class="flex flex-justify line">
                                     <span class="left">总核销码数</span>
                                     <span class="right"><font style="font-weight: bold;color: #FDB338;">{pigcms{$pass_info['total_pass_num']}</font></span>
+                                </div>
+                                <div class="flex flex-justify line">
                                     <span class="left">未使用核销码数</span>
                                     <span class="right"><font style="font-weight: bold;color: red;">{pigcms{$pass_info['unconsume_pass_num']}</font></span>
                                 </div>
@@ -315,13 +461,13 @@
                                     <span class="right"><font style="font-weight: bold;color: red;">{pigcms{$refund_offline_money_fee}{pigcms{$config['Currency_txt']}</font></span>
                                 </div>
                             </if>
-                        <elseif condition="$now_order['status'] eq 4">
+                        <elseif condition="$now_order['status'] eq 4" />
                             <div class="flex flex-justify line">
                                 <span class="left">订单未支付已取消</span>
                             </div>
                         </if>
 					</div>
-                    <if condition="$is_gift neq 1">
+                    <!-- <if condition="$is_gift neq 1">
                     <if condition="$now_order['status'] neq 3 && $now_order['status'] neq 6">
                         <php>if($now_order['is_share_group']==2||(($now_group['open_num']<=$now_group['sale_count']&&$now_order['open_num']!=0)||$now_group['open_num']==0)||($now_group['open_now_num']<=$now_group['sale_count']&&$now_group['open_now_num']!=0)){</php>
 
@@ -346,7 +492,7 @@
                             <php>}</php>
                         <php>}</php>
                     </if>
-                    </if>
+                    </if> -->
                     <if condition="$now_order['tuan_type'] eq 3">
                         <div class="other-info-box">
                             <div class="flex flex-justify line">
@@ -366,15 +512,17 @@
                             </div>
                         </if>
                     </if>
-                    <div class="other-info-box">
-                        <if condition="$write_list">
+                    
+                    <if condition="$write_list">
+                        <div class="other-info-box">
                             <volist name="write_list" id="vos">
                                 <div class="flex flex-justify line">
                                     <span class="left">{pigcms{$vos.name}</span>
                                     <span class="right">{pigcms{$vos.value}</span>
                                 </div>
                             </volist>
-                        </if>
+                        </div>
+                    </if>
                     </div>
 				</div>
 			</div>
@@ -428,7 +576,18 @@
         </if>
 		
 		<div id="hideLoad" class="hide"></div>
-		
+
+        <!-- 微信分享提示 -->
+        <div class="weixin-share-tips-wrap">
+            <div class="top">
+                <img src="{pigcms{$static_path}groupnew/images/tipsBg.png" alt="" class="img">
+                <span class="desc">点击右上角<br/>分享给团购券给您的好友~</span>
+            </div>
+            <div class="bottom">
+                <img src="{pigcms{$static_path}groupnew/images/btnBg.png" alt="" class="img">
+                <span class="desc">我知道了</span>
+            </div>
+        </div>
 		<script type="text/javascript">
 			window.shareData = {
 				"moduleName":"Home",
@@ -445,13 +604,12 @@
 		{pigcms{$shareScript}
 		
 		<script type="text/javascript" src="{pigcms{:C('JQUERY_FILE_190')}" charset="utf-8"></script>
-		
+        <script src="{pigcms{$static_public}js/jquery.qrcode.min.js"></script>
 		<!-- minirefresh -->
 		<link rel="stylesheet" type="text/css" href="{pigcms{$static_public}minirefresh/minirefresh.min.css"/>
 		<script type="text/javascript" src="{pigcms{$static_public}minirefresh/minirefresh.min.js" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="{pigcms{$static_public}minirefresh/themes/applet/minirefresh.theme.applet.min.css"/>
 		<script type="text/javascript" src="{pigcms{$static_public}minirefresh/themes/applet/minirefresh.theme.applet.min.js" charset="utf-8"></script>
-
 		<!-- layer -->
 		<script type="text/javascript" src="{pigcms{$static_public}jqueryweui/fastclick.js" charset="utf-8"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}layer/mobile/layer.js" charset="utf-8"></script>
@@ -461,6 +619,24 @@
 		<script type="text/javascript" src="{pigcms{$static_path}groupnew/js/base.js?t={pigcms{:time()}" charset="utf-8"></script>
 		<script type="text/javascript" src="{pigcms{$static_path}groupnew/js/order_detail.js?t={pigcms{:time()}" charset="utf-8"></script>
 		<script type="text/javascript" src="{pigcms{$static_path}js/common.js?t={pigcms{:time()}" charset="utf-8"></script>
+
+        <link rel="stylesheet" type="text/css" href="{pigcms{$static_public}minirefresh/minirefresh.min.css" />
+        <script type="text/javascript" src="{pigcms{$static_public}minirefresh/minirefresh.min.js" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="{pigcms{$static_public}minirefresh/themes/applet/minirefresh.theme.applet.min.css" />
+        <script type="text/javascript" src="{pigcms{$static_public}minirefresh/themes/applet/minirefresh.theme.applet.min.js" charset="utf-8"></script>
+
+        <!-- layer -->
+        <script type="text/javascript" src="{pigcms{$static_public}jqueryweui/fastclick.js" charset="utf-8"></script>
+        <script type="text/javascript" src="{pigcms{$static_public}layer/mobile/layer.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="{pigcms{$static_public}jqueryweui/swiper.min.js" charset="utf-8"></script>
+
+        <script type="text/javascript" src="{pigcms{$static_path}js/iosfunction.js?t={pigcms{:time()}" charset="utf-8"></script>
+
+        <script type="text/javascript" src="{pigcms{$static_public}jqueryweui/jquery-weui.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="{pigcms{$static_path}js/common.js?t={pigcms{:time()}" charset="utf-8"></script>
+        <script type="text/javascript" src="{pigcms{$static_path}groupnew/js/base.js?t={pigcms{:time()}" charset="utf-8"></script>
+        
 		<script type="text/javascript">
 			var origin_lat = '{pigcms{$lat}';
 			var origin_long= '{pigcms{$lng}';
@@ -519,5 +695,160 @@
                 }
             }
 		</script>
-	</body>
+        <script type="text/javascript" >
+            $(function () {
+                var group_pass = ''
+                var sendFriendLinkInit = window.location.protocol + "//" + window.location.hostname + '/packapp/plat/pages/plat_menu/index?pass_id={pigcms{$now_order.share_id}&path=coupon'
+                var sendFriendLink = sendFriendLinkInit
+                window.shareData = {
+                    "moduleName": "Home",
+                    "moduleID": "0",
+                    "imgUrl": "<if condition="
+                    $config['wechat_share_img']
+                    ">{pigcms{$now_order.list_pic}<else/>{pigcms{$config.site_logo}</if>",
+                    "sendFriendLink": sendFriendLink,
+                    "tTitle": "{pigcms{$now_order.user_name}送你一张团购商品券~",
+                    "tContent": "{pigcms{$now_order.s_name}"
+                };
+                // 获取参数
+                function GetRequest() {
+                    var url = location.search;
+                    var theRequest = {};
+                    if (url.indexOf("?") != -1) {
+                        var str = url.substr(1);
+                        strs = str.split("&");
+                        for (var i = 0; i < strs.length; i++) {
+                            theRequest[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
+                        }
+                    }
+                    return theRequest;
+                }
+
+                // 设定swiper初始化时的索引 默认0
+                var initialSlide = 0
+                initialSlide = GetRequest()['key_id']?Number(GetRequest()['key_id']):0
+
+                // 设置分享链接
+                function setSendFriendLink() {
+                    group_pass = $('.swiper-slide-active').data().group_pass
+                    sendFriendLink = sendFriendLinkInit + '&group_pass=' + group_pass
+                    if(typeof wx_share_init == 'function'){
+                        wx_share_init();
+                    }
+                }
+
+                var swiper = new Swiper(".qcode-swiper", {
+                    // pagination: ".qcode-swiper .swiper-pagination",
+                    // paginationClickable: ".qcode-swiper .swiper-pagination",
+                    nextButton: ".qcode-swiper .swiper-button-next",
+                    prevButton: ".qcode-swiper .swiper-button-prev",
+                    initialSlide: initialSlide,
+                    onInit: function () {
+                        $(
+                            ".qcode-swiper .swiper-pagination-bullet-active, .qcode-swiper .swiper-pagination-bullet"
+                        ).css("background", main_color);
+                        setSendFriendLink()
+                    },
+                    onTransitionStart: function () {
+                        $(
+                            ".qcode-swiper .swiper-pagination-bullet-active,.qcode-swiper .swiper-pagination-bullet"
+                        ).css("background", main_color);
+                        setSendFriendLink()
+                    }
+                });
+            });
+
+        </script>
+
+        <script type="text/javascript">
+            setTimeout(function() {
+                var qrcode_width = $(window).width() * 0.64 > 154 ? 154 : $(window).width() * 0.64;
+
+                $('.qcode-img').qrcode({
+                    width: qrcode_width,
+                    height: qrcode_width,
+                    text: "{pigcms{$config.site_url}/wap.php?c=Storestaff&a=group_qrcode&order_id={pigcms{$now_order.real_orderid}&id={pigcms{$now_order.group_pass}&is_group_combine={pigcms{$now_order.is_group_combine}&owner={pigcms{$owner}"
+                });
+            }, 10);
+
+            var get_route = "{pigcms{$config['site_url']}/wap.php?g=Wap&c=Groupnew&a=get_route";
+        </script>
+        <if condition="$give_submit_show eq 1">
+            {pigcms{$shareScript}
+        </if>
+
+        <script type="text/javascript">
+            $(".coupon-gift .btn").on("click", function() {
+                $.confirm(
+                    "团购商品一次只可转赠一份可同时转赠给多位好友，但仅第一位领取者能成功领取",
+                    function() {
+                        var group_pass = $('.swiper-slide-active').data().group_pass
+                        //点击确认后的回调函数
+                        if (motify.checkWeixinApp()) {
+                            // 小程序中
+                            // 添加分享参数
+
+                            var wxappUrl = "/pages/plat_menu/index?pass_id={pigcms{$now_order.share_id}&path=coupon&group_pass=" + group_pass
+                            var url = "/pages/index/share?title=" +
+                                encodeURIComponent(window.shareData.tTitle) +
+                                "&shareTitle=" + encodeURIComponent('{pigcms{$now_order.user_name}送你一张团购商品券~') +
+                                "&shareImg=" + encodeURIComponent(window.shareData.imgUrl) +
+                                "&sharePath=" + encodeURIComponent(wxappUrl) +
+                                "&poster=" + encodeURIComponent(window.shareData.imgUrl) +
+                                "&bg=" + encodeURIComponent(window.shareData.imgUrl)
+
+                            console.log('分享参数', wxappUrl, url)
+
+                            wx.miniProgram.navigateTo({
+                                url: url
+                            })
+                        } else if (motify.checkApp()) {
+
+                            var wxappUrl = window.location.protocol + '//' + window.location.host + "/packapp/plat/pages/plat_menu/index?pass_id={pigcms{$now_order.share_id}&path=coupon&group_pass=" + group_pass
+                            let shareTtitle = window.shareData.tTitle
+                            let shareImg = window.shareData.imgUrl
+                            let shareDesc = window.shareData.tContent
+                            if (motify.checkAndroid()) {
+                                window.lifepasslogin.shareWeChat(shareTtitle, shareDesc, shareImg, wxappUrl)
+                            } else {
+                                var ios_shareWeChat = {
+                                    name: 'shareWeChat',
+                                    imgUrl: shareImg,
+                                    sendFriendLink: wxappUrl,
+                                    tTitle: shareTtitle,
+                                    tContent: shareDesc
+                                }
+                                iosCommon.iosFunction('shareWeChat', ios_shareWeChat)
+                            }
+                        } else if (motify.checkWeixin()) {
+                            // 微信公众号环境
+                            $('.weixin-share-tips-wrap').show();
+                        }
+                    },
+                    function() {
+                        //点击取消后的回调函数
+                    }
+                );
+            });
+
+            $(".weixin-share-tips-wrap").on("click", function() {
+                $('.weixin-share-tips-wrap').hide();
+            })
+
+            //店铺更多点击
+            $(".storeList .more.down").click(function() {
+                $(".storeList .item").show();
+                // $(this).removeClass("hide");
+                $(".storeList .more.down").addClass("hide");
+                $(".storeList .more.up").removeClass("hide");
+            });
+            $(".storeList .more.up").click(function() {
+                $(".storeList .item:gt(1)").hide();
+                // $(this).removeClass("hide");
+                $(".storeList .more.down").removeClass("hide");
+                $(".storeList .more.up").addClass("hide");
+            });
+        </script>
+
+    </body>
 </html>

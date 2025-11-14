@@ -71,7 +71,7 @@ class UserReminderController extends ApiBaseController
                 }
                 $jpush = new Jpush();
 
-                $href = "miniapp://__UNI__8799035&pages/reminder/index/index";
+                $href = "miniapp://".cfg('staff_uni_appid')."&pages/reminder/index/index";
                 $title = '订单提醒';
                 $msgl = '用户催单已超时未送达订单，等待您的处理';
 

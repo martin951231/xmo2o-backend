@@ -382,7 +382,6 @@ class HouseNewPayOrder extends Model
         if ($whereRaw) {
             if ($page) {
                 $sql = $this->alias('o')
-                    ->leftJoin('house_admin u', 'u.id = o.role_id')
                     ->leftJoin('house_new_charge_project p', 'p.id = o.project_id')
                     ->leftJoin('house_new_charge_number n', 'n.id = p.subject_id');
                 if (!empty($where_summary)) {
@@ -402,7 +401,6 @@ class HouseNewPayOrder extends Model
                     ->select();
             } else {
                 $sql = $this->alias('o')
-                    ->leftJoin('house_admin u', 'u.id = o.role_id')
                     ->leftJoin('house_new_charge_project p', 'p.id = o.project_id')
                     ->leftJoin('house_new_charge_number n', 'n.id = p.subject_id');
                 if (!empty($where_summary)) {
@@ -424,7 +422,6 @@ class HouseNewPayOrder extends Model
         } else {
             if ($page) {
                 $sql = $this->alias('o')
-                    ->leftJoin('house_admin u', 'u.id = o.role_id')
                     ->leftJoin('house_new_charge_project p', 'p.id = o.project_id')
                     ->leftJoin('house_new_charge_number n', 'n.id = p.subject_id');
                 if (!empty($where_summary)) {
@@ -443,7 +440,6 @@ class HouseNewPayOrder extends Model
                     ->select();
             } else {
                 $sql = $this->alias('o')
-                    ->leftJoin('house_admin u', 'u.id = o.role_id')
                     ->leftJoin('house_new_charge_project p', 'p.id = o.project_id')
                     ->leftJoin('house_new_charge_number n', 'n.id = p.subject_id');
                 if (!empty($where_summary)) {
@@ -462,8 +458,6 @@ class HouseNewPayOrder extends Model
             }
 
         }
-
-      //  print_r($this->getLastSql());exit;
         return $data;
     }
 
@@ -959,6 +953,24 @@ class HouseNewPayOrder extends Model
     public function getOrderRoomSum($where,$field='modify_money')
     {
         $count = $this->alias('o')->leftJoin('house_village_user_vacancy r', 'o.room_id = r.pigcms_id')->where($where)->sum($field);
+        return $count;
+    }
+
+    public function getMeterReadingSplitOrders($where,$field,$page=0,$limit=10,$order='o.order_id'){
+        $sql = $this->alias('o')
+            ->leftJoin('house_village_meter_reading m', 'o.meter_reading_id=m.id')
+            ->where($where)
+            ->field($field)
+            ->order($order);
+        if($page){
+            $list = $sql->page($page,$limit)->select();
+        }else{
+            $list = $sql->select();
+        }
+        return $list;
+    }
+    public function getMeterReadingSplitOrderCount($where){
+        $count = $this->alias('o')->leftJoin('house_village_meter_reading m', 'o.meter_reading_id=m.id')->where($where)->count();
         return $count;
     }
 }

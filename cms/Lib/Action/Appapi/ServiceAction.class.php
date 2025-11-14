@@ -1444,7 +1444,7 @@ class ServiceAction extends BaseAction{
             $model = new templateNews(C('config.wechat_appid'), C('config.wechat_appsecret'));
             $href = C('config.site_url') . '/wap.php?g=Wap&c=Service&a=price_list&publish_id=' . $publish_id;
             // 帮买帮送修改  待办事项通知 模板 为 订单状态更新 模板
-            $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'first' => L_('X1您好！',$now_user['nickname']), 'OrderSn' => $publishInfo['order_sn'], 'OrderStatus' =>L_('您发布的需求已经完成支付，请查看。'), 'remark' => date('Y.m.d H:i:s')));
+            $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'OrderStatus' => C('config.service_alias_name'), 'OrderSn' => $publishInfo['order_sn'], 'first' =>L_('您发布的需求已经完成支付，请查看。'), 'remark' => date('Y.m.d H:i:s')));
         }
         // 进行极光App推送
         if ($now_user) {

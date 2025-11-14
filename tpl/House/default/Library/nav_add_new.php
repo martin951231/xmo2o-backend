@@ -27,7 +27,7 @@
 			<tr>
 				<th width="80">链接</th>
 				<td>
-					<input type="text" class="input fl" name="url" id="url" style="width:200px;" placeholder="请填写链接地址" validate="maxlength:200,required:true"/>
+					<input type="text" class="input fl" name="url" id="url" style="width:200px;" placeholder="请填写链接地址" validate="maxlength:2000,required:true"/>
 					<?php if(!C('butt_open')){ ?>
 						<if condition="$now_category['cat_type'] neq '1'">
 							<a href="#modal-table" class="btn btn-sm btn-success" onclick="addLink('url', 'on_deving', 0)" data-toggle="modal">从功能库选择</a>

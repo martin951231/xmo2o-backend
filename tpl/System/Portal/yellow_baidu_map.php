@@ -146,7 +146,7 @@
     <else />
     <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="//apps.bdimg.com/libs/layer/2.1/layer.js"></script>
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=4c1bb2055e24296bbaef36574877b4e2"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak={pigcms{$config.baidu_map_ak_web}"></script>
     <script type="text/javascript">
 
         function save(){

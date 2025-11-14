@@ -5,9 +5,9 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Merchant/index')}" class="on">商家列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/add')}','添加商家',800,560,true,false,false,addbtn,'add',true);">添加商家</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/add')}','添加商家',800,560,true,false,false,addbtn,'add',true);">添加商家</a>
 					<if condition="C('config.lakala_pay_switch') neq null">
-						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/downloadLakalaBill')}','【拉卡拉】下载商户对账文件',600,500,true,false,false,false,'',true);">【拉卡拉】下载商户对账文件</a>
+						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/downloadLakalaBill')}','【拉卡拉】下载商户对账文件',600,500,true,false,false,false,'',true);">【拉卡拉】下载商户对账文件</a>
 					</if>
 				</ul>
 			</div>
@@ -199,15 +199,15 @@
 										<if condition="C('config.pay_weixin_sp_xiaowei_open') eq 1">
 										<td class="textcenter">
 											<if condition="$vo.xiaowei eq '1'">
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/add_xiaowei',array('mer_id'=>$vo['mer_id']))}','录入进件信息',800,800,true,false,false,editbtn,'edit',true);">立即进件</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/add_xiaowei',array('mer_id'=>$vo['mer_id']))}','录入进件信息',800,800,true,false,false,editbtn,'edit',true);">立即进件</a>
 											<elseif condition="$vo.xiaowei eq '2'"/>
 												<span style="color:red;">微信官方正在审核</span>
 											<elseif condition="$vo.xiaowei eq '3'"/>
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/view_status',array('mer_id'=>$vo['mer_id']))}','查看微信审核结果',800,800,true,false,false,editbtn,'edit',true);">查看审核结果</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/view_status',array('mer_id'=>$vo['mer_id']))}','查看微信审核结果',800,800,true,false,false,editbtn,'edit',true);">查看审核结果</a>
 											<elseif condition="$vo.xiaowei eq '4'"/>
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/add_xiaowei',array('mer_id'=>$vo['mer_id']))}','录入进件信息',800,800,true,false,false,editbtn,'edit',true);">审核失败，重新进件</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/add_xiaowei',array('mer_id'=>$vo['mer_id']))}','录入进件信息',800,800,true,false,false,editbtn,'edit',true);">审核失败，重新进件</a>
 											<elseif condition="$vo.xiaowei eq '5'"/>
-												<a href="javascript:void(0);" style="color:green;" onclick="window.top.artiframe('{pigcms{:U('Merchant/view_status',array('mer_id'=>$vo['mer_id']))}','查看微信审核结果',800,800,true,false,false,editbtn,'edit',true);">已通过审核(待商户扫码)</a>
+												<a href="javascript:void(0);" style="color:green;" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/view_status',array('mer_id'=>$vo['mer_id']))}','查看微信审核结果',800,800,true,false,false,editbtn,'edit',true);">已通过审核(待商户扫码)</a>
 											<elseif condition="$vo.xiaowei eq '6'"/>
 												<span style="color:green;">进件流程已完成</span>
 											</if>
@@ -216,7 +216,7 @@
 										<!--td class="textcenter"><a href="{pigcms{:U('Merchant/weidian_order',array('mer_id'=>$vo['mer_id']))}">微店账单</a></td-->
 										<td class="textcenter">
                                         <if condition="$open_yibao == 1">
-										<a href="javascript:void(0);" onclick="window.top.iframeDrawer({
+										<a href="javascript:void(0);" onclick="window.o2oTop.iframeDrawer({
 											url: '/v20/public/platform/#/merchant/platform/NetInDetail?mer_id={pigcms{$vo[\mer_id\]}',
 											id: '',
 											title: '入网信息', //标题
@@ -233,9 +233,9 @@
 											});">查看入网信息</a> |
                                         </if>
 										<a href="{pigcms{:U('Merchant/store',array('mer_id'=>$vo['mer_id']))}">店铺列表</a>
-										<!--<a href="javascript:void(0);" onclick="window.top.show_other_frame('Group','product','mer_id={pigcms{$vo.mer_id}')">{pigcms{$config.group_alias_name}列表</a> | -->
-										<!--<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id'],'frame_show'=>true))}','查看详细信息',520,370,true,false,false,false,'detail',true);">查看</a> | -->
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id']))}','编辑商家信息',800,650,true,false,false,editbtn,'edit',true);">编辑</a> |
+										<!--<a href="javascript:void(0);" onclick="window.o2oTop.show_other_frame('Group','product','mer_id={pigcms{$vo.mer_id}')">{pigcms{$config.group_alias_name}列表</a> | -->
+										<!--<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id'],'frame_show'=>true))}','查看详细信息',520,370,true,false,false,false,'detail',true);">查看</a> | -->
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id']))}','编辑商家信息',800,650,true,false,false,editbtn,'edit',true);">编辑</a> |
 										
 										<a href="javascript:void(0);" class="delete_row" parameter="mer_id={pigcms{$vo.mer_id}" url="{pigcms{:U('Merchant/del')}">删除</a>
 										</td>

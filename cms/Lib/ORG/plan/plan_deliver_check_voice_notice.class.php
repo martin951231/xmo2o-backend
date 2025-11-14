@@ -29,6 +29,8 @@ class plan_deliver_check_voice_notice extends plan_base
                     $alias = C('config.service_alias_name');
                 } else if ($row['item'] == 4 || $row['item'] == 5) {
                     $alias = C('config.mall_alias_name_new');
+                } elseif ($row['item'] == 8) {
+                    $alias = C('config.village_group_alias');
                 }
 
 				$phoneArr = explode(' ', $row['deliver_phone']);

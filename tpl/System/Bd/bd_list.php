@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 						<a href="{pigcms{:U('Bd/bd_list')}" class="on">业务经理列表</a>
-						<a  href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Bd&a=add&type=2','新增业务经理',500,350,true,false,false,addbtn,'add',true);">新增业务经理</a>
+						<a  href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Bd&a=add&type=2','新增业务经理',500,350,true,false,false,addbtn,'add',true);">新增业务经理</a>
 						<a href="{pigcms{:U('Bd/bd_son_list')}">业务员列表</a>
 					
 				</ul>
@@ -75,7 +75,7 @@
 										<td>{pigcms{$vo.son_nums}人 <a style="color:green;" href="{pigcms{:U('Bd/bd_son_list',array('pbd_id'=>$vo['bd_id']))}">管理</a></td>
 										<td><if condition="$vo.status eq '1'"><span style="color:green;">{pigcms{$vo.status_txt}</span><else /><span style="color:red;">{pigcms{$vo.status_txt}</span></if></td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Bd&a=edit&bd_id={pigcms{$vo.bd_id}','编辑业务经理',500,250,true,false,false,editbtn,'edit',true);">编辑</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Bd&a=edit&bd_id={pigcms{$vo.bd_id}','编辑业务经理',500,250,true,false,false,editbtn,'edit',true);">编辑</a>
 										</td>
 									</tr>
 								</volist>

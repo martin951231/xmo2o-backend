@@ -4,7 +4,7 @@
 	<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Service/auto_goodsname')}" class="on">分类列表</a>|
-			<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/auto_cat_add')}','添加主分类',580,450,true,false,false,addbtn,'add',true);">添加分类</a>|
+			<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/auto_cat_add')}','添加主分类',580,450,true,false,false,addbtn,'add',true);">添加分类</a>|
 			<a href="{pigcms{:U('Service/auto_store_order_list')}"> 指定商家订单查询</a>
 		</ul>
 	</div>
@@ -63,7 +63,7 @@
 								<td><if condition="$vo['status'] eq 1"><font color="green">启用</font><else/><font color="red">关闭</font></if></td>
 
 								<td class="textcenter">
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/auto_cat_add',array('id'=>$vo['id']))}','编辑分类信息',580,450,true,false,false,editbtn,'add',true);">编辑</a> | 
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/auto_cat_add',array('id'=>$vo['id']))}','编辑分类信息',580,450,true,false,false,editbtn,'add',true);">编辑</a> | 
 									<a href="javascript:void(0);" class="delete_row" tip="操作后会同步删除该分类且不能恢复！" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Service/auto_cat_del')}">删除</a>
 								</td>
 							</tr>

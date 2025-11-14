@@ -83,8 +83,10 @@
 					   	<font color="red">{pigcms{:L_("未支付")}</font>
 					<elseif condition="$now_order['paid'] == 1" />
 
-                        <php>if ($now_order['payment_status']!=1) {</php>
+                        <php>if ((floatval($vo['payment_money']) || floatval($vo['product_payment_price'])) &&$now_order['payment_status']!=1) {</php>
                             <font style="color:green">{pigcms{:L_("已支付")}</font>
+                        <php>} elseif (empty(floatval($vo['payment_money'])) && empty(floatval($vo['product_payment_price'])) && $vo['is_initiative']<=0) {</php>
+                            <span style="color:red">待支付</span>
                         <php>} elseif ($now_order['service_status']<=0 && $now_order['is_initiative']<=0) {</php>
                             <span style="color:green">定金已支付</span><span style="color:red">尾款待支付</span>
                         <php>} elseif ($now_order['service_status']>0 && $now_order['is_initiative']<=0 && $now_order['secondary_payment_money']) {</php>
@@ -122,10 +124,6 @@
                         </font>
 					</if>
 				</td>
-				
-				
-				<!--th width="15%">{pigcms{:L_("定金")}</th>
-				<td width="35%">{pigcms{$config['Currency_symbol']} {pigcms{$now_order.payment_money}</td-->
 			</tr>
 			<if condition='$now_order["del_time"]'>
 				<tr>
@@ -150,7 +148,6 @@
 				<tr>
 					<td colspan="4" style="padding-left:5px;color:black;"><b>{pigcms{:L_("服务工作人员信息：")}</b></td>
 				</tr>
-                
                 <if condition='$now_order["store_id"]'>
 					<tr>
 						<th width="15%">{pigcms{:L_("店铺名称")}</th>
@@ -159,7 +156,6 @@
 						</td>
 					</tr>
                 </if>
-                
             	<tr>
                     <th width="15%">{pigcms{:L_("服务工作人员")}</th>
                     <td width="35%">
@@ -171,8 +167,6 @@
                     </td>
                 </tr>
             </if>
-            
-            
 			<if condition="!empty($now_order['use_time'])">		
 				<tr>
 					<th width="15%"><if condition="$now_order['tuan_type'] neq 2">{pigcms{:L_("消费")}<else/>{pigcms{:L_("发货")}</if>{pigcms{:L_("时间")}</th>
@@ -181,6 +175,23 @@
 					<td width="35%">{pigcms{$now_order.last_staff}</td>
 				</tr>
 			</if>
+            <if condition='($now_order["service_status"] eq 0) && ($now_order["is_del"] eq 0)'>
+                <tr>
+                    <td colspan="4" style="padding-left:5px;color:black;"><b>{pigcms{:L_("更改")}<?php echo $config['appoint_worker_name'] ?: L_('技师'); ?>：</b></td>
+                </tr>
+                <tr>
+                    <th width="15%"><?php echo $config['appoint_worker_name'] ?: L_('技师'); ?>{pigcms{:L_("列表")}</th>
+                    <td width="85%" colspan="3">
+                        <select class="col-sm-1" style="margin-right:10px;" name="merchant_worker_id" id="merchant_worker_id">
+                            <option value="0">&nbsp;{pigcms{:L_("请选择")}&nbsp;</option>
+                            <volist name='worker_list' id='vo'>
+                                <option value="{pigcms{$key}">&nbsp;{pigcms{$vo}&nbsp;</option>
+                            </volist>
+                        </select>
+                        <button onClick="allot_info()">{pigcms{:L_("确认分配")}</button>
+                    </td>
+                </tr>
+            </if>
 			<if condition="$now_order['paid'] egt '1'">
 				<tr>
 					<td colspan="4" style="padding-left:5px;color:black;"><b>{pigcms{:L_("用户信息：")}</b></td>
@@ -295,7 +306,7 @@
 						<tr>
 							<th width="15%">{pigcms{$val.name}</th>
 							<td width="35%" colspan="3">
-								{pigcms{:L_("地址：")}{pigcms{$val.address}	<!--{pigcms{$val.value}-->
+								{pigcms{:L_("地址：")}{pigcms{$val.address}
 							</td>
 						</tr>
 					<else/>
@@ -306,7 +317,7 @@
 					</if>
 				</volist>
 			</if>
-		<form id="myform" method="post" action="{pigcms{:U('Appoint/editOrder')}" enctype="multipart/form-data">
+		<!--<form id="myform" method="post" action="{pigcms{:U('Appoint/editOrder')}" enctype="multipart/form-data">
 			<input type="hidden" name="order_id" value="{pigcms{$now_order.order_id}"/>
 			<tr>
 				<td colspan="4" style="padding-left:5px;color:black;"><b>自定义项目名称：</b></td>
@@ -322,7 +333,6 @@
 							<option <if condition="$now_order['project_city_id'] eq $vo['project_city_name']">selected="selected"</if> value="{pigcms{$vo['project_city_name']}">{pigcms{$vo['project_city_name']}</option>
 						</volist>
 					</select>
-
 				</td>
 			</tr>
 			<tr>
@@ -331,19 +341,18 @@
 					<select id="second" name="project_id">
 						<option  value=" ">请选择项目名称</option>
 					</select>
-
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="btn">
 						<input type="submit" name="dosubmit" id="dosubmit" value="提交" class="button" />
-
 					</div>
 				</td>
 			</tr>
-		</form>
+		</form>-->
 		</table>
+        <script src="{pigcms{$static_public}js/layer/layer.js"></script>
 		<script type="text/javascript">
 			$(function(){
 				$('#merchant_remark_btn').click(function(){
@@ -365,15 +374,10 @@
 			function change_price(obj){
 				var price = $(obj).siblings('input[name="price"]').val();
 				$.post('{pigcms{:U('change_order_price')}',{order_id:'{pigcms{$_GET['order_id']}',price:price},function(date){
-					
 					alert(date.msg)
 					window.location.reload();
 				},'json')
-				
 			}
-
-
-
 
 			$(document).ready(function(){
 				console.log($("#first").val());
@@ -394,7 +398,6 @@
 							html += '<option value="">请项目名称</option>';
 							$("#second").html(html);
 						}
-
 					}
 				})
 			});
@@ -415,6 +418,21 @@
 					}
 				});
 			}
+            
+            function allot_info(){
+                var merchant_worker_id = $('#merchant_worker_id').val();
+                var order_id = "{pigcms{$_GET['order_id']}";
+                var url = "{pigcms{:U('Store/ajax_worker_edit')}";
+                var type = "{pigcms{$now_order['type']}";
+                $.post(url,{'merchant_worker_id':merchant_worker_id,'order_id':order_id,'type':type, 'is_mer': 1},function(data){
+                    if(data.status){
+                        layer.msg(data.msg);
+                        location.reload();
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                },'json')
+            }
 		</script>
 	</body>
 </html>

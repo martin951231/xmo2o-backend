@@ -3,7 +3,7 @@
 	<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Deliver/field')}" class="on">填写项列表</a>|
-			<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/field_add')}','添加填写项',460,250,true,false,false,addbtn,'add',true);">添加填写项</a>
+			<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/field_add')}','添加填写项',460,250,true,false,false,addbtn,'add',true);">添加填写项</a>
 		</ul>
 	</div>
 	<form name="myform" id="myform" action="" method="post">

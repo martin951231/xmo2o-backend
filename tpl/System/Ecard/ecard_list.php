@@ -95,7 +95,7 @@
 											</span>
 										</td>
 										<td class="textcenter">
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Ecard/ecard_edit',array('id'=>$vo['id']))}','编辑{pigcms{$config.ecard_alias_name}',580,320,true,false,false,editbtn,'edit',true);">编辑</a>|
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Ecard/ecard_edit',array('id'=>$vo['id']))}','编辑{pigcms{$config.ecard_alias_name}',580,320,true,false,false,editbtn,'edit',true);">编辑</a>|
 											<a href="{pigcms{:U('Ecard/ecard_del',array('id'=>$vo['id']))}" class="del">删除</a>
 										</td>
 									</tr>

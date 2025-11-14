@@ -42,7 +42,7 @@
                         <td>{pigcms{$vo.id}</td>
                         <td>{pigcms{$vo.card_name}</td>
                         <td>{pigcms{$vo.card_id}</td>
-                        <td><empty name="vo.uid"><font color="red">没有绑定用户</font><else /> <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></font></empty></td>
+                        <td><empty name="vo.uid"><font color="red">没有绑定用户</font><else /> <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></font></empty></td>
                         <td>{pigcms{$vo.user_name}</td>
                         <td>{pigcms{$vo.phone}</td>
                         <td>{pigcms{$vo.unit_name}</td>

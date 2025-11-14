@@ -128,7 +128,7 @@
 			<tr <php>if($can_recharge==0){echo 'style="display:none"';}</php> >
 			<th width="15%">短信条数</th>
 			<td width="85%" colspan="3"><div style="height:30px;line-height:24px;">当前短信：{pigcms{$now_village.now_sms_number}（条） &nbsp;&nbsp;&nbsp;&nbsp;<select name="set_sms_type"><option value="1">增加</option><option value="2">减少</option></select>&nbsp;&nbsp;<input type="text" class="input" name="set_sms_number" size="10" validate="number:true," tips="此处填写增加或减少的条数，不是将短信条数变为此处填写的值"/>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/sms_order',array('village_id'=>$now_village['village_id'],'frame_show'=>true))}','查看短信变动记录',800,600,true,false,false,false,'detail',true);">记录</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/sms_order',array('village_id'=>$now_village['village_id'],'frame_show'=>true))}','查看短信变动记录',800,600,true,false,false,false,'detail',true);">记录</a>
 					<input type="hidden" name="now_sms_number" value="{pigcms{$now_village.now_sms_number}">
 				</div></td>
 			</tr>

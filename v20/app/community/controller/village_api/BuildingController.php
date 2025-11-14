@@ -1833,6 +1833,7 @@
             $room_imgs =  $this->request->param('room_imgs','');  //图片 数组
             $lease_time_start =  $this->request->param('lease_time_start','','trim');
             $lease_time_end =  $this->request->param('lease_time_end','','trim');
+            $yumenlao_special_meter = $this->request->param('yumenlao_special_meter','');
             if (!$village_id){
                 return api_output(1002, [], '请先登录到小区后台！');
             }
@@ -1878,6 +1879,7 @@
                 'lease_time_start'=>$lease_time_start ? $lease_time_start:'',
                 'lease_time_end'=>$lease_time_end ? $lease_time_end:'',
                 'room_number'=>$room_number ? $room_number:'',
+                'yumenlao_special_meter'=>$yumenlao_special_meter,
             ];
             $app_key = cfg('hik_info_vision_i_community_app_key');
             $app_secret = cfg('hik_info_vision_i_community_app_secret');

@@ -45,7 +45,7 @@
 										<td>{pigcms{$vo.merchant_phone}</td>
 										<td>{pigcms{$vo.store_phone}</td>
 										<!--<td>{pigcms{$vo.create_time|date="Y-m-d H:i:s",###}</td>-->
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Mall/shop_edit',array('store_id' => $vo['store_id']))}','修改服务距离',680,480,true,false,false,editbtn,'edit',true);">设置店铺配送</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Mall/shop_edit',array('store_id' => $vo['store_id']))}','修改服务距离',680,480,true,false,false,editbtn,'edit',true);">设置店铺配送</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="13">{pigcms{$pagebar}</td></tr>

@@ -121,7 +121,7 @@ class Group_combine_activityModel extends Model
         $returnArr['error'] = 0;
         if(empty($merId) || empty($orderId)){
             $returnArr['msg'] = '缺少参数';
-            $returnArr['error'] = 0;
+            $returnArr['error'] = 1;
             return $returnArr;
         }
 

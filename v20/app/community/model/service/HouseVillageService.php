@@ -804,7 +804,7 @@ class HouseVillageService {
     public function getList($where,$field = true,$page=1,$limit=20,$order='village_id DESC',$type=0) {
         // 初始化 物业管理员 数据层
         $db_house_village = new HouseVillage();
-        $list = $db_house_village->getList($where,$field,$page,$limit,$order,$type);
+        $list = $db_house_village->getList($where,$field,$page,$limit,$order);
         return $list;
     }
 
@@ -1639,11 +1639,11 @@ class HouseVillageService {
      * @param $order
      * @return array|\think\Model|null
      */
-    public function getFloorInfo($where,$field=true,$order='floor_id DESC')
+    public function getFloorInfo($where,$field=true,$order='s.id desc')
     {
         $db_house_village_floor= new HouseVillageFloor();
         $db_house_village_user_bind = new HouseVillageUserBind();
-        $list = $db_house_village_floor->getList($where,$field,$order);
+        $list = $db_house_village_floor->floorSingleName($where,$field,$order);
         if (!$list || $list->isEmpty()) {
             $list = [];
         }else{

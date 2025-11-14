@@ -23,6 +23,9 @@ class ShoppingTicketPointApply extends Model
         if (isset($params['status'])) {
             $where[] = ['a.status', '=', $params['status']];
         }
+        if (isset($params['mall_id']) && !is_null($params['mall_id'])) {
+            $where[] = ['a.mall_id', '=', $params['mall_id']];
+        }
 
         $fields = 'u.nickname,u.phone,m.name AS mall_name,a.*';
         $lists = $this->alias('a')

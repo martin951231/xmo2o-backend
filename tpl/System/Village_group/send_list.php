@@ -187,7 +187,7 @@
 											</if>
 										</td>
 										<!--td class="textcenter">
-											<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,editbtn,'store_add',true);">订单详情</a>  
+											<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,editbtn,'store_add',true);">订单详情</a>  
 										</td-->
 									</tr>
 								</volist>
@@ -259,7 +259,7 @@
        get_str = get_str.replace(/a=\w+&/,'',get_str)
        other += '&'+get_str;
        
-       window.top.art.dialog({
+       window.o2oTop.art.dialog({
            icon: 'question',
            title: '请确认',
            id: 'msg' + Math.random(),
@@ -271,10 +271,10 @@
            ok:function (){
                $.post(now_dom.attr('url'),now_dom.attr('parameter')+other,function(result){
                    if(result.status == 1){
-                       window.top.msg(1,result.info,true);
+                       window.o2oTop.msg(1,result.info,true);
                        window.location.reload();
                    }else{
-                       window.top.msg(0,result.info);
+                       window.o2oTop.msg(0,result.info);
                    }
                });
            },
@@ -296,7 +296,7 @@
 		if(typeof $('#choose_areass').val() != 'undefined'){
 			str += "&area_id="+$('#choose_areass').val();
 		}
-		window.top.artiframe('{pigcms{:U('pre_print')}'+str+'&goods_id='+$('#goods_id').val()+'&searchtimetype='+$('#searchtimetype').find(":selected").val()+'&begin_time='+$('#begin_time').val()+'&end_time='+$('#end_time').val()+'&searchtype='+$('#searchtype').val()+'&keyword='+$('#keyword').val()+"&page={pigcms{$_GET['page']}",'打印预览','80%','80%',true,false,false,'','add',true);
+		window.o2oTop.artiframe('{pigcms{:U('pre_print')}'+str+'&goods_id='+$('#goods_id').val()+'&searchtimetype='+$('#searchtimetype').find(":selected").val()+'&begin_time='+$('#begin_time').val()+'&end_time='+$('#end_time').val()+'&searchtype='+$('#searchtype').val()+'&keyword='+$('#keyword').val()+"&page={pigcms{$_GET['page']}",'打印预览','80%','80%',true,false,false,'','add',true);
 	}
 
 

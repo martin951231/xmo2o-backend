@@ -620,9 +620,10 @@ class BillAccessService
             $order_info['summary_id'] = $summary_id;
             $orderData['uid'] = $pay_uid;
             $order_info['uid'] = $pay_uid;
-            $orderData['name'] = $name;
+            $orderData['pay_bind_id'] = $pigcms_id;
+            $orderData['pay_bind_name'] = $name;
             $order_info['name'] = $name;
-            $orderData['phone'] = $phone;
+            $orderData['pay_bind_phone'] = $phone;
             $order_info['phone'] = $phone;
             $orderData['is_paid'] = 1;
             $order_info['is_paid'] = 1;

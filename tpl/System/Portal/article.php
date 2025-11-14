@@ -4,11 +4,11 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Portal/article')}" class="on">资讯列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_add')}','添加资讯',820,560,true,false,false,addbtn,'add',true);">添加资讯</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_add')}','添加资讯',820,560,true,false,false,addbtn,'add',true);">添加资讯</a>
 					<a href="{pigcms{:U('Portal/article_label')}">标签列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_label_add')}','添加标签',480,200,true,false,false,addbtn,'add',true);">添加标签</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_label_add')}','添加标签',480,200,true,false,false,addbtn,'add',true);">添加标签</a>
 					<a href="{pigcms{:U('Portal/article_source')}">资讯来源列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_source_add')}','添加来源',480,200,true,false,false,addbtn,'add',true);">添加来源</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_source_add')}','添加来源',480,200,true,false,false,addbtn,'add',true);">添加来源</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -41,8 +41,8 @@
 								<td class="textcenter">{pigcms{$vo.dateline|date="Y-m-d H:i:s",###}</td>
 								<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">已发布</font><else/><font color="red">草稿</font></if></td>
 								<td class="textcenter"><label><input aid="{pigcms{$vo.aid}" type="checkbox" onclick="isrecommend(this)" <if condition="$vo.recommend eq 1">checked</if> ></label></td>
-								<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_add',array('aid'=>$vo['aid']))}','编辑资讯',820,560,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="aid={pigcms{$vo.aid}" url="{pigcms{:U('Portal/article_del')}">删除</a> | 
-								<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/portal_recomment',array('aid'=>$vo['aid'],'type'=>0,'frame_show'=>true))}','评论列表',1000,500,true,false,false,false,'detail',true);">评论管理</a>
+								<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_add',array('aid'=>$vo['aid']))}','编辑资讯',820,560,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="aid={pigcms{$vo.aid}" url="{pigcms{:U('Portal/article_del')}">删除</a> | 
+								<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/portal_recomment',array('aid'=>$vo['aid'],'type'=>0,'frame_show'=>true))}','评论列表',1000,500,true,false,false,false,'detail',true);">评论管理</a>
 							</tr>
 							</volist>
 								<tr><td class="textcenter pagebar" colspan="12">{pigcms{$pagebar}</td></tr>

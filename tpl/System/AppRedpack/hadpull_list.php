@@ -49,7 +49,7 @@
 									<tr>
 										<td>{pigcms{$vo.id}</td>
 										<td>{pigcms{$vo.nickname}</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></td>
 										<td>{pigcms{$vo.money|floatval}</td>
 										<td>{pigcms{$vo.add_time|date="Y-m-d H:i:s",###}</td>
 									</tr>

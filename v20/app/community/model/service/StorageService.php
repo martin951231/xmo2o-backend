@@ -30,6 +30,7 @@ use app\community\model\db\UserSet;
 use app\community\model\db\VillageUserMoneyList;
 use app\community\model\db\VillageUserMoneyLog;
 use app\community\model\service\HouseVillageService;
+use app\community\model\service\HouseNewMeterService;
 
 use Dompdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -1145,6 +1146,131 @@ font-size: 13px
         }
         return $water_order_handle;
     }
+    /***
+    **水电燃 余额自动支付拆单
+     ***/
+    public function meter_split_order_by_balance($order=array(),$uid=0,$price,$extra_data=array()){
+        $villageUserMoneyListDb=new VillageUserMoneyList();
+        $service_house_new_meter = new HouseNewMeterService();
+        $userVillageMoneyObj=$villageUserMoneyListDb->getOne(['uid'=>$uid,'business_id'=>$order['village_id'],'business_type'=>1],'*');
+        $split_order='';
+        $meter_reading_id=isset($order['meter_reading_id']) && $order['meter_reading_id'] ? $order['meter_reading_id']:0;
+
+        $whereArr=['id'=>$meter_reading_id,'village_id'=>$order['village_id']];
+        $meter_reading_obj=$service_house_new_meter->getMeterRecordInfo($whereArr,'*','id DESC');
+        $meter_reading='';
+        if($meter_reading_obj && !$meter_reading_obj->isEmpty()){
+            $meter_reading= $meter_reading_obj->toArray();
+        }
+        if(!empty($meter_reading) && $userVillageMoneyObj && !$userVillageMoneyObj->isEmpty() && $userVillageMoneyObj['current_money']>0 && $userVillageMoneyObj['current_money']<$price){
+            //满足拆分条件
+            $saveArr=array('total_money'=>$userVillageMoneyObj['current_money'],'modify_money'=>$userVillageMoneyObj['current_money']);
+            $tmp_ammeter=$order['now_ammeter']-$order['last_ammeter'];
+            $tmp_ammeter=round($tmp_ammeter,3);
+            $new_cost_num=($userVillageMoneyObj['current_money']/$price)*$tmp_ammeter;
+            $new_cost_num=round($new_cost_num,2);
+            $new_now_ammeter=$order['last_ammeter']+$new_cost_num;
+            $new_now_ammeter=round($new_now_ammeter,2);
+            $saveArr['now_ammeter']=$new_now_ammeter;
+            if(empty($order['order_serial'])){
+                $saveArr['order_serial']=date('YmdHis').'000'.rand(1000,9999);
+                $order['order_serial']=$saveArr['order_serial'];
+            }
+            $saveArr['order_type_flag']='split_order_by_balance';
+            $nowtime=time();
+            //更新现有订单和记录
+            $this->HouseNewPayOrder->saveOne(array('order_id'=>$order['order_id']),$saveArr);
+            $split_order_obj=$this->HouseNewPayOrder->get_one(array('order_id'=>$order['order_id']),'*');
+            $split_order=$split_order_obj->toArray();  //需要余额支付的订单
+            
+            $meterSaveArr=array('last_ammeter'=>$new_now_ammeter,'cost_num'=>$new_cost_num,'cost_money'=>$userVillageMoneyObj['current_money']);
+            $meterSaveArr['split_record_no']=$order['order_serial'];
+            $extra_data=array('split_original'=>array('start_ammeter'=>$meter_reading['start_ammeter'],'last_ammeter'=>$meter_reading['last_ammeter'],'cost_num'=>$meter_reading['cost_num'],'cost_money'=>$meter_reading['cost_money']));
+            $meterSaveArr['extra_data']=json_encode($extra_data,JSON_UNESCAPED_UNICODE);
+            $service_house_new_meter->saveMeterReading(array('id'=>$meter_reading['id']),$meterSaveArr);
+
+            //生成新记录
+            if($meter_reading['original_id']==0){
+                //第一次拆分
+                $meter_reading['original_id']=$meter_reading['id'];
+                $meter_reading['split_record_no']=$order['order_serial'];
+                $meter_reading['f_id']=$meter_reading['id'];
+                $order['primitive_order_id']=$order['order_id'];
+            }else{
+                $meter_reading['f_id']=$meter_reading['id'];
+            }
+            $meter_reading['note']='住户余额不足，记录拆分';
+            $meter_reading['split_num']=$meter_reading['split_num']+1;
+            unset($meter_reading['id']);
+            $meter_reading['start_ammeter']=$new_now_ammeter;
+            $meter_reading['cost_num']=$tmp_ammeter-$new_cost_num;
+            $meter_reading['cost_num']=round($meter_reading['cost_num'],2);
+            $meter_reading['cost_money']=$price-$userVillageMoneyObj['current_money'];
+            $meter_reading['cost_money']=round($meter_reading['cost_money'],2);
+            $meter_reading['last_time']=$nowtime;
+            $meter_reading['add_time']=$nowtime;
+            $newInsertId=$service_house_new_meter->addMeterReading($meter_reading);
+            
+            //生成新订单
+            unset($order['order_id']);
+            $order['remark']='住户余额不足，记录拆分';
+            $order['last_ammeter']=$new_now_ammeter;
+            $order['meter_reading_id']=$newInsertId;
+            $new_price=$price-$userVillageMoneyObj['current_money'];
+            $new_price=round($new_price,2);
+            $order['total_money']=$new_price;
+            $order['modify_money']=$new_price;
+            $order['add_time']=$nowtime;
+            $order['order_type_flag']='split_order_by_balance';
+            $this->HouseNewPayOrder->addOne($order);
+        }
+
+        return $split_order;
+    }
+    
+    public function checkUserMeterOrderToPay($uid=0,$village_id=0,$pigcms_id=0){
+        if($uid<1 || $village_id<1){
+            return false;
+        }
+        $where=array();
+        $where[] = ['is_paid','=',2];
+        $where[] = ['meter_reading_id','>',0];
+        $where[] = ['is_discard','=',1];
+        $where[] = ['village_id','=',$village_id];
+        $where[] = ['uid','=',$uid];
+        $field='order_id,pigcms_id,village_id,uid,modify_money,meter_reading_id';
+        $order='modify_money asc,order_id asc';
+        $listObj=$this->HouseNewPayOrder->getOrder($where,$field,$order);
+        $listOrder=array();
+        if(!empty($listObj) && !$listObj->isEmpty()){
+            $listOrder=$listObj->toArray();
+        }
+        if(empty($listOrder)){
+            return false;
+        }
+        fdump_api([__LINE__,'listOrder'=>$listOrder,'uid'=>$uid,'village_id'=>$village_id,'pigcms_id'=>$pigcms_id],'storage/checkUserMeterOrderToPay',true);
+        $villageUserMoneyListDb=new VillageUserMoneyList();
+        $userVillageMoneyObj=$villageUserMoneyListDb->getOne(['uid'=>$uid,'business_id'=>$village_id,'business_type'=>1],'*');
+        $current_money=0;
+        if($userVillageMoneyObj && !$userVillageMoneyObj->isEmpty() && $userVillageMoneyObj['current_money']>0){
+            $current_money=$userVillageMoneyObj['current_money'];
+        }
+        fdump_api([__LINE__,'current_money'=>$current_money,'uid'=>$uid,'village_id'=>$village_id],'storage/checkUserMeterOrderToPay',true);
+        $remarks='住户余额增加，自动扣除余额';
+        $extra_data=array('order_id'=>0,'meter_reading_id'=>0,'opt_type'=>'meter_split_order');
+        foreach ($listOrder as $v){
+            fdump_api([__LINE__,'current_money'=>$current_money,'v'=>$v,'uid'=>$uid,'village_id'=>$village_id],'storage/checkUserMeterOrderToPay',true);
+            if($current_money<=0){
+                break;
+            }
+            $extra_data['order_id']=$v['order_id'];
+            $extra_data['meter_reading_id']=$v['meter_reading_id'];
+            $this->userBalanceChange($uid,2,$v['modify_money'],$remarks,$remarks,$v['order_id'],$village_id,'',$extra_data);
+            $current_money=$current_money-$v['modify_money'];
+        }
+        return true;
+    }
+    
     /**
      * 余额变动
      * @author: liukezhu
@@ -1171,6 +1297,7 @@ font-size: 13px
             }
             $configCustomizationService= new ConfigCustomizationService();
             $isAihorseCustomized=$configCustomizationService->getAihorseCustomizedJudge();
+            
             /***
             if($isAihorseCustomized && $status==2 && $order_id>0){
                 $is_water_handle=$this->handle_room_water_order_balance($order_id,$village_id,$pigcms_id);
@@ -1188,7 +1315,7 @@ font-size: 13px
             $where[]=['hvb.status', '=', 1];
             $where[]=['hvb.type', 'in', [0,1,2,3]];
             $field='hvb.pigcms_id,hvb.name,hvb.phone,hvb.village_id,u.now_money,u.uid';
-            if(!is_numeric($price) || empty($price)){
+            if(!is_numeric($price) || $price<=0){
                 return ['error'=>false,'msg'=>'请选择余额'];
             }
             $user = (new StorageService())->getUser($where,$field,1);
@@ -1200,12 +1327,14 @@ font-size: 13px
             if($village_id<1){
                 return ['error'=>false,'msg'=>'小区信息错误！'];
             }
-            if(intval($order_id) > 0){
+            if($order_id > 0){
                 $where=[];
                 $where[]=['order_id', '=', $order_id];
                 $order=$this->HouseNewPayOrder->get_one($where);
-                if(!empty($order)){
+                if(!empty($order) && !$order->isEmpty()){
                     $order=$order->toArray();
+                }else{
+                    $order='';
                 }
                 if(empty($order)){
                     fdump_api(['订单不存在'.__LINE__,$pigcms_id,$status,$price,$system_remarks,$user_remarks,$order_id,$order],'storage/error_log',1);
@@ -1243,7 +1372,15 @@ font-size: 13px
                         return ['error'=>false,'msg'=>'用户'.$this->charge_name_arr[$order['order_type']].'暂未开启自动扣款'];
                     }
                 }
-
+                if($uid>0 && $isAihorseCustomized && $status==2 && $is_automat_pay && $extra_data && isset($extra_data['opt_type']) && $extra_data['opt_type']=='meter_split_order'){
+                    //水电燃 余额划扣拆单逻辑
+                    $split_order=$this->meter_split_order_by_balance($order,$uid,$price,$extra_data);
+                    if($split_order && is_array($split_order)){
+                        $order=$split_order;
+                        $order_id=$order['order_id'];
+                        $price=$split_order['modify_money'];
+                    }
+                }
                 $village_money_data=[
                     'uid'=>$uid,
                     'village_id'=>$village_id,
@@ -1255,6 +1392,7 @@ font-size: 13px
                     'order_type'=>1,
                     'opt_money_type'=>$opt_money_type,
                 ];
+
             }else{
                 $village_money_data=[
                     'uid'=>$uid,
@@ -1273,6 +1411,11 @@ font-size: 13px
                 fdump_api(['error-----'.__LINE__,$pigcms_id,$status,$price='0',$system_remarks,$user_remarks,$order_id,$add_res['msg']],'storage/error_log',1);
                 return ['error'=>false,'msg'=>$add_res['msg']];
             }
+            
+            if($order_id<1 && $status==1 && $isAihorseCustomized){
+                $this->checkUserMeterOrderToPay($uid,$village_id);
+            }
+            
             $log_id=$add_res['log_id'];
             if($is_automat_pay){
                 $PayOrder=[
@@ -1421,6 +1564,32 @@ font-size: 13px
             $customizeMeterWaterReadingService=new CustomizeMeterWaterReadingService();
             $customizeMeterWaterReadingService->openUserWaterElectricUse($order['village_id'],$order['room_id'],$PayOrder['order_type_flag']);
         }
+        if(isset($order['order_type_flag']) && $order['order_type_flag']=='easymeter_order' && isset($order['third_meter_code']) && $order['third_meter_code']){
+            $nbLotEasyMeterApiService=new \app\community\model\service\Device\NbLotEasyMeterApiService($order['village_id']);
+            $nbLotEasyMeterApiService->meterOpenUse($order['third_meter_code'],$order['room_id']);
+        }else if(isset($order['order_type_flag']) && $order['order_type_flag']=='jisheyunmeter_order' && isset($order['third_meter_id']) && $order['third_meter_id'] && isset($order['third_meter_code']) && $order['third_meter_code']){
+            $jiSheYunMeterApiService=new \app\community\model\service\Device\JiSheYunMeterApiService($order['village_id']);
+            $meter_type=1;
+            if($order['order_type']=='electric'){
+                $meter_type=2;
+            }
+            $jiSheYunMeterApiService->meterOpenUse($order['third_meter_id'],$meter_type,$order['third_meter_code'],$order['room_id']);
+        }else if(isset($order['order_type_flag']) && $order['order_type_flag']=='lingyinmeter_order' && isset($order['third_meter_code']) && $order['third_meter_code']){
+            $lingYinPfMeterApiService=new \app\community\model\service\Device\LingYinPfMeterApiService($order['village_id']);
+            $meter_type=1;
+            if($order['order_type']=='electric'){
+                $meter_type=2;
+            }
+            $lingYinPfMeterApiService->meterOpenUse($order['third_meter_code'],$order['room_id'],$meter_type);
+        }else if(isset($order['order_type_flag']) && $order['order_type_flag']=='bomingmeter_order' && isset($order['third_meter_code']) && $order['third_meter_code']){
+            $boMingPfMeterApiService=new \app\community\model\service\Device\BoMingPfMeterApiService($order['village_id']);
+            $meter_type=1;
+            if($order['order_type']=='electric'){
+                $meter_type=2;
+            }
+            $boMingPfMeterApiService->meterOpenUse($order['third_meter_code'],$order['room_id'],$meter_type);
+        }
+        
         $tmp_order = [];
         $tmp_order['plat_order_id'] = $plat_order_id;
         $tmp_order['score_used_count'] = 0;
@@ -1499,7 +1668,7 @@ font-size: 13px
                     $v['add_time']=date('Y-m-d H:i:s',$v['add_time']);
                 }
                 $v['is_print']=0;
-                if($isAihorseCustomized && $v['type']==1 && in_array($v['order_type'],array('pc_plus','user_recharge'))){
+                if($isAihorseCustomized && $v['type']==1 && in_array($v['order_type'],array('pc_plus','user_recharge','third_opt'))){
                     $v['is_print']=1;
                 }
                 $v['off_pay_type_str']='';
@@ -1836,7 +2005,7 @@ font-size: 13px
                 $saveArr['electric_balance']=$user_money['electric_balance']-$data['current_village_balance'];
             }else{
                 if($user_money['current_money'] < $data['current_village_balance']){
-                    return array('error_code' => true, 'msg' =>  L_($msg_balance.'余额扣除失败！请联系管理员协助解决。'));
+                    return array('error_code' => true,'current_money'=>$user_money['current_money'], 'msg' =>  L_($msg_balance.'余额扣除失败！请联系管理员协助解决。'));
                 }
                 $saveArr['current_money']=$user_money['current_money']-$data['current_village_balance'];
             }
@@ -2003,6 +2172,9 @@ font-size: 13px
         if ($data['current_village_balance']<0){
             return array('error_code' => true, 'msg' =>  L_('住户余额数据有误'));
         }
+        $configCustomizationService=new ConfigCustomizationService();
+        $is_aihorse_customized=$configCustomizationService->getAihorseCustomizedJudge();
+        
         $msg_balance='住户';
         if($opt_money_type=='current_money'){
             $msg_balance='物业';
@@ -2114,7 +2286,9 @@ font-size: 13px
                         $log_data['current_money']=$v['current_money'];
                     }
                     $log_id=$db_village_user_money_log->addOne($log_data);
-
+                    if($data['type']==1 && $is_aihorse_customized){
+                        $this->checkUserMeterOrderToPay($v['uid'],$data['village_id']);
+                    }
                 }else{
                     $error['msg']='操作错误';
                     $error['uid'][]=$v['uid'];
@@ -2166,7 +2340,9 @@ font-size: 13px
                     }
                 }
                 $log_id=$db_village_user_money_log->addOne($log_data);
-        
+                if($data['type']==1 && $is_aihorse_customized){
+                    $this->checkUserMeterOrderToPay($data['uid']['0'],$data['village_id']);
+                }
             }else if($data['type']==2){
                 $user_info=$db_user->getOne(['uid'=>$data['uid']['0']],'nickname');
                 $error['msg']='操作错误';
@@ -2229,6 +2405,8 @@ font-size: 13px
             $data = (new HouseNewMeterService())->readFile($_SERVER['DOCUMENT_ROOT'] . $savepath, $filed, 'Xls');
 
         }
+        $configCustomizationService=new ConfigCustomizationService();
+        $is_aihorse_customized=$configCustomizationService->getAihorseCustomizedJudge();
         $data = array_values($data);
         $house_village = new HouseVillage();
         $village_single = new HouseVillageSingle();
@@ -2372,6 +2550,9 @@ font-size: 13px
                         'desc' => '导入住户余额'
                     ];
                     $res = $this->addVillageUserMoney($log_data);
+                    if(!$res['error_code'] && $is_aihorse_customized && $user_info['uid']>0 && $village_id){
+                        $this->checkUserMeterOrderToPay($user_info['uid'],$village_id);
+                    }
                 }
 
                 if ($res['error_code']) {
@@ -2949,7 +3130,7 @@ font-size: 13px
         if ($userMoneyLogObj && !$userMoneyLogObj->isEmpty()) {
             $userMoneyLog = $userMoneyLogObj->toArray();
         }
-        $pay_type_arr = array('weixin' => '微信支付', 'alipay' => '支付宝支付');
+        $pay_type_arr = array('weixin' => '微信支付', 'alipay' => '支付宝支付','constructionPay'=>'建行支付');
         if ($userMoneyLog) {
             $houseVillageDb = new HouseVillage();
             $houseVillageObj = $houseVillageDb->getInfo(array('village_id' => $village_id), 'village_id,village_name,property_id,village_code,seal_img');

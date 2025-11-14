@@ -78,7 +78,7 @@
 										<td class="textcenter">
 											
 											<a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,editbtn,'store_add',true);">订单详情</a> 
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,editbtn,'store_add',true);">订单详情</a> 
 										</td>
 									</tr>
 								</volist>

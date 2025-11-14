@@ -242,7 +242,7 @@ $(document).ready(function(){
 	//查看配送员的订单详情
     $(document).on('click', '.off_work', function(){
 		var uid = $(this).data('uid');
-		window.top.art.dialog({
+		window.o2oTop.art.dialog({
 			icon: 'question',
 			title: '关闭接单状态',
 			lock: true,
@@ -1186,7 +1186,7 @@ function artiframe(url, title, width, height, lock, resize, background, button, 
     art.dialog.open(url, {
         init: function(){
             var iframe = this.iframe.contentWindow;
-            window.top.art.dialog.data('iframe' + id, iframe);
+            window.o2oTop.art.dialog.data('iframe' + id, iframe);
         },
         id: id,
         title: title,

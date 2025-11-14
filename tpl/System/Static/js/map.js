@@ -20,6 +20,9 @@ function paint_map(){
 		area_type_v=area_type_v ? parseInt(area_type_v):0;
 		(new BMap.Geocoder()).getLocation(pt,function(rs){
 			console.log('rs',rs);
+			if(!rs){
+			    return true;
+			}
 			addComp = rs.addressComponents;
 			var fulladdress=rs.address!=undefined && rs.address ? rs.address:'';
 			if(rs.addressComponents!=undefined && rs.addressComponents.province!=undefined && rs.addressComponents.province){

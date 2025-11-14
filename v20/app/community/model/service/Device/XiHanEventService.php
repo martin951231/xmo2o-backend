@@ -34,6 +34,7 @@ use app\consts\DeviceQrcodeConst;
 use app\traits\XiHanFaceDeviceTraits;
 use app\traits\house\DeviceTraits;
 use face\wordencryption;
+use file_handle\FileHandle;
 
 class XiHanEventService
 {
@@ -202,16 +203,32 @@ class XiHanEventService
 
         $cut_image = '';
         if ($imageFile) {
+            $fileHandle   = new FileHandle();
             $ymdHis = date('Ymdhis', $nowTime);
             $ymdString = date('Ymd', $nowTime);
             $rootPath = app()->getRootPath() . '..';
             $faceImgPath = '/upload/face_log/' . $ymdString . '/' . $serialNo . '/';
             $imageSavePath = $rootPath . $faceImgPath;
             $imageFileSaveFileName = $ymdHis . '_face_' . $picID;
-            $flags = FILE_USE_INCLUDE_PATH | FILE_APPEND;
-            $toImg = base64_to_img($imageSavePath, $imageFileSaveFileName, $imageFile, 'jpg', $flags);
+           // $flags = FILE_USE_INCLUDE_PATH | FILE_APPEND;
+            $toImg = base64_to_img($imageSavePath, $imageFileSaveFileName, $imageFile, 'jpg');
             if ($toImg) {
                 $cut_image = $faceImgPath . $imageFileSaveFileName . '.jpg';
+                $saveImg = $this->traitSaveImage($toImg, $toImg);
+                $is_check_open_oss=$fileHandle->check_open_oss();
+                fdump_api(['toImg'=>$toImg,'saveImg' => $saveImg,'cut_image'=>$cut_image,'is_check_open_oss'=>$is_check_open_oss,'imageFile'=>$imageFile], 'xiHan/eventNotificationImg', true);
+                if ($is_check_open_oss) {
+                    try {
+                        $info = $fileHandle->upload('.'.$cut_image);
+                        fdump_api(['toImg'=>$toImg,'info' => $info,'cut_image'=>$cut_image], 'xiHan/eventNotificationImg', true);
+                        if(isset($info['error']) && !$info['error']){
+                            @unlink('.'.$cut_image);
+                        }
+                    } catch (\Exception $e) {
+                        fdump_api(['msg' => 'oss上传大图执行错误', 'message' => $e->getMessage(), 'toImg' => $toImg, 'cut_image' => $cut_image, 'info' => $info], 'xiHan/eventNotificationImg', true);
+                    }
+                }
+                
             }
         }
         $log_detail = unsetParam($log_detail, ['Image']);

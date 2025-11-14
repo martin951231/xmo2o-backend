@@ -93,7 +93,7 @@ class StoreGroupService
             $where[] = ['s.status','=',$param['status']];
         }
 
-        $field = 'g.group_id,g.package_id,s.store_id,s.province_id,s.city_id,s.area_id,s.adress,s.phone,s.name,s.score,s.long,s.lat,s.open_store_marketing';
+        $field = 'g.group_id,g.package_id,s.store_id,s.province_id,s.city_id,s.area_id,s.adress,s.phone,s.name,s.score,s.long,s.lat,s.open_store_marketing,s.logo';
         $order = [];
         if ($lat>0 && $lng>0) {
             $field .= ", ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN(({$lat}*PI()/180-`s`.`lat`*PI()/180)/2),2)+COS({$lat}*PI()/180)*COS(`s`.`lat`*PI()/180)*POW(SIN(({$lng}*PI()/180-`s`.`long`*PI()/180)/2),2)))*1000) AS juli";

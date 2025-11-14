@@ -34,7 +34,7 @@ class ClassifyBaseController extends CommonBaseController
      * @param string $method
      * @return array|mixed
      */
-    protected function validateParameter(string $scenario = '', array $params = [], $method = 'post'): array
+    protected function validateParameter(string $scenario = '', array $params = [], string $method = 'post'): array
     {
         empty($params) && $params = input($method . '.');
         $validate = validate($this->classifyValidate);

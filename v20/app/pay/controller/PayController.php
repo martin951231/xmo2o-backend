@@ -19,6 +19,7 @@ use app\employee\model\db\EmployeeCard;
 use app\employee\model\db\EmployeeCardUser;
 use app\internal_card\model\db\InternalMembershipCard;
 use app\internal_card\model\service\InternalCardService;
+use app\maiyatian\service\MaiyatianRechargeService;
 use app\mall\model\service\MallOrderCombineService;
 use app\pay\model\service\channel\TianqueService;
 use app\pay\model\service\env\EnvService;
@@ -137,15 +138,25 @@ class PayController
 		$extra_cfg['business_order_sn'] = $order_info['business_order_sn'] ?? '';
         $extra_cfg['goods_desc'] = $order_info['goods_desc'] ?? '';
         $extra_cfg['old_order_no'] = $order_info['order_no'] ?? '';
-        Db::startTrans();
+        $isStartTrans=false;
+        if(!empty($pay_info['select_pay_type']) && $pay_info['online_pay_money']>0){
+            $isStartTrans=true;
+        }
+        if($isStartTrans){
+            Db::startTrans();
+        }
         try {
             $s1=microtime(true);
         	$return = $pay_service->pay($order_info['order_type'], $order_info['order_id'], $pay_info['select_pay_type'], $pay_info['online_pay_money'], $pay_info, $extra_cfg, get_format_number($rate));
             $n1=microtime(true);
             fdump_api(['$pay_service->pay花费时长',$n1-$s1,$s1,$n1],'microtime_0706',1);
-        	Db::commit();
+            if($isStartTrans){
+                Db::commit();
+            }
         } catch (\Exception $e) {
-            Db::rollback();
+            if($isStartTrans){
+                Db::rollback();
+            }
             fdump_api(['param' => $_POST,'compute' => $compute,'pay_info' => $pay_info,'order_info' => $order_info,'order_type' => $order_info['order_type'],'order_id' => $order_info['order_id'],'select_pay_type' => $pay_info['select_pay_type'],'online_pay_money' => $pay_info['online_pay_money'],'extra_cfg' => $extra_cfg,'rate' => $rate,'errormsg'=>$e->getMessage(),'msg' => $e->getTraceAsString()],'errPay/goPayLog',1);
             return api_output_error(1005, $e->getMessage());
         }
@@ -273,8 +284,17 @@ class PayController
                 break;
             case 'pile_user_charge_balance': //充电桩用户余额充值
                 $business = new \app\community\model\service\PileOrderPayService();
-               
                 break;
+
+			case 'maiyatian_recharge': //麦芽田商家充值
+				$business = new MaiyatianRechargeService();
+				break;
+			case 'building': //商场楼宇系统跳转支付中心订单
+				$business = new \app\building\service\OrderService();
+				break;
+			case 'shopping_mall_park': //商场停车缴费
+				$business = new \app\building\service\ParkOrderService();
+				break;
 			default:
 				return api_output_error(1001, '当前业务（'.$order_type.'）未对接');
 		}
@@ -285,6 +305,11 @@ class PayController
                 $now_order = $business->getOrderPayInfo($order_id);
             }
 
+
+			//楼宇系统跳转到O2O支付中心支付的订单，需要更新支付uid
+			if ($order_type == 'building' && $now_order['uid'] != $now_uid) {
+				(new \app\building\model\ShoppingBuildingOrder())->where('order_id', $order_id)->update(['uid' => $now_uid]);
+	    		}
 			//如果是商家小程序，不允许跨商家支付
 			$wxappOwnMerId = request()->param('wxapp_own_mer_id', 0, 'intval');
 			if ($wxappOwnMerId > 0 && $now_order['mer_id'] != $wxappOwnMerId) {
@@ -555,7 +580,26 @@ class PayController
         }
 		$score_display = false;//显示积分抵扣功能
 		$user_score_use_condition = cfg('user_score_use_condition');//积分使用条件（必须设置）
-		$user_score_use_percent = cfg('user_score_use_percent');//抵扣1元所需积分量（必须设置）
+		$user_score_use_percent = cfg('user_score_use_percent'); //抵扣1元所需积分量（必须设置）
+
+		//楼宇订单的积分使用规则以楼宇上送规则为准
+		if ($order_type == 'building') {
+			$scoreSetting = $business->getScoreSetting($order_id);
+			if ($scoreSetting['count_per_yuan'] <= 0) {
+				$user_score_use_condition = 0;
+				$user_score_use_percent = 0;
+				$max_use_score = 0;
+			} else {
+				$user_score_use_condition = 0.01;
+				$user_score_use_percent = $scoreSetting['count_per_yuan'];
+				$max_use_score = $scoreSetting['max_use_score'];
+			}
+		}else if($order_type == 'shopping_mall_park'){
+			//商场停车缴费
+			$scoreSetting = $business->getScoreSetting($order_id);
+			$max_use_score = $scoreSetting['max_use_score'];
+		}
+
         fdump_api([$user_score_use_condition,$order_money,$user_score_use_condition,$user_score_use_percent,$now_user,$open_user_score,$now_order,$can_use_score],'pay_0224',1);
 		if($user_score_use_condition > 0 && $order_money >= $user_score_use_condition && $user_score_use_percent > 0 && $now_user && $now_user['score_count'] > 0 && $open_user_score == '1' && (!isset($now_order['use_score']) || $now_order['use_score'] == true) && $can_use_score && $now_order['is_recharge'] != 1){
 			$score_display = true;
@@ -568,6 +612,12 @@ class PayController
                     $user_score_info = $business->get_score($order_id,$now_user);
                     $user_score_max_use=$user_score_info['score_can_use'];
                     fdump_api([$user_score_info],'pay_0224',1);
+                    break;
+				case 'building'://楼宇支付
+                    $user_score_max_use = $max_use_score;
+                    break;
+				case 'shopping_mall_park'://商场停车缴费
+                    $user_score_max_use = $max_use_score;
                     break;
 				default:
 					$user_score_max_use = $user->checkScoreCanUse($now_order['uid'], $order_money, $order_type, $group_id, $now_order['mer_id'])['score'];//获取设置的积分最大使用量
@@ -813,6 +863,11 @@ class PayController
         }
         
 		//================================使用平台余额================================
+		//如果业务订单返回了不能使用平台余额，则需要屏蔽
+		if (isset($now_order['use_system_balance']) && $now_order['use_system_balance'] == 0) {
+			$can_use_system_balance = false;
+		}
+
 		if($can_use_system_balance && $use_system_balance && isset($now_user['now_money']) && $now_user['now_money'] > 0 && $online_pay_money > 0 && (!isset($now_order['use_platform_balance']) || $now_order['use_platform_balance'] == true)){
 			if($now_user['now_money'] >= $online_pay_money){
 				$show_pay_money = $online_pay_money;

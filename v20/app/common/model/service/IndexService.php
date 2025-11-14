@@ -1257,7 +1257,7 @@ class IndexService {
     {
         $merchantMenuMall = (new NewMerchantMenu())->where(['name'=>'商城管理','module'=>'Mall','status'=>1])->value('id');
         $merchantMenuMeal = (new NewMerchantMenu())->where(['name'=>'餐饮管理','module'=>'Foodshop','status'=>1])->value('id');
-        $pluginMall = (new Plugin())->where(['plugin_name'=>'商城管理','plugin_label'=>'mall','show'=>1])->value('plugin_id');
+        $pluginMall = (new Plugin())->where(['plugin_name'=>'商城管理','plugin_label'=>'mall','system_menu_id'=>295,'show'=>1])->value('plugin_id');
         $pluginMeal = (new Plugin())->where(['plugin_name'=>'餐饮管理','plugin_label'=>'foodshop','show'=>1])->value('plugin_id');
         if($merchantMenuMall || $merchantMenuMeal || $pluginMall || $pluginMeal){
             return ['isShow'=>1];
@@ -1275,7 +1275,7 @@ class IndexService {
             //关闭商家菜单
             (new NewMerchantMenu())->where(['name'=>'商城管理','module'=>'Mall'])->update(['status'=>0]);
             //关闭应用中心入口
-            (new Plugin())->where(['plugin_name'=>'商城管理','plugin_label'=>'mall'])->update(['show'=>0]);
+            (new Plugin())->where(['plugin_name'=>'商城管理','plugin_label'=>'mall','system_menu_id'=>295,])->update(['show'=>0]);
         }
         //关闭老版餐饮
         if(in_array('meal',$business)){

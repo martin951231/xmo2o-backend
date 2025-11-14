@@ -9,6 +9,8 @@ namespace app\common\model\service;
 
 use app\appoint\model\service\goods\AppointImageService;
 use app\appoint\model\service\goods\AppointService;
+use app\atlas\model\db\AtlasArticleCollect;
+use app\atlas\model\service\AtlasArticleCollectService;
 use app\common\model\db\MerchantUserRelation;
 use app\group\model\service\GroupService;
 use app\group\model\service\StoreGroupService;
@@ -72,14 +74,6 @@ class MerchantUserRelationService
         $whereCollect[] = ['type', 'in', ['group','appoint','mallgoods']];
         $goodsCount = $this->getCount($whereCollect);
 
-
-        // 文章总数
-        $where = [];
-        $where['c.uid'] = $uid;
-        $where['c.is_del'] = 0;
-        $articleCount = (new GrowGrassArticleCollectService())->getCount($where);
-
-
         $returnArr['list'] = [
             [
                 'title' => L_('店铺'),
@@ -87,17 +81,41 @@ class MerchantUserRelationService
                 'count' => $storeCount,
             ],
             [
-                'title' => L_('文章'),
-                'type' => 'article',
-                'count' => $articleCount,
-            ],
-            [
                 'title' => L_('商品'),
                 'type' => 'goods',
                 'count' => $goodsCount,
             ],
         ];
-		return $returnArr;
+
+        $growGrassPlugin = (new \app\common\model\db\Plugin())->where(['status' => 1, 'show' => 1, 'plugin_label' => 'grow_grass'])->find();
+        if($growGrassPlugin){
+            // 种草总数
+            $where = [];
+            $where['c.uid'] = $uid;
+            $where['c.is_del'] = 0;
+            $articleCount = (new GrowGrassArticleCollectService())->getCount($where);
+                $returnArr['list'][] = [
+                    'title' => cfg('grow_grass_alias'),
+                    'type' => 'article',
+                    'count' => $articleCount,
+                ];
+        }
+
+        $atlasPlugin = (new \app\common\model\db\Plugin())->where(['status' => 1, 'show' => 1, 'plugin_label' => 'atlas'])->find();
+        if ($atlasPlugin) {
+            // 图文总数
+            $where = [];
+            $where['c.uid'] = $uid;
+            $where['c.status'] = 0;
+            $where['a.status'] = 0;
+            $articleCount = (new AtlasArticleCollectService())->getCount($where);
+            $returnArr['list'][] = [
+                'title' => L_('图文'),
+                'type' => 'atlas',
+                'count' => $articleCount,
+            ];
+        }
+        return $returnArr;
 	}
     
     /**
@@ -236,6 +254,31 @@ class MerchantUserRelationService
                 }
                 
                 break;
+            case 'atlas': //图文
+                $where['c.uid'] = $uid;
+                $where['c.status'] = 0;
+                $where['a.status'] = 0;
+                $atlasArticles = (new AtlasArticleCollectService())->getCollectList($where, 'c.article_id,a.title,a.pic,a.cat_id', [], $page, $pageSize);
+                foreach ($atlasArticles as &$item) {
+                    $item['article_url'] =  get_base_url("pages/imageText/v1/detail/index?id=" . $item['article_id'] . "&title=" . $item['title'], true);
+                    $item['pic'] = thumb_img($item['pic'], 640, 640, 'fill');
+                    if ($item['cat_id'] > 0) {
+                        $category = \think\facade\Db::name('atlas_category')->alias('c')->join('merchant_category mc', 'mc.cat_id=c.cat_fid')
+                            ->where('c.cat_id', '=', $item['cat_id'])
+                            ->field('mc.cat_name AS first_cate,c.cat_name AS second_cate')
+                            ->find();
+                        if ($category) {
+                            $item['category'] = implode('/', $category);
+                            $item['category_link'] = get_base_url("pages/imageText/v1/category/index?cat_id=" . $item['cat_id'], true);
+                        }
+                    } else {
+                        $item['category'] = $item['category_link'] = '';
+                    }
+                }
+                $returnArr['list'] = $atlasArticles;
+                $returnArr['page_size'] = $pageSize;
+                break;
+
         }
         $returnArr['type'] = $type;
         return $returnArr;

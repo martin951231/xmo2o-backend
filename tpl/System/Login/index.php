@@ -44,7 +44,7 @@
 					art.dialog.open("{pigcms{:U('Login/see_admin_qrcode')}&t="+Math.random(),{
 						init: function(){
 							var iframe = this.iframe.contentWindow;
-							window.top.art.dialog.data('login_iframe_handle',iframe);
+							window.o2oTop.art.dialog.data('login_iframe_handle',iframe);
 						},
 						id: 'login_handle',
 						title:'请使用微信扫描二维码登录',
@@ -73,7 +73,7 @@
 			});
 		</script>
 		<script type="text/javascript">
-			if(self!=top){window.top.location.href="{pigcms{:U('Index/index')}";}
+			if(self!=top){window.o2oTop.location.href="{pigcms{:U('Index/index')}";}
 			var static_public="{pigcms{$static_public}",static_path="{pigcms{$static_path}",login_check="{pigcms{:U('Login/check')}",system_index="{pigcms{:U('Index/index')}";
 		</script>
 		<script type="text/javascript" src="{pigcms{$static_path}login/login.js"></script>

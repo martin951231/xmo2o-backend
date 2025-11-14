@@ -2232,8 +2232,8 @@ class LifeToolsOrderService
                         if ($refund_num <= 0) throw new \think\Exception('没有未核销的订单，请检查');
                         $canceledNum = $this->LifeToolsOrderDetail->where('order_id', $order_id)->where('status', 3)->count();
                         $refundNum = $this->LifeToolsOrderDetail->updateThis($where, ['status' => 3, 'last_time' => time(), 'refund_status' => 2]); //更新详情表
-                        $this->lifeTools->setDec(['tools_id' => $orderDetail['tools_id']], 'sale_count', $refund_num); //减少销量
-                        $this->LifeToolsTicket->setDec(['ticket_id' => $orderDetail['ticket_id']], 'sale_count', $refund_num); //减少销量
+                        $this->lifeTools->setDec([['tools_id', '=', $orderDetail['tools_id']], ['sale_count', '>=', $refund_num]], 'sale_count', $refund_num); //减少销量
+                        $this->LifeToolsTicket->setDec([['ticket_id', '=', $orderDetail['ticket_id']], ['sale_count', '>=', $refund_num]], 'sale_count', $refund_num); //减少销量
                         //多规格库存回滚
                         if($orderDetail['sku_id']){
                             (new LifeToolsTicketSku)->setInc(['sku_id'=>$orderDetail['sku_id']], 'stock_num', $refund_num);

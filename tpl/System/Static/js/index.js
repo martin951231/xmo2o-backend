@@ -145,7 +145,7 @@ $(function () {
 
 //刷新父级页面
 function top_refresh() {
-	window.top.location.reload();
+	window.o2oTop.location.reload();
 }
 //刷新框架页面
 function main_refresh() {
@@ -204,7 +204,7 @@ function change_frame_position_left(name) {
 	} else {
 		var frame_left = '20%';
 	}
-	window.top.art.dialog.list[name].position(frame_left, '38.2%');
+	window.o2oTop.art.dialog.list[name].position(frame_left, '38.2%');
 }
 
 //得到右边框架的左边
@@ -250,7 +250,7 @@ function artiframe(url, title, width, height, lock, resize, background, button, 
 	art.dialog.open(url, {
 		init: function () {
 			var iframe = this.iframe.contentWindow;
-			window.top.art.dialog.data('iframe' + id, iframe);
+			window.o2oTop.art.dialog.data('iframe' + id, iframe);
 		},
 		id: id,
 		title: title,

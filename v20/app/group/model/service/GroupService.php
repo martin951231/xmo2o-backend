@@ -1536,15 +1536,15 @@ class GroupService
         // 保存主表数据
         $saveData['mer_id'] = $merchantUser['mer_id'];
         if($groupId){
-            if($saveData['tuan_type']==3){
-                unset($saveData['count_num']);
-            }
             $where = [
                 'group_id' => $groupId
             ];
             $detail = $this->getOne($where);
             if (empty($detail)) {
                 throw new \think\Exception(L_("商品不存在"),1003);
+            }
+            if ($saveData['tuan_type'] == 3) {
+                $saveData['count_num'] = $detail['count_num'];
             }
             $res = $this->updateThis($where, $saveData);
             if($res === false){
@@ -3337,8 +3337,7 @@ class GroupService
 
         // 商家信息
         $merchant = (new MerchantService())->getMerchantByMerId($groupInfo['mer_id']);
-
-
+        
         $returnArr['group_id'] = $groupInfo['group_id'];
         $returnArr['group_cate'] = $groupInfo['group_cate'];// 类型 
         $returnArr['mer_id'] = $groupInfo['mer_id']; // 归属商家ID
@@ -3347,6 +3346,10 @@ class GroupService
         $returnArr['sale_count'] = $groupInfo['sale_count']+($groupInfo['virtual_num']??0);// 销量+虚拟销量
         $returnArr['old_price'] = $groupInfo['old_price'];// 原价
         $returnArr['price'] = $groupInfo['price'];// 团购价 或 拼团价
+        //如果是拼团显示团长优惠后价格
+        if($groupInfo['pin_num'] >= 2 && $groupInfo['start_discount'] > 0){
+            $returnArr['price'] = getFormatNumber($groupInfo['price'] * $groupInfo['start_discount'] /100);
+        }
         $returnArr['cancel_type'] = $groupInfo['cancel_type'];// 0=不可取消 1=到期前几小时取消 2=随时可取消
         $returnArr['cancel_hours'] = intval($groupInfo['cancel_hours']);
         $returnArr['appoint_time'] = $groupInfo['appoint_time'];// 需提前预约时间：0=无需预约  >0时表示需提前多长时间预约
@@ -3480,6 +3483,12 @@ class GroupService
         $returnArr['store']['address'] = $store['adress'] ?? '';
         $returnArr['store']['long'] = $store['long'] ?? '';
         $returnArr['store']['lat'] = $store['lat'] ?? '';
+        if ($store['logo']) {
+            $returnArr['store']['logo'] = replace_file_domain($store['logo']);
+        } else {
+            $pics = explode(';', $store['pic_info']);
+            $returnArr['store']['logo'] = $pics ? replace_file_domain($pics[0]) : '';
+        }
         $returnArr['store']['phone'] = isset($store['phone']) && $store['phone'] ? (is_array($store['phone']) ? $store['phone'] : explode(' ', $store['phone'])) : [];
         $returnArr['phone_list'] = isset($store['phone']) && $store['phone'] ? (is_array($store['phone']) ? $store['phone'] : explode(' ', $store['phone'])) : [];// 店铺电话
 

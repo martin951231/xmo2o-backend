@@ -28,10 +28,10 @@
         }
         $.post("<?php echo U('Spread_hb/detach_promote')?>", {'pigcms_id': pigcms_id}, function(data){
             if (data.err_code == 0) {
-                window.top.msg(1, data.message);
+                window.o2oTop.msg(1, data.message);
                 setTimeout('history.go(0)',1000);//延时1秒
             } else {
-                window.top.msg(1, data.message);
+                window.o2oTop.msg(1, data.message);
                 setTimeout('history.go(0)',1000);//延时1秒
             }
         },'json');
@@ -46,10 +46,10 @@
         }
         $.post('<?php echo  U("Spread_hb/enable")?>', {'pigcms_id': pigcms_id,'type': type}, function(data){
             if (data.err_code == 0) {
-                window.top.msg(1, data.message);
+                window.o2oTop.msg(1, data.message);
                 setTimeout('history.go(0)',1000);//延时1秒
             } else {
-                window.top.msg(1, data.message);
+                window.o2oTop.msg(1, data.message);
                 setTimeout('history.go(0)',1000);//延时1秒
             }
         },'json');
@@ -64,10 +64,10 @@
         }
         $.post('<?php echo U("Spread_hb/enable")?>', {'pigcms_id': pigcms_id, 'type': type}, function(data){
             if (data.error == 0) {
-                window.top.msg(1, data.message);
+                window.o2oTop.msg(1, data.message);
                 setTimeout('history.go(0)',1000);//延时1秒
             } else {
-                window.top.msg(1, data.message);
+                window.o2oTop.msg(1, data.message);
                 setTimeout('history.go(0)',1000);//延时1秒
             }
         },'json');

@@ -525,9 +525,20 @@ class MerchantService {
             ->find();
         !empty($customMenu) && $menuIds = $customMenu->menu_ids;
         
-        $menu = function ($item)use($menuIds) {
+        $phone = Merchant::where([
+            'mer_id' => $params['merchant_id']
+        ])->value('phone');
+        $menu = function ($item)use($menuIds,$params,$phone) {
             $item->image_icon = cfg('site_url') . "/static/merchant_menu/{$item['type']}.png";
             $item->is_select = 0;
+
+            if ($item->type == 'paotui' || $item->type == 'paotui_orders') {
+                $login_url = cfg('site_url') . '/index.php?c=Third_login&a=login_from_merchant&type=' . $item->type . '&phone=' . $phone;
+                $item->path = $login_url;
+                $item->showNavBar = true;
+            }else{
+                $item->showNavBar = false;
+            }
             if(!empty($menuIds) && in_array($item->menu_id, $menuIds)){
                 $item->is_select = 1;//已选中为首页菜单
             }
@@ -585,8 +596,19 @@ class MerchantService {
             return [];
         }
         $menuIds = $customMenuIds->menu_ids;
-        $menu = function ($item) {
+
+        $phone = Merchant::where([
+            'mer_id' => $params['merchant_id']
+        ])->value('phone');
+        $menu = function ($item) use ($params, $phone) {
             $item->image_icon = cfg('site_url') . "/static/merchant_menu/{$item['type']}.png";
+            if ($item->type == 'paotui' || $item->type == 'paotui_orders') {
+                $login_url = cfg('site_url') . '/index.php?c=Third_login&a=login_from_merchant&type=' . $item->type . '&phone=' . $phone;
+                $item->path = $login_url;
+                $item->showNavBar = true;
+            }else{
+                $item->showNavBar = false;
+            }
         };
        
         $merchantCustomMenu = MerchantCustomMenu::where('id', 'IN', $menuIds)

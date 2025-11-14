@@ -86,7 +86,7 @@
 								<td class="textcenter">{pigcms{$vo.nums}</td>
 								<td class="textcenter"><if condition="$vo.tx_status eq '1'">正常<else /><font color='red'>异常</font></if></td>	
 								<td class="textcenter">{pigcms{$vo.lang}</td>
-								<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Storestate/staff_list',array('store_id'=>$vo['store_id'],'frame_show'=>true))}','查看{pigcms{$vo.name}店员账号',950,600,true,false,false,false,'detail',true);">查看店员账号</a></td>
+								<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Storestate/staff_list',array('store_id'=>$vo['store_id'],'frame_show'=>true))}','查看{pigcms{$vo.name}店员账号',950,600,true,false,false,false,'detail',true);">查看店员账号</a></td>
 							</tr>
 							</volist>
 							<tr>

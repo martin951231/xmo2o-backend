@@ -43,7 +43,7 @@
 				<td><input type="text" class="input fl" name="reduce_money" id="reduce_money" size="25" placeholder="优惠金额大于0" validate="maxlength:20,required:true" tips="减免的金额 开启百分比时需填写百分比 例0.5"/></td>
 			</tr>
             <tr>
-                <th width="90">平台补贴金额</th>
+                <th width="90">SYSTEM_SHOP_DISCOUNT_ADD_1</th>
                 <td><input type="text" class="input fl" name="plat_money" value="{pigcms{$now_discount.plat_money}" id="plat_money" size="10" placeholder="大于等于0" validate="maxlength:10" tips="平台承担的金额与商家承担的金额的和等于优惠的金额，如果两个都不填写的话，由平台全部承担 开启百分比时需填写百分比 例0.5"/></td>
             </tr>
             <tr>

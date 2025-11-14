@@ -147,7 +147,7 @@
 		</form>
 	</div>
 <script type="text/javascript">
-    var topIfram = window.top.getTopIframe();
+    var topIfram = window.o2oTop.getTopIframe();
 
 
 $('select[name=cat_fid]').change(function(){
@@ -168,13 +168,13 @@ if(cat_id>0){
 var url2="{pigcms{:U('Mall/index_sort_set')}";
 function index_edit(goods_id){
 	url2+='&goods_id='+goods_id;
-	window.top.artiframe(url2,'首页排序',480,260,true,false,false,editbtn,'edit',true);
+	window.o2oTop.artiframe(url2,'首页排序',480,260,true,false,false,editbtn,'edit',true);
 }
 
 var url3="{pigcms{:U('Mall/check_id_card')}";
 function check_id_card(goods_id){
     url3+='&goods_id='+goods_id;
-    window.top.artiframe(url3,'实名认证',480,260,true,false,false,editbtn,'edit',true);
+    window.o2oTop.artiframe(url3,'实名认证',480,260,true,false,false,editbtn,'edit',true);
 }
 
 function set_perfence(goods_id){

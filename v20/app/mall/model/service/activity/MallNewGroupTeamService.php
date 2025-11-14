@@ -234,7 +234,7 @@ class MallNewGroupTeamService
                 ['s.act_id','=',$val['group_act_id']]
             ];
             $pay_time_msg=(new MallNewGroupOrder())->getOrderList($where,"s.id,od.pay_time,od.status","od.pay_time desc");
-            if(!$pay_time_msg){
+            if(!$pay_time_msg || intval($pay_time_msg['pay_time']) <= 0){
                 if($is_throw_error){
                     throw new \think\Exception(L_('订单未支付，无法成团！'));
                 }else{

@@ -202,17 +202,17 @@
 			<tr>
 				<th width="160">店铺是否上架到平台</th>
 				<td>
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/store_edit_on_sale',array('store_id'=>$store['store_id'],'type'=>'merchant_store'))}','店铺是否上架到平台',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">店铺是否上架到平台</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/store_edit_on_sale',array('store_id'=>$store['store_id'],'type'=>'merchant_store'))}','店铺是否上架到平台',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">店铺是否上架到平台</a>&nbsp;&nbsp;&nbsp;&nbsp;
 			</tr>
 			<tr>
 				<th width="160">店铺抽成设置</th>
 				<td>
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/store_edit_percent',array('store_id'=>$store['store_id'],'type'=>'merchant_store'))}','设置店铺抽成比例',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">设置店铺抽成比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/store_edit_percent',array('store_id'=>$store['store_id'],'type'=>'merchant_store'))}','设置店铺抽成比例',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">设置店铺抽成比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
 			</tr>
             <if condition="$config['is_open_merchant_foodshop_discount'] eq 1">
                 <tr>
                     <th width="160">店铺餐饮折扣设置</th>
-                    <td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/m_discount',array('store_id'=>$store['store_id']))}','设置店铺餐饮折扣',700,500,true,false,false,null,'m_discount',true);" style="color:blue">设置店铺餐饮折扣</a><td>
+                    <td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/m_discount',array('store_id'=>$store['store_id']))}','设置店铺餐饮折扣',700,500,true,false,false,null,'m_discount',true);" style="color:blue">设置店铺餐饮折扣</a><td>
                 </tr>
             </if>
 			<if condition="$config['open_meal_electronic_menu'] eq 1">
@@ -225,7 +225,7 @@
 			</tr>
 			<tr>
 				<th width="160">堂扫配置</th>
-				<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit_pay_rates',array('mer_id'=>$store['mer_id'],'type'=>'alipay','store_id'=>$store['store_id']))}','堂扫配置',800,560,true,false,false,null,'edit_pay_rates',true);" style="color:blue">堂扫配置</a></td>
+				<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit_pay_rates',array('mer_id'=>$store['mer_id'],'type'=>'alipay','store_id'=>$store['store_id']))}','堂扫配置',800,560,true,false,false,null,'edit_pay_rates',true);" style="color:blue">堂扫配置</a></td>
 			</tr>
 			</if>
             <if condition="!empty($merchant['miaomaiyun_erp_appid']) && !empty($merchant['miaomaiyun_erp_appsecret']) && !empty($merchant['miaomaiyun_url'])">

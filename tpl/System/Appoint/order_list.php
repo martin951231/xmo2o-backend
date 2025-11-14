@@ -145,7 +145,7 @@
                                 用户昵称：{pigcms{$vo.nickname}<br/>
                                 手机号：{pigcms{$vo.phone}
                             </td>
-                            <td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','查看服务详情',680,560,true,false,false,false,'detail',true);">查看用户信息</a></td>
+                            <td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','查看服务详情',680,560,true,false,false,false,'detail',true);">查看用户信息</a></td>
                             <td>
                                 <if condition="$vo['paid'] eq 0"><span style="color:red">未支付</span>
                                     <elseif condition="$vo['paid'] eq 1"/>
@@ -221,12 +221,12 @@
                                 </if>
                             </td>
                             <td class="textcenter">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>false))}','查看服务详情',660,520,true,false,false,false,'detail',true);">查看详情</a>
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>false))}','查看服务详情',660,520,true,false,false,false,'detail',true);">查看详情</a>
                                 <if condition='($vo["is_del"] eq 0) && ($vo["paid"] eq 0)'>
                                     &nbsp;|&nbsp;
                                     <a href="javascript:void(0);" onclick="cancel_order({pigcms{$vo['order_id']})">取消订单</a>
                                 </if>
-                                &nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/order_trace',array('order_id'=>$vo['order_id']))}','服务轨迹',680,680,true,false,false,closebtn,'content',true,false);">服务轨迹</a> 
+                                &nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/order_trace',array('order_id'=>$vo['order_id']))}','服务轨迹',680,680,true,false,false,closebtn,'content',true,false);">服务轨迹</a> 
                             </td>
                         </tr>
                     </volist>

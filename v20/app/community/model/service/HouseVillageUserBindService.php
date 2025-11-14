@@ -809,6 +809,7 @@ class HouseVillageUserBindService
             $where[] = ['ub.uid','=',0];
         }
         //根据物业服务时间查询
+        /*
         if($property_endtime_start && $property_endtime_end){
             $start_time = strtotime($property_endtime_start);
             $end_time = strtotime($property_endtime_end.'23:59:59');
@@ -820,6 +821,7 @@ class HouseVillageUserBindService
             $property_endtime_end = strtotime($property_endtime_end.'23:59:59');
             $where[] = ['ub.property_endtime','<',$property_endtime_end];
         }
+        */
         //是否为真实用户
         if($is_real == 1){
             $whereRaw .= "(ub.uid not in (0,'') OR ub.phone not in (0,'') OR ub.name not in (0,''))";
@@ -834,11 +836,13 @@ class HouseVillageUserBindService
         }
         if($vacancy_id){
             $where[] = ['ub.vacancy_id','=',$vacancy_id];
+        }else{
+            $where[] = ['ub.vacancy_id','>',$vacancy_id];
         }
         if($layer_id){
             $where[] = ['ub.layer_id','=',$layer_id];
         }
-        $where[] = ['ub.parent_id','=',0];
+        //$where[] = ['ub.parent_id','=',0];
         $where[] = ['ub.type','in',[0,3]];
 
         //校验是否开启新版物业收费

@@ -61,12 +61,12 @@ class DeliverSupplyService
      * @author: 汪晨
      * @date: 2021/1/29
      */
-    public function tipPriceUpdae($orderId,$tipPrice)
+    public function tipPriceUpdae($orderId, $tipPrice)
     {
         $data = [
             'tip_price' => $tipPrice,
         ];
-        return $this->deliverSupplyMod->where(['order_id' => $orderId])->inc('tip_price',$tipPrice)->update();
+        return $this->deliverSupplyMod->where(['order_id' => $orderId])->inc('tip_price', $tipPrice)->update();
         // return $this->deliverSupplyMod->where(['order_id' => $orderId])->update($data);
     }
 
@@ -92,7 +92,7 @@ class DeliverSupplyService
         $myLat = $nowUser->lat;
         $myRange = $nowUser->range * 1000;
         $uid = $nowUser->uid;
-        $tm = time(); 
+        $tm = time();
         if ($nowUser->group == 1) {
             //平台配送员 状态必须为待结单和没有关联配送员
             $where = "`type`= 0 AND `status`=1 AND `uid`=0 AND NOT FIND_IN_SET($uid,back_log) AND NOT FIND_IN_SET($uid,refuse_log)";
@@ -148,15 +148,32 @@ class DeliverSupplyService
         //屏蔽掉不允许抢单的订单
         $cityIds = array_unique(array_column($items, 'city_id'));
         $areaConfig = (new \app\common\model\db\Area())->whereIn('area_id', $cityIds)->column('no_grab_min', 'area_id');
-//        $areaDeliverConfig = (new \app\common\model\db\Area())->whereIn('area_id', $cityIds)->column('deliver_model', 'area_id');
+        //        $areaDeliverConfig = (new \app\common\model\db\Area())->whereIn('area_id', $cityIds)->column('deliver_model', 'area_id');
 
         foreach ($items as $k => $v) {
             if ($v['type'] == 0 && $v['status'] == 1 && isset($areaConfig[$v['city_id']]) && $v['create_time'] + $areaConfig[$v['city_id']] * 60 < $tm) {
                 unset($items[$k]);
             }
-//            elseif($v['type'] == 0 && isset($areaDeliverConfig[$v['city_id']]) && $areaDeliverConfig[$v['city_id']] > 0 && $v['get_type'] == 0){//禁止抢单的城市的订单不出现
-//                unset($items[$k]);
-//            }
+            //            elseif($v['type'] == 0 && isset($areaDeliverConfig[$v['city_id']]) && $areaDeliverConfig[$v['city_id']] > 0 && $v['get_type'] == 0){//禁止抢单的城市的订单不出现
+            //                unset($items[$k]);
+            //            }
+            //判断跑腿单是否来自商家中心，而且商家是否绑定了骑手
+            if (cfg('open_paotui_price_template') && $v['item'] == 3 && $v['mer_id'] > 0) {
+                $poolIds = Db::name('paotui_grab_pool_merchant')->alias('m')
+                    ->join('paotui_grab_pool p', 'p.id = m.pool_id')
+                    ->where('p.status', 1)
+                    ->where('m.mer_id', $v['mer_id'])
+                    ->column('p.id');
+                if ($poolIds) {
+                    //商家绑定了配送池，则只能配送池里的骑手才能抢单，其他骑手不允许抢单
+                    $isBind = Db::name('paotui_grab_pool_deliver')->whereIn('pool_id', $poolIds)->where('deliver_uid', $uid)->find();
+                    if (empty($isBind)) {
+                        unset($items[$k]);
+                    }
+                } else {
+                    //商家没绑定配送池，走原逻辑抢单
+                }
+            }
         }
         $items = array_values($items);
 
@@ -205,6 +222,10 @@ class DeliverSupplyService
             } else if ($value['item'] == 3) {
                 //帮我买帮我送
                 $order = $serviceUserPublishService->getInfoForDeliverList($value['order_id']);
+                if($value['fetch_number']){
+                    $order['fetch_number'] = $value['fetch_number'];
+                }
+
                 $isVoice = $order['order']['is_voice'] ?? 0;
                 $endAddressName = $order['order']['end_adress_name'] ?? '';
                 $prefectOrderInfo = ($isVoice == 1 && empty($endAddressName));
@@ -220,16 +241,16 @@ class DeliverSupplyService
                 if ($value['order_out_time'] == 0) {
                     $value['order_out_time'] = $fixExpectTime;
                 }
-            }else if($value['item'] == 4 ){
+            } else if ($value['item'] == 4) {
                 //新版商城
                 $order = $mallOrderService->getDeliverDetail($value['order_id']);
-            } else if($value['item'] == 5 ){
+            } else if ($value['item'] == 5) {
                 //新版商城周期购
-                $order = $mallOrderService->getDeliverDetail($value['order_id'],1);
+                $order = $mallOrderService->getDeliverDetail($value['order_id'], 1);
             } else if ($value['item'] == 8) {
                 //社区团购
                 $order = $villageGroupOrderService->getInfoForDeliverList($value['order_id']);
-            }else {
+            } else {
                 continue;
             }
 
@@ -240,6 +261,9 @@ class DeliverSupplyService
                     $fc = $value['freight_charge'] ?? 0;
                 } else if ($value['item'] == 3) {
                     //帮我买帮我送
+                    if (cfg('open_paotui_price_template')) {
+                        $feeResult = $serviceUserPublishService->calDeliverUserFee($uid, $order['order']);
+                    }
                     $fc = $order['order']['basic_distance_price'] + $order['order']['weight_price'] + $order['order']['distance_price']; //基础配送费+超重费用+超距离配送
                 } else if ($value['item'] == 4) {
                     //新版商城
@@ -248,7 +272,13 @@ class DeliverSupplyService
                     //社区团购
                     $fc = $value['freight_charge'] ?? 0;
                 }
-                $thisOrder['deliver_user_fee'] = $fc - ($fc * ($nowUser['take_percent'] / 100));
+
+                if (empty($feeResult)) {
+                    $thisOrder['deliver_user_fee'] = $fc - ($fc * ($nowUser['take_percent'] / 100));
+                } else {
+                    $thisOrder['deliver_user_fee'] = $feeResult['total_fee'];
+                }
+
                 $thisOrder['deliver_user_fee'] = get_format_number($thisOrder['deliver_user_fee'] + $value['tip_price']);
             }
 
@@ -298,8 +328,8 @@ class DeliverSupplyService
             // 获取订单完成时间 判断是否显示收货地址
             $is_user_address = true;
             $businessOrderTime = $value['finish_time'] ?? $value['end_time'];
-            if(!empty($businessOrderTime)){
-                $businessOrderDateline = $businessOrderTime + (60*60*6);
+            if (!empty($businessOrderTime)) {
+                $businessOrderDateline = $businessOrderTime + (60 * 60 * 6);
                 $is_user_address = $businessOrderDateline > time() ? true : false;
             }
             $thisOrder['is_user_address'] = $is_user_address;
@@ -311,7 +341,7 @@ class DeliverSupplyService
             $thisOrder['phone_lists'] = $order['phone_lists'];
             $thisOrder['username'] = $order['username'];
             $thisOrder['phone'] = $order['phone'];
-            $thisOrder['btns'] = $this->getBtnsByDeliverStatus($value['deliver_status'], '', $isTransferToUser,$value['is_fetch_order'],0,$prefectOrderInfo);
+            $thisOrder['btns'] = $this->getBtnsByDeliverStatus($value['deliver_status'], '', $isTransferToUser, $value['is_fetch_order'], 0, $prefectOrderInfo);
             $newOrders[] = $thisOrder;
         }
 
@@ -323,21 +353,21 @@ class DeliverSupplyService
      * @author: 张涛
      * @date: 2020/9/9
      */
-    public function getBtnsByDeliverStatus($status, $from = '', $isTransferToUser = 0, $isFetchOrder = 1, $uid =0, $prefectOrderInfo = false)
+    public function getBtnsByDeliverStatus($status, $from = '', $isTransferToUser = 0, $isFetchOrder = 1, $uid = 0, $prefectOrderInfo = false)
     {
         //配送状态 1：等待接待  2：接单  3：我已到店  4：我已取货 5：我已送达
         //1：文本 2、拒单  3、电话  4、转单  5、扔回
-        $grabBtn = ["action" => "grab_order", "style" => 1, "txt" => L_("抢单"), "background" => "#27A3F7", "font_color" => "#FFFFFF","border_color"=>"#27A3F7"];
-        $refuseBtn = ["action" => "refuse_order", "style" => 2, "txt" => L_("拒绝"), "background" => "#FFFFFF", "font_color" => "#333333","border_color"=>"#D5D5D5"];
-        $reportArriveStoreBtn = ["action" => "report_arrive_store", "style" => 1, "txt" => L_("上报到店"), "background" => "#FD9827", "font_color" => "#FFFFFF","border_color"=>"#FD9827"];
-        $pickBtn = ["action" => "pick_order", "style" => 1, "txt" => L_("我已取货"), "background" => "#27A3F7", "font_color" => "#FFFFFF","border_color"=>"#27A3F7"];
-        $finishBtn = ["action" => "finish_order", "style" => 1, "txt" => L_("我已送达"), "background" => "#57D57A", "font_color" => "#FFFFFF","border_color"=>"#57D57A"];
-        $acceptTransferBtn = ["action" => "accept_transfer_order", "style" => 1, "txt" => L_("接收转单"), "background" => "#2AC5B4", "font_color" => "#FFFFFF","border_color"=>"#2AC5B4"];
-        $fetchBtn = ["action" => "fetch_order", "style" => 1, "txt" => L_("接收派单"), "background" => "#2AC5B4", "font_color" => "#FFFFFF","border_color"=>"#2AC5B4"];
-        $phoneBtn = ["action" => "phone", "style" => 3, "txt" => "", "background" => "#ffffff", "font_color" => "#000000","border_color"=>"#ffffff"];
-        $throwBtn = ["action" => "throw_order", "style" => 5, "txt" => L_("扔回"), "background" => "#ffffff", "font_color" => "#000000","border_color"=>"#ffffff"];
-        $transferBtn = ["action" => "transfter_order", "style" => 4, "txt" => L_("转单"), "background" => "#ffffff", "font_color" => "#000000","border_color"=>"#ffffff"];
-        $perfectBtn = ["action" => "fill_shipping_address", "style" => 1, "txt" => L_("完善订单信息"), "background" => "#27A3F7", "font_color" => "#FFFFFF","border_color"=>"#27A3F7"];
+        $grabBtn = ["action" => "grab_order", "style" => 1, "txt" => L_("抢单"), "background" => "#27A3F7", "font_color" => "#FFFFFF", "border_color" => "#27A3F7"];
+        $refuseBtn = ["action" => "refuse_order", "style" => 2, "txt" => L_("拒绝"), "background" => "#FFFFFF", "font_color" => "#333333", "border_color" => "#D5D5D5"];
+        $reportArriveStoreBtn = ["action" => "report_arrive_store", "style" => 1, "txt" => L_("上报到店"), "background" => "#FD9827", "font_color" => "#FFFFFF", "border_color" => "#FD9827"];
+        $pickBtn = ["action" => "pick_order", "style" => 1, "txt" => L_("我已取货"), "background" => "#27A3F7", "font_color" => "#FFFFFF", "border_color" => "#27A3F7"];
+        $finishBtn = ["action" => "finish_order", "style" => 1, "txt" => L_("我已送达"), "background" => "#57D57A", "font_color" => "#FFFFFF", "border_color" => "#57D57A"];
+        $acceptTransferBtn = ["action" => "accept_transfer_order", "style" => 1, "txt" => L_("接收转单"), "background" => "#2AC5B4", "font_color" => "#FFFFFF", "border_color" => "#2AC5B4"];
+        $fetchBtn = ["action" => "fetch_order", "style" => 1, "txt" => L_("接收派单"), "background" => "#2AC5B4", "font_color" => "#FFFFFF", "border_color" => "#2AC5B4"];
+        $phoneBtn = ["action" => "phone", "style" => 3, "txt" => "", "background" => "#ffffff", "font_color" => "#000000", "border_color" => "#ffffff"];
+        $throwBtn = ["action" => "throw_order", "style" => 5, "txt" => L_("扔回"), "background" => "#ffffff", "font_color" => "#000000", "border_color" => "#ffffff"];
+        $transferBtn = ["action" => "transfter_order", "style" => 4, "txt" => L_("转单"), "background" => "#ffffff", "font_color" => "#000000", "border_color" => "#ffffff"];
+        $perfectBtn = ["action" => "fill_shipping_address", "style" => 1, "txt" => L_("完善订单信息"), "background" => "#27A3F7", "font_color" => "#FFFFFF", "border_color" => "#27A3F7"];
 
         $isCancelOrder = 1;
         if ($uid > 0) {
@@ -354,10 +384,10 @@ class DeliverSupplyService
             if ($status == 1) {
                 $btns = [$grabBtn];
             } else if ($status == 2) {
-                if($isFetchOrder == 0){
-                    if(cfg('deliver_refuse_system_assign') == 1){
+                if ($isFetchOrder == 0) {
+                    if (cfg('deliver_refuse_system_assign') == 1) {
                         $btns = [$fetchBtn, $refuseBtn, $phoneBtn];
-                    }else{
+                    } else {
                         $btns = [$fetchBtn, $phoneBtn];
                     }
                 } else {
@@ -365,13 +395,13 @@ class DeliverSupplyService
                         $btns = [$reportArriveStoreBtn, $throwBtn, $transferBtn, $phoneBtn];
                     } else {
                         $btns = [$reportArriveStoreBtn, $transferBtn, $phoneBtn];
-					}
-				}
+                    }
+                }
             } else {
                 if ($isFetchOrder == 0) {
-                    if(cfg('deliver_refuse_system_assign') == 1){
+                    if (cfg('deliver_refuse_system_assign') == 1) {
                         $btns = [$fetchBtn, $refuseBtn, $phoneBtn];
-                    }else{
+                    } else {
                         $btns = [$fetchBtn, $phoneBtn];
                     }
                 } else {
@@ -393,9 +423,9 @@ class DeliverSupplyService
                 $btns = [$grabBtn];
             } else {
                 if ($isFetchOrder == 0) {
-                    if(cfg('deliver_refuse_system_assign') == 1){
+                    if (cfg('deliver_refuse_system_assign') == 1) {
                         $btns = [$fetchBtn, $refuseBtn];
-                    }else{
+                    } else {
                         $btns = [$fetchBtn];
                     }
                 } else {
@@ -533,22 +563,22 @@ class DeliverSupplyService
             $rs['pick_address'] = $order['pick_address'];
             $rs['user_address'] = $order['user_address'];
             $rs['phone_lists'] = $order['phone_lists'];
-            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'],$uid);
+            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'], $uid);
 
             $rs['goods'] = (new ShopOrderService())->getGoodsByMergeSubsidiaryGoods($supplyOrder['order_id']);
 
             $is_cancel = 0;
-            if($businessOrder['status']==4){
-                $goods_total_all = (new ShopOrderDetail())->where(['order_id'=>$supplyOrder['order_id']])->sum('num');
+            if ($businessOrder['status'] == 4) {
+                $goods_total_all = (new ShopOrderDetail())->where(['order_id' => $supplyOrder['order_id']])->sum('num');
                 $refund_goods_total_all = (new ShopOrderRefund())->alias('r')->join('shop_refund_detail rd', 'rd.refund_id = r.id')
-                    ->where(['r.order_id'=>$supplyOrder['order_id'],'r.status'=>1])->sum('rd.num');
-                if(!$refund_goods_total_all||($refund_goods_total_all>0&&$goods_total_all<=$refund_goods_total_all)){
+                    ->where(['r.order_id' => $supplyOrder['order_id'], 'r.status' => 1])->sum('rd.num');
+                if (!$refund_goods_total_all || ($refund_goods_total_all > 0 && $goods_total_all <= $refund_goods_total_all)) {
                     $is_cancel = 1;
                 }
             }
-            
+
             $rs['satus_show'] = new \stdClass();
-            if (in_array($businessOrder['status'], [ 5, 11])||($businessOrder['status']==4&&$is_cancel)) {
+            if (in_array($businessOrder['status'], [5, 11]) || ($businessOrder['status'] == 4 && $is_cancel)) {
                 $rs['satus_show'] = ['type' => 2, 'value' => ['status' => L_('订单已取消')]];
             } else if ($supplyOrder['deliver_status'] == 1) {
                 //等待接单
@@ -584,8 +614,8 @@ class DeliverSupplyService
             // 获取订单完成时间 判断是否显示收货地址
             $is_user_address = true;
             $businessOrderTime = $supplyOrder['finish_time'] ?? $supplyOrder['end_time'];
-            if(!empty($businessOrderTime)){
-                $businessOrderDateline = $businessOrderTime + (60*60*6);
+            if (!empty($businessOrderTime)) {
+                $businessOrderDateline = $businessOrderTime + (60 * 60 * 6);
                 $is_user_address = $businessOrderDateline > time() ? true : false;
             }
 
@@ -610,14 +640,20 @@ class DeliverSupplyService
                 "fee" => get_format_number($supplyOrder['tip_price']),
                 "income" => get_format_number($supplyOrder['deliver_user_fee'] + $supplyOrder['tip_price'])
             ];
-        } else if($supplyOrder['item'] == 3){
+        } else if ($supplyOrder['item'] == 3) {
             $order = (new ServiceUserPublishService())->getInfoForDeliverList($supplyOrder['order_id']);
             if (empty($order)) {
                 throw new Exception(L_('业务订单不存在'));
             }
             $businessOrder = $order['order'];
-            $fc = $businessOrder['basic_distance_price'] + $businessOrder['weight_price'] + $businessOrder['distance_price'];//基础配送费+超重费用+超距离配送
-            $supplyOrder['deliver_user_fee'] = $rs['deliver_user_fee'] = $supplyOrder['deliver_status'] > 1 ? $supplyOrder['deliver_user_fee'] : get_format_number($fc - ($fc * ($nowUser['take_percent'] / 100)));//配送员所得费用（扣除平台抽成）
+            $fc = $businessOrder['basic_distance_price'] + $businessOrder['weight_price'] + $businessOrder['distance_price']; //基础配送费+超重费用+超距离配送
+
+            if (cfg('open_paotui_price_template')) {
+                $feeResult = (new ServiceUserPublishService())->calDeliverUserFee($uid, $businessOrder);
+                $supplyOrder['deliver_user_fee'] = $rs['deliver_user_fee'] = $supplyOrder['deliver_status'] > 1 ? $supplyOrder['deliver_user_fee'] : $feeResult['total_fee'];
+            } else {
+                $supplyOrder['deliver_user_fee'] = $rs['deliver_user_fee'] = $supplyOrder['deliver_status'] > 1 ? $supplyOrder['deliver_user_fee'] : get_format_number($fc - ($fc * ($nowUser['take_percent'] / 100))); //配送员所得费用（扣除平台抽成）
+            }
 
             $fixExpectTime = strtotime($order['expect_use_time']);
             if ($supplyOrder['appoint_time'] == 0) {
@@ -626,7 +662,7 @@ class DeliverSupplyService
             if ($supplyOrder['order_out_time'] == 0) {
                 $supplyOrder['order_out_time'] = $fixExpectTime;
             }
-            $rs['fetch_number'] = 0;
+            $rs['fetch_number'] = $supplyOrder['fetch_number'] ?? 0;
             if ($supplyOrder['deliver_status'] == 1) {
                 $rs['is_new_order'] = true;
             }
@@ -648,7 +684,7 @@ class DeliverSupplyService
             $isVoice = $businessOrder['is_voice'] ?? 0;
             $endAddressName = $businessOrder['end_adress_name'] ?? '';
             $prefectOrderInfo = ($isVoice == 1 && empty($endAddressName));
-            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail',$isTransferToUser, $supplyOrder['is_fetch_order'],$uid,$prefectOrderInfo);
+            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'], $uid, $prefectOrderInfo);
 
             $rs['satus_show'] = new \stdClass();
 
@@ -673,10 +709,10 @@ class DeliverSupplyService
             $rs['special'] = [];
 
             $rs['service_goods'] = [];
-            $rs['service_goods']['fee'] = get_format_number($businessOrder['tip_price']??0);
+            $rs['service_goods']['fee'] = get_format_number($businessOrder['tip_price'] ?? 0);
             $rs['service_goods']['goods_catgory'] = $businessOrder['goods_catgory'] ?? '';
             $rs['service_goods']['weight'] = get_format_number(floatval($businessOrder['weight']));
-            $rs['service_goods']['weight_price'] = get_format_number($businessOrder['weight_price']??0);
+            $rs['service_goods']['weight_price'] = get_format_number($businessOrder['weight_price'] ?? 0);
             $rs['service_goods']['price'] = get_format_number(floatval($businessOrder['estimate_goods_price'] ?? $businessOrder['total_price']));
             $rs['service_goods']['pics'] = array_filter(explode(';', $businessOrder['img']));
             $rs['service_goods']['remarks'] = $businessOrder['remarks'] ?? '';
@@ -688,11 +724,11 @@ class DeliverSupplyService
                 ["txt" => L_("实际送达"), "time" => $supplyOrder['finish_time'] > 0 ? date('H:i', $supplyOrder['finish_time']) : '--'],
             ];
 
-            if($businessOrder['catgory_type'] == 2){
+            if ($businessOrder['catgory_type'] == 2) {
                 //帮我买
                 $orderType = 'service_buy';
                 $orderTypeStr = L_('同城-帮买');
-            }else{
+            } else {
                 //帮我送
                 $orderType = 'service_send';
                 $orderTypeStr = L_('同城-帮送');
@@ -716,7 +752,7 @@ class DeliverSupplyService
                 "fee" => get_format_number($supplyOrder['tip_price']),
                 "income" => get_format_number($supplyOrder['deliver_user_fee'] + $supplyOrder['tip_price'])
             ];
-        }else if ($supplyOrder['item'] == 4 || $supplyOrder['item'] == 5) {
+        } else if ($supplyOrder['item'] == 4 || $supplyOrder['item'] == 5) {
             //商城订单
             $isPeriodic = $supplyOrder['item'] == 4 ? 0 : 1;
             $order = (new MallOrderService())->getDeliverDetail($supplyOrder['order_id'], $isPeriodic);
@@ -725,7 +761,7 @@ class DeliverSupplyService
             }
             $supplyOrder['deliver_user_fee'] = $rs['deliver_user_fee'] = $supplyOrder['deliver_status'] > 1 ? $supplyOrder['deliver_user_fee'] : get_format_number($supplyOrder['freight_charge'] - ($supplyOrder['freight_charge'] * ($nowUser['take_percent'] / 100)));
             $businessOrder = $order['order'];
-            $rs['fetch_number'] = intval($businessOrder['fetch_number']??0);
+            $rs['fetch_number'] = intval($businessOrder['fetch_number'] ?? 0);
             if ($supplyOrder['deliver_status'] == 1) {
                 $rs['is_new_order'] = true;
             }
@@ -737,10 +773,10 @@ class DeliverSupplyService
             $rs['pick_address'] = $order['pick_address'];
             $rs['user_address'] = $order['user_address'];
             $rs['phone_lists'] = $order['phone_lists'];
-            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'],$uid);
+            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'], $uid);
 
-            $rs['goods'] = (new MallOrderService())->getGoodsByOrderId($supplyOrder['order_id'], 'goods_id,name,num,price,sku_info AS spec',$isPeriodic);
-            $goodsCount = array_sum(array_column($rs['goods'],'num'));
+            $rs['goods'] = (new MallOrderService())->getGoodsByOrderId($supplyOrder['order_id'], 'goods_id,name,num,price,sku_info AS spec', $isPeriodic);
+            $goodsCount = array_sum(array_column($rs['goods'], 'num'));
 
             $rs['satus_show'] = new \stdClass();
             if (in_array($businessOrder['status'], [4, 5, 11])) {
@@ -791,7 +827,7 @@ class DeliverSupplyService
                 "fee" => get_format_number($supplyOrder['tip_price']),
                 "income" => get_format_number($supplyOrder['deliver_user_fee'] + $supplyOrder['tip_price'])
             ];
-        }else if($supplyOrder['item'] == 8){
+        } else if ($supplyOrder['item'] == 8) {
             //社区团购订单
             $order = (new VillageGroupOrderService())->getInfoForDeliverList($supplyOrder['order_id']);
             if (empty($order)) {
@@ -811,9 +847,9 @@ class DeliverSupplyService
             $rs['pick_address'] = $order['pick_address'];
             $rs['user_address'] = $order['user_address'];
             $rs['phone_lists'] = $order['phone_lists'];
-            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'],$uid);
-            
-            $rs['goods'] = (new VillageGroupOrderService())->getGoodsByOrderId($supplyOrder['order_id'],'goods_id,name,num,price,"" AS spec');
+            $rs['btns'] = $this->getBtnsByDeliverStatus($supplyOrder['deliver_status'], 'detail', $isTransferToUser, $supplyOrder['is_fetch_order'], $uid);
+
+            $rs['goods'] = (new VillageGroupOrderService())->getGoodsByOrderId($supplyOrder['order_id'], 'goods_id,name,num,price,"" AS spec');
             $rs['satus_show'] = new \stdClass();
             if ($supplyOrder['deliver_status'] >= 1 && $supplyOrder['deliver_status'] < 6) {
                 //等待接单
@@ -824,7 +860,7 @@ class DeliverSupplyService
             if ($businessOrder['note']) {
                 $rs['special'][] = ['title' => L_('备注'), 'value' => $businessOrder['note']];
             }
-          
+
 
             //时间点
             $rs['status_list'] = [
@@ -833,16 +869,16 @@ class DeliverSupplyService
                 ["txt" => L_("取货"), "time" => $supplyOrder['pick_time'] > 0 ? date('H:i', $supplyOrder['pick_time']) : '--'],
                 ["txt" => L_("送达"), "time" => $supplyOrder['finish_time'] > 0 ? date('H:i', $supplyOrder['finish_time']) : '--'],
             ];
-         
+
 
             // 获取订单完成时间 判断是否显示收货地址
             $is_user_address = true;
             $businessOrderTime = $supplyOrder['finish_time'] ?? $supplyOrder['end_time'];
-            if(!empty($businessOrderTime)){
-                $businessOrderDateline = $businessOrderTime + (60*60*6);
+            if (!empty($businessOrderTime)) {
+                $businessOrderDateline = $businessOrderTime + (60 * 60 * 6);
                 $is_user_address = $businessOrderDateline > time() ? true : false;
             }
-          
+
             $rs['is_user_address'] = $is_user_address;
 
             $rs['order'] = [
@@ -864,7 +900,7 @@ class DeliverSupplyService
                 "fee" => get_format_number($supplyOrder['tip_price']),
                 "income" => get_format_number($supplyOrder['deliver_user_fee'] + $supplyOrder['tip_price'])
             ];
-        }else {
+        } else {
             throw new Exception(L_('非外卖业务订单详情暂未适配'));
         }
         $rs['transfer_order_expire_time'] = 180;
@@ -878,6 +914,23 @@ class DeliverSupplyService
                 "income" => 0,
             ];
         }
+
+        //增加income_details_arr字段
+        $rs['income_details_arr'][] = ['title' => L_('配送费'), 'value' => $rs['income_details']['freight_charge']];
+        //增值服务费
+        if (!empty($businessOrder) && isset($businessOrder['added_fee_list']) && $businessOrder['added_fee'] > 0) {
+            $addedFeeLists = json_decode($businessOrder['added_fee_list'], true);
+            foreach ($addedFeeLists as $fee) {
+                $rs['income_details_arr'][] = [
+                    'title' => $fee['name'],
+                    'value' => $fee['money'],
+                ];
+            }
+        }
+        $rs['income_details_arr'][] = ['title' => L_('平台服务费'), 'value' => $rs['income_details']['plat_service_charge']];
+        $rs['income_details_arr'][] = ['title' => L_('小费'), 'value' => $rs['income_details']['fee']];
+        $rs['income_details_arr'][] = ['title' => L_('预计收入'), 'value' => $rs['income_details']['income']];
+        
         return $rs;
     }
 
@@ -980,7 +1033,7 @@ class DeliverSupplyService
      * @author: 张涛
      * @date: 2020/12/1
      */
-    public function getDeliverTimeSetting($fromLocation, $toLocation, $horseman_type=1, $mer_id = 0)
+    public function getDeliverTimeSetting($fromLocation, $toLocation, $horseman_type = 1, $mer_id = 0)
     {
         //判断是否可配送
         $isPositionInDeliverRange = (new DeliverUserService())->isPositionInDeliverRange($fromLocation['lat'], $fromLocation['lng'], $horseman_type, $mer_id);
@@ -1004,7 +1057,7 @@ class DeliverSupplyService
         $time3 = explode('-', cfg('delivery_time3'));
 
         $timeLists = [];
-        if ($time1 && cfg('delivery_time')!='-' && $time1[0] != $time1[1]) {
+        if ($time1 && cfg('delivery_time') != '-' && $time1[0] != $time1[1]) {
             $timeLists[] = [
                 'start_time' => $time1[0] . ':00', //开始时间
                 'end_time' => $time1[1] . ':59',  //结束时间
@@ -1034,7 +1087,7 @@ class DeliverSupplyService
                 'per_km_price' => cfg('per_km_price3')
             ];
         }
-        
+
         $return = [
             'status' => $isPositionInDeliverRange,  //true=能够支持送达 false=不能够支持送达
             'time' => $speed > 0 ? round(($distanceKm / $speed) * 60 + $delay, 2) : $defaultSendTime, //预计配送时间 单位：分
@@ -1057,7 +1110,7 @@ class DeliverSupplyService
     {
         $freight = 0;
         $expectUnix = strtotime($expectTime);
-        $day = date('Y-m-d',$expectUnix);
+        $day = date('Y-m-d', $expectUnix);
 
         //计算距离
         if (cfg('is_riding_distance') || cfg('map_config') == 'google') {
@@ -1085,8 +1138,8 @@ class DeliverSupplyService
             if (isset($time[1]) && $time[1] == '00:00') {
                 $time[1] = '23:59';
             }
-            $start = strtotime($day.' '.$time[0] . ':00');
-            $end = strtotime($day.' '.$time[1] . ':59');
+            $start = strtotime($day . ' ' . $time[0] . ':00');
+            $end = strtotime($day . ' ' . $time[1] . ':59');
             if ($expectUnix >= $start && $expectUnix <= $end) {
                 $basicDistance = cfg($v[2]);
                 $basicDistance = $basicDistance ?: 0;
@@ -1096,11 +1149,10 @@ class DeliverSupplyService
             }
         }
         $freight > 0 && $freight = format_number_by_config($freight);
-        if($returnType === 0){
+        if ($returnType === 0) {
             return $freight;
-        }
-        else{
-            return ['freight' => $freight, 'distance' => $distance];   
+        } else {
+            return ['freight' => $freight, 'distance' => $distance];
         }
     }
 
@@ -1163,32 +1215,32 @@ class DeliverSupplyService
             'id' => $uid,
             'name' => $user['name'],
             'phone' => $user['phone'],
-            'store_id'=>$supply['store_id']
+            'store_id' => $supply['store_id']
         ];
 
         //业务后置操作
-        if($supply['item'] == 4 || $supply['item'] == 5){
+        if ($supply['item'] == 4 || $supply['item'] == 5) {
             //新版商城
             (new MallOrderService())->housemanOrderLog($supply['item'] == 4 ? 'order' : 'periodic', 1, $supply['order_id'], $user['now_lng'], $user['now_lat'], $deliverUser);
             //增加消息通知
             (new UserNoticeService())->addNotice([
-                'type'=>0,
-                'business'=>'mall',
-                'order_id'=>$supply['order_id'],
-                'title'=>'骑手正在配送',
-                'content'=>'骑手正在配送，商品将尽快为你送达',
+                'type' => 0,
+                'business' => 'mall',
+                'order_id' => $supply['order_id'],
+                'title' => '骑手正在配送',
+                'content' => '骑手正在配送，商品将尽快为你送达',
             ]);
-        }else if($supply['item'] == 8){
+        } else if ($supply['item'] == 8) {
             //社区团购
             //增加消息通知
             (new UserNoticeService())->addNotice([
-                'type'=>0,
-                'business'=>'village_group',
-                'order_id'=>$supply['order_id'],
-                'title'=>'骑手正在配送',
-                'content'=>'骑手正在配送，商品将尽快为你送达',
+                'type' => 0,
+                'business' => 'village_group',
+                'order_id' => $supply['order_id'],
+                'title' => '骑手正在配送',
+                'content' => '骑手正在配送，商品将尽快为你送达',
             ]);
-            (new VillageGroupOrderService())->afterGrap($supply['order_id'],$deliverUser);
+            (new VillageGroupOrderService())->afterGrap($supply['order_id'], $deliverUser);
         }
     }
 
@@ -1196,7 +1248,7 @@ class DeliverSupplyService
     {
         $supply = (new DeliverSupply())->where('supply_id', $supplyId)->findOrEmpty()->toArray();
         $user = (new DeliverUser())->where('uid', $uid)->findOrEmpty()->toArray();
-        if($supply['status']==5){
+        if ($supply['status'] == 5) {
             throw new Exception(L_('操作失败，订单已完成！'));
         }
 
@@ -1213,13 +1265,12 @@ class DeliverSupplyService
             'name' => $user['name'],
             'phone' => $user['phone'],
         ];
-        if($supply['item'] == 4 || $supply['item'] == 5){
+        if ($supply['item'] == 4 || $supply['item'] == 5) {
             (new MallOrderService())->housemanOrderLog($supply['item'] == 4 ? 'order' : 'periodic', 2, $supply['order_id'], $user['now_lng'], $user['now_lat'], $deliverUser);
-        }else if($supply['item'] == 8){
+        } else if ($supply['item'] == 8) {
             //社区团购
-            (new VillageGroupOrderService())->afterReportArriveStore($supply['order_id'],$deliverUser);
+            (new VillageGroupOrderService())->afterReportArriveStore($supply['order_id'], $deliverUser);
         }
-        
     }
 
     public function pickOrder($uid, $supplyId)
@@ -1243,11 +1294,11 @@ class DeliverSupplyService
             'name' => $user['name'],
             'phone' => $user['phone'],
         ];
-        if($supply['item'] == 4 || $supply['item'] == 5){
+        if ($supply['item'] == 4 || $supply['item'] == 5) {
             (new MallOrderService())->housemanOrderLog($supply['item'] == 4 ? 'order' : 'periodic', 3, $supply['order_id'], $user['now_lng'], $user['now_lat'], $deliverUser);
-        }else if($supply['item'] == 8){
+        } else if ($supply['item'] == 8) {
             //社区团购
-            (new VillageGroupOrderService())->afterPickOrder($supply['order_id'],$deliverUser);
+            (new VillageGroupOrderService())->afterPickOrder($supply['order_id'], $deliverUser);
         }
     }
 
@@ -1264,7 +1315,7 @@ class DeliverSupplyService
             'deliver_status' => 5,
             'end_time' => time(),
             'finish_time' => time(),
-            'is_settlement'=>1
+            'is_settlement' => 1
         ];
         $result = (new DeliverSupply())->where(['uid' => $uid, 'supply_id' => $supplyId, 'status' => 4])->update($columns);
         if (!$result) {
@@ -1281,35 +1332,35 @@ class DeliverSupplyService
             'phone' => $user['phone'],
         ];
 
-        if($supply['item'] == 4 || $supply['item'] == 5){
+        if ($supply['item'] == 4 || $supply['item'] == 5) {
             (new MallOrderService())->housemanOrderLog($supply['item'] == 4 ? 'order' : 'periodic', 4, $supply['order_id'], $user['now_lng'], $user['now_lat'], $deliverUser);
-            if($supply['is_settlement'] == 0){
-                (new DeliverUserService())->addMoney($supply['uid'], 'mall', $supply['order_id'], $supply['deliver_user_fee'], '配送收入', $supply['tip_price'], '小费收入'); 
+            if ($supply['is_settlement'] == 0) {
+                (new DeliverUserService())->addMoney($supply['uid'], 'mall', $supply['order_id'], $supply['deliver_user_fee'], '配送收入', $supply['tip_price'], '小费收入');
             }
-            
+
             //增加消息通知
             (new UserNoticeService())->addNotice([
-                'type'=>0,
-                'business'=>'mall',
-                'order_id'=>$supply['order_id'],
-                'title'=>'商品已经送达',
-                'content'=>'您的商城商品已经送达，点击查看订单详情',
+                'type' => 0,
+                'business' => 'mall',
+                'order_id' => $supply['order_id'],
+                'title' => '商品已经送达',
+                'content' => '您的商城商品已经送达，点击查看订单详情',
             ]);
-        }else if($supply['item'] == 8){
+        } else if ($supply['item'] == 8) {
             //社区团购
-            $res = (new VillageGroupOrderService())->afterFinishOrder($supply['order_id'],$deliverUser);
-            if($res && $supply['is_settlement'] == 0){
+            $res = (new VillageGroupOrderService())->afterFinishOrder($supply['order_id'], $deliverUser);
+            if ($res && $supply['is_settlement'] == 0) {
                 //增加配送员配送费
-                (new DeliverUserService())->addMoney($supply['uid'], 'village_group', $supply['order_id'], $supply['deliver_user_fee'], '配送收入', $supply['tip_price'], '小费收入');  
+                (new DeliverUserService())->addMoney($supply['uid'], 'village_group', $supply['order_id'], $supply['deliver_user_fee'], '配送收入', $supply['tip_price'], '小费收入');
             }
-            
+
             //增加消息通知
             (new UserNoticeService())->addNotice([
-                'type'=>0,
-                'business'=>'village_group',
-                'order_id'=>$supply['order_id'],
-                'title'=>'商品已经送达',
-                'content'=>'您的社区团购商品已经送达，点击查看订单详情',
+                'type' => 0,
+                'business' => 'village_group',
+                'order_id' => $supply['order_id'],
+                'title' => '商品已经送达',
+                'content' => '您的社区团购商品已经送达，点击查看订单详情',
             ]);
         }
 
@@ -1491,13 +1542,13 @@ class DeliverSupplyService
         }
         //增加消息通知
         (new UserNoticeService())->addNotice([
-            'type'=>0,
-            'business'=>'mall',
-            'order_id'=>$supply['order_id'],
-            'title'=>'骑手正在配送',
-            'content'=>'骑手正在配送，商品将尽快为你送达',
+            'type' => 0,
+            'business' => 'mall',
+            'order_id' => $supply['order_id'],
+            'title' => '骑手正在配送',
+            'content' => '骑手正在配送，商品将尽快为你送达',
         ]);
-        if($supply['item'] == 4 || $supply['item'] == 5){
+        if ($supply['item'] == 4 || $supply['item'] == 5) {
             $deliverUser = [
                 'id' => $uid,
                 'name' => $nowUser['name'],
@@ -1547,4 +1598,19 @@ class DeliverSupplyService
         }
         return $rs;
     }
+	
+	public function getDistance($fromLocation, $toLocation)
+	{
+		//计算距离
+		$distance = 0;//单位：米
+		if (cfg('is_riding_distance') || cfg('map_config') == 'google') {
+			$distance = (new longLat())->getRidingDistance($fromLocation['lat'], $fromLocation['lng'], $toLocation['lat'], $toLocation['lng']);
+			if ($distance == -1) {
+				throw new Exception(L_('获取距离失败'));
+			}
+		}
+		$distance || $distance = get_distance($fromLocation['lat'], $fromLocation['lng'], $toLocation['lat'], $toLocation['lng']);
+		
+		return $distance;
+	}
 }

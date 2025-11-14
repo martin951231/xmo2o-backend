@@ -469,7 +469,7 @@ class LoginAction extends BaseAction {
 			$this->returnCodeError('请求非法，请联系客服处理。');
 		}
 
-        if($this->DEVICE_ID != 'packapp' && $this->DEVICE_ID != 'wxapp' && $this->DEVICE_ID != 'dyapp'){
+        if($this->DEVICE_ID != 'packapp' && $this->DEVICE_ID != 'wxapp' && $this->DEVICE_ID != 'dyapp' && $this->DEVICE_ID != 'street_wxapp'){
 			if($this->app_version >= 30100 && ($this->config['dingxiang_captcha_appid'] || $this->config['qcloud_captcha_appid'])){
 				if(!$_POST['CaptchaToken']){
 					$this->returnCodeError('图形校验码未监控通过，请刷新页面后再试。');
@@ -621,7 +621,7 @@ class LoginAction extends BaseAction {
         $columns['status'] = 0;
         $columns['send_time'] = $send_time;
         $columns['send_ip'] = get_client_ip();
-        $columns['expire_time'] = $columns['send_time'] + 1200;
+        $columns['expire_time'] = $columns['send_time'] + 300;
         $result = D("App_sms_record")->add($columns);
         if (! $result) {
             $this->returnCode('20044007');

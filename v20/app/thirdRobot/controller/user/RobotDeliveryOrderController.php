@@ -27,7 +27,7 @@ class RobotDeliveryOrderController extends ApiBaseController
      * @param string $scenario
      * @return array
      */
-    private function validateParameter(array $params = [], string $scenario = ''): array
+	protected function validateParameter(array $params = [], string $scenario = ''): array
     {
         empty($params) && $params = input('post.');
 

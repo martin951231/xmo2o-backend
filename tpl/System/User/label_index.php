@@ -7,12 +7,12 @@ td span{
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('User/index')}">用户列表</a>
-					<a href="{pigcms{:U('User/label_index')}" class="on">用户标签管理</a>
-					<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/label_edit')}','添加用户标签',750,700,true,false,false,addbtn,'add',true);">添加用户标签</a> -->
+					<a href="{pigcms{:U('User/index')}">SYSTEM_USER_LABEL_INDEX_1</a>
+					<a href="{pigcms{:U('User/label_index')}" class="on">SYSTEM_USER_LABEL_INDEX_2</a>
+					<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/label_edit')}','添加用户标签',750,700,true,false,false,addbtn,'add',true);">添加用户标签</a> -->
 
-					<a href="{pigcms{:U('User/label_edit')}">添加用户标签</a>
-					<a href="{pigcms{:U('User/privileged_user')}">特权用户</a>
+					<a href="{pigcms{:U('User/label_edit')}">SYSTEM_USER_LABEL_INDEX_3</a>
+					<a href="{pigcms{:U('User/privileged_user')}">SYSTEM_USER_LABEL_INDEX_4</a>
 				</ul>
 			</div>
 			<table class="search_table" width="100%">
@@ -42,7 +42,7 @@ td span{
 							<tr>
 								<th>ID</th>
 								<th>标签名称</th>
-								<th>用户数</th>
+								<th>SYSTEM_USER_LABEL_INDEX_5</th>
 								<th>是否默认</th>
 								<th>标签类型</th>
 								<th>打标条件</th>
@@ -65,14 +65,14 @@ td span{
 										</td>
 										<td>
 											<if condition="$vo['type'] eq 1">
-												&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/label_condition_detail',array('id'=>$vo['id']))}','打标详情',550,450,true,false,false,'','detail',true);">查看详情</a>
+												&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/label_condition_detail',array('id'=>$vo['id']))}','打标详情',550,450,true,false,false,'','detail',true);">查看详情</a>
 											<else/>
 											——
 											</if>
 										</td>
 										<td>
 											<span data-href="{pigcms{:U('User/label_del',array('id'=>$vo['id']))}" class="del">删除</span>|
-											<a onclick="window.top.artiframe('{pigcms{:U('User/label_edit',array('id'=>$vo['id']))}','编辑标签信息',850,400,true,false,false,editbtn,'edit',true);">编辑</a>
+											<a onclick="window.o2oTop.artiframe('{pigcms{:U('User/label_edit',array('id'=>$vo['id']))}','编辑标签信息',850,400,true,false,false,editbtn,'edit',true);">编辑</a>
 										</td>
 									</tr>
 								</volist>

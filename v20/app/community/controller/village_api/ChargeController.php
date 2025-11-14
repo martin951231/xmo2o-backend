@@ -39,6 +39,7 @@ class ChargeController extends CommunityBaseController{
         $type= $this->request->param('type','','trim');
         $charge_type= $this->request->param('charge_type','','trim');
         $project_type= $this->request->param('project_type','','trim'); // cycle周期性的
+        $xresource= $this->request->param('xresource','','trim');  //过滤掉一些项目
         $login_role = $this->login_role;
         if (in_array($login_role,$this->propertyRole)) {
             $from_type = 2;//物业
@@ -63,6 +64,7 @@ class ChargeController extends CommunityBaseController{
             'type'=>$type,
             'charge_type'=>$charge_type,
             'project_type'=>$project_type,
+            'xresource'=>$xresource
         ];
         try{
             $list = $HouseNewChargeProjectService->getList($param);
@@ -867,15 +869,19 @@ class ChargeController extends CommunityBaseController{
             $configCustomizationService=new ConfigCustomizationService();
             $isWSXCustomizedOpen=$configCustomizationService->getWSXCustomizedOpen();
             $is_aihorse_customized=$configCustomizationService->getAihorseCustomizedJudge();
+
+            $standardBindImportBtnJudge=$configCustomizationService->getStandardBindImportBtnJudge();
+            
             $is_standard_bind_import_btn=0;
-            if($isWSXCustomizedOpen || $is_aihorse_customized){
+            if($isWSXCustomizedOpen || $is_aihorse_customized || $standardBindImportBtnJudge){
                 $is_standard_bind_import_btn=1;
             }
-            $chargeSetInfo['standard_bind_import_btn']=0;
+            $chargeSetInfo['standard_bind_import_btn']=$is_standard_bind_import_btn;
+            /*
             if($is_standard_bind_import_btn && isset($chargeSetInfo['rule_info']) && in_array($chargeSetInfo['rule_info']['fees_type'],array(1,2))){
                 $chargeSetInfo['standard_bind_import_btn']=1;
             }
-            
+            */
         } catch (\Exception $e) {
             return api_output_error(-1, $e->getMessage());
         }
@@ -982,17 +988,18 @@ class ChargeController extends CommunityBaseController{
         $service_start_time = $this->request->param('service_start_time', '', 'trim');
         $service_end_time = $this->request->param('service_end_time', '', 'trim');
         $xtype = $this->request->param('xtype', 0, 'intval');
+        $charge_type = $this->request->param('charge_type', '', 'trim');
         if($rule_id<1){
-            return api_output(1000, ['status'=>1000,'msg'=>'收费标准id不能为空'], '收费标准id不能为空');
+            return api_output(1000, ['status'=>1001,'msg'=>'收费标准id不能为空'], '收费标准id不能为空');
         }
         /*
         if(empty($single_data) || !is_array($single_data)){
-            return api_output(1000, ['status'=>1000,'msg'=>'请选择需要操作的楼栋数据'], '请选择需要操作的楼栋数据!');
+            return api_output(1000, ['status'=>1001,'msg'=>'请选择需要操作的楼栋数据'], '请选择需要操作的楼栋数据!');
         }
         */
         $village_id = $this->adminUser['village_id'];
         try {
-            $datas=array('village_id'=>$village_id,'single_data'=>array(),'rule_id'=>$rule_id,'login_role'=>$this->login_role,'role_id'=>0);
+            $datas=array('village_id'=>$village_id,'single_data'=>array(),'rule_id'=>$rule_id,'login_role'=>$this->login_role,'role_id'=>0,'charge_type'=>$charge_type);
             if($xtype==1){
                 $service_start_time_tmp=0;
                 if($service_start_time){
@@ -1019,7 +1026,7 @@ class ChargeController extends CommunityBaseController{
             $serviceChargeProject = new HouseNewChargeRuleService();
             $chargeSetInfo = $serviceChargeProject->createManyOrderByRuleId($datas);
         } catch (\Exception $e) {
-            return api_output(1000, ['status'=>1000,'msg'=>$e->getMessage()], $e->getMessage());
+            return api_output(1000, ['status'=>1001,'msg'=>$e->getMessage()], $e->getMessage());
         }
         return api_output(0, $chargeSetInfo);
     }

@@ -17,24 +17,7 @@ class AppointDecorateController extends AuthBaseController
 {
     //region 参数验证
     const STATUS_OK = 1000;//状态码 正常
-
-    /**
-     * 参数验证
-     * @param $scenario
-     * @param array $param
-     * @param string $method
-     * @return array|mixed
-     */
-    private function validateParameter($method = 'post', array $params = [], string $scenario = ''): array
-    {
-        empty($params) && $params = input($method . '.');
-        $validate = validate(AppointDecorateValidate::class);
-        if (!$validate->scene($scenario ?: Str::snake(request()->action()))->check($params)) {
-            throw new ParametersException(L_($validate->getError()));
-        }
-
-        return $params;
-    }
+	protected $validateClass = AppointDecorateValidate::class;
 
     //endregion
 

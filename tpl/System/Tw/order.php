@@ -87,7 +87,7 @@
                                     <td>{pigcms{$vo.pay_type}</td>
                                     <td>{pigcms{$vo.pay_time}</td>
                                     <td>
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Tw/order_detail',array('id'=>$vo['id']))}','查看图维订单详情',950,'90%',true,false,false,false,'detail',true);">查看</a>
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Tw/order_detail',array('id'=>$vo['id']))}','查看图维订单详情',950,'90%',true,false,false,false,'detail',true);">查看</a>
 									</td>
 								</tr>
 							</volist>

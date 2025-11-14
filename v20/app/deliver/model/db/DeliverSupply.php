@@ -11,6 +11,9 @@ use think\Model;
  */
 class DeliverSupply extends Model
 {
+	protected $pk = 'supply_id';
+	const STATUS_CANCEL = 0; //取消
+	const ITEM_USER_PUBLISH = 3; //帮我送
     /**
      * 获取一条配送记录
      * @param $where

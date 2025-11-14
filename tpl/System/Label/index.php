@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Label/index')}" class="on">栏目列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Label/column_add')}','添加栏目',600,300,true,false,false,addbtn,'add',true);">添加栏目</a>|
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Label/column_add')}','添加栏目',600,300,true,false,false,addbtn,'add',true);">添加栏目</a>|
 					<a href="{pigcms{:U('Label/label_list')}">标签列表</a>
 					<a href="{pigcms{:U('Label/label_add')}" >添加标签</a>
 				</ul>
@@ -38,7 +38,7 @@
 											<if condition="$vo['status'] eq 1"><font color="green">禁止</font><elseif condition="$vo['status'] eq 0"/><font color="red">正常</font></if>
 										</td>
 										<td class="textcenter">
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Label/column_add',array('column_id'=>$vo['id']))}','编辑栏目',600,300,true,false,false,editbtn,'edit',true);">编辑</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Label/column_add',array('column_id'=>$vo['id']))}','编辑栏目',600,300,true,false,false,editbtn,'edit',true);">编辑</a>
 									  	</td>
 									</tr>
 								</volist>

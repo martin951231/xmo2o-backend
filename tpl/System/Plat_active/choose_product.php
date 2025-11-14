@@ -5,6 +5,7 @@
 		<title>选择商品</title>
 		<link href="./tpl/Merchant/default/static/diypage/css/customField.css" type="text/css" rel="stylesheet"/>
 		<script type="text/javascript" src="./tpl/Merchant/default/static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="./tpl/System/Static/js/common.js"></script>
 		<script type="text/javascript">
 			$(function(){
 				function unescapeHTML(escapedHTML) {
@@ -18,7 +19,7 @@
 				$('.item_'+active_item).addClass('active');
 			
 				$('button.js-choose').live('click',function(){
-					var parentIframe = window.top.getParentIframe()
+					var parentIframe = window.o2oTop.getParentIframe()
 					if(parentIframe){
 						var _html = $.parseJSON($(this).siblings('.data').html());
 						if(_html){
@@ -26,7 +27,7 @@
 							_html.store_name = unescapeHTML(_html.store_name);
 						}
 						parentIframe.choose_product(_html);
-						window.top.closeiframe()
+						window.o2oTop.closeiframe()
 					}else{
 						alert('团购');
 					}

@@ -58,7 +58,7 @@ $(function(){
 	$('.pre').click(function(){
 		var pre_uid = $(this).data('uid');
 		if(pre_uid == now_uid){
-			window.top.msg(0,'推广用户上级不能是自己')
+			window.o2oTop.msg(0,'推广用户上级不能是自己')
 		}else{
 			change_uid(pre_uid,now_uid,1,$(this))
 		}
@@ -67,7 +67,7 @@ $(function(){
 	$('.next_').click(function(){
 		var next_uid = $(this).data('uid');
 		if(next_uid == now_uid){
-			window.top.msg(0,'推广用户下级不能是自己')
+			window.o2oTop.msg(0,'推广用户下级不能是自己')
 		}else{
 			change_uid(next_uid,now_uid,2,$(this))
 		}
@@ -83,10 +83,10 @@ function change_uid(spread_uid,now_uid,type,obj){
 		success:function(date){
 			
 			if(date.status==1){
-				window.top.msg(1,date.info)
+				window.o2oTop.msg(1,date.info)
 				window.location.reload();
 			}else{
-				window.top.msg(0,date.info)
+				window.o2oTop.msg(0,date.info)
 			}
 			
 		}

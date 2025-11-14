@@ -11,8 +11,8 @@
                     </if>
 					<a href="{pigcms{:U('Deliver/reply')}">配送员评论列表</a>|
 					<a href="{pigcms{:U('Deliver/cancel')}">配送员扔回订单列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
-					<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
+					<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
                     <if condition="$show_merchant_user eq 1">
                         <a href="{pigcms{:U('Deliver/merchant_user')}">商家配送员管理</a>
                     </if>
@@ -82,7 +82,7 @@
                                         <td><if condition="$vo['handle_time'] gt 0">{pigcms{$vo.handle_time|date='Y-m-d H:i:s',###}<else/>--</if></td>-->
 										<td class="textcenter">
                                             <if condition="$vo['status'] eq 0">
-                                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/handleRegister',array('id'=>$vo['id']))}','配送员审核',860,650,true,false,false,editbtn,'edit',true);">审核</a>
+                                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/handleRegister',array('id'=>$vo['id']))}','配送员审核',860,650,true,false,false,editbtn,'edit',true);">审核</a>
                                             <else/>
                                                 --
                                             </if>

@@ -12,7 +12,7 @@
 			</tr>
 			
 			<if condition="($many_city eq 1 AND !in_array($now_category['cat_key'],array('wap_gift_adver','levelad'))) OR C('customization.open_view_multi_city') eq 1">
-                <if condition="$is_area_many_city neq 1 ">
+                <if condition="(C('customization.open_view_multi_city') neq 1) || (C('customization.open_view_multi_city') eq 1 && $is_area_many_city neq 1)">
                     <tr id="adver_currency">
                         <th width="15%">通用广告</th>
                         <td width="35%" class="radio_box">

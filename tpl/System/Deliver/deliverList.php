@@ -1,4 +1,23 @@
 <include file="Public:header"/>
+<style>
+    .layui-btn-normal{
+        color: #fff;
+        margin-top: 5px;
+        background-color: #009688;
+        border-color: #009688;
+        min-width: 52px;
+        padding: 0px 2px;
+    } 
+    .layui-btn-radius{
+        border-radius: 5px;
+    }
+    .layui-btn-danger{
+        color: #fff;
+        margin-top: 5px;
+        background-color: #FF5722;
+        border-color: #FF5722;
+    }
+</style>
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
@@ -179,7 +198,11 @@
                                                 <elseif condition="$vo['order_from'] eq 2" />
                                                 美团
                                                 <elseif condition="$vo['order_from'] eq 3" />
-                                                帮我送
+                                                    帮我送
+                                                    <if condition="$vo['third_type'] eq 'maiyatian'">
+                                                        <button type="button" class="layui-btn layui-btn-danger layui-btn-radius">麦芽田</button>
+                                                        <button type="button" class="layui-btn layui-btn-normal layui-btn-radius">{pigcms{$vo['order_source']}</button>
+                                                    </if>
                                                 <elseif condition="$vo['order_from'] eq 4 OR $vo['order_from'] eq 5" />
                                                 帮我买
                                                 <elseif condition="$vo['order_from'] eq 10" />
@@ -230,9 +253,9 @@
 										<if condition="$vo['status'] eq 0" >
 										<font color="red">订单失效</font>
 										<elseif condition="$vo['status'] eq 1" />
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/appoint_deliver',array('supply_id' => $vo['supply_id']))}','指派配送员',480,380,true,false,false,editbtn,'edit',true);">指派配送员</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/appoint_deliver',array('supply_id' => $vo['supply_id']))}','指派配送员',480,380,true,false,false,editbtn,'edit',true);">指派配送员</a>
 										<elseif condition="$vo['status'] lt 5" />
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/appoint_deliver',array('supply_id' => $vo['supply_id']))}','更换配送员',480,380,true,false,false,editbtn,'edit',true);" style="color:red">更换配送员</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/appoint_deliver',array('supply_id' => $vo['supply_id']))}','更换配送员',480,380,true,false,false,editbtn,'edit',true);" style="color:red">更换配送员</a>
                                         <elseif condition="$vo['status'] eq 7" />
                                         <font color="red">退款失败</font>
                                         <else />
@@ -243,23 +266,23 @@
                                         <if condition="!in_array($vo['status'], array(2,3,4))">
                                         ---
                                         <else />
-                                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/edit_supply_status',array('supply_id'=>$vo['supply_id']))}','修改配送状态',500,200,true,false,false,false,'edit',true);" style="color:green" data-supply="{pigcms{$vo['supply_id']}" class="change">修改配送状态</a>
+                                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/edit_supply_status',array('supply_id'=>$vo['supply_id']))}','修改配送状态',500,200,true,false,false,false,'edit',true);" style="color:green" data-supply="{pigcms{$vo['supply_id']}" class="change">修改配送状态</a>
                                         </if>
                                         </td>
 
                                         <td width="80">
                                             <if condition="$vo['item'] eq 3">
-                                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/offer_info',array('publish_id' => $vo['order_id'],'frame_show'=>true))}','查看订单信息',600,600,true,false,false,false,'detail',true);">查看</a>
+                                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/offer_info',array('publish_id' => $vo['order_id'],'frame_show'=>true))}','查看订单信息',850,700,true,false,false,false,'detail',true);">查看</a>
                                                 <elseif condition="$vo['item'] eq 2" />
-                                                    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.shop_alias_name}订单详情','65%','70%',true,false,false,false,'detail',true);">查看</a>
+                                                    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.shop_alias_name}订单详情',850,700,true,false,false,false,'detail',true);">查看</a>
                                                 <elseif condition="$vo['item'] eq 4" />
-                                                    <a href="javascript:void(0);" onclick="window.top.artiframe('/v20/public/platform/#/dialog/platform.mall/orderDetail?order_id={pigcms{$vo.order_id}','查看{pigcms{$config.mall_alias_name_new}订单详情','65%','75%',true,false,false,false,'detail',true);">查看</a>
+                                                    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/v20/public/platform/#/dialog/platform.mall/orderDetail?order_id={pigcms{$vo.order_id}','查看{pigcms{$config.mall_alias_name_new}订单详情','65%','75%',true,false,false,false,'detail',true);">查看</a>
                                                 <elseif condition="$vo['item'] eq 8" />
-                                                    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.village_group_alias}订单详情','65%','70%',true,false,false,false,'detail',true);">查看</a>
+                                                    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.village_group_alias}订单详情',850,700,true,false,false,false,'detail',true);">查看</a>
                                             </if>
 
                                             <if condition="($vo['uid'] gt 0) AND ($vo['deliver_status'] egt 2) AND ($vo['deliver_status'] lt 5)">
-                                                &nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Deliver/map',array('supply_id' => $vo['supply_id'],'uid' => $vo['uid'],'frame_show'=>true))}','坐标预览',850,700,true,false,false,false,'detail',true);">坐标</a>
+                                                &nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/map',array('supply_id' => $vo['supply_id'],'uid' => $vo['uid'],'frame_show'=>true))}','坐标预览',850,700,true,false,false,false,'detail',true);">坐标</a>
                                             </if>
                                           
 										</td>

@@ -405,7 +405,7 @@ class HardwareServe{
             } else {
                 $userColumn = [];
             }
-            $defaultImg = cfg('site_url') . '/static/default_img.png';
+
             foreach ($logList as $v) {
                 $log_business_id = isset($v['log_business_id']) ? intval($v['log_business_id']) : 0;
                 $villageInfo = isset($villageColumn[$log_business_id]) ? $villageColumn[$log_business_id] : [];

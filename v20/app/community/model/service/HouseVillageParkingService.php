@@ -186,9 +186,7 @@ class HouseVillageParkingService
     public function getParkingGarageLists($where, $field = true, $page = 0, $limit = 0, $order = 'garage_id DESC')
     {
         $data = $this->parkingGarageModel->getLists($where, $field, $page, $limit, $order)->toArray();
-        $count = count($data);
-//        $data[$count]['garage_id'] = 9999;
-//        $data[$count]['garage_num'] = '临时车库';
+
         return $data;
     }
 
@@ -324,7 +322,7 @@ class HouseVillageParkingService
             $houseVillageParkGarageConfigService = new HouseVillageParkGarageConfigService();
             $parkGarageConfig=array();
             foreach ($data as &$val) {
-                if ($val['garage_id'] == 9999) {
+                if ($val['garage_id'] == 0 || ($val['position_type']==3 && $val['position_pattern']==1)) {
                     $carInfo = $this->parkingCarModel->getOne(['car_position_id' => $val['position_id']], 'province');
                     $val['position_num'] = $carInfo['province'] . $val['position_num'];
                 }
@@ -1099,7 +1097,7 @@ class HouseVillageParkingService
             $items[] = $list;
         }
         $count = count($items);
-        $items[$count]['permission_id'] = 9999;
+        $items[$count]['permission_id'] = '999999999';
         $items[$count]['title'] = '临时车位';
         $items[$count]['disabled'] = false;
         $items[$count]['scopedSlots'] = ['icon' => 'cluster','switcherIcon' => 'temgarage'];
@@ -1147,7 +1145,7 @@ class HouseVillageParkingService
                 if(isset($v['village_id'])){
                     $where[]=array('pp.village_id','=',$v['village_id']);
                 }
-                $position_list = $this->getPosition($where, 'pp.position_id,pp.position_num,pp.garage_id');
+                $position_list = $this->getPosition($where, 'pp.position_id,pp.position_num,pp.garage_id,pp.position_type,pp.position_pattern');
                 $list = [];
                 foreach ($position_list as $k1 => $v1) {
                     $list[$k1]['title'] = $v1['title'];
@@ -1182,10 +1180,11 @@ class HouseVillageParkingService
                 **/
                 $position_list[$k]['title'] = $v['position_num'];
                 $position_list[$k]['disabled'] = false;
-                if($v['garage_id'] == 9999)
-                    $position_list[$k]['scopedSlots'] = ['icon' => 'user','title'=>'edit_out','switcherIcon' => 'position'];
-                else
+                if($v['position_type'] == 3 && $v['position_pattern']==1){
+                    $position_list[$k]['scopedSlots'] = ['icon' => 'user','title'=>'edit_out','switcherIcon' => 'position']; 
+                }else{
                     $position_list[$k]['scopedSlots'] = ['icon' => 'user','switcherIcon' => 'position'];
+                }
                 $position_list[$k]['key'] = $v['position_id'] . '|' . $v['position_num'] . '|' . 'position';
             }
         }
@@ -2712,6 +2711,8 @@ class HouseVillageParkingService
         if (empty($rule_info)) {
             throw new Exception('该停车场未绑定收费规则');
         }
+        $rule_id=$rule_info['id'];
+        $project_id=$rule_info['charge_project_id'];
         $where_out = [];
         $where_out['car_number'] = $data['car_number'];
         $where_out['park_id'] = $data['village_id'];
@@ -2996,6 +2997,8 @@ class HouseVillageParkingService
         if (isset($data['in_record_id']) && $data['in_record_id']) {
             $data_temp['in_record_id'] = $data['in_record_id'];
         }
+        $data_temp['rule_id']=$rule_id;
+        $data_temp['project_id']=$project_id;
         $id1 = $db_house_village_park_temp->addOne($data_temp);
         fdump_api(['计算后记录临时表中', $data_temp], 'D3Park/temp_pay_' . $car_number, 1);
 
@@ -3090,6 +3093,8 @@ class HouseVillageParkingService
         if (empty($park_charge)) {
             throw new Exception('该停车场未绑定收费规则');
         }
+        $rule_id=$rule_info['id'];
+        $project_id=$rule_info['charge_project_id'];
         $where_charge = [];
         $where_charge['village_id'] = $data['village_id'];
         $where_charge['park_sys_type'] = 'D3';
@@ -3200,6 +3205,8 @@ class HouseVillageParkingService
         $data_temp['car_number'] = $data['car_number'];
         $data_temp['out_channel_id'] = $park_info['id'];
         $data_temp['park_sys_type'] = 'D3';
+        $data_temp['rule_id']=$rule_id;
+        $data_temp['project_id']=$project_id;
         $db_house_village_park_temp = new HouseVillageParkingTemp();
         $db_house_village_park_temp->addOne($data_temp);
 
@@ -3838,7 +3845,11 @@ class HouseVillageParkingService
         if (!empty(cache('freeList_'.$passage_info['village_id']))) {
             $free_list= cache('freeList_'.$passage_info['village_id']);
         }else {
-            $free_list = $db_house_village_park_free->getList(['village_id' => $passage_info['village_id']]);
+            $free_list_obj = $db_house_village_park_free->getList(['village_id' => $passage_info['village_id']]);
+            $free_list='';
+            if ($free_list_obj && !$free_list_obj->isEmpty()) {
+                $free_list = $free_list_obj->toArray();
+            }
             cache('freeList_'.$passage_info['village_id'],$free_list, 3600);
         }
         $province = mb_substr($car_number, 0, 1);
@@ -3967,130 +3978,124 @@ class HouseVillageParkingService
         $whereAccessRecord = [
             ['car_number', '=', $car_number],
             ['park_id', '=', $passage_info['village_id']],
-            ['accessType', '=',1],
-            ['park_sys_type', '=',$park_sys_type],
+            ['accessType', '=', 1],
+            ['park_sys_type', '=', $park_sys_type],
             ['accessTime', '>=', $starttime],
             ['accessTime', '<=', $endtime],
             ['del_time', '<', 1],
         ];
-        if ($free_list && !is_array($free_list)) {
-            $free_list = $free_list->toArray();
-        }
+        
         if (!empty($free_list)) {
-            if ($parkTime) {
-                fdump_api(['免费车'=>$car_number,'free_list' => $free_list],'D3Park/plateresult'.$parkTime,true);
-            }
-            if (!empty($free_list)) {
-                foreach ($free_list as $v) {
-                    $first_number=substr($car_number,0,strlen($v['first_name']));
-                    $last_name=substr($car_number,'-'.strlen($v['last_name']));
+            fdump_api(['免费车' => $car_number, 'free_list' => $free_list], 'D3Park/plateresult' . $parkTime, true);
+            foreach ($free_list as $v) {
+                $first_number = substr($car_number, 0, strlen($v['first_name']));
+                $last_name = substr($car_number, '-' . strlen($v['last_name']));
+                if ($parkTime) {
+                    fdump_api(['免费车' => $car_number, 'first_number' => $first_number, 'last_name' => $last_name], 'D3Park/plateresult' . $parkTime, true);
+                }
+                $isFreePark = false;
+                if (!empty($v['first_name']) && $first_number == $v['first_name']) {
+                    $isFreePark = true;
+                } elseif (!empty($v['last_name']) && $last_name == $v['last_name']) {
+                    $isFreePark = true;
+                } elseif ($car_number == $v['free_park']) {
+                    $isFreePark = true;
+                }
+                if ($isFreePark) {
                     if ($parkTime) {
-                        fdump_api(['免费车'=>$car_number,'first_number' => $first_number,'last_name' => $last_name],'D3Park/plateresult'.$parkTime,true);
+                        fdump_api(['符合免费车条件' => $car_number, 'first_name' => $v['first_name']], 'D3Park/plateresult' . $parkTime, true);
                     }
-                    $isFreePark = false;
-                    if (!empty($v['first_name']) && $first_number==$v['first_name']) {
-                        $isFreePark = true;
-                    }elseif (!empty($v['last_name']) && $last_name==$v['last_name']) {
-                        $isFreePark = true;
-                    }elseif ($car_number == $v['free_park']) {
-                        $isFreePark = true;
+                    $park_info_car = $db_in_park->getOne1($park_where);
+                    if ($park_info_car && !$park_info_car->isEmpty()) {
+                        $park_info_car = $park_info_car->toArray();
+                    } else {
+                        $park_info_car = array();
                     }
-                    if($isFreePark) {
+                    if ($parkTime) {
+                        fdump_api(['条件查询结果' => $car_number, 'park_where' => $park_where, 'park_info_car' => $park_info_car], 'D3Park/plateresult' . $parkTime, true);
+                    }
+                    if (empty($park_info_car) || !isset($park_info_car['id'])) {
+                        //写入车辆入场表
+                        $insert_id = $db_in_park->insertOne($park_data);
                         if ($parkTime) {
-                            fdump_api(['符合免费车条件' => $car_number, 'first_name' => $v['first_name']], 'D3Park/plateresult' . $parkTime, true);
+                            fdump_api(['in_park' => '插入in_park表', 'park_data' => $park_data, 'insert_id' => $insert_id], 'D3Park/plateresult' . $parkTime, true);
                         }
-                        $park_info_car = $db_in_park->getOne1($park_where);
-                        if($park_info_car && !$park_info_car->isEmpty()){
-                            $park_info_car=$park_info_car->toArray();
-                        }else{
-                            $park_info_car=array();
+                        //写入车辆入场表
+                        $car_access_record['business_type'] = 0;
+                        $car_access_record['business_id'] = $passage_info['village_id'];
+                        $car_access_record['car_number'] = $car_number;
+                        $car_access_record['accessType'] = 1;
+                        $car_access_record['accessTime'] = $now_time;
+                        $car_access_record['accessMode'] = 8;
+                        $car_access_record['park_sys_type'] = $park_sys_type;
+                        $car_access_record['is_out'] = 0;
+                        $car_access_record['park_id'] = $passage_info['village_id'];
+                        $car_access_record['park_name'] = $village_info['village_name'] ? $village_info['village_name'] : '';
+                        $car_access_order_id = date('YmdHis') . rand(100, 999);
+                        $car_access_record['order_id'] = $car_access_order_id;
+                        $car_access_record['update_time'] = $now_time;
+                        if (isset($insert_id) && !empty($insert_id)) {
+                            $car_access_record['from_id'] = $insert_id;
                         }
                         if ($parkTime) {
-                            fdump_api(['条件查询结果' => $car_number, 'park_where' => $park_where, 'park_info_car' => $park_info_car], 'D3Park/plateresult' . $parkTime, true);
+                            fdump_api(['记录通行记录' => $car_number, 'car_access_record' => $car_access_record], 'D3Park/plateresult' . $parkTime, true);
                         }
-                        if (empty($park_info_car) || !isset($park_info_car['id'])) {
-                            //写入车辆入场表
-                            $insert_id = $db_in_park->insertOne($park_data);
-                            if ($parkTime) {
-                                fdump_api(['in_park' => '插入in_park表', 'park_data' => $park_data, 'insert_id' => $insert_id], 'D3Park/plateresult' . $parkTime, true);
+                        $record_id = $db_house_village_car_access_record->addOne($car_access_record);
+                        if ($record_id > 0) {
+                            /*
+                            $access_record_where_near = [
+                                ['car_number', '=', $car_number],
+                                ['park_id', '=', $passage_info['village_id']],
+                                ['is_out', '=', 0],
+                                ['del_time', '<', 1],
+                                ['record_id', '<', $record_id],
+                            ];
+                            //最近一条未出场的 记录
+                            $access_record_tmp = $db_house_village_car_access_record->getOne($access_record_where_near,'record_id,is_out,accessType,car_number,accessTime');
+                            if ($access_record_tmp && !$access_record_tmp->isEmpty()){
+                                $access_record_tmp=$access_record_tmp->toArray();
+                                $db_house_village_car_access_record->saveOne(array(['record_id', '=', $access_record_tmp['record_id']]),['is_out'=>1]);
                             }
-                            //写入车辆入场表
-                            $car_access_record['business_type'] = 0;
-                            $car_access_record['business_id'] = $passage_info['village_id'];
-                            $car_access_record['car_number'] = $car_number;
-                            $car_access_record['accessType'] = 1;
-                            $car_access_record['accessTime'] = $now_time;
-                            $car_access_record['accessMode'] = 8;
-                            $car_access_record['park_sys_type'] = $park_sys_type;
-                            $car_access_record['is_out'] = 0;
-                            $car_access_record['park_id'] = $passage_info['village_id'];
-                            $car_access_record['park_name'] = $village_info['village_name'] ? $village_info['village_name'] : '';
-                            $car_access_order_id = date('YmdHis') . rand(100, 999);
-                            $car_access_record['order_id'] = $car_access_order_id;
-                            $car_access_record['update_time'] = $now_time;
-                            if (isset($insert_id) && !empty($insert_id)) {
-                                $car_access_record['from_id'] = $insert_id;
-                            }
-                            if ($parkTime) {
-                                fdump_api(['记录通行记录' => $car_number, 'car_access_record' => $car_access_record], 'D3Park/plateresult' . $parkTime, true);
-                            }
-                            $record_id = $db_house_village_car_access_record->addOne($car_access_record);
-                            if ($record_id > 0) {
-                                /*
-                                $access_record_where_near = [
-                                    ['car_number', '=', $car_number],
-                                    ['park_id', '=', $passage_info['village_id']],
-                                    ['is_out', '=', 0],
-                                    ['del_time', '<', 1],
-                                    ['record_id', '<', $record_id],
-                                ];
-                                //最近一条未出场的 记录
-                                $access_record_tmp = $db_house_village_car_access_record->getOne($access_record_where_near,'record_id,is_out,accessType,car_number,accessTime');
-                                if ($access_record_tmp && !$access_record_tmp->isEmpty()){
-                                    $access_record_tmp=$access_record_tmp->toArray();
-                                    $db_house_village_car_access_record->saveOne(array(['record_id', '=', $access_record_tmp['record_id']]),['is_out'=>1]);
-                                }
-                                */
-                                $in_park_info = $db_in_park->getOne(array('id' => $insert_id), '*');
-                                if ($in_park_info && isset($in_park_info['access_order_id']) && empty($in_park_info['access_order_id'])) {
-                                    $saveArr = array('access_record_id' => $record_id, 'access_order_id' => $car_access_order_id);
-                                    $db_in_park->saveOne(array('id' => $insert_id), $saveArr);
-                                }
-                                if ($parkTime) {
-                                    fdump_api(['car_number' => $car_number, 'record_id' => $record_id, 'msg' => '数据记录添加完成'], 'D3Park/plateresult' . $parkTime, true);
-                                }
-                                $tmpUpdateRecordArr = array('car_number' => $car_number, 'in_park_id' => $insert_id, 'village_id' => $passage_info['village_id'], 'record_id' => $record_id, 'access_order_id' => $car_access_order_id, 'access_type' => 1, 'access_time' => time());
-                                (new ParkCarToJobService())->outToInParkToJob($tmpUpdateRecordArr);
+                            */
+                            $in_park_info = $db_in_park->getOne(array('id' => $insert_id), '*');
+                            if ($in_park_info && isset($in_park_info['access_order_id']) && empty($in_park_info['access_order_id'])) {
+                                $saveArr = array('access_record_id' => $record_id, 'access_order_id' => $car_access_order_id);
+                                $db_in_park->saveOne(array('id' => $insert_id), $saveArr);
                             }
                             if ($parkTime) {
-                                fdump_api(['记录通行记' => $car_number, 'record_id' => $record_id], 'D3Park/plateresult' . $parkTime, true);
+                                fdump_api(['car_number' => $car_number, 'record_id' => $record_id, 'msg' => '数据记录添加完成'], 'D3Park/plateresult' . $parkTime, true);
                             }
-                        } else {
-                            $insert_id = $park_info_car['id'];
-                            $record_id = isset($park_info_car['access_record_id']) ? intval($park_info_car['access_record_id']) : 0;
-                            $car_access_order_id = isset($park_info_car['access_order_id']) ? trim($park_info_car['access_order_id']) : '';
+                            $tmpUpdateRecordArr = array('car_number' => $car_number, 'in_park_id' => $insert_id, 'village_id' => $passage_info['village_id'], 'record_id' => $record_id, 'access_order_id' => $car_access_order_id, 'access_type' => 1, 'access_time' => time());
+                            (new ParkCarToJobService())->outToInParkToJob($tmpUpdateRecordArr);
                         }
-                        if ($isImageToJob) {
-                            $imageToJob['in_park_id'] = $insert_id;
-                        }
-                        //$in_record_info = $db_house_village_car_access_record->getOne($whereAccessRecord);
-      
-                        //TODO:屏显和语音提示特殊车辆通行
-                        $showscreen_data['content']='免费车通行';
                         if ($parkTime) {
-                            fdump_api(['记录通行记录'=>$car_number,'showscreen_data' => $showscreen_data],'D3Park/plateresult'.$parkTime,true);
+                            fdump_api(['记录通行记' => $car_number, 'record_id' => $record_id], 'D3Park/plateresult' . $parkTime, true);
                         }
-                        $this->addParkShowScreenLog($showscreen_data);
-                        //特殊车辆通行
-                        if ($isImageToJob && ($record_id || $insert_id)) {
-                            if (isset($car_access_order_id) && $car_access_order_id) {
-                                $imageToJob['car_access_order_id'] = $car_access_order_id;
-                            }
-                            $imageToJob['in_record_id'] = $record_id;
-                            (new ParkCarToJobService())->parkCarImageToJob($imageToJob);
-                        }
-                        return true;
+                    } else {
+                        $insert_id = $park_info_car['id'];
+                        $record_id = isset($park_info_car['access_record_id']) ? intval($park_info_car['access_record_id']) : 0;
+                        $car_access_order_id = isset($park_info_car['access_order_id']) ? trim($park_info_car['access_order_id']) : '';
                     }
+                    if ($isImageToJob) {
+                        $imageToJob['in_park_id'] = $insert_id;
+                    }
+                    //$in_record_info = $db_house_village_car_access_record->getOne($whereAccessRecord);
+
+                    //TODO:屏显和语音提示特殊车辆通行
+                    $showscreen_data['content'] = '免费车通行';
+                    if ($parkTime) {
+                        fdump_api(['记录通行记录' => $car_number, 'showscreen_data' => $showscreen_data], 'D3Park/plateresult' . $parkTime, true);
+                    }
+                    $this->addParkShowScreenLog($showscreen_data);
+                    //特殊车辆通行
+                    if ($isImageToJob && ($record_id || $insert_id)) {
+                        if (isset($car_access_order_id) && $car_access_order_id) {
+                            $imageToJob['car_access_order_id'] = $car_access_order_id;
+                        }
+                        $imageToJob['in_record_id'] = $record_id;
+                        (new ParkCarToJobService())->parkCarImageToJob($imageToJob);
+                    }
+                    return true;
                 }
             }
         }
@@ -4976,7 +4981,11 @@ class HouseVillageParkingService
         if (!empty(cache('freeList_'.$passage_info['village_id']))) {
             $free_list= cache('freeList_'.$passage_info['village_id']);
         }else {
-            $free_list = $db_house_village_park_free->getList(['village_id' => $passage_info['village_id']]);
+            $free_list_obj = $db_house_village_park_free->getList(['village_id' => $passage_info['village_id']]);
+			$free_list='';
+            if ($free_list_obj && !$free_list_obj->isEmpty()) {
+                $free_list = $free_list_obj->toArray();
+            }
             cache('freeList_'.$passage_info['village_id'],$free_list, 3600);
         }
         $province = mb_substr($car_number, 0, 1);
@@ -5108,7 +5117,6 @@ class HouseVillageParkingService
         ];
         $record_id=0;
         if (!empty($free_list)) {
-            $free_list = $free_list->toArray();
             if ($parkTime) {
                 fdump_api(['免费车信息'=>$car_number,'free_list' => $free_list],'D3Park/plateresult'.$parkTime,true);
             }
@@ -6650,15 +6658,15 @@ class HouseVillageParkingService
                     $carList[$k]['garage_num']='';
                     if($v['position_id']>0){
                         $whereArr=array('position_id'=>$v['position_id'],'village_id'=>$v['village_id']);
-                        $parkingPosition=$houseVillageParkingPosition->getFind($whereArr,'garage_id,position_num');
+                        $parkingPosition=$houseVillageParkingPosition->getFind($whereArr,'garage_id,position_num,position_type,position_pattern');
                         if($parkingPosition && !$parkingPosition->isEmpty()){
                             $carList[$k]['position_num']=$parkingPosition['position_num'];
-                            if($parkingPosition['garage_id']>0 && $parkingPosition['garage_id']!=9999){
+                            if($parkingPosition['garage_id']>0 && !($parkingPosition['position_type']==3 && $parkingPosition['position_pattern']==1)){
                                 $parkingGarage=$houseVillageParkingGarage->getOne(['garage_id'=>$parkingPosition['garage_id'],'village_id'=>$v['village_id']],'garage_num');
                                 if($parkingGarage && !$parkingGarage->isEmpty()){
                                     $carList[$k]['garage_num']=$parkingGarage['garage_num'];
                                 }
-                            }else if($parkingPosition['garage_id']>0 && $parkingPosition['garage_id']==9999){
+                            }else if($parkingPosition['garage_id']==0 || ($parkingPosition['position_type']==3 && $parkingPosition['position_pattern']==1)){
                                 $carList[$k]['garage_num']='虚拟车库';
                             }
                         }
@@ -6680,14 +6688,14 @@ class HouseVillageParkingService
             $position_list = $bindPosition->toArray();
             $houseVillageParkingGarage= new HouseVillageParkingGarage();
             foreach ($position_list as $kk => $vv ){
-                if($vv['garage_id']>0 && $vv['garage_id']!=9999){
+                if($vv['garage_id']>0 && !($vv['position_type'] == 3 && $vv['position_pattern']==1)){
                     $parkingGarage=$houseVillageParkingGarage->getOne(['garage_id'=>$vv['garage_id'],'village_id'=>$vv['village_id']],'garage_num,status');
                     if($parkingGarage && !$parkingGarage->isEmpty() && $parkingGarage['status']==1){
                         $position_list[$kk]['garage_num']=$parkingGarage['garage_num'];
                     }else if($parkingGarage && !$parkingGarage->isEmpty() && $parkingGarage['status']==0){
                         unset($position_list[$kk]);
                     }
-                }else if($vv['garage_id']>0 && $vv['garage_id']==9999){
+                }else if($vv['garage_id']==0 || ($vv['position_type'] == 3 && $vv['position_pattern']==1)){
                     $position_list[$kk]['garage_num']='虚拟车库';
                 }
             }
@@ -7672,7 +7680,7 @@ class HouseVillageParkingService
                                     $car_access_record['accessType'] = 2;
                                     $car_access_record['coupon_id'] = isset($park_temp_info['coupon_id'])?$park_temp_info['coupon_id']:0;
                                     $car_access_record['park_time'] =$pay_info['pay_time']-$in_park_pay_info['in_time'] ;
-                                    $car_access_record['total'] =$park_temp_info['price'];
+                                    $car_access_record['total'] =$park_temp_info && $park_temp_info['price'] ? $park_temp_info['price']:0;
                                     $car_access_record['accessTime'] = $now_time;
                                     if(isset($in_park_pay_info['out_image_big']) && $in_park_pay_info['out_image_big']){
                                         $car_access_record['accessBigImage'] = $in_park_pay_info['out_image_big'];
@@ -7817,7 +7825,7 @@ class HouseVillageParkingService
                                     $car_access_record['accessType'] = 2;
                                     $car_access_record['coupon_id'] = isset($park_temp_info['coupon_id'])?$park_temp_info['coupon_id']:0;
                                     $car_access_record['park_time'] =$park_temp_info['pay_time']-$in_park_pay_info['in_time'] ;
-                                    $car_access_record['total'] =$park_temp_info['price'];
+                                    $car_access_record['total'] = $park_temp_info && $park_temp_info['price'] ? $park_temp_info['price']:0;
                                     $car_access_record['accessTime'] = $now_time;
                                     if(isset($in_park_pay_info['out_image_big']) && $in_park_pay_info['out_image_big']){
                                         $car_access_record['accessBigImage'] = $in_park_pay_info['out_image_big'];
@@ -8998,7 +9006,7 @@ class HouseVillageParkingService
         if(!$village_park_config){
             throw new Exception('请先开启智慧停车');
         }
-        if(!in_array($village_park_config['park_sys_type'],['D3','A11'])){
+        if(!in_array($village_park_config['park_sys_type'],['D3','A11','HXT85'])){
             throw new Exception('仅D3/A11智慧停车支持此类型配置');
         }
         return $village_park_config['park_sys_type'];
@@ -11435,6 +11443,7 @@ class HouseVillageParkingService
         
         $passage_info=$db_park_passage->getFind(['village_id'=>$village_id,'id'=>$passage_id]);
         $voice=[];
+        $park_sys_type='';
         if (!empty($passage_info)) {
             $garage_id=0;
             if (isset($passage_info['garage_id'])) {
@@ -11452,8 +11461,13 @@ class HouseVillageParkingService
                 'screen_type' => 1,
                 'park_sys_type'=>$park_sys_type
             ];
-            $voice = $db_house_village_park_showscreen_config->getFind($where,'temp_line_1,temp_line_2,temp_line_3,temp_line_4,mouth_line_1,mouth_line_2,mouth_line_3,mouth_line_4');
+            $voiceObj = $db_house_village_park_showscreen_config->getFind($where,'temp_line_1,temp_line_2,temp_line_3,temp_line_4,mouth_line_1,mouth_line_2,mouth_line_3,mouth_line_4');
+            if($voiceObj && !$voiceObj->isEmpty()){
+                $voice= $voiceObj->toArray();
+            }
         }
+        $voice['passage_id']=$passage_id;
+        $voice['park_sys_type']=$park_sys_type;
         return $voice;
     }
 
@@ -12604,109 +12618,103 @@ class HouseVillageParkingService
                 $in_time = isset($in_park_pay_info['in_time']) ? intval($in_park_pay_info['in_time']) : 0;
                 $in_time > 0 && $in_time < $now_time && $park_time = $now_time - $in_time;
                 if (!empty($in_park_pay_info['pay_order_id'])) {
-                    fdump_api(['line' => __LINE__,'msg' => '存在支付订单记录', 'pay_order_id' => $in_park_pay_info['pay_order_id']],'A11/serial'.$serialTime,true);
-//                    $park_temp_info = $db_house_village_parking_temp->getOne(['car_number' => $data['car_number'], 'village_id' => $passage_info['village_id'], 'order_id' => $in_park_pay_info['order_id'],'is_paid' => 1]);
-                    $pay_info = $db_house_new_pay_order->get_one(['summary_id' => $in_park_pay_info['pay_order_id'], 'is_paid' => 1]);
-                    fdump_api(['line' => __LINE__,'msg' => '支付订单', 'pay_info' => ($pay_info && !is_array($pay_info)) ? $pay_info->toArray() : $pay_info],'A11/serial'.$serialTime,true);
-                    if (!empty($pay_info)) {
-                        //写入车辆入场表
-                        $park_data = [];
-                        $park_data['out_time'] = $accessTime;
-                        $park_data['is_out'] = 1;
-                        $park_data['is_paid'] = 1;
-                        $park_time > 0 && $park_data['park_time'] = $park_time;
-                        $whereInOut = ['car_number' => $data['car_number'], 'park_id' => $passage_info['village_id'], 'park_sys_type' => $park_sys_type, 'is_out' => 0];
-                        $res_in = $db_in_park->saveOne($whereInOut, $park_data);
-                        fdump_api(['line' => __LINE__,'msg' => '写入车辆入场表', 'whereInOut' => $whereInOut, 'park_data' => $park_data, 'res_in' => $res_in],'A11/serial'.$serialTime,true);
-                        $from_id=0;
-                        $insert_id=0;
-                        /*
-                        $out_data = [];
-                        $out_data['car_number'] = $data['car_number'];
-                        if (!empty($in_park_pay_info)) {
-                            $out_data['in_time'] = $in_time;
-                            $out_data['order_id'] = $in_park_pay_info['order_id'];
-                        }
-                        $out_data['out_time'] = $accessTime;
-                        $out_data['park_id'] = $passage_info['village_id'];
-                        $out_data['pay_type'] = 'cash';
-                        $out_data['total'] = $data['price'];
-                        $starttime = time() - 60;
-                        $endtime = time() + 10;
-                        $park_where = [
-                            ['car_number', '=', $data['car_number']],
-                            ['business_id','=',$passage_info['village_id']],
-                            ['out_time', '>=', $starttime],
-                            ['out_time', '<=', $endtime],
-                        ];
-                        $park_info_car = $db_out_park->getOne($park_where);
-                        fdump_api(['line' => __LINE__,'msg' => '写入车辆入场表', 'park_where' => $park_where],'A11/serial'.$serialTime,true);
-                        //写入车辆入场表
-                        if (empty($park_info_car)) {
-                            $insert_id= $db_out_park->insertOne($out_data);
-                            fdump_api(['line' => __LINE__,'msg' => '添加出场表', 'insert_id' => $insert_id],'A11/serial'.$serialTime,true);
-                            $from_id = $insert_id;
-                        } else {
-                            $from_id = isset($park_info_car['id']) && intval($park_info_car['id']) > 0 ? intval($park_info_car['id']) : 0;
-                        }
-                        */
-                        $park_where = [
-                            ['car_number', '=', $data['car_number']],
-                            ['park_id', '=', $passage_info['village_id']],
-                            ['accessType', '=',1],
-                            ['is_out', '=', 0],
-                            ['del_time', '=', 0],
-                        ];
-                        $park_info_car111 = $db_house_village_car_access_record->getOne($park_where);
-                        $car_access_record['accessType'] = 2;
-                        $car_access_record['park_time'] =$data['park_time']>0 ? $data['park_time']:$park_time;
-                        $car_access_record['total'] =$data['price'];
-                        $car_access_record['accessMode'] = $accessMode;
-                        if (empty($park_info_car111)){
-                            $car_access_record['exception_type'] = 2;
-                        }else{
-                            fdump_api(['line' => __LINE__,'msg' => '查询对应出场记录', 'record_id' => $park_info_car111['record_id']],'A11/serial'.$serialTime,true);
-                            $db_house_village_car_access_record->saveOne(['record_id'=>$park_info_car111['record_id']],['is_out'=>1]);
-                        }
-                        $car_access_record['is_out'] = 1;
-                        $car_access_record['is_paid'] = 1;
-                        if($park_info_car111 && $park_info_car111['order_id']){
-                            $car_access_record['order_id'] = $park_info_car111['order_id'];
-                        }else{
-                            $car_access_record['order_id'] = date('YmdHis') . rand(100000, 999999);
-                        }
-                        $order_id=$car_access_record['order_id'];
-                        $car_access_record['pay_type'] = $this->pay_type[0];
-                        $car_access_record['update_time'] = $now_time;
-                        $car_access_record['trade_no'] = time() . rand(10, 99) . sprintf("%08d", $passage_info['village_id']);
-                        if (isset($insert_id)) {
-                            $car_access_record['from_id'] = $insert_id;
-                        }
-                        $park_time > 0 && $car_access_record['park_time'] = $park_time;
-                        fdump_api(['line' => __LINE__,'msg' => '记录出场', 'car_access_record' => $car_access_record],'A11/serial'.$serialTime,true);
-                        $record_id = $db_house_village_car_access_record->addOne($car_access_record);
-
-                        if(!empty($outRightPosition)) {
-                            //释放车位
-                            $whereArr = array('position_id' => $outRightPosition['position_id'], 'use_car_id' => $car_info['car_id']);
-                            $saveArr = array('use_car_id' => 0, 'use_start_time' => 0, 'use_car_number' => '', 'access_record_id' => $record_id);
-                            $this->updateParkingPositionUse($whereArr, $saveArr, $data['car_number'], 'addParkInfo_out_park');
-                        }
-                        if($record_id>0 && $is_real_garage>0){
-                            //将此条之前的 都改掉
-                            $wherexArr=[];
-                            $wherexArr[]=['record_id','<',$record_id];
-                            $wherexArr[]=['car_number','=',$data['car_number']];
-                            $wherexArr[]=['is_out','=',0];
-                            $wherexArr[]=['business_id','=',$passage_info['village_id']];
-                            $db_house_village_car_access_record->saveOne($wherexArr,['is_out'=>1,'update_time'=>$now_time]);
-                            fdump_api(['line' => __LINE__,'msg' => '更改之前记录为已出场', 'record_id' => $record_id, 'wherexArr' => $wherexArr, 'whenow_timerexArr' => $now_time],'A11/serial'.$serialTime,true);
-
-                        }
-                        $access_record_id = $record_id;
+                    fdump_api(['line' => __LINE__, 'msg' => '存在支付订单记录', 'pay_order_id' => $in_park_pay_info['pay_order_id']], 'A11/serial' . $serialTime, true);
+                    //写入车辆入场表
+                    $park_data = [];
+                    $park_data['out_time'] = $accessTime;
+                    $park_data['is_out'] = 1;
+                    $park_data['is_paid'] = 1;
+                    $park_time > 0 && $park_data['park_time'] = $park_time;
+                    $whereInOut = ['car_number' => $data['car_number'], 'park_id' => $passage_info['village_id'], 'park_sys_type' => $park_sys_type, 'is_out' => 0];
+                    $res_in = $db_in_park->saveOne($whereInOut, $park_data);
+                    fdump_api(['line' => __LINE__, 'msg' => '写入车辆入场表', 'whereInOut' => $whereInOut, 'park_data' => $park_data, 'res_in' => $res_in], 'A11/serial' . $serialTime, true);
+                    $from_id = 0;
+                    $insert_id = 0;
+                    /*
+                    $out_data = [];
+                    $out_data['car_number'] = $data['car_number'];
+                    if (!empty($in_park_pay_info)) {
+                        $out_data['in_time'] = $in_time;
+                        $out_data['order_id'] = $in_park_pay_info['order_id'];
                     }
-                }
-                else{
+                    $out_data['out_time'] = $accessTime;
+                    $out_data['park_id'] = $passage_info['village_id'];
+                    $out_data['pay_type'] = 'cash';
+                    $out_data['total'] = $data['price'];
+                    $starttime = time() - 60;
+                    $endtime = time() + 10;
+                    $park_where = [
+                        ['car_number', '=', $data['car_number']],
+                        ['business_id','=',$passage_info['village_id']],
+                        ['out_time', '>=', $starttime],
+                        ['out_time', '<=', $endtime],
+                    ];
+                    $park_info_car = $db_out_park->getOne($park_where);
+                    fdump_api(['line' => __LINE__,'msg' => '写入车辆入场表', 'park_where' => $park_where],'A11/serial'.$serialTime,true);
+                    //写入车辆入场表
+                    if (empty($park_info_car)) {
+                        $insert_id= $db_out_park->insertOne($out_data);
+                        fdump_api(['line' => __LINE__,'msg' => '添加出场表', 'insert_id' => $insert_id],'A11/serial'.$serialTime,true);
+                        $from_id = $insert_id;
+                    } else {
+                        $from_id = isset($park_info_car['id']) && intval($park_info_car['id']) > 0 ? intval($park_info_car['id']) : 0;
+                    }
+                    */
+                    $park_where = [
+                        ['car_number', '=', $data['car_number']],
+                        ['park_id', '=', $passage_info['village_id']],
+                        ['accessType', '=', 1],
+                        ['is_out', '=', 0],
+                        ['del_time', '=', 0],
+                    ];
+                    $park_info_car111 = $db_house_village_car_access_record->getOne($park_where);
+                    $car_access_record['accessType'] = 2;
+                    $car_access_record['park_time'] = $data['park_time'] > 0 ? $data['park_time'] : $park_time;
+                    $car_access_record['total'] = $data['price'];
+                    $car_access_record['accessMode'] = $accessMode;
+                    if (empty($park_info_car111)) {
+                        $car_access_record['exception_type'] = 2;
+                    } else {
+                        fdump_api(['line' => __LINE__, 'msg' => '查询对应出场记录', 'record_id' => $park_info_car111['record_id']], 'A11/serial' . $serialTime, true);
+                        $db_house_village_car_access_record->saveOne(['record_id' => $park_info_car111['record_id']], ['is_out' => 1]);
+                    }
+                    $car_access_record['is_out'] = 1;
+                    $car_access_record['is_paid'] = 1;
+                    if ($park_info_car111 && $park_info_car111['order_id']) {
+                        $car_access_record['order_id'] = $park_info_car111['order_id'];
+                    } else {
+                        $car_access_record['order_id'] = date('YmdHis') . rand(100000, 999999);
+                    }
+                    $order_id = $car_access_record['order_id'];
+                    $car_access_record['pay_type'] = $this->pay_type[0];
+                    $car_access_record['update_time'] = $now_time;
+                    $car_access_record['trade_no'] = time() . rand(10, 99) . sprintf("%08d", $passage_info['village_id']);
+                    if (isset($insert_id)) {
+                        $car_access_record['from_id'] = $insert_id;
+                    }
+                    $park_time > 0 && $car_access_record['park_time'] = $park_time;
+                    fdump_api(['line' => __LINE__, 'msg' => '记录出场', 'car_access_record' => $car_access_record], 'A11/serial' . $serialTime, true);
+                    $record_id = $db_house_village_car_access_record->addOne($car_access_record);
+
+                    if (!empty($outRightPosition)) {
+                        //释放车位
+                        $whereArr = array('position_id' => $outRightPosition['position_id'], 'use_car_id' => $car_info['car_id']);
+                        $saveArr = array('use_car_id' => 0, 'use_start_time' => 0, 'use_car_number' => '', 'access_record_id' => $record_id);
+                        $this->updateParkingPositionUse($whereArr, $saveArr, $data['car_number'], 'addParkInfo_out_park');
+                    }
+                    if ($record_id > 0 && $is_real_garage > 0) {
+                        //将此条之前的 都改掉
+                        $wherexArr = [];
+                        $wherexArr[] = ['record_id', '<', $record_id];
+                        $wherexArr[] = ['car_number', '=', $data['car_number']];
+                        $wherexArr[] = ['is_out', '=', 0];
+                        $wherexArr[] = ['business_id', '=', $passage_info['village_id']];
+                        $db_house_village_car_access_record->saveOne($wherexArr, ['is_out' => 1, 'update_time' => $now_time]);
+                        fdump_api(['line' => __LINE__, 'msg' => '更改之前记录为已出场', 'record_id' => $record_id, 'wherexArr' => $wherexArr, 'whenow_timerexArr' => $now_time], 'A11/serial' . $serialTime, true);
+
+                    }
+                    $access_record_id = $record_id;
+                } else{
                     $where_park_temp = ['car_number' => $data['car_number'], 'village_id' => $passage_info['village_id'], 'order_id' => $in_park_pay_info['order_id'],'is_paid' => 1];
                     $park_temp_info = $db_house_village_parking_temp->getOne($where_park_temp);
                     fdump_api(['line' => __LINE__,'msg' => '临时中间表数据', 'where_park_temp' => $where_park_temp, 'park_temp_info' => ($park_temp_info && !is_array($park_temp_info)) ? $park_temp_info->toArray() : $park_temp_info],'A11/serial'.$serialTime,true);

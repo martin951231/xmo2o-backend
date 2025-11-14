@@ -49,16 +49,6 @@ class ApiBaseController extends BaseController{
 
             // 用户信息
             $this->userInfo = $user;
-        }else{
-            // 临时用户信息
-            $this->userTemp = [
-                'uid' => 1358679 ,
-                'nickname' => '黑',
-                'avatar' => 'https://xxxxxx',
-                'openid'=>'opwwWxLvcPZvoEMadt1MA7SCSYj8',
-                'wxapp_openid' => '',
-                'alipay_uid' => '',
-            ];
         }
         
         // 读取配置缓存

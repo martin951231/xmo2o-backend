@@ -62,7 +62,7 @@ class RewardOrderPushService{
         
         $jpush = new Jpush();
 
-        $href = "miniapp://__UNI__8799035&pages/reward/index/index";
+        $href = "miniapp://".cfg('staff_uni_appid')."&pages/reward/index/index";
         $title =  '顾客答谢小费'.$order['order_money'].'元';
         $msgl = '收到【#'.$shopCont['fetch_number'].'】'.$order_address.' 订单的顾客答谢小费';
                 

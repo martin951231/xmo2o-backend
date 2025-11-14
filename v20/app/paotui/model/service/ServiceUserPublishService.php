@@ -8,8 +8,10 @@ use app\deliver\model\db\DeliverSupply;
 use app\deliver\model\db\DeliverUser;
 use app\deliver\model\service\DeliverSupplyService;
 use app\deliver\model\service\DeliverUserService;
+use app\maiyatian\service\MaiyatianPushService;
+use app\paotui\model\db\PaotuiRiderCommissionSetting;
 use app\paotui\model\db\ServiceUserPublish;
-use think\Exception;
+use think\Exception; 
 
 /**
  * 服务快派服务
@@ -26,7 +28,7 @@ class ServiceUserPublishService
     public function __construct()
     {
         $this->publishMod = new ServiceUserPublish();
-        $this->buyService = new ServiceUserPublishBuySerivce();
+        $this->buyService = new ServiceUserPublishBuyService();
         $this->giveService = new ServiceUserPublishGiveService();
     }
 
@@ -51,9 +53,6 @@ class ServiceUserPublishService
         if (empty($publishOrder)) {
             return [];
         }
-
-
-
         $rs['pick_address'] = $publishOrder['pick_address'];
         $rs['user_address'] = $publishOrder['user_address'];
         return $rs;
@@ -169,6 +168,11 @@ class ServiceUserPublishService
             'report_arrive_store_time' => time()
         ];
         (new DeliverSupply())->where(['supply_id' => $supplyId, 'uid' => $uid])->update($columns);
+		
+	    $publishOrder = $this->publishMod->where('publish_id', $supply['order_id'])->find();
+	    (new MaiyatianPushService())->saveDeliveryChange($publishOrder['publish_id'], [
+		    'status' => 'PICKUP',
+	    ]);
     }
 
     /**
@@ -193,6 +197,9 @@ class ServiceUserPublishService
             throw new Exception('更新配送信息失败！');
         }
         invoke_cms_model('Service_offer/offer_save_status', [$supply['order_id'], $uid, $supply['offer_id'], 9], true);
+	    (new MaiyatianPushService())->saveDeliveryChange($supply['order_id'], [
+		    'status' => 'DELIVERING'
+	    ]);
     }
 
 
@@ -239,6 +246,9 @@ class ServiceUserPublishService
             (new DeliverUserService())->addMoney($nowSupply['uid'], 'service', $nowSupply['order_id'], $nowSupply['deliver_user_fee'], '配送收入', $nowSupply['tip_price'], '小费收入');
             (new DeliverSupply())->where(['supply_id' => $supplyId])->update(['is_settlement' => 1]);
         }
+	    (new MaiyatianPushService())->saveDeliveryChange($supply['order_id'], [
+		    'status' => 'DONE'
+	    ]);
     }
 
     /**
@@ -345,6 +355,22 @@ class ServiceUserPublishService
             $user = (new DeliverUser())->where('uid', $uid)->findOrEmpty()->toArray();
             //转单后重新计算佣金
             $deliver_user_fee = $supply['freight_charge'] - ($supply['freight_charge'] * ($user['take_percent'] / 100));
+
+            //跑腿的转单抽成需要重新算
+            if (cfg('open_paotui_price_template') && $supply['item'] == 3) {
+                $publishOrder = $this->publishMod->where('publish_id', $supply['order_id'])->findOrEmpty()->toArray();
+                if ($publishOrder['catgory_type'] == 2) {
+                    //帮我买
+                    $businessOrder = $this->buyService->buyMod->where('publish_id', $publishOrder['publish_id'])->findOrEmpty()->toArray();
+                } else if ($publishOrder['catgory_type'] == 3) {
+                    //帮我送
+                    $businessOrder = $this->giveService->giveMod->where('publish_id', $publishOrder['publish_id'])->findOrEmpty()->toArray();
+                }
+                if ($businessOrder) {
+                    $feeResult = (new ServiceUserPublishService())->calDeliverUserFee($uid, array_merge($publishOrder, $businessOrder));
+                    $deliver_user_fee =  $feeResult['total_fee'];
+                }
+            }
             $data = [
                 'uid' => $supply['transfer_to_uid'],
                 'transfer_accept_time' => time(),
@@ -411,11 +437,89 @@ class ServiceUserPublishService
             throw new Exception('配送员不存在');
         }
 
-
+	    (new MaiyatianPushService())->saveDeliveryChange($supply['order_id'], [
+		    'status' => 'GRABBED'
+	    ]);
         $data = ['is_fetch_order' => 1];
         (new DeliverSupply())->where(['supply_id' => $supplyId])->update($data);
     }
 
 
+    //计算配送员抽成
+    public function calDeliverUserFee($uid, $order)
+    {
+        $setting = (new PaotuiRiderCommissionSetting())->where('deliver_uid', $uid)->findOrEmpty()->toArray();
+        if (empty($setting)) {
+            throw new Exception('配送员还未设置跑腿佣金');
+        }
 
+        $rs = [
+            'total_fee' => 0, //骑手配送费应得总额
+            'added_fee' => 0, //增值服务应得
+            'deliver_fee' => 0, //配送费部分应得
+        ];
+
+        //真实运费 = 订单总金额 - 小费 - 增值服务费
+        $realDeliverFee = $order['total_price'] - $order['tip_price'] - $order['added_fee'];
+        $addedFee = $order['added_fee'];
+
+        //增值服务费、专送抽成
+        $addedServicesCommission = $setting['added_services_commission'];
+        $specialServicesCommission = $setting['special_services_commission'];
+
+        $rs['added_fee'] = round($addedFee * (100 - $addedServicesCommission) / 100, 2);
+
+        //如果是专送，按照专送配置抽成即可，不走阶梯
+        if (isset($order['special_delivery']) && $order['special_delivery'] == 1) {
+            //专送
+            $rs['deliver_fee'] = round($realDeliverFee * (100 - $specialServicesCommission) / 100, 2);
+        } else {
+            if ($setting['commission_type'] == 1) {
+                //动态佣金
+                $dynamicsCommission = $setting['dynamics_commission'];
+                $dynamicsCommissionLadder = $setting['dynamics_commission_ladder'];
+                $rs['deliver_fee'] = round($realDeliverFee * (100 - $dynamicsCommission) / 100, 2);
+                foreach ($dynamicsCommissionLadder as $item) {
+                    if ($realDeliverFee <= $item['price']) {
+                        $rs['deliver_fee'] = round($realDeliverFee * (100 - $item['commission']) / 100, 2);
+                        break;
+                    }
+                }
+            } else {
+                //固定佣金
+                $distance = $order['destance_sum'] * 1000;
+                $weight = $order['weight'];
+
+                //先算距离费用
+                $distanceMoney = $setting['within_distance_money'];
+                $fixedCommissionDistanceLadder = $setting['fixed_commission_distance_ladder'];
+                usort($fixedCommissionDistanceLadder, function ($a, $b) {
+                    return $a['distance'] > $b['distance'] ? -1 : 1;
+                });
+                foreach ($fixedCommissionDistanceLadder as $item) {
+                    if ($distance > $item['distance']) {
+                        $distanceMoney += $distance * $item['price'] / 1000;
+                        break;
+                    }
+                }
+
+                //计算重量费用
+                $weightMoney = 0;
+                $fixedCommissionWeightLadder = $setting['fixed_commission_weight_ladder'];
+                foreach ($fixedCommissionWeightLadder as $item) {
+                    if ($weight > $item['min_weight'] && $weight <= $item['max_weight']) {
+                        $weightMoney = $item['price'];
+                        break;
+                    }
+                }
+                if ($weight > $setting['exceed_weight']) {
+                    $weightMoney += ($weight - $setting['exceed_weight']) * $setting['exceed_weight_add_money'];
+                }
+
+                $rs['deliver_fee'] = $distanceMoney + $weightMoney;
+            }
+        }
+        $rs['total_fee'] = $rs['deliver_fee'] + $rs['added_fee'];
+        return $rs;
+    }
 }

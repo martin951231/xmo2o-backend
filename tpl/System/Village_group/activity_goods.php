@@ -12,7 +12,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td>
-						<input type="button" value="添加商品" class="button" onclick="window.top.artiframe('{pigcms{:U('add_activity_goods',['activity_id'=>$activity_id])}','添加商品','80%','80%',true,false,false,addbtn,'add',true);"/>
+						<input type="button" value="添加商品" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_activity_goods',['activity_id'=>$activity_id])}','添加商品','80%','80%',true,false,false,addbtn,'add',true);"/>
 						<input type="button" value="全选" onclick="checkAll();" class="button" />
 						<input type="button" value="删除选中" onclick="delCheck();" class="button" />
 					</td>

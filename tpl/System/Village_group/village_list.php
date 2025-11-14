@@ -9,7 +9,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td width="100">
-						<input type="button" value="添加社区" class="button" onclick="window.top.artiframe('{pigcms{:U('add_village')}','添加社区',550,450,true,false,false,addbtn,'store_add',true);"/>
+						<input type="button" value="添加社区" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_village')}','添加社区',550,450,true,false,false,addbtn,'store_add',true);"/>
 					</td>
 			
 					<td>
@@ -78,13 +78,13 @@
 										<td>{pigcms{$vo.header_uid}</td>
 										<td>{pigcms{$vo.header_name}</td>
 										<td>{pigcms{$vo.header_phone}</td>
-										<td><a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('leader_print')}&leader_id={pigcms{$vo['header_uid']}','打印预览','80%','80%',true,false,false,'','add',true);">打印发货单</a></td>
+										<td><a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('leader_print')}&leader_id={pigcms{$vo['header_uid']}','打印预览','80%','80%',true,false,false,'','add',true);">打印发货单</a></td>
 						
 										<td><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 0"/><font color="red">禁止</font></if></td>
 										
 										<td class="textcenter">
 											<a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/add_village',array('id'=>$vo['id']))}','编辑社区',550,450,true,false,false,editbtn,'store_add',true);">编辑</a> | <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Village_group/del_village')}">删除</a>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_village',array('id'=>$vo['id']))}','编辑社区',550,450,true,false,false,editbtn,'store_add',true);">编辑</a> | <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Village_group/del_village')}">删除</a>
 										</td>
 									</tr>
 								</volist>

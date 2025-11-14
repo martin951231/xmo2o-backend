@@ -8,7 +8,7 @@
 			</div>
 			<form id="myform" method="post" action="/admin.php?g=System&c=Config&a=amend" refresh="true"> 
 				<ul class="tab_ul">
-					<li class="active"><a data-toggle="tab" href="#tab_system_pr" onclick="changeTab()">平台</a></li>
+					<li class="active"><a data-toggle="tab" href="#tab_system_pr" onclick="changeTab()">SYSTEM_PERCENT_1</a></li>
 					<if condition="$config['open_pufa_pay'] eq '1'">
 					<li><a data-toggle="tab" href="#tab_recharge_pr" onclick="changeTab('recharge')">平台充值</a></li>
 					</if>
@@ -35,12 +35,15 @@
                     <if condition="$config['classify_name']">
                         <li><a data-toggle="tab" href="#tab_classifynew_pr" onclick="changeTab('classifynew')">{pigcms{$config.classify_name}</a></li>
                     </if>
-                    <li><a data-toggle="tab" href="#tab_user_level" onclick="changeTab('user_level')">平台会员</a></li>
+                    <li><a data-toggle="tab" href="#tab_user_level" onclick="changeTab('user_level')">SYSTEM_PERCENT_2</a></li>
+					<if condition="$openScenicUserSpread">
+						<li><a data-toggle="tab" href="#tab_scenic_pr" onclick="changeTab('scenic')">{pigcms{$config.life_tools_scenic_alias_name}</a></li>
+					</if>
 				</ul> 
 			   <table cellpadding="0" cellspacing="0" class="table_form" width="100%"  id="tab_system_pr">
 				<tbody>
 					<tr><td colspan="2" style="color:red">
-						推广用户分享获得平台佣金比例设置
+						SYSTEM_PERCENT_3
 					</td></tr>
 					<tr>
 						<th width="160">直接推广用户分享<if condition="$config.open_extra_price eq 1">{pigcms{$config.score_name}<else />佣金</if>比例：</th>
@@ -63,7 +66,7 @@
 						 <td>
 							<span class="cb-enable">
 								<label class="cb-enable  <php>if(C('config.add_spread_by_system_commission')>0&&C('config.add_spread_by_system_commission')!=""){</php>selected<php>}</php>">
-									<span>平台抽成结算</span>
+									<span>SYSTEM_PERCENT_4</span>
 									<input type="radio" name="add_spread_by_system_commission" value="1" <php>if(C('config.add_spread_by_system_commission')>0&&C('config.add_spread_by_system_commission')!=""){</php>checked="checked"<php>}</php>/>
 								</label>
 							</span>			     
@@ -77,7 +80,7 @@
 					 </tr>
 				 	<eq name='config.open_jifen_back' value='1'>
 					 	<tr><td colspan="2" style="color:red">
-							推广用户分享获得平台积分比例设置（只支持这一总设置，不支持其他单独业务设置）
+                                SYSTEM_PERCENT_5
 						</td></tr>
 						<tr>
 							<th width="160">
@@ -752,7 +755,7 @@
                     <tbody>
                     <tr>
                         <td colspan="2" style="color:red">
-                            平台会员推广分佣比例设置
+                            SYSTEM_PERCENT_6
                         </td>
                     </tr>
                     <tr>
@@ -776,6 +779,66 @@
                     </tr>
                     </tbody>
                 </table>
+
+				<if condition="openScenicUserSpread">
+				<table cellpadding="0" cellspacing="0" class="table_form" width="100%" style="display:none;" id="tab_scenic_pr">
+					<tbody>
+					<tr>
+					<th width="160">直接推广用户分佣比例：</th>
+					<td>
+							<span class="cb-enable">
+								<label class="cb-enable  <php>if(C('config.scenic_first_rate')>=0&&C('config.scenic_first_rate')!=""){</php>selected<php>}</php>">
+									<span>设置</span>
+									<input type="radio" name="open_rate" value="1" <php>if(C('config.scenic_first_rate')>=0&&C('config.scenic_first_rate')!=""){</php>checked="checked"<php>}</php>/>
+					</label>
+							</span>
+						<span class="cb-disable">
+								<label class="cb-disable  <php>if(C('config.scenic_first_rate')<0||C('config.scenic_first_rate')==""){</php>selected<php>}</php>">
+									<span>跳过</span>
+									<input type="radio" name="open_rate" value="0" <php>if(C('config.scenic_first_rate')<0||C('config.scenic_first_rate')==""){</php>checked="checked"<php>}</php>/>
+						</label>
+							</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+						<input type="text" class="input-text" name="scenic_first_rate" id="$config_scenic_first_rate" value="{pigcms{:C('config.scenic_first_rate')}" size="10" validate="number:true,max:100" tips="用户推广分佣比例（点击设置后，请填写百分比，不要填写%，选择跳过则跳过当前设置）微信和小程序分享有效" <php>if(C('config.scenic_first_rate')<0||C('config.scenic_first_rate')==""){</php>style="display:none"<php>}</php>/></td>
+					</tr>
+					<tr <if condition="$config.open_extra_price eq 1">style="display:none"</if>>
+					<th width="160">直接推广用户上级分佣比例：</th>
+					<td>
+							<span class="cb-enable">
+								<label class="cb-enable  <php>if(C('config.scenic_second_rate')>=0&&C('config.scenic_second_rate')!=""){</php>selected<php>}</php>">
+									<span>设置</span>
+									<input type="radio" name="open_rate" value="1" <php>if(C('config.scenic_second_rate')>=0&&C('config.scenic_second_rate')!=""){</php>checked="checked"<php>}</php>/>
+					</label>
+							</span>
+					<span class="cb-disable">
+								<label class="cb-disable  <php>if(C('config.scenic_second_rate')<0||C('config.scenic_second_rate')==""){</php>selected<php>}</php>">
+									<span>跳过</span>
+									<input type="radio" name="open_rate" value="0" <php>if(C('config.scenic_second_rate')<0||C('config.scenic_second_rate')==""){</php>checked="checked"<php>}</php>/>
+						</label>
+							</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" class="input-text" name="scenic_second_rate" id="$config_scenic_second_rate" value="{pigcms{:C('config.scenic_second_rate')}" size="10" validate="number:true,max:100" tips="直接推广用户上级分佣比例（点击设置后，请填写百分比，不要填写%，选择跳过则跳过当前设置）微信和小程序分享有效" <php>if(C('config.scenic_second_rate')<0||C('config.scenic_second_rate')==""){</php>style="display:none"<php>}</php>/></td>
+					</tr>
+					<tr <if condition="$config.open_extra_price eq 1">style="display:none"</if>>
+					<th width="160">直接推广用户上上级分佣比例：</th>
+					<td>
+							<span class="cb-enable">
+								<label class="cb-enable  <php>if(C('config.scenic_third_rate')>=0&&C('config.scenic_third_rate')!=""){</php>selected<php>}</php>">
+									<span>设置</span>
+									<input type="radio" name="open_rate" value="1" <php>if(C('config.scenic_third_rate')>=0&&C('config.scenic_third_rate')!=""){</php>checked="checked"<php>}</php>/>
+					</label>
+							</span>
+					<span class="cb-disable">
+								<label class="cb-disable  <php>if(C('config.scenic_third_rate')<0||C('config.scenic_third_rate')==""){</php>selected<php>}</php>">
+									<span>跳过</span>
+									<input type="radio" name="open_rate" value="0" <php>if(C('config.scenic_third_rate')<0||C('config.scenic_third_rate')==""){</php>checked="checked"<php>}</php>/>
+						</label>
+							</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" class="input-text" name="scenic_third_rate" id="$config_scenic_third_rate" value="{pigcms{:C('config.scenic_third_rate')}" size="10" validate="number:true,max:100" tips="直接推广用户上上级分佣比例（点击设置后，请填写百分比，不要填写%，选择跳过则跳过当前设置）微信和小程序分享有效" <php>if(C('config.scenic_third_rate')<0||C('config.scenic_third_rate')==""){</php>style="display:none"<php>}</php> /></td>
+					</tr>
+					</tbody>
+				</table>
+				</if>  
                 
                 <!-- 一级分佣区间设置 -->
 				<div class="table-list percent_div">

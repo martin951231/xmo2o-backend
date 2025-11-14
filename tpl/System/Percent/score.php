@@ -279,7 +279,7 @@
 				  <th colspan="2" style="text-align:left;color:red">积分设置填写 ‘%’ 积分数将按比例计算,如20%,不填 ‘%’ 则按积分数计算，数值应大于等于0，百分比不能大于100%，不包括小区业务</th>
 				 </tr>
 				 <tr>
-				  <th width="160">平台总体每单最大使用积分：</th>
+				  <th width="160">SYSTEM_PERCENT_SCORE_1：</th>
 				  <td><input type="text" class="input-text" name="user_score_max_use" id="config_user_score_max_use" value="{pigcms{:C('config.user_score_max_use')}" size="10" validate="required:true" tips="(1) 0 相当于不使用积分抵扣&lt;br/&gt;(2)每单最大使用积分, 如 50,每单最多可以使用50个积分" /></td>
 				 </tr>
 				<if condition="$config['group_alias_name']">

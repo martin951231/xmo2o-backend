@@ -55,9 +55,9 @@
                     <if condition="C('config.system_type') neq 'village'">
                     <label for="show_page_1"><input type="checkbox" name="show_page[]" value="1" id="show_page_1" checked="checked" />{pigcms{:L_('平台首页')}</label>&nbsp;&nbsp;&nbsp;&nbsp;
                     </if>
-                    <label for="show_page_2"><input type="checkbox" name="show_page[]" value="2" id="show_page_2" checked="checked" />{pigcms{:L_('外卖首页')}</label>
-                    <label for="show_page_4"><input type="checkbox" name="show_page[]" value="4" id="show_page_4" checked="checked" />{pigcms{:L_('商城首页')}</label>
-                    <label for="show_page_8"><input type="checkbox" name="show_page[]" value="8" id="show_page_8" checked="checked" />{pigcms{:L_('预约首页')}</label>
+                    <label for="show_page_2"><input type="checkbox" name="show_page[]" value="2" id="show_page_2" checked="checked" />{pigcms{:L_('外卖首页')}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="show_page_4"><input type="checkbox" name="show_page[]" value="4" id="show_page_4" checked="checked" />{pigcms{:L_('商城首页')}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label for="show_page_8"><input type="checkbox" name="show_page[]" value="8" id="show_page_8" checked="checked" />{pigcms{:L_('预约首页')}</label>&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
             </tr>
             <tr id="adver_currency">

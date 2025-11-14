@@ -191,14 +191,14 @@
 					var province_id = $("#choose_provincess :selected").val();
 					var city_id = $("#choose_cityss :selected").val();
 					var _param = tongyong == '2' ? "&province_id="+province_id+"&city_id="+city_id : "";
-					window.top.artiframe("{pigcms{:U('choose_shop_coupon')}"+_param,'选择优惠券',800,500,true,false,'black',null,'choose_shop_coupon');
+					window.o2oTop.artiframe("{pigcms{:U('choose_shop_coupon')}"+_param,'选择优惠券',800,500,true,false,'black',null,'choose_shop_coupon');
 				});
 				$('.addProductBtn').click(function(){
 					var tongyong = $('[name="currency"]:checked').val();
 					var province_id = $("#choose_provincess :selected").val();
 					var city_id = $("#choose_cityss :selected").val();
 					var _param = tongyong == '2' ? "&province_id="+province_id+"&city_id="+city_id : "";
-					window.top.artiframe("{pigcms{:U('choose_shop')}"+_param,'选择店铺',800,500,true,false,'black',null,'choose_shop');
+					window.o2oTop.artiframe("{pigcms{:U('choose_shop')}"+_param,'选择店铺',800,500,true,false,'black',null,'choose_shop');
 				});
 				
 				$('.js-fields-region .action.delete').live('click',function(){

@@ -3,7 +3,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('News/index')}" class="on">资讯列表</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('News/news_add')}','添加资讯',850,700,true,false,false,addbtn,'store_add',true);">添加资讯</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('News/news_add')}','添加资讯',850,700,true,false,false,addbtn,'store_add',true);">添加资讯</a>
         </ul>
     </div>
     <form name="myform" id="myform" action="" method="post">
@@ -43,7 +43,7 @@
                             </td>
 
                             <td class="textcenter">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('News/news_save',array('news_id'=>$vo['news_id']))}','编辑资讯',850,700,true,false,false,editbtn,'edit',true);">编辑</a>|
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('News/news_save',array('news_id'=>$vo['news_id']))}','编辑资讯',850,700,true,false,false,editbtn,'edit',true);">编辑</a>|
                                 <a href="javascript:void(0);" class="delete_row" parameter="news_id={pigcms{$vo.news_id}" url="{pigcms{:U('News/news_del')}">删除</a>
                             </td>
                         </tr>

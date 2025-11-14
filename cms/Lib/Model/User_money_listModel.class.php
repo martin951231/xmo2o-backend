@@ -2,6 +2,7 @@
 class User_money_listModel extends Model{
 	/*增加记录行数*/
 	public function add_row($uid,$type,$money,$msg,$record_ip = true,$ask=0,$ask_id=0,$admin=false,$time =0 ,$is_live=0){
+		fdump_api(func_get_args(), 'user_money_list', true);
 		if(!$time){
             $time = time();
 		}

@@ -244,16 +244,23 @@ class GridCustomController extends CommunityBaseController
         $service = new HouseVillageGridService();
         /*$rtn = $service->getGridRangeType([['b.zoom','<',$zoom],['b.f_street_id','=',$street_id]],'b.type,a.bind_id,a.manage_range_polygon','b.zoom DESC',$polygon_center_code);
         $type = $rtn['type'] +1;*/
-
+        $f_single_ids='';
         $f_street_id = $street_id;
-        if ($village_id>0 && $single_id>0){
+        if ($village_id>0 && !empty($single_id)){
             $type = 4;
             $f_street_id = $street_id;
             $f_area_id = $area_id;
             $f_village_id = $village_id;
-            $f_single_id = $single_id;
             $fid= $village_id;
-            $bind_id = $single_id;
+            if(is_array($single_id)){
+                $f_single_id = $single_id['0'];
+                $bind_id = $single_id['0'];
+                $f_single_ids=implode(',',$single_id);
+            }else{
+                $f_single_id = $single_id;
+                $bind_id = $single_id;
+            }
+
         }else if($area_id>0 && $village_id>0){
             $type = 3;
             $f_street_id = $street_id;
@@ -295,6 +302,9 @@ class GridCustomController extends CommunityBaseController
         $postData['f_single_id'] = $f_single_id;
         $postData['polygon_name'] = $polygon_name;
         $postData['create_time'] = time();
+        if($f_single_ids){
+            $postData['f_single_ids']=$f_single_ids;
+        }
         $res = $service->addGridRange($postData);
         if($res){
             $data = $service->getGridCenter(['bind_id'=>$postData['bind_id'],'type'=>$type]);
@@ -468,6 +478,13 @@ class GridCustomController extends CommunityBaseController
                 $data['xkey']='village_area';
             }elseif($data['type']==4){
                 $data['xkey']='single_area';
+            }
+            if(isset($data['f_single_ids']) && !empty($data['f_single_ids'])){
+                $f_single_ids=explode(',',$data['f_single_ids']);
+                $f_single_ids[]=$data['f_single_id'];
+                $f_single_ids=array_unique($f_single_ids);
+                $f_single_ids=array_map('intval',$f_single_ids);
+                $data['f_single_id']=$f_single_ids;
             }
         }
         return api_output(0,$data);
@@ -683,12 +700,27 @@ class GridCustomController extends CommunityBaseController
             $single_info = $service_house_village->getSingleVillageName(['s.id'=>$info['bind_id']],'s.single_name,v.village_name,v.community_id,s.id,v.street_id');
             $area_info = $service_area_street->getAreaStreet(['area_id'=>$single_info['community_id']],'area_name,phone');
             $street_info = $service_area_street->getAreaStreet(['area_id'=>$single_info['street_id']],'area_name,phone');
-            $data['single_name'] = $single_info['single_name'];
+            $single_name=$single_info['single_name'];
+            $data['single_id'] = $single_info['id'];
+            if(isset($info['f_single_ids']) && !empty($info['f_single_ids']) && strpos($info['f_single_ids'],',')){
+                $f_single_ids=explode(',',$info['f_single_ids']);
+                $data['single_id']=array();
+                $singleListObj = $service_house_village->getSingleList(array(['id','in',$f_single_ids]),'id,single_name');
+                if($singleListObj){
+                    $single_name_arr=array();
+                    foreach ($singleListObj as $singV){
+                        $single_name_arr[]=$singV['single_name'];
+                        $data['single_id'][]=$singV['id'];
+                    }
+                    $single_name=implode('，',$single_name_arr);
+                }
+            }
+            $data['single_name'] = $single_name;
             $data['village_name'] = $single_info['village_name'];
             $data['area_name'] = $area_info['area_name'];
             $data['phone'] = $area_info['phone'];
             $data['type'] = 4;
-            $data['single_id'] = $single_info['id'];
+            
             $data['street_name'] = $street_info['area_name'];
         }
         return api_output(0,$data);
@@ -728,10 +760,17 @@ class GridCustomController extends CommunityBaseController
     public function getFloorInfo()
     {
         $single_id = $this->request->post('single_id',0);
-        if(!$single_id)
+        if(!$single_id){
             return api_output_error(1001,'必传参数缺失');
+        }
+        $whereArr=array(['f.status','=',1]);
+        if(is_array($single_id)){
+            $whereArr[]=array('f.single_id','in',$single_id);
+        }else{
+            $whereArr[]=array('f.single_id','=',$single_id);
+        }
         $service_house_village = new HouseVillageService();
-        $data = $service_house_village->getFloorInfo(['single_id'=>$single_id,'status'=>1],'floor_id,floor_name,village_id','floor_id DESC');
+        $data = $service_house_village->getFloorInfo($whereArr,'f.floor_id,f.single_id,f.floor_name,f.village_id,s.single_name','s.id DESC');
         if($data){
             $data = $data->toArray();
         }
@@ -747,18 +786,41 @@ class GridCustomController extends CommunityBaseController
     public function getSingleInfo()
     {
         $single_id = $this->request->post('single_id',0);
-        if(!$single_id)
+        if(!$single_id){
             return api_output_error(1001,'必传参数缺失');
+        }
+        $g_id=$this->request->post('g_id',0,'intval');
+        if(!is_array($single_id)){
+            $single_id=array($single_id);
+        }
         $service_house_village = new HouseVillageService();
         $service_house_village_user_bind = new HouseVillageUserBindService();
         $service_house_village_user_vacancy = new HouseVillageUserVacancyService();
         $service_house_village_grid = new HouseVillageGridService();
-        $single_info = $service_house_village->get_house_village_single_where(['id'=>$single_id],'single_name,measure_area,upper_layer_num');
-        $count = $service_house_village_user_bind->getUserCount(['single_id'=>$single_id]);
-        $floor_count = $service_house_village->getFloorCount(['single_id'=>$single_id,'status'=>1]);
-        $room_count = $service_house_village_user_vacancy->getRoomCount(['single_id'=>$single_id,'is_del'=>0]);
-        $gird_info = $service_house_village_grid->getSingleGridMemberInfo(['a.bind_id'=>$single_id,'a.type'=>4],'b.name,b.phone');
-        $data['single_name'] = $single_info['single_name'];
+        $single_info = $service_house_village->get_house_village_single_where(array(['id','in',$single_id]),'single_name,sum(measure_area) as sum,sum(upper_layer_num)  as upper_layer_num');
+        $count = $service_house_village_user_bind->getUserCount(array(['single_id','in',$single_id]));
+        $floor_count = $service_house_village->getFloorCount(array(['single_id','in',$single_id],['status','=',1]));
+        $room_count = $service_house_village_user_vacancy->getRoomCount(array(['single_id','in',$single_id],['is_del','=',1]));
+        
+        $whereArr=array(['a.type','=',4]);
+        if($g_id>0){
+            $whereArr[]=array('a.id','=',$g_id);
+        }else{
+            $whereArr[]=array('a.bind_id','in',$single_id);
+        }
+        $gird_info = $service_house_village_grid->getSingleGridMemberInfo($whereArr,'b.name,b.phone');
+        $single_name=$single_info['single_name'];
+        $singleListObj = $service_house_village->getSingleList(array(['id','in',$single_id]),'id,single_name');
+        if($singleListObj){
+            $single_name_arr=array();
+            foreach ($singleListObj as $singV){
+                $single_name_arr[]=$singV['single_name'];
+                $data['single_id'][]=$singV['id'];
+            }
+            $single_name=implode('，',$single_name_arr);
+        }
+        
+        $data['single_name'] = $single_name;
         $data['measure_area'] = $single_info['measure_area'];
         $data['upper_layer_num'] = $single_info['upper_layer_num'];
         $data['people_count'] = $count;
@@ -894,9 +956,14 @@ class GridCustomController extends CommunityBaseController
             $old_bind_id = $paramsPost['old_bind_id'];
             unset($paramsPost['old_bind_id']);
             if (isset($paramsPost['single_id'])) {
-                $paramsPost['f_single_id'] = $paramsPost['single_id'];
+                if(is_array($paramsPost['single_id'])){
+                    $paramsPost['f_single_id'] = $paramsPost['single_id']['0'];
+                    $paramsPost['f_single_ids']= implode(',',$paramsPost['single_id']);
+                }else{
+                    $paramsPost['f_single_id'] = $paramsPost['single_id'];
+                }
                 if ($paramsPost['type'] == 4) {
-                    $paramsPost['bind_id'] = $paramsPost['single_id'];
+                    $paramsPost['bind_id'] = $paramsPost['f_single_id'];
                 }
                 unset($paramsPost['single_id']);
             }

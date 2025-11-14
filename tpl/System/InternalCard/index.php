@@ -34,7 +34,7 @@
                             <input type="submit" style="margin-right:10px;" value="查询" class="button"/>
                             <input type="submit" style="margin-right:10px;" value="单卡新建" class="button" id="add_card"/>
 
-                            <a href="javascript:void(0);" class="button" onclick="window.top.artiframe('{pigcms{:U('InternalCard/names', ['from' => 'card'])}','一卡通类型汇总',1200,600,true,false,false,false,'',false);">一卡通类型汇总</a>
+                            <a href="javascript:void(0);" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/names', ['from' => 'card'])}','一卡通类型汇总',1200,600,true,false,false,false,'',false);">一卡通类型汇总</a>
                             <a href="javascript:void(0)" onclick="exportCard()" class="button" style="float:right;margin-right: 10px;">导出Excel</a>
 
                             <notempty name="export">
@@ -93,9 +93,9 @@
                                                 <font color="red">没有绑定用户</font>
                                             <else /> 
                                                 <if condition="$system_session['level'] == 2">
-                                                    <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看</a></font>
+                                                    <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看</a></font>
                                                 <else/>
-                                                    <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,false,false,false,'','edit',false);">查看</a></font>
+                                                    <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,false,false,false,'','edit',false);">查看</a></font>
                                                 </if>
                                             </empty>
                                         </td>
@@ -109,15 +109,15 @@
 										<td>{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}</td>
 										<td class="textcenter">{pigcms{$config['Currency_symbol']}{pigcms{$vo.balance_money|floatval=###}
                                             <if condition="$vo['status'] neq 0">
-                                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/recharge_balance',array('card_id'=>$vo['card_id']))}','充值',500,300,true,false,false,submitbtn,'recharge_balance',true);"> 充值</a>&nbsp;|&nbsp;
+                                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/recharge_balance',array('card_id'=>$vo['card_id']))}','充值',500,300,true,false,false,submitbtn,'recharge_balance',true);"> 充值</a>&nbsp;|&nbsp;
                                             </if>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/recharge_records',array('card_id'=>$vo['card_id']))}','交易记录',1000,560,true,false,false,null,'money_list',true);"> 充值记录</a>&nbsp;|&nbsp;
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/transaction_records',array('card_id'=>$vo['card_id']))}','交易记录',1000,560,true,false,false,null,'money_list',true);"> 交易记录</a> 
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/recharge_records',array('card_id'=>$vo['card_id']))}','交易记录',1000,560,true,false,false,null,'money_list',true);"> 充值记录</a>&nbsp;|&nbsp;
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/transaction_records',array('card_id'=>$vo['card_id']))}','交易记录',1000,560,true,false,false,null,'money_list',true);"> 交易记录</a> 
                                         </td>
 
                                         <td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 2" /><font color="red">未审核</font><else /><font color="red">禁用</font></if></td>
 										<td class="textcenter">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/edit_card',array('card_id'=>$vo['card_id']))}','编辑实体卡信息',680,560,true,false,false,editbtn,'add',true);"><if condition="($vo['status'] eq 2) or ($vo['status'] eq 0)">审核<else />编辑</if></a>&nbsp;|&nbsp;
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/edit_card',array('card_id'=>$vo['card_id']))}','编辑实体卡信息',680,560,true,false,false,editbtn,'add',true);"><if condition="($vo['status'] eq 2) or ($vo['status'] eq 0)">审核<else />编辑</if></a>&nbsp;|&nbsp;
                                             <a href="javascript:void(0);" class="delete_row" parameter="id=10" url="{pigcms{:U('InternalCard/del_card',array('card_id'=>$vo['card_id']))}">删除</a>&nbsp;|&nbsp;
                                             <if condition="in_array($vo['status'], [0, 1])">
                                                 <a href="javascript:void(0);" class="delete_row" parameter="card_id={pigcms{$vo.card_id}" url="{pigcms{:U('InternalCard/statusChange')}" not-del="1" tip="您确定要{pigcms{$vo['status'] ? '禁用' : '恢复'}{pigcms{$vo.card_id}一卡通吗？">{pigcms{$vo['status'] ? '禁用' : '恢复'}</a>&nbsp;|&nbsp;
@@ -202,6 +202,6 @@
     //新建
     $("#add_card").click(function(event){ 
         event.preventDefault()
-        window.top.artiframe('{pigcms{:U('InternalCard/addCard')}','单卡新建',780,400,true,false,false,addbtn,'add',true)
+        window.o2oTop.artiframe('{pigcms{:U('InternalCard/addCard')}','单卡新建',780,400,true,false,false,addbtn,'add',true)
     });
 </script>

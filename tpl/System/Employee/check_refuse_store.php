@@ -5,7 +5,7 @@
             <a href="{pigcms{:U('Employee/store')}">店铺列表</a>|
             <a href="{pigcms{:U('Employee/check_store')}">审核店铺列表</a>|
             <a href="{pigcms{:U('Employee/check_refuse_store')}" class="on">审核拒绝店铺列表</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Employee/store_add')}','添加店铺',620,440,true,false,false,addbtn,'store_add',true);">添加店铺</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Employee/store_add')}','添加店铺',620,440,true,false,false,addbtn,'store_add',true);">添加店铺</a>
         </ul>
     </div>
     <form name="myform" id="myform" action="" method="post">
@@ -46,7 +46,7 @@
                                 </if>
                             </td>
                             <td class="textcenter">
-                               <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Employee/store_detail',array('store_id'=>$vo['store_id'],'frame_show'=>true))}','查看详情',720,600,true,false,false,false,'detail',true);">查看详情</a>
+                               <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Employee/store_detail',array('store_id'=>$vo['store_id'],'frame_show'=>true))}','查看详情',720,600,true,false,false,false,'detail',true);">查看详情</a>
                             </td>
                         </tr>
                     </volist>

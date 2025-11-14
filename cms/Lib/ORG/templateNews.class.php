@@ -47,17 +47,20 @@ class templateNews{
             //兼容新类目模板，有新的用新的
             if ($mer_id > 0) {
                 $new_dbinfo =  M('Tempmsg')->where(['tempkey' => $dataArr['new_info']['tempKey'], 'mer_id' => $mer_id, 'property_id' => 0, 'status' => 1])->find();
-            } else if ($property_id > 0) {
+            } 
+            /*
+            if ($property_id > 0) {
                 $new_dbinfo =  M('Tempmsg')->where(['tempkey' => $dataArr['new_info']['tempKey'], 'mer_id' => 0, 'property_id' => $property_id, 'status' => 1])->find();
-            }
+            }*/
             //商家自有模板不存在则读取平台
             if (empty($new_dbinfo)) {
                 $new_dbinfo =  M('Tempmsg')->where(['tempkey' => $dataArr['new_info']['tempKey'], 'mer_id' => 0, 'property_id' => 0, 'status' => 1])->find();
             }
+            
             if ($new_dbinfo) {
                 $newTempId = $new_dbinfo['tempid'];
                 $tempKey = $dataArr['new_info']['tempKey'];
-                $dataArr = $this->getDataArr($tempKey, $dataArr, $property_id, $mer_id);
+                $dataArr = $this->getDataArr($tempKey, $dataArr, 0, $mer_id);
                 $dbinfo["tempid"] = $dataArr['tempid'];
                 $dataArr = $dataArr['ary'];
                 $dbinfo = $new_dbinfo;
@@ -88,10 +91,10 @@ class templateNews{
             if(isset($dataArr['new_info'])){
                 //兼容新类目模板，有新的用新的
                 if($dataArr['new_info'] && $dataArr['new_info']['type']==1){//缴费成功通知
-                    $newTempId = M('Tempmsg')->where(['tempkey'=>'42822','status'=>1])->getField('tempid');
+                    $newTempId = M('Tempmsg')->where(['tempkey'=>'42822','status'=>1,'mer_id' => '0', 'property_id' => '0'])->getField('tempid');
                     $tempKey = $newTempId ? '42822' : $tempKey;
                 }elseif($dataArr['new_info'] && $dataArr['new_info']['type']==0){//提醒缴费
-                    $newTempId = M('Tempmsg')->where(['tempkey'=>'42804','status'=>1])->getField('tempid');
+                    $newTempId = M('Tempmsg')->where(['tempkey'=>'42804','status'=>1,'mer_id' => '0', 'property_id' => '0'])->getField('tempid');
                     $tempKey = $newTempId ? '42804' : $tempKey;
                     $jumpAbChina = true;
                 }else{
@@ -103,7 +106,7 @@ class templateNews{
                 //类目模板
                 $dbinfo = M('Tempmsg')->where(array('tempkey' => $tempKey, 'mer_id' => '0', 'property_id' => '0'))->order('status DESC,id ASC')->find();
 //                $property_id=$dbinfo['property_id'];
-                $dataArr = $this->getDataArr($tempKey,$dataArr,$property_id,$mer_id);
+                $dataArr = $this->getDataArr($tempKey,$dataArr,0,$mer_id);
                 $dbinfo["tempid"] = $dataArr['tempid'];
                 $dataArr = $dataArr['ary'];
             }else{

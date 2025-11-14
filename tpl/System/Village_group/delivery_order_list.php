@@ -102,7 +102,7 @@
 								<th>完成时间</th>
 								<th>购买数量</th>
 
-                                <th>配送状态</th>
+                                <th>发货状态</th>
 							
 								<th class="textcenter">操作</th>
 							</tr>
@@ -117,7 +117,7 @@
                                             团长:{pigcms{$vo.header_info.name}<br>
                                             手机:{pigcms{$vo.header_info.phone}<br>
                                             <a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/add_header',array('id'=>$vo['start_uid']))}','订单详情',800,600,true,false,false,false,'store_add',true);">查看</a> </td>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_header',array('id'=>$vo['start_uid']))}','订单详情',800,600,true,false,false,false,'store_add',true);">查看</a> </td>
 										<td>
                                             {pigcms{$vo.total_money|floatval}
                                         </td>
@@ -141,8 +141,7 @@
 												<font color="red">未支付</font>
 											</if>
 										</td>
-										<td style="text-align:center">	
-											
+										<td>	
 											<if condition="$vo['status'] eq '1'">
 												<font color="red">待发货</font>
 											<elseif condition="$vo.status eq 7" />
@@ -188,7 +187,13 @@
                                                     已到货
                                                 </a>
                                                 <elseif condition="$vo.status eq 6" />
-                                                <font color="green">团长收货 待自提</font>
+                                                <font color="green">
+													<if condition="$vo.is_pick_group eq 1">
+														团长收货 待配送
+													<else/>
+														团长收货 待自提
+													</if>
+												</font>
                                                 <elseif condition="$vo.status eq 2" />
                                                 <font color="green">已取货</font>
                                             </if>
@@ -196,7 +201,7 @@
 								
 										<td class="textcenter">
 											<a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,false,'detail',true);">订单详情</a>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,false,'detail',true);">订单详情</a>
 										</td>
 									</tr>
 								</volist>
@@ -215,7 +220,7 @@
 	
    $('.send_goods').click(function(){
        var now_dom = $(this);
-       window.top.art.dialog({
+       window.o2oTop.art.dialog({
            icon: 'question',
            title: '请确认',
            id: 'msg' + Math.random(),
@@ -227,10 +232,10 @@
            ok:function (){
                $.post(now_dom.attr('url'),now_dom.attr('parameter'),function(result){
                    if(result.status == 1){
-                       window.top.msg(1,result.info,true);
+                       window.o2oTop.msg(1,result.info,true);
                        window.location.reload();
                    }else{
-                       window.top.msg(0,result.info);
+                       window.o2oTop.msg(0,result.info);
                    }
                });
            },

@@ -56,6 +56,18 @@ class ImageAction extends Action{
 		$url = $_GET['url'];
 		$width = intval($_GET['width']);
 		$height = intval($_GET['height']);
+        $check_url_res = (bool) preg_match('/' .
+            implode('|', array_map(function ($v) {
+                return preg_quote(trim($v, '/'), '/');
+            }, array_filter(array_unique([
+                C('config.site_url'),
+                C('config.static_oss_access_domain_names'),
+                C('config.static_obs_access_domain_names'),
+                C('config.static_cos_access_domain_names'),
+            ])))) . '/i', $url);
+		if(empty($url) || !$check_url_res){
+            $this->display();exit();
+        }
 		if(empty($url) || empty($width) || empty($height) || !in_array($width.'_'.$height,$this->thumbWidthHeight)){
 			redirect($url);
 		}

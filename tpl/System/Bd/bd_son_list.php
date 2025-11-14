@@ -4,7 +4,7 @@
 				<ul>
 						<a href="{pigcms{:U('Bd/bd_list')}">业务经理列表</a>
 						<a href="{pigcms{:U('Bd/bd_son_list')}" class="on"><if condition="!empty($pbd_info['bd_name'])">{pigcms{$pbd_info.bd_name} 的</if>业务员列表</a>
-						<a  href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Bd&a=add&type=1&pbd_point_id={pigcms{$pbd_info.bd_id}','新增业务员',500,350,true,false,false,addbtn,'add',true);">新增业务员</a>
+						<a  href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Bd&a=add&type=1&pbd_point_id={pigcms{$pbd_info.bd_id}','新增业务员',500,350,true,false,false,addbtn,'add',true);">新增业务员</a>
 					
 				</ul>
 			</div>
@@ -70,7 +70,7 @@
 										<td>{pigcms{$vo.pbd_name}</td>
 										<td><if condition="$vo.status eq '1'"><span style="color:green;">{pigcms{$vo.status_txt}</span><else /><span style="color:red;">{pigcms{$vo.status_txt}</span></if></td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Bd&a=edit&bd_id={pigcms{$vo.bd_id}','编辑业务员',500,250,true,false,false,editbtn,'edit',true);">编辑</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Bd&a=edit&bd_id={pigcms{$vo.bd_id}','编辑业务员',500,250,true,false,false,editbtn,'edit',true);">编辑</a>
 										</td>
 									</tr>
 								</volist>

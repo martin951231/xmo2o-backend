@@ -128,8 +128,21 @@
 									</div>
 
 
-									
 									<div class="form-group ">
+										<label class="tiplabel"><label>{pigcms{:L_("是否支持店铺直接核销")}:</label></label>
+					                        <if condition="isset($coupon)">
+					                            <if condition="$coupon.store_direct_verification eq 1">
+													是
+												<else/>
+													否
+												</if>
+					                        <else/>
+					                            <label class="radiolabel first"><span><label><input name="store_direct_verification" value="1" type="radio" <if condition="$coupon.store_direct_verification eq 1">checked="checked"</if> /></label>&nbsp;<span>{pigcms{:L_("是")}</span></span></label>
+					                            <label class="radiolabel"><span><label><input name="store_direct_verification" value="0" type="radio" <if condition="$coupon.store_direct_verification eq 0">checked="checked"</if>/></label>&nbsp;<span>{pigcms{:L_("否")}</span>&nbsp;</span></label>
+					                        </if>
+					                </div>
+									
+					                <div class="form-group">
 										<label class="tiplabel"><label>{pigcms{:L_("使用平台：")}</label></label>
 										<if condition="isset($coupon)">
 											{pigcms{$coupon['platform']}

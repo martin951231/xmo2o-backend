@@ -3,7 +3,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('House/notice')}" class="on">物业公告</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/notice_add')}','添加公告',800,460,true,false,false,addbtn,'add',true);">添加公告</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/notice_add')}','添加公告',800,460,true,false,false,addbtn,'add',true);">添加公告</a>
         </ul>
     </div>
     <p>物业后台首页会显示最前面10条公告。置顶的公告会优先显示，并将悬浮在页面顶部。</p>
@@ -31,7 +31,7 @@
                             <td>{pigcms{$vo.id}</td>
                             <td>{pigcms{$vo.title}</td>
                             <td class="textcenter"><if condition="$vo['is_top'] eq 1"><font color="green">是</font><else/><font color="red">否</font></if></td>
-                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/notice_edit',array('id'=>$vo['id']))}','编辑公告',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/notice_del')}">删除</a></td>
+                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/notice_edit',array('id'=>$vo['id']))}','编辑公告',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/notice_del')}">删除</a></td>
                         </tr>
                     </volist>
                     <tr><td class="textcenter pagebar" colspan="9">{pigcms{$pagebar}</td></tr>

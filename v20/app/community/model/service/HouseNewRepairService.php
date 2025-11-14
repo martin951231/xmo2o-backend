@@ -5239,7 +5239,8 @@ class HouseNewRepairService
                                 $integral = $work_order_extra['per_works_order_integral'];
                                 $commonUserService = new commonUserService();
                                 //加积分
-                                $ret = $commonUserService->addScore($bind_info['uid'], $integral, '社区工单评价加积分');
+                                $scoreParam=array('order_type'=>'repair_works_order_evaluate','score_type'=>20,'order_id'=>$order_id,'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                                $ret = $commonUserService->addScore($bind_info['uid'], $integral, '社区工单评价加积分',0,$scoreParam);
                                 fdump_api(['uid' => $bind_info['uid'], 'integral' => $integral, 'ret' => $ret], '00updateWorkOrderAddintegral', 1);
                             }
                         }

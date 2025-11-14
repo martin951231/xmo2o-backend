@@ -151,6 +151,9 @@
     var info = {};
     var userCurrentPosition = {};
     var address_info = {};
+    var coord = "{pigcms{$_GET['coord']}"
+    var business = "{pigcms{$_GET['business']}"
+
     $(document).ready(function(){
         $('.map .MapHolder').height(($(window).height()-50)*0.4);
         $('.mapaddress').height(($(window).height()-52)*0.6);
@@ -313,14 +316,24 @@
 
 
         var user_address = $.cookie('user_address');
+
         if(user_address){
             user_address = $.parseJSON(user_address);
-            
+        
             if (user_address.longitude === '' || user_address.latitude === '') {
                 setCurrentLocation(true, true);
             } else {
                 setCurrentLocation(true, false);
             }
+        }
+
+        if(coord && business == 'runErrands'){
+            const [lat,lng] = coord.split(',')
+            if(!user_address || !user_address.latitude){
+                user_address = {}
+            }
+            user_address.latitude = lat
+            user_address.longitude = lng
         }
         
         if(user_address && user_address.longitude && user_address.latitude){
@@ -805,6 +818,8 @@
         var info = {};
         var userCurrentPosition = {};
         var address_info = {};
+        var coord = "{pigcms{$_GET['coord']}"
+        var business = "{pigcms{$_GET['business']}"
         console.log(13)
         $(document).ready(function(){
             $('.map .MapHolder').height(($(window).height()-50)*0.4);
@@ -953,14 +968,24 @@
 
 
             var user_address = $.cookie('user_address');
+
             if(user_address){
                 user_address = $.parseJSON(user_address);
-				
+
 				if (user_address.longitude === '' || user_address.latitude === '') {
 					setCurrentLocation(true, true);
 				} else {
 					setCurrentLocation(true, false);
 				}
+            }
+
+            if(coord && business == 'runErrands'){
+                const [lat,lng] = coord.split(',')
+                if(!user_address || !user_address.latitude){
+                    user_address = {}
+                }
+                user_address.latitude = lat
+                user_address.longitude = lng
             }
 			
             if(user_address && user_address.longitude && user_address.latitude){

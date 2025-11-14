@@ -72,7 +72,7 @@ class ApiBaseController extends BaseController{
      * @param string $method
      * @return array|mixed
      */
-    protected function validateParameter(array $params = [], string $scenario = '', $method = 'post'): array
+    protected function validateParameter(array $params = [], string $scenario = '', string $method = 'post'): array
     {
         empty($params) && $params = input($method . '.');
         $validate = validate($this->validateClass);

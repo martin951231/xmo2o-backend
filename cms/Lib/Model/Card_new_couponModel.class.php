@@ -187,7 +187,7 @@ class Card_new_couponModel extends Model
         }
         if ($mer_id) {
             $res = M(_view('card_new_coupon'))->where($where)->order('status ASC,allow_new DESC,discount DESC,add_time DESC')
-                ->getField('coupon_id,coupon_url,mer_id,name,platform,img,had_pull,num,des,cate_name,cate_id,is_discount,discount,order_money,start_time,end_time,last_time,status,allow_new,wx_cardid,wx_ticket_addtime,cardsign,limit,store_id');
+                ->getField('coupon_id,coupon_url,mer_id,name,platform,img,had_pull,num,des,cate_name,cate_id,is_discount,discount,order_money,start_time,end_time,last_time,status,allow_new,wx_cardid,wx_ticket_addtime,cardsign,limit,store_id,store_direct_verification');
         } else {
             unset($where['status']);
             $where['c.status'] = 1;
@@ -195,7 +195,7 @@ class Card_new_couponModel extends Model
 //            $res = $this->join('as c LEFT JOIN '.C('DB_PREFIX').'merchant as m ON m.mer_id=c.mer_id LEFT JOIN '.C('DB_PREFIX').'card_new cn ON cn.mer_id = m.mer_id')->where($where)->order('c.status ASC,c.allow_new DESC,c.discount DESC,c.add_time DESC')
 //                ->getField('c.coupon_id,c.mer_id,c.name,c.platform,c.img,c.had_pull,c.num,c.des,c.cate_name,c.cate_id,c.discount,c.order_money,c.start_time,c.end_time,c.last_time,c.status,c.allow_new,c.wx_cardid,c.wx_ticket_addtime,c.cardsign,c.limit,m.name as merchant_name');
             $res = M(_view('card_new_coupon'))->join('as c LEFT JOIN ' . C('DB_PREFIX') . 'merchant as m ON m.mer_id=c.mer_id AND m.status=1 ')->where($where)->order('c.status ASC,c.allow_new DESC,c.discount DESC,c.add_time DESC')
-                ->getField('c.coupon_id,c.coupon_url,c.mer_id,c.name,c.platform,c.img,c.had_pull,c.num,c.des,c.cate_name,c.cate_id,c.discount,c.order_money,c.start_time,c.end_time,c.last_time,c.status,c.allow_new,c.wx_cardid,c.wx_ticket_addtime,c.cardsign,c.limit,m.name as merchant_name,c.store_id');
+                ->getField('c.coupon_id,c.coupon_url,c.mer_id,c.name,c.platform,c.img,c.had_pull,c.num,c.des,c.cate_name,c.cate_id,c.discount,c.order_money,c.start_time,c.end_time,c.last_time,c.status,c.allow_new,c.wx_cardid,c.wx_ticket_addtime,c.cardsign,c.limit,m.name as merchant_name,c.store_id,c.store_direct_verification');
         }
         return $res;
     }
@@ -924,7 +924,6 @@ class Card_new_couponModel extends Model
                         if ($card_code) {
                             $data['wx_card_code'] = $card_code;
                         }
-                        $data['uid'] = $uid;
                         $data_all[] = $data;
                     }
                     

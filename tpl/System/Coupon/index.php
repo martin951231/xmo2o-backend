@@ -3,8 +3,8 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('Coupon/index')}" class="on">平台优惠券列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Coupon/add')}','添加平台优惠券','80%','80%',true,false,false,addbtn,'edit',true);">添加平台优惠券</a>
+					<a href="{pigcms{:U('Coupon/index')}" class="on">SYSTEM_COUPON_CENTER_1</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/add')}','SYSTEM_COUPON_CENTER_2','80%','80%',true,false,false,addbtn,'edit',true);">SYSTEM_COUPON_CENTER_2</a>
 					<a href="{pigcms{:U('Coupon/had_pull')}" >领取列表</a>
 					<a href="{pigcms{:U('Coupon/send_coupon')}" >派发优惠券</a>
                     <a href="{pigcms{:U('Coupon/center_decoration')}" >领券中心装修</a>
@@ -72,7 +72,7 @@
 								<th>已使用</th>
 								<th>起始时间</th>
 								<th>满减条件</th>
-                                <th>平台/商家补贴金额</th>
+                                <th>SYSTEM_COUPON_CENTER_5/商家补贴金额</th>
                                 <th>指定店铺</th>
 								<th class="textcenter">只允许新用户</th>
 								<th>查看二维码</th>
@@ -96,7 +96,7 @@
 										<td>{pigcms{$vo.start_time|date='Y-m-d H:i',###} 到 {pigcms{$vo.end_time|date='Y-m-d H:i',###}</td>
 										<td><php>if($vo['is_discount']==1){</php> 满 {pigcms{$vo.order_money|getFormatNumber=###} 打 {pigcms{$vo.discount_value|floatval}折  <php>}else{</php>满 {pigcms{$vo.order_money|getFormatNumber=###} 减 {pigcms{$vo.discount|getFormatNumber=###}<php>}</php></td>
 
-                                        <td>平台：{pigcms{$vo.plat_money|getFormatNumber} / 商家：{pigcms{$vo.merchant_money|getFormatNumber}</td>
+                                        <td>SYSTEM_COUPON_CENTER_5：{pigcms{$vo.plat_money|getFormatNumber} / 商家：{pigcms{$vo.merchant_money|getFormatNumber}</td>
                                         <td><if condition="$vo['use_type'] eq 1"><a href="{pigcms{:U('Coupon/store_list',array('coupon_id' => $vo['coupon_id']))}">指定店铺</a><else/><font color="green">全部店铺</font></if></td>
 
 										<td class="textcenter"><if condition="$vo['allow_new'] eq 1"><font color="green">是</font><else /><font color="red">否</font></if></td>
@@ -104,7 +104,7 @@
 										<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">启用</font><elseif condition="$vo['status'] eq 2"/><font color="blue">超过期限</font><elseif condition="$vo['status'] eq 3" /><font color="black">领完了</font><else /><font color="red">禁止</font></if></td>
 										<td class="textcenter">
 										<if condition="$vo.edit eq 1">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Coupon/edit',array('coupon_id'=>$vo['coupon_id']))}','编辑优惠券信息','80%','80%',true,false,false,editbtn,'edit',true);">编辑</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/edit',array('coupon_id'=>$vo['coupon_id']))}','编辑优惠券信息','80%','80%',true,false,false,editbtn,'edit',true);">编辑</a>
 										</if>
 										<if condition="$vo.status neq 1">|
 										<a href="javascript:void(0);" class="delete_row" parameter="coupon_id={pigcms{$vo.coupon_id}" url="{pigcms{:U('Coupon/delete_coupon')}">删除</a></if>
@@ -135,7 +135,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看渠道二维码',

@@ -3,7 +3,7 @@
 	<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('index')}" class="on">优惠时间段列表</a>|
-			<a href="javascript:void(0);"  onclick="window.top.artiframe('{pigcms{:U('add')}','添加优惠时间段',800,560,true,false,false,editbtn,'edit',true);">添加优惠时间段</a>
+			<a href="javascript:void(0);"  onclick="window.o2oTop.artiframe('{pigcms{:U('add')}','添加优惠时间段',800,560,true,false,false,editbtn,'edit',true);">添加优惠时间段</a>
 			<a href="{pigcms{:U('area_set')}">配置设置</a>|
 		</ul>
 	</div>
@@ -30,7 +30,7 @@
 								<td>{pigcms{$vo.have_number}</td>
 								<td>{pigcms{$vo.money}</td>
 								<td class="textcenter">
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('edit',array('discount_id'=>$vo['discount_id']))}','编辑信息',800,560,true,false,false,editbtn,'edit',true);">编辑</a> | 
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('edit',array('discount_id'=>$vo['discount_id']))}','编辑信息',800,560,true,false,false,editbtn,'edit',true);">编辑</a> | 
 									<a href="javascript:void(0);" class="delete_row" parameter="discount_id={pigcms{$vo.discount_id}" url="{pigcms{:U('del')}">删除</a>
 								</td>
 							</tr>

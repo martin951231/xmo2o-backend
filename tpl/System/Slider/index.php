@@ -33,7 +33,7 @@
 										<td><a href="{pigcms{:U('Slider/slider_list',array('cat_id'=>$vo['cat_id']))}">导航列表</a></td>
 										<td class="textcenter">
 											<if condition="!$vo['is_system']">
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Slider/cat_edit',array('cat_id'=>$vo['cat_id'],'frame_show'=>true))}','查看导航分类',500,320,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Slider/cat_edit',array('cat_id'=>$vo['cat_id']))}','编辑导航分类',500,320,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Slider/cat_del')}">删除</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Slider/cat_edit',array('cat_id'=>$vo['cat_id'],'frame_show'=>true))}','查看导航分类',500,320,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Slider/cat_edit',array('cat_id'=>$vo['cat_id']))}','编辑导航分类',500,320,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Slider/cat_del')}">删除</a>
 											<else/>
 												系统自带，无法操作
 											</if>

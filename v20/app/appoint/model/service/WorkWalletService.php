@@ -26,7 +26,7 @@ class WorkWalletService
         $result = $this->getBillListArr($where);
         $worker_user = (new MerchantWorkers())->where(['merchant_worker_id'=>$work_id])->findOrEmpty()->toArray();
         //获取冻结金额
-        $freeze_money = (new MerchantWorkersMoney())->where(['type'=>3])->sum('money');
+        $freeze_money = (new MerchantWorkersMoney())->where(['merchant_worker_id'=>$work_id, 'type'=>3])->sum('money');
         $result['money'] = getFormatNumber(($worker_user['now_money']+$freeze_money)); //余额（包含打赏/服务金额）
         $result['reward_money'] = getFormatNumber($worker_user['reward_money']); //打赏金额
         $result['withdrawable_money'] = getFormatNumber($worker_user['now_money']); //可提现金额

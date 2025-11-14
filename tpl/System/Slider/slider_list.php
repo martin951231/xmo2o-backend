@@ -26,7 +26,7 @@
 						<a href="{pigcms{:U('Slider/index')}">导航分类列表</a>|
 					</if>
 					<a href="{pigcms{:U('Slider/slider_list',$_GET)}" class="on">{pigcms{$now_category.cat_name} - 导航列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Slider/slider_add',array('cat_id'=>$now_category['cat_id'],'from_page'=>$_GET['from_page']))}','添加导航',600,520,true,false,false,addbtn,'add',true);">添加导航</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Slider/slider_add',array('cat_id'=>$now_category['cat_id'],'from_page'=>$_GET['from_page']))}','添加导航',600,520,true,false,false,addbtn,'add',true);">添加导航</a>
 				</ul>
 			</div>
 			<div class="page_tips">导航建议尺寸：{pigcms{:str_replace(' ','&nbsp;',$now_category['size_info'])}</div>
@@ -97,7 +97,7 @@
                                             </td>
                                         </if>
 										<td class="textcenter">{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Slider/slider_edit',array('id'=>$vo['id'],'frame_show'=>true,'from_page'=>$_GET['from_page']))}','查看信息',800,600,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Slider/slider_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page']))}','编辑信息',800,600,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Slider/slider_del')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Slider/slider_edit',array('id'=>$vo['id'],'frame_show'=>true,'from_page'=>$_GET['from_page']))}','查看信息',800,600,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Slider/slider_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page']))}','编辑信息',800,600,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Slider/slider_del')}">删除</a></td>
 									</tr>
 								</volist>
 							<else/>

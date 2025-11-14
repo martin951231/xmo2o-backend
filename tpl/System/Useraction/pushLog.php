@@ -35,8 +35,8 @@
                                         <td>{pigcms{$vo.log_push_id}</td>
                                         <td>{pigcms{$vo.receiver_client}</td>
                                         <td><a href="{pigcms{$vo.push_url}" target="view_window"><span style="color:#3900ff;">{pigcms{$vo.push_title}</span></a></td>
-                                        <td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/pushUser',array('log_push_id'=>$vo['log_push_id']))}','查看用户',800,600,true,false,false,addbtn,'add',true);">查看用户</a></td>
-                                        <td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/pushAction',array('log_push_id'=>$vo['log_push_id']))}','查看分组',450,320,true,false,false,addbtn,'add',true);">查看分组</a></td>
+                                        <td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/pushUser',array('log_push_id'=>$vo['log_push_id']))}','查看用户',800,600,true,false,false,addbtn,'add',true);">查看用户</a></td>
+                                        <td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/pushAction',array('log_push_id'=>$vo['log_push_id']))}','查看分组',450,320,true,false,false,addbtn,'add',true);">查看分组</a></td>
                                         <if condition="$vo['push_status'] eq 1">
                                             <td><span style="color:green;">{pigcms{$vo.push_statu}</span></td>
                                         <else/>

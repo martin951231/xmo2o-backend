@@ -65,7 +65,7 @@
 										<td>{pigcms{$vo.remark}</td>
 										<td class="textcenter">{pigcms{$vo.admin_name}</td>
 										<if condition="$vo.status == 0">
-											<td class="textcenter red" style="cursor: pointer;"  onclick="window.top.artiframe('{pigcms{:U('user_money_verify_handle',array('id'=>$vo['id']))}','审核信息',400,200,true,false,false,editbtn,'add',true);">待审核</td>
+											<td class="textcenter red" style="cursor: pointer;"  onclick="window.o2oTop.artiframe('{pigcms{:U('user_money_verify_handle',array('id'=>$vo['id']))}','审核信息',400,200,true,false,false,editbtn,'add',true);">待审核</td>
 										<elseif condition="$vo.status == 1" />
 											<td class="textcenter"><font color="green">审核成功</font></td>
 										<else />

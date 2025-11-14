@@ -193,6 +193,16 @@ class LinkService
                     continue;
                 }
 			}
+
+            //问卷调查
+            $plugin = (new \app\common\model\db\Plugin())->where(['status' => 1, 'show' => 1, 'plugin_label' => 'questionnaire_survey'])->find();
+            if ($plugin) {
+                $catArr[] = [
+                    'label' => 'questionnaireSurvey',
+                    'txt' => $plugin['plugin_name']
+                ];
+            }
+
 			$catArr = array_values($catArr);
         }
         return $catArr;
@@ -281,15 +291,19 @@ class LinkService
         if (empty($label)) {
             throw new \think\Exception('label参数缺失');
         }
-        foreach ($this->listArr as $key => $val) {
-            if ($val == $label) {
-                $res = $this->$label($systemUser, $keyword, $page, $pageSize, $source, $source_id, $store_id);
-                break;
-            }
-        }
-        if (empty($res)) {
+        // foreach ($this->listArr as $key => $val) {
+        //     if ($val == $label) {
+        //         $res = $this->$label($systemUser, $keyword, $page, $pageSize, $source, $source_id, $store_id);
+        //         break;
+        //     }
+        // }
+
+        //判断$label方法是否存在
+        if (!method_exists($this, $label)) {
             throw new \think\Exception('未找到该分类');
         }
+        $res = $this->$label($systemUser, $keyword, $page, $pageSize, $source, $source_id, $store_id);
+
         return $res;
 
     }
@@ -4413,6 +4427,79 @@ class LinkService
 
                     ]
                 ]
+            ]
+        ];
+        return $arr;
+    }
+
+    //问卷调查功能库入口
+    private function questionnaireSurvey()
+    {
+        $arr = [
+            'style' => 'list',
+            'list' => [
+                'left' => [['txt' => '问卷列表', 'label' => 'questionnaireSurveyLists']]
+            ]
+        ];
+        return $arr;
+    }
+
+    //问卷调查列表
+    private function questionnaireSurveyLists($systemUser, $keyword, $page, $pageSize, $source, $source_id)
+    {
+        $where = [['is_del', '=', 0]];
+        if ($keyword) {
+            $where[] = ['name', 'like', '%' . $keyword . '%'];
+        }
+        $lists = (new \app\survey\model\SurveyForm())->where('is_del', 0)
+            ->append(['status_text'])
+            ->order('create_time desc')
+            ->paginate($pageSize)
+            ->toArray();
+        $items = ['list' => [], 'count' => $lists['total']];
+        foreach ($lists['data'] as $val) {
+            $url = get_base_url('pages/activity/questionnaire/form?form_id=' . $val['id']);
+            $item = [
+                'cat_id' => $val['id'],
+                'cat_fid' => 0,
+                'url' => $url,
+                'title' => [
+                    'txt' => $val['title'],
+                    'url' => '',
+                    'image' => '',
+                ],
+                'valid_data' => [
+                    'txt' => $val['end_time'],
+                    'url' => '',
+                    'image' => '',
+                ],
+                'status' => [
+                    'txt' => $val['status_text'],
+                    'url' => '',
+                    'image' => '',
+                ],
+                'yllj' => [
+                    'txt' => '预览链接',
+                    'url' => $url,
+                    'image' => '',
+                ]
+            ];
+            $items['list'][] = $item;
+        }
+
+        $arr = [
+            'add_link' => '', //为空时不显示跳转按钮
+            'show_search' => true, //为空不展示搜索按钮
+            'page_bar' => true, //是否有分页
+            'type' => 'list', //列表=list  多级分类=cat
+            'list' => [
+                'head' => [
+                    ['txt' => '问卷名称', 'label' => 'title'],
+                    ['txt' => '有效期限', 'label' => 'valid_data'],
+                    ['txt' => '问卷状态', 'label' => 'status'],
+                    ['txt' => '预览链接', 'label' => 'yllj']
+                ],
+                'body' => $items
             ]
         ];
         return $arr;

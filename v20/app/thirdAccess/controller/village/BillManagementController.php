@@ -105,14 +105,19 @@ class BillManagementController extends CommonBaseController
             return api_output_error('1001', '业主住户信息错误！');
         }
         if (empty($desc)) {
+            $desc='第三方充值';
             //return api_output_error('1001', '余额操作备注不能为空！');
         }
+        $pay_type=$pay_type ? $pay_type:'constructionPay'; //建行支付
         try {
             $pdata=array('opt_type'=>$opt_type,'room_id'=>$room_id,'user_bind_id'=>$user_bind_id,'ip'=>$ip,'opt_money'=>$opt_money,'pay_type'=>$pay_type,'third_order_id'=>$third_order_id);
             $pdata['desc']=$desc;
+            fdump_api(['post'=>$_POST,'get'=>$_GET,'uid'=>$uid,'pdata'=>$pdata],'thirdAccess/villageUserBalanceChange',1);
             $dataArr = $billAccessService->villageUserBalanceChange($village_id,$uid,$pdata);
+            fdump_api(['uid'=>$uid,'dataArr'=>$dataArr],'thirdAccess/villageUserBalanceChange',1);
             return api_output(0,$dataArr);
         } catch (\Exception $e) {
+            fdump_api(['uid'=>$uid,'err_msg'=>$e->getMessage()],'thirdAccess/villageUserBalanceChange',1);
             return api_output_error(1001,$e->getMessage());
         }
     }
@@ -158,6 +163,7 @@ class BillManagementController extends CommonBaseController
             return api_output_error(1001,$e->getMessage());
         }
         $arr['list'] = $data;
+		fdump_api(['paramData'=>$paramData,'arr'=>$arr],'thirdAccess/00userNewPayOrders',1);
         return api_output(0,$arr);
     }
 
@@ -178,6 +184,7 @@ class BillManagementController extends CommonBaseController
         if (!$pigcms_id && !$phone) {
             return api_output_error(1001, '请上传身份ID或者手机号');
         }
+		fdump_api(['post'=>$_POST,'get'=>$_GET,'param'=>$this->request->param()], '11payUserOrders',1);
         /** order: 7cc9886b964d438b91e903c2205fff3d,a637d9eacd5e8f3d6f651b4e6cd54a66,c89d74639ca36990191d0a61adb69586  注意是英文逗号拼接 */
         $orders = $this->request->param('orders');
         if (!$orders) {
@@ -185,12 +192,10 @@ class BillManagementController extends CommonBaseController
         }
         /** orderDetail: [{orderId: cc9886b964d438b91e903c2205fff3d, payMoney: 100},{orderId: a637d9eacd5e8f3d6f651b4e6cd54a66, payMoney: 80},{orderId: c89d74639ca36990191d0a61adb69586, payMoney: 70}] */
         $orderDetail = $this->request->param('orderDetail');
-        fdump_api($orderDetail, '$orderDetail');
+        fdump_api(['orderDetail'=>$orderDetail], '11payUserOrders',1);
         if (!is_array($orderDetail) || !isset($orderDetail[0])) {
-            fdump_api($orderDetail, '$orderDetail',1);
             $orderDetail = json_decode($orderDetail, true);
         }
-        fdump_api($orderDetail, '$orderDetail',1);
         if (!is_array($orderDetail) && !isset($orderDetail[0])) {
             return api_output_error(1001, '请上传正确的订单详情格式');
         }
@@ -212,6 +217,8 @@ class BillManagementController extends CommonBaseController
             'payType' => $payType,
             'payTime' => $payTime,
         ];
+		fdump_api(['paramData'=>$paramData], '11payUserOrders',1);
+		
         $billAccessService = new BillAccessService();
         $arr = [];
         try {

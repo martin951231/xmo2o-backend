@@ -376,7 +376,7 @@ class GiftModel extends Model{
 
     public function get_gift_url($gift_id,$is_wap){
         if($is_wap){
-            return str_replace('appapi.php', 'wap.php',U('Wap/Gift/detail',array('gift_id'=>$gift_id)));
+            return str_replace('appapi.php', 'wap.php',U('Wap/Gift/gift_detail',array('gift_id'=>$gift_id)));
         }else{
             $url = U('Index/Gift/gift_detail',array('gift_id'=>$gift_id));
             return $url;

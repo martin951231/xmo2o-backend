@@ -379,5 +379,41 @@ class LoginService {
         return $returnArr;
     }
 
+    //商家中心店员管理自动登录
+    public function autoLoginFromMerchant($staffId, $merId)
+    {
+        // 获得一个店员
+        $where = [
+            'staff.id' => $staffId,
+            'store.mer_id' => $merId,
+        ];
+        $nowStaff = \think\facade\Db::name('merchant_store_staff')->alias('staff')
+            ->join('merchant_store store', 'store.store_id=staff.store_id')
+            ->where($where)
+            ->field('staff.*')
+            ->find();
+        if (empty($nowStaff)) {
+            throw new \think\Exception(L_("该店铺没有找到店员"), 1003);
+        }
+        // 返回数据
+        $returnArr = [];
 
+        // 保存登录信息
+        if (!(new MerchantStoreStaffService())->updateThis(['id' => $nowStaff['id']], ['last_time' => time()])) {
+            throw new \think\Exception("登录信息保存失败,请重试！", 1003);
+        }
+
+        //商家后台伪登录标识
+        $extends = 'merchant_fake_login';
+
+        // 生成ticket
+        $ticket = Token::createToken($nowStaff['id'], $extends);
+        if (!$ticket) {
+            throw new \think\Exception("登陆失败,请重试！", 1003);
+        }
+        $returnArr['ticket'] = $ticket;
+        return $returnArr;
+    }
 }
+
+

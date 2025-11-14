@@ -104,12 +104,39 @@ class longLat{
 	        $result = json_decode($result, true);
 	        if ($result['status'] == 0) {
 	            return array('lat' => $result['result'][0]['y'],'lng' => $result['result'][0]['x']);
-	        }
+	        }else{
+				//fromType 1:wgs84   3:gcj02
+				if ($fromType == 1) {
+					list($lng, $lat) = Coordinate::wgs84ToBd09($wgsLon, $wgsLat);
+					return array('lat' => $lat, 'lng' => $lng);
+				} else if ($fromType == 3) {
+					list($lng, $lat) = Coordinate::gcj02ToBd09($wgsLon, $wgsLat);
+					return array('lat' => $lat, 'lng' => $lng);
+				}
+			}
 	    }
 	    
 		return false;
 	}
-	
+
+	/**
+	 * 高德坐标(GCJ-02)转百度坐标(BD-09)
+	 * @param float $lng 高德经度
+	 * @param float $lat 高德纬度
+	 * @return array 百度坐标系 [lng, lat]
+	 */
+	function gcj02ToBd09($lng, $lat)
+	{
+		// 坐标系转换参数
+		$z = sqrt($lng * $lng + $lat * $lat) + 0.00002 * sin($lat * $this->x_pi);
+		$theta = atan2($lat, $lng) + 0.000003 * cos($lng * $this->x_pi);
+
+		// 计算百度坐标
+		$bd_lng = $z * cos($theta) + 0.0065;
+		$bd_lat = $z * sin($theta) + 0.006;
+
+		return [$bd_lng, $bd_lat];
+	}
 	
 	/**
        * 腾讯地图坐标转百度地图坐标

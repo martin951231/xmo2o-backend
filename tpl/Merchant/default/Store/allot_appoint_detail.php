@@ -190,9 +190,7 @@
 						</if>
 					</volist>
 				</if>
-                
-                 
-                 
+
            <if condition="$merchant_workers_info">
             <tr>
 					<td colspan="4" style="padding-left:5px;color:black;"><b>{pigcms{:L_("服务工作人员信息：")}</b></td>
@@ -208,9 +206,7 @@
                     </td>
                 </tr>
             </if>
-            
-            
-            
+
             <if condition='($now_order["service_status"] eq 0) && ($now_order["is_del"] eq 0)'>
                 <tr>
                     <td colspan="4" style="padding-left:5px;color:black;"><b>{pigcms{:L_("分配：")}<?php echo $config['appoint_worker_name'] ? $config['appoint_worker_name'] : L_('技师'); ?></b></td>
@@ -228,7 +224,6 @@
                     </td>
                 </tr>
             </if>
-            
 		</table>
         
         <script type="text/javascript">

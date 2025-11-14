@@ -1,5 +1,5 @@
 <include file="Public:header"/>
-<div id="frame_map_tips" style="margin:0;height:auto;font-size:12px;line-height:20px;">(用鼠标滚轮可以缩放地图)&nbsp;&nbsp;&nbsp;&nbsp;拖动红色图标即可选取经纬度。<br/>若有多个搜索结果，只会展示第一条，请手动通过拖动红色图标进行校准。</div>
+<div id="frame_map_tips" style="margin:0;height:auto;font-size:12px;line-height:20px;">(用鼠标滚轮可以缩放地图)&nbsp;&nbsp;&nbsp;&nbsp;拖动红色图标即可选取经纬度。<br/>若有多个搜索结果，只会展示第一条，请手动通过拖动图标进行校准。</div>
 <div class="modal-body no-padding" style="width:100%;">
     <form id="map-search" style="margin:10px;">
         <input id="map-keyword" type="textbox" style="width:300px;height:26px;padding-left:6px;" placeholder="尽量填写城市、区域、街道名" value=""/>
@@ -11,9 +11,9 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key={pigcms{$config.google_map_ak}&region=au"></script>
     <script>
 		if(is_v20()) {
-			var store_add_frame = window.top.frames('Openstore_add').document;
+			var store_add_frame = window.o2oTop.frames('Openstore_add').document;
 		}else {
-			var store_add_frame = window.top.frames['Openstore_add'].document;
+			var store_add_frame = window.o2oTop.frames['Openstore_add'].document;
 		}
         var markers_circle = [];
         var long_lat = '{pigcms{$long_lat}';
@@ -112,19 +112,142 @@
                 });
             }
         }
-
-</script>
-    <else />
-	<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+	</script>
+	<elseif condition="$config['tianditu_web_key']" />
+	<script src="https://api.tianditu.gov.cn/api?v=4.0&tk={pigcms{$config.tianditu_web_key}" type="text/javascript"></script>
+	<script src="/tpl/Static/js/coordinate.js"></script>
 	<script type="text/javascript">
 		$(function(){
 			var local = null
 			if(is_v20()) {
-				var store_add_dom = window.top.frames('Openstore_add');
+				var store_add_dom = window.o2oTop.frames('Openstore_add');
+				var store_add_frame = store_add_dom.document;
+			} else {
+				var store_add_dom = window.o2oTop.frames['Openstore_add'];
+				var store_add_frame = window.o2oTop.frames['Openstore_add'].document;
+			}
+			var map = null;
+			const lnglat = "{pigcms{$long_lat}".toString();
+			const [lng, lat] = Coordinate.bd09ToWgs84(lnglat.split(',')[0], lnglat.split(',')[1])//转天地图wgs84坐标系
+			var oPoint = new T.LngLat(lng,lat);
+			
+			var marker = new T.Marker(oPoint);
+			var setPoint = function(mk,b){
+				var pt = mk.getLngLat();
+				const [lng, lat] = Coordinate.wgs84ToBd09(pt.lng, pt.lat)//转百度坐标系
+				$('#long_lat',store_add_frame).val(lng + ',' + lat);
+				// 天地图的逆地理编码
+				var geocoder = new T.Geocoder();
+				geocoder.getLocation(pt, function(result){
+					var addComp = result.addressComponent;
+					if (b === true){
+						if(addComp.province && typeof($('#choose_province',store_add_frame)) != 'undefined'){
+							$.each($('#choose_province option',store_add_frame), function(i, item){
+								var text = $(item).html();
+								if(text && addComp.province.indexOf(text) != -1){
+									var choose_province = $('#choose_province', store_add_frame);
+									choose_province.find('option').eq(i).prop('selected', true);
+									store_add_dom.show_city(choose_province.find('option:selected').attr('value'), choose_province.find('option:selected').html(), 1);
+									return false;
+								}
+							});
+						}
+						setTimeout(function(){
+							if(addComp.city && typeof($('#choose_city',store_add_frame)) != 'undefined'){
+								$.each($('#choose_city option',store_add_frame), function(i, item){
+									var text = $(item).html();
+									if(text && addComp.city.indexOf(text) != -1){
+										var choose_city = $('#choose_city',store_add_frame);
+										choose_city.find('option').eq(i).prop('selected', true);
+										if($('#choose_cityarea', store_add_frame).attr('circle') != '-1'){
+											store_add_dom.show_area(choose_city.find('option:selected').attr('value'), choose_city.find('option:selected').html(), 1);
+											return false;
+										}
+									}
+								});
+							}
+						}, 200)
+
+						setTimeout(function(){
+							if(addComp.county && typeof($('#choose_area', store_add_frame)) != 'undefined'){
+								$.each($('#choose_area option', store_add_frame), function(i, item){
+									var text = $(item).html();
+									if(text && addComp.county.indexOf(text) != -1){
+										var choose_area = $('#choose_area', store_add_frame);
+										choose_area.find('option').eq(i).prop('selected', true);
+										if($('#choose_cityarea', store_add_frame).attr('circle') != '-1'){
+											store_add_dom.show_circle(choose_area.find('option:selected').attr('value'), choose_area.find('option:selected').html(), 1);
+											return false;
+										}
+									}
+								});
+							}
+						}, 500)
+						$('#adress', store_add_frame).val(addComp.town + addComp.town_code);
+
+						layer.msg('设置成功', {
+							offset: '20px',
+							anim: 6
+						});
+					}
+				});
+			};
+
+			map = new T.Map("cmmap");
+			map.centerAndZoom(oPoint, 14);
+			map.enableScrollWheelZoom();
+
+			// 设置标记
+			map.addOverLay(marker);
+			marker.enableDragging();
+
+			// 拖拽标记事件
+			marker.addEventListener("dragend", function(){
+				setPoint(marker, true);
+			});
+
+			marker.addEventListener("click", function(e){    
+				setPoint(marker, true);
+			});
+
+			// 初始化天地图本地搜索
+			local = new T.LocalSearch(map, {
+				pageCapacity: 1,
+				onSearchComplete: function(results){
+					if(results.getSuggests()){
+						const [lng,lat] = results.getSuggests()[0].lonlat.split(',')
+						let point = new T.LngLat(lng,lat);
+						map.centerAndZoom(point, 17);
+						marker.setPosition(point);
+					}else{
+						layer.msg('暂无相关数据', {
+							offset: '20px',
+							anim: 6
+						});
+					}
+				}
+			});
+
+			$('#map-search').submit(function(){
+				$('#map-keyword').val($.trim($('#map-keyword').val()));
+				if($('#map-keyword').val().length > 0){
+					local.search($('#map-keyword').val());
+				}
+				return false;
+			});
+		});
+	</script>
+	<else />
+	<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			var local = null
+			if(is_v20()) {
+				var store_add_dom = window.o2oTop.frames('Openstore_add');
 				var store_add_frame = store_add_dom.document;
 			}else {
-				var store_add_dom = window.top.frames['Openstore_add'];
-				var store_add_frame = window.top.frames['Openstore_add'].document;
+				var store_add_dom = window.o2oTop.frames['Openstore_add'];
+				var store_add_frame = window.o2oTop.frames['Openstore_add'].document;
 			}
 			var map = null;
 			var oPoint = new BMap.Point({pigcms{$long_lat});

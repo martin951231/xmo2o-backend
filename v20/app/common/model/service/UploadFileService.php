@@ -244,8 +244,8 @@ class UploadFileService
                 validate(['file' => $valdate])->check(['file' => $file]);
 
                 // 上传图片到本地服务器
-
-                $saveName = \think\facade\Filesystem::disk('public_upload')->putFileAs($upload_dir, $file, $_FILES['file']['name']);
+                $fileName = uniqid().'_'.$file->getOriginalName();
+                $saveName = \think\facade\Filesystem::disk('public_upload')->putFileAs($upload_dir, $file, $fileName);
 
                 $saveName = str_replace("\\", '/', $saveName);
                 $savepath = '/upload/' . $saveName;

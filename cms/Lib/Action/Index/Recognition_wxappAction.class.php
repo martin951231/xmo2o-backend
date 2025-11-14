@@ -5,7 +5,7 @@
  */
 class Recognition_wxappAction extends BaseAction{
 	public function create_page_qrcode(){
-		$qr_path = htmlspecialchars_decode($_GET['page']);
+		$origin_page = $qr_path = htmlspecialchars_decode($_GET['page']);
 		$access_token_array = D('Access_token_wxapp_expires')->get_access_token();
 		if ($access_token_array['errcode']) {
 			exit('获取access_token发生错误：错误代码' . $access_token_array['errcode'] .',微信返回错误信息：' . $access_token_array['errmsg']);
@@ -26,7 +26,29 @@ class Recognition_wxappAction extends BaseAction{
 		);
 		$img_content = $this->curlPost($qrcode_url,json_encode($post_data));
 		header('Content-type: image/jpeg');
-		echo $img_content;
+
+		if (is_null(json_decode($img_content))) {
+			echo $img_content;
+			die;
+		}
+
+		//如果生成二维码失败，则尝试生成无数量限制的
+		$webview_url = get_base_url($origin_page);
+		$parse_url = parse_url($webview_url);
+		//获取$webview_url携带的参数，如果是webview跳转，重新获取地址
+		$urlQuery = $this->convertUrlQuery($parse_url['query']);
+		if ($urlQuery['redirect'] == 'webview' && $urlQuery['webview_url']) {
+			$webview_url = urldecode($urlQuery['webview_url']);
+		}
+		$link_id = M('Short_link')->data(['link_url' => $webview_url])->add();
+		if (!$link_id) {
+			$this->error('小程序码生成失败'); 
+		}
+		$webview_url = '/short_' . $link_id;
+		$_GET['page'] = 'pages/webview/webview';
+		$_GET['scene'] = urldecode($webview_url);
+		$_GET['width'] = 425;
+		$this->create_unlimit_qrcode();
 	}
 	public function create_unlimit_qrcode(){
 		$page = htmlspecialchars_decode($_GET['page']);
@@ -44,7 +66,7 @@ class Recognition_wxappAction extends BaseAction{
 		$post_data = array(
 			'scene'	=>	$scene,
 			'page'	=>	$page,
-			'width'	=>	280
+			'width'	=>	$_GET['width'] ?? 280
 		);
 		$img_content = $this->curlPost($qrcode_url,json_encode($post_data));
 		header('Content-type: image/jpeg');

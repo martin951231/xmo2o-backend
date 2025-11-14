@@ -1252,7 +1252,7 @@ class GroupOrderService
 
         isset($nowGroup['vip_discount_money']) && $nowGroup['vip_discount_money'] && $dataGroupOrder['vip_discount_money'] = $nowGroup['vip_discount_money'] * $dataGroupOrder['num'];
         $dataGroupOrder['total_money'] = get_format_number($dataGroupOrder['price'] * $dataGroupOrder['num']);
-        $dataGroupOrder['tuan_type'] = $nowGroup['tuan_type'];
+        $dataGroupOrder['tuan_type'] = $nowGroup['group_cate'] == 'cashing' ? 1 : $nowGroup['tuan_type'];
         $dataGroupOrder['add_time'] = time();
         $orderid = build_real_orderid($nowUser['uid']);//real_orderid
         $dataGroupOrder['real_orderid'] = $orderid;
@@ -2498,9 +2498,9 @@ class GroupOrderService
             $href = cfg('site_url') . '/wap.php?c=My&a=group_order&order_id=' . $order['order_id'];
             $model->sendTempMsg('TM00017', array('href' => $href,
                 'wecha_id' => $nowUser['openid'],
-                'first' => cfg('group_alias_name') . L_('团购提醒'),
-                'OrderSn' => $order['real_orderid'],
-                'OrderStatus' => L_("您购买的团购已于X1核销成功", date('Y-m-d H:i:s', time())),
+                'first' =>  $order['order_name']?:$order['real_orderid'],
+                'OrderSn' => L_("核销成功"),
+                'OrderStatus' => cfg('group_alias_name'),
                 'remark' => L_('点击查看详情')),
                 $order['mer_id']);
         }

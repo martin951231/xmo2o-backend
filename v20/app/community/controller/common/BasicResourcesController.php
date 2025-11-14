@@ -213,9 +213,11 @@ class BasicResourcesController extends CommunityBaseController
         $datas=array();
         $configCustomizationService=new ConfigCustomizationService();
         $jz_wsxdsj_customized_open = $configCustomizationService->getWSXCustomizedOpen();
+        $isAihorseCustomized=$configCustomizationService->getAihorseCustomizedJudge();
         $datas['jz_wsxdsj_customized_open']=$jz_wsxdsj_customized_open ? 1:0;
         $datas['meter_use_v']=0;
         $datas['reset_btn_show']=0;
+        $datas['isAihorseCustomized']=$isAihorseCustomized;
         if($jz_wsxdsj_customized_open && $project_id){
             $projectInfo = (new HouseNewChargeProject())->where('id',$project_id)->field('meter_use_v,reset_btn_show')->find();
             $datas['meter_use_v'] = $projectInfo['meter_use_v'] ?? 0;

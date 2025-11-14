@@ -7,7 +7,7 @@
 	<div class="breadcrumbs" id="breadcrumbs">
 		<ul class="breadcrumb">
 			<i class="ace-icon fa fa-comments-o comments-o-icon"></i>
-			<li class="active"><a href="{pigcms{:U('Analysis/goods')}" class="on">{pigcms{:L_("菜品信息")}</a></li>
+			<li class="active"><a href="{pigcms{:U('Analysis/goods')}" class="on">MERCHANT_ANALYSIS_GOODS_1</a></li>
 		</ul>
 	</div>
 	<!-- {pigcms{:L_("内容头部")} -->
@@ -71,7 +71,7 @@
 						<thead>
 							<tr>
 								<th>{pigcms{:L_("排名")}</th>
-								<th>{pigcms{:L_("菜品名称")}</th>
+								<th>MERCHANT_ANALYSIS_GOODS_2</th>
 								<th>{pigcms{:L_("规格")}</th>
 								<th>{pigcms{:L_("条码")}</th>
 								<th>{pigcms{:L_("单价")}</th>

@@ -31,7 +31,7 @@
                 <if condition="$system_session['level'] == 2">
                     <tr>
                         <td>
-                            <a href="javascript:void(0);" class="button" style="float:right;margin-right: 10px;" onclick="window.top.artiframe('{pigcms{:U('InternalCard/namesAdd')}','添加一卡通',780,400,true,false,false,addbtn,'add',true);">添加</a>
+                            <a href="javascript:void(0);" class="button" style="float:right;margin-right: 10px;" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/namesAdd')}','添加一卡通',780,400,true,false,false,addbtn,'add',true);">添加</a>
                         </td>
                     </tr>
                 </if>
@@ -105,7 +105,7 @@
 										<td>{pigcms{$vo.card_name}</td>
 										<td>{pigcms{$vo.belong_admin_name}</td>
 										<td>
-											<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/index', ['card_name' => $vo['card_name'],'type'=>'show_user_list'])}','会员列表',780,400,true,false,false,editbtn,'add',true);"> -->
+											<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/index', ['card_name' => $vo['card_name'],'type'=>'show_user_list'])}','会员列表',780,400,true,false,false,editbtn,'add',true);"> -->
 												{pigcms{$vo.card_count}
 											<!-- </a> -->
 										</td>
@@ -119,19 +119,19 @@
 											</if>
 										</td>
 										<td>
-											<a onclick="window.top.artiframe('{pigcms{:U('InternalCard/area', ['name_id' => $vo['id']])}','指定区域',780,600,true,false,false,false,'',true);">指定区域</a>
+											<a onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/area', ['name_id' => $vo['id']])}','指定区域',780,600,true,false,false,false,'',true);">指定区域</a>
 										</td>
 										<td>
-											<a onclick="window.top.artiframe('{pigcms{:U('InternalCard/store', ['name_id' => $vo['id']])}','指定店铺',900,600,true,false,false,false,'',true);">指定店铺</a>
+											<a onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/store', ['name_id' => $vo['id']])}','指定店铺',900,600,true,false,false,false,'',true);">指定店铺</a>
 										</td>
 										<td>{pigcms{$vo.store_name}<br/>【ID:{pigcms{$vo.store_id}】</td>
                                         <td>{pigcms{$vo.admin_name}</td>
                                         <td>{pigcms{$vo.update_time}</td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/cardUnits', ['card_name' => $vo['card_name'],'from'=>$_GET['from']])}','查看关联单位列表',900,450,true,false,false,false,'',false);">单位列表</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/cardUnits', ['card_name' => $vo['card_name'],'from'=>$_GET['from']])}','查看关联单位列表',900,450,true,false,false,false,'',false);">单位列表</a>
                                             <if condition="$system_session['level'] == 2">
                                                 &nbsp;|&nbsp;
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/namesAdd', ['id' => $vo['id']])}','编辑一卡通',780,400,true,false,false,editbtn,'add',true);">编辑</a> &nbsp;|&nbsp;
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/namesAdd', ['id' => $vo['id']])}','编辑一卡通',780,400,true,false,false,editbtn,'add',true);">编辑</a> &nbsp;|&nbsp;
                                             <a href="javascript:void(0);" class="delete_row" parameter="id=10" url="{pigcms{:U('InternalCard/namesDel',array('id'=>$vo['id']))}">删除</a>
                                             </if>
                                         </td>

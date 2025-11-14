@@ -1022,10 +1022,14 @@ class LifeToolsService
             $param['images'] = implode(',', $param['images']);
         }
         if (!empty($param['long']) && !empty($param['lat'])) {
-            $cityMatching = (new AutoAddressService())->cityMatching($param['lat'], $param['long']);
-            $param['province_id'] = $cityMatching['area_info']['province_id'] ?? 0;
-            $param['city_id']     = $cityMatching['area_info']['city_id'] ?? 0;
-            $param['area_id']     = $cityMatching['area_info']['area_id'] ?? 0;
+            try{
+                $cityMatching = (new AutoAddressService())->cityMatching($param['lat'], $param['long']);
+                $param['province_id'] = $cityMatching['area_info']['province_id'] ?? 0;
+                $param['city_id']     = $cityMatching['area_info']['city_id'] ?? 0;
+                $param['area_id']     = $cityMatching['area_info']['area_id'] ?? 0;
+            }catch (\think\Exception $e){
+                //pass
+            }
         }
         $param['add_time'] = time();
         $this->LifeToolsComplaintAdvice->insert($param);

@@ -2,7 +2,7 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<!--<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('circle/cateAdd')}','添加{pigcms{$now_type_str}',450,320,true,false,false,addbtn,'add',true);">添加圈子新分类</a>-->
+					<!--<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('circle/cateAdd')}','添加{pigcms{$now_type_str}',450,320,true,false,false,addbtn,'add',true);">添加圈子新分类</a>-->
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -44,7 +44,7 @@
 										<td class="textcenter"><a href="/admin.php?g=System&c=Circle&a=usercollection&uid={pigcms{$vo.id}">查看收藏</a></td>
 										<td class="textcenter"><a href="/admin.php?g=System&c=Circle&a=mycircle&uid={pigcms{$vo.id}">查看圈子</a></td>
 										<td class="textcenter"><if condition="$vo['status'] eq 1">禁用<else/>正常</if> </td>
-										<td class="textcenter"> <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/useredit',array('id'=>$vo['id']))}','编辑用户信息',800,500,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/deluser')}">删除</a></td>
+										<td class="textcenter"> <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/useredit',array('id'=>$vo['id']))}','编辑用户信息',800,500,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/deluser')}">删除</a></td>
 										
 									</tr>
 								</volist>

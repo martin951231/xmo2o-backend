@@ -72,7 +72,7 @@ ul.modules li div.mright{float:right;width:55%;text-align:right;}
 	})
 	
 	function fun(){
-		var topIframe = window.top.getTopIframe()
+		var topIframe = window.o2oTop.getTopIframe()
 		topIframe.art.dialog({id : 'part_village'}).close();  
 	}
 </script>

@@ -2525,6 +2525,12 @@ input[type=button].btn-block,input[type=reset].btn-block,input[type=submit].btn-
 .fade.in {
 	opacity:1
 }
+.map-modal.in{
+    transform: translateY(0) !important;
+}
+.map-modal.fade{
+    transform: translateY(-100%);
+}
 .collapse {
 	display:none
 }

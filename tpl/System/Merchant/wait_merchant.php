@@ -1,1 +1,87 @@
-<include file="Public:header"/>		<div class="mainbox">			<div id="nav" class="mainnav_title">				<ul>					<a href="{pigcms{:U('Merchant/wait_merchant')}" class="on">待审核商家列表</a>				</ul>			</div>			<table class="search_table" width="100%">				<tr>					<td>						<form action="{pigcms{:U('Merchant/wait_merchant')}" method="get">							<input type="hidden" name="c" value="Merchant"/>							<input type="hidden" name="a" value="wait_merchant"/>							筛选: <input type="text" name="keyword" class="input-text" value="{pigcms{$_GET['keyword']}"/>							<select name="searchtype">								<option value="name" <if condition="$_GET['searchtype'] eq 'name'">selected="selected"</if>>商家名称</option>																<option value="account" <if condition="$_GET['searchtype'] eq 'account'">selected="selected"</if>>商家帐号</option>								<option value="phone" <if condition="$_GET['searchtype'] eq 'phone'">selected="selected"</if>>联系电话</option>								<option value="mer_id" <if condition="$_GET['searchtype'] eq 'mer_id'">selected="selected"</if>>商家编号</option>							</select>                            <if condition="$config['merchant_type_switch'] eq 1 && $type_list">                                商家类型：                                <select name="searchtype">                                    <option value="0">全部类型</option>                                    <volist name="type_list" id="vo">                                        <option value="{pigcms{$vo['type_id']}" <if condition="$_GET['searchtype'] eq $vo['type_id']">selected="selected"</if>>{pigcms{$vo['type_name']}</option>                                    </volist>                                </select>                            </if>							<input type="submit" value="查询" class="button"/>						</form>					</td>				</tr>			</table>			<form name="myform" id="myform" action="" method="post">				<div class="table-list">					<table width="100%" cellspacing="0">						<colgroup><col> <col> <col> <col><col><col><col><col><col width="240" align="center"> </colgroup>						<thead>							<tr>								<th>编号</th>								<th>商家帐号</th>								<th>商家名称</th>                                <if condition="$config.open_c2b_spread eq 1">                                <th>注册来源</th>                                </if>								<th>联系电话</th>								<th>状态</th>								<th class="textcenter">操作</th>							</tr>						</thead>						<tbody>							<if condition="is_array($merchant_list)">								<volist name="merchant_list" id="vo">									<tr>										<td>{pigcms{$vo.mer_id}</td>										<td>{pigcms{$vo.account}</td>										<td>{pigcms{$vo.name}</td>                                        <if condition="$config.open_c2b_spread eq 1">                                            <td>                                                <if condition="$vo.user_nickname neq '' || $vo.user_phone neq ''">                                                    邀请人推荐（ <php>if ($vo['user_nickname'] != '') {</php>昵称:{pigcms{$vo.user_nickname}<php>}</php>  <php>if ($vo['user_phone'] != '') {</php>电话:{pigcms{$vo.user_phone}<php>}</php> 编号:{pigcms{$vo.user_uid}）                                                    <else/>                                                    -                                                </if>                                            </td>                                        </if>										<td>{pigcms{$vo.phone}</td>										<td><if condition="$vo['status'] eq 1"><font color="green">启用</font><elseif condition="$vo['status'] eq 2"/><font color="red">待审核</font><else/><font color="red">关闭</font></if></td><!--										<td><a href="{pigcms{:U('Merchant/order',array('mer_id'=>$vo['mer_id']))}">查看账单</a></td>-->										<td class="textcenter">											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id'],'frame_show'=>true))}','查看详细信息',700,600,true,false,false,false,'detail',true);">查看</a> | 											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id'],'is_verify'=>1))}','编辑商家信息',800,560,true,false,false,editbtn,'edit',true);">编辑</a> | 											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/menu',array('mer_id'=>$vo['mer_id']))}','设置商家使用权限',700,500,true,false,false,editbtn,'edit',true);">设置商家使用权限</a> | 											<a href="javascript:void(0);" class="delete_row" parameter="mer_id={pigcms{$vo.mer_id}" url="{pigcms{:U('Merchant/del')}">删除</a>										</td>									</tr>								</volist>								<tr><td class="textcenter pagebar" colspan="11">{pigcms{$pagebar}</td></tr>							<else/>								<tr><td class="textcenter red" colspan="11">列表为空！</td></tr>							</if>						</tbody>					</table>				</div>			</form>		</div><include file="Public:footer"/>
+<include file="Public:header"/>
+		<div class="mainbox">
+			<div id="nav" class="mainnav_title">
+				<ul>
+					<a href="{pigcms{:U('Merchant/wait_merchant')}" class="on">待审核商家列表</a>
+				</ul>
+			</div>
+			<table class="search_table" width="100%">
+				<tr>
+					<td>
+						<form action="{pigcms{:U('Merchant/wait_merchant')}" method="get">
+							<input type="hidden" name="c" value="Merchant"/>
+							<input type="hidden" name="a" value="wait_merchant"/>
+							筛选: <input type="text" name="keyword" class="input-text" value="{pigcms{$_GET['keyword']}"/>
+							<select name="searchtype">
+								<option value="name" <if condition="$_GET['searchtype'] eq 'name'">selected="selected"</if>>商家名称</option>								
+								<option value="account" <if condition="$_GET['searchtype'] eq 'account'">selected="selected"</if>>商家帐号</option>
+								<option value="phone" <if condition="$_GET['searchtype'] eq 'phone'">selected="selected"</if>>联系电话</option>
+								<option value="mer_id" <if condition="$_GET['searchtype'] eq 'mer_id'">selected="selected"</if>>商家编号</option>
+							</select>
+                            <if condition="$config['merchant_type_switch'] eq 1 && $type_list">
+                                商家类型：
+                                <select name="searchtype">
+                                    <option value="0">全部类型</option>
+                                    <volist name="type_list" id="vo">
+                                        <option value="{pigcms{$vo['type_id']}" <if condition="$_GET['searchtype'] eq $vo['type_id']">selected="selected"</if>>{pigcms{$vo['type_name']}</option>
+                                    </volist>
+                                </select>
+                            </if>
+							<input type="submit" value="查询" class="button"/>
+						</form>
+					</td>
+				</tr>
+			</table>
+			<form name="myform" id="myform" action="" method="post">
+				<div class="table-list">
+					<table width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>编号</th>
+								<th>商家帐号</th>
+								<th>商家名称</th>
+                                <if condition="$config.open_c2b_spread eq 1">
+                                <th>注册来源</th>
+                                </if>
+								<th>联系电话</th>
+								<th>状态</th>
+								<th class="textcenter">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<if condition="is_array($merchant_list)">
+								<volist name="merchant_list" id="vo">
+									<tr>
+										<td>{pigcms{$vo.mer_id}</td>
+										<td>{pigcms{$vo.account}</td>
+										<td>{pigcms{$vo.name}</td>
+                                        <if condition="$config.open_c2b_spread eq 1">
+                                            <td>
+                                                <if condition="$vo.user_nickname neq '' || $vo.user_phone neq ''">
+                                                    邀请人推荐（ <php>if ($vo['user_nickname'] != '') {</php>昵称:{pigcms{$vo.user_nickname}<php>}</php>  <php>if ($vo['user_phone'] != '') {</php>电话:{pigcms{$vo.user_phone}<php>}</php> 编号:{pigcms{$vo.user_uid}）
+                                                    <else/>
+                                                    -
+                                                </if>
+                                            </td>
+                                        </if>
+										<td>{pigcms{$vo.phone}</td>
+										<td><if condition="$vo['status'] eq 1"><font color="green">启用</font><elseif condition="$vo['status'] eq 2"/><font color="red">待审核</font><else/><font color="red">关闭</font></if></td>
+<!--										<td><a href="{pigcms{:U('Merchant/order',array('mer_id'=>$vo['mer_id']))}">查看账单</a></td>-->
+										<td class="textcenter">
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id'],'frame_show'=>true))}','查看详细信息',700,600,true,false,false,false,'detail',true);">查看</a> | 
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/edit',array('mer_id'=>$vo['mer_id'],'is_verify'=>1))}','编辑商家信息',800,560,true,false,false,editbtn,'edit',true);">编辑</a> | 
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/menu',array('mer_id'=>$vo['mer_id']))}','设置商家使用权限',700,500,true,false,false,editbtn,'edit',true);">设置商家使用权限</a> | 
+											<a href="javascript:void(0);" class="delete_row" parameter="mer_id={pigcms{$vo.mer_id}" url="{pigcms{:U('Merchant/del')}">删除</a>
+										</td>
+									</tr>
+								</volist>
+								<tr><td class="textcenter pagebar" colspan="7">{pigcms{$pagebar}</td></tr>
+							<else/>
+								<tr><td class="textcenter red" colspan="7">列表为空！</td></tr>
+							</if>
+						</tbody>
+					</table>
+				</div>
+			</form>
+		</div>
+<include file="Public:footer"/>

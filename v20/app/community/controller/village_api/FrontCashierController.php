@@ -1762,6 +1762,11 @@ class FrontCashierController extends CommunityBaseController
         $service_new_pay = new NewPayService();
         try{
             $data1['role_id']=$this->_uid>0 ? $this->_uid:0;
+            $data1['login_role']=$this->login_role>0 ? $this->login_role:0;
+            $data1['role_name']= '';
+            if($this->adminUser && isset($this->adminUser['user_name']) && $this->adminUser['user_name']){
+                $data1['role_name']= preg_replace('/【.*】$/', '', $this->adminUser['user_name']);
+            }
             $data = $service_new_pay->frontCashierGoPay($order_list,$village_id,$data1);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
@@ -1849,6 +1854,12 @@ class FrontCashierController extends CommunityBaseController
             $param['village_id']=$village_id;
             $param['ticket_number']=$ticket_number;
             $param['extra_data']=array('offline_pay_type_mix'=>$offline_pay_type_mix);
+            $param['role_id']=$this->_uid>0 ? $this->_uid:0;
+            $param['login_role']=$this->login_role>0 ? $this->login_role:0;
+            $param['role_name']= '';
+            if($this->adminUser && isset($this->adminUser['user_name']) && $this->adminUser['user_name']){
+                $param['role_name']= preg_replace('/【.*】$/', '', $this->adminUser['user_name']);
+            }
             $res = $service_new_pay->pay($summary_id,$pay_type,$remark,$offline_pay_type,$param);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
@@ -1939,7 +1950,7 @@ class FrontCashierController extends CommunityBaseController
         $where[] = ['pp.children_type','=',1];
         $where[] = ['pp.garage_id','=',$garage_id];
         $where[] = ['pp.village_id','=',$village_id];
-        $field = 'pp.position_id,pp.position_num,pp.position_area,pp.position_note,pp.position_status,pp.garage_id';
+        $field = 'pp.position_id,pp.position_num,pp.position_area,pp.position_note,pp.position_status,pp.garage_id,pp.position_type,pp.position_pattern';
         $data = $house_village_parking_position->getParkingPositionLists($where, $field,0);
         return api_output(0, $data, '获取成功');
     }

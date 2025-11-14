@@ -61,7 +61,7 @@
 	</form>
 	<script>
 		$('#chooseProductBtn').click(function(){
-			window.top.artiframe('{pigcms{:U('choose_product',array('city_id'=>$now_group['city_id']))}&from_page='+window.name,'选择商品',1000,600,true,false,false,false,'choose_plat_product',true);
+			window.o2oTop.artiframe('{pigcms{:U('choose_product',array('city_id'=>$now_group['city_id']))}&from_page='+window.name,'选择商品',1000,600,true,false,false,false,'choose_plat_product',true);
 		});
 		function choose_product(data){
 			$('input[name="active_desc"]').val('');

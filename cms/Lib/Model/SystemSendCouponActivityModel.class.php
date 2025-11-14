@@ -375,7 +375,7 @@ class SystemSendCouponActivityModel extends Model
     }
 
 
-    public function getNowActivity($uid, $page = '',$city_id=0)
+    public function getNowActivity($uid, $page = '', $city_id = 0, $status = -1)
     {
         if ($uid > 0) {
             $paidOrderCount = D('User')->check_new($uid, 'all');
@@ -422,9 +422,15 @@ class SystemSendCouponActivityModel extends Model
         $fields .= ",plat.img AS plat_img,plat.is_discount AS plat_is_discount,plat.coupon_id as plat_coupon_id,plat.name AS plat_name,plat.order_money AS plat_order_money,plat.discount_value AS plat_discount_value,plat.discount AS plat_discount,plat.start_time AS plat_start_time,plat.end_time AS plat_end_time,plat.platform AS plat_platform,plat.cate_name AS plat_cate_name,plat.is_privileged AS plat_is_privileged,plat.is_hide AS plat_is_hide,plat.allow_sign AS plat_allow_sign,plat.allow_gift AS plat_allow_gift,plat.allow_im_get AS plat_allow_im_get,plat.allow_new AS plat_allow_new,plat.is_vip_level AS plat_is_vip_level,plat.status AS plat_status,plat.num AS plt_num,plat.`limit` AS plat_limit,plat.use_type AS plat_use_type,plat.coupon_url AS plat_coupon_url";
         $fields .= ",mer.mer_id,mer.store_id,mer.img AS mer_img,mer.is_discount AS mer_is_discount,mer.coupon_id as mer_coupon_id,mer.name AS mer_name,mer.order_money AS mer_order_money,mer.discount_value AS mer_discount_value,mer.discount AS mer_discount,mer.start_time AS mer_start_time,mer.end_time AS mer_end_time,mer.platform AS mer_platform,mer.cate_name AS mer_cate_name,mer.allow_new AS mer_allow_new,mer.allow_im_get AS mer_allow_im_get,mer.is_live AS mer_is_live,mer.status AS mer_status,mer.num AS mer_num,mer.`limit` AS mer_limit,mer.coupon_url AS mer_coupon_url";
 
+        $sys_coupon_join = C('DB_PREFIX') . 'system_coupon AS plat ON s.coupon_id = plat.coupon_id AND s.coupon_type="plat"';
+        $mer_coupon_join = C('DB_PREFIX') . 'card_new_coupon AS mer ON s.coupon_id = mer.coupon_id AND s.coupon_type="mer"';
+        if($status > -1){
+            $sys_coupon_join .= 'AND plat.status = '. $status;
+            $mer_coupon_join .= 'AND mer.status = '. $status;
+        }
         $setting = M('System_send_coupon_activity_setting')->alias('s')
-            ->join(C('DB_PREFIX') . 'system_coupon AS plat ON s.coupon_id = plat.coupon_id AND s.coupon_type="plat"')
-            ->join(C('DB_PREFIX') . 'card_new_coupon AS mer ON s.coupon_id = mer.coupon_id AND s.coupon_type="mer"')
+            ->join($sys_coupon_join)
+            ->join($mer_coupon_join)
             ->field($fields)
             ->where(['s.aid' => $activity['id']])
             ->select();

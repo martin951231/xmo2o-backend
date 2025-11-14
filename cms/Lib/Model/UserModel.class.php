@@ -397,11 +397,11 @@ class UserModel extends Model
   					if ($spread_user_give_type == 0 ||$spread_user_give_type == 2) {
 						$spread_give_money = $now_level['spread_user_give_moeny']>0?$now_level['spread_user_give_moeny']: C('config.spread_give_money');
 						if(C('config.open_score_fenrun')){
-							$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
+							//$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
 						}else{
-							$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
+							//$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
 						}
-  						D('Scroll_msg')->add_msg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.C('config.Currency_txt')))); 
+  						//D('Scroll_msg')->add_msg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.C('config.Currency_txt')))); 
   					}
   
  					if ($spread_user_give_type == 1 || $spread_user_give_type == 2) {
@@ -460,11 +460,11 @@ class UserModel extends Model
   					if ($spread_user_give_type == 0 ||$spread_user_give_type == 2) {
 						$spread_give_money = $now_level['spread_user_give_moeny']>0?$now_level['spread_user_give_moeny']: C('config.spread_give_money');
 						if(C('config.open_score_fenrun')){
-							$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
+							//$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
 						}else{
-							$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
+							//$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
 						}
-  						D('Scroll_msg')->add_msg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.C('config.Currency_txt')))); 
+  						//D('Scroll_msg')->add_msg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.C('config.Currency_txt')))); 
   					}
   
  					if ($spread_user_give_type == 1 || $spread_user_give_type == 2) {
@@ -527,11 +527,11 @@ class UserModel extends Model
   					if ($spread_user_give_type == 0 ||$spread_user_give_type == 2) {
 						$spread_give_money = $now_level['spread_user_give_moeny']>0?$now_level['spread_user_give_moeny']: C('config.spread_give_money');
 						if(C('config.open_score_fenrun')){
-							$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
+							//$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
 						}else{
-							$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
+							//$this->add_money($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
 						}
-  						D('Scroll_msg')->add_msg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.C('config.Currency_txt')))); 
+  						//D('Scroll_msg')->add_msg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.C('config.Currency_txt')))); 
   					}
   
  					if ($spread_user_give_type == 1 || $spread_user_give_type == 2) {
@@ -716,7 +716,7 @@ class UserModel extends Model
 		if($money>0){
 			$condition_user['uid'] = $uid;
 			if($this->where($condition_user)->setInc('score_recharge_money',$money)){
-				D('User_money_list')->add_row($uid,1,$money,$desc);
+				//D('User_money_list')->add_row($uid,1,$money,$desc);
 				return array('error_code' =>false,'msg' =>'OK');
 			}else{
 				return array('error_code' => true, 'msg' => L_("用户X1兑换余额保存记录失败！请联系管理员协助解决。",array("X1" => C('config.score_name')))); 

@@ -10,7 +10,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td>
-						<input type="button" value="添加商品子分类" class="button" onclick="window.top.artiframe('{pigcms{:U('add_son_category',array('cat_fid'=>$_GET['cat_fid']))}','添加商品子分类',800,480,true,false,false,addbtn,'add',true);"/>
+						<input type="button" value="添加商品子分类" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_son_category',array('cat_fid'=>$_GET['cat_fid']))}','添加商品子分类',800,480,true,false,false,addbtn,'add',true);"/>
 						
 						
 					</td>
@@ -68,7 +68,7 @@
 										<td><if condition="$vo.status eq 1"><font color="green">正常</font><else /><font color="red">禁止</font></if></td>
 										<td>{pigcms{$vo.goods_count}</td>
 										<td class="textcenter">
-											<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_son_category',array('cat_id'=>$vo['cat_id']))}','编辑',800,480,true,false,false,editbtn,'edit',true);">编辑</a>  | <a class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Village_group/del_category')}">删除</a>
+											<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_son_category',array('cat_id'=>$vo['cat_id']))}','编辑',800,480,true,false,false,editbtn,'edit',true);">编辑</a>  | <a class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Village_group/del_category')}">删除</a>
 										</td>
 									</tr>
 								</volist>

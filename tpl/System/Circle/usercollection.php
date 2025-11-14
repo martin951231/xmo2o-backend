@@ -30,8 +30,8 @@
 										<td class="textcenter">
 										<if condition="$vo['status'] eq 1">隐藏<else/>显示</if> 
 										</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/seearticle',array('did'=>$vo['did']))}','查看文章',850,700,true,false,false,editbtn,'edit',true);">查看文章</a> | <a href="javascript:void(0);" class="delete_row" parameter="did={pigcms{$vo.id}" url="{pigcms{:U('Circle/delcollection')}">删除收藏</a>
-										| <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/modifyCollection',array('id'=>$vo['id']))}','修改收藏',450,100,true,false,false,editbtn,'edit',true);">修改收藏</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/seearticle',array('did'=>$vo['did']))}','查看文章',850,700,true,false,false,editbtn,'edit',true);">查看文章</a> | <a href="javascript:void(0);" class="delete_row" parameter="did={pigcms{$vo.id}" url="{pigcms{:U('Circle/delcollection')}">删除收藏</a>
+										| <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/modifyCollection',array('id'=>$vo['id']))}','修改收藏',450,100,true,false,false,editbtn,'edit',true);">修改收藏</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="8">{pigcms{$pagebar}</td></tr>

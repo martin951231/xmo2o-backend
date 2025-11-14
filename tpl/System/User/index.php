@@ -4,13 +4,13 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<if condition="$config['open_school'] eq '1'">
-						<a href="{pigcms{:U('User/index')}" <if condition="empty($_GET['school_type'])">class="on"</if>>校内用户列表</a>
+						<a href="{pigcms{:U('User/index')}" <if condition="empty($_GET['school_type'])">class="on"</if>>SYSTEM_USER_INDEX_1</a>
 						<a href="{pigcms{:U('User/index?school_type=1')}" <if condition="!empty($_GET['school_type'])">class="on"</if>>校外用户列表</a>
 					<else />
-					<a href="{pigcms{:U('User/index')}" class="on">用户列表</a>
+					<a href="{pigcms{:U('User/index')}" class="on">SYSTEM_USER_INDEX_2</a>
 					</if>
-					<a href="{pigcms{:U('User/label_index')}">用户标签管理</a>
-					<a href="{pigcms{:U('User/privileged_user')}">特权用户</a>
+					<a href="{pigcms{:U('User/label_index')}">SYSTEM_USER_INDEX_3</a>
+					<a href="{pigcms{:U('User/privileged_user')}">SYSTEM_USER_INDEX_4</a>
 					<if condition="$config.open_user_money_verify eq '1'">
 						<a href="{pigcms{:U('User/user_money_verify')}">用户余额变动申请列表</a>
 					</if>
@@ -124,7 +124,7 @@
 								<th class="textcenter"><a href="{pigcms{:U('User/index',array('sort'=>'score'))}" style="color:blue;">{pigcms{$config['score_name']}</a></th>
 								<th class="textcenter">来源</th>
 								<th class="textcenter">状态</th>
-                                <if condition="$config.open_user_spread eq 1"><th class="textcenter">推广用户</th></if>
+                                <if condition="$config.open_user_spread eq 1"><th class="textcenter">SYSTEM_USER_INDEX_5</th></if>
                                 <if condition="$discuzx_url"><th class="textcenter">Discuzx论坛用户名</th></if>
 								<th class="textcenter">操作</th>
 							</tr>
@@ -134,7 +134,11 @@
 								<volist name="user_list" id="vo">
 									<tr>
 										<td>{pigcms{$vo.uid}</td>
-										<td>{pigcms{$vo.nickname}</td>
+										<td>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','查看用户信息',880,650,true,false,false,editbtn,'edit',true);">	
+												{pigcms{$vo.nickname}
+											</a>
+										</td>
 										<php>if(!isset($config['not_o2o_demo'])){</php>
 											<td><if condition="$vo['phone_country_type']">+{pigcms{$vo.phone_country_type}&nbsp;</if>{pigcms{$vo.phone}</td>
 										<php>}</php>
@@ -183,8 +187,8 @@
 										<php>}</php></td>
 										<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 2" /><font color="red">未审核</font><elseif condition="$vo['status'] eq 4" /><font color="red">已注销</font><else /><font color="red">禁用</font></if></td>
 										<if condition="$config.open_user_spread eq 1">
-											<td class="textcenter"><if condition="$vo.openid neq '' OR $vo.wxapp_openid neq ''"><a href="{pigcms{:U('User/spread_higher_user',array('openid'=>$vo['openid'],'uid'=>$vo['uid']))}">上级推广用户</a> | <a href="{pigcms{:U('User/spread_user',array('action'=>'spread_user','openid'=>$vo['openid'],'uid'=>$vo['uid']))}">下级推广用户</a>
-											 | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit_spread',array('uid'=>$vo['uid']))}','编辑推广用户上下级',680,500,true,false,false,editbtn,'edit',true);">修改上下级</a>
+											<td class="textcenter"><if condition="$vo.openid neq '' OR $vo.wxapp_openid neq ''"><a href="{pigcms{:U('User/spread_higher_user',array('openid'=>$vo['openid'],'uid'=>$vo['uid']))}">SYSTEM_USER_INDEX_6</a> | <a href="{pigcms{:U('User/spread_user',array('action'=>'spread_user','openid'=>$vo['openid'],'uid'=>$vo['uid']))}">SYSTEM_USER_INDEX_7</a>
+											 | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit_spread',array('uid'=>$vo['uid']))}','编辑推广用户上下级',680,500,true,false,false,editbtn,'edit',true);">修改上下级</a>
 											
 											</if></td>
 										</if>
@@ -193,7 +197,7 @@
                                             <td class="textcenter">{pigcms{$vo.discuzx_name}</td>
                                         </if>
 										<td class="textcenter">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',880,650,true,false,false,editbtn,'edit',true);"><if condition="$vo['status'] eq 2">审核<else />编辑</if></a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',880,650,true,false,false,editbtn,'edit',true);"><if condition="$vo['status'] eq 2">审核<else />编辑</if></a>
                                             <if condition="$isRoot AND ($vo['status'] eq 4)">
                                                 &nbsp;|&nbsp;<a href="javascript:void(0);" class="restore_row" data-phone="{pigcms{$vo.phone}" data-uid="{pigcms{$vo.uid}" data-nickname="{pigcms{$vo.nickname}">恢复</a>
                                             </if>
@@ -219,7 +223,7 @@
             var nickname = now_dom.data('nickname');
             var uid = now_dom.data('uid');
             var phone = now_dom.data('phone');
-            window.top.art.dialog({
+            window.o2oTop.art.dialog({
                 icon: 'question',
                 title: '请确认',
                 id: 'msg' + Math.random(),
@@ -231,10 +235,10 @@
                 ok: function () {
                     $.post("{pigcms{:U('User/restore')}", {uid:uid}, function (result) {
                         if (result.error_no == 0) {
-                            window.top.msg(1, result.error_msg, true);
+                            window.o2oTop.msg(1, result.error_msg, true);
                             window.location.reload();
                         } else {
-                            window.top.msg(0, result.error_msg);
+                            window.o2oTop.msg(0, result.error_msg);
                         }
                     });
                 },

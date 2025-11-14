@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <div class="group-title">
                             <span class="name">搜索排行配置</span>
-                            <button onclick="window.top.goV20Url('/common/platform/viewpage/SearchRankingConfig')" type="button" class="btn fitment" data-edit="1">装修
+                            <button onclick="window.o2oTop.goV20Url('/common/platform/viewpage/SearchRankingConfig')" type="button" class="btn fitment" data-edit="1">装修
                             </button>
                         </div>
                         <div class="group-content">自定义排序规则与权重调整，优化用户搜索体验</div>
@@ -403,15 +403,15 @@
 				if($(this).data('target')){
 					top.addIframe(_this.siblings('.name').text(),_this.data('page_id'),_this.data('url'));
 				}else if($(this).data('edit')){
-					window.top.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,580,true,false,false,editbtn,'store_add',true);
+					window.o2oTop.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,580,true,false,false,editbtn,'store_add',true);
 				}else if($(this).data('simple')){
-          window.top.artiframe(_this.data('url'),_this.siblings('.name').text(),800,500,true,false,false,editbtn,'simple',true);
+          window.o2oTop.artiframe(_this.data('url'),_this.siblings('.name').text(),800,500,true,false,false,editbtn,'simple',true);
         }else if($(this).data('opacity')){
-          window.top.artiframe(_this.data('url'),_this.siblings('.name').text(),500,200,true,false,false,editbtn,'opacity',true);
+          window.o2oTop.artiframe(_this.data('url'),_this.siblings('.name').text(),500,200,true,false,false,editbtn,'opacity',true);
         }else if($(this).data('noedit')){
-                    window.top.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,680,true,false,false,false,'store_add',true);
+                    window.o2oTop.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,680,true,false,false,false,'store_add',true);
                 }else{
-					window.top.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true,
+					window.o2oTop.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true,
 						function(){
 							if (_this.data('refresh')=="1") {
 								window.location.reload();

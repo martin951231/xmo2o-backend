@@ -7,7 +7,7 @@
 	<form name="myform" id="myform" action="" method="post">
 		<!--
 		<div style="margin: 5px;height: 30px;line-height: 30px;">
-			<input type="submit" style="margin-right:20px;" value="新增" class="button" onclick="window.top.artiframe('{pigcms{:U('mobileAppAdd')}','新增',680,500,true,false,false,editbtn,'add',true);"/>
+			<input type="submit" style="margin-right:20px;" value="新增" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('mobileAppAdd')}','新增',680,500,true,false,false,editbtn,'add',true);"/>
 		</div>
 		-->
 		<div class="table-list">
@@ -51,7 +51,7 @@
 									</if>
 								</td>
 								<td class="textcenter">
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('mobileAppAdd',[\'pack_id\'=>$vo[\'pack_id\']])}','查看/编辑',680,500,true,false,false,editbtn,'add',true);">查看/编辑</a>
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('mobileAppAdd',[\'pack_id\'=>$vo[\'pack_id\']])}','查看/编辑',680,500,true,false,false,editbtn,'add',true);">查看/编辑</a>
 									&nbsp;&nbsp;|&nbsp;&nbsp;
 									<a href="{pigcms{:U('mobileApp',array('pack_id'=>$vo['pack_id']))}" style="color: {pigcms{$vo['tip_color']}">详细信息</a>
 								</td>

@@ -62,9 +62,9 @@
                                         <td>{pigcms{$vo.admin_name}</td>
                                         <td>{pigcms{$vo.create_time}</td>
 										<td>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/rechargeBatchRemarkSet',array('id'=>$vo['id']))}','修改备注',680,400,true,false,false,editbtn,'edit',true);">修改备注</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/rechargeBatchRemarkSet',array('id'=>$vo['id']))}','修改备注',680,400,true,false,false,editbtn,'edit',true);">修改备注</a>
                                             <span>&nbsp;|&nbsp;</span>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalCard/recharge_log',array('deduction_batch_no'=>$vo['batch_no']))}','一卡通充值明细',1000,560,true,false,false,null,'money_list',true);">查看导入明细</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalCard/recharge_log',array('deduction_batch_no'=>$vo['batch_no']))}','一卡通充值明细',1000,560,true,false,false,null,'money_list',true);">查看导入明细</a>
                                             <span>&nbsp;|&nbsp;</span>
                                             <a href="{pigcms{:U('InternalCard/recharge_log',array('deduction_batch_no'=>$vo['batch_no'], 'export' => 'excel'))}">导出导入明细</a>
                                         </td>

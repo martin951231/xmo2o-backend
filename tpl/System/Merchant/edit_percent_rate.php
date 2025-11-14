@@ -167,7 +167,7 @@
 		   <tbody>
 			<tr>
 			 <th width="160">商家平台活动抽成比例：</th>
-			 <td><input type="text" class="input-text" name="activity_percent" id="config_activity_percent" value="{pigcms{$mer_pr.activity_percent}" size="10" validate="number:true,max:100" tips="平台独立活动抽成比例，平台活动包括一元夺宝，优惠券（按百分比，不要填写%，填-1 则跳过当前业务设置）" /></td>
+			 <td><input type="text" class="input-text" name="activity_percent" id="config_activity_percent" value="{pigcms{$mer_pr.activity_percent}" size="10" validate="number:true,max:100" tips="平台独立活动抽成比例，平台活动包括{pigcms{$config.activity_score_alias}，优惠券（按百分比，不要填写%，填-1 则跳过当前业务设置）" /></td>
 			</tr>
 			<tr>
 			 <th width="160">商家平台活动分佣比例：</th>
@@ -189,12 +189,12 @@
 			$('#dosubmit').click(function(){
 				$.post('{pigcms{:U('Merchant/edit_percent_rate')}', $('#myform').serialize(), function(data, textStatus, xhr) {
 					if(data.status==1){
-						window.top.msg(2,data.info,true,2);
+						window.o2oTop.msg(2,data.info,true,2);
 					}else{
-						window.top.msg(0,data.info,true,2);
+						window.o2oTop.msg(0,data.info,true,2);
 					}
 					
-					window.top.art.dialog({id:'edit_percent_rate'}).close();
+					window.o2oTop.art.dialog({id:'edit_percent_rate'}).close();
 				});
 				
 			});
@@ -208,22 +208,22 @@
 				return false;
 			});
 			$('#im_key').click(function(){
-				window.top.msg(2,'正在请求中,请稍等...',true,100);
+				window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 				$.get("{pigcms{:U('Config/im')}",function(data){
 					if(data.error_code){
-						window.top.msg(0,data.msg,true,3);
+						window.o2oTop.msg(0,data.msg,true,3);
 					}else{
-						window.top.msg(1,data.msg,true,3);
+						window.o2oTop.msg(1,data.msg,true,3);
 					}
 				},'json');
 			});
 			$('#live_service_key').click(function(){
-				window.top.msg(2,'正在请求中,请稍等...',true,100);
+				window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 				$.get("{pigcms{:U('Config/live_service')}",function(data){
 					if(data.error_code){
-						window.top.msg(0,data.msg,true,3);
+						window.o2oTop.msg(0,data.msg,true,3);
 					}else{
-						window.top.msg(1,data.msg,true,3);
+						window.o2oTop.msg(1,data.msg,true,3);
 					}
 				},'json');
 			});

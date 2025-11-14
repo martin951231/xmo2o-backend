@@ -27,6 +27,16 @@ class AreaStreetPartyBuild extends Model
         return $data;
     }
 
+    public function getListsJoinCategory($where,$field='*',$page=1,$limit=20,$order='is_hot,build_id DESC')
+    {
+        $data = $this->alias('pb')->leftJoin('area_street_party_build_category pbc','pb.cat_id = pbc.cat_id')->where($where)->field($field)->order($order)->page($page,$limit)->select();
+        return $data;
+    }
+    public function getJoinCategoryCount($where)
+    {
+        $count = $this->alias('pb')->leftJoin('area_street_party_build_category pbc','pb.cat_id = pbc.cat_id')->where($where)->count();
+        return $count;
+    }
     /**
      * 党建资讯详情
      * @author lijie

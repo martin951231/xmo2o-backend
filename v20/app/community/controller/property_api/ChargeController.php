@@ -7,6 +7,7 @@ use app\community\model\service\HouseNewChargeProjectService;
 use app\community\model\service\HouseNewChargeRuleService;
 use app\community\model\service\HouseNewTransactionSummaryService;
 use app\community\model\service\HouseVillageService;
+use app\community\model\service\KefuService;
 use app\community\model\service\order\PropertyBillOrderService;
 
 class ChargeController extends CommunityBaseController
@@ -367,16 +368,31 @@ class ChargeController extends CommunityBaseController
         $village_ids = $this->request->param('village_ids', ''); //小区ids
         $w_singles = $this->request->param('w_singles', '');
         $year_v = $this->request->param('year_v', 0,'intval');
+        $single_ids = $this->request->param('single_ids', '');
+        $wids = $this->request->param('wids', '');
         if($year_v<1){
             $year_v=date('Y');
         }
         $singleArr=array();
+        /*
         if($w_singles){
             foreach ($w_singles as $tvv){
                 $tmpArr=explode('_',$tvv);
                 $singleArr[]=$tmpArr['1'];
             }
             $singleArr=array_unique($singleArr,SORT_NUMERIC);
+        }
+        */
+        if(!empty($single_ids)){
+            $singleArr=array_unique($single_ids);
+        }else if(!empty($wids)){
+            $where = array(
+                ['village_id', '=', $village_ids],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+            );
+            $singleList = (new KefuService())->getVillageSingleListByWid($where,$wids);
+            $singleArr=$singleList['single_ids'];
         }
         if(empty($village_ids)){
             $condition_where = array(['property_id', '=', $property_id]);
@@ -409,16 +425,31 @@ class ChargeController extends CommunityBaseController
         $w_singles = $this->request->param('w_singles', '');
         $year_v = $this->request->param('year_v', 0,'intval');
         $is_split = $this->request->param('is_split', 0 ,'intval');
+        $single_ids = $this->request->param('single_ids', '');
+        $wids = $this->request->param('wids', '');
         if($year_v<1){
             $year_v=date('Y');
         }
         $singleArr=array();
+        /*
         if($w_singles){
             foreach ($w_singles as $tvv){
                 $tmpArr=explode('_',$tvv);
                 $singleArr[]=$tmpArr['1'];
             }
             $singleArr=array_unique($singleArr,SORT_NUMERIC);
+        }
+        */
+        if(!empty($single_ids)){
+            $singleArr=array_unique($single_ids);
+        }else if(!empty($wids)){
+            $where = array(
+                ['village_id', '=', $village_ids],
+                ['single_id', '>', 0],
+                ['floor_id', '<', 1],
+            );
+            $singleList = (new KefuService())->getVillageSingleListByWid($where,$wids);
+            $singleArr=$singleList['single_ids'];
         }
         if(empty($village_ids)){
             $condition_where = array(['property_id', '=', $property_id]);

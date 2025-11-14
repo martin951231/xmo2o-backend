@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="javascript:void(0);" class="on">分类信息公告列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('add')}','添加公告',800,460,true,false,false,addbtn,'add',true);">添加公告</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('add')}','添加公告',800,460,true,false,false,addbtn,'add',true);">添加公告</a>
 				</ul>
 			</div>
 			<div class="table-list">
@@ -29,7 +29,7 @@
 									<td>{pigcms{$vo.id}</td>
 									<td>{pigcms{$vo.title}</td>
 								
-									<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('edit',array('id'=>$vo['id']))}','编辑公告',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('del')}">删除</a></td>
+									<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('edit',array('id'=>$vo['id']))}','编辑公告',800,460,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('del')}">删除</a></td>
 								</tr>
 							</volist>
 							<tr><td class="textcenter pagebar" colspan="4">{pigcms{$pagebar}</td></tr>

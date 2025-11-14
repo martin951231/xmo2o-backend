@@ -38,6 +38,14 @@ class Village_groupAction extends BaseAction{
 
 	//社区拼团
 	public function index(){
+		$leader_id = intval($_GET['leader_id']);
+		if ($leader_id > 0) { 
+			redirect($this->config['site_url'] . "/packapp/community_group/#/index?leaderId=" . intval($_GET['leader_id']));
+		} else {
+			redirect($this->config['site_url'] . "/packapp/community_group/#/index");
+		}
+
+		
         redirect($this->config['site_url']."/packapp/community_group/index.html?c=Village_group&a=index".($_GET['leader_id'] ? "&leaderId=".intval($_GET['leader_id']) : ""));
 		//redirect($this->config['site_url']."/packapp/community_group/index.html#/index".($_GET['leader_id'] ? "?leaderId=".intval($_GET['leader_id']) : ""));
 		//===>郭先森重构
@@ -1771,24 +1779,28 @@ class Village_groupAction extends BaseAction{
 		$this->assign('label',D('Village_group')->get_label());
 
 
-        // if (C('config.village_group_hide_detail')) {
-        //     $header['phone'] = '';
-        //     $header['name'] = str_replace_name($header['name']);
-        //     if (mb_strlen($header['pick_address']['pick_addr'],'UTF8') > 3) {
-        //         if (mb_strlen($header['pick_address']['pick_addr'],'UTF8') == 4) {
-        //             $header['pick_address']['pick_addr'] =  mb_substr($header['pick_address']['pick_addr'],0,-3).'****';
-        //         }else{
-        //             $header['pick_address']['pick_addr'] =  mb_substr($header['pick_address']['pick_addr'],0,-4).'****';
-        //         }
-        //     }
-        //     if (mb_strlen($order['pick_addr'],'UTF8') > 3) {
-        //         if (mb_strlen($order['pick_addr'],'UTF8') == 4) {
-        //             $order['pick_addr'] =  mb_substr($order['pick_addr'],0,-3).'****';
-        //         }else{
-        //             $order['pick_addr'] =  mb_substr($order['pick_addr'],0,-4).'****';
-        //         }
-        //     }
-        // }
+		// if (C('config.village_group_hide_detail')) {
+		//     $header['phone'] = '';
+		//     $header['name'] = str_replace_name($header['name']);
+		//     if (mb_strlen($header['pick_address']['pick_addr'],'UTF8') > 3) {
+		//         if (mb_strlen($header['pick_address']['pick_addr'],'UTF8') == 4) {
+		//             $header['pick_address']['pick_addr'] =  mb_substr($header['pick_address']['pick_addr'],0,-3).'****';
+		//         }else{
+		//             $header['pick_address']['pick_addr'] =  mb_substr($header['pick_address']['pick_addr'],0,-4).'****';
+		//         }
+		//     }
+		//     if (mb_strlen($order['pick_addr'],'UTF8') > 3) {
+		//         if (mb_strlen($order['pick_addr'],'UTF8') == 4) {
+		//             $order['pick_addr'] =  mb_substr($order['pick_addr'],0,-3).'****';
+		//         }else{
+		//             $order['pick_addr'] =  mb_substr($order['pick_addr'],0,-4).'****';
+		//         }
+		//     }
+		// }
+
+		//待支付订单超时时间（秒）
+		$unpaid_timeout_seconds = C('config.village_group_order_unpaid_timeout') > 0 ? C('config.village_group_order_unpaid_timeout') * 60 : 1800;
+		$this->assign('unpaid_timeout_seconds', $unpaid_timeout_seconds);
 
 		$order['show_after_sale_btn'] = $order['bill_time'] + C('config.village_group_order_refund_days') * 86400 > time();
 		$this->assign('village_group_unshipped_cancel_order',$this->config['village_group_unshipped_cancel_order']);
@@ -3546,7 +3558,8 @@ class Village_groupAction extends BaseAction{
 				// 如果优惠后金额大于0 以此计算
 				$total_money = $order['discount_price'];
 			}
-			D('User')->add_score($order['uid'], round(($total_money-$goods_score_price) * $score_get)+$goods_score, '购买 社区拼团 消费' . floatval($total_money) . $this->config['Currency_txt'].' 获得'.$this->config['score_name'],0,[
+			//积分抵扣部分不算积分
+			D('User')->add_score($order['uid'], ($total_money - $order['score_deducte'] - $goods_score_price) * $score_get + $goods_score, '购买 社区拼团 消费' . floatval($total_money) . $this->config['Currency_txt'].' 获得'.$this->config['score_name'],0,[
 			    'order_id'=>$order['order_id'],
                 'order_type'=>'village_group'
             ]);

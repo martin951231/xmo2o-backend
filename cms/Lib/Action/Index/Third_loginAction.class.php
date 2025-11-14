@@ -354,4 +354,62 @@ class Third_loginAction extends BaseAction{
 		$baodiTicket = new baodiTicket();
 		$result = $baodiTicket->verifyTicket();
 	}
+
+	//客户定制商家中心免登陆跳转到用户端下跑腿订单
+	public function login_from_merchant()
+	{
+		$phone = strval($_REQUEST['phone']);
+		$type = strval($_REQUEST['type']);
+		$source = 'merchant_paotui';
+
+		if (empty($phone)) {
+			$this->error('手机号不能为空');
+		}
+		//判断手机号有对应的商家
+		$merchant = D('Merchant')->where(['status' => 1, 'phone' => $phone])->find();
+		if (empty($merchant)) {
+			$this->error('系统错误');
+		}
+
+		$now_user = D('User')->get_user($phone, 'phone');
+		$data_user['nickname'] 		= phone_show($phone);
+		$data_user['avatar'] 		= '';
+		$data_user['phone'] 		= $phone;
+		$data_user['source'] 		= $source;
+
+		if (empty($now_user)) {
+			//查不到手机号那就注册
+			$reg_result = D('User')->autoreg($data_user);
+			if ($reg_result['error_code']) {
+				$this->error($reg_result['msg']);
+			}
+			$now_user = D('User')->get_user($reg_result['uid'], 'uid');
+		}
+
+		$login_result = D('User')->autologin('uid', $now_user['uid']);
+		if ($login_result['error_code']) {
+			$this->error($login_result['msg']);
+		} else {
+			$now_user = $login_result['user'];
+			session('user', $now_user);
+			$this->user_session = $now_user;
+			$device_id = 'packapp';
+			$ticket = ticket::create($this->user_session['uid'], $device_id, true);
+			setcookie('user_device_id', $device_id, 0, '/');
+			setcookie('user_ticket', $ticket['ticket'], 0, '/');
+			setcookie('login_status', 'login', 0, '/');
+			setcookie('now_user', json_encode($now_user, JSON_UNESCAPED_UNICODE), 0, '/');
+			$v20Ticket = Token::createToken($this->user_session['uid']);
+			setcookie('v20_ticket', $v20Ticket, 0, '/');
+		}
+
+		if($type == 'paotui'){
+			$referer = get_base_url("pages/runErrands/confirm?from=merchant&mer_id=" . $merchant['mer_id']."&tm=".uniqid());
+		}else if($type == 'paotui_orders'){
+			$referer = get_base_url("pages/my/my_order?type=service");
+		}else{
+			$referer = get_base_url();
+		}
+		redirect($referer);
+	}
 }

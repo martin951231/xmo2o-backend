@@ -274,33 +274,33 @@
                                                                     console.log('share_type', share_type);
 																	
                                                                     if(name.length == 0){
-                                                                        window.top.msg(1, '海报名称不能为空');
+                                                                        window.o2oTop.msg(1, '海报名称不能为空');
                                                                         $("input[name='name']").focus();
                                                                         return false;
                                                                     }
 																	if(title.length == 0){
-                                                                        window.top.msg(1, '副标题不能为空');
+                                                                        window.o2oTop.msg(1, '副标题不能为空');
                                                                         $("input[name='title']").focus();
                                                                         return false;
                                                                     }
 
                                                                     if(start_time.length == 0){
-                                                                        window.top.msg(1, '开始时间不能为空');
+                                                                        window.o2oTop.msg(1, '开始时间不能为空');
                                                                         $("input[name='start_time']").focus();
                                                                         return false;
                                                                     }
                                                                     if(end_time.length == 0){
-                                                                        window.top.msg(1, '结束时间不能为空');
+                                                                        window.o2oTop.msg(1, '结束时间不能为空');
                                                                         $("input[name='end_time']").focus();
                                                                         return false;
                                                                     }
                                                                     if(descr.length == 0){
-                                                                        window.top.msg(1, '描述不能为空');
+                                                                        window.o2oTop.msg(1, '描述不能为空');
                                                                         $("input[name='descr']").focus();
                                                                         return false;
                                                                     }
                                                                     if(!share_type){
-                                                                        window.top.msg(1, '请选择选择推送对象');
+                                                                        window.o2oTop.msg(1, '请选择选择推送对象');
                                                                         return false;
                                                                     }
 																	console.log(ctrlJson);
@@ -321,11 +321,11 @@
                                                                         'banner_config': JSON.stringify(ctrlJson)
                                                                     }, function (data) {
                                                                         if (data.error == 0) {
-                                                                            window.top.msg(1, data.message);
+                                                                            window.o2oTop.msg(1, data.message);
                                                                             setTimeout('history.go(0)',1000);//延时1秒
                                                                             location.href='<?php echo U('Employee/promote_index')?>';
                                                                         } else {
-                                                                            window.top.msg(false, data.message);
+                                                                            window.o2oTop.msg(false, data.message);
                                                                         }
                                                                     }, 'json');
                                                                 });

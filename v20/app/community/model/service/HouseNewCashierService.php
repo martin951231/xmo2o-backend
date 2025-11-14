@@ -221,7 +221,8 @@ class HouseNewCashierService
         }
         $db_house_new_pay_order = new HouseNewPayOrder();
         $data = $db_house_new_pay_order->getSumByGroup($where, $group, $field,$page,$limit,$whereOr);
-        $total_money = 0;
+        $x_total_money = 0;
+        $x_pay_money=0;
         if($data){
             $data = $data->toArray();
         }
@@ -236,7 +237,7 @@ class HouseNewCashierService
             $configCustomizationService=new ConfigCustomizationService();
             $is_grapefruit_prepaid=$configCustomizationService->getHzhouGrapefruitOrderJudge();
 
-            $childrenfield.=',o.unify_flage_id,p.type as project_type,o.order_type_flag,o.ticket_number';
+            $childrenfield.=',o.unify_flage_id,p.type as project_type,o.order_type_flag,o.ticket_number,o.meter_reading_id,o.order_type_flag';
             $jz_open = $configCustomizationService->getWSXCustomizedOpen();
             
             $is_aihorse_customized=$configCustomizationService->getAihorseCustomizedJudge();
@@ -634,7 +635,8 @@ class HouseNewCashierService
                 }
 
                 $data[$k]['pay_money'] = formatNumber($data[$k]['pay_money'],2,1);
-                $total_money += ($data[$k]['pay_money']);
+                $x_pay_money += ($data[$k]['pay_money']);
+                $x_total_money += ($data[$k]['total_money']);
                 $v['is_no_selected']=false;
                 $v['my_check_status']=0;  //我看到审核状态 1审核中 2审核 自己已审核
                 $v['order_apply_info']='';
@@ -675,7 +677,8 @@ class HouseNewCashierService
                 }
             }
         }
-        $total_money = formatNumber($total_money,2,1);
+        $x_pay_money= formatNumber($x_pay_money,2,1);
+        $x_total_money = formatNumber($x_total_money,2,1);
         /*  当水小数 电然 和 其他  设置不一样时 有问题  改成统一取两位小数处理
         if(empty($digit_info)){
             $total_money = formatNumber($total_money,2,1);
@@ -683,7 +686,8 @@ class HouseNewCashierService
             $total_money = formatNumber($total_money,$digit_info['other_digit'],$digit_info['type']);
         }
         */
-        $res['total_money'] = $total_money;
+        $res['pay_money'] = $x_pay_money;
+        $res['total_money'] = $x_total_money;
         $res['order_list'] = $data;
         return $res;
     }
@@ -759,6 +763,7 @@ class HouseNewCashierService
         $where[] = ['o.is_paid','=',2];
         $where[] = ['o.is_discard','=',1];
         $where[] = ['o.is_prepare','=',1];
+        $where[] = ['o.order_type','not in',['water','electric','gas']];
         $houseVillageCheckauthApplyService=new HouseVillageCheckauthApplyService();
         $field = 'o.order_id,o.property_id,o.village_id,o.add_time,o.check_apply_id,o.check_status,o.primitive_order_id';
         $db_house_new_pay_order = new HouseNewPayOrder();
@@ -920,7 +925,8 @@ class HouseNewCashierService
         }else{
             $digit_info = [];
         }
-   
+        $db_house_village_parking_position = new HouseVillageParkingPosition();
+        $db_house_village_user_vacancy = new HouseVillageUserVacancy();
         $data['modify_money'] = formatNumber($data['modify_money'],2,1);
         $data['modify_money']=$data['modify_money']*1;
         $data['total_money'] = formatNumber($data['total_money'],2,1);
@@ -964,6 +970,29 @@ class HouseNewCashierService
                 'title' => '账单结束时间',
                 'val' => $data['service_end_time_txt']
             );
+            if (isset($data['room_id']) && ($data['room_id']>0)) {
+                $room = $db_house_village_user_vacancy->getLists(['pigcms_id' => $data['room_id']]);
+                if (!empty($room)) {
+                    $room = $room->toArray();
+                    if (!empty($room)) {
+                        $room1 = $room[0];
+                        $house_village_service=new HouseVillageService();
+                        $number_room =$house_village_service->word_replce_msg(array('single_name'=>$room1['single_name'],'floor_name'=>$room1['floor_name'],'layer'=>$room1['layer_name'],'room'=>$room1['room']),$data['village_id']);
+                        $return_data[0]['list'][] = array(
+                            'title' => '房间号',
+                            'val' => $number_room
+                        );
+                    }
+                }
+            }
+            if (isset($data['position_id']) && ($data['position_id']>0)) {
+                $park_number_info = $this->getCarParkingById($data['position_id']);
+                $park_number =$park_number_info['park_number'];
+                $return_data[0]['list'][] = array(
+                    'title' => '车位号',
+                    'val' => $park_number
+                );
+            } 
             if (isset($data['parking_num']) && intval($data['parking_num'])) {
                 $return_data[0]['list'][] = array(
                     'title' => '车位数量',
@@ -1817,6 +1846,7 @@ class HouseNewCashierService
         if (empty($data['project_name'])&&$data['car_type']=='temporary_type'){
             $data['project_name']='临时车缴费（'.$data['car_number'].'）';
         }
+        $db_house_village_user_vacancy = new HouseVillageUserVacancy();
         $digit_info=array();
         $late_payment_money = formatNumber($data['late_payment_money'],2,1);
         $db_house_new_pay_order_summary = new HouseNewPayOrderSummary();
@@ -1949,6 +1979,29 @@ class HouseNewCashierService
                 'title' => '收费项目名称',
                 'val' => $data['project_name']
             );
+            if (isset($data['room_id']) && ($data['room_id']>0)) {
+                $room = $db_house_village_user_vacancy->getLists(['pigcms_id' => $data['room_id']]);
+                if (!empty($room)) {
+                    $room = $room->toArray();
+                    if (!empty($room)) {
+                        $room1 = $room[0];
+                        $house_village_service=new HouseVillageService();
+                        $number_room =$house_village_service->word_replce_msg(array('single_name'=>$room1['single_name'],'floor_name'=>$room1['floor_name'],'layer'=>$room1['layer_name'],'room'=>$room1['room']),$data['village_id']);
+                        $return_data[0]['list'][] = array(
+                            'title' => '房间号',
+                            'val' => $number_room
+                        );
+                    }
+                }
+            }
+            if (isset($data['position_id']) && ($data['position_id']>0)) {
+                $park_number_info = $this->getCarParkingById($data['position_id']);
+                $park_number =$park_number_info['park_number'];
+                $return_data[0]['list'][] = array(
+                    'title' => '车位号',
+                    'val' => $park_number
+                );
+            }
             $return_data[0]['list'][] = array(
                 'title' => '应收费用',
                 'val' => $data['total_money']
@@ -3202,7 +3255,7 @@ class HouseNewCashierService
         $db_house_village_detail_record = new HouseVillageDetailRecord();
         $db_house_new_charge_project = new HouseNewChargeProject();
         $db_village_info = new HouseVillageInfo();
-
+        $db_admin = new HouseAdmin();
         $village_id = 0;
         $is_online = 0;
         $room_flag=0;
@@ -3239,7 +3292,7 @@ class HouseNewCashierService
                 if ($va[0] == 'o.room_id') {
                     $room_flag=1;
                 }
-                if ($va[0] == 'o.pay_type') {
+                if ($va[0] == 'o.pay_type' && $va[1] =='=') {
                     unset($where[$k]);
                     $pay_type_where=$va[2];
                     if(!is_array($pay_type_where)){
@@ -3651,6 +3704,9 @@ class HouseNewCashierService
                     } elseif (isset($v['check_status']) && in_array($v['check_status'],array(2,6))) {
                         $v['my_check_status'] = 1;
                     }
+                    if($v['check_status_str']){
+                        $v['order_status']=$v['check_status_str'];
+                    }
                     if( isset($v['phone']) && !empty($v['phone'])) {
                         $v['phone'] =$houseVillageDb->phone_desensitization_v($v['phone'],$village_id,$village_info);;
                     }
@@ -3671,6 +3727,19 @@ class HouseNewCashierService
                         }
                         $v['project_name'] .= ']';
                     }
+                    $role_name = '';
+                    if($v['role_id']>0 && ($v['login_role']==401||$v['login_role']==0)){
+                        $role_name=$v['role_name'];
+                        $admininfo = $db_admin->getOne(['id' => $v['role_id']],'id,village_id,account,realname,phone');
+                        if($admininfo && !$admininfo->isEmpty()){
+                            $role_name=$admininfo['realname'];
+                        }
+                    }else if($v['role_id']<1 && $pay_type==4){
+                        $role_name = '自助缴费';
+                    }else if(in_array($v['login_role'],[0,303,304,104,105])){
+                        $role_name = '平台缴费';
+                    }
+                    $v['role_name']=$role_name;
                 }
             }
 
@@ -3981,7 +4050,7 @@ class HouseNewCashierService
                 }
             }
         }
-
+        $db_admin = new HouseAdmin();
         $list = $db_house_new_pay_order->getCancelOrder($where, $where1, $field, $page, $limit,$order);
         if ($list) {
             $list = $list->toArray();
@@ -4079,7 +4148,12 @@ class HouseNewCashierService
                     if(isset($v['pay_bind_phone']) && !empty($v['pay_bind_phone'])){
                         $v['pay_bind_phone']=$houseVillageDb->phone_desensitization_v($v['pay_bind_phone'],$village_id,$village_info);
                     }
-                    
+                    if(isset($v['role_name']) && empty($v['role_name']) && $v['role_id']>0 && isset($v['login_role']) && $v['login_role']<=0){
+                        $admininfo = $db_admin->getOne(['id' =>$v['role_id']],'id,village_id,account,realname,phone');
+                        if (!empty($admininfo) && !$admininfo->isEmpty()) {
+                            $v['role_name']=$admininfo['realname'] ? $admininfo['realname']:$admininfo['account'];
+                        }
+                    }
                 }
             }
 
@@ -4359,21 +4433,22 @@ class HouseNewCashierService
             }
             $data['role_name'] = '';
             $data['ammeter'] = bcsub(strval($data['now_ammeter']),strval($data['last_ammeter']),2);
-            if ($data['pay_type_way']!=4 && $data['role_id']){
-                $admininfo = $db_admin->getOne(['id' => $data['role_id']]);
-                if (!empty($admininfo)) {
-                    if (!empty($admininfo['realname'])){
-                        $data['role_name'] = $admininfo['realname'];
-                    }else{
-                        $data['role_name'] = $admininfo['account'];
-                    }
+
+
+            $role_name = '';
+            if($data['role_id']>0 && ($data['login_role']==401||$data['login_role']==0)){
+                $role_name=$data['role_name'];
+                $admininfo = $db_admin->getOne(['id' => $data['role_id']],'id,village_id,account,realname,phone');
+                if($admininfo && !$admininfo->isEmpty()){
+                    $role_name=$admininfo['realname'];
                 }
             }else if($data['pay_type_way']==4){
-                $data['role_name'] = '自助缴费';
-            }else {
-                $data['role_name'] = '平台缴费';
+                $role_name = '自助缴费';
+            }else if(in_array($data['login_role'],[0,303,304,104,105])){
+                $role_name = '平台缴费';
             }
-
+            $data['role_name']=$role_name;
+            
             $data['record_status']='未开票';
             if(isset($data['invoice_status']) && $data['invoice_status']==1){
                 $data['record_status'] = '已开票';
@@ -4464,7 +4539,9 @@ class HouseNewCashierService
                 if(isset($data['village_balance']) && $data['village_balance']>0){
                     $data['system_balance']=$data['system_balance']+$data['village_balance'];
                 }
-                $data['pay_amount_points']=formatNumber($data['pay_amount_points']/100,2,1).'元';
+                $pay_amount_points= ($data['pay_amount_points']/100);
+                
+                $data['pay_amount_points']=formatNumber($pay_amount_points,2,1).'元';
                 $data['system_balance']=formatNumber($data['system_balance'],2,1).'元';
                 $data['score_deducte']=formatNumber($data['score_deducte'],2,1).'元';
                 $data['score_used_count']=formatNumber($data['score_used_count'],2,1);
@@ -4874,18 +4951,24 @@ class HouseNewCashierService
                 if(!empty($orderInfo['position_id']) ){
                     $pay_where=array(['village_id','=',$orderInfo['village_id']],['is_discard','in',[1]],['is_paid','=',2],['position_id','=',$orderInfo['position_id']],['order_type','=',$orderInfo['order_type']]);
                     $payed_where=array(['village_id','=',$orderInfo['village_id']],['is_refund','=',1],['is_paid','=',1],['position_id','=',$orderInfo['position_id']],['order_type','=',$orderInfo['order_type']]);
-                    if (isset($getProjectArr)&&!empty($getProjectArr)){
+                    if (isset($getProjectArr)&&!empty($getProjectArr) && $orderInfo['order_type']=='property'){
                         $pay_where[]=['project_id','in',$getProjectArr];
                         $payed_where[]=['project_id','in',$getProjectArr];
+                    }else{
+                        $pay_where[]=['project_id','=',$orderInfo['project_id']];
+                        $payed_where[]=['project_id','=',$orderInfo['project_id']];
                     }
                     $pay_order_info = $this->getInfo($pay_where,'order_id,project_id,service_start_time,service_end_time','service_end_time DESC,order_id DESC');
                     $payed_order_info = $db_house_new_pay_order->get_one($payed_where,'service_start_time,service_end_time,order_id','service_end_time DESC');
                 } else{
                     $pay_where=array(['village_id','=',$orderInfo['village_id']],['is_discard','in',[1]],['is_paid','=',2],['room_id','=',$orderInfo['room_id']],['order_type','=',$orderInfo['order_type']]);
                     $payed_where=array(['village_id','=',$orderInfo['village_id']],['is_refund','=',1],['is_paid','=',1],['room_id','=',$orderInfo['room_id']],['order_type','=',$orderInfo['order_type']]);
-                    if (isset($getProjectArr)&&!empty($getProjectArr)){
+                    if (isset($getProjectArr)&&!empty($getProjectArr) && $orderInfo['order_type']=='property'){
                         $pay_where[]=['project_id','in',$getProjectArr];
                         $payed_where[]=['project_id','in',$getProjectArr];
+                    }else{
+                        $pay_where[]=['project_id','=',$orderInfo['project_id']];
+                        $payed_where[]=['project_id','=',$orderInfo['project_id']];
                     }
                     $payed_order_info = $db_house_new_pay_order->get_one($payed_where,'service_start_time,service_end_time,order_id','service_end_time DESC');
                     $pay_order_info = $this->getInfo($pay_where,'order_id,project_id,service_start_time,service_end_time','service_end_time DESC,order_id DESC');
@@ -5232,7 +5315,8 @@ class HouseNewCashierService
                     }else{
                         $score_used_count=round_number($orderInfo['score_used_count']*($score_deducte_money/$orderInfo['score_deducte']),2);
                     }
-                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])));
+                    $scoreParam=array('order_type'=>'village_order_refund','score_type'=>20,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])),0,$scoreParam);
                     if (empty($refund['error_code'])){
                         $param_bill=[];
                         $param_bill=[
@@ -5266,7 +5350,8 @@ class HouseNewCashierService
                         }
                     }
                     if($refund_score_can_get>0){
-                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id']);
+                        $scoreParam=array('order_type'=>'village_order_refund','score_type'=>21,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id'],2,$scoreParam);
                     }
                 }
                 //住户余额退款
@@ -5362,7 +5447,8 @@ class HouseNewCashierService
                     }else{
                         $score_used_count=round_number($orderInfo['score_used_count']*($score_deducte_money/$orderInfo['score_deducte']),2);
                     }
-                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])));
+                    $scoreParam=array('order_type'=>'village_order_refund','score_type'=>20,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])),0,$scoreParam);
                     if (empty($refund['error_code'])){
                         $param_bill=[];
                         $param_bill=[
@@ -5396,7 +5482,8 @@ class HouseNewCashierService
                         }
                     }
                     if($refund_score_can_get>0){
-                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id']);
+                        $scoreParam=array('order_type'=>'village_order_refund','score_type'=>21,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id'],2,$scoreParam);
                     }
                 }
             }
@@ -5676,6 +5763,7 @@ class HouseNewCashierService
                     // 是否作废 1-未作废 2-已作废 3-已挂单
                     $new_order['is_discard'] = 3;
                 }
+                $new_order['original_order_id']=$orderInfo['order_id'];
                 if($is_aihorse_customized>0){
                     //查询是否有子订单
                     $subCount = ($db_house_new_pay_order)->getCount(['f_order_id'=>$order_id]);
@@ -5686,13 +5774,14 @@ class HouseNewCashierService
                     if(isset($orderInfo['f_order_id']) && $orderInfo['f_order_id'] > 0) {
                         $new_order['service_time_handle']=1;
                     }
-                    $new_order['original_order_id']=$orderInfo['order_id'];
                 }
+                $new_order['order_serial']=$orderInfo['order_serial'] ? $orderInfo['order_serial']:'';
+                $new_order['order_type_flag']=$orderInfo['order_type_flag'] ? $orderInfo['order_type_flag']:'';
                 if(isset($orderInfo['primitive_order_id'])){
-                    $new_order['original_order_id']=$orderInfo['order_id'];
-                    $new_order['primitive_order_id']=$orderInfo['order_id'];
                     if($orderInfo['primitive_order_id']>0){
                         $new_order['primitive_order_id']=$orderInfo['primitive_order_id'];
+                    }else{
+                        $new_order['primitive_order_id']=$orderInfo['order_id'];
                     }
                 }
                 if(isset($orderInfo['service_time_handle']) && $orderInfo['service_time_handle']==5){
@@ -5753,20 +5842,27 @@ class HouseNewCashierService
             $returnArr['order_info']=$housePayOrder;
             if($housePayOrder['order_type']=='park_new'){
                 $returnArr['is_can_create_order']=0;
+                $housePayOrder['stored_balance']=$housePayOrder['stored_balance']*1;
                 if($housePayOrder['car_type']=='stored_type' && $housePayOrder['car_number']){
                     //储值车
                     $db_house_village_parking_car = new HouseVillageParkingCar();
                     $whereArr=array(['village_id','=',$housePayOrder['village_id']]);
-                    $housePayOrder['stored_balance']=0;
                     if($housePayOrder['car_id']>0){
                         $whereArr[]=array('car_id','=',$housePayOrder['car_id']);
                         $village_parking_car=$db_house_village_parking_car->getFind($whereArr,'*');
                         if($village_parking_car && !$village_parking_car->isEmpty()){
                             $village_parking_car= $village_parking_car->toArray();
-                            $housePayOrder['stored_balance']=isset($village_parking_car['stored_balance'])  && $village_parking_car['stored_balance'] ? $village_parking_car['stored_balance']:0;
+                            $stored_balance=isset($village_parking_car['stored_balance'])  && $village_parking_car['stored_balance'] ? $village_parking_car['stored_balance']:0;
+                            $stored_balance=$stored_balance>$housePayOrder['stored_balance'] ? $housePayOrder['stored_balance']:$stored_balance;
+                            $housePayOrder['stored_balance']=$stored_balance*1;
+                        }else{
+                            $housePayOrder['stored_balance']=0;
                         }
+                    }else{
+                        $housePayOrder['stored_balance']=0; 
                     }
                 }
+                $returnArr['order_info']=$housePayOrder;
             }
             if(isset($housePayOrder['f_order_id']) && $housePayOrder['f_order_id']>0){
                 $returnArr['is_can_create_order']=0;
@@ -5889,12 +5985,12 @@ class HouseNewCashierService
             $sheet->mergeCells('A1:AG1'); //合并单元格
             $sheet->setCellValue('A1', '已缴账单明细表');
             $sheet->setCellValue('A2', '总合计：');
-            $sheet->setCellValue('K2', $data['total_money']);
-            $sheet->setCellValue('L2', $data['modify_money']);
-            $sheet->setCellValue('M2', $data['pay_money']);
-            $sheet->setCellValue('W2', $data['late_payment_money']);
-            $sheet->setCellValue('Y2', $data['prepare_pay_money']);
-            $sheet->setCellValue('Z2', $data['refund_money']);
+            $sheet->setCellValue('N2', $data['total_money']);
+            $sheet->setCellValue('O2', $data['modify_money']);
+            $sheet->setCellValue('P2', $data['pay_money']);
+            $sheet->setCellValue('Z2', $data['late_payment_money']);
+            $sheet->setCellValue('AB2', $data['prepare_pay_money']);
+            $sheet->setCellValue('AC2', $data['refund_money']);
             //设置单元格内容
             $titCol = 'A';
 
@@ -6025,7 +6121,7 @@ class HouseNewCashierService
                     $record_status = $va[2];
                     unset($where[$k]);
                 }
-                if ($va[0] == 'o.pay_type') {
+                if ($va[0] == 'o.pay_type' && $va[1] == '=') {
                     unset($where[$k]);
                     $pay_type_where=$va[2];
                     if(!is_array($pay_type_where)){
@@ -6280,16 +6376,19 @@ class HouseNewCashierService
                         $v['order_no']=$summary_info['order_no'];
                     }
                 }
-                $admininfo = $db_admin->getOne(['id' => $v['role_id']]);
-                $v['role_name'] = '';
-                if ($admininfo && !$admininfo->isEmpty()) {
-                    $admininfo = $admininfo->toArray();
-                    if (!empty($admininfo['realname'])){
-                        $v['role_name'] = $admininfo['realname'];
-                    }else{
-                        $v['role_name'] = $admininfo['account'];
+                if($v['role_id']>0 && ($v['login_role']==401||$v['login_role']==0)){
+                    $role_name=$v['role_name'];
+                    $admininfo = $db_admin->getOne(['id' => $v['role_id']],'id,village_id,account,realname,phone');
+                    if($admininfo && !$admininfo->isEmpty()){
+                        $role_name=$admininfo['realname'];
                     }
+                }else if($v['pay_type']==4){
+                    $role_name = '自助缴费';
+                }else if(in_array($v['login_role'],[0,303,304,104,105])){
+                    $role_name = '平台缴费';
                 }
+                $v['role_name']=$role_name;
+                
                 $v['phone']=$houseVillageDb->phone_desensitization_v($v['phone'],$village_id,$village_info);
                 $v['numbers'] = $number;
                 $data_list[$k]['usernum']=$usernum;
@@ -6302,6 +6401,7 @@ class HouseNewCashierService
                     $data_list[$k]['phone'] = $v['phone'];
                     $data_list[$k]['charge_number_name'] = $v['charge_number_name'];
                     $data_list[$k]['project_name'] = $v['project_name'];
+                    $data_list[$k]['charge_name'] = $v['charge_name'];
                     $data_list[$k]['order_no'] = '';
                     //$data_list[$k]['order_serial'] = $v['order_serial'];
                     if (!empty($v['summary_id'])) {
@@ -6387,6 +6487,7 @@ class HouseNewCashierService
                     $data_list[$k]['phone'] = $v['phone'];
                     $data_list[$k]['charge_number_name'] = $v['charge_number_name'];
                     $data_list[$k]['project_name'] = $v['project_name'];
+                    $data_list[$k]['charge_name'] = $v['charge_name'];
                     $data_list[$k]['order_no'] = '';
                     $data_list[$k]['order_serial'] = $v['order_serial'];
                     $remark = '';
@@ -6567,9 +6668,9 @@ class HouseNewCashierService
         $data['list'] = $data_list;
        
         if($exporttype=='exportRefund'){
-            $title = ['物业编号','车位号','房间号/车位号', '缴费人', '电话', '所属收费科目', '收费项目名称', '订单编号', '应收费用（元）', '实际缴费金额', '退款金额', '支付方式', '支付时间', '退款时间','开票状态','账单状态','账单模式', '楼栋/车库', '单元', '楼层','房间/车位','修改后费用', '优惠方式', '积分使用数量', '计费开始时间', '计费结束时间', '使用电量', '收款人', '违约天数', '违约金费用（元）', '预缴周期', '预缴费用（元）','线上支付金额','余额支付金额','积分抵扣金额','车牌号'];
+            $title = ['物业编号','车位号','房间号/车位号', '缴费人', '电话', '所属收费科目', '收费项目名称','收费标准', '订单编号', '应收费用（元）', '实际缴费金额', '退款金额', '支付方式', '支付时间', '退款时间','开票状态','账单状态','账单模式', '楼栋/车库', '单元', '楼层','房间/车位','修改后费用', '优惠方式', '积分使用数量', '计费开始时间', '计费结束时间', '使用电量', '收款人', '违约天数', '违约金费用（元）', '预缴周期', '预缴费用（元）','线上支付金额','余额支付金额','积分抵扣金额','车牌号'];
         }else{
-            $title = ['物业编号','车位号','楼栋/车库', '单元', '楼层', '房间号/车位号', '业主名', '电话', '所属收费科目', '收费项目名称', '订单编号', '支付单号', '应收费用（元）', '修改后费用', '实际缴费金额', '优惠方式', '积分使用数量', '支付时间', '支付方式', '计费开始时间', '计费结束时间', '使用电量', '收款人', '违约天数', '违约金费用（元）', '预缴周期', '预缴费用（元）', '退款总金额', '备注','开票状态','打印编号','线上支付金额','余额支付金额','积分抵扣金额','车牌号'];
+            $title = ['物业编号','车位号','楼栋/车库', '单元', '楼层', '房间号/车位号', '业主名', '电话', '所属收费科目', '收费项目名称','收费标准', '订单编号', '支付单号', '应收费用（元）', '修改后费用', '实际缴费金额', '优惠方式', '积分使用数量', '支付时间', '支付方式', '计费开始时间', '计费结束时间', '使用电量', '收款人', '违约天数', '违约金费用（元）', '预缴周期', '预缴费用（元）', '退款总金额', '备注','开票状态','打印编号','线上支付金额','余额支付金额','积分抵扣金额','车牌号'];
         }
         if($is_aihorse_customized){
             $title[]='收银台修改优惠';
@@ -7557,7 +7658,6 @@ class HouseNewCashierService
         }
         $user_info=array();
         $is_notpay_print=0;
-
         if ($printTempLateType == 'materiel') {
             if (empty($choice_ids)) {
                 throw new \think\Exception("缺少打印对象！");
@@ -7751,7 +7851,6 @@ class HouseNewCashierService
             }
             $order_ids = [$order_id];
         }
-        
         $one_order_obj=$db_house_new_pay_order->get_one(array('order_id'=>$order_ids['0']),'order_id,village_id,is_paid,pay_time');
         if($one_order_obj && !$one_order_obj->isEmpty()){
             $one_order=$one_order_obj->toArray();
@@ -7770,7 +7869,7 @@ class HouseNewCashierService
         }
 
         $field='o.*,s.remark as s_remark,p.name as order_name2,p.type,r.bill_create_set,r.measure_unit,s.online_pay_type,s.order_no as s_order_no,r.charge_name,r.fees_type';
-        $orderBy = 'o.order_id DESC';
+        $orderBy = 'o.project_id DESC,o.service_start_time desc,o.order_id DESC';
         if($print_orders_merge_project>0){
             $orderBy = 'o.project_id DESC,o.service_start_time ASC,o.order_id DESC';
         }
@@ -7790,6 +7889,7 @@ class HouseNewCashierService
         $money = []; // 应收金额
         $late_payment_money_arr = []; // 违约金
         $role_id = []; // 操作人ID 新版打印 收款人名称取操作人名称
+        $pf_login_role=0;
         $is_water_electric_gas=0;
         $room_id = 0;
         $payee_name='';
@@ -8302,6 +8402,9 @@ class HouseNewCashierService
                     if(isset($body_item['append_later_money'])){
                         $order_body_merge[$merge_project_key]['append_later_money']=$order_body_merge[$merge_project_key]["append_later_money"]+$body_item['append_later_money'];
                     }
+                    if(isset($body_item['modify_opt_discount_v'])){
+                        $order_body_merge[$merge_project_key]['modify_opt_discount_v']=$order_body_merge[$merge_project_key]["modify_opt_discount_v"]+$body_item['modify_opt_discount_v'];
+                    }
                     $order_body_merge[$merge_project_key]['late_payment_money'] = $order_body_merge[$merge_project_key]["late_payment_money"] + $body_item['late_payment_money'];
                     $order_body_merge[$merge_project_key]['late_payment_money'] = round($order_body_merge[$merge_project_key]['late_payment_money'], 2);
                     $merge_project_key_arr[$v["project_id"]]=$order_body_merge[$merge_project_key];
@@ -8322,17 +8425,10 @@ class HouseNewCashierService
             $late_payment_money_arr[] = $late_payment_money_tmp;
             $money[] = $total_money;
             // 新版打印 收款人名称取操作人名称
-           //  $role_id[] = ($v['from'] == 1) ? (empty($v['role_id']) ? '1-0' : $v['role_id']) : 0;
-            if($v['from'] == 1){
-                $role_id[]=  (empty($v['role_id']) ? '1-0' : $v['role_id']);
-            }else{
-                if ($v['pay_type']!=4){
-                    $role_id[]=  (empty($v['role_id']) ? 0 : $v['role_id']);
-                }else{
-                    $role_id[]=  0;
-                }
+            $role_id[]=$v['role_id'];
+            if(in_array($v['login_role'],[303,304,104,105])){
+                $pf_login_role=104;
             }
-
             // 房间ID
             $room_id = $v['room_id'];
 
@@ -8389,20 +8485,21 @@ class HouseNewCashierService
         else{
             $pay_time='';
         }
+        $role_id=array_unique($role_id);
         // 新版打印 延华 收款人
         $payeeType = '自助缴费';
         if(!in_array(0,$role_id)){
-            if(in_array('1-0',$role_id)){
+            if($pf_login_role>0){
                 $payeeType = '平台缴费';
             }else{
-                $admininfo = $db_house_admin->getOne([['id','in', $role_id]]);
+                $admininfo = $db_house_admin->getOne([['id','in', $role_id]],'id,village_id,account,realname,phone','id desc');
                 if($admininfo && !$admininfo->isEmpty()){
                     $admininfo = $admininfo->toArray();
-                    $payeeType = !empty($admininfo['realname']) ? $admininfo['realname'] : '自助缴费';
+                    $payeeType =  $admininfo['realname'];
                 }
             }
         }
-        if ($payeeType=='自助缴费' && isset($v['pay_type'])&&$v['pay_type']==2) {
+        if ($payeeType=='自助缴费' && isset($v['pay_type']) && $v['pay_type']!=4) {
             $payeeType = '收银台缴费';
         }
         $money=$money*1;
@@ -8477,7 +8574,6 @@ class HouseNewCashierService
         if($is_aihorse_customized){
             $order_field['usernum']=$ser_print_template->printTemplateNumber($templateInfo['template_id'],$order_ids,$village_id,1); //定制的
         }
-
         $printList1 = [];
         $printList2 = [];
         $printList3 = [];
@@ -10731,11 +10827,11 @@ class HouseNewCashierService
                 if($property_order_log && isset($property_order_log['service_end_time']) && $property_order_log['service_end_time']>100){
                     $service_end_time_x=$property_order_log['service_end_time'];
                 }
-                $is_continue_create_order=true;
+                //$is_continue_create_order=true;
             }else if($property_fee_info && $property_fee_info['service_end_time']>100){
                 $service_end_time_x=$property_fee_info['service_end_time'];
             }
-            if(!$is_continue_create_order && $service_end_time_x<=$beginTime){
+            if($service_end_time_x<=$tmptime){
                 $is_continue_create_order=true;
             }else if($service_end_time_x>$tmptime){
                 if($have_advance_order_day_func && isset($rule_info['advance_order_day']) && $rule_info['advance_order_day']>0){
@@ -11365,11 +11461,11 @@ class HouseNewCashierService
                 if($property_order_log && isset($property_order_log['service_end_time']) && $property_order_log['service_end_time']>100){
                     $service_end_time_x=$property_order_log['service_end_time'];
                 }
-                $is_continue_create_order=true;
+                //$is_continue_create_order=true;
             }else if($property_fee_info && $property_fee_info['service_end_time']>100){
                 $service_end_time_x=$property_fee_info['service_end_time'];
             }
-            if(!$is_continue_create_order && $service_end_time_x<=$beginTime){
+            if($service_end_time_x<=$tmptime){
                 $is_continue_create_order=true;
             }else if($service_end_time_x>$tmptime){
                 if($have_advance_order_day_func && isset($rule_info['advance_order_day']) && $rule_info['advance_order_day']>0){
@@ -11605,6 +11701,7 @@ class HouseNewCashierService
             }
             //新版生成账单逻辑,按照计费时间顺序来生成账单
             if (cfg('new_pay_order')==1&&!empty($pay_order_info)&& $pay_order_info['service_end_time']>100){
+                /*
                 if ($pay_order_info['project_id']!=$v['project_id']){
                     if (!empty($auto_order_info)){
                         $db_house_new_auto_order_log->saveOne(['id'=>$auto_order_info['id']],['status'=>2,'fail_reason'=>'当前房间的该类别下有其他项目的待缴账单，无法生成账单']);
@@ -11613,8 +11710,8 @@ class HouseNewCashierService
                     $result['error']=1;
                     $result['msg']='当前房间的该类别下有其他项目的待缴账单，无法生成账单';
                     return $result;
-                   // return false;
                 }
+                */
                 $orderData['service_start_time'] = $pay_order_info['service_end_time']+1;
                 $orderData['service_start_time'] = strtotime(date('Y-m-d',$orderData['service_start_time']));
                 if($v['order_add_type'] == 1){
@@ -12277,16 +12374,19 @@ class HouseNewCashierService
             return false;
         }
         $StorageService=new StorageService();
+        $where=array();
         $where[] = ['is_paid','=',2];
         if(empty($xtype)){
             $where[] = ['order_type','=','property'];
         }else if(in_array($xtype,array('cold_water_balance','hot_water_balance','electric_balance'))){
             $where[] = ['order_type_flag','=',$xtype];
+        }else if($xtype=='checkUserMeterOrderToPay'){
+            $where[] = ['meter_reading_id','>',0];
         }
         $where[] = ['is_discard','=',1];
         $where[] = ['village_id','=',$village_id];
         $where[] = ['pigcms_id','=',$pigcms_id];
-        $field='order_id,pigcms_id,modify_money';
+        $field='order_id,pigcms_id,village_id,uid,modify_money,meter_reading_id';
         $order='modify_money asc,order_id asc';
         $list=(new HouseNewPayOrder())->getOrder($where,$field,$order);
         if(!empty($list)){
@@ -12297,7 +12397,12 @@ class HouseNewCashierService
         }
         $remarks='物业预缴，触发自动扣除余额';
         foreach ($list as $v){
-            $StorageService->userBalanceChange($v['pigcms_id'],2,$v['modify_money'],$remarks,$remarks,$v['order_id'],$village_id,$xtype);
+            if($xtype=='checkUserMeterOrderToPay'){
+                $StorageService->checkUserMeterOrderToPay($v['uid'],$village_id,$pigcms_id);
+                break;
+            }else{
+                $StorageService->userBalanceChange($v['uid'],2,$v['modify_money'],$remarks,$remarks,$v['order_id'],$village_id,$xtype);
+            }
         }
         return true;
     }
@@ -12405,8 +12510,8 @@ class HouseNewCashierService
         if(empty($info)){
             throw new \think\Exception("收费标准信息不存在");
         }
-        if($type == 2 && $info['fees_type'] == 2 && empty($info['unit_gage'])){
-            throw new \think\Exception("车场没有房屋面积，无法生成账单");
+        if($type == 2 && $info['fees_type'] == 2 && empty($info['unit_gage']) && $info['unit_gage_type'] != 3){
+            throw new \think\Exception("房屋没有面积，无法生成账单");
         }
         
         if($info['fees_type'] == newChargeConst::FEES_TYPE_NUMBER_OF_PARKING_SPACES) {
@@ -12453,7 +12558,8 @@ class HouseNewCashierService
             $whereArrTmp=array();
             $whereArrTmp[]=array('pigcms_id','=',$data['room_id']);
             $whereArrTmp[]=array('user_status','=',2);
-            $whereArrTmp[]=array('status','in',[1,2,3]);
+            //$whereArrTmp[]=array('status','in',[1,2,3]);
+            $whereArrTmp[]=array('user_status','=',2);
             $whereArrTmp[]=array('is_del','=',0);
             $room_vacancy=$service_house_village_user_vacancy->getUserVacancyInfo($whereArrTmp);
             $not_house_rate = 100;
@@ -12472,6 +12578,9 @@ class HouseNewCashierService
             else {
                 $not_house_rate = 100;
             }
+        }
+        if($not_house_rate<=0 || $not_house_rate>100){
+            $not_house_rate=100;
         }
         $postData=[];
         $custom_value = 1;
@@ -12516,6 +12625,18 @@ class HouseNewCashierService
             }elseif (!empty($info['unit_gage'])&&!empty($data['custom_value'])){
                 $custom_value=$data['custom_value'];
             }
+            $positionSize = 0;
+            if($info['unit_gage_type'] == 3) {
+                if(empty($data['position_id'])){
+                    throw new \think\Exception("车位面积为0，无法生成账单");
+                }
+                $positionSize = (new HouseVillageParkingPosition())->where(['position_id' =>$data['position_id']])->value('position_area');
+                if(!$positionSize || $positionSize<=0){
+                    throw new \think\Exception('车位面积为0，无法生成账单！');
+                }
+                $custom_value=$positionSize;
+            }
+            
             $postData['total_money'] = $info['charge_price']*$not_house_rate/100*$custom_value*$info['rate']*$data['cycle'];
         }
         $rule_digit=-1;
@@ -12557,9 +12678,8 @@ class HouseNewCashierService
         $postData['order_no'] = '';
         $postData['add_time'] = time();
         $postData['unit_price'] = $info['charge_price'];
-        if($not_house_rate>0 && $not_house_rate<100){
-            $postData['not_house_rate'] = $not_house_rate;
-        }
+        $postData['not_house_rate'] = $not_house_rate;
+        
         $custom_number=$custom_value;
         if(isset($custom_number)){
             $postData['number'] = $custom_number;
@@ -12600,9 +12720,11 @@ class HouseNewCashierService
                 $pay_order_info = $this->getInfo($pay_where,'project_id,service_start_time,service_end_time','service_end_time DESC,order_id DESC');
             }
             if (cfg('new_pay_order')==1&&!empty($pay_order_info)&& $pay_order_info['service_end_time']>100){
+                /*
                 if ($pay_order_info['project_id']!=$info['charge_project_id']){
                     throw new \think\Exception("当前房间的该类别下有其他项目的待缴账单，无法生成账单");
                 }
+                */
                 $postData['service_start_time'] = $pay_order_info['service_end_time']+100;
                 $postData['service_start_time'] = strtotime(date('Y-m-d',$postData['service_start_time']));
                 if($info['bill_create_set'] == 1){
@@ -12707,6 +12829,12 @@ class HouseNewCashierService
             }elseif ($info['fees_type']==2&&!empty($info['unit_gage'])&&!empty($data['custom_value'])){
                 $info['charge_price']=$info['charge_price']*$data['custom_value'];
             }
+            if($info['unit_gage_type'] == 3 && $data['position_id']) {
+                $positionSize = (new HouseVillageParkingPosition())->where(['position_id' =>$data['position_id']])->value('position_area');
+                if($positionSize >0){
+                    $info['charge_price']=$info['charge_price']*$positionSize;
+                }
+            }
             if (!empty($data['end_time'])){
                $end_time=strtotime($data['end_time'].' 23:59:59');
                 $cycle_c=$cycle_cc+1;
@@ -12748,7 +12876,7 @@ class HouseNewCashierService
                 $cycle_s=86400*365;
                 $price=$info['charge_price']*($time_c/$cycle_s);
             }
-            $total_money=$info['charge_price']*$cycle_cc+$price;
+            $total_money=($info['charge_price']*$cycle_cc+$price)*($not_house_rate/100);
             if($info['fees_type'] == newChargeConst::FEES_TYPE_NUMBER_OF_PARKING_SPACES && $parkingNum > 1) {
                 $total_money = $total_money * intval($parkingNum);
             }
@@ -13021,9 +13149,11 @@ class HouseNewCashierService
             $last_order = $this->getOrderLog($where_order_log,true,'id DESC');
             $order_info=$db_house_new_pay_order->get_one($where_order,'project_id,order_id,service_start_time,service_end_time');
             if (cfg('new_pay_order')==1&&!empty($order_info)&& $order_info['service_end_time']>100){
+                /*
                 if ($order_info['project_id']!=$rule_info['charge_project_id']){
                     throw new \think\Exception("当前房间的该类别下有其他项目的待缴账单，无法生成账单");
                 }
+                */
                 $rule_info['start_time'] = $order_info['service_end_time']+100;
                 $rule_info['start_time'] = strtotime(date('Y-m-d',$rule_info['start_time']));
                 if ($rule_info['charge_valid_type']==1){
@@ -13372,7 +13502,9 @@ class HouseNewCashierService
                $rule_info['contract_time_end']=date('Y-m-d',$contract_time['contract_time_end']);
            }
 
-
+        }else{
+            $rule_info['contract_time_start']='1990-01-01';
+            $rule_info['contract_time_end']='3990-01-01';
         }
         return $rule_info;
     }
@@ -14772,6 +14904,8 @@ class HouseNewCashierService
         $where[] = ['status', '=', 1];
         $where[] = ['fid', '>', 0];
         $nowtime = time();
+        $today_date=date('Ymd');
+        $today_date=intval($today_date);
         //$where[] = ['expire_time', '>', $nowtime];
         $where['_string']='(expire_time > '.$nowtime.' OR expire_time<86400)';
         $listObj = $db_charge_prepaid_discount->getList($where, '*', 'con_num asc,num asc,id asc');
@@ -14807,9 +14941,16 @@ class HouseNewCashierService
                 //$newOrderObj = $houseNewPayOrderDb->getOrder($whereArr, 'order_id,room_id,rule_id,service_start_time,service_end_time', 'service_start_time ASC');
                 if ($newOrderObj && !$newOrderObj->isEmpty()) {
                     $tmp_time = $newOrderObj['service_start_time'] - $nowtime;
+                    $start_time_date=date('Ymd',$newOrderObj['service_start_time']);
+                    $start_time_date=intval($start_time_date);
                     if ($tmp_time > 0) {
-                        $advance_day_num=$tmp_time / 86400;
-                        $advance_day_num = floor($advance_day_num);
+                        $advance_day_num_tmp=$tmp_time / 86400;
+                        $advance_day_num = floor($advance_day_num_tmp);
+                        $advance_day_num = intval($advance_day_num);
+                        if($start_time_date>$today_date && $advance_day_num_tmp>$advance_day_num){
+                            $advance_day_num=$advance_day_num+1;
+                        }
+                        
                         /*
                         $month_num = $tmp_time / (86400 * 30);
                         $advance_month_num = floor($month_num);
@@ -15375,7 +15516,8 @@ class HouseNewCashierService
                     }else{
                         $score_used_count=round_number($orderInfo['score_used_count']*($score_deducte_money/$orderInfo['score_deducte']),2);
                     }
-                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])));
+                    $scoreParam=array('order_type'=>'village_order_refund','score_type'=>20,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])),0,$scoreParam);
                     if (empty($refund['error_code'])){
                         $param_bill=[];
                         $param_bill=[
@@ -15409,7 +15551,8 @@ class HouseNewCashierService
                         }
                     }
                     if($refund_score_can_get>0){
-                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id']);
+                        $scoreParam=array('order_type'=>'village_order_refund','score_type'=>21,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id'],2,$scoreParam);
                     }
                 }
                 //住户余额退款
@@ -15455,7 +15598,8 @@ class HouseNewCashierService
                     }else{
                         $score_used_count=round_number($orderInfo['score_used_count']*($score_deducte_money/$orderInfo['score_deducte']),2);
                     }
-                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])));
+                    $scoreParam=array('order_type'=>'village_order_refund','score_type'=>20,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                    $refund = (new UserService())->addScore($summaryInfo['pay_uid'], $score_used_count, L_("账单退款 ，增加X1 ，订单编号X2", array( "X1" => $score_used_count, "X2" => $orderInfo['order_id'])),0,$scoreParam);
                     if (empty($refund['error_code'])){
                         $param_bill=[];
                         $param_bill=[
@@ -15489,7 +15633,8 @@ class HouseNewCashierService
                         }
                     }
                     if($refund_score_can_get>0){
-                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id']);
+                        $scoreParam=array('order_type'=>'village_order_refund','score_type'=>21,'order_id'=>$orderInfo['summary_id'],'house_type'=>1,'village_id'=>$orderInfo['village_id']);
+                        $user_result = (new UserService())->userScore($summaryInfo['pay_uid'], $refund_score_can_get, '社区退款扣除已获得积分，订单编号'.$orderInfo['order_id'],2,$scoreParam);
                     }
                 }
             }
@@ -15814,6 +15959,7 @@ class HouseNewCashierService
                         $orderSave['service_time_handle']=5;
                         $tmp_ret=$houseNewPayOrderDb->saveOne(array('order_id'=>$order['order_id']),$orderSave);
                         if($tmp_ret){
+                            $order['primitive_order_id']=$order['order_id'];
                             unset($order['order_id']);
                             $order['service_start_time']=$apart_order_time+3;
                             $order['total_money']=$other_total_money;
@@ -15827,6 +15973,7 @@ class HouseNewCashierService
                                 $order['is_discard']=2;
                                 $order['discard_reason']='拆分并作废后一笔账单';
                             }
+                            
                             $new_order_id=$houseNewPayOrderDb->addOne($order);
                         }
                         return array('new_order_id'=>$new_order_id);

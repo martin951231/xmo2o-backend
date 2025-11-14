@@ -4,9 +4,9 @@
 			<!-- <div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Portal/article')}" class="on">资讯列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_add')}','添加资讯',780,450,true,false,false,addbtn,'add',true);">添加资讯</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_add')}','添加资讯',780,450,true,false,false,addbtn,'add',true);">添加资讯</a>
 					<a href="{pigcms{:U('Portal/article_label')}">标签列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_label_add')}','添加标签',480,200,true,false,false,addbtn,'add',true);">添加标签</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_label_add')}','添加标签',480,200,true,false,false,addbtn,'add',true);">添加标签</a>
 				</ul>
 			</div> -->
 			<form name="myform" id="myform" action="" method="post">

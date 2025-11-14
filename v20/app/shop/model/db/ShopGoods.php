@@ -11,6 +11,8 @@ use think\Model;
 use think\facade\Env;
 class ShopGoods extends Model {
     use \app\common\model\db\db_trait\CommonFunc;
+    
+    protected $pk = 'goods_id';
     /**
      * 根据条件获取商品列表
      * @param $where
@@ -31,7 +33,12 @@ class ShopGoods extends Model {
                             ->page($page,$limit)
                             ->select();
         }else{
-            $result = $this->where($where)->order($order)->select();
+            $result = [];
+            $this->withoutField('des,describe')->where($where)->order($order)->chunk(1000,function ($item) use(&$result){
+                foreach ($item as $k => $v){
+                    array_push($result,$v);
+                }
+            });
         }
         return $result;
     }
@@ -91,7 +98,7 @@ class ShopGoods extends Model {
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getGoodsListByModule($tableName, $where=[], $order=[], $limit='0', $page='1') {
+    public function getGoodsListByModule($tableName, $where=[], $order=[], $limit='0', $page='1', $field = '*') {
         if(empty($tableName)) {
             return false;
         }
@@ -101,6 +108,7 @@ class ShopGoods extends Model {
         if($tableName == 'mall_goods'){
             if($limit>0){
                 $result = $this->alias('s')
+                    ->field($field)
                     ->join($prefix.$tableName.' t','s.goods_id = t.common_goods_id')
                     ->where($where)
                     ->page($page,$limit)
@@ -108,6 +116,7 @@ class ShopGoods extends Model {
                     ->select();
             }else{
                 $result = $this->alias('s')
+                    ->field($field)
                     ->join($prefix.$tableName.' t','s.goods_id = t.common_goods_id')
                     ->where($where)
                     ->order($order)
@@ -117,6 +126,7 @@ class ShopGoods extends Model {
             $this->name = _view($this->name);
             if($limit>0){
                 $result = $this->alias('s')
+                    ->field($field)
                     ->join($prefix.$tableName.' t','s.goods_id = t.goods_id')
                     ->where($where)
                     ->page($page,$limit)
@@ -124,6 +134,7 @@ class ShopGoods extends Model {
                     ->select();
             }else{
                 $result = $this->alias('s')
+                    ->field($field)
                     ->join($prefix.$tableName.' t','s.goods_id = t.goods_id')
                     ->where($where)
                     ->order($order)

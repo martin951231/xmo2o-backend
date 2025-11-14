@@ -164,6 +164,9 @@ class PercentAction extends BaseAction
     }
 
     public function user_rate(){
+        //客户存在景区业务就显示景区推广分佣
+        $plugin = M('Plugin')->where(['plugin_label' => 'life_tools', 'status' => 1])->find();
+        $this->assign('openScenicUserSpread', $plugin ? true : false);
         // 获得用户推广分佣的区间配置
         $percent_detail = M('Percent_spread_detail')->select();
         $this->assign('percent_detail', $percent_detail);

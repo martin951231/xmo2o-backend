@@ -3,9 +3,9 @@
 		<div id="nav" class="mainnav_title">
 			<ul>
 				<a href="{pigcms{:U('Lang/service_lang')}" class="on">系统支持语言</a>|
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Lang/service_lang_add')}','添加语言',450,320,true,false,false,addbtn,'lang_add',true);">添加语言</a>|
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Lang/create_view')}','刷新视图',450,60,true,false,false,confirmbtn,'lang_add',true);">刷新视图</a>|
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Lang/create_table_field')}','更新文字字段',450,200,true,false,false,confirmbtn,'lang_add',true);">更新文字字段</a>
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Lang/service_lang_add')}','添加语言',450,320,true,false,false,addbtn,'lang_add',true);">添加语言</a>|
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Lang/create_view')}','刷新视图',450,60,true,false,false,confirmbtn,'lang_add',true);">刷新视图</a>|
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Lang/create_table_field')}','更新文字字段',450,200,true,false,false,confirmbtn,'lang_add',true);">更新文字字段</a>
 			</ul>
 		</div>
 		<form name="myform" id="myform" action="" method="post">

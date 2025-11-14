@@ -29,7 +29,7 @@
                             </form>
                         </td>
                         <td>
-                            <a href="javascript:void(0)" onclick="window.top.artiframe('/v20/public/platform/#/merchant/platform/HistoricalContracts?type=reSign','重签合同','40%',350,true,false,false,false,'edit',true);" class="button" style="float:right;margin-right: 10px;">重签合同</a>
+                            <a href="javascript:void(0)" onclick="window.o2oTop.artiframe('/v20/public/platform/#/merchant/platform/HistoricalContracts?type=reSign','重签合同','40%',350,true,false,false,false,'edit',true);" class="button" style="float:right;margin-right: 10px;">重签合同</a>
                         </td>
                     </tr>
                 </table>
@@ -59,7 +59,7 @@
                             <td>{pigcms{$vo.sign_time|date='Y-m-d H:i:s',###}</td>
                             <td>{pigcms{$vo.nums}</td>
                             <td class="textcenter">
-                                <a href="javascript:void(0);" onclick="window.top.iframeDrawer({
+                                <a href="javascript:void(0);" onclick="window.o2oTop.iframeDrawer({
                                     url: '/v20/public/platform/#/merchant/platform/HistoricalContracts?mer_id={pigcms{$vo['mer_id']}',
                                     title: '历史合同',
                                     id: '1',
@@ -72,8 +72,8 @@
                                         height: '88vh'
                                     }
                                 });">历史合同</a> |
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/viewContract',array('mer_id'=>$vo['mer_id']))}','查看合同',900,600,true,false,false,false,'edit',true);">查看合同</a> |
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/downloadContract',array('mer_id'=>$vo['mer_id']))}','查看合同',900,600,true,false,false,false,'edit',true);">下载合同</a> |
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/viewContract',array('mer_id'=>$vo['mer_id']))}','查看合同',900,600,true,false,false,false,'edit',true);">查看合同</a> |
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/downloadContract',array('mer_id'=>$vo['mer_id']))}','查看合同',900,600,true,false,false,false,'edit',true);">下载合同</a> |
                                 <a href="javascript:void(0);" onclick="showArt('{pigcms{$vo['mer_id']}')">重签合同</a>
                             </td>
                         </tr>
@@ -91,7 +91,7 @@
     var mer_id = '';
     function showArt(d){
         mer_id = d;
-        window.top.art.dialog({
+        window.o2oTop.art.dialog({
             url: '',
             title: '重签合同',
             content: '确认后当前合同会作废，需要重新签署合同！',

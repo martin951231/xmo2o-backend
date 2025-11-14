@@ -8,7 +8,7 @@
 			</ul>
 		</div>
         <div class="page_tips" style="position: relative;height: 68px;">
-			<button  onclick="window.top.artiframe('{pigcms{:U('Wxapp/generateNfcScheme')}','生成scheme码',700,420,true,false,false,addbtn,'add',true);" class="button" style="margin-right: 14px;">生成scheme码</button>
+			<button  onclick="window.o2oTop.artiframe('{pigcms{:U('Wxapp/generateNfcScheme')}','生成scheme码',700,420,true,false,false,addbtn,'add',true);" class="button" style="margin-right: 14px;">生成scheme码</button>
 			说明：<div style="display: inline-block; float: left; position: absolute; top: 19px; line-height: 20px;">
 			1. NFC标签调用小程序需要先完成设备接入。接入指引：https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/NFC.html<br/>
 			2. NFC的小程序scheme生成之后，不可删除，不可修改，永久生效</div>

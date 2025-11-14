@@ -71,7 +71,7 @@
 	<script>
     $(document).ready(function(){
         $('.show_bigimage').click(function(){
-            window.top.art.dialog({
+            window.o2oTop.art.dialog({
     			padding: 0,
     			title: '大图',
     			content: '<img src="'+$(this).attr('src')+'" />',

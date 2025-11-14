@@ -6,7 +6,7 @@
 				
 				</ul>
 			</div>
-			<input type="button" value="添加拼团标签" class="button" onclick="window.top.artiframe('{pigcms{:U('add_label')}','添加拼团商品','500px','450px',true,false,false,addbtn,'add',true);" style="margin-bottom:10px;"/>
+			<input type="button" value="添加拼团标签" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_label')}','添加拼团商品',600,400,true,false,false,addbtn,'add',true);" style="margin-bottom:10px;"/>
 			<form name="myform" id="myform" action="" method="post">
 				<div class="table-list">
 					<style>
@@ -53,7 +53,7 @@
 										<td><if condition="$vo.status eq 1"><font color="green">正常</font><else /><font color="red">禁止</font></if></td>
 										<td class="textcenter">
 											<a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/add_label',array('id'=>$vo['id']))}','编辑标签',550,450,true,false,false,editbtn,'add',true);">编辑</a> | <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Village_group/del_label')}">删除</a>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_label',array('id'=>$vo['id']))}','编辑标签',600,400,true,false,false,editbtn,'add',true);">编辑</a> | <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Village_group/del_label')}">删除</a>
 										</td>
 									</tr>
 									

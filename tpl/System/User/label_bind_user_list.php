@@ -3,13 +3,13 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('User/index')}">用户列表</a>
-					<a href="{pigcms{:U('User/label_index')}">用户标签管理</a>
-					<a href="{pigcms{:U('User/privileged_user')}">特权用户</a>
+					<a href="{pigcms{:U('User/index')}">SYSTEM_USER_LABEL_INDEX_1</a>
+					<a href="{pigcms{:U('User/label_index')}">SYSTEM_USER_LABEL_INDEX_2</a>
+					<a href="{pigcms{:U('User/privileged_user')}">SYSTEM_USER_LABEL_INDEX_4</a>
 					<if condition="$config.open_user_money_verify eq '1'">
-						<a href="{pigcms{:U('User/user_money_verify')}">用户余额变动申请列表</a>
+						<a href="{pigcms{:U('User/user_money_verify')}">SYSTEM_USER_LABEL_BIND_USER_LIST_1</a>
 					</if>
-					<a href="{pigcms{:U('User/label_bind_user_list')}" class="on">标签用户列表</a>
+					<a href="{pigcms{:U('User/label_bind_user_list')}" class="on">SYSTEM_USER_LABEL_BIND_USER_LIST_2</a>
 				</ul>
 			</div>
 			<table class="search_table" width="100%">

@@ -23,7 +23,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="#" class="on">{pigcms{$title} - 导航列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Baodi/adver_add',array('block'=>$block))}','添加导航',600,400,true,false,false,addbtn,'add',true);">添加导航</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Baodi/adver_add',array('block'=>$block))}','添加导航',600,400,true,false,false,addbtn,'add',true);">添加导航</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -66,7 +66,7 @@
 											</if>
 										</td>
 										<td class="textcenter">{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Baodi/adver_add',array('id'=>$vo['id']))}','编辑信息',600,400,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Baodi/adver_del')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Baodi/adver_add',array('id'=>$vo['id']))}','编辑信息',600,400,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Baodi/adver_del')}">删除</a></td>
 									</tr>
 								</volist>
 							<else/>

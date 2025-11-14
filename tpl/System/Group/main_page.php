@@ -4,7 +4,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Group/main_page')}" class="on">团购首页配置</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Group/add_group_center_type_img')}','添加中部导航',600,400,true,false,false,addbtn,'edit',true);">添加中部导航</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Group/add_group_center_type_img')}','添加中部导航',600,400,true,false,false,addbtn,'edit',true);">添加中部导航</a>
 				
 				</ul>
 			</div>
@@ -44,7 +44,7 @@
 						<option value="-5" <if condition="($config['group_main_page_center_type'] eq -5 AND $_GET['type'] eq '') OR $_GET['type'] eq -5">selected</if>>5图 图文模式</option>
 						
 					</select>
-					<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('image_show')}','示例图',1320,825,true,false,false,'','show',true);" style="color:blue">示例图,用户前台广告位显示顺序按照排序值由高到低，从上往下，从左往右原则排序。</a>
+					<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('image_show')}','示例图',1320,825,true,false,false,'','show',true);" style="color:blue">示例图,用户前台广告位显示顺序按照排序值由高到低，从上往下，从左往右原则排序。</a>
 				  </td>
 				 </tr>
 				 <input type="hidden" name="group_main_page_show_type" id="group_main_page_show_type" value="<if condition="isset($_GET['type'])"><if condition="$_GET['type'] gt 0">0<else />1</if><else />{pigcms{$config.group_main_page_show_type}</if>">
@@ -114,7 +114,7 @@
 										<td><img class="slider_pic" src="{pigcms{:file_domain()}/upload/slider/{pigcms{$vo.pic}"></td>
                                         <td>{pigcms{$vo['area_name']}</td>
 										<td>{pigcms{$vo['last_time']|date='Y-m-d H:i:s',###}</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Group/add_group_center_type_img',array('id'=>$vo['id']))}','查看图文详情',800,560,true,false,false,editbtn,'edit',true);">查看详情</a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Group/add_group_center_type_img',array('id'=>$vo['id']))}','查看图文详情',800,560,true,false,false,editbtn,'edit',true);">查看详情</a></td>
 										
 									</tr>
 								</volist>

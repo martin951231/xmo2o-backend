@@ -138,7 +138,7 @@
 
 		$.post("{pigcms{:U('Bill/check_tixian')}", {area_id:"{pigcms{$_GET['area_id']}",street_id:"{pigcms{$_GET['street_id']}"}, function(data){
 			if(data.status == 1){
-				window.top.artiframe("{pigcms{:U('Bill/area_commission_withdraw',['area_id'=>$_GET['area_id'],'street_id'=>$_GET['street_id']])}",'申请提现',800,500,true,false,false,addbtn,'add',true);
+				window.o2oTop.artiframe("{pigcms{:U('Bill/area_commission_withdraw',['area_id'=>$_GET['area_id'],'street_id'=>$_GET['street_id']])}",'申请提现',800,500,true,false,false,addbtn,'add',true);
 			}
 			else{
 				layer.alert(data.msg, {offset: '100px'});

@@ -137,17 +137,20 @@ class AppPushMsgService
             $real_orderid = '';
         }
         /*区分商城*/
-        $alias_name =  cfg('mall_alias_name');
+        $alias_name =  cfg('mall_alias_name_new');
         $addData =[];
         foreach ($staffs as $staff) {
             if ($staff['client'] == 0 && $staff['openid']) {
                 $msgDataWx = [
                     'href' => $href,
                     'wecha_id' => $staff['openid'],
-                    'first' => L_("X1您好！X2新订单提醒！",array("X1" => $staff['name'],"X2" => $alias_name)),
-                    'OrderSn' => $real_orderid,
-                    'OrderStatus' => L_('待处理'),
-                    'remark' => L_('请您及时处理！')
+                    'new_info' => [
+                        'tempKey' => 44716,
+                        'thing12' => L_("新订单提醒"),
+                        'phrase2' => $alias_name,
+                        'time13' => date("Y-m-d H:i:s", time()),
+                        'thing11' => $real_orderid
+                    ]
                 ];
                 (new TemplateNewsService())->sendTempMsg('OPENTM400166399', $msgDataWx);
             } elseif($staff['client'] > 0){
@@ -181,7 +184,7 @@ class AppPushMsgService
 
                     $url = str_replace('http://','https://',$url);
 //                    $js_url = str_replace('http://','https://',$js_url);
-                    $js_url = "miniapp://__UNI__8799035&pages/mall/index/index";
+                    $js_url = "miniapp://".cfg('staff_uni_appid')."&pages/mall/index/index";
                     $extra = array(
                         'pigcms_tag' => 'mall_order',
                         'tag_desc' => $order['order_no'],

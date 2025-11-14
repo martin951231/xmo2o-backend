@@ -27,7 +27,7 @@
 										<td>{pigcms{$vo.name}</td>
 										<td>{pigcms{$vo.mobile}</td>
 										<td><if condition="$vo['status'] eq 1"><font color="green">启用</font><elseif condition="$vo['status'] eq 2"/><font color="red">审核中</font><else/><font color="red">关闭</font></if></td>
-										<td class="textcenter"><a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Appoint/worker_time',array('worker_id'=>$vo['merchant_worker_id'],'frame_show'=>true))}','查看可预约时间',600,370,true,false,false,false,'detail',true);">查看可预约时间</a></td>
+										<td class="textcenter"><a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/worker_time',array('worker_id'=>$vo['merchant_worker_id'],'frame_show'=>true))}','查看可预约时间',600,370,true,false,false,false,'detail',true);">查看可预约时间</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="5">{pigcms{$pagebar}</td></tr>

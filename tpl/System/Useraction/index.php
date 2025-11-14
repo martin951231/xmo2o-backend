@@ -3,7 +3,7 @@
             <div id="nav" class="mainnav_title">
                 <ul>
                     <a href="{pigcms{:U('Useraction/index')}" class="on">用户行为管理</a>|
-                    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/add',array('type'=>1))}','添加用户行为分组',450,320,true,false,false,addbtn,'add',true);">添加用户行为分组</a>|
+                    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/add',array('type'=>1))}','添加用户行为分组',450,320,true,false,false,addbtn,'add',true);">添加用户行为分组</a>|
                     <a href="{pigcms{:U('Useraction/massGroup')}">创建群发</a>
                 </ul>
             </div>
@@ -37,7 +37,7 @@
                                         <td>{pigcms{$vo.action_name}</td>
                                         <td><a href="{pigcms{:U('Useraction/relation',array('action_id'=>$vo['action_id'],'action_name'=>$vo['action_name']))}">进入明细</a></td>
                                         <td>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Useraction/edit',array('type'=>1,'action_id'=>$vo['action_id']))}','编辑行为分组',450,320,true,false,false,editbtn,'add',true);">编辑</a> | 
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Useraction/edit',array('type'=>1,'action_id'=>$vo['action_id']))}','编辑行为分组',450,320,true,false,false,editbtn,'add',true);">编辑</a> | 
                                             <a href="javascript:void(0);" class="delete_row" parameter="action_id={pigcms{$vo.action_id}" url="{pigcms{:U('Useraction/del',array('status'=>1))}">删除</a>
                                         </td>
                                     </tr>

@@ -105,7 +105,7 @@
             </tr>
             <tr style="display: none;">
                 <th width="80">具体地区</th>
-                <td><input type="text" class="input fl" readonly="readonly" name="address" value="{pigcms{$area_street.address}" id="adress" validate="required:true"/></td> </tr>
+                <td><input type="text" class="input fl" readonly="readonly" name="address" value="{pigcms{$area_street.address}" id="adress"/></td> </tr>
             <tr>
                 <th width="80">所处经纬度</th>
                 <td>
@@ -155,7 +155,7 @@
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,drawing&key={pigcms{$config.google_map_ak}&language=en"></script>
         <script type="text/javascript" src="{pigcms{$static_path}js/map_google.js"></script>
         <else />
-        <script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+        <script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
         <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
         <script type="text/javascript">var polygonMap = 1;</script>
         <script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=3"></script>

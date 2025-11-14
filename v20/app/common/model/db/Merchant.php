@@ -12,6 +12,7 @@ use think\Model;
 
 class Merchant extends Model
 {
+	protected $pk ='mer_id';
     use \app\common\model\db\db_trait\CommonFunc;
     /**
      * 根据mer_id获取商户信息

@@ -1139,6 +1139,12 @@
                             <div class="ulli ulli-6">预计送达时间：</div>
                             <div class="ulli ulli-flex1"><if condition="$cat_field_info['fetch_time']">{pigcms{$cat_field_info.fetch_time}<else/>立即取件</if></div>
                         </li>
+                        <if condition="$cat_field_info['special_delivery']">
+                            <li class="li">
+                                <div class="ulli ulli-6">配送类型：</div>
+                                <div class="ulli ulli-flex1">专送</div>
+                            </li>
+                        </if>
                         <li class="li">
                             <div class="ulli ulli-6">备注：</div>
                             <div class="ulli ulli-flex1">{pigcms{$cat_field_info.remarks|default='无'}</div>
@@ -1156,6 +1162,16 @@
                             <div class="ulli ulli-6">超出基础配送费：</div>
                             <div class="ulli ulli-flex1">{pigcms{$cat_field_info.distance_price}</div>
                         </li>
+                        
+                        <if condition="is_array($cat_field_info['added_fee_list']) && $cat_field_info['added_fee_list']">
+                            <volist name="cat_field_info['added_fee_list']" id="item">
+                                <li class="li">
+                                    <div class="ulli ulli-6">{pigcms{$item.name}：</div>
+                                    <div class="ulli ulli-flex1">{pigcms{$item.money}</div>
+                                </li>
+                            </volist>
+                        </if>
+
                         <li class="li">
                             <div class="ulli ulli-6">优惠券抵扣:</div>
                             <div class="ulli ulli-flex1">{pigcms{$publishInfo.system_coupon_price}</div>

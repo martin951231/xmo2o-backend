@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Live/live_category')}" class="on">首页分类</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/add_live_category')}','添加分类','800px','80%',true,false,false,addbtn,'add',true);">添加分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/add_live_category')}','添加分类','800px','80%',true,false,false,addbtn,'add',true);">添加分类</a>
 				</ul>
 			</div>
 			
@@ -42,7 +42,7 @@
 										<td>{pigcms{$vo.name}</td>
 										<td>{pigcms{$vo.addtime|date='Y-m-d H:i:s',###}</td>
 										<td>{pigcms{$vo.sort}</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/edit_live_category',array('id'=>$vo['id']))}','编辑分类',800,600,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Live/del_live_category',array('id'=>$vo['id']))}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/edit_live_category',array('id'=>$vo['id']))}','编辑分类',800,600,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Live/del_live_category',array('id'=>$vo['id']))}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="9">{pigcms{$pagebar}</td></tr>

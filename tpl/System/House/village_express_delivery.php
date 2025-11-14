@@ -445,7 +445,7 @@
                         <ul>
                             <a href="" class="on">首页自定义导航列表</a>
                             <if condition="!$house_visualize_assign">|
-                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_nav_add',array('block_type_id' => $block_type_id,'is_community_platform'=>$is_community_platform,'source'=>1))}','添加导航',850,580,true,false,false,addbtn,'add',true,'refreshPage');">添加导航</a></if>
+                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_nav_add',array('block_type_id' => $block_type_id,'is_community_platform'=>$is_community_platform,'source'=>1))}','添加导航',850,580,true,false,false,addbtn,'add',true,'refreshPage');">添加导航</a></if>
                         </ul>
                     </div>
                     <div class="page_tips">图标建议尺寸：图片宽度建议为：150px，高度建议为：150px 平台已为你添加<span>{pigcms{$adver_count}</span> 张</div>
@@ -479,7 +479,7 @@
                                                 </if></td>
                                                 <if condition="!$house_visualize_assign">
                                                 <td class="textcenter">
-                                                   <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/house_nav_edit',array('id'=>$vo['id'],'block_type_id' => $block_type_id,'is_community_platform'=>1,'source'=>1,'from_page'=>$_GET['from_page']))}','编辑导航信息',850,580,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/house_nav_del')}">删除</a>
+                                                   <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/house_nav_edit',array('id'=>$vo['id'],'block_type_id' => $block_type_id,'is_community_platform'=>1,'source'=>1,'from_page'=>$_GET['from_page']))}','编辑导航信息',850,580,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('House/house_nav_del')}">删除</a>
                                                 </td>
                                                </if>
                                             </tr>

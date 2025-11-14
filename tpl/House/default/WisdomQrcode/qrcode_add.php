@@ -144,9 +144,14 @@
 		</div>
 	</div>
 	<script type="text/javascript" src="{pigcms{$static_path}js/area.js"></script>
+<if condition="$config['tianditu_web_key']">
+    <script src="https://api.tianditu.gov.cn/api?v=4.0&tk={pigcms{$config.tianditu_web_key}" type="text/javascript"></script>
+    <script src="/tpl/Static/js/coordinate.js"></script>
+	<script type="text/javascript" src="{pigcms{$static_path}js/tianditu_map.js"></script>
+<else />
 	<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
 	<script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=01"></script>
-
+</if>
 	<style>
 		.BMap_cpyCtrl{display:none;}
 		input.ke-input-text {

@@ -46,7 +46,7 @@
 								<else/>
 								<a href="javascript:;" onclick="dotop({pigcms{$vo['id']})">置顶</a>
 								</if>
-								<a href="{pigcms{:U('Portal/yellow_add',array('yid'=>$vo['id']))}">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="yid={pigcms{$vo.id}" url="{pigcms{:U('Portal/yellow_del')}">删除</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/yellow_recomment',array('yellow_id'=>$vo['id'],'frame_show'=>true))}','评论列表',1000,500,true,false,false,false,'detail',true);">评论管理</a>
+								<a href="{pigcms{:U('Portal/yellow_add',array('yid'=>$vo['id']))}">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="yid={pigcms{$vo.id}" url="{pigcms{:U('Portal/yellow_del')}">删除</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/yellow_recomment',array('yellow_id'=>$vo['id'],'frame_show'=>true))}','评论列表',1000,500,true,false,false,false,'detail',true);">评论管理</a>
 								</td>
 							</tr>
 							</volist>

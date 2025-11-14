@@ -249,7 +249,7 @@
 			</if>
 
 <!--		</table>-->
-		<form id="myform" method="post" action="{pigcms{:U('Appoint/editOrder')}" enctype="multipart/form-data">
+		<!--<form id="myform" method="post" action="{pigcms{:U('Appoint/editOrder')}" enctype="multipart/form-data">
 			<input type="hidden" name="order_id" value="{pigcms{$now_order.order_id}"/>
 			<tr>
 				<td colspan="4" style="padding-left:5px;color:black;"><b>自定义项目名称：</b></td>
@@ -282,7 +282,7 @@
 					</div>
 				</td>
 			</tr>
-		</form>
+		</form>-->
 
 			<form id="myform" method="post" action="{pigcms{:U('Appoint/orderNote')}" enctype="multipart/form-data">
 				<input type="hidden" name="order_id" value="{pigcms{$now_order.order_id}"/>

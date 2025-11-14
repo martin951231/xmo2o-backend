@@ -63,7 +63,7 @@
 <script type="text/javascript" src="./static/js/artdialog/iframeTools.js"></script>
 <script>
     $('#choose_color_box1').click(function(){
-        window.top.showTopColorPanel('Openedit',$(this).offset().top,$(this).height(),$(this).offset().left,'choose_color1')
+        window.o2oTop.showTopColorPanel('Openedit',$(this).offset().top,$(this).height(),$(this).offset().left,'choose_color1')
     });
     // var a = $("input[name='is_open_adver']:checked").val();
 </script>

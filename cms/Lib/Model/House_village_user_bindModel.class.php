@@ -2594,7 +2594,7 @@ class House_village_user_bindModel extends Model
         }
         $data=[];
         foreach ($dataList as $v){
-            $value=$v['value'];
+            $value='';
             if($v['key'] == 'birthday'){
                 $value=$idCard['birthday'];
             }elseif ($v['key'] == 'sex'){
@@ -2611,7 +2611,116 @@ class House_village_user_bindModel extends Model
         return ['error'=>true,'data'=>serialize($data)];
     }
 
-
+    public function get_authentication_field($dataList=array(),$fieldArr=array()){
+        if(empty($dataList) || empty($fieldArr)){
+            return '';
+        }
+        $data=[];
+        $areaDb=M('Area');
+        foreach ($dataList as $v){
+            $value='';
+            $key=trim($v['key']);
+            if(isset($fieldArr[$key])){
+                $value=$fieldArr[$v['key']];
+            }
+            if($key=='native_place' && $value){
+                $value=str_replace('，',',',$value);
+                $value=str_replace(' ','',$value);
+                $tmpArr=explode(',',$value);
+                $whereP=array('area_type'=>1,'area_name'=>$tmpArr['0']);
+                $areaInfo=$areaDb->where($whereP)->field('area_id,area_pid')->find();
+                // fdump_api(['value' =>$value, 'line' => __LINE__, 'whereP' => $whereP, 'areaInfo' => $areaInfo], 'native_place',1);
+                $valueNew='';
+                $area_pid=0;
+                if($areaInfo){
+                    $valueNew=$areaInfo['area_id'];
+                    $area_pid=$areaInfo['area_id'];
+                }
+                $whereC=array('area_pid'=>$area_pid,'area_type'=>2,'area_name'=>$tmpArr['1']);
+                $areaInfo=$areaDb->where($whereC)->field('area_id,area_pid')->find();
+                if($areaInfo){
+                    $valueNew=$valueNew.'#'.$areaInfo['area_id'];
+                }
+                // fdump_api(['valueNew' =>$valueNew, 'line' => __LINE__, 'whereP' => $whereC, 'areaInfo' => $areaInfo], 'native_place',1);
+                $value=$valueNew;
+            }
+            $data[$v['key']]=[
+                'type'=>$v['type'],
+                'is_must'=>$v['is_must'],
+                'key'=>$v['key'],
+                'title'=>$v['title'],
+                'value'=>$value
+            ];
+        }
+        return $data;
+    }
+    public function updateUserBindInfo($pigcms_id=0,$updateUserArr=array(),$village_id=0){
+        $saveBindInfo=array();
+        if(isset($updateUserArr['name'])){
+            $saveBindInfo['name']=$updateUserArr['name'];
+        }
+        if(isset($updateUserArr['id_card'])){
+            $saveBindInfo['id_card']=$updateUserArr['id_card'];
+        }
+        if(isset($updateUserArr['ic_card'])){
+            $saveBindInfo['ic_card']=$updateUserArr['ic_card'];
+        }
+        if(isset($updateUserArr['memo'])){
+            $saveBindInfo['memo']=$updateUserArr['memo'];
+        }
+        $areaDb=M('Area');
+        if(isset($updateUserArr['authenticationArr']) && isset($updateUserArr['systemConfigAttr']) && $updateUserArr['systemConfigAttr'] ){
+            $authentication_field= isset($updateUserArr['authentication_field']) && $updateUserArr['authentication_field']?$updateUserArr['authentication_field']:array();
+            $fieldArr=$updateUserArr['authenticationArr'];
+            foreach ($updateUserArr['systemConfigAttr'] as $v){
+                $value='';
+                $key=trim($v['key']);
+                if(isset($fieldArr[$key])){
+                    $value=$fieldArr[$v['key']];
+                }
+                if($key=='native_place' && $value){
+                    $value=str_replace('，',',',$value);
+                    $value=str_replace(' ','',$value);
+                    $tmpArr=explode(',',$value);
+                    $whereP=array('area_type'=>1,'area_name'=>$tmpArr['0']);
+                    $areaInfo=$areaDb->where($whereP)->field('area_id,area_pid')->find();
+                    //fdump_api(['value' =>$value, 'line' => __LINE__, 'whereP' => $whereP, 'areaInfo' => $areaInfo], 'native_place',1);
+                    $valueNew='';
+                    $area_pid=0;
+                    if($areaInfo){
+                        $valueNew=$areaInfo['area_id'];
+                        $area_pid=$areaInfo['area_id'];
+                    }
+                    $whereC=array('area_pid'=>$area_pid,'area_type'=>2,'area_name'=>$tmpArr['1']);
+                    $areaInfo=$areaDb->where($whereC)->field('area_id,area_pid')->find();
+                    if($areaInfo){
+                        $valueNew=$valueNew.'#'.$areaInfo['area_id'];
+                    }
+                   //fdump_api(['valueNew' =>$valueNew, 'line' => __LINE__, 'whereP' => $whereC, 'areaInfo' => $areaInfo,'sql'=>$areaDb->getLastSql()], 'native_place',1);
+                    $value=$valueNew;
+                }
+                if(isset($authentication_field[$key])){
+                    $authentication_field[$key]['value']=$value;
+                }else{
+                    $authentication_field[$key]=[
+                        'type'=>$v['type'],
+                        'is_must'=>$v['is_must'],
+                        'key'=>$v['key'],
+                        'title'=>$v['title'],
+                        'value'=>$value
+                    ];
+                }
+            }
+            $saveBindInfo['authentication_field']= serialize($authentication_field);
+        }
+        if($saveBindInfo){
+            $this->data($saveBindInfo)->where(array('pigcms_id'=>$pigcms_id,'village_id' => $village_id))->save();
+        }
+        if(isset($updateUserArr['user_tag_arr']) && $updateUserArr['user_tag_arr']){
+            D('House_village_user_label')->updateUserTagAttr($pigcms_id,$updateUserArr['user_tag_arr'],$village_id);
+        }
+        return true;
+    }
     //删除业主方法 迁移 从控制器到model
     public function user_bind_del($pigcms_id){
         $database_house_village_user_bind = D('House_village_user_bind');

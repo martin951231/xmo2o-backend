@@ -12,7 +12,7 @@
 							<a href="{pigcms{:U('Village_group/area_list',array('type'=>$_GET['type']-1))}">上一级</a>
 						</if>
 						<if condition="!$system_session['area_id']">
-							<input type="button" value="添加{pigcms{$now_type_str}" class="button" onclick="window.top.artiframe('{pigcms{:U('area_add',array('type'=>$_GET['type'],'pid'=>$_GET['pid']))}','添加{pigcms{$now_type_str}',800,480,true,false,false,addbtn,'add',true);"/>
+							<input type="button" value="添加{pigcms{$now_type_str}" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('area_add',array('type'=>$_GET['type'],'pid'=>$_GET['pid']))}','添加{pigcms{$now_type_str}',800,480,true,false,false,addbtn,'add',true);"/>
 						</if>
                         <if condition="$_GET['type'] eq 1">
                             <input type="button" style="float: right;margin-right: 2px;" value="同步平台城市" class="button" onclick="showArt()"/>
@@ -68,7 +68,7 @@
 
                                         <td><a href="{pigcms{:U('Village_group/leader_area_level_list',array('city_id'=>$vo['area_id']))}">团长等级列表</a></td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('area_edit',array('pigcms_id'=>$vo['pigcms_id']))}','编辑{pigcms{$now_type_str}',450,320,true,false,false,editbtn,'store_add',true);">编辑</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('area_edit',array('pigcms_id'=>$vo['pigcms_id']))}','编辑{pigcms{$now_type_str}',450,320,true,false,false,editbtn,'store_add',true);">编辑</a>
 											<!-- <a href="javascript:void(0);" class="delete_row" parameter="area_id={pigcms{$vo.area_id}" url="{pigcms{:U('Area/del')}" tip="删除只是进了回收站，所以区域标识未来将无法继续使用，<br/>但是标识无特殊意义，可以填写其他字母数字。<br/>（回收站恢复十分复杂，请勿随意删除区域。）">删除</a> -->
                                         </td>
 									</tr>
@@ -84,7 +84,7 @@
 <script>
     var mer_id = '';
     function showArt(){
-        window.top.art.dialog({
+        window.o2oTop.art.dialog({
             url: '',
             title: '确认同步平台城市信息',
             content: '确认后已添加的城市不会被修改，只同步未添加的城市！',

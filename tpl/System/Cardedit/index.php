@@ -3,8 +3,8 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Cardedit/index')}" class="on">实体卡列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Cardedit/add_card')}','批量添加实体卡',680,560,true,false,false,addbtn,'edit',true);">批量添加实体卡</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Cardedit/mutil_bind_merid')}','批量添加实体卡',680,560,true,false,false,addbtn,'edit',true);">批量绑定商家</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Cardedit/add_card')}','批量添加实体卡',700,400,true,false,false,addbtn,'edit',true);">批量添加实体卡</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Cardedit/mutil_bind_merid')}','批量添加实体卡',700,400,true,false,false,addbtn,'edit',true);">批量绑定商家</a>
 					<a href="{pigcms{:U('Cardedit/log')}" >实体卡操作记录</a>
 				</ul>
 			</div>
@@ -59,7 +59,7 @@
 									<tr>
 										<td>{pigcms{$vo.id}</td>
 										<td>{pigcms{$vo.cardid}</td>
-										<td><empty name="vo.uid"><font color="red">没有绑定用户</font><else /> <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></font></empty></td>
+										<td><empty name="vo.uid"><font color="red">没有绑定用户</font><else /> <font color="blue">{pigcms{$vo.uid}<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a></font></empty></td>
 										<td><empty name="vo.merid"><font color="red">没有绑定商家</font><else /> <font color="blue">{pigcms{$vo.merid}</font></empty></td>
 										<td><empty name="vo.regtime"><else />{pigcms{$vo.regtime|date='Y-m-d H:i:s',###}</empty></td>
 										<td>{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}</td>
@@ -67,7 +67,7 @@
 										<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 2" /><font color="red">未审核</font><else /><font color="red">禁用</font></if></td>
 										<td class="textcenter">
 										
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Cardedit/edit_card',array('cardid'=>$vo['cardid']))}','编辑实体卡信息',680,560,true,false,false,editbtn,'add',true);"><if condition="($vo['status'] eq 2) or ($vo['status'] eq 0)">审核<else />编辑</if></a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Cardedit/edit_card',array('cardid'=>$vo['cardid']))}','编辑实体卡信息',680,560,true,false,false,editbtn,'add',true);"><if condition="($vo['status'] eq 2) or ($vo['status'] eq 0)">审核<else />编辑</if></a>
 										<a href="javascript:void(0);" class="delete_row" parameter="id=10" url="{pigcms{:U('Cardedit/del_card',array('cardid'=>$vo['cardid']))}">删除</a>
 
 									</tr>

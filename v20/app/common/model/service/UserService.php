@@ -459,14 +459,14 @@ class UserService
                         $spread_give_money = $now_level['spread_user_give_moeny'] > 0 ? $now_level['spread_user_give_moeny'] : cfg('spread_give_money');
                         if (cfg('open_score_fenrun')) {
 //                            $this->addMoney($spread_user['uid'], $spread_give_money, L_('推荐新用户注册平台赠送余额'), '', '', $uid);
-                            $this->addMoney($spread_user['uid'], $spread_give_money, '推荐新用户注册平台赠送余额', '', '', $uid);
+                            //$this->addMoney($spread_user['uid'], $spread_give_money, '推荐新用户注册平台赠送余额', '', '', $uid);
                         } else {
 //                            $this->addMoney($spread_user['uid'], $spread_give_money, L_('推荐新用户注册平台赠送余额'));
-                            $this->addMoney($spread_user['uid'], $spread_give_money, '推荐新用户注册平台赠送余额');
+                            //$this->addMoney($spread_user['uid'], $spread_give_money, '推荐新用户注册平台赠送余额');
                         }
                         $scrollMsgService = new ScrollMsgService();
                         //待定...
-                        $scrollMsgService->addMsg('spread_reg', $spread_user['uid'], L_("用户X1于X2推荐新用户注册获赠平台余额X3", array("X1" => str_replace_name($spread_user['nickname']), "X2" => date('Y-m-d H:i', $_SERVER['REQUEST_TIME']), "X3" => $spread_give_money . cfg('Currency_txt'))));
+                        //$scrollMsgService->addMsg('spread_reg', $spread_user['uid'], L_("用户X1于X2推荐新用户注册获赠平台余额X3", array("X1" => str_replace_name($spread_user['nickname']), "X2" => date('Y-m-d H:i', $_SERVER['REQUEST_TIME']), "X3" => $spread_give_money . cfg('Currency_txt'))));
                     }
 
                     if ($spread_user_give_type == 1 || $spread_user_give_type == 2) {
@@ -536,12 +536,12 @@ class UserService
                     if ($spread_user_give_type == 0 ||$spread_user_give_type == 2) {
                         $spread_give_money = $now_level['spread_user_give_moeny']>0?$now_level['spread_user_give_moeny']: cfg('spread_give_money');
                         if(cfg('open_score_fenrun')){
-                            $this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
+                            //$this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
                         }else{
-                            $this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
+                            //$this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
                         }
 
-                        $scrollMsgService->addMsg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.cfg('Currency_txt'))));
+                        //$scrollMsgService->addMsg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.cfg('Currency_txt'))));
                     }
 
                     if ($spread_user_give_type == 1 || $spread_user_give_type == 2) {
@@ -684,7 +684,7 @@ class UserService
     }
 
     /*使用用户的积分   【待定....】   */
-    public function userScore($uid,$score,$desc,$type=2){
+    public function userScore($uid,$score,$desc,$type=2,$scoreParam=array()){
         if($score>0){
             // if(cfg('mdd_api_url')){
             //     // mdd 用户查询
@@ -733,7 +733,7 @@ class UserService
                 $dec_extra_score = $now_user['score_extra_count']<$score?$now_user['score_extra_count']:$score; 
                 $this->userObj->setDec($condition_user,'score_extra_count',$dec_extra_score); //同时减少
                 $userScoreListService = new UserScoreListService();
-                $userScoreListService->addRow($uid,2,$score,$desc);
+                $userScoreListService->addRow($uid,2,$score,$desc,true,false,0,$scoreParam);
 
                 // //执行减少用户积分后的钩子
                 // $hook_result = hook::hook_exec('user.use_user_score_after',['uid'=>$now_user['uid'],'user'=>$now_user,'score'=>$score,'desc'=>$desc]);
@@ -1393,12 +1393,12 @@ class UserService
                     if ($spread_user_give_type == 0 ||$spread_user_give_type == 2) {
                         $spread_give_money = $now_level['spread_user_give_moeny']>0?$now_level['spread_user_give_moeny']: cfg('spread_give_money');
                         if(cfg('open_score_fenrun')){
-                            $this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
+                            //$this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'),'','',$uid);
                         }else{
-                            $this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
+                            //$this->addMoney($spread_user['uid'],  $spread_give_money, L_('推荐新用户注册平台赠送余额'));
                         }
 //                        $scrollMsgService = new ScrollMsgService();
-                        $scrollMsgService->addMsg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.cfg('Currency_txt'))));
+                        //$scrollMsgService->addMsg('spread_reg',$spread_user['uid'],L_("用户X1于X2推荐新用户注册获赠平台余额X3",array("X1" => str_replace_name($spread_user['nickname']),"X2" => date('Y-m-d H:i',$_SERVER['REQUEST_TIME']),"X3" => $spread_give_money.cfg('Currency_txt'))));
                     }
 
                     if ($spread_user_give_type == 1 || $spread_user_give_type == 2) {
@@ -2501,8 +2501,7 @@ class UserService
     public function getLevelByUid($uid)
     {
         $rs = ['is_level' => false, 'level' => 0, 'can_spread' => false, 'expire_time' => 0];
-        $user = $this->getUser($uid);
-
+        $user = $this->userObj->getUser(true, ['uid' => $uid]);
         if (empty($user)) {
             return $rs;
         }
@@ -2515,6 +2514,7 @@ class UserService
         $isAllCloseSpread = $userLevelMod->getOne(['can_spread' => 1]) ? false : true;
 
         if ($levelInfo && $user['level'] > 0) {
+            $rs['level_name'] = $levelInfo['lname'];
             if ($levelInfo['validity'] == 0) {
                 $rs['expire_time'] = -1;  //-1表示永久有效
                 $rs['level'] = $user['level'];

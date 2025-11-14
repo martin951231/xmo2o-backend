@@ -8,8 +8,11 @@
 namespace app\common\model\service\address;
 
 use app\common\model\db\Area;
+use map\Coordinate;
 use map\Tianditu;
 use net\Http;
+use tools\AddressParser;
+
 class AutoAddressService
 {
     /**
@@ -52,7 +55,7 @@ class AutoAddressService
             if (!empty($addr)) {
                 $addrAll = $this->findAddressBaidu($addr);
                 if ($addrAll) {
-                    $addr = $addrAll->getData();
+                    $addr = $addrAll;
                     foreach ($addr as $key => $val) {
                         $result[$key] = $val;
                     }
@@ -93,33 +96,39 @@ class AutoAddressService
         $info = preg_replace('/\s{2,}|,|，|;|；|、|\/|\n/', ',', $info);
         $infos = explode(',', $info);
 
-        $count = count($infos);
-        switch ($count) {
-            case 1:
-                $data = mb_strpos($infos[0], ' ') !== FALSE ? $this->pddInfo($infos) : $this->noSpace($infos[0]);
-                break;
-            case 2:
-                $data = $this->jdInfo($infos);
-                break;
-            case 3:
-                $data = $this->customInfo($infos);
-                break;
-            case 4:
-                $data = $this->taobaoInfo($infos);
-                break;
-            case 5:
-                $data = $this->weixinInfo($infos);
-                break;
-            default:
-                $data = $this->formatInfo($info);
-                break;
+        // $count = count($infos);
+        // switch ($count) {
+        //     case 1:
+        //         $data = mb_strpos($infos[0], ' ') !== FALSE ? $this->pddInfo($infos) : $this->noSpace($infos[0]);
+        //         break;
+        //     case 2:
+        //         $data = $this->jdInfo($infos);
+        //         break;
+        //     case 3:
+        //         $data = $this->customInfo($infos);
+        //         break;
+        //     case 4:
+        //         $data = $this->taobaoInfo($infos);
+        //         break;
+        //     case 5:
+        //         $data = $this->weixinInfo($infos);
+        //         break;
+        //     default:
+        //         $data = $this->formatInfo($info);
+        //         break;
 
-        }
+        // }
+        $parseRs = AddressParser::parse($info);
+        $data = [
+            'name'    => $parseRs['username'] ?? '',
+            'phone'   => $parseRs['phone'] ?? '',
+            'address' => $parseRs['province'] . $parseRs['city'] . $parseRs['district'],
+            'detail'  => $parseRs['detail'] ?? '',
+        ];
         if (!empty($data)) {
             if (!empty($data['address']) || !empty($data['detail'])) {
-                $addrAll = $this->findAddressBaidu($data['address']?:$data['detail']);
+                $addrAll = $this->findAddressBaidu($data['address'].$data['detail']);
                 if ($addrAll) {
-                    $addrAll = $addrAll->getData();
                     $data['lat'] = $addrAll['lat'];
                     $data['lng'] = $addrAll['lng'];
                 } else {
@@ -127,12 +136,14 @@ class AutoAddressService
                     $data['lat'] = '';
                     $data['lng'] = '';
                 }
+                $data['search_ok'] = 1;
             } else {
                 $data['address'] = '';
                 $data['lat'] = '';
                 $data['lng'] = '';
+                $data['search_ok'] = 0;
             }
-            $data['search_ok'] = 1;  //1-搜索成功，0-搜索失败（清楚粘贴板内容）
+            //1-搜索成功，0-搜索失败（清楚粘贴板内容）
             return $data;
         } else {
             $data['address'] = '';
@@ -140,7 +151,6 @@ class AutoAddressService
             $data['lng'] = '';
             $data['search_ok'] = 0;  //1-搜索成功，0-搜索失败（清楚粘贴板内容）
             return $data;
-            //throw new \think\Exception('无法查询到相关信息');
         }
     }
 
@@ -201,14 +211,33 @@ class AutoAddressService
         $result['name'] = $name;
         return json($result);
     }
-
+	public function findAddressTdt($addr): array
+	{
+		$address = Tianditu::geocoder($addr, cfg('tianditu_key'));
+		$location = $address['location'];
+		empty($location) && throw_exception('地址解析失败,请去除特殊字符后重试');
+		return [
+			'address' => $addr,
+			'lng' => $location['lon'],
+			'lat' => $location['lat'],
+		];
+	}
+	
     /**
      *Baidu地理编码自动获取地址
      * @param $addr
-     * @return json or null
      */
-    public function findAddressBaidu($addr)
+    public function findAddressBaidu($addr): array
     {
+	    if (cfg('tianditu_key')) {
+		   $addrInfo = $this->findAddressTdt($addr);
+		   $position = Coordinate::wgs84ToBd09($addrInfo['lng'], $addrInfo['lat']);
+		   return [
+			   'address' => $addrInfo['address'],
+			   'lng' => $position[0],
+			   'lat' => $position[1],
+		   ];
+	    }
         $ak = cfg('baidu_map_ak');
         $url = "http://api.map.baidu.com/geocoding/v3/";
         $params = [
@@ -234,21 +263,15 @@ class AutoAddressService
                 $addrInfo = $json['result']['addressComponent'];
                 $lng = number_format($json['result']['location']['lng'], 6);
                 $lat = number_format($json['result']['location']['lat'], 6);
-                if ($lng && $lng) {
-                    $addrAll = ['address' => $addr, 'lng' => $lng, 'lat' => $lat];
-                }
-
-                return json($addrAll);
             }
         }
-        return null;
-
+	    return ['address' => $addr, 'lng' => $lng ?? 0, 'lat' => $lat ?? 0];
     }
 
     /**
      *逆地理编码获取地址
      * @param $addr
-     * @return json or null
+     * @return mixed
      */
     public function cityMatching($lat, $lng, $returnPois = false)
     {
@@ -353,7 +376,7 @@ class AutoAddressService
                 $now_city['area_info']['province_id'] = $now_city[0]['area_pid'];
                 $now_city['area_info']['province_name'] = $area['province_name'];
                 $now_city['pois'] = array();
-                if (isset($result['result']['pois'])) {
+                if (!empty($result['result']['pois'])) {
                     $now_city['address_name'] = $result['result']['pois'][0]['name'];
                     $now_city['address_addr'] = $result['result']['pois'][0]['addr'];
                     if ($returnPois) {

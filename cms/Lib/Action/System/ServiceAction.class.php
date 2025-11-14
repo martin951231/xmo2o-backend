@@ -728,19 +728,12 @@ class ServiceAction extends BaseAction {
             $publishInfo = D('Service_user_publish')->where(array('publish_id'=> $publish_id))->find();
         } else {
             $offerInfo = D('Service_offer')->field(true)->where(array('offer_id' => $offer_id))->find();
-
-
             $publishInfo = D('Service_user_publish')->where(array('publish_id'=>$offerInfo['publish_id']))->find();
         }
-
-
         $catInfo = D('Service_category')->where(array('cid'=>$publishInfo['cid']))->field('cat_name,accept_time')->find();
         if($catInfo){
             $publishInfo['cat_name'] = $catInfo['cat_name'];
         }
-
-
-
         if($publishInfo['catgory_type'] == 1){
             $publishInfo['cat_field'] = unserialize($publishInfo['cat_field']);
             foreach ($publishInfo['cat_field'] as $kk => $vv) {
@@ -801,7 +794,8 @@ class ServiceAction extends BaseAction {
             // 处理退款
             $cat_field_info['is_refund'] = $plat_order_info['is_refund'];
             $cat_field_info['refund_detail'] = unserialize($plat_order_info['refund_detail']);
-
+            //增值服务费用列表
+            $cat_field_info['added_fee_list'] = json_decode($cat_field_info['added_fee_list'],true);
 
             $this->assign('offer_info',$offer_info);
 
@@ -851,9 +845,9 @@ class ServiceAction extends BaseAction {
             }
 
             fdump($cat_field_info, '$cat_field_info', true);
+            //增值服务费用列表
+            $cat_field_info['added_fee_list'] = json_decode($cat_field_info['added_fee_list'],true);
             $this->assign('cat_field_info',$cat_field_info);
-
-
         }
 
         // 查询发布服务快派用户注册的手机号

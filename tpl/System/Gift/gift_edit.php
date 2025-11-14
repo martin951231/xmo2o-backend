@@ -369,7 +369,7 @@ function addCoupon(){
 }
 
 $('#giftEditSubmit').on('click',function(){
-    if(typeof top.contentScrollToTop == 'function'){
+    if(typeof window.o2oTop.contentScrollToTop == 'function'){
         $.each($('.iframe-container iframe', parent.document), function(i, item){
             if($(item).css('display') != 'none'){
                 console.log($(item).attr('src'), $(item).css('min-height'));

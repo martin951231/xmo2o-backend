@@ -139,6 +139,26 @@ class plan_supply_order extends plan_base
 			if (empty($user)) continue;
 			
 			$deliver_user_fee = $row['freight_charge'] - ($row['freight_charge'] * ($user['take_percent']/100));
+
+			//如果是跑腿订单需要重新计算配送费
+			if ($row['item'] == 3 && C('config.open_paotui_price_template')) {
+				$publishInfo = D('Service_user_publish')->where(array('publish_id' => $row['order_id']))->find();
+				if ($publishInfo['catgory_type'] == 2) {
+					//帮我买
+					$cat_field_info = D('Service_user_publish_buy')->where(array('publish_id' => $publishInfo['publish_id']))->find();
+				}
+				if ($publishInfo['catgory_type'] == 3) {
+					//帮我送
+					$cat_field_info = D('Service_user_publish_give')->where(array('publish_id' => $publishInfo['publish_id']))->find();
+				}
+				$calDeliverUserFeeRs = invoke_v20_service('\app\paotui\model\service\ServiceUserPublishService/calDeliverUserFee', [$user['uid'], array_merge($publishInfo, $cat_field_info)]);
+				$calDeliverUserFeeRs = $calDeliverUserFeeRs['data']['retval'] ?? [];
+				if (empty($calDeliverUserFeeRs)) {
+					continue;
+				}
+				$deliver_user_fee = $calDeliverUserFeeRs['total_fee'];
+			}
+
 			$result = $deliverSupplyDB->where(array('supply_id' => $row['supply_id']))->save(array('uid' => $user['uid'],'deliver_user_fee' => $deliver_user_fee, 'status' => 2, 'get_type' => 1,'start_time'=>time(),'check_time'=>C('config.deliver_look_out_time')*60+time()));
 			if ($result) {
 				$deliverSupplyDB->sendNotice($user, $row);

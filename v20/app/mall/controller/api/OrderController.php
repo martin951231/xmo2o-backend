@@ -560,6 +560,7 @@ class OrderController extends ApiBaseController
 			'list' => [],
 		];
 		$order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
 		$MallRiderService = new MallRiderService;
 		$rider = $MallRiderService->getRecord($type, $data_id, 'id desc');
 		if(!empty($rider)){
@@ -634,6 +635,7 @@ class OrderController extends ApiBaseController
         //1、获取订单信息
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         
         //查询店铺状态
         $merchantStoreInfo = (new MerchantStore())->where(['store_id'=>$order['order']['store_id']])->field('status,have_mall')->find();
@@ -674,6 +676,7 @@ class OrderController extends ApiBaseController
         //1、获取订单信息
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
 
         if($order['order']['address_id'] == $address_id){
         	return api_output_error(1001, '未检测到变更地址!');	
@@ -758,6 +761,7 @@ class OrderController extends ApiBaseController
         }
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         if((new MallOrderRemindService)->getTodayRemind($order['order']['store_id'], 20, $order_id) > 0){
 	       	return api_output_error(1003, '今天已经提醒过店家了!');
 	    }
@@ -779,6 +783,7 @@ class OrderController extends ApiBaseController
         }
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         if($order['order']['goods_activity_type'] == 'periodic'){
         	(new MallActivityService)->updateSurePeriodic($order_id);
 	    }
@@ -800,6 +805,7 @@ class OrderController extends ApiBaseController
         }
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
 
         $MallOrderService->checkOrderStatus(52,0,$order_id);
         $MallOrderService->changeOrderStatus($order_id, 52, '用户取消订单');
@@ -822,6 +828,7 @@ class OrderController extends ApiBaseController
         $MallOrderRefundService = new MallOrderRefundService;
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         $type = 1;//这里判断订单状态来确定是什么退款
         if($order['order']['status'] < 20){
         	$type = 1;
@@ -853,6 +860,7 @@ class OrderController extends ApiBaseController
         $MallOrderRefundService = new MallOrderRefundService;
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         $type = 1;//这里判断订单状态来确定是什么退款
         if($order['order']['status'] == 60){
             return api_output_error(1001, '已申请退款，请勿重复操作!');
@@ -918,6 +926,7 @@ class OrderController extends ApiBaseController
         ];
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         if(!empty($order['order']['goods_activity_type']) && $order['order']['goods_activity_type'] != 'limited'){
         	return api_output_error(1001, '该商品活动暂不支持加入购物车');
         }
@@ -969,6 +978,7 @@ class OrderController extends ApiBaseController
         }
         $MallOrderService = new MallOrderService;
         $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         $MallOrderService->changeOrderStatus($order_id, 31, '用户确认自提');
 
         return api_output(0, ['res'=>1]);
@@ -983,6 +993,9 @@ class OrderController extends ApiBaseController
         if(empty($order_id)){
         	return api_output_error(1001, 'order_id必传!');
         }
+        $MallOrderService = new MallOrderService;
+        $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         $periodic_order_id = $this->request->param("periodic_order_id", 0, "intval");
         if(empty($periodic_order_id)){
         	return api_output_error(1001, 'periodic_order_id必传!');
@@ -1004,6 +1017,9 @@ class OrderController extends ApiBaseController
         if(empty($order_id)){
         	return api_output_error(1001, 'order_id必传!');
         }
+        $MallOrderService = new MallOrderService;
+        $order = $MallOrderService->getOrderDetail($order_id);
+        $MallOrderService->checkOrderAuth($order,$this->request->log_uid);
         $periodic_order_id = $this->request->param("periodic_order_id", 0, "intval");
         if(empty($periodic_order_id)){
         	return api_output_error(1001, 'periodic_order_id必传!');

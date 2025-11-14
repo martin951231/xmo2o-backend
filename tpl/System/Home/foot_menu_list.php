@@ -6,7 +6,7 @@
 						<a href="{pigcms{:U('foot_menu_category')}">导航分类列表</a>|
 					</if>
 					<a href="{pigcms{:U('foot_menu_list',$_GET)}" class="on">{pigcms{$now_category.cat_name} - 导航列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('foot_menu_add',array('cat_id'=>$now_category['cat_id'],'from_page'=>$_GET['from_page']))}','添加导航',700,520,true,false,false,addbtn,'add',true);">添加导航</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('foot_menu_add',array('cat_id'=>$now_category['cat_id'],'from_page'=>$_GET['from_page']))}','添加导航',700,520,true,false,false,addbtn,'add',true);">添加导航</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -64,7 +64,7 @@
 												<font color="red">关闭</font>
 											</if>
 										</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('foot_menu_edit',array('id'=>$vo['id'],'frame_show'=>true,'from_page'=>$_GET['from_page']))}','查看信息',700,520,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('foot_menu_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page']))}','编辑信息',700,520,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('foot_menu_del')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('foot_menu_edit',array('id'=>$vo['id'],'frame_show'=>true,'from_page'=>$_GET['from_page']))}','查看信息',700,520,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('foot_menu_edit',array('id'=>$vo['id'],'from_page'=>$_GET['from_page']))}','编辑信息',700,520,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('foot_menu_del')}">删除</a></td>
 									</tr>
 								</volist>
 							<else/>

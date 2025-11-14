@@ -31,8 +31,15 @@ class UserScoreListService
         isset($param['mer_id']) && $param['mer_id'] > 0 && $data_user_score_list['mer_id'] = $param['mer_id'];
         isset($param['store_id']) && $param['store_id'] && $data_user_score_list['store_id'] = $param['store_id'];
         isset($param['score_type']) && $param['score_type'] && $data_user_score_list['score_type'] = $param['score_type'];
+        /*****score_type 20小区支付赠送21小区支付抵扣22小区退款退还23小区退款扣除**********/
         isset($param['order_id']) && $param['order_id'] && $data_user_score_list['order_id'] = $param['order_id'];
         isset($param['order_type']) && $param['order_type'] && $data_user_score_list['order_type'] = $param['order_type'];
+        if(isset($param['house_type']) && $param['house_type']){
+            $data_user_score_list['house_type'] = $param['house_type'];
+        }
+        if(isset($param['village_id']) && $param['village_id']){
+            $data_user_score_list['village_id'] = $param['village_id'];
+        }
         if (strpos($msg, '返现') !== false) {
             $data_user_score_list['is_pay_back'] = 1;
         }

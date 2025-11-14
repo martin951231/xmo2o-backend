@@ -102,7 +102,7 @@
 			art.dialog.open("{pigcms{:U('select_live_video_category')}",{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'select_store',
 				title:'选择短视频话题',
@@ -143,7 +143,7 @@
 			art.dialog.open("{pigcms{:U('select_live_show_category')}",{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'select_store',
 				title:'选择直播分类',

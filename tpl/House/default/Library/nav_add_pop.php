@@ -52,12 +52,12 @@
 			</tr>
 			<tr>
 				<th width="80">图标</th>
-				<td><input type="file" class="input fl" name="img" style="width:200px;" placeholder="请上传图片" tips="不修改请不上传！上传新图片，老图片会被自动删除！" onchange="preview(this);"  <if condition="empty($detail) OR empty($detail['img'])">validate="maxlength:200,required:true" </if> /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;建议尺寸:586X734支持扩展名:png，jpg</td>
+				<td><input type="file" class="input fl" name="img" style="width:200px;" placeholder="请上传图片" tips="不修改请不上传！上传新图片，老图片会被自动删除！" onchange="preview(this);"  <if condition="empty($detail) OR empty($detail['img'])">validate="maxlength:2000,required:true" </if> /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;建议尺寸:586X734支持扩展名:png，jpg</td>
 			</tr>
 			<tr>
 				<th width="80">链接地址</th>
 				<td>
-					<input type="text" class="input fl" name="url" id="url" value="{pigcms{$detail.url}" style="width:200px;" placeholder="请填写链接地址" validate="maxlength:200,required:true"/>
+					<input type="text" class="input fl" name="url" id="url" value="{pigcms{$detail.url}" style="width:200px;" placeholder="请填写链接地址" validate="maxlength:2000,required:true"/>
 					<?php if(!C('butt_open')){ ?>
 						<if condition="$now_category['cat_type'] neq 1">
 							<a href="#modal-table" class="btn btn-sm btn-success" onclick="addLink('url', 'on_deving', 0)" data-toggle="modal">从功能库选择</a>

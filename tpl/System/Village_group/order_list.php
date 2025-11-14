@@ -26,6 +26,7 @@
 							<select name="searchtype">
                                 <option value="real_orderid" <if condition="$_GET['searchtype'] eq 'real_orderid'">selected="selected"</if>>订单号</option>
 								<option value="order_id" <if condition="$_GET['searchtype'] eq 'order_id'">selected="selected"</if>>订单id</option>
+								<option value="orderid" <if condition="$_GET['searchtype'] eq 'orderid'">selected="selected"</if>>流水号</option>
 								<option value="user_phone" <if condition="$_GET['searchtype'] eq 'user_phone'">selected="selected"</if>>用户电话</option>
 								<option value="user_id" <if condition="$_GET['searchtype'] eq 'user_id'">selected="selected"</if>>用户id</option>
 								<option value="header_phone" <if condition="$_GET['searchtype'] eq 'header_phone'">selected="selected"</if>>团长电话</option>
@@ -128,7 +129,7 @@
                                             团长:{pigcms{$vo.header_info.name}<br>
                                             手机:{pigcms{$vo.header_info.phone}<br>
                                             <a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/add_header',array('id'=>$vo['start_uid']))}','订单详情',800,600,true,false,false,false,'store_add',true);">查看</a> </td>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_header',array('id'=>$vo['start_uid']))}','订单详情',800,600,true,false,false,false,'store_add',true);">查看</a> </td>
 										<td>
                                             {pigcms{$vo.total_money|floatval}
                                         </td>
@@ -199,11 +200,11 @@
 										<td class="textcenter">
 											<if condition="$vo.status eq 1">
 											<a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/change_leader',array('order_id'=>$vo['order_id']))}','更换团长',1200,600,true,false,false,editbtn,'edit',true);">更换团长</a>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/change_leader',array('order_id'=>$vo['order_id']))}','更换团长',1200,600,true,false,false,editbtn,'edit',true);">更换团长</a>
 											|
 											</if>
 											<a href="javascript:void(0)"
-											onclick="window.top.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,false,'detail',true);">订单详情</a>
+											onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/join_order_detail',array('order_id'=>$vo['order_id']))}','订单详情',800,600,true,false,false,false,'detail',true);">订单详情</a>
 										</td>
 
 									</tr>
@@ -223,7 +224,7 @@
 	
    $('.send_goods').click(function(){
        var now_dom = $(this);
-       window.top.art.dialog({
+       window.o2oTop.art.dialog({
            icon: 'question',
            title: '请确认',
            id: 'msg' + Math.random(),
@@ -235,10 +236,10 @@
            ok:function (){
                $.post(now_dom.attr('url'),now_dom.attr('parameter'),function(result){
                    if(result.status == 1){
-                       window.top.msg(1,result.info,true);
+                       window.o2oTop.msg(1,result.info,true);
                        window.location.reload();
                    }else{
-                       window.top.msg(0,result.info);
+                       window.o2oTop.msg(0,result.info);
                    }
                });
            },

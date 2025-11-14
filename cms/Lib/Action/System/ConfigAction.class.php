@@ -62,7 +62,6 @@ class ConfigAction extends BaseAction {
 		$condition_config['gid'] = $gid;
 		$condition_config['status'] = '1';
 		$tmp_config_list = $database_config->where($condition_config)->order('`sort` DESC')->select();
-
 		foreach($tmp_config_list as $key=>$value){
 			$value['info'] = str_replace('订餐',$this->config['meal_alias_name'],$value['info']);
             if(strpos($value['info'], '社区团购')!==false){
@@ -371,9 +370,25 @@ class ConfigAction extends BaseAction {
 				if($key == 'open_score_fenrun'){
 					M('Process_plan')->where(array('file'=>'user_fenrun'))->setField('plan_time',(strtotime(date("Y-m-d",$_SERVER['REQUEST_TIME']))+86400));
 				}
-
+				
 				if($num>0){
 					$before = $database_config->where('name="'.$key.'"')->find();
+                    $tmp_type_arr = explode('&',$before['type']);
+                    $type_arr = array();
+                    foreach($tmp_type_arr as $k=>$v){
+                        $tmp_value = explode('=',$v);
+                        $type_arr[$tmp_value[0]] = $tmp_value[1];
+                    }
+                    if($type_arr['type'] == 'multiSelect'){
+                        $value_arr = $value ? explode(',', $value) : [0];
+                        foreach ($value_arr as $item){
+                            if($item == 0){
+                                $value_arr = [0];
+                                break;
+                            }
+                        }
+                        $data['value'] = $value_arr ? implode(',', $value_arr) : 0;
+                    }
 					if($before['gid']){
 						$before_group = M("Config_group")->where(['gid'=>$before['gid']])->find();
 					}
@@ -478,7 +493,10 @@ class ConfigAction extends BaseAction {
 			if ($image['error']) {
 				exit(json_encode($image));
 			} else {
-				$url = $_SERVER['DOCUMENT_ROOT'].$image['url']['imgFile'];
+				$url = $_SERVER['DOCUMENT_ROOT'] . $image['url']['imgFile'];
+				if (!file_exists($url)) {
+					file_put_contents($url, file_get_contents(replace_file_domain($image['url']['imgFile'])));
+				}
 				$mode = D('Access_token_expires');
 				$res = $mode->get_access_token();
 				import('ORG.Net.Http');
@@ -748,7 +766,25 @@ class ConfigAction extends BaseAction {
                         }
                     }else if($type_arr['type'] == 'show'){
 						$config_html .= ''.$value['value'];
-					}
+					}else if($type_arr['type'] == 'multiSelect'){
+                        $radio_option = explode('|',$type_arr['value']);
+                        $value_option = explode(',',$value['value']);
+                        $config_html .= '<div class="show-select-value"><div class="select-list">';
+                        foreach($radio_option as $radio_k=>$radio_v) {
+                            $radio_one = explode(':', $radio_v);
+                            foreach ($value_option as $vo) {
+                                if($vo == $radio_one[0]){
+                                    $config_html .= '<div class="item" data-id="'.$vo.'">'.$radio_one[1].'<span class="icon">×</span></div>';
+                                }
+                            }
+                        }
+                        $config_html .= '</div><span class="select-icon"></span><ul class="list">';
+                        foreach($radio_option as $radio_k=>$radio_v){
+                            $radio_one = explode(':',$radio_v);
+                            $config_html .= '<li class="item" data-id="'.$radio_one[0].'">'.$radio_one[1].'</li>';
+                        }
+                        $config_html .= '</ul><input class="hidden_multi_select" type="hidden" name="'.$value['name'].'" value="'.$value['value'].'""></div>';
+                    }
 					$config_html .= '</td>';
 					$config_html .= '</tr>';
 				}

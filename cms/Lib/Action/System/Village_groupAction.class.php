@@ -1309,6 +1309,16 @@ class Village_groupAction extends BaseAction{
                 case 'real_orderid':
                     $where['o.real_orderid'] = $_GET['keyword'];
                     break;
+				case 'orderid': //支付流水号
+					$where['o.order_id'] = 0;
+					$payment_money_order = D('Payment_money_order')->where(['order_type' => 'plat', 'orderid' => trim($_GET['keyword'])])->find();
+					if ($payment_money_order) {
+						$order_id = D('Plat_order')->where(['order_id' => $payment_money_order['order_id'], 'business_type' => 'village_group'])->getField('business_id');
+						if ($order_id) {
+							$where['o.order_id'] = $order_id;
+						}
+					}
+					break;
 			}
 		}
 

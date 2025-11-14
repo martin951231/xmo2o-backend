@@ -6,13 +6,26 @@ namespace app\building\controller\platform;
 
 use app\building\model\ShoppingMall;
 use app\building\model\ShoppingMallAdver;
+use app\building\model\ShoppingMallBindAdmin;
 use app\building\model\ShoppingMallLikeSetting;
+use app\building\model\ShoppingMallMembershipBenefits;
+use app\building\model\ShoppingMallParkingSetting;
+use app\building\model\ShoppingMallWifi;
 use app\building\model\ShoppingTicketPointApply;
+use app\building\service\ShoppingMallService;
+use app\building\validate\ShoppingMall as ShoppingMallValidate;
 use app\building\service\ShoppingTicketPointApplyService;
 use app\common\controller\platform\AuthBaseController;
+use app\common\model\db\Admin;
+use think\response\Json;
 
 class ShoppingMallController extends AuthBaseController
 {
+	public function initialize()
+	{
+		$this->validateClass = ShoppingMallValidate::class;
+		parent::initialize();
+	}
     /**
      * 显示资源列表
      *
@@ -26,10 +39,13 @@ class ShoppingMallController extends AuthBaseController
     //获取列表
     public function getLists()
     {
-        $params['name'] = $this->request->param('name', '', 'trim');
+        $params['name'] = $this->request->param('title', '', 'trim');
         $params['page'] = $this->request->param('page', 1, 'intval');
         $params['page_size'] = $this->request->param('page_size', 10, 'intval');
-        $lists = (new ShoppingMall())->getLists($params);
+		if($this->systemUser['level'] != Admin::LEVEL_SUPER) {
+			$params['mall_ids'] = ShoppingMallBindAdmin::where('admin_id', $this->_uid)->column('mall_id') ?? [0];
+		}
+	    $lists = (new ShoppingMall())->getLists($params);
         return api_output(0, $lists);
     }
 
@@ -52,7 +68,8 @@ class ShoppingMallController extends AuthBaseController
     //商场绑定的店铺
     public function getBindStore()
     {
-        $params['id'] = $this->request->param('id', 0, 'intval');
+        $params['mall_id'] = $this->request->param('mall_id', 0, 'intval');
+        $params['store_name'] = $this->request->param('store_name', '', 'trim');
         $params['page'] = $this->request->param('page', 1, 'intval');
         $params['page_size'] = $this->request->param('page_size', 10, 'intval');
         $lists = (new ShoppingMall())->getBindStoreLists($params);
@@ -227,6 +244,7 @@ class ShoppingMallController extends AuthBaseController
         $params['status'] = $this->request->param('status', 0, 'intval');
         $params['page'] = $this->request->param('page', 1, 'intval');
         $params['page_size'] = $this->request->param('page_size', 10, 'intval');
+        $params['mall_id'] = $this->request->param('mall_id', null, 'intval');
 
         try {
             $result = (new ShoppingTicketPointApply())->getLists($params);
@@ -260,13 +278,13 @@ class ShoppingMallController extends AuthBaseController
         $reason =  $this->request->param('reason', '', 'trim');
         $money  = $this->request->param('money', 0, 'floatval');
         $adminAccount = $this->systemUser['account'];
-        $cacheKey = 'shopping_ticket_point_apply_'. $id;
+        $cacheKey = 'shopping_ticket_point_apply_' . $id;
         try {
             if (cache($cacheKey)) {
                 return api_output_error(1003, '请勿重复提交审核');
             }
             cache($cacheKey, 1, 10);
-            $result = (new ShoppingTicketPointApplyService())->handleTicketPoint($id, $status, $reason, $money,$adminAccount);
+            $result = (new ShoppingTicketPointApplyService())->handleTicketPoint($id, $status, $reason, $money, $adminAccount);
             return api_output(0, $result, 'success');
         } catch (\Exception $e) {
             return api_output_error(1003, $e->getMessage());
@@ -274,10 +292,127 @@ class ShoppingMallController extends AuthBaseController
     }
 
     //审核记录
-    public function handleTicketPointLogs(){
+    public function handleTicketPointLogs()
+    {
         $applyId = $this->request->param('apply_id', 0, 'intval');
         $logs = (new ShoppingTicketPointApplyService())->handleTicketPointLogs($applyId);
         return api_output(0, $logs, 'success');
+    }
 
+
+    //获取WIFI列表
+    public function getWifiLists()
+    {
+        $params['mall_id'] = $this->request->param('mall_id', 0, 'intval');
+        $params['page'] = $this->request->param('page', 1, 'intval');
+        $params['page_size'] = $this->request->param('page_size', 10, 'intval');
+        $lists = (new ShoppingMallWifi())->getLists($params);
+        return api_output(0, $lists);
+    }
+
+    //添加/编辑WIFI
+    public function saveWifi()
+    {
+        $params['id'] = $this->request->param('id', 0, 'intval');
+        $params['mall_id'] = $this->request->param('mall_id', 0, 'intval');
+        $params['ssid'] = $this->request->param('ssid', '', 'trim');
+        $params['password'] = $this->request->param('password', '', 'trim');
+        $params['status'] = $this->request->param('status', 0, 'intval');
+        try {
+            $lists = (new ShoppingMallWifi())->saveWifi($params);
+            return api_output(0, $lists);
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+    }
+
+    //删除WIFI
+    public function deleteWifi()
+    {
+        $id = $this->request->param('id', 0, 'intval');
+        try {
+            $arr = (new ShoppingMallWifi())->deleteWifi($id);
+            return api_output(0, $arr, 'success');
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+    }
+
+    //切换WiFi状态
+    public function changeWifiStatus()
+    {
+        $id = $this->request->param('id', 0, 'intval');
+        try {
+            $arr = (new ShoppingMallWifi())->changeWifiStatus($id);
+            return api_output(0, $arr, 'success');
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+    }
+
+    //用户等级列表
+    public function userLevels()
+    {
+        $mallId = $this->request->param('mall_id', 0, 'intval');
+        try {
+            $levels = (new ShoppingMallMembershipBenefits())->userLevels($mallId);
+            return api_output(0, $levels, 'success');
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+    }
+
+    //保存商场用户权益设置
+    public function saveParkingDiscount()
+    {
+        $params['mall_id'] = $this->request->param('mall_id', 0, 'intval');
+        $params['level'] = $this->request->param('level', 0, 'intval');
+        $params['parking_config'] = $this->request->param('parking_config', []);
+        $params['benefits'] = $this->request->param('benefits', []);
+        $params['uid'] = $this->_uid;
+        try {
+            (new ShoppingMallMembershipBenefits())->saveMembershipBenefits($params);
+            return api_output(0, []);
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+    }
+
+	public function saveShoppingMall(): Json
+	{
+		$params = input('post.');
+		$params['status'] = input('status', 0, 'intval');
+		$this->validateParameter($params);
+		try {
+			$result = (new ShoppingMallService())->saveShoppingMall($params);
+		} catch (\Exception $e) {
+			return api_output_error(1003, $e->getMessage());
+		}
+		return api_output(0, $result, 'success');
+	}
+	
+	public function getCanBindAdminUser(): Json
+	{
+		try {
+			$result = (new ShoppingMallService())->getCanBindAdminUser();
+		} catch (\Exception $e) {
+			return api_output_error(1003, $e->getMessage());
+		}
+		return api_output(0, $result, 'success');
+	}
+
+    /**
+     * 获取楼宇优惠券列表
+     * @return Json
+     */
+    public function getBuildingSystemCoupon()
+    {
+        $mallId = $this->request->param('mall_id', 0, 'intval');
+        try {
+            $result['coupon_list'] = (new ShoppingMallService())->getBuildingSystemCoupon($mallId);
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+        return api_output(0, $result, 'success');
     }
 }

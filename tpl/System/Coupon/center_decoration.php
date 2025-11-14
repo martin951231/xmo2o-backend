@@ -2,8 +2,8 @@
 <div class="mainbox">
     <div id="nav" class="mainnav_title">
         <ul>
-            <a href="{pigcms{:U('Coupon/index')}">平台优惠券列表</a>
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Coupon/add')}','添加平台优惠券','80%','80%',true,false,false,addbtn,'edit',true);">添加平台优惠券</a>
+            <a href="{pigcms{:U('Coupon/index')}">SYSTEM_COUPON_CENTER_1</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/add')}','SYSTEM_COUPON_CENTER_2','80%','80%',true,false,false,addbtn,'edit',true);">SYSTEM_COUPON_CENTER_2</a>
             <a href="{pigcms{:U('Coupon/had_pull')}" >领取列表</a>
             <a href="{pigcms{:U('Coupon/send_coupon')}" >派发优惠券</a>
             <a href="{pigcms{:U('Coupon/center_decoration')}"  class="on">领券中心装修</a>
@@ -58,12 +58,12 @@
 
             <div class="form-group">
                 <div class="group-title">
-                    <span class="name">平台券</span>
+                    <span class="name">SYSTEM_COUPON_CENTER_3</span>
                     <button type="button" class="btn fitment"  data-edit="1"
                             data-url="{pigcms{:U('Coupon/edit_system_coupon_alias',array('frame'=>1))}">装修
                     </button>
                 </div>
-                <div class="group-content">默认展示所有的平台优惠券，只支持修改名称不支持修改展示规则，排序规则为：越新创建的券展示越靠前</div>
+                <div class="group-content">SYSTEM_COUPON_CENTER_4</div>
             </div>
 
             <div class="form-group">
@@ -322,9 +322,9 @@
             if($(this).data('target')){
                 parent.addIframe(_this.siblings('.name').text(),_this.data('page_id'),_this.data('url'));
             }else if($(this).data('edit')){
-                window.top.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,480,true,false,false,editbtn,'store_add',true);
+                window.o2oTop.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,480,true,false,false,editbtn,'store_add',true);
             }else{
-                window.top.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1200,600,true,false,false,false,'viewpage',true);
+                window.o2oTop.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1200,600,true,false,false,false,'viewpage',true);
             }
         });
 

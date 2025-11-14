@@ -72,7 +72,7 @@
 										<td><if condition="$vo['total_money']">{pigcms{$vo.total_money}<else/>未设置</if> </td>
 										<td>{pigcms{$vo.give_out_money}</td>
 										<td class="textcenter"><if condition="$vo['status'] eq 0"><font color="blue">待审核</font><elseif condition="$vo['status'] eq 1"/><font color="green">启用</font><elseif condition="$vo['status'] eq 2"/><font color="blue">禁止</font><elseif condition="$vo['status'] eq 3 " /><font color="black">商家关闭</font><else /><font color="red">系统关闭</font></if></td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Lottery/edit',array('id'=>$vo['id']))}','编辑抽奖信息',980,600,true,false,false,editbtn,'edit',true);">编辑</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Lottery/edit',array('id'=>$vo['id']))}','编辑抽奖信息',980,600,true,false,false,editbtn,'edit',true);">编辑</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="14">{pigcms{$pagebar}</td></tr>
@@ -99,7 +99,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看渠道二维码',

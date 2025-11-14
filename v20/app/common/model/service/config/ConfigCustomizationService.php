@@ -462,7 +462,15 @@ class ConfigCustomizationService {
         }
         return $is_func_yougejianet_special;
     }
-
+    
+    public function getFuncParkDevHxt85Customized()
+    {
+        /** 小红马华夏t85车闸设备定制定制 */
+        $config = $this->getConfigData();
+        $park_dev_hxt85_customized = isset($config['park_dev_hxt85_customized']) && $config['park_dev_hxt85_customized'] == 1 ? 1 : 0;
+        return $park_dev_hxt85_customized;
+    }
+    
     public function getFuncZhihuilantiancomSpecial($is_force = false)
     {
         /** www.zhihuilantian.com定制 */
@@ -479,5 +487,48 @@ class ConfigCustomizationService {
             }
         }
         return $is_func_lantiancom_special;
+
+    }
+
+    public function getFuncYumenLaoSpecial($is_force = false)
+    {
+        /** 玉门市老市区管委会定制 */
+        $config = $this->getConfigData();
+        $is_func_yumenlao_special = isset($config['func_yumenlao_special']) && $config['func_yumenlao_special'] == 1 ? 1 : 0;
+        if ($is_force) {
+            //走队列调用时 强制查询
+            $is_func_yumenlao_special = 0;
+            $whereArr = array();
+            $whereArr[] = ['name', '=', 'func_yumenlao_special'];
+            $oneTmp = $this->configObj->getOne($whereArr, 'value');
+            if ($oneTmp && !$oneTmp->isEmpty()) {
+                $is_func_yumenlao_special = isset($oneTmp['value']) && $oneTmp['value'] == 1 ? 1 : 0;
+            }
+        }
+        return $is_func_yumenlao_special;
+    }
+    
+    public function getFuncYumenLaoSpecialMeter($is_force = false)
+    {
+        /** 玉门市老市区管委会定制 */
+        $config = $this->getConfigData();
+        $is_func_yumenlao_special_meter = isset($config['func_yumenlao_special_meter']) && $config['func_yumenlao_special_meter'] == 1 ? 1 : 0;
+        if ($is_force) {
+            //走队列调用时 强制查询
+            $is_func_yumenlao_special_meter = 0;
+            $whereArr = array();
+            $whereArr[] = ['name', '=', 'func_yumenlao_special_meter'];
+            $oneTmp = $this->configObj->getOne($whereArr, 'value');
+            if ($oneTmp && !$oneTmp->isEmpty()) {
+                $is_func_yumenlao_special_meter = isset($oneTmp['value']) && $oneTmp['value'] == 1 ? 1 : 0;
+            }
+        }
+        return $is_func_yumenlao_special_meter;
+    }
+    
+    public function getStandardBindImportBtnJudge(){
+        $config = $this->getConfigData();
+        $standard_bind_import_btn = isset($config['standard_bind_import_btn']) && $config['standard_bind_import_btn'] == 1 ? 1 : 0;
+        return $standard_bind_import_btn;
     }
 }

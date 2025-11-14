@@ -13,4 +13,5 @@ use think\Model;
  */
 class ServiceUserPublishGive extends Model
 {
+	protected $pk = 'give_id';
 }

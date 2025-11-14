@@ -17,12 +17,12 @@
 		<script type="text/javascript" src="{pigcms{$static_public}js/jquery.colorpicker.js"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}js/layer/layer.js"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}js/layer/extend/layer.ext.js"></script>
-		<script type="text/javascript" src="{pigcms{$static_path}js/common.js?t=13101"></script>
+		<script type="text/javascript" src="{pigcms{$static_path}js/common.js?t=13102"></script>
 		<script type="text/javascript" src="{pigcms{$static_path}js/area_adver.js?t=13"></script>
 		<script type="text/javascript" src="./static/js/artdialog/jquery.artDialog.js"></script>
 		<script type="text/javascript" src="./static/js/artdialog/iframeTools.js"></script>
 	</head>
 	<script>
-		//window.top.contentScrollToTop()
+		//window.o2oTop.contentScrollToTop()
 	</script>
 	<body width="100%" <if condition="$bg_color">style="background:{pigcms{$bg_color};"</if>>

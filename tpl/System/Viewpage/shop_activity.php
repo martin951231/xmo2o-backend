@@ -160,7 +160,7 @@
 		function add_activity(id=''){
 			var url = '';
 			url = '{pigcms{:U("activity_edit",array("business_type"=>"shop"))}' + '&id='+id;
-				window.top.artiframe(url,'添加活动',720,600,true,false,false,editbtn,'activity_edit',true,
+				window.o2oTop.artiframe(url,'添加活动',720,600,true,false,false,editbtn,'activity_edit',true,
 				function(){
 					$("#activity_box tbody").empty();
 					$.post("{pigcms{:U('activity_list',array('business_type'=>'shop'))}",{},function(data){

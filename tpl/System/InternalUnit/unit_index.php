@@ -21,7 +21,7 @@
                             <span>总收款余额：<span style="color: #ff5100;">(￥{pigcms{$sumInternalUnit['sumCollectMoney']})</span></span>
                             <span>总支出余额：<span style="color: #ff5100;">(￥{pigcms{$sumInternalUnit['sumUsedMoney']})</span></span>
                             <a href="javascript:void(0)" onclick="exportData()" class="button" style="float:right;margin-right: 10px;">导出Excel</a>
-                            <a href="javascript:void(0);" class="button" style="float:right;margin-right: 10px;" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/unitSet', ['id' => $vo['id']])}','添加归属单位',680,200,true,false,false,addbtn,'add',true);">添加</a>
+                            <a href="javascript:void(0);" class="button" style="float:right;margin-right: 10px;" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/unitSet', ['id' => $vo['id']])}','添加归属单位',680,200,true,false,false,addbtn,'add',true);">添加</a>
 
                         </form>
 					</td>
@@ -70,12 +70,12 @@
                                         <td>{pigcms{$vo.create_time}</td>
 										<td>
                                             <if condition="$system_session['level'] == 2">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/unitSet', ['id' => $vo['id']])}','编辑归属单位信息',680,200,true,false,false,editbtn,'add',true);">编辑</a> &nbsp;|&nbsp;
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/unitSet', ['id' => $vo['id']])}','编辑归属单位信息',680,200,true,false,false,editbtn,'add',true);">编辑</a> &nbsp;|&nbsp;
                                             </if>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/rechargeAdd', ['unit_id' => $vo['id']])}','添加收款记录',680,400,true,false,false,addbtn,'add',true);">收款</a>&nbsp;|&nbsp;
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/deductionAdd', ['unit_id' => $vo['id']])}','添加支出记录',680,400,true,false,false,addbtn,'add',true);">支出</a>&nbsp;|&nbsp;
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/rechargeRecords', ['unit_id' => $vo['id']])}','收款记录',850,600,true,false,false,false,'add',true);">收款记录</a>&nbsp;|&nbsp;
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('InternalUnit/deductionRecords', ['unit_id' => $vo['id']])}','支出记录',850,600,true,false,false,false,'add',true);">支出记录</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/rechargeAdd', ['unit_id' => $vo['id']])}','添加收款记录',680,400,true,false,false,addbtn,'add',true);">收款</a>&nbsp;|&nbsp;
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/deductionAdd', ['unit_id' => $vo['id']])}','添加支出记录',680,400,true,false,false,addbtn,'add',true);">支出</a>&nbsp;|&nbsp;
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/rechargeRecords', ['unit_id' => $vo['id']])}','收款记录',850,600,true,false,false,false,'add',true);">收款记录</a>&nbsp;|&nbsp;
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('InternalUnit/deductionRecords', ['unit_id' => $vo['id']])}','支出记录',850,600,true,false,false,false,'add',true);">支出记录</a>
                                         </td>
 									</tr>
 								</volist>

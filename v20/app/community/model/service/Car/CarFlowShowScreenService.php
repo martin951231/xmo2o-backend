@@ -22,6 +22,12 @@ class CarFlowShowScreenService
      * 整合来源：\app\community\model\service\HouseVillageParkingService::addParkShowScreenLog
      */
     public function addParkShowScreenLog($data) {
+
+        if( isset($data['passage']['park_sys_type']) && $data['passage']['park_sys_type']=='HXT85'){
+            $parkDevInfoHandleService=  new \app\community\model\service\Park\ParkDevInfoHandleService();
+            $logId=$parkDevInfoHandleService->addParkShowScreenLog($data);
+            return $logId;
+        }
         $db_park_showscreen_log = new ParkShowscreenLog();
         /*----------添加显屏指令start-----------*/
         //临时车入场

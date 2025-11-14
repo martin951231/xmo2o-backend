@@ -154,6 +154,9 @@ class HardwareAction extends BaseAction
                     $v['qrcode'] = $img_url;
                     if (isset($v['last_heart_time']) && $v['last_heart_time'] < $time) {
                         $v['statusHeart'] = 44;
+                        if ($v['type'] == 1 && $v['status']==1) {
+                            $v['statusHeart']=0;
+                        }
                         if($v['last_heart_time'] > 1000) {
                             $v['statusHeartTime'] = date('Y-m-d H:i:s',$v['last_heart_time']);
                         }else{

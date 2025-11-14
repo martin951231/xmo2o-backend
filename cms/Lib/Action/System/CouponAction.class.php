@@ -833,7 +833,7 @@ class CouponAction extends BaseAction {
 		$model = D('System_coupon');
 		$return = array();
 		foreach ($coupon_list as $key=>$item) {
-			$tmp = $model->had_pull($item,$uid,'',0,1,$send_num[$key]??1);
+			$tmp = $model->had_pull($item,$uid,'',0,1,$send_num[$key]?:1);
 			$model->decrease_sku(0,1,$item);//网页领取完，微信卡券库存需要同步减少
 			$tmp['msg'] = $this->coupon_error($tmp['error_code']);
 			$data['uid'] = $uid;

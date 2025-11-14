@@ -779,6 +779,7 @@ class System_orderModel extends Model{
 			return false;
 		}
 		$system_id=$this->get_system_id($type,$order_id);
+		if(empty($system_id)) return false;
 		$data['id']=$system_id;
 		if(isset($data['status'])){
 			if($type=='shop' || $type=='mall'){

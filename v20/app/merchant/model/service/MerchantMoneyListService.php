@@ -746,6 +746,11 @@ class MerchantMoneyListService {
         else{
             $commission_money = $data['total_money'];
         }
+
+        if (cfg('add_spread_by_system_commission')) { // 根据平台抽成获得佣金	
+            $commission_money = $systemTakeMoney;
+        }
+
         invoke_cms_model('Area_commission/addCommission',[$commission_money, $merId, $orderInfo['store_id'], $orderInfo['order_type'], $orderInfo['order_id']]);
         fdump_api([$commission_money, $systemTakeMoney, $data, $other], 'merchant_money_list/bd', 1);
         //平台业务员得到分佣（扣除平台抽成后的金额，计算分佣）
@@ -812,8 +817,30 @@ class MerchantMoneyListService {
             (new TemplateNewsService())->sendTempMsg('OPENTM402026291', $msgData);
         }
 
-        //结算佣金
-        (new UserSpreadListService)->spreadToComplete($orderInfo['order_type'], $orderInfo['order_id']);
+        //如果是根据抽成算三级用户分佣，那么在结算的时候处理（目前仅适配了餐饮,其他业务都是支付成功的时候记录推广佣金了）
+        if (cfg('add_spread_by_system_commission') && in_array($orderInfo['order_type'], ['dining'])) {
+            //根据平台抽成算分销佣金
+            $spreadInfo = [
+                'order_id' => $orderInfo['order_id'],
+                'pay_order_id' => 0,
+                'mer_id' => $orderInfo['mer_id'],
+                'store_id' => $orderInfo['store_id'],
+                'uid' => $orderInfo['uid'],
+                'order_type' => $orderInfo['order_type'],
+                'real_orderid' => $data['order_id'],
+                'spread_total_money' => $data['system_take']
+            ];
+            try {
+                (new UserSpreadListService())->addSpreadList($spreadInfo);
+            } catch (\Exception $e) {
+                fdump_sql($e->getMessage(), 'addSpreadList_error');
+            }
+        }
+
+        //结算佣金(商城业务过了售后期再结算，走定时任务执行)
+        if ($orderInfo['order_type'] != 'mall') {
+            (new UserSpreadListService)->spreadToComplete($orderInfo['order_type'], $orderInfo['order_id']);
+        }
         
         if($orderInfo['order_type']!='merrecharge'){
             if ($unionMerId) {

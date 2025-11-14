@@ -58,7 +58,7 @@
 				if(imgg.width>0 || imgg.height>0){
 				   //获取宽高
 				   clearInterval(set);
-					window.top.art.preview({
+					window.o2oTop.art.preview({
 						padding: 0,
 						title: '大图',
 						url: imgg.src,

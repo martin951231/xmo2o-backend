@@ -1039,10 +1039,11 @@ class Merchant_money_listModel extends Model{
             $payment_money_order = M('Pay_order_info')->where(array('orderid'=>$order_info['third_id']))->find();
             if($payment_money_order){
                 $pay_config = $payment_money_order['pay_config'] ? json_decode($payment_money_order['pay_config'], true) : '';
-                $payment_money_order['payment_money'] = $payment_money_order['paid_money']/100;
+                $payment_money_order['paid_money'] = $payment_money_order['paid_money']/100;
                 $payment_money_order['is_v20'] = 1;
                 $payment_money_order['pay_type'] = $payment_money_order['pay_type'];
                 $payment_money_order['pay_method'] = $payment_money_order['channel'];
+                $payment_money_order['third_plat_data'] = $payment_money_order['paid_extra'];
                 $order_info['third_id'] = $payment_money_order['paid_extra'];
             }
         }
@@ -3767,7 +3768,7 @@ class Merchant_money_listModel extends Model{
         if (bccomp($totalDepositSettlement, $deposit, 2) > 0) {
             $adjustRatio = bcdiv($deposit, $totalDepositSettlement, 2);
             $merDepositSettlement = bcmul($merDepositSettlement, $adjustRatio, 2);
-            $platDepositCommission = bcmul($platDepositCommission, $adjustRatio, 2);
+            $platDepositCommission = bcsub($deposit, $merDepositSettlement, 2);
         }
 
         // 计算尾款部分的总抽成金额
@@ -3776,13 +3777,13 @@ class Merchant_money_listModel extends Model{
         if (bccomp($totalBalanceSettlement, $balance, 2) > 0) {
             $adjustRatio = bcdiv($balance, $totalBalanceSettlement, 2);
             $merBalanceSettlement = bcmul($merBalanceSettlement, $adjustRatio, 2);
-            $platBalanceCommission = bcmul($platBalanceCommission, $adjustRatio, 2);
+            $platBalanceCommission = bcsub($balance, $merBalanceSettlement, 2);
         }
         return [
-            'merDepositSettlement' => $merDepositSettlement,  //商家定金结算部分
-            'platDepositCommission' => $platDepositCommission, //平台定金抽成部分
-            'merBalanceSettlement' => $merBalanceSettlement, //商家尾款结算部分
-            'platBalanceCommission' => $platBalanceCommission, //平台尾款抽成部分
+            'merDepositSettlement' => $merDepositSettlement > 0 ? $merDepositSettlement : 0,  //商家定金结算部分
+            'platDepositCommission' => $platDepositCommission > 0 ? $platDepositCommission : 0, //平台定金抽成部分
+            'merBalanceSettlement' => $merBalanceSettlement > 0 ? $merBalanceSettlement : 0, //商家尾款结算部分
+            'platBalanceCommission' => $platBalanceCommission > 0 ? $platBalanceCommission : 0, //平台尾款抽成部分
         ];
     }
 	

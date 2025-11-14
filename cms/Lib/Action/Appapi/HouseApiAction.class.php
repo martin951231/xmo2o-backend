@@ -1093,11 +1093,11 @@ class HouseApiAction  extends BaseAction
                 $return['village_list'][$k]['village_address'] = $v['village_address'];
                 $return['village_list'][$k]['range'] = $v['range'];
                 $return['village_list'][$k]['village_logo'] = $v['village_logo'];
-
+                /*
                 $header_id = $v['header_id'] ? $v['header_id'] : $this->config['house_village_group_headerId'];
                 $exist = M('Village_group_header')->where(array('id' => $header_id))->find();
                 $header_id = $exist ? $header_id : 0;
-
+                */
 
                 $property_phone = explode(' ', $v['property_phone']);
                 $return['village_list'][$k]['property_phone'] = $property_phone[0];
@@ -3750,7 +3750,8 @@ class HouseApiAction  extends BaseAction
             $arr['category_list'] = $category_list;
 
 
-            $cat_id = $cat_id ? $cat_id : '0';
+//            $cat_id = $cat_id ? $cat_id : '_999';
+
 
             // 处理下
             $pigcms_id = I('pigcms_id');
@@ -3776,12 +3777,15 @@ class HouseApiAction  extends BaseAction
                 }
             }
             $floor_id = 0;
+
             $news_list = D('House_village_news')->get_list_by_cid($cat_id, $floor_id,$news_id,$village_id);
+
             foreach ($news_list as $k => &$v) {
                 $v['add_time'] = date('m-d H:i', $v['add_time']);
             }
 
             $arr['news_list'] = $news_list;
+
             $this->returnCode(0, $arr);
         } else {
             $arr['news_list'] = [];
@@ -6791,6 +6795,7 @@ class HouseApiAction  extends BaseAction
                         $bind_info['cycle']=$v['park_charge_id'];
                     }
                 }
+                $list['rule_name']=$v['charge_name'];
                 if($k== 0){
                     $list['select_status'] = true;
                 }else{
@@ -18569,7 +18574,7 @@ class HouseApiAction  extends BaseAction
         $house_park_garage_config = D('House_village_park_garage_config')->getVillageParkConfig($garage_id, $village_id);
         $park_sys_type = isset($house_park_garage_config['park_sys_type']) ? trim($house_park_garage_config['park_sys_type']) : '';
         fdump_api($house_park_garage_config, '$house_park_garage_config');
-        if ($house_park_garage_config && !in_array($park_sys_type, ['D3', 'A11'])) {
+        if ($house_park_garage_config && !in_array($park_sys_type, ['D3', 'A11','HXT85'])) {
             //判断小区有没有对接停车主机，若未对接则报错。
             $park_system = M('Park_system')->where(['park_id' => $village_id])->find();
             if (empty($park_system)) {
@@ -18815,7 +18820,7 @@ class HouseApiAction  extends BaseAction
         if(isset($_POST['passage_id']) && !empty($_POST['passage_id'])){
             $passage_id=intval($_POST['passage_id']);
         }
-
+        $garage_id=0;
         if(isset($_POST['garage_id']) && !empty($_POST['garage_id'])){
             $garage_id=intval($_POST['garage_id']);
         }
@@ -18883,7 +18888,7 @@ class HouseApiAction  extends BaseAction
             $this->returnCode(0, $data);
 
         }
-        elseif (2==$village_park_config['park_versions'] && 'D3'==$village_park_config['park_sys_type']) {
+        elseif (2==$village_park_config['park_versions'] && ('HXT85'==$village_park_config['park_sys_type'] || 'D3'==$village_park_config['park_sys_type'])) {
             if ($spread==2){
                 // 直付
                 if(empty($channel_info)){
@@ -19460,7 +19465,7 @@ class HouseApiAction  extends BaseAction
             }
             $arr['car_number'] = $parking_temp['car_number'];
         }
-        elseif ( in_array($parking_temp['park_sys_type'],['D3','A11'])){
+        elseif ( in_array($parking_temp['park_sys_type'],['D3','A11','HXT85'])){
             if($parking_temp){
                 $arr['in_time'] = $parking_temp['in_time'] ? date('Y-m-d H:i:s',$parking_temp['in_time']) : '';
 
@@ -19827,9 +19832,9 @@ class HouseApiAction  extends BaseAction
 
     public function park_go_pay()
     {
-        fdump($_POST, 'park_go_pay', true);
-
-
+        
+        fdump_api($_POST,'go_pay_0507',1);
+        
         $pay_type = I('type','park');
 
         $pay_name = $this->pay_list_type[$pay_type];
@@ -20039,9 +20044,18 @@ class HouseApiAction  extends BaseAction
                 'village_id' => $village_id,
                 'is_paid' => 0,
             ];
+            $nowtime=time();
+            $add_time_max=$nowtime+10;
+            $add_time_min=$nowtime-600;
+            $whereTemp['_string'] = ' (add_time>'.$add_time_min.' AND add_time<'.$add_time_max.')';
             $temp = M('House_village_parking_temp')->where($whereTemp)->field('*')->order('id DESC')->find();
             if(empty($temp)){
                 $this->returnCodeError('未查到对应待支付订单!');
+            }
+            fdump_api( ['whereTemp'=>$whereTemp,'temp'=>$temp] ,'go_pay_0507',1);
+            if(isset($temp['rule_id'])){
+                $postData['rule_id'] = $temp['rule_id'];
+                $postData['project_id'] = $temp['project_id'];
             }
             $park_sys_type=$temp['park_sys_type'];
             // 如果是d1查询当前记录订单金额
@@ -20064,7 +20078,7 @@ class HouseApiAction  extends BaseAction
                     }
   
             }
-            elseif($temp && 'D3'==$temp['park_sys_type']){
+            elseif($temp && ('HXT85'==$temp['park_sys_type'] || 'D3'==$temp['park_sys_type'])){
                 /*
                 $whereTemp = [
                     'park_sys_type' => 'D3',

@@ -5,9 +5,9 @@
 		<title>社区拼团发货单</title>
 		<script type="text/javascript">
 			/*<if condition="!C('butt_open')">
-				if(self==top){window.top.location.href="{pigcms{:U('Index/index')}";}
+				if(self==top){window.o2oTop.location.href="{pigcms{:U('Index/index')}";}
 			<else/>
-				if(self==top){window.top.location.href="{pigcms{:C('butt_system_url')}";}
+				if(self==top){window.o2oTop.location.href="{pigcms{:C('butt_system_url')}";}
 			</if>*/
 			var kind_editor=null,static_public="{pigcms{$static_public}",static_path="{pigcms{$static_path}",system_index="{pigcms{:U('Index/index')}",choose_province="{pigcms{:U('Area/ajax_province')}",choose_city="{pigcms{:U('Area/ajax_city')}",choose_area="{pigcms{:U('Area/ajax_area')}",choose_circle="{pigcms{:U('Area/ajax_circle')}",choose_market="{pigcms{:U('Area/ajax_market')}",choose_map="{pigcms{:U('Map/frame_map')}",get_firstword="{pigcms{:U('Words/get_firstword')}",frame_show=<if condition="$_GET['frame_show']">true<else/>false</if>;
  var  meal_alias_name = "{pigcms{$config.meal_alias_name}",parentShowHelpParam = [],parentShowIndex = false,choose_provincess="{pigcms{:U('Area/ajax_province')}",choose_cityss="{pigcms{:U('Area/ajax_city')}";

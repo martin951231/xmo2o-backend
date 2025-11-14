@@ -2,7 +2,7 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('circle/dynamicAdd')}','添加{pigcms{$now_type_str}',850,700,true,false,false,addbtn,'add',true);">添加新的动态</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('circle/dynamicAdd')}','添加{pigcms{$now_type_str}',850,700,true,false,false,addbtn,'add',true);">添加新的动态</a>
 				</ul>
 			</div>
 
@@ -73,7 +73,7 @@
 										<if condition="$vo['status'] eq 1">隐藏<else/>显示</if> 
 										</td>
 										<th class="textcenter"><a href="/admin.php?g=System&c=Circle&a=showcomment&dyid={pigcms{$vo.id}">查看评论</a></th>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Circle/dynamicadd',array('id'=>$vo['id']))}','编辑信息',850,700,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/deldynamic')}">删除</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Circle/dynamicadd',array('id'=>$vo['id']))}','编辑信息',850,700,true,false,false,editbtn,'edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Circle/deldynamic')}">删除</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="11">{pigcms{$pagebar}</td></tr>

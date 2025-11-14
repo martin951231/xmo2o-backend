@@ -85,8 +85,8 @@
 										<td>{pigcms{$vo.paytype}</td>
 										<else />
 										<td style="text-align: center;">
-											<a style="padding: 5px 10px;background-color: #ccc" href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Bill&a=edit_area_commission&id={pigcms{$vo.id}','编辑',500,100,true,false,false,editbtn,'add',true);">设为已兑现</a>
-											<a style="padding: 5px 10px;background-color: #ccc" href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Bill&a=edit_area_commission_fail&id={pigcms{$vo.id}','编辑',400,200,true,false,false,editbtn,'add',true);">驳回</a>
+											<a style="padding: 5px 10px;background-color: #ccc" href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Bill&a=edit_area_commission&id={pigcms{$vo.id}','编辑',500,100,true,false,false,editbtn,'add',true);">设为已兑现</a>
+											<a style="padding: 5px 10px;background-color: #ccc" href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Bill&a=edit_area_commission_fail&id={pigcms{$vo.id}','编辑',400,200,true,false,false,editbtn,'add',true);">驳回</a>
 										</td>
 										</if>
 									</tr>

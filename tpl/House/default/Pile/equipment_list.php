@@ -55,7 +55,6 @@
                                 <th width="20%">二维码序列号</th>
                                 <!--<th width="10%">SN编号</th>-->
                                 <!--<th width="10%">工作模式</th>-->
-                                <th width="10%">心跳时间</th>
                                 <th width="10%">状态</th>
                                 <th class="button-column" width="20%">操作</th>
                             </tr>
@@ -69,13 +68,12 @@
                             <!--<td><div class="tagDiv">{pigcms{$vo.equipment_sn}</div></td>-->
                             <td><div class="tagDiv">{pigcms{$vo.equipment_num}</div></td>
                             <td><div class="tagDiv">{pigcms{$vo.equipment_sn}</div></td>
-                            <td><div class="tagDiv">{pigcms{$vo.last_heart_time}</div></td>
                             <!--<td><div class="tagDiv">{pigcms{$vo.equipment_sn}</div></td>-->
                             <!--<td><div class="tagDiv"><if condition='$vo.work_type eq 1'>计时版<else/>计量版</if></div></td>-->
                             <if condition="$vo.status == 1">
-                                <td><div class="tagDiv" style="color: green">上线</div></td>
+                                <td><div class="tagDiv" style="color: green">正常</div></td>
                                 <else />
-                                <td><div class="tagDiv" style="color: red">禁用</div></td>
+                                <td><div class="tagDiv" style="color: red">离线</div></td>
                             </if>
 
                             <td class="am-text-middle">

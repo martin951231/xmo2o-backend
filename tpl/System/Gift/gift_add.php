@@ -29,9 +29,9 @@
 						</td>
 					</tr>
 					<tr>
-						<th width="100">选择平台优惠券</th> 
+						<th width="100">SYSTEM_GIFT_ADD_1</th> 
 						<td>
-							<button type="button" onclick="addCoupon()" class="a_choose class_1">添加平台优惠券</button>&nbsp;&nbsp;
+							<button type="button" onclick="addCoupon()" class="a_choose class_1">SYSTEM_GIFT_ADD_2</button>&nbsp;&nbsp;
 							<div class="tags class_1" id="tags" tabindex="1"> 
 								<span class='tag'>
 								<if condition="!empty($user_list)">

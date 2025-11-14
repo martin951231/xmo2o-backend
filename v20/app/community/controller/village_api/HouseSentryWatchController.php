@@ -81,6 +81,10 @@ class HouseSentryWatchController extends CommunityBaseController
         $data['is_public_v']=1; //默认外网视频
         $data['current_village_id']=$current_village_id;
         $data['current_village_name']=$current_village_name;
+        $data['is_show_table_ver']=0;
+        if($this->hasCloudIntercom()){
+            $data['is_show_table_ver']=1;
+        }
         try {
             $carWorkerRecordService= new HouseVillageCarWorkerRecordService();
             if($tmp_village_id<1){

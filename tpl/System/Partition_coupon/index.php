@@ -3,8 +3,8 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('index')}" class="on">平台瓜分券列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('add')}','添加平台瓜分券','50%','75%',true,false,false,addbtn,'edit',true);">添加平台瓜分券</a>
+					<a href="{pigcms{:U('index')}" class="on">SYSTEM_PARTITION_COUPON_1</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('add')}','SYSTEM_PARTITION_COUPON_2','50%','75%',true,false,false,addbtn,'edit',true);">SYSTEM_PARTITION_COUPON_2</a>
 					<!-- <a href="{pigcms{:U('had_pull')}" >领取列表</a> -->
 				</ul>
 			</div>
@@ -84,7 +84,7 @@
 										<td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">进行中</font><elseif condition="$vo['status'] eq 2"/><font color="blue">已结束</font><elseif condition="$vo['status'] eq 3" /><font color="black">领完了</font><else /><font color="red">禁止</font></if></td>
 										<td class="textcenter">
 										
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('edit',array('pigcms_id'=>$vo['pigcms_id']))}','编辑瓜分券信息','50%','50%',true,false,false,editbtn,'edit',true);">编辑</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('edit',array('pigcms_id'=>$vo['pigcms_id']))}','编辑瓜分券信息','50%','50%',true,false,false,editbtn,'edit',true);">编辑</a>
 										|<a  class="label label-sm label-info" title="删除" href="javascript:void(0)" onClick="if(confirm('确定停止活动么？停止活动后，用户将不可发起新的瓜分券活动，已经进行中的活动还可继续，已经瓜分成功的活动只要券在有效期内还可正常使用!')){location.href='{pigcms{:U('stop_coupon',array('pigcms_id'=>$vo['pigcms_id']))}'}">停止活动</a>
 										<if condition="$vo.status neq 1">|
 										<a href="javascript:void(0);" class="delete_row" parameter="pigcms_id={pigcms{$vo.pigcms_id}" url="{pigcms{:U('delete_coupon')}">删除</a></if>
@@ -115,7 +115,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看二维码',

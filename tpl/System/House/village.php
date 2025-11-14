@@ -8,11 +8,11 @@
 					<a href="{pigcms{:U('House/village',array('property_id'=>$_GET['property_id']))}" class="on">{pigcms{$config['house_name']}列表</a>
 
 					<if condition="$_GET['property_id']">
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/village_add',array('property_id'=>$_GET['property_id']))}','添加{pigcms{$config['house_name']}',1100,350,true,false,false,addbtn,'add',true);">添加{pigcms{$config['house_name']}</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/village_add',array('property_id'=>$_GET['property_id']))}','添加{pigcms{$config['house_name']}',1100,350,true,false,false,addbtn,'add',true);">添加{pigcms{$config['house_name']}</a>
 					</if>
-<!--					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/village_import')}','添加{pigcms{$config['house_name']}',450,150,true,false,false,importbtn,'add',true);">导入{pigcms{$config['house_name']}</a>-->
+<!--					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/village_import')}','添加{pigcms{$config['house_name']}',450,150,true,false,false,importbtn,'add',true);">导入{pigcms{$config['house_name']}</a>-->
 					<if condition="$config['buy_sms'] eq 1">
-						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/sms_add_all')}','添加短信',520,350,true,false,false,addbtn,'add',true);">添加短信</a>
+						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/sms_add_all')}','添加短信',520,350,true,false,false,addbtn,'add',true);">添加短信</a>
 					</if>
 						<!-- <a href="{pigcms{:U('House/door_notice_map')}" target="_blank" >{pigcms{$config['house_name']}开门状态监控</a> -->
 				</ul>
@@ -108,7 +108,7 @@
                                         <td class="textcenter">{pigcms{$vo.village_sort}</td>
                                         <td class="textcenter"><if condition="$vo['status'] eq 1"><font color="green">正常</font><elseif condition="$vo['status'] eq 0"/><font color="red" title="等待{pigcms{$config['house_name']}管理员登录社区后台完善信息">待完善信息</font><else/><font color="red">禁止</font></if></td>
 										<td class="textcenter">
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('House/village_edit',array('village_id'=>$vo['village_id']))}','编辑{pigcms{$config['house_name']}信息',960,600,true,false,false,editbtn,'edit',true);">编辑</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('House/village_edit',array('village_id'=>$vo['village_id']))}','编辑{pigcms{$config['house_name']}信息',960,600,true,false,false,editbtn,'edit',true);">编辑</a>
                                             <if condition="$vo['is_del'] eq 1 && (!$vo['is_saas_user'] || $vo['is_saas_user'] neq 1)">
                                                 |
                                                 <a href="javascript:void(0);" class="delete_row1" data-name="{pigcms{$vo.village_name}" parameter="village_id={pigcms{$vo.village_id}" url="{pigcms{:U('House/house_village_del')}">删除</a>
@@ -140,7 +140,7 @@
 
     $('.delete_row1').click(function(){
         var now_dom = $(this);
-        window.top.art.dialog({
+        window.o2oTop.art.dialog({
             icon: 'question',
             title: '请确认是否要删除['+now_dom.attr('data-name')+']小区',
             id: 'msg' + Math.random(),
@@ -152,10 +152,10 @@
             ok:function (){
                 $.post(now_dom.attr('url'),now_dom.attr('parameter'),function(result){
                     if(result.status == 1){
-                        window.top.msg(1,result.info,true);
+                        window.o2oTop.msg(1,result.info,true);
                         window.location.reload();
                     }else{
-                        window.top.msg(0,result.info);
+                        window.o2oTop.msg(0,result.info);
                     }
                 });
             },

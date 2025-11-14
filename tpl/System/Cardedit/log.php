@@ -3,8 +3,8 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Cardedit/index')}" >实体卡列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Cardedit/add_card')}','批量添加实体卡',680,560,true,false,false,addbtn,'edit',true);">批量添加实体卡</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Cardedit/mutil_bind_merid')}','批量添加实体卡',680,560,true,false,false,addbtn,'edit',true);">批量绑定商家</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Cardedit/add_card')}','批量添加实体卡',680,560,true,false,false,addbtn,'edit',true);">批量添加实体卡</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Cardedit/mutil_bind_merid')}','批量添加实体卡',680,560,true,false,false,addbtn,'edit',true);">批量绑定商家</a>
 					<a href="{pigcms{:U('Cardedit/log')}" class="on">实体卡操作记录</a>
 				</ul>
 			</div>

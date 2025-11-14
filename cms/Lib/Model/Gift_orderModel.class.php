@@ -79,7 +79,7 @@ class Gift_orderModel extends Model{
             }
 			
             if($data_gift_order['is_pick_in_store']==2){
-                $data_gift_order['status'] = 1;
+                //$data_gift_order['status'] = 1;
             }
             
 
@@ -200,17 +200,17 @@ class Gift_orderModel extends Model{
                 $use_score = $data_gift_order['payment_integral'] * $data_gift_order['num'];
                 $use_money = $now_gift['payment_money'] * $data_gift_order['num']+$data_gift_order['delivery_fee'];
                 if($now_user['now_money'] < $use_money){
-                    if(!empty($data_gift_order['is_source'])){
-                        $order_id = $this->data($data_gift_order)->add();
-						if(!$order_id){
-							fdump_sql([$this->getLastSql(), $data_gift_order], 'gift_order_add_error');
-						}
-                    }
                     if ($user_type==2) {
                         return array('error'=>1,'msg'=>L_("您的帐户余额为 X1 ，不足以兑换此奖品",array("X1" => $now_user['now_money']))); 
                     }else{
 
                         return array('error'=>1,'msg'=>L_("您的帐户余额为 X1 ，不足以兑换此奖品",array("X1" => $now_user['now_money'])),'order_id'=>$order_id,'flag'=>1); 
+                    }
+                    if(!empty($data_gift_order['is_source'])){
+                        $order_id = $this->data($data_gift_order)->add();
+						if(!$order_id){
+							fdump_sql([$this->getLastSql(), $data_gift_order], 'gift_order_add_error');
+						}
                     }
                 }
 
@@ -284,8 +284,7 @@ class Gift_orderModel extends Model{
                             'remark' =>L_('点击查看详情')));
                     }
                 }
-
-                if($data_gift_order['is_pick_in_store']==2){
+                if($data_gift_order['is_pick_in_store']==2 && $data_gift_order['status'] == 1){
                     //获取平台配送设置
                     $plat_deliver = M('Gift_plat_deliver')->where(array('id'=>2))->find();
                     $result = D('Deliver_supply')->saveOrder($order_id, $plat_deliver,'','gift_order');

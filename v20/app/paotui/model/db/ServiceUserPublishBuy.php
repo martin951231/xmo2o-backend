@@ -12,4 +12,5 @@ use think\Model;
  */
 class ServiceUserPublishBuy extends Model
 {
+	protected $pk = 'buy_id';
 }

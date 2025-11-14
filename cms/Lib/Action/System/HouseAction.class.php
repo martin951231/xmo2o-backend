@@ -93,11 +93,14 @@ class HouseAction extends BaseAction
         if ($_GET['property_id']) {
             $condition_house_village['a.property_id'] = $_GET['property_id'];
         }
+        /*
         if ($condition_house_village) {
             $count = 10000;
         } else {
             $count = 30;
         }
+        */
+        $count = 30;
         $condition_house_village['a.status'] = array('neq', 5);
 
         if ($this->system_session['area_id']) {
@@ -2758,9 +2761,12 @@ class HouseAction extends BaseAction
                     import('@.ORG.withdraw.WeixinPayV3');
                     $weixinObj = new WeixinPayV3();
                     $ret = $weixinObj->withdraw($param);
+                    fdump_api(['msg' => 'V3提现结果','ret' => $ret,'param' => $param],'withdraw/edit_withdraw',1);
                     $result=$ret['result'];
                     if($result && is_array($result) && isset($result['batch_id']) && !empty($result['batch_id'])){
                         $date_village['third_id'] = $result['batch_id'];
+                    }elseif($result && is_array($result) && isset($result['transfer_bill_no']) && !empty($result['transfer_bill_no'])){
+                        $date_village['third_id'] = $result['transfer_bill_no'];
                     }else {
                         $msg='提现失败！错误码：'.$result['code'];
                         if(isset($result['message']) && !empty($result['message'])){
@@ -2775,6 +2781,7 @@ class HouseAction extends BaseAction
                     import('@.ORG.withdraw.Weixin');
                     $weixinObj = new Weixin();
                     $ret = $weixinObj->withdraw($param);
+                    fdump_api(['msg' => '提现结果','ret' => $ret,'param' => $param],'withdraw/edit_withdraw',1);
                     $result=$ret['result'];
                     if($result['return_code']=='SUCCESS' && $result['result_code']=='SUCCESS'){
                         $date_village['third_id'] = $result['payment_no'];

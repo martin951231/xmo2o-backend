@@ -88,7 +88,7 @@
                 <td>
 	                <ul class="avatar_list" id="avatar_show" >
 		                <if condition="$coupon.img_url neq ''">
-		                    <li  class="upload_pic_li1" style="float:left;list-style:none;"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Recruit/view_image',array('url'=>urlencode(file_domain().$coupon['img_url'])))}','查看大图',700,600,true,false,false,'','',true);"><img src="{pigcms{:file_domain().$coupon['img_url']}" style="width:250px;height:200px;margin-right:5px;"></a></li>
+		                    <li  class="upload_pic_li1" style="float:left;list-style:none;"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Recruit/view_image',array('url'=>urlencode(file_domain().$coupon['img_url'])))}','查看大图',700,600,true,false,false,'','',true);"><img src="{pigcms{:file_domain().$coupon['img_url']}" style="width:250px;height:200px;margin-right:5px;"></a></li>
 		                   
 		                </if>
 	                </ul>

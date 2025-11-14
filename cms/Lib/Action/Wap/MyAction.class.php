@@ -6134,7 +6134,7 @@ class MyAction extends BaseAction{
                                 continue;
                             }
                             $value['group_info'] = $spread_list[$key]['group_info'] = D('Group')->field('`group_id`,`name`')->where(array('group_id' => $value['third_id']))->find();
-                        } else if ($value['order_type'] == 'shop' || $value['order_type'] == 'mall') {
+                        } else if ($value['order_type'] == 'shop') {
                             $order_info = $spread_list[$key]['order_info'] = D('Shop_order')->field(true)->where(array('order_id' => $value['order_id']))->find();
 
                             if ($order_info['status'] == 0) {
@@ -6142,14 +6142,11 @@ class MyAction extends BaseAction{
                                 continue;
                             }
                             $value['shop_info'] = $spread_list[$key]['shop_info'] = D('Merchant_store')->field('`store_id`,`name`')->where(array('store_id' => $value['third_id']))->find();
-                            
-                            if($value['order_type'] == 'mall'){
-	                        	$order_info = D('Mall_order')->field(true)->where(array('order_id' => $value['order_id']))->find();
-	                        	$order_info['total_price'] = $order_info['money_total'];
-	                        	$value['order_info'] = $spread_list[$key]['order_info'] = $order_info;
-	                        }
-
-                        } else if ($value['order_type'] == 'store' || $value['order_type'] == 'cash') {
+                        }else if($value['order_type'] == 'mall'){
+							$order_info = D('Mall_order')->field(true)->where(array('order_id' => $value['order_id']))->find();
+	                        $order_info['total_price'] = $order_info['money_total'];
+	                        $value['order_info'] = $spread_list[$key]['order_info'] = $order_info;
+						} else if ($value['order_type'] == 'store' || $value['order_type'] == 'cash') {
                             $order_info = $spread_list[$key]['order_info'] = D('Store_order')->field(true)->where(array('order_id' => $value['order_id']))->find();
                             if ($order_info['paid'] == 0) {
                                 unset($spread_list[$key]);
@@ -6707,7 +6704,11 @@ class MyAction extends BaseAction{
         $level_info = M('User_level')->where(array('level' => $now_user['level']))->find();
         $user_level_gift_info = $m_user_level_gift->where(array('level_id' => $level_info['id'], 'gift_status' => array('neq', 3)))->find();
         $this->assign("show_gift", $user_level_gift_info ? '1' : '0');
-		$this->display();
+		if(C('config.system_type') != 'shopping_mall'){
+			$this->display('levelUpdateOld');
+		}else{
+			$this->display();
+		}
 	}
 
     /****选择等级升级****/
@@ -10948,18 +10949,16 @@ class MyAction extends BaseAction{
 	
 	//跳转商家客服中转页，目的是为了网页授权获取用户 openid
 	public function concact_kefu(){
-        if (C('IM_JMESSAGE_OPEN')) {
-            $storeId = intval($_GET['store_id']);
-            $merId = M('Merchant_store')->where(['store_id' => $storeId])->getField('mer_id');
-            $storeKf = M('Merchant_store_kefu')->where(array('store_id' => $storeId))->find();
-            if ($storeKf) {
-                $url = build_im_chat_url('user_' . $this->now_user['uid'], $storeKf['username'], 'user2store', ['from' => $_GET['from']]);
-                redirect($url);
-                exit;
-            } else {
-                $this->error_tips('客服未配置');
-            }
-        }
+		$storeId = intval($_GET['store_id']);
+		$merId = M('Merchant_store')->where(['store_id' => $storeId])->getField('mer_id');
+		$storeKf = M('Merchant_store_kefu')->where(array('store_id' => $storeId))->find();
+		if ($storeKf) {
+			$url = build_im_chat_url('user_' . $this->now_user['uid'], $storeKf['username'], 'user2store', ['from' => $_GET['from']]);
+			redirect($url);
+			exit;
+		} else {
+			$this->error_tips('客服未配置');
+		}
 
 		$key = $this->get_encrypt_key(array('app_id'=>$this->config['im_appid'],'openid' => ($this->now_user['openid'] ? $this->now_user['openid'] : $this->now_user['uid'])), $this->config['im_appkey']);
 		$url = ($this->config['im_url'] ? $this->config['im_url'] : 'http://im-link.weihubao.com').'/?app_id=' . $this->config['im_appid'] . '&openid=' . ($this->now_user['openid'] ? $this->now_user['openid'] : $this->now_user['uid']) . '&key=' . $key . '&title=' . urlencode('联系客服') . '#serviceList_' . $_GET['mer_id'];

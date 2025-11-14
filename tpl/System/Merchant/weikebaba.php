@@ -50,11 +50,11 @@ $(function(){
 				$.post('{pigcms{:U('Merchant/weikebaba')}', $('#myform').serialize(), function(data, textStatus, xhr) {
 					//console.log(data);
 					if(data.status==1){
-						window.top.msg(2,data.info,true,2);
+						window.o2oTop.msg(2,data.info,true,2);
 					}else{
-						window.top.msg(0,data.info,true,2);
+						window.o2oTop.msg(0,data.info,true,2);
 					}
-					window.top.art.dialog({id:'edit_weikebaba'}).close();
+					window.o2oTop.art.dialog({id:'edit_weikebaba'}).close();
 				});
 				return false;
 			});

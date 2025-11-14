@@ -3,6 +3,8 @@
 namespace app\building\controller\api;
 
 use app\building\model\ShoppingMall;
+use app\building\model\ShoppingMallFloor;
+use app\building\service\ParkService;
 use app\building\service\ShoppingMallAdverService;
 use app\building\service\ShoppingMallService;
 use app\mall\controller\api\ApiBaseController;
@@ -64,6 +66,19 @@ class HomeController extends ApiBaseController
             $rs['navigate'] = $mallAdverService->replaceUrlToAppPage($rs['navigate'], $this->request->agent == 'iosapp' ? 1 : 2);
             $rs['footer_navigate'] = $mallAdverService->replaceUrlToAppPage($rs['footer_navigate'], $this->request->agent == 'iosapp' ? 1 : 2);
         }
+
+        //分享参数
+        $shareConfigData = (new \app\common\model\db\ConfigData())
+            ->where([['name', 'in', 'index_share_title,index_share_desc,index_share_wxapp_img,index_share_wx_img']])
+            ->column('value', 'name');
+
+        $rs['share_data'] = [
+            'h5_img' => !empty($shareConfigData['index_share_wx_img']) ? replace_file_domain($shareConfigData['index_share_wx_img']) : replace_file_domain(cfg('wechat_share_img')),
+            'h5_title' => !empty($shareConfigData['index_share_title']) ? $shareConfigData['index_share_title'] : cfg('site_name'),
+            'h5_content' => !empty($shareConfigData['index_share_desc']) ? $shareConfigData['index_share_desc'] : '',
+            'wxapp_title' => !empty($shareConfigData['index_share_title']) ? $shareConfigData['index_share_title'] : cfg('site_name'),
+            'wxapp_img' => !empty($shareConfigData['index_share_wxapp_img']) ? replace_file_domain($shareConfigData['index_share_wxapp_img']) : replace_file_domain(cfg('wechat_share_img')),
+        ];
         return api_output(0, $rs, 'success');
     }
 
@@ -76,56 +91,6 @@ class HomeController extends ApiBaseController
         $mallId = $this->request->param('mall_id', 0, 'intval');
 
         $rs['items'] = (new ShoppingMallService())->getGuessYouLike($mallId, $page, $pageSize);
-
-        // $rs['items'] = [
-        //     //商城商品
-        //     [
-        //         'goods_id' => 54056,
-        //         'name' => '白菜',
-        //         'image' => 'https://o2o-demo-img.pigcms.com/upload/goods/000/004/900/64e45621a2520352.png',
-        //         'type' => 'mall_goods',
-        //         'tag' => '商城',
-        //         'price' => '10.00',
-        //         'old_price' => '119.00',
-        //         'is_multi_spec' => 1,
-        //         'url' => get_base_url('pages/shopmall_third/commodity_details?goods_id=54056')
-        //     ],
-        //     //外卖店铺
-        //     [
-        //         'store_id' => 429,
-        //         'name' => '张涛专属测试店铺',
-        //         'image' => 'http://o2o-dev-1305348519.cos.ap-nanjing.myqcloud.com/upload/20230225/aa64b4fc49a577f93cf63f76d07ce7ae.png',
-        //         'type' => 'shop_store',
-        //         'tag' => '外卖',
-        //         'score' => '4.9',
-        //         'sale' => '月售7千+',
-        //         'deliver_time' => '33分钟',
-        //         'url' => get_base_url('pages/shop_new/shopDetail/shopDetail?store_id=429')
-        //     ],
-        //     //餐饮店铺
-        //     [
-        //         'store_id' => 429,
-        //         'name' => '张涛专属测试店铺',
-        //         'image' => 'http://o2o-dev-1305348519.cos.ap-nanjing.myqcloud.com/upload/20230225/aa64b4fc49a577f93cf63f76d07ce7ae.png',
-        //         'type' => 'dining_store',
-        //         'tag' => '餐饮',
-        //         'score' => '4.9',
-        //         'sale' => '月售7千+',
-        //         'url' => get_base_url('pages/store/v1/home/index?store_id=429', true)
-        //     ],
-        //     //团购商品
-        //     [
-        //         'group_id' => 1391,
-        //         'name' => '肯德基团购券',
-        //         'image' => 'http://o2o-dev-1305348519.cos.ap-nanjing.myqcloud.com/upload/group/20230510/1ccb80c40ecd4e099d643a1b1e38e27b.png',
-        //         'type' => 'group_goods',
-        //         'tag' => '团购',
-        //         'price' => '10.00',
-        //         'old_price' => '119.00',
-        //         'url' => get_base_url('pages/group/v1/groupDetail/index?group_id=1391', true)
-        //     ],
-        // ];
-
         $mallAdverService = new ShoppingMallAdverService();
         //获取广告配置
         if ($page == 1) {
@@ -197,13 +162,28 @@ class HomeController extends ApiBaseController
             return api_output_error(1003, '楼层ID不能为空');
         }
 
-        $url = sprintf(cfg('building_domain') . '/village/get/layer/info?floor_id=%s&appkey=%s&org_id=%s', $floorId, cfg('building_appkey'),cfg('building_org_id'));
-        $res = Http::curlGet($url);
-        $res = json_decode($res, true);
-        if ($res['code'] == 1000) {
-            return api_output(0, $res['data'], 'success');
+        $floor = (new ShoppingMallFloor())->alias('f')
+            ->field('f.id,f.name as layer_name,f.floor_number as layer_number,f.bg_img,f.coor_list as coorList,m.is_self')
+            ->join('shopping_mall m', 'f.mall_id = m.id')
+            ->where(['f.id' => $floorId])->findOrEmpty()->toArray();
+        if (!empty($floor['is_self'])) {
+            $floor['two_dimensional'] = [
+                'bg_img' => $floor['bg_img'],
+                'coorList' => $floor['coorList'],
+            ];
+            unset($floor['bg_img']);
+            unset($floor['coorList']);
+            $res['layerInfo'] = $floor;
+            return api_output(0, $res, 'success');
         } else {
-            return api_output_error(1003, $res['msg']);
+            $url = sprintf('/village/get/layer/info?floor_id=%s&appkey=%s&org_id=%s', $floorId, cfg('building_appkey'), cfg('building_org_id'));
+            $res = building_request_get($url);
+            $res = json_decode($res, true);
+            if ($res['code'] == 1000) {
+                return api_output(0, $res['data'], 'success');
+            } else {
+                return api_output_error(1003, $res['msg']);
+            }
         }
     }
 
@@ -213,7 +193,8 @@ class HomeController extends ApiBaseController
         $floorId = $this->request->param('floor_id', '', 'trim');
         $room = $this->request->param('room', '', 'trim');
         $mallId = $this->request->param('mall_id', 0, 'intval');
-        $rs = (new ShoppingMallService())->getStore($floorId, $room, $mallId);
+        $store_id = $this->request->param('store_id', '', 'trim,intval');
+        $rs = (new ShoppingMallService())->getStore($floorId, $room, $mallId, $store_id);
         return api_output(0, $rs, 'success');
     }
 
@@ -269,6 +250,33 @@ class HomeController extends ApiBaseController
         $uid = $this->request->log_uid;
         $status = $this->request->param('status', 0, 'intval');
         $result = (new ShoppingMallService())->ticketPointApplyList($uid, $status, $page, $pageSize);
+        return api_output(0, $result, 'success');
+    }
+
+    //根据商场获取wifi列表
+    public function getWifiList()
+    {
+        if (empty($this->request->log_uid)) {
+            return api_output_error(1002, '当前接口需要登录');
+        }
+        $mallId = $this->request->param('mall_id', 0, 'intval');
+        $result = (new ShoppingMallService())->getWifiList($mallId);
+        return api_output(0, $result, 'success');
+    }
+
+    //会员权益
+    public function levelBenefits()
+    {
+        if (empty($this->request->log_uid)) {
+            return api_output_error(1002, '当前接口需要登录');
+        }
+        $mallId = $this->request->param('mall_id', 0, 'intval');
+        $level = $this->request->param('level', 0, 'intval');
+        if (empty($level) || empty($mallId)) {
+            return api_output(0, [], 'success');
+        }
+
+        $result = (new ParkService())->getLevelBenefits($level, $mallId);
         return api_output(0, $result, 'success');
     }
 }

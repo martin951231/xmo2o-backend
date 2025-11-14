@@ -12,24 +12,7 @@ use think\helper\Str;
 class LiveGoodsController extends AuthBaseController
 {
     const STATUS_OK = 1000;//状态码 正常
-
-    /**
-     * @param string $method
-     * @param array $params
-     * @param string $scenario
-     * @return array
-     */
-    private function validateParameter($method = 'post', array $params = [], string $scenario = ''): array
-    {
-        empty($params) && $params = input($method . '.');
-
-        $validate = validate(LiveGoodsValidate::class);
-        if (!$validate->scene($scenario ?: Str::snake(request()->action()))->check($params)) {
-            throw new ParametersException($validate->getError());
-        }
-
-        return $params;
-    }
+	protected $validateClass = LiveGoodsValidate::class;
 
     public function liveGoodsList()
     {

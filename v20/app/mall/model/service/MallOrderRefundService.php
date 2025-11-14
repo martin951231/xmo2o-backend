@@ -418,7 +418,16 @@ class MallOrderRefundService
             if($is_all){//是全部退款则推优惠券
                 $return_counpon=true;
             }
-            $refundRs = $this->refund($order_id, $refund['refund_money'],$return_counpon);
+            
+            \think\facade\Db::startTrans();
+            try{
+                $refundRs = $this->refund($order_id, $refund['refund_money'],$return_counpon);
+                \think\facade\Db::commit();
+            }catch(\Exception $e){
+                \think\facade\Db::rollback();
+                throw new \think\Exception($e->getMessage(), 1005);
+            }
+            
             if($refundRs){
                 $order_update = ['money_refund'=>$refund['refund_money']+$order['order']['money_refund'], 'refund_status'=>1];
                 if($refund['is_all'] == '1'){

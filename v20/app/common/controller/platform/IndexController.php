@@ -170,7 +170,7 @@ class IndexController extends CommonBaseController
 			return api_output_error(0, '系统异常获取失败', 403);
 		}
 
-		$returnArr['baidu_map_ak_web'] = cfg('baidu_map_ak_web') ? cfg('baidu_map_ak_web') : cfg('baidu_map_ak');
+		$returnArr['baidu_map_ak_web'] = cfg('baidu_map_ak_web') ? cfg('baidu_map_ak_web') : '';
 		$returnArr['tianditu_web_key'] = cfg('tianditu_web_key') ? cfg('tianditu_web_key') : '';
 		return api_output(0, $returnArr);
 	}

@@ -108,7 +108,7 @@ var closebtn = [
 ];
 
 function is_v20() {
-	if (window.top.location.href.indexOf('v20') == -1) {
+	if (window.o2oTop.location.href.indexOf('v20') == -1) {
 		return false
 	} else {
 		return true
@@ -142,8 +142,8 @@ function show_province() {
 			$('#choose_cityarea').prepend(area_dom);
 			show_city(result.id, result.name, 0);
 		} else {
-			window.top.msg(0, result.info, true);
-			window.top.closeiframe();
+			window.o2oTop.msg(0, result.info, true);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -184,8 +184,8 @@ function show_city(id, name, type) {
 				show_area(result.id, result.name, 0);
 			}
 		} else {
-			window.top.msg(0, result.info, true, 5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0, result.info, true, 5);
+			window.o2oTop.closeiframe();
 		}
 		if (typeof update_deliver_customs_select == 'function') {
 			update_deliver_customs_select();
@@ -248,8 +248,8 @@ function show_area(id, name, type) {
 				show_circle(result.id, result.name, 0);
 			}
 		} else {
-			window.top.msg(0, result.info, true, 5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0, result.info, true, 5);
+			window.o2oTop.closeiframe();
 		}
 
 		if (typeof show_area_callback == 'function') {
@@ -287,8 +287,8 @@ function show_street(id, name, type) {
 			area_dom += '</select>';
 			$('#choose_cityarea').prepend(area_dom);
 		} else {
-			//window.top.msg(0, result.info, true, 5);
-			//window.top.closeiframe();
+			//window.o2oTop.msg(0, result.info, true, 5);
+			//window.o2oTop.closeiframe();
 			var area_dom = '<select id="choose_street" name="street_id"><option value="0">请选择</option></select>';
 			if (document.getElementById('choose_street')) {
 				$('#choose_street').replaceWith(area_dom);
@@ -340,8 +340,8 @@ function show_circle(id, name, type) {
 
 				//			 }
 			} else {
-				window.top.msg(0, result.info, true, 5);
-				//window.top.closeiframe();
+				window.o2oTop.msg(0, result.info, true, 5);
+				//window.o2oTop.closeiframe();
 			}
 		}
 
@@ -408,8 +408,8 @@ function show_provinces() {
 			$('#choose_cityareas').prepend(area_dom);
 			show_citys(result.id, result.name, 0);
 		} else {
-			window.top.msg(0, result.info, true);
-			//			window.top.closeiframe();
+			window.o2oTop.msg(0, result.info, true);
+			//			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -441,8 +441,8 @@ function show_citys(id, name, type) {
 			$('#choose_cityareas').prepend(area_dom);
 			show_areas(result.id, result.name, 0);
 		} else {
-			window.top.msg(0, result.info, true, 5);
-			//			window.top.closeiframe();
+			window.o2oTop.msg(0, result.info, true, 5);
+			//			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -464,8 +464,8 @@ function show_areas(id, name, type) {
 				$('#choose_cityareas').prepend(area_dom);
 			}
 		} else {
-			window.top.msg(0, result.info, true, 5);
-			//			window.top.closeiframe();
+			window.o2oTop.msg(0, result.info, true, 5);
+			//			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -487,7 +487,7 @@ function get_first_word(id1, id2, id3) {
 						$('#' + id3).val(result.info.substr(0, 1));
 					}
 				} else {
-					window.top.msg(0, result.info, true);
+					window.o2oTop.msg(0, result.info, true);
 				}
 			});
 
@@ -543,7 +543,7 @@ $(function () {
 			}
 			$('#choose_map').html(html);
 			$('#show_map_frame').click(function () {
-				window.top.artiframe(choose_map + '&long_lat=' + $('#long_lat').val(), "地图选点", 655, 520, true, false, false, false, "choose_map", true, function () { window.top.art.dialog.list["store_add"].position("50%", "38.2%"); });
+				window.o2oTop.artiframe(choose_map + '&long_lat=' + $('#long_lat').val(), "地图选点", 655, 520, true, false, false, false, "choose_map", true, function () { window.o2oTop.art.dialog.list["store_add"].position("50%", "38.2%"); });
 			});
 
 		}
@@ -708,27 +708,27 @@ $(function () {
 						// 	return false;
 						// }
 						console.log('action', $(form).attr('action'));
-						window.top.msg(2, '表单提交中，请稍等...', true, 360);
+						window.o2oTop.msg(2, '表单提交中，请稍等...', true, 360);
 						$.post($(form).attr('action'), $(form).serialize(), function (result) {
 							if (result.status == 1) {
 								if ($(form).data('call_fun')) {
 									submitCallBack(result.info);
 								} else {
-									window.top.msg(1, result.info, true);
+									window.o2oTop.msg(1, result.info, true);
 									if ($(form).attr('refresh') == 'true') {
-										window.top.main_refresh();
+										window.o2oTop.main_refresh();
 									}
-									window.top.closeiframe();
+									window.o2oTop.closeiframe();
 								}
 							} else {
 								if($(form).attr('mycheck') != 'true'){
-									window.top.msg(0, result.info, true);
+									window.o2oTop.msg(0, result.info, true);
 								}
 							}
 						});
 						return false;
 					} else {
-						//window.top.msg(2, '表单提交中，请稍等...', true, 360);
+						//window.o2oTop.msg(2, '表单提交中，请稍等...', true, 360);
 						form.submit();
 					}
 				}
@@ -737,12 +737,12 @@ $(function () {
 	}
 	//全屏预览键，即隐藏左边
 	$('.full_screen_link').click(function () {
-		window.top.toggleMenu(1);
+		window.o2oTop.toggleMenu(1);
 	});
 	//删除行
 	$('.delete_row').click(function () {
 		var now_dom = $(this);
-		window.top.art.dialog({
+		window.o2oTop.art.dialog({
 			icon: 'question',
 			title: '请确认',
 			id: 'msg' + Math.random(),
@@ -754,7 +754,7 @@ $(function () {
 			ok: function () {
 				$.post(now_dom.attr('url'), now_dom.attr('parameter'), function (result) {
 					if (result.status == 1) {
-						window.top.msg(1, result.info, true);
+						window.o2oTop.msg(1, result.info, true);
 						if (now_dom.closest('table').find('tr').size() > 3) {
 							now_dom.closest('tr').remove();
 							$('#row_count').html(parseInt($('#row_count').html()) - 1);
@@ -762,7 +762,7 @@ $(function () {
 							window.location.reload();
 						}
 					} else {
-						window.top.msg(0, result.info);
+						window.o2oTop.msg(0, result.info);
 					}
 				});
 			},
@@ -810,7 +810,7 @@ $(function () {
 	});
 	//预览大图
 	$('.view_msg').click(function () {
-		window.top.art.preview({
+		window.o2oTop.art.preview({
 			padding: 0,
 			title: '大图',
 			url: $(this).attr('src'),
@@ -832,7 +832,7 @@ $(function () {
 		       //获取宽高
 		       clearInterval(set);
 				if (max_width > 0 && imgg.width > max_width) {
-					window.top.art.preview({
+					window.o2oTop.art.preview({
 						padding: 0,
 						title: '大图',
 						url: imgg.src,
@@ -842,7 +842,7 @@ $(function () {
 						lock: true
 					});
 				} else {
-					window.top.art.preview({
+					window.o2oTop.art.preview({
 						padding: 0,
 						title: '大图',
 						url: imgg.src,
@@ -912,11 +912,57 @@ function showTopColorPanel(frameName,ttop,thei,tleft,txt,callFunc){
 //想刷新最外层iframe请调用这个方法
 window['mainiReloadIframe'] = ()=>{
 	// 找到新版框架并刷新
-	if(typeof window.top.contentScrollToTop == 'function'){
+	if(typeof window.o2oTop.contentScrollToTop == 'function'){
 		$.each($('.iframe-container iframe', window.parent.document), function(i, item){
 			if($(item).css('display') != 'none'){
 				item && item.contentWindow && item.contentWindow.location.reload()
 			}
 		});
 	}
+}
+
+
+function getO2OTopWindow() {
+	let currentWindow = window;
+	const maxDepth = 10; // 限制最大遍历层数，防止死循环
+	let depth = 0;
+
+	while (currentWindow.parent && currentWindow.parent !== currentWindow && depth < maxDepth) {
+		const parentWindow = currentWindow.parent;
+		depth++;
+
+		try {
+			// 尝试访问父窗口的origin，若跨域会抛出异常（通过try-catch捕获）
+			const parentOrigin = parentWindow.origin;
+			const currentOrigin = currentWindow.origin;
+
+			// 仅当同源时，才检查isO2OSystem属性
+			if (parentOrigin === currentOrigin) {
+				console.log("同源页面，判断是否是O2O页面");
+				if (parentWindow.isO2OSystem) {
+					return parentWindow;
+				} 
+			} else {
+				console.log("遇到跨域窗口，停止向上遍历");
+				break;
+			}
+		} catch (e) {
+			console.log("跨域访问被阻止，停止遍历");
+			break;
+		}
+
+		currentWindow = parentWindow;
+	}
+	return currentWindow;
+}
+
+try {
+	if (window.top.isO2OSystem) {
+		window.o2oTop = window.top
+	}else{
+		throw new Error("It's not Vue's O2O system")
+	}
+} catch (e) {
+	//跨域了或者不存在window.top.isO2OSystem， 重新赋值
+	window.o2oTop = getO2OTopWindow()
 }

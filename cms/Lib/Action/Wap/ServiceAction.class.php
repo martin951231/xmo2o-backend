@@ -2778,7 +2778,7 @@ class ServiceAction extends BaseAction {
                 $model = new templateNews(C('config.wechat_appid'), C('config.wechat_appsecret'));
                 $href = C('config.site_url') . '/wap.php?g=Wap&c=Service&a=price_list&publish_id=' . $_POST['publish_id'];
                 // 帮买帮送修改  待办事项通知 模板 为 订单状态更新 模板
-                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'first' => $now_user['nickname'] . '您好！', 'OrderSn' => $publishInfo['order_sn'], 'OrderStatus' =>'您发布的需求配送员已接单，请查看。', 'remark' => date('Y.m.d H:i:s')));
+                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'OrderStatus' => C('config.service_alias_name'), 'OrderSn' => $publishInfo['order_sn'], 'first' =>'您发布的需求配送员已接单，请查看。', 'remark' => date('Y.m.d H:i:s')));
             }
             exit(json_encode(array('error'=>1,'msg'=>'接单成功，请尽快完成。',)));
         }else{
@@ -2832,7 +2832,7 @@ class ServiceAction extends BaseAction {
                 $model = new templateNews(C('config.wechat_appid'), C('config.wechat_appsecret'));
                 $href = C('config.site_url') . '/wap.php?g=Wap&c=Service&a=price_list&publish_id=' . $_POST['publish_id'];
                 // 帮买帮送修改  待办事项通知 模板 为 订单状态更新 模板
-                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'first' => $now_user['nickname'] . '您好！', 'OrderSn' => $publishInfo['order_sn'], 'OrderStatus' =>'您发布的需求'.$remarks.'，请查看。', 'remark' => date('Y.m.d H:i:s')));
+                $model->sendTempMsg('TM00017', array('href' => $href, 'wecha_id' => $now_user['openid'], 'OrderStatus' => C('config.service_alias_name'), 'OrderSn' => $publishInfo['order_sn'], 'first' =>'您发布的需求'.$remarks.'，请查看。', 'remark' => date('Y.m.d H:i:s')));
             }
 
 
@@ -2971,6 +2971,8 @@ class ServiceAction extends BaseAction {
             // $cat_field_info['arrival_time']=$cat_field_info['arrival_time']/60; //小时送达
 
             // $cat_field_info['end_adress_name'] = $adress_info['adress'].$adress_info['detail'];
+            //增值服务费用列表
+            $cat_field_info['added_fee_list'] = json_decode($cat_field_info['added_fee_list'],true);
 
             if($publishInfo['deliver_type'] == 1){
                 $offer_info = D('')->table(array(C('DB_PREFIX').'deliver_supply'=>'ds', C('DB_PREFIX').'deliver_user'=>'du'))->where("ds.order_id= '".$publishInfo['publish_id']."' AND du.uid = ds.uid AND ds.order_from in (4,5)")->field(true)->find();
@@ -3076,6 +3078,8 @@ class ServiceAction extends BaseAction {
             // $end_adress_info = D("User_adress")->get_adress($this->user_session['uid'],$cat_field_info['end_adress_id']);
             // $cat_field_info['end_adress_name'] = $end_adress_info['end_adress_name'];
 
+            //增值服务费用列表
+            $cat_field_info['added_fee_list'] = json_decode($cat_field_info['added_fee_list'],true);
             $this->assign('cat_field_info',$cat_field_info);
 
             $whereAry = [];

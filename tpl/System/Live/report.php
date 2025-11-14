@@ -75,7 +75,7 @@
 									<td>{pigcms{$vo.category_txt}</td>
 									<td>{pigcms{$vo.content}</td>
 									<td class="textcenter">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/report_detail',array('report_id'=>$vo['id'],'frame_show'=>true))}','查看举报详情',900,'90%',true,false,false,false,'detail',true);">查看</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/report_detail',array('report_id'=>$vo['id'],'frame_show'=>true))}','查看举报详情',900,'90%',true,false,false,false,'detail',true);">查看</a>
 									</td>
 								</tr>
 							</volist>

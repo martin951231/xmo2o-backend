@@ -23,6 +23,7 @@ function invoke_v20_service($func, $params = [], $curlTimeOutArr = [])
     $result  = httpRequest($api, 'post', json_encode(['func' => $func, 'params' => $params, 'tm' => $tm]), $headers,false,$curlTimeOutArr);
     $result  = isset($result[1]) ? json_decode($result[1], true) : [];
     if (is_array($result) && $result['error_no'] == 1) {
+        fdump_api([$params, $result], 'invoke_v20_service_error/error', 1);
         return false;
     }
     return $result;

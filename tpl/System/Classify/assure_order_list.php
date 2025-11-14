@@ -55,7 +55,7 @@
 										<td>数量：{pigcms{$vo.num}<br/>总价：{pigcms{$config['Currency_symbol']}{pigcms{$vo.total_price|floatval=###}</td>
 										<td>用户名：{pigcms{$vo.contact_name}<br/>订单手机号：{pigcms{$vo.phone}</td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/edit',array('uid'=>$vo['uid']))}','编辑用户信息',680,560,true,false,false,editbtn,'edit',true);">查看用户信息</a>
 										</td>
 										<td>
 											<if condition="$vo['paid'] eq 0">
@@ -70,7 +70,7 @@
 											下单时间：{pigcms{$vo['order_time']|date='Y-m-d H:i:s',###}<br/>
 											<if condition="$vo['paid']">付款时间：{pigcms{$vo['pay_time']|date='Y-m-d H:i:s',###}</if>
 										<td class="textcenter">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('order_detail',array('order_id'=>$vo['order_id']))}','查看订单详情',660,490,true,false,false,false,'order_edit',true);">查看详情</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('order_detail',array('order_id'=>$vo['order_id']))}','查看订单详情',660,490,true,false,false,false,'order_edit',true);">查看详情</a>
 										
 										<if condition="(($vo['paid'] == 1) AND (empty($vo['status'])))" >
 										|

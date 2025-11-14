@@ -549,14 +549,14 @@ class MerchantWorkService
         ];
     }
 
-    public function workTime($workUser, $recentTime = false)
+    public function workTime($workUser, $recentTime = false, $params = [])
     {
         $officeTime = unserialize($workUser['office_time']);
         if (isset($officeTime['open']) && isset($officeTime['close'])) {
             $officeTime = array($officeTime);
         }
         if (
-            (count($officeTime) <= 1) ||
+            (count($officeTime) < 1) ||
             ((isset($officeTime['open']) && $officeTime['open'] == '00:00') &&
                 (isset($officeTime['close']) && $officeTime['close'] == '00:00'))
         ) {
@@ -593,6 +593,9 @@ class MerchantWorkService
                 }
             }
         }
+		if(!empty($params['now_date_time'])) {
+			return $tempTime;
+		}
         $startTimeAppoint = strtotime('now');
         $endTimeAppoint   = strtotime('+3 day');
 
@@ -1089,13 +1092,11 @@ class MerchantWorkService
 		}
 
 		$distance = getDistance($lat, $lng, $latitude, $longitude);
-		$address = [];
-		if($latitude && $longitude) {
-			$address = (new AutoAddressService())->cityMatching($latitude, $longitude);
-		}
+		$address = (new AutoAddressService())->cityMatching($latitude, $longitude);
+		empty($address['address_addr']) && throw_exception('打卡地址获取失败');
 		return [
 			'worker_arrived' => $distance <= $arriveMeter,
-			'address' => $address['address_addr'] ?? '',
+			'address' => $address['address_addr'],
 		];
 	}
 

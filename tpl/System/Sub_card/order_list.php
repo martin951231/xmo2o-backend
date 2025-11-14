@@ -6,7 +6,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Sub_card/index')}" >免单套餐列表</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Sub_card/add')}','添加免单',800,500,true,false,false,addbtn,'add_sub_card',true);">添加免单</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Sub_card/add')}','添加免单',800,500,true,false,false,addbtn,'add_sub_card',true);">添加免单</a>
 					<a href="{pigcms{:U('Sub_card/order_list')}"  class="on">免单订单列表</a>		
 				</ul>
 			</div>
@@ -91,7 +91,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看渠道二维码',

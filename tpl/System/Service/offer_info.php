@@ -112,6 +112,14 @@
                     </td>
                 </tr>
             </if>
+            <if condition="$cat_field_info['special_delivery']">
+                <tr>
+                    <td width="150">配送类型：</td>
+                    <td>
+                        <label>专送</label>
+                    </td>
+                </tr>
+            </if>
 			<tr>
 				<td width="150">购买类型：</td>
 				<td>
@@ -199,7 +207,7 @@
 				</td>
 			</tr>
 
-            <if condition="$cat_field_info.weight_info neq ''">
+            <if condition="($cat_field_info.weight_info neq '') || ($cat_field_info.weight_price gt 0)">
                 <tr>
                     <td width="150">重量费用：</td>
                     <td>
@@ -219,6 +227,16 @@
 					<label>{pigcms{$cat_field_info.distance_price}</label>
 				</td>
 			</tr>
+            <if condition="is_array($cat_field_info['added_fee_list']) && $cat_field_info['added_fee_list']">
+                <volist name="cat_field_info['added_fee_list']" id="item">
+                    <tr>
+                        <td width="150">{pigcms{$item.name}：</td>
+                        <td>
+                            <label>{pigcms{$item.money}</label>
+                        </td>
+                    </tr>
+                </volist>
+            </if>
             <if condition="$cat_field_info.deliver_user_fee gt 0">
                 <tr>
                     <td width="150">配送员佣金：</td>
@@ -373,6 +391,14 @@
                     <label><if condition="$cat_field_info['fetch_time']">{pigcms{$cat_field_info.fetch_time}<else/>立即取件</if></label>
                 </td>
             </tr>
+             <if condition="$cat_field_info['special_delivery']">
+                <tr>
+                    <td width="150">配送类型：</td>
+                    <td>
+                        <label>专送</label>
+                    </td>
+                </tr>
+            </if>
 			<tr>
 				<td width="150">收货地址：</td>
 				<td>
@@ -427,6 +453,16 @@
 					<label>{pigcms{$cat_field_info.distance_price}</label>
 				</td>
 			</tr>
+            <if condition="is_array($cat_field_info['added_fee_list']) && $cat_field_info['added_fee_list']">
+                <volist name="cat_field_info['added_fee_list']" id="item">
+                    <tr>
+                        <td width="150">{pigcms{$item.name}：</td>
+                        <td>
+                            <label>{pigcms{$item.money}</label>
+                        </td>
+                    </tr>
+                </volist>
+            </if>
             <if condition="$cat_field_info.deliver_user_fee gt 0">
                 <tr>
                     <td width="150">配送员佣金：</td>
@@ -549,7 +585,7 @@
 	<script>
     $(document).ready(function(){
         $('.show_bigimage').click(function(){
-            window.top.art.dialog({
+            window.o2oTop.art.dialog({
     			padding: 0,
     			title: '大图',
     			content: '<img src="'+$(this).attr('src')+'" />',

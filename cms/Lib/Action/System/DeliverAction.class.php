@@ -718,6 +718,14 @@ class DeliverAction extends BaseAction {
     public function user_edit() {
     	if($_POST){
     		$uid = intval($_POST['uid']);
+            $now_user = $this->deliver_user->where(array('uid'=>$uid))->find();
+            if(!$now_user){
+                $this->error(L_('配送员不存在！'));
+            }
+            if($now_user['group'] == 2){
+                $this->error(L_('无法修改商家配送员信息！'));
+            }
+            
     		$column['name'] = isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '';
     		$column['phone'] = isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '';
     		$column['pwd'] = isset($_POST['pwd']) ? htmlspecialchars($_POST['pwd']) : '';
@@ -1227,7 +1235,7 @@ class DeliverAction extends BaseAction {
         }
 
         $prefix = C('DB_PREFIX');
-        $fied = "s.`supply_id`, s.`deliver_status`, s.`uid`, ".
+        $fied = "s.`supply_id`, s.`deliver_status`, s.`uid`, sp.third_type, ".
             "CASE  WHEN s.`server_type` <> 0 THEN (SELECT order_sn FROM ".$prefix."service_user_publish AS spps WHERE spps.publish_id = s.order_id) WHEN s.`item`= 8 THEN (SELECT real_orderid FROM ".$prefix."village_group_order AS vgo WHERE vgo.order_id = s.order_id) WHEN s.`item`= 4 THEN (SELECT order_no FROM ".$prefix."mall_order AS mo WHERE mo.order_id = s.order_id)  WHEN s.`item`= 5 THEN (SELECT mo.order_no FROM ".$prefix."mall_new_periodic_purchase_order AS periodic_o LEFT JOIN ".$prefix."mall_order AS mo ON periodic_o.order_id=mo.order_id WHERE periodic_o.id = s.order_id) ELSE (SELECT real_orderid FROM ".$prefix."shop_order AS sho WHERE sho.order_id = s.order_id) END AS order_sn, ".
             "CASE  WHEN s.`server_type` <> 0 THEN (SELECT orderid FROM ".$prefix."plat_order AS spp WHERE spp.business_id = s.order_id AND spp.business_type = 'service' AND spp.is_final_pay = '0') WHEN s.`item`= 8 THEN (SELECT orderid FROM ".$prefix."plat_order AS spp WHERE spp.business_id = s.order_id AND spp.business_type = 'village_group') WHEN s.`item`= 4 THEN (SELECT pay_orderno FROM ".$prefix."mall_order AS mo WHERE mo.order_id = s.order_id) WHEN s.`item`= 5 THEN (SELECT mo.pay_orderno FROM ".$prefix."mall_new_periodic_purchase_order AS periodic_o LEFT JOIN ".$prefix."mall_order AS mo ON periodic_o.order_id=mo.order_id WHERE periodic_o.id = s.order_id) ELSE (SELECT orderid FROM pigcms_shop_order AS sho WHERE sho.order_id = s.order_id) END AS orderid, ".
             "CASE  WHEN s.`server_type` <> 0 THEN (SELECT pay_type FROM pigcms_plat_order AS spp WHERE spp.business_id = s.order_id AND spp.business_type = 'service' AND spp.is_final_pay = '0') WHEN s.`item`= 8 THEN (SELECT pay_type FROM ".$prefix."village_group_order AS vgo WHERE vgo.order_id = s.order_id) WHEN s.`item`= 4 THEN (SELECT online_pay_type FROM ".$prefix."mall_order AS mo WHERE mo.order_id = s.order_id)  WHEN s.`item`= 5 THEN (SELECT mo.online_pay_type FROM ".$prefix."mall_new_periodic_purchase_order AS periodic_o LEFT JOIN ".$prefix."mall_order AS mo ON periodic_o.order_id=mo.order_id WHERE periodic_o.id = s.order_id) ELSE (SELECT pay_type FROM pigcms_shop_order AS sho WHERE sho.order_id = s.order_id) END AS order_pay_type, ".
@@ -1249,7 +1257,6 @@ class DeliverAction extends BaseAction {
              C('DB_PREFIX') . "deliver_user AS u ON s.uid=u.uid LEFT JOIN " .
              C('DB_PREFIX') . "service_user_publish AS sp ON (sp.publish_id=s.order_id AND s.`server_type` <> 0) LEFT JOIN ".
              C('DB_PREFIX') . "user AS us ON (sp.uid=us.uid AND s.`server_type` <> 0)";
-
 
         $sql .= ' WHERE s.type=0';
         $sql_count .= ' WHERE s.type=0';
@@ -1294,9 +1301,6 @@ class DeliverAction extends BaseAction {
                 $sql_count .= ' AND u.name LIKE "%' . $keyword . '%"';
             }
         }
-
-
-
         if ($time > 0) {
             $sqltime = $time * 60;
             if ($timetype == 0) {
@@ -1454,6 +1458,9 @@ class DeliverAction extends BaseAction {
                     $value['aim_site'] = $uids['address'];
                 }
             }
+			if($value['third_type'] == 'maiyatian') {
+				$value['order_source'] = D('Maiyatian_delivery')->getOrderSource($value['order_id']);
+			}
         }
         
         $pagebar = $p->show();
@@ -1474,8 +1481,6 @@ class DeliverAction extends BaseAction {
         $this->assign('selectStoreId', $selectStoreId);
         $this->assign('orderNum', $orderNum);
         $this->assign('selectUserId', $selectUserId);
-        $this->assign('stores', $stores);
-        $this->assign('delivers', $delivers);
         $this->assign('pagebar', $pagebar);
         $this->assign('supply_info', $supply_info);
         $this->assign('res_count', $res_count);
@@ -1497,6 +1502,8 @@ class DeliverAction extends BaseAction {
             $checkOrderType = 2;
         } else if ($supply['item'] == 3 && $supply['server_type'] == 1) {
             $checkOrderType = 3;
+        }else if ($supply['item'] ==8) {
+            $checkOrderType = 4;
         }
 
     	if (IS_POST) {
@@ -1541,6 +1548,15 @@ class DeliverAction extends BaseAction {
                 if($cat_field_info){
                     $fc = $cat_field_info['basic_distance_price'] + $cat_field_info['weight_price'] + $cat_field_info['distance_price'];//基础配送费+超重费用+超距离配送
                     $save_data['deliver_user_fee'] = $fc - ($fc * ($user['take_percent']/100));//配送员所得费用（扣除平台抽成）
+                }
+
+                if (C('config.open_paotui_price_template')) {
+                    $calDeliverUserFeeRs = invoke_v20_service('\app\paotui\model\service\ServiceUserPublishService/calDeliverUserFee', [$uid, array_merge($publishInfo, $cat_field_info)]);
+                    $calDeliverUserFeeRs = $calDeliverUserFeeRs['data']['retval'] ?? [];
+                    if (empty($calDeliverUserFeeRs)) {
+                        $this->error('配送员所得费用计算失败,请重试');
+                    }
+                    $save_data['deliver_user_fee'] = $calDeliverUserFeeRs['total_fee'];
                 }
             }
             else{
@@ -2268,6 +2284,12 @@ class DeliverAction extends BaseAction {
                             );
                             D('Service_user_publish_log')->notify_url($notify_data, $notifyurl);
                         }
+	                    invoke_v20_service('\app\maiyatian\service\MaiyatianPushService/saveDeliveryChange', [
+		                    'publish_id' => $supply['order_id'],
+		                    'params' => [
+			                    'status' => 'CANCEL',
+		                    ]
+	                    ]);
                     } else {
                         // 退款失败改写状态
                         M('Service_user_publish')->where(array('publish_id' => $supply['order_id']))->save(array('status' => 13));
@@ -2405,6 +2427,12 @@ class DeliverAction extends BaseAction {
                             );
                             D('Service_user_publish_log')->notify_url($notify_data, $notifyurl);
                         }
+	                    invoke_v20_service('\app\maiyatian\service\MaiyatianPushService/saveDeliveryChange', [
+		                    'publish_id' => $publishInfo['publish_id'],
+		                    'params' => [
+			                    'status' => 'DELIVERING',
+		                    ]
+	                    ]);
                     }else if($supply['item'] == 4 || $supply['item'] == 5){
                         //新版商城
                         $thisDeliver = D('Deliver_user')->where(['uid'=>$supply['uid']])->find();
@@ -3757,6 +3785,8 @@ class DeliverAction extends BaseAction {
                 $checkOrderType = 2;
             } else if ($s['item'] == 3 && $s['server_type'] == 1) {
                 $checkOrderType = 3;
+            }else if ($s['item'] == 8){
+                $checkOrderType = 4;
             }
             //判断配送员是否能接该类型订单
             if (empty($orderTypes) || !in_array($checkOrderType, $orderTypes)) {
@@ -3798,6 +3828,14 @@ class DeliverAction extends BaseAction {
                     if($cat_field_info){
                         $fc = $cat_field_info['basic_distance_price'] + $cat_field_info['weight_price'] + $cat_field_info['distance_price'];//基础配送费+超重费用+超距离配送
                         $save_data['deliver_user_fee'] = $fc - ($fc * ($user['take_percent']/100));//配送员所得费用（扣除平台抽成）
+                    }
+                    if (C('config.open_paotui_price_template')) {
+                        $calDeliverUserFeeRs = invoke_v20_service('\app\paotui\model\service\ServiceUserPublishService/calDeliverUserFee', [$uid, array_merge($publishInfo, $cat_field_info)]);
+                        $calDeliverUserFeeRs = $calDeliverUserFeeRs['data']['retval'] ?? [];
+                        if (empty($calDeliverUserFeeRs)) {
+                            $this->error('配送员所得费用计算失败,请重试');
+                        }
+                        $save_data['deliver_user_fee'] = $calDeliverUserFeeRs['total_fee'];
                     }
                 } elseif ($sup['item'] == 4){
                     $save_data['deliver_user_fee'] = $sup['freight_charge'] - ($sup['freight_charge'] * ($user['take_percent']/100));//配送员所得费用（扣除平台抽成）

@@ -72,13 +72,15 @@ class AreaStreetPartyBuildController extends CommunityBaseController
         $cat_id = $this->request->post('cat_id',0);
         $street_id = $this->request->post('area_street_id',0);
         $area_street_party_build_service = new AreaStreetPartyBuildService();
-        if($cat_id)
-            $where['cat_id'] = $cat_id;
-        if($street_id)
-            $where['area_id'] = $street_id;
-        $where['status'] = 1;
-        $field = 'title,add_time,title_img,build_id,cat_id';
-        $data = $area_street_party_build_service->getPartyBuildLists($where,$field,$page,$limit,'is_hot,build_id DESC');
+        $where=array(['pb.status','=',1],['pbc.cat_status','<',2]);
+        if($cat_id){
+            $where[]=array('pb.cat_id','=',$cat_id);
+        }
+        if($street_id){
+            $where[]=array('pb.area_id','=',$street_id);
+        }
+        $field = 'pb.title,pb.add_time,pb.title_img,pb.build_id,pb.cat_id';
+        $data = $area_street_party_build_service->getPartyBuildJoinCategoryLists($where,$field,$page,$limit,'is_hot,build_id DESC');
         return api_output(0,$data);
     }
 
@@ -96,11 +98,14 @@ class AreaStreetPartyBuildController extends CommunityBaseController
         if(!$build_id)
             return api_output_error(1001,'缺少必传参数');
         $area_street_party_build_service = new AreaStreetPartyBuildService();
-        $where['r.build_id'] = $build_id;
+        $where=array(['r.build_id','=',$build_id]);
         $res = $area_street_party_build_service->getAreaConfig(['b.build_id'=>$build_id],'a.party_build_switch');
-        if($res['party_build_switch'] == 1)
-            $where['r.status'] = 1;
-        $field = 'r.content,r.add_time,u.nickname,u.avatar';
+        if($res['party_build_switch'] == 1){
+            $where[] = ['r.status','=',1];
+        }else{
+            $where[] = ['r.status','in',[1,3]];
+        }
+        $field = 'r.pigcms_id,r.content,r.add_time,u.nickname,u.avatar';
         $data = $area_street_party_build_service->getPartyBuildReplyLists($where,$field,$page,$limit,'r.pigcms_id DESC');
         return api_output(0,$data);
     }
@@ -125,6 +130,10 @@ class AreaStreetPartyBuildController extends CommunityBaseController
         $data['build_id'] = $build_id;
         $data['add_time'] = time();
         $area_street_party_build_service = new AreaStreetPartyBuildService();
+        $resx = $area_street_party_build_service->getAreaConfig(['b.build_id'=>$build_id],'a.party_build_switch');
+        if($resx['party_build_switch'] == 1){
+            $data['status'] = 3;
+        }
         $res = $area_street_party_build_service->addReply($data);
         if($res)
             return api_output(0,'','留言成功');

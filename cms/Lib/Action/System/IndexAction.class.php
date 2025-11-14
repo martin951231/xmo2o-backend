@@ -1257,6 +1257,9 @@ class IndexAction extends BaseAction
             } else {
                 $_POST['area_id'] = $_POST['province_idss'];
             }
+            if($_POST['open_admin_area'] && !$_POST['area_id']){
+                $this->error('请选择管理员所在区域！');
+            }
             !$_POST['open_admin_area'] && $_POST['area_id'] = 0;
             if ($_POST['area_id']) {
                 $_POST['level'] = 1;
@@ -2036,23 +2039,18 @@ class IndexAction extends BaseAction
                 $this->error('类型参数有误！');
         }
         $where = array('area_type' => array('lt', 3), 'is_open' => 1);
-        /*if ($this->system_session['area_id']) {
-            $now_area = D('Area')->field(true)->where(['area_id'=>$this->system_session['area_id']])->find();
+        if ($this->system_session['area_id']) {
+            $now_area = D('Area')->field(true)->where(['area_id' => $this->system_session['area_id']])->find();
             if ($now_area['area_type'] == 3) {
                 $where['area_id'] = $this->system_session['area_id'];
-            }elseif ($now_area['area_type'] == 2){
-                $where['area_pid'] = $this->system_session['area_id'];
-            }elseif($now_area['area_type'] == 1){
-                $city_list = D('Area')->get_arealist_by_areaPid($now_area['area_id'],true);
-                $area_id = array();
-                foreach($city_list as $value){
-                    $area_id[] = $value['area_id'];
-                }
-                $where['area_pid'] = ['in',$area_id];
+            } elseif ($now_area['area_type'] == 2) {
+                $where['area_id'] = ['IN', [$now_area['area_id'], $now_area['area_pid']]];
+            } elseif ($now_area['area_type'] == 1) {
+                $where['_string'] = "area_id = {$now_area['area_id']} or area_pid = {$now_area['area_id']}";
             } else {
                 $where['area_pid'] = $this->system_session['area_id'];
             }
-        }*/
+        }
         //dump($where);exit();
         $areaList = D('Area')->field('area_id, area_pid, area_name')->where($where)->select();
 //        $list = D('Shop_discount_area')->field('aid')->where(array('did' => $id))->select();

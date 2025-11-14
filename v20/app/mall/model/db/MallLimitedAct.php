@@ -35,7 +35,7 @@ class MallLimitedAct  extends Model
              ->where($where)
              ->group($group);
              $return = $return
-                 ->order('k.sort desc,k.id desc')
+                 ->order('k.is_first desc,k.sort desc,k.id desc')
                  ->field($field)
                  ->select()
                  ->toArray();
@@ -66,7 +66,8 @@ class MallLimitedAct  extends Model
               }
          }
          $sort = array_column($goods_list1, 'sort');
-         array_multisort($sort, SORT_DESC, $goods_list1);
+         $is_first_sort = array_column($goods_list1, 'is_first'); //置顶
+         array_multisort($is_first_sort, SORT_DESC, $sort, SORT_DESC, $goods_list1);
          return $goods_list1;
      }
 

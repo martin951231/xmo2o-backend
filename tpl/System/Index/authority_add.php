@@ -76,7 +76,7 @@ $(document).ready(function(){
 });
 
 function submitCallBack(info){
-		window.top.msg(1,info,true);
+		window.o2oTop.msg(1,info,true);
 	  top.art.dialog({id:"add"}).close();
 }
 </script>

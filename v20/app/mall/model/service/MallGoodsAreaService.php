@@ -383,7 +383,27 @@ class MallGoodsAreaService
             if(count($area_name)<3){
                 throw new \think\Exception(L_('第'.$key.'行格式错误！'));
             }
-            $province = $area_model->where([['is_open', '=', 1], ['area_type', '<>', 4],['area_name','in',$area_name]])->field($fields)->order('area_type asc')->select()->toArray();
+
+            $province = [];
+            $area1 = $area_model->where([['is_open', '=', 1], ['area_type', '=', 1], ['area_name', '=', $item['province']]])->field($fields)->findOrEmpty()->toArray();
+            if (!$area1) {
+                throw new \think\Exception(L_('第' . $key . '行省份名称错误！'));
+            }
+            $province[] = $area1;
+            $area2 = $area_model->where([['is_open', '=', 1], ['area_type', '=', 2], ['area_pid', '=', $area1['area_id']], ['area_name', '=', $item['city']]])->field($fields)->findOrEmpty()->toArray();
+            if (!$area2) {
+                throw new \think\Exception(L_('第' . $key . '行城市名称错误！'));
+            }
+            $province[] = $area2;
+            if (!empty($item['area'])) {
+                $area3 = $area_model->where([['is_open', '=', 1], ['area_type', '=', 3], ['area_pid', '=', $area2['area_id']], ['area_name', '=', $item['area']]])->field($fields)->findOrEmpty()->toArray();
+                if (!$area3) {
+                    throw new \think\Exception(L_('第' . $key . '行区县名称错误！'));
+                }
+                $province[] = $area3;
+            }
+            
+            //$province = $area_model->where([['is_open', '=', 1], ['area_type', '<>', 4],['area_name','in',$area_name]])->field($fields)->order('area_type asc')->select()->toArray();
             if(count($province)<2){
                 throw new \think\Exception(L_('第'.$key.'行省/市名称错误！'));
             }

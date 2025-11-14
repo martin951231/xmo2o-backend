@@ -52,8 +52,9 @@ class DeliverAction extends BaseAction
             $config['google_map_ak'] = $this->config['google_map_ak'];
         } else {
             $config['google_map_ak'] = '-1';
+            $config['baidu_map_key'] = $this->config['baidu_map_ak_web'];
         }
-
+       
         $appConfig = D('Appapi_app_config')->get();
         $config['deliver_android_version'] = $appConfig['deliver_android_version'];
         $config['deliver_android_vcode'] = $appConfig['deliver_android_vcode'];

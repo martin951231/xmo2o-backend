@@ -233,8 +233,8 @@
         <div id="tips" class="tips"></div>
 		<div class="btn-wrapper">
 			<ul class="tab">
-				<li><a class="react" href="{pigcms{:U('My/join_activity')}">平台活动</a>
-				</li><li class="active"><a class="react" href="{pigcms{:U('My/join_lottery')}">商家活动</a>
+				<li><a class="react" href="#" data-href="{pigcms{:U('My/join_activity')}">平台活动</a>
+				</li><li class="active"><a class="react" href="#" data-href="{pigcms{:U('My/join_lottery')}">商家活动</a>
 				</li>
 			</ul>
 		</div>
@@ -284,6 +284,15 @@
 		</if>
     	<script src="{pigcms{:C('JQUERY_FILE')}"></script>
 		<script src="{pigcms{$static_path}js/common_wap.js"></script>
+        <script>
+            $(function () {
+                $('.react').click(function (event){
+                    event.preventDefault(); // 阻止默认的链接跳转行为
+                    var link = $(this).attr('data-href'); // 获取链接
+                    window.location.replace(link) ; // 刷新当前页面到新的链接
+                })
+            })
+        </script>
 		<include file="Public:footer"/>
 {pigcms{$hideScript}
 </body>

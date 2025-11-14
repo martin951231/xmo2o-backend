@@ -68,12 +68,12 @@
 								<th class="hide_col">获得{pigcms{$config.score_name}数</th>
 								<th class="hide_col">使用{pigcms{$config.score_name}数</th>
 								<th class="hide_col">商家优惠券抵扣</th>
-								<th class="hide_col">平台优惠券抵扣</th>
+								<th class="hide_col">SYSTEM_STORE_ARRIVAL_ORDER_1</th>
 								<th class="hide_col">会员等级优惠金额</th>
 								<th class="hide_col">会员卡折扣金额</th>
 								<th class="hide_col">会员卡余额支付</th>
 								<th class="hide_col">会员卡赠送余额支付</th>
-								<th class="hide_col">平台余额支付</th>
+								<th class="hide_col">SYSTEM_STORE_ARRIVAL_ORDER_2</th>
 								<th class="hide_col">线下支付</th>
 								<th>线上支付金额</th>
 								<th>实付金额</th>

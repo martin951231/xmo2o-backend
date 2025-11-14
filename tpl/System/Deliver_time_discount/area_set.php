@@ -86,7 +86,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('index')}">优惠时间段列表</a>|
-					<a href="javascript:void(0);"  onclick="window.top.artiframe('{pigcms{:U('add')}','添加优惠时间段',800,560,true,false,false,editbtn,'edit',true);">添加优惠时间段</a>
+					<a href="javascript:void(0);"  onclick="window.o2oTop.artiframe('{pigcms{:U('add')}','添加优惠时间段',800,560,true,false,false,editbtn,'edit',true);">添加优惠时间段</a>
 					<a href="{pigcms{:U('area_set')}" class="on">配置设置</a>
 				</ul>
 			</div>

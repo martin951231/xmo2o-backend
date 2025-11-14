@@ -95,7 +95,7 @@
 	
     <section class="orderDetails">
         <div class="ormx_pro" style="border-bottom: unset;">
-            <if condition='$classify_userinput_detail["imgs"]'><img src="{pigcms{$classify_userinput_detail["imgs"][0]}"></if>
+            <if condition='$classify_userinput_detail["imgs"]'><img src="{pigcms{:replace_file_domain($classify_userinput_detail['imgs'][0])}"></if>
             <div class="ormxp_mess">
                 <p class="ormxpm_tit">{pigcms{:msubstr($classify_userinput_detail['description'] , 0 , 30)}</p>
                 <p class="ormxpm_price"><i>{pigcms{$config['Currency_symbol']}</i>{pigcms{$classify_userinput_detail["assure_money"]}

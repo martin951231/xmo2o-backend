@@ -29,22 +29,16 @@ class WechatService{
 		switch ($this->agent) {
 			case 'wechat_h5'://微信端
 				return $this->Wechatpay($order_no, $money, $extra_cfg);
-				break;
 			case 'iosapp':
 			case 'androidapp':
 				return $this->Apppay($order_no, $money, $extra_cfg);
-				break;
 			case 'wechat_mini':
 				return $this->Minipay($order_no, $money, $extra_cfg);
-				break;
 			case 'h5':
 				return $this->H5pay($order_no, $money, $extra_cfg);
-				break;
-			
 			default:
                 fdump_api(['param' => $_POST,'agent' => $this->agent,'order_no' => $order_no,'money' => $money,'msg' => '当前端口未对接，不能使用'],'errPay/WechatServicePayLog',1);
 				throw new \think\Exception("当前端口未对接，不能使用");
-				break;
 		}
 	}
 
@@ -713,7 +707,7 @@ class WechatService{
 				$config->secret = $this->config['pay_weixinh5_appsecret'];
 				$config->sslCertPath = $root_path.$this->config['pay_weixinh5_client_cert'];
 				$config->sslKeyPath = $root_path.$this->config['pay_weixinh5_client_key'];
-                if($this->config['pay_weixinh5_mchid'] == cfg('pay_weixinh5_mchid') && $this->config['pay_weixinh5_key'] == cfg('pay_weixinh5_key')){
+                if($this->config['pay_weixinh5_mchid'] == cfg('pay_weixinh5_mchid') && $this->config['pay_weixinh5_key'] == cfg('pay_weixinh5_key') && cfg('pay_weixinh5_client_cert')){
                     $config->sslCertPath = $_SERVER['DOCUMENT_ROOT'].cfg('pay_weixinh5_client_cert');
                     $config->sslKeyPath = $_SERVER['DOCUMENT_ROOT'].cfg('pay_weixinh5_client_key');
                 }

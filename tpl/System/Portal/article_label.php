@@ -3,11 +3,11 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Portal/article')}">资讯列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_add')}','添加资讯',780,450,true,false,false,addbtn,'add',true);">添加资讯</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_add')}','添加资讯',780,450,true,false,false,addbtn,'add',true);">添加资讯</a>
 					<a href="{pigcms{:U('Portal/article_label')}" class="on">标签列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_label_add')}','添加标签',480,200,true,false,false,addbtn,'add',true);">添加标签</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_label_add')}','添加标签',480,200,true,false,false,addbtn,'add',true);">添加标签</a>
 					<a href="{pigcms{:U('Portal/article_source')}">资讯来源列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_source_add')}','添加来源',480,200,true,false,false,addbtn,'add',true);">添加来源</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_source_add')}','添加来源',480,200,true,false,false,addbtn,'add',true);">添加来源</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -26,7 +26,7 @@
 							<tr>
 								<td class="textcenter">{pigcms{$vo.id}</td>
 								<td class="textcenter">{pigcms{$vo.title}</td>
-								<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/article_label_add',array('label_id'=>$vo['id']))}','编辑资讯',480,200,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="label_id={pigcms{$vo.id}" url="{pigcms{:U('Portal/article_label_del')}">删除</a></td>
+								<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/article_label_add',array('label_id'=>$vo['id']))}','编辑资讯',480,200,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="label_id={pigcms{$vo.id}" url="{pigcms{:U('Portal/article_label_del')}">删除</a></td>
 							</tr>
 							</volist>
 							<else/>

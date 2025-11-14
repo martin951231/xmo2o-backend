@@ -76,7 +76,7 @@
 
                             <td class="textcenter">{pigcms{$vo.create_time|date="Y-m-d H:i:s",###}</td>
 
-                           <td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Portal/activity_sign_detail',array('sid'=>$vo['sid'],'frame_show'=>true))}','查看信息',580,350,true,false,false,false,'detail',true);">查看</a> </td>
+                           <td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Portal/activity_sign_detail',array('sid'=>$vo['sid'],'frame_show'=>true))}','查看信息',580,350,true,false,false,false,'detail',true);">查看</a> </td>
                         </tr>
                     </volist>
                     <tr><td class="textcenter pagebar" colspan="12">{pigcms{$pagebar}</td></tr>

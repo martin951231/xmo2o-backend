@@ -144,12 +144,22 @@ class StorestaffAction extends BaseAction{
 		$config['is_packapp'] = true;
         
 		$appConfig  =   D('Appapi_app_config')->get();
-        $config['staff_android_v'] = strval($appConfig['staff_android_v']);
-        $config['staff_android_vcode'] = strval($appConfig['staff_android_vcode']);
-        $config['staff_android_url'] = strval($appConfig['staff_android_url']);
-        $config['staff_android_vdesc'] = strval($appConfig['staff_android_vdesc']);
+
+        if($_POST['phone_type'] == 2){
+            $config['staff_android_v'] = strval($appConfig['pc_staff_android_v']);
+			$config['staff_android_vcode'] = strval($appConfig['pc_staff_android_vcode']);
+			$config['staff_android_url'] = strval($appConfig['pc_staff_android_url']);
+            $config['staff_android_vdesc'] = strval($appConfig['pc_staff_android_vdesc']);
+            $config['storestaff_android_package_name'] = $appConfig['pc_staff_android_package_name'] ? $appConfig['pc_staff_android_package_name'] : '';
+		}else{
+            $config['staff_android_v'] = strval($appConfig['staff_android_v']);
+			$config['staff_android_vcode'] = strval($appConfig['staff_android_vcode']);
+			$config['staff_android_url'] = strval($appConfig['staff_android_url']);
+            $config['staff_android_vdesc'] = strval($appConfig['staff_android_vdesc']);
+            $config['storestaff_android_package_name'] = $appConfig['storestaff_android_package_name'] ? $appConfig['storestaff_android_package_name'] : '';
+		}
+     
         $config['mer_android_package_name'] = $appConfig['mer_android_package_name'] ? $appConfig['mer_android_package_name'] : '';
-        $config['storestaff_android_package_name'] = $appConfig['storestaff_android_package_name'] ? $appConfig['storestaff_android_package_name'] : '';
         $config['mer_ios_package_name'] = $appConfig['mer_ios_package_name'] ? $appConfig['mer_ios_package_name'] : '';
         $config['storestaff_ios_package_name'] = $appConfig['storestaff_ios_package_name'] ? $appConfig['storestaff_ios_package_name'] : '';
 		
@@ -188,7 +198,8 @@ class StorestaffAction extends BaseAction{
         $config['open_company_advance_deposit'] = intval($this->config['open_company_advance_deposit']);
         $config['have_deposita']=empty(C('customization.deposita'))?0:C('customization.deposita');
         
-        $config['internal_membership_card'] = intval(C('customization.internal_membership_card'));//一卡通定制
+        $config['internal_membership_card'] = intval(C('customization.internal_membership_card')); //一卡通定制
+        $config['staff_uni_appid'] = C('config.staff_uni_appid') ? C('config.staff_uni_appid') : '__UNI__8799035';
         
 		$this->returnCode('0',$config);
 	}
@@ -1721,9 +1732,9 @@ class StorestaffAction extends BaseAction{
             $href = C('config.site_url').'/wap.php?c=My&a=group_order&order_id='.$order['order_id'];
             $model->sendTempMsg('TM00017', array('href' => $href,
                 'wecha_id' => $now_user['openid'],
-                'first' => $order['order_name'],
-                'OrderSn' => $order['real_orderid'],
-                'OrderStatus' =>L_("核销成功"),
+                'first' => $order['order_name']?:$order['real_orderid'],
+                'OrderSn' => L_("核销成功"),
+                'OrderStatus' =>C('config.group_alias_name'),
                 'remark' =>L_('点击查看详情')),
                 $this->store['mer_id']);
         }
@@ -3561,7 +3572,6 @@ class StorestaffAction extends BaseAction{
 
         $database_appoint_visit_order_info = D('Appoint_visit_order_info');
         $database_appoint_order = D('Appoint_order');
-        $Map['appoint_order_id'] = $order_id;
         $_data['merchant_worker_id'] = $merchant_worker_id;
         $where['order_id'] = $order_id;
         $worker = D('Merchant_workers')
@@ -3645,7 +3655,19 @@ class StorestaffAction extends BaseAction{
                 $supply_where['order_id'] = $now_order['order_id'];
                 $database_appoint_supply->where($supply_where)->data($supply_data)->save();
             }
-
+	        $recordContent['content'] = [
+		        [
+			        'title' => '服务人员名称',
+			        'value' => $now_worker['name'],
+			        'type'  => 'text'
+		        ],
+		        [
+			        'title' => '服务人员手机号',
+			        'value' => $now_worker['mobile'],
+			        'type'  => 'text'
+		        ],
+	        ];
+	        D('Appoint_order_records')->addOrderRecord($now_order['mer_id'], $now_order['order_id'], '分配服务人员', $recordContent);
             exit(json_encode(array('errorCode'=>0,'msg'=>L_('订单分配成功！'))));
         }else{
             exit(json_encode(array('errorCode'=>400,'errorMsg'=>L_('订单分配失败！'))));
@@ -3775,11 +3797,39 @@ class StorestaffAction extends BaseAction{
      */
     public function group_combine_verify(){
         $this->check_group();
+
+        $confirmData = isset($_POST['confirm_data']) ? json_decode(htmlspecialchars_decode($_POST['confirm_data']), true) : [];
+
         $param['order_id'] = $_POST['order_id'];
         $param['mer_id'] = $this->store['mer_id'];
         $param['store_id'] = $this->store['store_id'];
         $param['last_staff'] = $this->staff_session['name'];
         $param['staff_name'] = $this->staff_session['name'];
+
+        if ($confirmData) {
+            $param['order_id'] = $confirmData['order_id'] ?? 0;
+            $result = D('Group_combine_activity')->groupCombineVerify($param);
+            if ($result['error'] > 0) {
+                //异常
+                $rs = [
+                    'status' => 1003,
+                    'msg' => $result['msg'],
+                    'data' => new \stdClass()
+                ];
+            } else {
+                //正常
+                $rs = [
+                    'status' => 1000,
+                    'msg' => 'success',
+                    'data' => [
+                        'result' => '验证核销成功',
+                        'url' => C('config.site_url') . '/packapp/storestaff/group_detail.html?order_id=' . $result['data']['order_id'] . '&from=scan'
+                    ]
+                ];
+            }
+            echo json_encode($rs,JSON_UNESCAPED_UNICODE);
+            exit();
+        }
 
         $result = D('Group_combine_activity')->groupCombineVerify($param);
 
@@ -8278,7 +8328,7 @@ class StorestaffAction extends BaseAction{
                         }
                         D('Shop_order_log')->add_log(array('order_id' => $order_id, 'status' => 9));
                         D('Shop_order')->data($data_shop_order)->save();
-
+	                    D('Shop_order_refund')->recoverLackWeightMoney($order_id, $refund_id);
                         // 退还获得积分 20191219
                         $returnScoreBack = D('User')->refundScoreBack($order['uid'],$order_id,$order_type,floatval($refund['price']),1);
                         //增加消息通知

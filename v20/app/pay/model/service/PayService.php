@@ -15,6 +15,7 @@ use app\community\model\db\WeixinAppBind;
 use app\community\model\service\NewPayService;
 use app\community\model\service\PlatOrderService;
 use app\internal_card\model\service\InternalCardService;
+use app\maiyatian\service\MaiyatianRechargeService;
 use app\pay\model\db\PayChannel;
 use app\pay\model\db\PayChannelParam;
 use app\pay\model\db\PayOrderInfo;
@@ -197,7 +198,7 @@ class PayService{
                 'pay_info'  => $pay_info,
                 'extra_cfg' => $extra_cfg,
                 'rate'      => $rate,
-                'msg'       => '支付通道未配置!'
+                'msg'       => '支付通道配置信息'
             ], 'pay/payServicePayLog');
             
 			if(empty($channel) || empty($channel['config'])){
@@ -1085,11 +1086,9 @@ class PayService{
 			case 'reward':
 				$business = new \app\reward\model\service\order\RewardOrderPayService;
 				break;
-
             case 'pile':  //todo 社区=>充电桩
                 $business = new \app\community\model\service\PileOrderPayService;
                 break;
-
             case 'village_new_pay': //todo 社区=>新版物业
                 $business = new \app\community\model\service\NewPayService();
                 break;
@@ -1114,6 +1113,17 @@ class PayService{
             case 'pile_user_charge_balance': //充电桩用户余额充值
                 $business = new \app\community\model\service\PileOrderPayService();
                 break;
+
+	        case 'maiyatian_recharge': //麦芽田商家充值
+		        $business = new MaiyatianRechargeService();
+		        break;
+
+            case 'building': //商场楼宇系统跳转支付中心订单
+				$business = new \app\building\service\OrderService();
+				break;
+            case 'shopping_mall_park': //商场停车缴费
+				$business = new \app\building\service\ParkOrderService();
+				break;
             default:
                 break;
         }
@@ -1154,18 +1164,15 @@ class PayService{
 			case 'robot':
 				$business = new ThirdRobotDeliveryOrderService();
 				break;
-
 			case 'house_meter':
 				$business = new \app\community\model\service\HouseMeterPayService;
                 break;
 			case 'reward':
 				$business = new \app\reward\model\service\order\RewardOrderPayService;
 				break;
-
             case 'pile':
                 $business = new \app\community\model\service\PileOrderPayService;
                 break;
-
             case 'village_new_pay':
                 $business = new \app\community\model\service\NewPayService;
                 break;
@@ -1192,6 +1199,16 @@ class PayService{
                 $business = new \app\community\model\service\PileOrderPayService();
                 $redirect_url = $business->getPayResultUrl($order_id,'pile_user_charge_balance');
                 break;
+
+	        case 'maiyatian_recharge': //麦芽田商家充值
+		        $business = new MaiyatianRechargeService();
+		        break;
+            case 'building': //商场楼宇系统跳转支付中心订单
+				$business = new \app\building\service\OrderService();
+				break;
+            case 'shopping_mall_park': //商场停车缴费
+				$business = new \app\building\service\ParkOrderService();
+				break;
             default:
                 break;
         }
@@ -1989,6 +2006,12 @@ class PayService{
 				break;
 			case 'village_new_pay':
 				$business = new \app\community\model\service\NewPayService();
+				break;
+            case 'building': //商场楼宇系统跳转支付中心订单
+				$business = new \app\building\service\OrderService();
+				break;
+            case 'shopping_mall_park': //商场停车缴费
+				$business = new \app\building\service\ParkOrderService();
 				break;
 			default:
 				throw new \think\Exception('当前业务（' . $order->business . '）未对接');

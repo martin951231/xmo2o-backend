@@ -2805,18 +2805,18 @@ class CarHandleGetInfoService
         return true;
     }
     
-    public function setParkPassageHeart($serialno, $heartTime = 0)
+    public function setParkPassageHeart($serialno, $heartTime = 0,$suffix='')
     {
         !$heartTime && $heartTime = time();
-        $cacheKey = 'device_number' . $serialno;
+        $cacheKey = 'device_number' . $serialno.$suffix;
         $this->setCacheTag('parkPassageHeart:' . $serialno);
         $this->CacheTagSet($cacheKey, $heartTime);
         return $serialno;
     }
 
-    public function getParkPassageHeart($serialno, $isHandle = 0)
+    public function getParkPassageHeart($serialno, $isHandle = 0,$suffix='')
     {
-        $cacheKey = 'device_number' . $serialno;
+        $cacheKey = 'device_number' . $serialno.$suffix;
         $heartTime = $this->CacheTagGet($cacheKey);
         !$heartTime && $heartTime = 0;
         if ($isHandle == 1) {

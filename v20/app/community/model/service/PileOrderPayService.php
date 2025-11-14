@@ -683,13 +683,14 @@ class PileOrderPayService
         $pay_order_info_id=0;
         $paid_orderNo='';
         $order_type='';
+        $now_time=time();
         if (!empty($pay_order_info) && !$pay_order_info->isEmpty()){
             $pay_order_info=$pay_order_info->toArray();
             $paid_orderNo=$pay_order_info['paid_extra'];
             $pay_order_info_id=$pay_order_info['id'];
             if($pay_order_info['business']=='pile_user_charge_balance'){
                 $order_data = [
-                    'pay_time' => $extra['paid_time'],
+                    'pay_time' => $extra['paid_time'] ? $extra['paid_time']:$now_time,
                     'pay_money' => $extra['paid_money'],
                     'pay_type' => $paid_type,
                     'third_id' => $paid_orderNo,
@@ -717,7 +718,7 @@ class PileOrderPayService
         $order_type=$order_info['order_type'];
         $pay_orderid=isset($extra['paid_orderid']) ? $extra['paid_orderid']:'';
         $order_data = [
-            'pay_time' => $extra['paid_time'],
+            'pay_time' => $extra['paid_time'] ? $extra['paid_time']:$now_time,
             'pay_money' => $extra['paid_money'],
             'pay_type' => $paid_type,
             'third_id' => $paid_orderNo,
@@ -870,8 +871,9 @@ class PileOrderPayService
                 $param['plat_order_info']['is_pay_need_divide']=$is_lakala_pay_divide;
                 $param['plat_order_info']['pay_divide_type']='lakala_pay_divide';
                 $param['plat_order_info']['divide_village_money']=$mer_get_tmp;
-                $param['plat_order_info']['divide_system_take']=$plat_get_tmp;
-                $param['plat_order_info']['divide_desc'] = "【拉卡拉分账】订单号：".$pay_order_info['orderid']." 小区：".$mer_get_tmp." 平台：".$plat_get_tmp;
+                $param['plat_order_info']['divide_system_take']=0;
+                //$param['plat_order_info']['divide_desc'] = "【拉卡拉分账】订单号：".$pay_order_info['orderid']." 小区：".$mer_get_tmp." 平台：".$plat_get_tmp;
+                $param['plat_order_info']['divide_desc'] = "【拉卡拉分账】订单号：".$pay_order_info['orderid'];  //改成充电结束后分账 这里的分账数据不对了，不显示
             } catch (\Exception $ee) {
                 fdump_api([$paid_order_no, $ee->getMessage(), 'pay_order_info' => $pay_order_info], 'pay/villageLakalaPileFenzhangErr', 1);
             }
@@ -884,6 +886,73 @@ class PileOrderPayService
         }catch (\Exception $e){
             fdump_api(['line' . __LINE__, 'err_msg'=>$e->getMessage()], 'after_pay/PileOrderPayService', 1);
         }
+
+        //-----小区住户余额start-------//
+        //获取小区用户信息
+        $village_user = new StorageService();
+        // print_r([$now_order['uid'],$villageId]);
+        if(!empty($order_info['pay_uid'])&&!empty($order_info['village_id'])){
+            $now_village_user = $village_user->getVillageUser($order_info['pay_uid'],$order_info['village_id']);
+        }
+        if (empty($now_village_user)) {
+            throw new \Exception(L_("小区住户余额信息不存在"), 1003);
+        }
+        $villageBalancePay=0;
+        if (isset($extra['current_village_balance'])){
+            //判断小区住户帐户余额,扣除余额
+            $villageBalancePay = floatval($extra['current_village_balance']);
+            if ($villageBalancePay && $now_village_user['current_money'] < $villageBalancePay) {
+                fdump_api(['villageBalancePay'=>$villageBalancePay,'now_village_user'=>$now_village_user,'您的帐户余额不够此次支付'],'haokuaichong/startType3Tocharge',1);
+                //throw new \Exception(L_("您的帐户余额不够此次支付"), 1003);
+            }
+        }
+        if ($villageBalancePay > 0) {
+            $village_money_data=[
+                'uid'=>$order_info['pay_uid'],
+                'village_id'=>$order_info['village_id'],
+                'type'=>2,
+                'current_village_balance'=>$villageBalancePay,
+                'role_id'=>0,
+                'desc'=>L_("充电桩充电支付，扣除小区住户余额，订单编号X1", array("X1" => $pile_order_info['order_no'])),
+                'order_id'=>$pile_order_info['order_id'],
+                'order_type'=>1,
+            ];
+            $villageUseResult = $village_user->addVillageUserMoney($village_money_data);
+            if ($villageUseResult['error_code']) {
+                throw new \Exception($villageUseResult['msg'], 1003);
+            }
+        }
+        //-------小区住户余额end--------//
+        //获取购买用户信息
+        $userService = new UserService();
+        $buyer = $userService->getUser($order_info['pay_uid'], 'uid');
+        if (empty($buyer)) {
+            throw new \think\Exception(L_("购买用户不存在"), 1003);
+        }
+        //判断帐户余额,扣除余额
+        $balancePay = floatval($extra['current_system_balance']);
+        if ($balancePay && $buyer['now_money'] < $balancePay) {
+            throw new \think\Exception(L_("您的帐户余额不够此次支付"), 1003);
+        }
+        if ($balancePay > 0) {
+            $useResult = (new UserService())->userMoney($order_info['pay_uid'], $balancePay, L_("充电桩支付，扣除余额，订单编号X1", array("X1" => $order_info['order_no'])));
+            if ($useResult['error_code']) {
+                throw new \think\Exception($useResult['msg'], 1003);
+            }
+        }
+        //积分抵扣，扣除积分
+        $scoreUsedCount = $order_info['score_used_count'];
+        if ($scoreUsedCount && $buyer['score_count'] < $scoreUsedCount) {
+            throw new \think\Exception(L_("您的积分余额不够此次支付"), 1003);
+        }
+        if ($scoreUsedCount > 0) {
+            $scoreParam=array('order_id'=>$order_info['id'],'score_type'=>21,'house_type'=>1,'order_type'=>'village_pile_pay','village_id'=>$order_info['village_id']);
+            $use_result = (new UserService())->userScore($order_info['uid'], $scoreUsedCount, L_("充电桩支付 ，扣除X1 ，订单编号X2", array("X1" => cfg('score_name'), "X2" => $order_info['order_no'])),0,$scoreParam);
+            if ($use_result['error_code']) {
+                throw new \think\Exception($use_result['msg'], 1003);
+            }
+        }
+        
         if ($pay_type == 'balance') {
             $pay_type_pile = 1;
         }elseif ($pay_type== 'wechat'||$pay_type== 'weixin') {
@@ -910,6 +979,11 @@ class PileOrderPayService
         if($pile_order_info && isset($pile_order_info['third_paid_orderid'])){
             $order_data_pile['pay_orderid']=$pay_orderid;
             $order_data_pile['third_paid_orderid']=$paid_orderNo ? $paid_orderNo:'';
+        }
+        if($lakala_pay_switch>0 && $is_lakala_pay_divide==1) {
+            //先标记上等 充电结束分账
+            $order_data_pile['is_fenzhang']=1;
+            $order_data_pile['fz_type']='lakala_divide';
         }
         fdump_api(['更改记录' => __LINE__,'order_data_pile' => $order_data_pile],'after_pay/PileOrderPayService',1);
         $orderId = $service_order_pile->saveOne(['id' => $pile_order_info['id']], $order_data_pile);
@@ -951,6 +1025,7 @@ class PileOrderPayService
         if($pay_order_info && isset($pay_order_info['channel']) && $pay_order_info['channel']=='chinaums'){
             $this->chinaums_order_divide($pile_order_info['id'],$pile_order_info,$pay_order_info['orderid']);
         }
+        /***** 这里注释掉 等充电结束后这个流程走完后 在分账
         if($lakala_pay_switch>0 && $is_lakala_pay_divide==1) {
             try {
                 $pay_env = $pay_order_info['env'];
@@ -986,71 +1061,8 @@ class PileOrderPayService
 
             }
         }
-        //-----小区住户余额start-------//
-        //获取小区用户信息
-        $village_user = new StorageService();
-        // print_r([$now_order['uid'],$villageId]);
-        if(!empty($order_info['pay_uid'])&&!empty($order_info['village_id'])){
-            $now_village_user = $village_user->getVillageUser($order_info['pay_uid'],$order_info['village_id']);
-        }
-        if (empty($now_village_user)) {
-            throw new \Exception(L_("小区住户余额信息不存在"), 1003);
-        }
-        $villageBalancePay=0;
-        if (isset($extra['current_village_balance'])){
-            //判断小区住户帐户余额,扣除余额
-            $villageBalancePay = floatval($extra['current_village_balance']);
-            if ($villageBalancePay && $now_village_user['current_money'] < $villageBalancePay) {
-                fdump_api(['villageBalancePay'=>$villageBalancePay,'now_village_user'=>$now_village_user,'您的帐户余额不够此次支付'],'haokuaichong/startType3Tocharge',1);
-                //throw new \Exception(L_("您的帐户余额不够此次支付"), 1003);
-            } 
-        }
-        if ($villageBalancePay > 0) {
-            $village_money_data=[
-                'uid'=>$order_info['pay_uid'],
-                'village_id'=>$order_info['village_id'],
-                'type'=>2,
-                'current_village_balance'=>$villageBalancePay,
-                'role_id'=>0,
-                'desc'=>L_("充电桩充电支付，扣除小区住户余额，订单编号X1", array("X1" => $pile_order_info['order_no'])),
-                'order_id'=>$pile_order_info['order_id'],
-                'order_type'=>1,
-            ];
-            $villageUseResult = $village_user->addVillageUserMoney($village_money_data);
-            if ($villageUseResult['error_code']) {
-                throw new \Exception($villageUseResult['msg'], 1003);
-            }
-        }
-        //-------小区住户余额end--------//
-        
-        //获取购买用户信息
-        $userService = new UserService();
-        $buyer = $userService->getUser($order_info['pay_uid'], 'uid');
-        if (empty($buyer)) {
-            throw new \think\Exception(L_("购买用户不存在"), 1003);
-        }
-        //判断帐户余额,扣除余额
-        $balancePay = floatval($extra['current_system_balance']);
-        if ($balancePay && $buyer['now_money'] < $balancePay) {
-            throw new \think\Exception(L_("您的帐户余额不够此次支付"), 1003);
-        }
-        if ($balancePay > 0) {
-            $useResult = (new UserService())->userMoney($order_info['pay_uid'], $balancePay, L_("电表充值，扣除余额，订单编号X1", array("X1" => $order_info['order_no'])));
-            if ($useResult['error_code']) {
-                throw new \think\Exception($useResult['msg'], 1003);
-            }
-        }
-        //积分抵扣，扣除积分
-        $scoreUsedCount = $order_info['score_used_count'];
-        if ($scoreUsedCount && $buyer['score_count'] < $scoreUsedCount) {
-            throw new \think\Exception(L_("您的积分余额不够此次支付"), 1003);
-        }
-        if ($scoreUsedCount > 0) {
-            $use_result = (new UserService())->userScore($order_info['uid'], $scoreUsedCount, L_("电表充值 ，扣除X1 ，订单编号X2", array("X1" => cfg('score_name'), "X2" => $order_info['order_no'])));
-            if ($use_result['error_code']) {
-                throw new \think\Exception($use_result['msg'], 1003);
-            }
-        }
+        */
+
         return $order_id;
 
     }

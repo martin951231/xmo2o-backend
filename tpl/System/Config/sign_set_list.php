@@ -56,9 +56,9 @@
 		url+='&is_edit='+is_edit;
 
 		if(is_edit){
-			window.top.artiframe(url,title,500,320,true,false,false,addbtn,'add',true);			
+			window.o2oTop.artiframe(url,title,500,320,true,false,false,addbtn,'add',true);			
 		}else{
-			window.top.artiframe(url,title,500,320,true,false,false,false,'add',true);
+			window.o2oTop.artiframe(url,title,500,320,true,false,false,false,'add',true);
 		}
 	}
 </script>

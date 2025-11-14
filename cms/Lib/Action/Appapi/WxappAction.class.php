@@ -389,8 +389,25 @@ class WxappAction extends BaseAction{
 			'share_title' => '',										//分享标题
 			'share_img' => '',											//分享图片
 			'share_url' => 'pages/webview/tab_webview?url='.urlencode($webview_url),	//分享链接
-			'shareMenu' => true,										//允许分享
+			'shareMenu' => true,
+			'navigate_to_mini' => false,
+			'navigate_to_url' => ''
 		);
+
+		$parseUrlData = parse_url($webview_url);
+		//正则匹配short_(\d+) 先适配短链
+		if (strpos($webview_url, C('config.site_url')) == 0 && preg_match('/short_(\d+)/', $parseUrlData['path'], $matches)) {
+			$link_url = M('Short_link')->where(['link_id' => $matches[1]])->getField('link_url');
+			//判断link_url含有packapp和pages
+			if ($link_url && strpos($link_url, 'packapp') !== false && strpos($link_url, 'pages/') !== false) {
+				$return['navigate_to_mini'] = true;
+				$return['navigate_to_url'] = $link_url;
+				if ($parseUrlData['query']) {
+					//path  拼接上query参数
+					$return['navigate_to_url'] = $link_url . (strpos($link_url, '?') !== false ? '&' : '?') . $parseUrlData['query'];
+				}
+			}
+		}
 
 		// 商家小程序设置导航栏主题色
         $wxapp_own_mer_id = intval($_POST['wxapp_own_mer_id']);
@@ -473,6 +490,15 @@ class WxappAction extends BaseAction{
 		//社区拼团 - 禁止分享
 		if($urlQuery['c'] == 'Village_group' && $urlQuery['a'] == 'imgBoxShare'){
 			$return['shareMenu'] = false;
+		}
+
+		//社区团购首页分享
+		$isShequVillageGroup = ($urlQuery['c'] == 'House' && $urlQuery['a'] == 'go_villagegroup');
+		$isO2OVillageGroup = ($urlQuery['c'] == 'Village_group' && $urlQuery['a'] == 'index');
+		$isVillageGroup = strpos(trim($_POST['webview_url']), "packapp/community_group/#/index") !== false;
+		if ($isShequVillageGroup || $isO2OVillageGroup || $isVillageGroup) {
+			$return['share_title'] = C('config.village_group_wxapp_share_title');
+			$return['share_img'] = replace_file_domain(C('config.village_group_wxapp_share_img'));
 		}
 
 		//自定义页面，需要改颜色

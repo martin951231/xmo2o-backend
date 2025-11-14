@@ -1812,8 +1812,228 @@ class NewBuildingService
         $data['water_electric_gas_module']=$this->getWaterElectricGasParam($village_id,$vacancy_id);
         //水电表定制2 多水表多电表
         $data['many_water_electric_meter']=$this->getRoomWaterAndElectricMeter($village_id,$vacancy_id);
+        //水电表定制
+        $data['yumenlao_special_meter']=$this->getRoomYumenlaoSpecialMeter($village_id,$vacancy_id);
         return $data;
     }
+
+    public function getRoomYumenlaoSpecialMeter($village_id=0,$vacancy_id=0){
+        $configCustomizationService= new ConfigCustomizationService();
+        $is_yumenlao_special_meter=$configCustomizationService->getFuncYumenLaoSpecialMeter();
+        $returnArr= array('is_open'=>0,'meters'=>array());
+        if(!$is_yumenlao_special_meter){
+            return $returnArr;
+        }
+        $meter_pf_arr=array('easymeter'=>'泰安轻松','jisheyunmeter'=>'集社云','lingyinmeter'=>'聆音智能','bomingmeter'=>'博铭智能');
+        $easymeter_base_key = cfg('special_meter_easy_key');
+        $easymeter_base_key=$easymeter_base_key ? trim($easymeter_base_key):'';
+
+        $jisheyun_water_authorize_code = cfg('jisheyun_water_authorize_code');  //水表授权码
+        $jisheyun_water_authorize_code=$jisheyun_water_authorize_code ? trim($jisheyun_water_authorize_code):'';
+        $jisheyun_water_project_id = cfg('jisheyun_water_project_id'); //水表项目id
+        $jisheyun_water_project_id=$jisheyun_water_project_id ? trim($jisheyun_water_project_id):'';
+        
+        $jisheyun_electric_authorize_code = cfg('jisheyun_electric_authorize_code');  //电表授权码
+        $jisheyun_electric_authorize_code=$jisheyun_electric_authorize_code ? trim($jisheyun_electric_authorize_code):'';
+        $jisheyun_electric_project_id = cfg('jisheyun_electric_project_id'); //电表项目id
+        $jisheyun_electric_project_id=$jisheyun_electric_project_id ? trim($jisheyun_electric_project_id):'';
+
+        $lingyin_meter_pfaccount = cfg('lingyin_meter_pfaccount');  //聆音智能平台用户名
+        $lingyin_meter_pfaccount=$lingyin_meter_pfaccount ? trim($lingyin_meter_pfaccount):'';
+        $lingyin_meter_pfpwd = cfg('lingyin_meter_pfpwd'); //聆音智能平台密码
+        $lingyin_meter_pfpwd=$lingyin_meter_pfpwd ? trim($lingyin_meter_pfpwd):'';
+
+        $boming_meter_pfaccount = cfg('boming_meter_pfaccount');  //博铭智能平台用户名
+        $boming_meter_pfaccount=$boming_meter_pfaccount ? trim($boming_meter_pfaccount):'';
+        $boming_meter_pfpwd = cfg('boming_meter_pfpwd'); //博铭智能平台密码
+        $boming_meter_pfpwd=$boming_meter_pfpwd ? trim($boming_meter_pfpwd):'';
+        
+        $meter_type_arr=array(1=>'水表','2'=>'电表','3'=>'燃气表');
+        $returnArr['is_open']=1;
+        $houseVillageRoomMeterInfo=new \app\community\model\db\HouseVillageRoomMeterInfo();
+        $meter_pf_type=array('easymeter','jisheyunmeter','lingyinmeter','bomingmeter');
+        $whereArr = array(['village_id', '=', $village_id], ['meter_pf', 'in', $meter_pf_type],['room_id','=',$vacancy_id], ['is_del', '<', 1]);
+        $roomMeterInfoObj=$houseVillageRoomMeterInfo->getListData($whereArr,'*','id DESC',0,100);
+        $easymeterInfo=array();
+        $jisheyun_water_info=array();
+        $jisheyun_electric_info=array();
+        $lingyin_water_info=array();
+        $lingyin_electric_info=array();
+        $boming_electric_info=array();
+        if($roomMeterInfoObj && !$roomMeterInfoObj->isEmpty()){
+            $roomMeters= $roomMeterInfoObj->toArray();
+            foreach ($roomMeters as $mvv){
+                switch ($mvv['meter_pf']){
+                    case 'easymeter':
+                        $xtitle='泰安轻松'.$meter_type_arr[$mvv['meter_type']].'号';
+                        $tmpArr=array('id'=>$mvv['id'],'meter_code'=>$mvv['meter_code'],'xtitle'=>$xtitle,'meter_type'=>$mvv['meter_type'],'meter_pf'=>$mvv['meter_pf']);
+                        $easymeterInfo[]=$tmpArr;
+                    break;
+                    case 'jisheyunmeter':
+                        $xtitle='集社云'.$meter_type_arr[$mvv['meter_type']].'号';
+                        
+                        $tmpArr=array('id'=>$mvv['id'],'meter_code'=>$mvv['meter_code'],'xtitle'=>$xtitle,'meter_type'=>$mvv['meter_type'],'meter_pf'=>$mvv['meter_pf']);
+                        if($mvv['meter_type']==1){
+                            $jisheyun_water_info[]=$tmpArr;
+                        }elseif ($mvv['meter_type']==2){
+                            $jisheyun_electric_info[]=$tmpArr;
+                        }
+                        break;
+                    case 'lingyinmeter':
+                        $xtitle='聆音智能'.$meter_type_arr[$mvv['meter_type']].'号';
+
+                        $tmpArr=array('id'=>$mvv['id'],'meter_code'=>$mvv['meter_code'],'xtitle'=>$xtitle,'meter_type'=>$mvv['meter_type'],'meter_pf'=>$mvv['meter_pf']);
+                        if($mvv['meter_type']==1){
+                            $lingyin_water_info[]=$tmpArr;
+                        }elseif ($mvv['meter_type']==2){
+                            $lingyin_electric_info[]=$tmpArr;
+                        }
+                        break;
+                    case 'bomingmeter':
+                        $xtitle='博铭智能'.$meter_type_arr[$mvv['meter_type']].'户号';
+
+                        $tmpArr=array('id'=>$mvv['id'],'meter_code'=>$mvv['meter_code'],'xtitle'=>$xtitle,'meter_type'=>$mvv['meter_type'],'meter_pf'=>$mvv['meter_pf']);
+                        if($mvv['meter_type']==1){
+                            $boming_electric_info[]=$tmpArr;
+                        }elseif ($mvv['meter_type']==2){
+                            $boming_electric_info[]=$tmpArr;
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+
+            }
+        }
+        
+        if($easymeter_base_key){
+            if(empty($easymeterInfo)){
+                $easymeterInfo[]=array('id'=>0,'meter_code'=>'','xtitle'=>'泰安轻松水表号','meter_type'=>1,'meter_pf'=>'easymeter');
+            }
+            foreach ($easymeterInfo as $evv){
+                $returnArr['meters'][]=$evv;
+            }
+        }
+        if($jisheyun_water_authorize_code && $jisheyun_water_project_id){
+            if(empty($jisheyun_water_info)){
+                $jisheyun_water_info[]=array('id'=>0,'meter_code'=>'','xtitle'=>'集社云水表号','meter_type'=>1,'meter_pf'=>'jisheyunmeter');
+            }
+            foreach ($jisheyun_water_info as $evv){
+                $returnArr['meters'][]=$evv;
+            }
+        }
+        if($jisheyun_electric_authorize_code && $jisheyun_electric_project_id) {
+            if (empty($jisheyun_electric_info)) {
+                $jisheyun_electric_info[] = array('id' => 0, 'meter_code' => '', 'xtitle' => '集社云电表号', 'meter_type' => 2, 'meter_pf' => 'jisheyunmeter');
+            }
+            foreach ($jisheyun_electric_info as $evv) {
+                $returnArr['meters'][] = $evv;
+            }
+        }
+        
+        if($lingyin_meter_pfaccount && $lingyin_meter_pfpwd) {
+            if (empty($lingyin_water_info)) {
+                $lingyin_water_info[] = array('id' => 0, 'meter_code' => '', 'xtitle' => '聆音智能水表号', 'meter_type' => 1, 'meter_pf' => 'lingyinmeter');
+            }
+            foreach ($lingyin_water_info as $evv) {
+                $returnArr['meters'][] = $evv;
+            }
+
+            if (empty($lingyin_electric_info)) {
+                $lingyin_electric_info[] = array('id' => 0, 'meter_code' => '', 'xtitle' => '聆音智能电表号', 'meter_type' => 2, 'meter_pf' => 'lingyinmeter');
+            }
+            foreach ($lingyin_electric_info as $evv) {
+                $returnArr['meters'][] = $evv;
+            }
+        }
+        
+        if($boming_meter_pfaccount && $boming_meter_pfpwd) {
+            if (empty($boming_electric_info)) {
+                $boming_electric_info[] = array('id' => 0, 'meter_code' => '', 'xtitle' => '博铭智能电表户号', 'meter_type' => 2, 'meter_pf' => 'bomingmeter');
+            }
+            foreach ($boming_electric_info as $evv) {
+                $returnArr['meters'][] = $evv;
+            }
+        }
+        
+        return $returnArr;
+    }
+
+    public function saveRoomYumenlaoSpecialMeter($village_id = 0, $room_id = 0, $yumenlao_special_meter = array())
+    {
+        $returnArr = array('err_code' => 0, 'err_msg' => '保存成功！');
+        if ($village_id < 0 || $room_id < 0 || empty($yumenlao_special_meter)) {
+            $returnArr['err_code'] = 1;
+            $returnArr['err_msg'] = '表数错误！';
+            return $returnArr;
+        }
+        $whereArr = array(['village_id', '=', $village_id], ['room_id', '=', $room_id]);
+        $houseVillageRoomMeterInfo = new \app\community\model\db\HouseVillageRoomMeterInfo();
+        $jiSheYunMeterApiService= new \app\community\model\service\Device\JiSheYunMeterApiService($village_id);
+        $nowtime = time();
+        $newData = array('village_id' => $village_id, 'room_id' => $room_id);
+        foreach ($yumenlao_special_meter as $mvv) {
+            $whereTmpArr = $whereArr;
+            $is_add_new = false;
+            $id=0;
+            $third_meter_id=0;
+            $mvv['meter_code'] = strval($mvv['meter_code']);
+            $mvv['meter_code'] = trim($mvv['meter_code']);
+            if ($mvv['id'] > 0 && empty($mvv['meter_code'])) {
+                //删除
+                $whereTmpArr[] = array('id', '=', $mvv['id']);
+                $dataArr = array('room_id' => $room_id, 'is_del' => 1, 'del_time' => $nowtime);
+                $houseVillageRoomMeterInfo->saveData($whereTmpArr, $dataArr);
+            } elseif ($mvv['id'] > 0 && !empty($mvv['meter_code'])) {
+                $whereTmpArr[] = array('id', '=', $mvv['id']);
+                $roomMeterInfoObj = $houseVillageRoomMeterInfo->getOneData($whereTmpArr);
+                $roomMeterInfo = '';
+                if ($roomMeterInfoObj && !$roomMeterInfoObj->isEmpty()) {
+                    $roomMeterInfo = $roomMeterInfoObj->toArray();
+                }
+                if ($roomMeterInfo && ($roomMeterInfo['meter_code'] != $mvv['meter_code'] || $roomMeterInfo['is_del']>0)) {
+                    //删除 修改了表号 删除原来的  新增新的
+                    $dataArr = array('room_id' => $room_id, 'is_del' => 1, 'del_time' => $nowtime);
+                    $houseVillageRoomMeterInfo->saveData($whereTmpArr, $dataArr);
+                    $is_add_new = true;
+                } elseif (empty($roomMeterInfo)) {
+                    //数据不存在了 新增
+                    $is_add_new = true;
+
+                }else{
+                    $id=$roomMeterInfo['id'];
+                    $third_meter_id=$roomMeterInfo['third_meter_id'];
+                }
+            } elseif ($mvv['id'] < 1 && !empty($mvv['meter_code'])) {
+                $is_add_new = true;
+            }
+            if ($is_add_new) {
+                $third_meter_id=0;
+                $whereTmpArr = $whereArr;
+                $whereTmpArr[] = array('meter_code', '=', $mvv['meter_code']);
+                $whereTmpArr[] = array('meter_pf', '=', $mvv['meter_pf']);
+                $whereTmpArr[] = array('meter_type', '=', $mvv['meter_type']);
+                $whereTmpArr[] = array('is_del', '<', 1);
+                $roomMeterInfoObj = $houseVillageRoomMeterInfo->getOneData($whereTmpArr);
+                if (empty($roomMeterInfoObj) || $roomMeterInfoObj->isEmpty()) {
+                    //新增
+                    $tmpNewData = $newData;
+                    $tmpNewData['meter_code'] = $mvv['meter_code'];
+                    $tmpNewData['meter_type'] = $mvv['meter_type'];
+                    $tmpNewData['meter_pf'] = $mvv['meter_pf'];
+                    $tmpNewData['add_time'] = $nowtime;
+                    $id= $houseVillageRoomMeterInfo->addOneData($tmpNewData);
+                }else{
+                    $id=$roomMeterInfoObj['id'];
+                }
+            }
+            if($id && $third_meter_id <1 && $mvv['meter_pf']=='jisheyunmeter'){
+                $jiSheYunMeterApiService->getMeterDataInfo($id,$village_id);
+            }
+        }
+        return $returnArr;
+    }
+    
     public function getRoomWaterAndElectricMeter($village_id=0,$vacancy_id=0){
         $configCustomizationService= new ConfigCustomizationService();
         $is_customized_open=$configCustomizationService->getWSXCustomizedOpen();
@@ -1998,7 +2218,8 @@ class NewBuildingService
         if (isset($param['room_number'])) {
             $room_data['room_number'] = $param['room_number'];
         }
-        $isAihorseCustomizedJudge = (new ConfigCustomizationService())->getAihorseCustomizedJudge();
+        $configCustomizationService=new ConfigCustomizationService();
+        $isAihorseCustomizedJudge = $configCustomizationService->getAihorseCustomizedJudge();
         if($isAihorseCustomizedJudge){
             if (isset($param['house_in_time'])) {
                 $room_data['house_in_time'] = $param['house_in_time'] ? strtotime($param['house_in_time']):'';
@@ -2063,6 +2284,10 @@ class NewBuildingService
             if($ret['err_code']>0){
                 throw new \think\Exception($ret['err_msg']);
             }
+        }
+        $is_yumenlao_special_meter = $configCustomizationService->getFuncYumenLaoSpecialMeter();
+        if($is_yumenlao_special_meter && isset($param['yumenlao_special_meter']) && !empty($param['yumenlao_special_meter'])){
+            $this->saveRoomYumenlaoSpecialMeter($param['village_id'],$vacancy_info['pigcms_id'],$param['yumenlao_special_meter']);
         }
         $this->HouseVillageUserVacancy->saveOne(['pigcms_id' => $vacancy_info['pigcms_id']], $room_data);
         if (isset($room_data['housesize'])) {

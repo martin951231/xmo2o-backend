@@ -7,7 +7,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 						<a href="{pigcms{:U('news_list')}" class="on">新闻列表</a>|
-						<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('news_add')}','添加新闻',1000,600,true,false,false,addbtn,'add',true);">添加新闻</a>
+						<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('news_add')}','添加新闻',1000,600,true,false,false,addbtn,'add',true);">添加新闻</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -46,7 +46,7 @@
                                         <td><if condition='$vo["add_time"]'>{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</if></td>
                                         <td><if condition='$vo["last_time"]'>{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}</if></td>
                                         <td><if condition='$vo["status"] eq 1'><span class="green">开启</span><else /><span class="red">关闭</span></if></td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/news_edit',array('id'=>$vo['id']))}','编辑新闻信息',1000,600,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('news_del')}">删除</a>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/news_edit',array('id'=>$vo['id']))}','编辑新闻信息',1000,600,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('news_del')}">删除</a>
                                          </td>
 									</tr>
 								</volist>

@@ -6238,7 +6238,6 @@ class Shop_goodsModel extends Model
 
         $store = D(_view("Merchant_store"))->field(true)->where(array('store_id' => $store_id))->find();
         if ($store['have_shop'] == 0 || $store['status'] != 1) {
-           // dump(1);
             return array('error_code' => true, 'msg' => '商家已经关闭了该业务,不能下单了!');
         }
         if (C('config.store_shop_auth') == 1 && $store['auth'] < 3) {
@@ -6256,15 +6255,12 @@ class Shop_goodsModel extends Model
         $images = $store_image_class->get_allImage_by_path($store['pic_info']);
         $store['images'] = $images ? array_shift($images) : '';
 
-
         $store_shop = D(_view("Merchant_store_shop"))->field(true)->where(array('store_id' => $store_id))->find();
 		if($shop_type==2){//商城订单，商城的店铺信息兼容商城店铺的属性设置
-            //dump(3);
 			$store_shop = $this->get_mall_store($store_shop);
 		}
 
         if (empty($store) || empty($store_shop)) {
-            //dump(4);
             return array('error_code' => true, 'msg' => L_('店铺信息有误'));
         }
 		if($shop_type==1){
@@ -6298,7 +6294,6 @@ class Shop_goodsModel extends Model
         }
 
         //不满足配送要求的加价送增加的价格
-        //dump("deliver_type:".$store['deliver_type']);
         if ($store['deliver_type'] == 0 || $store['deliver_type'] == 3) {
             $store['extra_price'] = floatval($store['s_extra_price']) ? floatval($store['s_extra_price']) : floatval(C('config.extra_price'));
         } else {
@@ -6319,8 +6314,6 @@ class Shop_goodsModel extends Model
         $vipMinusPrice = 0;//立减金额
 
         //店铺设置的vip等级折扣率
-        //dump("shop_type:"2);
-        //fdump($store_shop,"dengyuanhui223",1);
         if ($shop_type == 2) {
             $storeShopLevel = !empty($store_shop['mall_leveloff']) ? unserialize($store_shop['mall_leveloff']) : '';
         } else {
@@ -6467,8 +6460,6 @@ class Shop_goodsModel extends Model
         if ($invalid_goods) {
             return array('error_code' => true, 'msg' => implode('、', $invalid_goods) . L_('已下架'));
         }
-        //fdump($goodsData,"dengyuanhui223",1);
-		//dump($goodsData);exit;
         /*按照重量计算的商品信息*/
         $goods_weight_list = array();
 		$total_score = 0;//订单所需总积分
@@ -6478,7 +6469,6 @@ class Shop_goodsModel extends Model
 				return $checkRes;
 			}
             if ($isCookie == 0) {
-
                 $goods_id = $row['goods_id'];
 				if(!empty($goods_id)){
 					$full_list = D('Mall_full_act')->get_full_list($goods_id,$store_id);
@@ -6506,7 +6496,6 @@ class Shop_goodsModel extends Model
                 $str = $row['spec'];
             }
             elseif ($isCookie == 1) {
-              //dump("8888888888");
                 $goods_id = $row['productId'];
 				if(!empty($goods_id)&&!$row['rep_id']){
 					$full_list = D('Mall_full_act')->get_full_list($goods_id,$store_id);
@@ -6538,7 +6527,6 @@ class Shop_goodsModel extends Model
                     $mall_periodic_purchase_specs = M('Mall_periodic_purchase_specs')->where(array('specs_id' => $row['specs_id']))->find();
                 }
 
-
                 $num = $row['count'];
                 $spec_ids = array();
                 $str_s = array();
@@ -6553,7 +6541,6 @@ class Shop_goodsModel extends Model
                         }
                     }
                 }
-                //fdump($row,"dengyuanhui223",1);
                 $spec_str = $spec_ids ? implode('_', $spec_ids) : '';
 
                 $str = '';
@@ -6567,7 +6554,6 @@ class Shop_goodsModel extends Model
                 $num = $totalData[$goods_id . '_' . $spec_str];
                 $weight = $totalData[$goods_id . '_' . $spec_str . 'w'];
             }
-            //fdump($weight,"dengyuanhui223",1);
             if ($num*1 < 1 && !$weight) continue;
             $tNum = isset($totalData[$goods_id . '_' . $spec_str]) ? intval($totalData[$goods_id . '_' . $spec_str]) : $num;
             $tWeight = isset($totalData[$goods_id . '_' . $spec_str . 'w']) ? intval($totalData[$goods_id . '_' . $spec_str . 'w']) : $weight;
@@ -6969,8 +6955,6 @@ class Shop_goodsModel extends Model
                 );
             }
         }
-
-		//dump($goods);exit;
         //无规格的附属商品价格重新计算
         foreach ($goods as $key => $value){
             if($value['host_goods_id'] > 0 AND empty($value['str'])){
@@ -8545,8 +8529,6 @@ class Shop_goodsModel extends Model
     {
     	// 当前商品
     	$now_goods = $this->where(['goods_id'=>$goods_id])->find();
-
-
     	// 店铺信息
         $storeShop = D('Merchant_store_shop')->where(array('store_id' => $now_goods['store_id']))->find();
         $stock_type = $storeShop['stock_type'];
@@ -8662,11 +8644,8 @@ class Shop_goodsModel extends Model
 	            $tmp_pic_arr = $goods_image_class->get_allImage_by_path($row['image'], 's');
 	            $tmp_pic_arr[0] = replace_file_domain($tmp_pic_arr[0]);
 	            $row['image'] = thumb_img($tmp_pic_arr[0], 240, 240, 'fill');
-
             }
-
             $combination_list[$key]['goods'] = $goods;
-
 			// 验证是否存在库存 获得优惠信息
 			if ($is_check) {
 				$return = $this->checkCart($now_goods['store_id'], $uid, $goodsData);

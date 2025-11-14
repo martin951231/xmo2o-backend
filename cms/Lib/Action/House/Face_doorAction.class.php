@@ -2048,7 +2048,6 @@ class Face_doorAction extends BaseAction{
                     }
                 }
             }
-            fdump_api($door_list,'$door_list');
             $this->assign('door_list',$door_list);
             $this->assign('pagebar',$p->show());
             $this->display();
@@ -3757,8 +3756,10 @@ class Face_doorAction extends BaseAction{
                     if (!$item['log_detail']) {
                         $item['log_detail'] = json_decode($log_detail, true);
                     }
-                    if ($item['log_detail'] && $item['log_detail']['face_img']) {
-                        if ($item['log_detail']['imgUrl']) {
+                    if ($item['log_detail']) {
+                        if($item['log_detail']['face_img']){
+                            $item['faceImg1'] = $item['log_detail']['face_img'];
+                        }else if ($item['log_detail']['imgUrl']) {
                             $item['faceImg1'] = $item['log_detail']['imgUrl'];
                         } elseif ($item['log_detail']['mediaUrls']) {
                             $item['faceImg1'] = $item['log_detail']['mediaUrls'];

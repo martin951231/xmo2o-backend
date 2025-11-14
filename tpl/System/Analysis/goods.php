@@ -3,7 +3,7 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('Analysis/goods')}" class="on">菜品分析</a>
+					<a href="{pigcms{:U('Analysis/goods')}" class="on">SYSTEM_ANALYSIS_GOODS_1</a>
 				</ul>
 			</div>
 			<table class="search_table" width="100%">

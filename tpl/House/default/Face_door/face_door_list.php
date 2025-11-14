@@ -118,47 +118,47 @@
                                            <td style="word-break:break-all">
                                                <php>if ($vo['log_detail'] && $vo['log_detail']['face_img']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['face_img'])}" style="width:50px;height:50px;" class="view_msg" onerror="this.src='{pigcms{$vo['faceImg1']}'"/>
+                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['face_img'])}" style="width:50px;height:50px;" class="view_msg"/>
                                                    </div>
                                                <php>} else if ($vo['log_detail'] && $vo['log_detail']['imgUrl']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['imgUrl']}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['imgUrl']}" style="width:50px;height:50px;" class="view_msg" />
                                                    </div>
                                                <php>} else if ($vo['log_detail'] && $vo['log_detail']['mediaUrls']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['mediaUrls']}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['mediaUrls']}" style="width:50px;height:50px;" class="view_msg" />
                                                    </div>
                                                <php>} else if ($vo['log_detail'] && $vo['log_detail']['pictureURL']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['pictureURL']}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['pictureURL']}" style="width:50px;height:50px;" class="view_msg" />
                                                    </div>
                                                <php>} else if($vo['log_detail'] && $vo['log_detail']['faceCapture']){</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['faceCapture'][0]['bkgUrl']}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{$vo['log_detail']['faceCapture'][0]['bkgUrl']}" style="width:50px;height:50px;" class="view_msg" />
                                                    </div>
                                                <php>} else if ($vo['log_detail'] && $vo['log_detail']['face_img_url']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['face_img_url'])}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['face_img_url'])}" style="width:50px;height:50px;" class="view_msg" />
                                                    </div>
                                                <php>} else if ($vo['faceImg1']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['faceImg1'])}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['faceImg1'])}" style="width:50px;height:50px;" class="view_msg"/>
                                                    </div>
                                                <php>} else if ($vo['cut_image']) {</php>
                                                    <div class="tagDiv">
-                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['cut_image'])}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       抓拍照片：<img src="{pigcms{:replace_file_domain($vo['cut_image'])}" style="width:50px;height:50px;" class="view_msg" />
                                                    </div>
                                                <php>}</php>
                                                
                                                <php>if ($vo['log_detail'] && $vo['log_detail']['capture_img_url']) {</php>
                                                    <div class="tagDiv">
-                                                       人脸图片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['capture_img_url'])}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       人脸图片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['capture_img_url'])}" style="width:50px;height:50px;" class="view_msg"/>
                                                    </div>
                                                <php>}</php>
                                                
                                                <php>if ($vo['log_detail'] && $vo['log_detail']['card_data_picture_url']) {</php>
                                                    <div class="tagDiv">
-                                                       证件照片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['card_data_picture_url'])}" style="width:50px;height:50px;" class="view_msg" onerror='this.src="{pigcms{$vo['onerrorImg']}"'/>
+                                                       证件照片：<img src="{pigcms{:replace_file_domain($vo['log_detail']['card_data_picture_url'])}" style="width:50px;height:50px;" class="view_msg"/>
                                                    </div>
                                                <php>}</php>
                                            </td>

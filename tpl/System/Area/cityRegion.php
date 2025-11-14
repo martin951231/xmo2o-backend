@@ -47,7 +47,7 @@
 
                                         </if>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/edit',array('area_id'=>$vo['area_id'],'type'=>$vo['area_type']))}','查看{pigcms{$now_type_str}',850,650,true,false,false,false,'city_region_edit',true);">查看</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/edit',array('area_id'=>$vo['area_id'],'type'=>$vo['area_type']))}','查看{pigcms{$now_type_str}',850,650,true,false,false,false,'city_region_edit',true);">查看</a>
                                         </td>
 									</tr>
 								</volist>

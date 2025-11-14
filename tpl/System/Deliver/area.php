@@ -75,7 +75,7 @@
                 <div class="deliver_search">
             <div id="choose_city_for_deliver" street_id="{pigcms{$_GET.street_id}" area_idss="{pigcms{$_GET.area_id}" province_idss="{pigcms{$_GET.province_id}" city_idss="{pigcms{$_GET.city_id}" style="display:inline">
             </div>
-                <a href="javascript:void(0);" class="button" onclick="window.top.artiframe('{pigcms{:U('Deliver/custom')}','新建配送区域',680,480,true,false,false,addbtn,'add',true);">新建配送区域</a>
+                <a href="javascript:void(0);" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/custom')}','新建配送区域',680,480,true,false,false,addbtn,'add',true);">新建配送区域</a>
                 </div>
             </td>
 
@@ -90,7 +90,7 @@
                     <div class="itemTop">
                         <p style="width: 390px;border-bottom:0px;font-weight: bold;font-size:1.5rem">{pigcms{$row['area_name']}</p>
                        <p style="border-top:0px">名称: <span>{pigcms{$row['name']}</span></p>
-                       <button class="btn1" type="button" onclick="window.top.artiframe('{pigcms{:U('Deliver/custom', array('id' => $row['id']))}','编辑配送区域',680,480,true,false,false,editbtn,'edit',true);">编辑</button>
+                       <button class="btn1" type="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Deliver/custom', array('id' => $row['id']))}','编辑配送区域',680,480,true,false,false,editbtn,'edit',true);">编辑</button>
                        <button class="btn1 delete_row" type="button" parameter="id={pigcms{$row['id']}" url="{pigcms{:U('Deliver/customDel')}">删除</button>
                     </div>
                     <div class="itemBot" id="area_{pigcms{$row['id']}"></div>

@@ -203,7 +203,7 @@ class HouseVillageUserVacancyService
             $houseVillageSignService = new HouseVillageSingleService();
             $village_id = isset($data['village_id'])?$data['village_id']:0;
             $where = [
-                'id'         => $data['single_id']
+                'id' => $data['single_id']
             ];
             if ($village_id) {
                 $where['village_id'] = $village_id;

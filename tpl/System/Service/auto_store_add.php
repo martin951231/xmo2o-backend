@@ -74,7 +74,7 @@
 		<script type="text/javascript">
 			var cid = "{pigcms{$_GET['cid']}";
 			$(function(){
-				// var product = window.top.frames[window.top.nowTab].get_selected_product();
+				// var product = window.o2oTop.frames[window.o2oTop.nowTab].get_selected_product();
 				// for(var i in product){
 				// 	$('.product-'+product[i]).val('已选择').prop('disabled',true);
 				// }
@@ -93,7 +93,7 @@
 						}
 						console.log(res)
 					})
-					// window.top.frames[window.top.nowTab].select_product($(this).data('id'),$(this).data('name'),$(this).data('image'));
+					// window.o2oTop.frames[window.o2oTop.nowTab].select_product($(this).data('id'),$(this).data('name'),$(this).data('image'));
 				});
 			});
 		</script>

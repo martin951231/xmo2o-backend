@@ -345,7 +345,7 @@ class HouseListDatasExportOutService
                     if($xtype=='is_payed_order'){
                         $where=isset($param['where']) && $param['where']? $param['where']:'';
                         $where1=isset($param['where1']) && $param['where1'] ? $param['where1']:'(`o`.`is_refund`=1 OR `o`.`refund_money`<`o`.`modify_money`)';
-                        $field=isset($param['field']) && $param['field'] ? $param['field']:'o.*,p.name as project_name,n.charge_number_name';
+                        $field=isset($param['field']) && $param['field'] ? $param['field']:'o.*,p.name as project_name,n.charge_number_name,r.charge_name';
                         $order=isset($param['order']) && $param['order'] ?$param['order']:'o.room_id DESC,o.position_id DESC,o.service_start_time DESC,o.pay_time DESC' ;
                         $exportPattern=isset($param['exportPattern']) ? $param['exportPattern']:1;
                         $single_id_arr=isset($param['single_id_arr']) ? $param['single_id_arr']:'';
@@ -433,7 +433,7 @@ class HouseListDatasExportOutService
                     }elseif($xtype=='no_pay_discard_order'){
                         //欠费账单导出
                         $where=isset($param['where']) && $param['where']? $param['where']:'';
-                        $fieldStr=isset($param['field']) && $param['field'] ? $param['field']:'o.village_id,o.update_time,o.property_id,o.project_id,o.last_ammeter,o.order_type,u.realname as account,o.now_ammeter,o.role_id,o.order_id,o.room_id,o.position_id,p.name as project_name,n.charge_number_name,o.modify_money as total_money,o.name as user_name,o.phone as user_phone,o.service_start_time,o.service_end_time,o.discard_reason,o.is_refund';
+                        $fieldStr=isset($param['field']) && $param['field'] ? $param['field']:'o.village_id,o.update_time,o.property_id,o.project_id,o.last_ammeter,o.order_type,o.now_ammeter,o.role_id,o.login_role,o.role_name,o.order_id,o.room_id,o.position_id,p.name as project_name,n.charge_number_name,o.modify_money as total_money,o.name as user_name,o.phone as user_phone,o.service_start_time,o.service_end_time,o.discard_reason,o.is_refund';
                         $order=isset($param['order']) && $param['order'] ? $param['order']:'o.order_id DESC';
                         $data = $service_house_new_cashier->getCancelOrder1($where,'',$fieldStr,0,20,$order);
                         //fdump_api(['where'=>$where,'data' => $data], '000startExecExportOut', 1);

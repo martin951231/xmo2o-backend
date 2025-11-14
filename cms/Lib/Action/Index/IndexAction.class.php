@@ -132,6 +132,8 @@ class IndexAction extends BaseAction {
 		$arr['house_manage_wxapp_appid'] = $this->config['house_manage_wxapp_appid'] ? $this->config['house_manage_wxapp_appid'] : '';
 		$arr['house_manage_wxapp_name'] = $this->config['house_manage_wxapp_name'] ? $this->config['house_manage_wxapp_name'] : '';
 		$arr['mobile_head_color'] = $this->config['mobile_head_color'] ? $this->config['mobile_head_color'] : '#06C1AE';
+        $arr['worker_appid'] = $this->config['worker_wxapp_appid'] ? $this->config['worker_wxapp_appid'] : '';
+        $arr['worker_name'] = $this->config['worker_wxapp_name'] ? $this->config['worker_wxapp_name'] : '';
 
 		// 打开其他小程序列表
 		$arr['wxapp_appid_list'] = array();

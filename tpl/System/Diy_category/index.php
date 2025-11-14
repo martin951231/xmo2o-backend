@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('index')}" class="on">自定义分类列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('add',['type'=>$type])}','创建分类',480,300,true,false,false,addbtn,'add',true);">创建分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('add',['type'=>$type])}','创建分类',480,300,true,false,false,addbtn,'add',true);">创建分类</a>
 					<!--<a href="{pigcms{:U('add',['type'=>$type])}">创建分类</a>|-->
 				</ul>
 			</div>
@@ -43,7 +43,7 @@
 										<td>{pigcms{$vo.begin_time|date='Y-m-d H:i',###}</td>
 										<td>{pigcms{$vo.end_time|date='Y-m-d H:i',###}</td>
 										<td>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('category_goods',['category_id'=>$vo['pigcms_id']])}','商品详情',900,520,true,false,false,editbtn,'add',true);">商品管理（{pigcms{$vo.goods_count}）</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('category_goods',['category_id'=>$vo['pigcms_id']])}','商品详情',900,520,true,false,false,editbtn,'add',true);">商品管理（{pigcms{$vo.goods_count}）</a>
 											<!--<a href="{pigcms{:U('Category_goods',['category_id'=>$vo['pigcms_id']])}">商品管理（{pigcms{$vo.goods_count}）</a>-->
 										</td>
 										<td>
@@ -55,7 +55,7 @@
 										</td>
 										<td class="textcenter">
 											<!--<a href="{pigcms{:U('edit',array('id'=>$vo['pigcms_id']))}">编辑</a>--> 
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('edit',array('id'=>$vo['pigcms_id']))}','编辑活动分类',480,370,true,false,false,editbtn,'add',true);">编辑</a>| 
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('edit',array('id'=>$vo['pigcms_id']))}','编辑活动分类',480,370,true,false,false,editbtn,'add',true);">编辑</a>| 
 											<a href="javascript:void(0);" class="delete_row" parameter="pigcms_id={pigcms{$vo.pigcms_id}" url="{pigcms{:U('del')}">删除</a>
 										</td>	
 									</tr>

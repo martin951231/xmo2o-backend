@@ -134,7 +134,7 @@
 										<if condition="$vo['status'] eq 0 OR $vo['status'] eq 5 OR $vo['status'] eq 1 OR $vo['item'] eq 3">
 										---
 										<else />
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/edit_supply_status',array('supply_id'=>$vo['supply_id']))}','修改配送状态',500,200,true,false,false,false,'edit',true);" style="color:green" data-supply="{pigcms{$vo['supply_id']}" class="change">修改配送状态</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/edit_supply_status',array('supply_id'=>$vo['supply_id']))}','修改配送状态',500,200,true,false,false,false,'edit',true);" style="color:green" data-supply="{pigcms{$vo['supply_id']}" class="change">修改配送状态</a>
 										</if>
 										</td>
 										<!--td width="50">{pigcms{$vo.create_time}</td-->
@@ -152,7 +152,7 @@
         <script type="text/javascript" src="{pigcms{$static_public}js/screenfull.min.js"></script>
         <script type="text/javascript" src="{pigcms{$static_public}js/artdialog/jquery.artDialog.js"></script>
         <script type="text/javascript" src="{pigcms{$static_public}js/artdialog/iframeTools.js"></script>
-        <script type="text/javascript">if(self!=top){window.top.location.href = "{pigcms{:U('Index/index')}";}var selected_module="{pigcms{:strval($_GET['module'])}",selected_action="{pigcms{:strval($_GET['action'])}",selected_url="{pigcms{:urldecode(strval(htmlspecialchars_decode($_GET['url'])))}";</script>
+        <script type="text/javascript">if(self!=top){window.o2oTop.location.href = "{pigcms{:U('Index/index')}";}var selected_module="{pigcms{:strval($_GET['module'])}",selected_action="{pigcms{:strval($_GET['action'])}",selected_url="{pigcms{:urldecode(strval(htmlspecialchars_decode($_GET['url'])))}";</script>
         <script type="text/javascript" src="{pigcms{$static_path}js/index.js"></script>
 <script>
 	var selectStoreId = {pigcms{:$selectStoreId? $selectStoreId: 0};

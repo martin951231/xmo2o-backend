@@ -142,7 +142,7 @@
                             <td><php>echo $vo['real_goods_name']?:$vo['goods_name'];</php></td>
                             <td>
                                 <if condition="$vo['spec_value_array']">
-                                    <span onclick="window.top.artiframe('{pigcms{:U('Shop/show_spec',array('id'=>$vo['id'],'frame_show'=>true))}','规格',900,'80%',true,false,false,false,'detail',true);">点击查看</span>
+                                    <span onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/show_spec',array('id'=>$vo['id'],'frame_show'=>true))}','规格',900,'80%',true,false,false,false,'detail',true);">点击查看</span>
                                 <else/>
                                     无
                                 </if>

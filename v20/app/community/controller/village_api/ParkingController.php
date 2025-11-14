@@ -1132,7 +1132,7 @@ class ParkingController extends CommunityBaseController{
             $res = $db_house_new_parking_service->getPassageList($data);
             
             foreach ($res['list'] as &$re){
-                if (!empty($re['mac_address'])){
+                if (!empty($re['mac_address']) && $re['park_sys_type']=='A11'){
                   $mac_address =   str_replace(':','_',$re['mac_address'] );
                   $re['mac_address_uri'] = "https://{$mac_address}.lsqv.com:96/login";
                 }else{
@@ -3491,7 +3491,22 @@ class ParkingController extends CommunityBaseController{
         }
         return api_output(0,$list);
     }
-
+    /**
+     * 华夏T85一键同步白名单 HXT85
+     */
+    public function allAddHXWhiteList(){
+        $village_id = $this->adminUser['village_id'];
+        if (empty($data['village_id'])){
+            return api_output_error(1002, '请先登录');
+        }
+        $parkDevInfoHandleService=  new \app\community\model\service\Park\ParkDevInfoHandleService();
+        try{
+            $res = $parkDevInfoHandleService->batchMonthCarToDev($village_id);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        return api_output(0,$res);
+    }
 
     /**
      * D3一键同步白名单
@@ -3511,7 +3526,6 @@ class ParkingController extends CommunityBaseController{
         }
         return api_output(0,$res);
     }
-
 
     /**
      * D7一键同步车辆信息
@@ -4009,6 +4023,7 @@ class ParkingController extends CommunityBaseController{
         $data['passage_direction'] = $this->request->param('passage_direction',0,'intval');
         $data['passage_type'] = $this->request->param('passage_type',0,'intval');//车牌类型
         $data['id'] = $this->request->param('id',0,'intval');//车道id
+        $data['garage_id']= $this->request->param('garage_id',0,'intval');//车库id
         $db_house_new_park_service = new HouseNewParkingService();
         try{
             $res = $db_house_new_park_service->getPassageTypeList($data);

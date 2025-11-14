@@ -3,7 +3,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('Article/index')}" >分类列表</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Article/create')}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加分类</a>|
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Article/create')}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加分类</a>|
             <a href="{pigcms{:U('Article/article_list')}" >文章列表</a>|
             <a href="{pigcms{:U('Article/comment_list')}" class="on">评论列表</a>
         </ul>
@@ -44,7 +44,7 @@
                             <td><?php echo  msubstr($vo['comment_content'],0,10);?></td>
                             <td>{pigcms{$vo.create_time|date='Y-m-d',###}</td>
                             <td style="text-align: center;">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Article/comment_edit',array('id'=>$vo['id'],'frame_show'=>true))}','查看',480,260,true,false,false,false,'detail',true);">查看</a> |
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Article/comment_edit',array('id'=>$vo['id'],'frame_show'=>true))}','查看',480,260,true,false,false,false,'detail',true);">查看</a> |
                                 <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('comment_delete')}">删除评论</a>
                             </td>
                         </tr>

@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Merchant/authority_group')}" class="on">权限套餐</a>|
-					<a href="javascript:void(0);"  onclick="window.top.artiframe('{pigcms{:U('Merchant/authority_add')}','添加权限套餐',800,500,true,false,false,addbtn,'add',true);">添加权限套餐</a>
+					<a href="javascript:void(0);"  onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/authority_add')}','添加权限套餐',800,500,true,false,false,addbtn,'add',true);">添加权限套餐</a>
 				</ul>
 			</div>
 			
@@ -39,7 +39,7 @@
 										<td>{pigcms{$vo.sort}</td>
 										<td class="textcenter">
 									
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Merchant/authority_add',array('id'=>$vo['id']))}','编辑权限套餐信息',800,500,true,false,false,editbtn,'edit',true);">编辑</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/authority_add',array('id'=>$vo['id']))}','编辑权限套餐信息',800,500,true,false,false,editbtn,'edit',true);">编辑</a>
 										<a href="javascript:void(0);" class="delete_row" parameter="id=10" url="/admin.php?g=System&c=Merchant&a=authority_del&id={pigcms{$vo.id}">删除</a>
 										
 										</td>
@@ -64,7 +64,7 @@ $(document).ready(function(){
 		test = art.dialog.open($(this).attr('href'),{
 			init: function(){
 				var iframe = this.iframe.contentWindow;
-				window.top.art.dialog.data('iframe_handle',iframe);
+				window.o2oTop.art.dialog.data('iframe_handle',iframe);
 			},
 			id: 'handle',
 			title:'扫描二维码绑定微信号',

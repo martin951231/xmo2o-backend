@@ -294,11 +294,16 @@ class LakalaService
 		$param['refund_rule'] = json_encode($param['refund_rule'], JSON_UNESCAPED_UNICODE);
 		$param['resp'] = json_encode($result, JSON_UNESCAPED_UNICODE);
 		Db::name('lakala_qianzhangtong_pay')->insert($param);
-
+        if($result && isset($result['result']['refund_status']) && $result['result']['refund_status']==2002){
+             //退款失败 http://47.110.246.50:6524/docs/qzt/qzt-1ekbcin2rs400
+            $refund_err_msg= isset($result['result']['error_message']) && $result['result']['error_message'] ? $result['result']['error_message']:'退款失败了';
+            throw new \Exception($refund_err_msg);
+        }
         return [
             'refund_no' => $refundNo,
             'merchant_get' => $merGet ?? 0,
-            'platform_get' => $platGet ?? 0
+            'platform_get' => $platGet ?? 0,
+            'response_ret'=>$result && isset($result['result']) ? $result['result']:'',
         ];
     }
 

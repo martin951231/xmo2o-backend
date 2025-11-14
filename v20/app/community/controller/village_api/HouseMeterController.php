@@ -307,7 +307,7 @@ class HouseMeterController extends CommunityBaseController
     public function meterReadingAdd()
     {
         $village_id = $this->adminUser['village_id'];
-        $uid=$this->login_role== 5?$this->_uid:0;
+        $role_id=$this->login_role== 5?$this->_uid:0;
         $single_id = $this->request->post('single_id',0);
         $floor_id = $this->request->post('floor_id',0);
         $layer_id = $this->request->post('layer_id',0);
@@ -405,11 +405,11 @@ class HouseMeterController extends CommunityBaseController
                 $is_exceed = 1; //止度小于等于起度 超过最大刻度
                 $last_ammeter = bcadd(strval($last_ammeter),strval($max),3);//用来计算的止度
             }
-            if($is_exceed == 0 && $start_ammeter > $last_ammeter){
-                return api_output_error(1001,'止度需要大于起度!');
+            if($is_exceed == 0 && $last_ammeter<$start_ammeter){
+                return api_output_error(1001,'止度不能小于起度！');
             }
-        }else if (($opt_xtype=='revise_data' && $start_ammeter>$last_ammeter) || ($opt_xtype!='revise_data' && $start_ammeter>=$last_ammeter)) {
-            return api_output_error(1001,'止度需要大于起度');
+        }else if ($last_ammeter<$start_ammeter) {
+            return api_output_error(1001,'止度不能小于起度！');
         }
         
         $res = $service_house_new_meter->getIsBind(['project_id' => $project_id, 'vacancy_id' => $vacancy_id, 'is_del' => 1]);
@@ -511,7 +511,7 @@ class HouseMeterController extends CommunityBaseController
         $insertData['cost_money'] = $cost_money;
         $insertData['add_time'] = time();
         $insertData['project_id'] = $project_id;
-        $insertData['role_id'] = $uid?$uid:0;
+        $insertData['role_id'] = $role_id?$role_id:0;
 
         //todo 同步写入关联数据
         $insertData['user_name'] = $user_info['name'];
@@ -600,11 +600,17 @@ class HouseMeterController extends CommunityBaseController
                 if($opt_xtype=='revise_data'){
                     return api_output(0,[],'矫正录入成功');
                 }
+                if($last_ammeter<=$start_ammeter){
+                    //止度小于等于起度直接成功 不生成订单
+                    return api_output(0,[],'抄表成功');
+                }
                 if($insertData['cost_money']<=0){
                     return api_output(0,[],'抄表成功');
                 }
                 $orderData=array();
+                $user_uid=0;
                 if($user_info){
+                    $user_uid=$user_info['uid'];
                     $orderData['uid'] = $user_info['uid'];
                     $orderData['name'] = $user_info['name'];
                     $orderData['phone'] = $user_info['phone'];
@@ -671,7 +677,6 @@ class HouseMeterController extends CommunityBaseController
                     ];
                     $electricityOrder = $service_house_new_cashier->addOrder($electricityOrderData);
                 }
-                
                 $res = $service_house_new_cashier->addOrder($orderData);
                 if($res && $electricityOrder){                    
                     $charge_all=['water' => '水费', 'electric' => '电费', 'gas' => '燃气费', 'new_nuanqifei' => '取暖费'];
@@ -688,7 +693,10 @@ class HouseMeterController extends CommunityBaseController
                             $opt_money_type = 'electric_balance';
                             $user_remarks = '后台电费缴费操作，扣除小区电费余额';
                         }
-                       (new StorageService())->userBalanceChange($user_info['uid'],2,$insertData['cost_money'],$system_remarks['remarks'],$user_remarks,$res,$village_id,$opt_money_type);
+                        if($user_uid>0){
+                            $extra_data=array('order_id'=>$res,'meter_reading_id'=>$orderData['meter_reading_id'],'opt_type'=>'meter_split_order');
+                            (new StorageService())->userBalanceChange($user_uid,2,$insertData['cost_money'],$system_remarks['remarks'],$user_remarks,$res,$village_id,$opt_money_type,$extra_data);
+                        }
                     }
                     return api_output(0,[],'抄表成功');
                 }else{
@@ -763,6 +771,8 @@ class HouseMeterController extends CommunityBaseController
 
     /*
      * 生成修改止度增加的费用账单
+     * 这个是对已缴的记录再修改后 在生成账单，会产生一条记录对应多个订单 起度 止度 金额都是对不上的 有问题
+     * 废弃掉，优化成只能对未缴的记录修改
     */
     public function addMdyMeterReadingOrder(){
         $village_id = $this->adminUser['village_id'];
@@ -881,6 +891,7 @@ class HouseMeterController extends CommunityBaseController
         $date_time = $this->request->post('date_time',[]);
         $transaction_type = $this->request->post('transaction_type',0);
         $is_unusual = $this->request->post('is_unusual',0);
+        $split_record_no = $this->request->post('split_record_no','','trim');
         $service_house_new_meter = new HouseNewMeterService();
         $where[] = ['m.village_id','=',$village_id];
         if($project_id){
@@ -894,6 +905,9 @@ class HouseMeterController extends CommunityBaseController
         }
         if($is_unusual==1){
             $where[] = ['m.is_unusual','=',1];
+        }
+        if($split_record_no){
+            $where[] = ['m.split_record_no','=',$split_record_no];
         }
         if(!empty($room_id) && is_array($room_id)){
             if (isset($room_id[3])){
@@ -915,7 +929,8 @@ class HouseMeterController extends CommunityBaseController
         }catch (\Exception $e){
             return api_output_error(-1,$e->getMessage());
         }
-        $jz_wsxdsj_net_customized_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
+        $configCustomizationService=new ConfigCustomizationService();
+        $jz_wsxdsj_net_customized_open = $configCustomizationService->getWSXCustomizedOpen();
         $res['total_info'] = $total_info;
         $res['list'] = $data;
         $res['count'] = $count;
@@ -939,6 +954,8 @@ class HouseMeterController extends CommunityBaseController
         if($charge_type && $jz_wsxdsj_net_customized_open && in_array($charge_type,['electric','water'])){
             $res['jzwsxdsj_customized_meter']=1;
         }
+        $isAihorseCustomized=$configCustomizationService->getAihorseCustomizedJudge();
+        $res['isAihorseCustomized']=$isAihorseCustomized;
         $houseVillageService=new HouseVillageService();
         $res['role_export']=$houseVillageService->checkPermissionMenu(112111,$this->adminUser,$this->login_role,$this->dismissPermissionRole);
         $res['role_import']=$houseVillageService->checkPermissionMenu(112112,$this->adminUser,$this->login_role,$this->dismissPermissionRole);
@@ -1033,6 +1050,7 @@ class HouseMeterController extends CommunityBaseController
         $date_time = $this->request->post('date_time',[]);
         $project_id = $this->request->post('project_id',0);
         $is_unusual = $this->request->post('is_unusual',0);
+        $split_record_no = $this->request->post('split_record_no','','trim');
         $service_house_new_meter = new HouseNewMeterService();
         $where[] = ['m.village_id','=',$village_id];
 
@@ -1044,6 +1062,9 @@ class HouseMeterController extends CommunityBaseController
         if($is_unusual == 1){
             $where[] = ['m.is_unusual','=',1];
             $file_name = '抄表用量异常记录';
+        }
+        if($split_record_no){
+            $where[] = ['m.split_record_no','=',$split_record_no];
         }
         if($charge_name)
             $where[] = ['m.charge_name','=',$charge_name];
@@ -1187,6 +1208,9 @@ class HouseMeterController extends CommunityBaseController
             $meter_reading=$service_house_new_meter->getMeterRecordInfo($whereArr,'*','id DESC');
             $id = $service_house_new_meter->addMeterReading($insertData);
             if($id){
+                if($insertData['cost_money']<=0){
+                    return api_output(0,[],'抄表成功');
+                }
                 $user_info = $service_house_village_user_bind->getBindInfo([['vacancy_id','=',$vacancy_id],['status','=',1],['type','in',[0,3]]],'uid,name,phone,pigcms_id,village_id');
                 $orderData=array();
                 if($user_info){
@@ -1265,9 +1289,10 @@ class HouseMeterController extends CommunityBaseController
      */
     public function getMeterProjectList()
     {
-        $village_id = $this->request->post('village_id',0);
-        if(!$village_id)
-            return api_output_error(1001,'缺少必传参数village_id');
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后台！');
+        }
         $service_house_new_meter = new HouseNewMeterService();
         $where[] = ['p.village_id','=',$village_id];
         $where[] = ['p.status','=',1];
@@ -1287,7 +1312,70 @@ class HouseMeterController extends CommunityBaseController
         }
         return api_output(0,$list);
     }
+    /****
+    **抄表余额拆单订单记录
+     **/
+    public function getMeterReadingSplitOrders(){
 
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后台！');
+        }
+        $room_id = $this->request->post('room_id',0);
+        $date_time = $this->request->post('date_time',[]);
+        $project_id = $this->request->post('project_id',0);
+        $split_record_no = $this->request->post('split_record_no','','trim');
+        $page = $this->request->post('page',1);
+        $limit = $this->request->post('limit',10);
+        $key_val       = $this->request->post('key_val','','trim');
+        $key_value         = $this->request->post('key_value','','trim');
+        $service_house_new_meter = new HouseNewMeterService();
+        $where=array();
+        $where[] = ['o.village_id','=',$village_id];
+        $where[] = ['m.village_id','=',$village_id];
+       // $where[] = ['o.charge_type','in',['water','electric','gas']];
+        $where[] = ['o.order_type_flag','=','split_order_by_balance'];
+        $where[] = ['o.meter_reading_id','>',0];
+        if($project_id>0){
+            $where[] = ['o.project_id','=',$project_id];
+        }
+        if($split_record_no){
+            $where[] = ['o.order_serial','=',$split_record_no];
+        }
+        if(!empty($room_id) && is_array($room_id)){
+            if (isset($room_id[3])){
+                $where[]=['m.layer_num','=',$room_id[3]];
+                $where[]=['o.room_id','=',$room_id[3]];
+            }elseif (isset($room_id[2])){
+                $where[]=['m.layer_id','=',$room_id[2]];
+            }elseif (isset($room_id[1])){
+                $where[]=['m.floor_id','=',$room_id[1]];
+            } else{
+                $where[]=['m.single_id','=',$room_id[0]];
+            }
+        }
+        if (!empty($key_val) && !empty($value)){
+            if($key_val=='key_name'){
+                $where[] = ['o.name','=',$value];
+            }else if($key_val=='key_phone'){
+                $where[] = ['o.phone','=',$value];
+            }
+        }
+        if($date_time){
+            $where[] = ['o.add_time','between',[strtotime($date_time[0].' 00:00:00'),strtotime($date_time[1].' 23:59:59')]];
+        }
+        try{
+            $fieldStr='o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.order_type,o.order_name,o.room_id,o.village_id,o.total_money,o.modify_money,o.pay_money,o.add_time,o.is_discard,o.refund_money';
+            $fieldStr .=',o.pay_time,o.pay_type,o.offline_pay_type,o.rule_id,o.project_id,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,o.order_serial,o.meter_reading_id,o.village_balance,o.order_type_flag,o.primitive_order_id';
+            $fieldStr .=',o.is_paid,o.is_refund,m.split_num,m.split_record_no';
+            $datas = $service_house_new_meter->getMeterReadingSplitOrders($where,$fieldStr,$page,$limit,$village_id,'m.id DESC,o.order_id DESC');
+            return api_output(0,$datas);
+        }catch (\Exception $e){
+            return api_output_error(-1,$e->getMessage());
+        }
+        
+        
+    }
     /**
      * 导入抄表
      * @return \json

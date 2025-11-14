@@ -3035,11 +3035,10 @@ public function meter_reading()
         $is_new_charge=D('House_village')->checkNewCharge($this->house_session['property_id']);
         if ($is_new_charge){
             $user_list[] = array(
-                '小黑','13212345679','30栋','三单元','12','1102',
+                '皇甫飞羽','13212345679','30栋','三单元','12','1102',
                 '342417************','123456','皖A12345','A车库','001',
                 '家中有狗','2020-03-24', '2050-07-24'
             );
-
         }else{
             $user_list[] = array(
             '小黑', '13212345679','11120.1',
@@ -3052,127 +3051,174 @@ public function meter_reading()
 
         }
 
-        $title = '导入业主模板';
+        $xtitle = '导入业主模板';
 
         $objExcel = new PHPExcel();
         $objProps = $objExcel->getProperties();
         // 设置文档基本属性
-        $objProps->setCreator($title);
-        $objProps->setTitle($title);
-        $objProps->setSubject($title);
-        $objProps->setDescription($title);
+        $objProps->setCreator($xtitle);
+        $objProps->setTitle($xtitle);
+        $objProps->setSubject($xtitle);
+        $objProps->setDescription($xtitle);
 
         $length = 1;
 
-        for ($i = 0; $i < $length; $i++) {
-            $i && $objExcel->createSheet();
-            $objExcel->setActiveSheetIndex($i);
+        $objExcel->createSheet();
+        $objExcel->setActiveSheetIndex($length);
 
-            $objExcel->getActiveSheet()->setTitle('导入业主模板');
-            $objActSheet = $objExcel->getActiveSheet();
+        $objExcel->getActiveSheet()->setTitle('导入业主模板');
+        $objActSheet = $objExcel->getActiveSheet();
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
 
-            if ($is_new_charge) {
-                $objActSheet->setCellValue('A1', '业主名(必填)');
-                $objActSheet->setCellValue('B1', '手机号(必填)');
-                $objActSheet->setCellValue('C1', '所属楼栋(必填)');
-                $objActSheet->setCellValue('D1', '所属单元(必填)');
-                $objActSheet->setCellValue('E1', '所属楼层(必填)');
-                $objActSheet->setCellValue('F1', '房间号(必填)');
-                $objActSheet->setCellValue('G1', '身份证号(选填)');
-                $objActSheet->setCellValue('H1', 'IC卡号(选填)');
-                $objActSheet->setCellValue('I1', '车辆(选填)');
-                $objActSheet->setCellValue('J1', '车库(选填)');
-                $objActSheet->setCellValue('K1', '车位(选填)');
-                $objActSheet->setCellValue('L1', '备注(选填)');
-                $objActSheet->setCellValue('M1', '缴费开始时间(选填)');
-                $objActSheet->setCellValue('N1', '缴费结束时间(选填)');
-            }else{
-                $objActSheet->setCellValue('A1', '业主名');
-                $objActSheet->setCellValue('B1', '手机号');
-                $objActSheet->setCellValue('C1', '水费总欠费');
-                $objActSheet->setCellValue('D1', '电费总欠费');
-                $objActSheet->setCellValue('E1', '燃气费总欠费');
-                $objActSheet->setCellValue('F1', '是否有停车位（1有0无）');
-                $objActSheet->setCellValue('G1', '停车费总欠费');
-                //2020/8/6 优化  start
-                $objActSheet->setCellValue('H1', '所属'.($this->house_alias['single_name']?:'楼栋'));
-                $objActSheet->setCellValue('I1', '所属'.($this->house_alias['floor_name']?:'单元'));
-                $objActSheet->setCellValue('J1', '所属楼层');
-                $objActSheet->setCellValue('K1', (D('House_village')->getHouseAlias('room_name')?:'房间').'号');
-                $objActSheet->setCellValue('L1', '物业开始时间');
-                $objActSheet->setCellValue('M1', '物业结束时间');
-		        $objActSheet->setCellValue('N1', '身份证号');
-                $objActSheet->setCellValue('O1', 'IC卡号');
-                $objActSheet->setCellValue('P1', '车辆');
-                $objActSheet->setCellValue('Q1', '车库');
-                $objActSheet->setCellValue('R1', '车位');
-                $objActSheet->setCellValue('S1', '备注');
-            }
-
-            if (!empty($user_list)) {
-                $index = 2;
-                $cell_list = range('A','T');
-                foreach ($cell_list as $cell) {
-                    $objActSheet->getColumnDimension($cell)->setWidth(30);
-                }
-                foreach ($user_list as $value) {
-                        if ($is_new_charge) {
-                            $objActSheet->setCellValueExplicit('A' . $index, $value[0]);
-                            $objActSheet->setCellValueExplicit('B' . $index, $value[1]);
-                            $objActSheet->setCellValueExplicit('C' . $index, $value[2]);
-                            $objActSheet->setCellValueExplicit('D' . $index, $value[3]);
-                            $objActSheet->setCellValueExplicit('E' . $index, $value[4]);
-                            $objActSheet->setCellValueExplicit('F' . $index, $value[5]);
-                            $objActSheet->setCellValueExplicit('G' . $index, $value[6]);
-                            $objActSheet->setCellValueExplicit('H' . $index, $value[7]);
-                            $objActSheet->setCellValueExplicit('I' . $index, $value[8]);
-                            $objActSheet->setCellValueExplicit('J' . $index, $value[9]);
-                            $objActSheet->setCellValueExplicit('K' . $index, $value[10]);
-                            $objActSheet->setCellValueExplicit('L' . $index, $value[11]);
-                            $objActSheet->setCellValueExplicit('M' . $index, $value[12]);
-                            $objActSheet->setCellValueExplicit('N' . $index, $value[13]);
-                        }else{
-                            $objActSheet->setCellValueExplicit('A' . $index, $value[0]);
-                            $objActSheet->setCellValueExplicit('B' . $index, $value[1]);
-                            $objActSheet->setCellValueExplicit('C' . $index, $value[2]);
-                            $objActSheet->setCellValueExplicit('D' . $index, $value[3]);
-                            $objActSheet->setCellValueExplicit('E' . $index, $value[4]);
-                            $objActSheet->setCellValueExplicit('F' . $index, $value[5]);
-                            $objActSheet->setCellValueExplicit('G' . $index, $value[6]);
-                            $objActSheet->setCellValueExplicit('H' . $index, $value[7]);
-                            $objActSheet->setCellValueExplicit('I' . $index, $value[8]);
-                            $objActSheet->setCellValueExplicit('J' . $index, $value[9]);
-                            $objActSheet->setCellValueExplicit('K' . $index, $value[10]);
-                            $objActSheet->setCellValueExplicit('L' . $index, $value[11]);
-                            $objActSheet->setCellValueExplicit('M' . $index, $value[12]);
-                            $objActSheet->setCellValueExplicit('N' . $index, $value[13]);
-                            $objActSheet->setCellValueExplicit('O' . $index, $value[14]);
-
-                            $objActSheet->setCellValueExplicit('P' . $index, $value[15]);
-                            $objActSheet->setCellValueExplicit('Q' . $index, $value[16]);
-                            $objActSheet->setCellValueExplicit('R' . $index, $value[17]);
-                            $objActSheet->setCellValueExplicit('S' . $index, $value[18]);
-
-                        }
-                    $index++;
-                }
-            }
-            sleep(2);
-            //输出
-            $objWriter = new PHPExcel_Writer_Excel5($objExcel);
-            ob_end_clean();
-            header("Pragma: public");
-            header("Expires: 0");
-            header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
-            header("Content-Type:application/force-download");
-            header("Content-Type:application/vnd.ms-execl");
-            header("Content-Type:application/octet-stream");
-            header("Content-Type:application/download");
-            header('Content-Disposition:attachment;filename="'.$title.'_' . date("Y-m-d h:i:sa", time()) . '.xls"');
-            header("Content-Transfer-Encoding:binary");
-            $objWriter->save('php://output');
-            exit();
+        $cell_list = range('A', 'T');
+        if($is_func_cloudmrsqfw_special){
+            $cell_list = range('A', 'Z');
+            $cell_list=array_merge($cell_list,['AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL']);
         }
+        foreach ($cell_list as $cell) {
+            $objActSheet->getColumnDimension($cell)->setWidth(30);
+        }
+        $index = 2;
+        if ($is_new_charge) {
+            $index = 3;
+            $objActSheet->getDefaultRowDimension()->setRowHeight(22); //设置默认行高
+            $tips='所有单元格请设置成文本格式后填写内容';
+            $columnCell='A1:T1';
+            if($is_func_cloudmrsqfw_special){
+                $tips='所有单元格请设置成文本格式后填写内容。政治面貌填写（党员,团员,群众）,社区党员组织关系是当党员是社区党员时填写才有效。特殊人群请填写（刑满释放,社区矫正,重点青少年,吸毒,艾滋病,精神病）多个值用,分隔，重点人群请填写（服刑人员,非法组织,上访人员）多个值用,分隔，关怀群体请填写（低保,残疾人,空巢,失独老人,孤寡老人,退役军人,留守儿童）多个值用,分隔。性别请填写（男,女），籍贯请填写从网站后台系统设置=》城市区域里面的省市名称例如(安徽,合肥)中间用,分隔，婚姻状况请填写（未婚,已婚,离婚,丧偶），教育水平请填写（无,初中及以下,高中或中专,大专,本科,硕士,博士,其他），单位性质请填写（国有企业,民营企业,外商独资,中外合资,港澳台企业,政府机关,事业单位,非营利性组织,自主创业,其他），国籍默认请不填或者填中国，其他值从业主编辑=》业主资料里找，民族请填写（汉族,满族,蒙古族,回族,藏族,维吾尔族,苗族,彝族,壮族,布依族,侗族,瑶族,白族,土家族,哈尼族,哈萨克族,傣族,黎族,傈僳族,佤族,畲族,高山族,拉祜族,水族,东乡族,纳西族,景颇族,柯尔克孜族,土族,达斡尔族,仫佬族,羌族,布朗族,撒拉族,毛南族,仡佬族,锡伯族,阿昌族,普米族,朝鲜族,塔吉克族,怒族,乌孜别克族,俄罗斯族,鄂温克族,德昂族,保安族,裕固族,京族,塔塔尔族,独龙族,鄂伦春族,赫哲族,门巴族,珞巴族,基诺族）';
+                $columnCell='A1:AL1';
+            }
+            $objActSheet->setCellValue('A1',$tips );
+            $objActSheet->mergeCells($columnCell);
+            $objActSheet->getStyle($columnCell)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+            $objActSheet->getRowDimension(1)->setRowHeight(30); // 固定高度
+            
+            $objActSheet->setCellValue('A2', '业主名(必填)');
+            $objActSheet->setCellValue('B2', '手机号(必填)');
+            $objActSheet->setCellValue('C2', '所属楼栋(必填)');
+            $objActSheet->setCellValue('D2', '所属单元(必填)');
+            $objActSheet->setCellValue('E2', '所属楼层(必填)');
+            $objActSheet->setCellValue('F2', '房间号(必填)');
+            $objActSheet->setCellValue('G2', '身份证号(选填)');
+            $objActSheet->setCellValue('H2', 'IC卡号(选填)');
+            $objActSheet->setCellValue('I2', '车辆(选填)');
+            $objActSheet->setCellValue('J2', '车库(选填)');
+            $objActSheet->setCellValue('K2', '车位(选填)');
+            $objActSheet->setCellValue('L2', '备注(选填)');
+            $objActSheet->setCellValue('M2', '缴费开始时间(选填)');
+            $objActSheet->setCellValue('N2', '缴费结束时间(选填)');
+            
+            if($is_func_cloudmrsqfw_special){
+                $objActSheet->setCellValue('O2', '政治面貌');
+                $user_list[0][]='党员';
+                $objActSheet->setCellValue('P2', '社区党员（是或否）');
+                $user_list[0][]='否';
+                $objActSheet->setCellValue('Q2', '社区党员组织关系');
+                $user_list[0][]='';
+                $objActSheet->setCellValue('R2', '特殊人群');
+                $user_list[0][]='社区矫正,重点青少年';
+                $objActSheet->setCellValue('S2', '重点人群');
+                $user_list[0][]='非法组织';
+                $objActSheet->setCellValue('T2', '关怀群体');
+                $user_list[0][]='残疾人,空巢,孤寡老人,退役军人,留守儿童';
+                $objActSheet->getColumnDimension('T')->setWidth(50);
+                $property_id=$this->house_session['property_id'];
+                $dataList = M('House_village_data_config')->where(array('property_id'=>$property_id,'is_system'=>1))->order('sort desc')->select();
+                if($dataList){
+                    $systemConfigAttr=array('sex'=>'男','birthday'=>'1992-03-21','nation'=>'满族','native_place'=>'安徽,滁州','nationality'=>'中国','household_register'=>'南谯区乌衣镇康泰路与大同路交叉口','marriage_status'=>'离婚','edcation'=>'本科','emergent_person'=>'皇甫涛','person_phone'=>'13212345593','job'=>'','unit_nature'=>'其他','job_address'=>'');
+                    $letter='U';
+                    foreach ($dataList as $kk=>$vv){
+                        $kkey=trim($vv['key']);
+                        if(!isset($systemConfigAttr[$kkey])){
+                            continue;
+                        }
+                        if(in_array($kkey,['birthday','sex','nation','marriage_status','edcation','nationality'])){
+                            $objActSheet->getColumnDimension($letter)->setWidth(20);
+                        }elseif (in_array($kkey,['household_register'])){
+                            $objActSheet->getColumnDimension($letter)->setWidth(40);
+                        }
+                        $user_list[0][]=$systemConfigAttr[$kkey];
+                        $title=trim($vv['title']);
+                        $objActSheet->setCellValue($letter.'2', $title);
+                        $letter++;
+                    }
+                }
+            }
+        } else {
+            $objActSheet->setCellValue('A1', '业主名');
+            $objActSheet->setCellValue('B1', '手机号');
+            $objActSheet->setCellValue('C1', '水费总欠费');
+            $objActSheet->setCellValue('D1', '电费总欠费');
+            $objActSheet->setCellValue('E1', '燃气费总欠费');
+            $objActSheet->setCellValue('F1', '是否有停车位（1有0无）');
+            $objActSheet->setCellValue('G1', '停车费总欠费');
+            //2020/8/6 优化  start
+            $objActSheet->setCellValue('H1', '所属' . ($this->house_alias['single_name'] ?: '楼栋'));
+            $objActSheet->setCellValue('I1', '所属' . ($this->house_alias['floor_name'] ?: '单元'));
+            $objActSheet->setCellValue('J1', '所属楼层');
+            $objActSheet->setCellValue('K1', (D('House_village')->getHouseAlias('room_name') ?: '房间') . '号');
+            $objActSheet->setCellValue('L1', '物业开始时间');
+            $objActSheet->setCellValue('M1', '物业结束时间');
+            $objActSheet->setCellValue('N1', '身份证号');
+            $objActSheet->setCellValue('O1', 'IC卡号');
+            $objActSheet->setCellValue('P1', '车辆');
+            $objActSheet->setCellValue('Q1', '车库');
+            $objActSheet->setCellValue('R1', '车位');
+            $objActSheet->setCellValue('S1', '备注');
+        }
+
+        if (!empty($user_list)) {
+            
+            foreach ($user_list as $value) {
+                if ($is_new_charge) {
+                    $letter='A';
+                    foreach ($value as $vStr) {
+                        $objActSheet->setCellValueExplicit($letter. $index, $vStr);
+                        $letter++;
+                    }
+
+                } else {
+                    $objActSheet->setCellValueExplicit('A' . $index, $value[0]);
+                    $objActSheet->setCellValueExplicit('B' . $index, $value[1]);
+                    $objActSheet->setCellValueExplicit('C' . $index, $value[2]);
+                    $objActSheet->setCellValueExplicit('D' . $index, $value[3]);
+                    $objActSheet->setCellValueExplicit('E' . $index, $value[4]);
+                    $objActSheet->setCellValueExplicit('F' . $index, $value[5]);
+                    $objActSheet->setCellValueExplicit('G' . $index, $value[6]);
+                    $objActSheet->setCellValueExplicit('H' . $index, $value[7]);
+                    $objActSheet->setCellValueExplicit('I' . $index, $value[8]);
+                    $objActSheet->setCellValueExplicit('J' . $index, $value[9]);
+                    $objActSheet->setCellValueExplicit('K' . $index, $value[10]);
+                    $objActSheet->setCellValueExplicit('L' . $index, $value[11]);
+                    $objActSheet->setCellValueExplicit('M' . $index, $value[12]);
+                    $objActSheet->setCellValueExplicit('N' . $index, $value[13]);
+                    $objActSheet->setCellValueExplicit('O' . $index, $value[14]);
+
+                    $objActSheet->setCellValueExplicit('P' . $index, $value[15]);
+                    $objActSheet->setCellValueExplicit('Q' . $index, $value[16]);
+                    $objActSheet->setCellValueExplicit('R' . $index, $value[17]);
+                    $objActSheet->setCellValueExplicit('S' . $index, $value[18]);
+
+                }
+                $index++;
+            }
+        }
+        sleep(2);
+        //输出
+        $objWriter = new PHPExcel_Writer_Excel5($objExcel);
+        ob_end_clean();
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="' . $xtitle . '_' . date("Y-m-d h:i:sa", time()) . '.xls"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+        exit();
+
     }
 
 

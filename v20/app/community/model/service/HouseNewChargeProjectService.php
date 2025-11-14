@@ -69,6 +69,10 @@ class HouseNewChargeProjectService{
         if(isset($param['project_type']) && $param['project_type']=='cycle'){
             $where[]=['p.type', '=', 2];
         }
+        if(isset($param['xresource']) && $param['xresource']=='water_electric_gas'){
+            $charge_type_arr=array('electric','gas','water');
+            $where[]=['c.charge_type', 'in', $charge_type_arr];
+        }
         $where[] = ['p.status', '<>', 4];
         if(intval($param['page']) > 0){
            $page = isset($param['page']) && $param['page'] ? $param['page'] : 0;

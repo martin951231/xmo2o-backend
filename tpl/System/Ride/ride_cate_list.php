@@ -3,7 +3,7 @@
 		<div id="nav" class="mainnav_title">
 			<ul>
 				<a href="{pigcms{:U('index')}">根列表</a>|
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Ride/add_cate')}','添加分类',700,480,true,false,false,addbtn,'add',true);">添加分类</a>
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Ride/add_cate')}','添加分类',700,480,true,false,false,addbtn,'add',true);">添加分类</a>
 				<a href="{pigcms{:U('ride_cate_list')}" class="on">分类列表</a>|
 			</ul>
 		</div>
@@ -53,7 +53,7 @@
 									</td>
 									<td>{pigcms{$vo.ride_cate_addtime|date='Y-m-d H:i',###}</td>
 									<td class="textcenter">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Ride/edit_ride_cate',array('ride_cate_id'=>$vo['ride_cate_id']))}','编辑分类信息',700,480,true,false,false,editbtn,'add',true);" >编辑</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Ride/edit_ride_cate',array('ride_cate_id'=>$vo['ride_cate_id']))}','编辑分类信息',700,480,true,false,false,editbtn,'add',true);" >编辑</a>
                                         <a href="javascript:void(0);"  onclick='del_category("{pigcms{$vo.ride_cate_id}")'>删除</a>
                                     </td>
 								</tr>

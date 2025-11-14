@@ -3484,6 +3484,14 @@ class MerchantappAction extends BaseAction{
                     $this->config['score_get'] = D('Percent_rate')->get_user_add_score_times($this->config['score_get'],$order_info['uid']);
                     D('User')->add_score($order_info['uid'], (($order_info['balance_pay']+$order_info['payment_money']) * $this->config['score_get']), L_('购买预约商品获得X1',$this->score_name));
                 }
+
+                //记录轨迹
+                $recordContent['content'] = [[
+					'title' => '操作时间',
+					'value' => date('Y-m-d H:i:s'),
+					'type' => 'text'
+				]];
+                D('Appoint_order_records')->addOrderRecord($now_order['mer_id'], $now_order['order_id'], '商家中心完成订单', $recordContent);
                 $this->returnCode(0);
             } else {
                 $this->returnCode('20130007');
@@ -4316,6 +4324,33 @@ class MerchantappAction extends BaseAction{
 
     }
 
+    public function maiyatianMoneyList()
+    {
+        $mer_id = $this->merchant['mer_id'];
+        $where = ['mer_id' => $mer_id];
+        $start_time = I('post.start_time', '');
+        $end_time = I('post.end_time', '');
+        $page = I('post.page', 1);
+
+        if ($start_time && $end_time) {
+            $where['create_time'] = [['egt', $start_time . ' 00:00:00'], ['elt', $end_time . ' 23:59:59']];
+        }
+	    $list = M('Maiyatian_mer_money_list')
+		    ->where($where)
+		    ->order('create_time desc')
+		    ->limit(10)
+		    ->page($page)
+		    ->select();
+	    foreach ($list as &$v) {
+		    if ($v['delivery_id']) {
+			    $v['paotui_order_no'] = M('Maiyatian_delivery')->where(['id' => $v['delivery_id']])->getField('paotui_order_no');
+		    } else if ($v['recharge_id']) {
+			    $v['recharge_pay_no'] = M('Maiyatian_recharge_order')->where(['id' => $v['recharge_id']])->getField('third_id');
+		    }
+	    }
+        $this->returnCode(0, $list);
+    }
+
     //商家余额接口
     public function merchant_money_info(){
         $mer_id  = $this->merchant['mer_id'];
@@ -4395,7 +4430,12 @@ class MerchantappAction extends BaseAction{
         } else {
             $arr['show_lakala_qianzhangtong'] = 0;
         }
-
+        $maiyatianBind = M('Maiyatian_token')->where(['mer_id' => $mer_id, 'is_unbind' => 0])->find();
+	    $arr['maiyatian_bind'] = false;
+        if ($maiyatianBind) {
+            $arr['maiyatian_mer_money'] = '￥'.$maiyatianBind['mer_money'];
+            $arr['maiyatian_bind'] = !$maiyatianBind['is_unbind'];
+        }
         $this->returnCode(0,$arr);
     }
 

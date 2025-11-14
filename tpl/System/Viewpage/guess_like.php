@@ -406,7 +406,7 @@
 					<input type="hidden" name="index_guess_like_goods_shop_goods" value="{pigcms{$config_data.index_guess_like_goods_shop_goods}"/>
 					<!--<a class="button" href="{pigcms{:U('Diy_category/index',['type'=>1])}" >管理分类/商品</a>-->
 					<a class="button" class="iframe_close" href="javascript:;" onclick="test();">管理分类/商品</a>
-					<!--<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Diy_category/index',['type'=>1])}','商品管理',480,300,true,false,false,addbtn,'add',true);">创建分类</a>
+					<!--<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Diy_category/index',['type'=>1])}','商品管理',480,300,true,false,false,addbtn,'add',true);">创建分类</a>
 						<input type="button" value="添加商品" class="button" onclick="select_goods()" style="margin-left:0px;margin-right:10px;margin-bottom:10px;">-->
 					<a></a>
 					<!--
@@ -472,7 +472,7 @@
 	<script>
 		function test(){
             parent.addIframe('平台发现好菜-自定义分类','diy_category_1','{pigcms{:U('Diy_category/index',['type'=>1])}');
-            window.top.closeiframe();
+            window.o2oTop.closeiframe();
     	}
 		$(function(){
 			
@@ -520,7 +520,7 @@
 		function add_activity(id=''){
 			var url = '';
 			url = '{pigcms{:U("activity_edit",array("business_type"=>"plat"))}' + '&id='+id;
-			window.top.artiframe(url,'添加活动',720,600,true,false,false,editbtn,'activity_edit',true,
+			window.o2oTop.artiframe(url,'添加活动',720,600,true,false,false,editbtn,'activity_edit',true,
 				function(){
 					$("#activity_box tbody").empty();
 					$.post("{pigcms{:U('activity_list',array('business_type'=>'plat'))}",{},function(data){

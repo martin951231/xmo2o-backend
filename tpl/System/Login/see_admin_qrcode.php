@@ -9,7 +9,7 @@
 		<p id="login_status" style="margin-top:20px;display:none;text-align:center;"></p>
 		<script src="{pigcms{:C('JQUERY_FILE')}"></script>
 		<script>
-			var redirect_url = window.top.location.href;
+			var redirect_url = window.o2oTop.location.href;
 			window.setInterval("ajax_weixin_login()", 5000);
 			function ajax_weixin_login(){
 				$.get("{pigcms{:U('Login/ajax_scan_login')}",{qrcode_id:{pigcms{$id}},function(result){
@@ -21,7 +21,7 @@
 						$('#login_status').html('登录信息保存失败,请重新登录！').css('color','red').show();
 					} else if (result.err_code == 1) {
 						$('#login_status').html('登录成功！正在跳转。').css('color','green').show();
-						window.top.location.href = '/admin.php';
+						window.o2oTop.location.href = '/admin.php';
 					}
 				}, 'json');
 			}

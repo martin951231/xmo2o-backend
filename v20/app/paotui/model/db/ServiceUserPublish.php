@@ -12,4 +12,8 @@ use think\Model;
  */
 class ServiceUserPublish extends Model
 {
+	protected $pk = 'publish_id';
+	
+	const STATUS_PAY_SUCCESS = 2; //已支付待服务
+	const STATUS_CANCEL = 10; //已取消
 }

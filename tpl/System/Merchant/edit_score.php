@@ -174,12 +174,12 @@
 			$('#dosubmit').click(function(){
 				$.post('{pigcms{:U('Merchant/edit_percent')}', $('#myform').serialize(), function(data, textStatus, xhr) {
 					if(data.status==1){
-						window.top.msg(1,data.info,true,2);
+						window.o2oTop.msg(1,data.info,true,2);
 					}else{
-						window.top.msg(0,data.info,true,2);
+						window.o2oTop.msg(0,data.info,true,2);
 					}
                     //layer.msg(data.info);
-					//window.top.art.dialog({id:'edit_score'}).close();
+					//window.o2oTop.art.dialog({id:'edit_score'}).close();
 				});
 				
 			});
@@ -226,22 +226,22 @@
 				return false;
 			});
 			$('#im_key').click(function(){
-				window.top.msg(2,'正在请求中,请稍等...',true,100);
+				window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 				$.get("{pigcms{:U('Config/im')}",function(data){
 					if(data.error_code){
-						window.top.msg(0,data.msg,true,3);
+						window.o2oTop.msg(0,data.msg,true,3);
 					}else{
-						window.top.msg(1,data.msg,true,3);
+						window.o2oTop.msg(1,data.msg,true,3);
 					}
 				},'json');
 			});
 			$('#live_service_key').click(function(){
-				window.top.msg(2,'正在请求中,请稍等...',true,100);
+				window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 				$.get("{pigcms{:U('Config/live_service')}",function(data){
 					if(data.error_code){
-						window.top.msg(0,data.msg,true,3);
+						window.o2oTop.msg(0,data.msg,true,3);
 					}else{
-						window.top.msg(1,data.msg,true,3);
+						window.o2oTop.msg(1,data.msg,true,3);
 					}
 				},'json');
 			});

@@ -5,7 +5,7 @@
         <ul>
             <a href="{pigcms{:U('MerchantSpread/audit')}">已审核推广商</a>|
             <a href="{pigcms{:U('MerchantSpread/notAudit')}" class="on">待审核推广商</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('MerchantSpread/setting')}','推广商奖励设置',550,300,true,false,false,editbtn,'edit',true);">推广商奖励设置</a>|
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('MerchantSpread/setting')}','推广商奖励设置',550,300,true,false,false,editbtn,'edit',true);">推广商奖励设置</a>|
             <a href="{pigcms{:U('MerchantSpread/index')}">推广商申请设置</a>
         </ul>
     </div>
@@ -56,7 +56,7 @@
                             <td><php>echo $vo['type']==1?'vip推广商':'城市推广商';</php></td>
                             <td>{pigcms{$vo.price|getFormatNumber}</td>
                             <td class="textcenter">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('MerchantSpread/handleApply',array('id'=>$vo['id']))}','审核',860,650,true,false,false,editbtn,'edit',true);">审核</a>
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('MerchantSpread/handleApply',array('id'=>$vo['id']))}','审核',860,650,true,false,false,editbtn,'edit',true);">审核</a>
                             </td>
                         </tr>
                     </volist>

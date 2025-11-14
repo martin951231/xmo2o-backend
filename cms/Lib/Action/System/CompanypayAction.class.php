@@ -318,6 +318,7 @@ class CompanypayAction extends BaseAction{
 				'user'=>'用户',
 				'mer'=>'商家',
 				'village'=>'小区',
+                'deliver'=>'配送员',
 		);
 		$status = array('未支付','已支付', '已取消');
 		if($_GET['export']==1){
@@ -408,7 +409,7 @@ class CompanypayAction extends BaseAction{
 		$data['status']=$_GET['status'];
 		if(D('Withdraw_list')->where(array('id'=>$_GET['id']))->save($data)){
 			$withdraw = M('Withdraw_list')->where(array(array('id'=>$_GET['id'])))->find();
-			if($withdraw['type']=='user'){
+			if($withdraw['type']=='user' || $withdraw['type']=='deliver'){
                 if ($withdraw['deliver_withdraw_id'] > 0) {
                     $model = '\app\deliver\model\service\DeliverUserService/handleWithDrawAfter';
                     $params = [
@@ -421,7 +422,7 @@ class CompanypayAction extends BaseAction{
                     D('Merchant_money_list')->withdraw_status_notice($withdraw['id'], 1);
                 }
 
-                if($data['status'] == 2){// 驳回审核 增加余额
+                if($data['status'] == 2 && $withdraw['type'] != 'deliver'){// 驳回审核 增加余额
                 	$money = $withdraw['old_money']/100 ;
                 	D('User')->add_money($withdraw['pay_id'], $money,'驳回提现 增加余额');
                 }

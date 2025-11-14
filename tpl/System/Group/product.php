@@ -45,7 +45,7 @@
 							<input type="submit" value="查询" class="button"/>
 							
 							<if condition="$now_groupwxapp_category">
-								<input type="button" value="添加优选商品" class="button" onclick="window.top.artiframe('{pigcms{:U('Groupwxapp/product_add',$_GET)}','添加优选商品 - {pigcms{$now_groupwxapp_category.cat_name}',600,400,true,false,false,addbtn,'edit',true);" style="float:right;margin-right:100px;"/>
+								<input type="button" value="添加优选商品" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Groupwxapp/product_add',$_GET)}','添加优选商品 - {pigcms{$now_groupwxapp_category.cat_name}',600,400,true,false,false,addbtn,'edit',true);" style="float:right;margin-right:100px;"/>
 							</if>
 						</form>
 					</td>
@@ -107,7 +107,7 @@
                                             <td>开始时间：{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}<br/>结束时间：-<br/>有效期：-</td>
                                         </if>
 										<td>查看数：{pigcms{$vo.hits}<br/>出售数：{pigcms{$vo.sale_count}<br/>评论数：{pigcms{$vo.reply_count}</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{$config.site_url}/index.php?g=Index&c=Recognition&a=see_qrcode&type=group&id={pigcms{$vo.group_id}&img=1','查看二维码',430,433,true,false,false,null,'merchant_qrcode',true);" class="see_qrcode">查看二维码</a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{$config.site_url}/index.php?g=Index&c=Recognition&a=see_qrcode&type=group&id={pigcms{$vo.group_id}&img=1','查看二维码',430,433,true,false,false,null,'merchant_qrcode',true);" class="see_qrcode">查看二维码</a></td>
 										<td>
                                             <if condition="$vo['group_cate'] eq 'booking_appoint' && $vo['add_time'] lt $_SERVER['REQUEST_TIME']">
                                                 进行中
@@ -124,7 +124,7 @@
 										<td><switch name="vo['status']"><case value="0"><font color="red">关闭</font></case><case value="1"><font color="green">正常</font></case><case value="2"><font color="red">审核中</font></case></switch></td>
 										<td class="textcenter">
 										<a href="{pigcms{:U('Group/order_list',array('group_id'=>$vo['group_id']))}">订单列表</a> | <a href="{pigcms{:U('Group/reply_list',array('group_id'=>$vo['group_id']))}">评论列表</a> | <a href="{pigcms{:U('Merchant/goods_merchant_login',array('mer_id'=>$vo['mer_id'],'group_id'=>$vo['group_id']))}">编辑</a>
-										<if condition="$now_groupwxapp_category['cat_id']"><br/><a href="javascript:void(0);"onclick="window.top.artiframe('{pigcms{:U('Groupwxapp/product_edit',array('group_id'=>$vo['group_id']))}','编辑优选商品',600,460,true,false,false,editbtn,'edit',true);">编辑优选</a> | <a href="javascript:void(0);" class="delete_row" parameter="group_id={pigcms{$vo.group_id}" url="{pigcms{:U('Groupwxapp/product_del')}" tip="">删除优选</a></if>
+										<if condition="$now_groupwxapp_category['cat_id']"><br/><a href="javascript:void(0);"onclick="window.o2oTop.artiframe('{pigcms{:U('Groupwxapp/product_edit',array('group_id'=>$vo['group_id']))}','编辑优选商品',600,460,true,false,false,editbtn,'edit',true);">编辑优选</a> | <a href="javascript:void(0);" class="delete_row" parameter="group_id={pigcms{$vo.group_id}" url="{pigcms{:U('Groupwxapp/product_del')}" tip="">删除优选</a></if>
 										</td>
 									</tr>
 								</volist>

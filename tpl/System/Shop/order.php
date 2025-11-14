@@ -119,7 +119,7 @@
                             <th>注册姓名</th>
                             <th>注册电话</th>
 							<th>总价<i class="menu-icon fa fa-sort"></i></th>
-							<th>平台优惠</th>
+							<th>SYSTEM_SHOP_ORDER_1</th>
 							<th>商家优惠</th>
 							<th>
 							<if condition="$type eq 'price'">
@@ -200,9 +200,9 @@
 									<td><!-- {pigcms{$vo.pay_status} --><span style="color: green">{pigcms{$vo.pay_type_str}</span></td>
 									<td class="textcenter">
 										<eq name="from_type" value='2'>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.mall_alias_name}订单详情',900,'90%',true,false,false,false,'detail',true);">查看</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.mall_alias_name}订单详情',900,'90%',true,false,false,false,'detail',true);">查看</a>
 										<else/>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.shop_alias_name}订单详情',900,'90%',true,false,false,false,'detail',true);">查看</a>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.shop_alias_name}订单详情',900,'90%',true,false,false,false,'detail',true);">查看</a>
 										</eq>										
 									</td>
 								</tr>
@@ -257,7 +257,7 @@ $(function(){
     });
     $('.refund').click(function(){
 		var get_url = $(this).data('href'), obj = $(this);
-		window.top.art.dialog({
+		window.o2oTop.art.dialog({
 			content: '您确定要手动退款吗？只取修改订单状态！',
 			lock: true,
 			ok: function () {
@@ -267,7 +267,7 @@ $(function(){
 						obj.parents('tr').find('.status').html('<del style="color:gray">已退款</del>');
 						obj.remove();
 					} else {
-						window.top.art.dialog({
+						window.o2oTop.art.dialog({
 							title: response.info
 						});
 					}

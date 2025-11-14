@@ -702,7 +702,8 @@ class Deliver_supplyModel extends Model
                         $supply['goods_price'] = isset($order['price']) ? $order['price'] : 0;//商品的预估费用
                         $supply['goods_weight'] = $order['weight'];//商品重量
                         $supply['server_time'] = $order['fetch_time'] ? $order['fetch_time'] : L_('立刻取货');//取货时间
-                        $supply['server_type'] = 1;//服务类型(1:帮我送，2：帮我买（指定地址），3：帮我买（未指定地址）；
+                        $supply['server_type'] = 1; //服务类型(1:帮我送，2：帮我买（指定地址），3：帮我买（未指定地址）；
+                        $supply['mer_id'] = $order['from_mer_id'] ?? 0;
                     }
                 }
 
@@ -783,6 +784,16 @@ class Deliver_supplyModel extends Model
         } else if ($supply['item'] == 3 && $supply['server_type'] == 1) {
             $checkOrderType = 3;
         }
+
+        //判断跑腿单是否来自商家中心，而且商家是否绑定了骑手
+        if (C('config.open_paotui_price_template') && $supply['item'] == 3 && $supply['mer_id'] > 0) {
+            $poolIds = D('Paotui_grab_pool_merchant')->alias('m')
+                ->join('INNER JOIN ' . C('DB_PREFIX') . 'paotui_grab_pool p ON p.id = m.pool_id')
+                ->where(['p.status' => 1, 'm.mer_id' => $supply['mer_id']])
+                ->getField('`p`.id,`m`.pool_id', true);
+            $poolIds = array_values($poolIds);
+        }
+
         foreach ($users as $user) {
             //判断配送员是否能接该类型订单
             $orderTypes = explode(',', $user['order_type']);
@@ -796,6 +807,15 @@ class Deliver_supplyModel extends Model
 			if($user['last_time'] == 0){
 				continue;
 			}
+
+            if (isset($poolIds) && $poolIds) {
+                //商家绑定了配送池，则只能配送池里的骑手才能抢单，其他骑手不允许抢单
+                $isBind = D('Paotui_grab_pool_deliver')->where(['pool_id' => ['IN', $poolIds], 'deliver_uid' => $user['uid']])->find();
+                if (empty($isBind)) {
+                    continue;
+                }
+            }
+
             if ($user['client'] == 0) {
                 if ($user['openid']) {
                     $model->sendTempMsg('TM00017',

@@ -14,9 +14,9 @@
                     </if>
 					<a href="{pigcms{$nowUrl}" class="on">{pigcms{$now_type_str}列表</a>
                     <if condition="$_GET['type'] eq 0">
-                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/add_area_street',array('area_pid'=>$area_id,'area_type'=>0,'from' => $_GET['from']))}','添加街道/乡镇',800,650,true,false,false,addbtn,'store_add',true);">添加街道/乡镇</a>
+                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/add_area_street',array('area_pid'=>$area_id,'area_type'=>0,'from' => $_GET['from']))}','添加街道/乡镇',800,650,true,false,false,addbtn,'store_add',true);">添加街道/乡镇</a>
                         <else/>
-                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/add_area_street',array('area_pid'=>$area_id,'area_type'=>1))}','添加社区/村',800,650,true,false,false,addbtn,'store_add',true);">添加社区/村</a>
+                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/add_area_street',array('area_pid'=>$area_id,'area_type'=>1))}','添加社区/村',800,650,true,false,false,addbtn,'store_add',true);">添加社区/村</a>
                     </if>
                 </ul>
 			</div>
@@ -91,7 +91,7 @@
                                             <if condition="$_GET['from'] neq 'house'">
                                             <a href="{pigcms{:U('Bill/merchant_percentage', array('street_id' => $vo['area_id']))}">数据统计</a> |
                                             </if>
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Area/add_area_street',array('area_type'=>$vo['area_type'],'area_id'=>$vo['area_id']))}','编辑',850,650,true,false,false,editbtn,'store_add',true);">编辑</a> |
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Area/add_area_street',array('area_type'=>$vo['area_type'],'area_id'=>$vo['area_id']))}','编辑',850,650,true,false,false,editbtn,'store_add',true);">编辑</a> |
 											<a href="javascript:void(0);" class="delete_row" parameter="area_id={pigcms{$vo.area_id}" url="{pigcms{:U('Area/del_area_street')}">删除</a>
 										</td>
 									</tr>

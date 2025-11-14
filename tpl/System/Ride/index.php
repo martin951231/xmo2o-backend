@@ -62,11 +62,11 @@
 										</if>
 									</td>
 									<td>
-										<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('show',array('ride_id'=>$vo['ride_id'],'frame_show'=>true))}','查看详细信息',600,400,true,false,false,false,'detail',true);">查看</a> -->
+										<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('show',array('ride_id'=>$vo['ride_id'],'frame_show'=>true))}','查看详细信息',600,400,true,false,false,false,'detail',true);">查看</a> -->
 
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('show',array('ride_id'=>$vo['ride_id']))}','查看详细信息',580,450,true,false,false,editbtn,'add',true);">查看</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('show',array('ride_id'=>$vo['ride_id']))}','查看详细信息',580,450,true,false,false,editbtn,'add',true);">查看</a>
 
-										| <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['user_id'],'ask'=>2,'ask_id'=>$vo['ride_id']))}','查看用户余额',600,400,true,false,false,false,'detail',true);">用户余额</a>
+										| <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['user_id'],'ask'=>2,'ask_id'=>$vo['ride_id']))}','查看用户余额',600,400,true,false,false,false,'detail',true);">用户余额</a>
 										<if condition="$vo['order_id']">| <a href="{pigcms{:U('order',array('ride_id'=>$vo['ride_id']))}">订单</a></if>
 									</td>
 								</tr>

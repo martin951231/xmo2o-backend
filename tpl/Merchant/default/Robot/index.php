@@ -38,7 +38,7 @@
 											<td>{pigcms{$vo.id}</td>
 										
 											<td>{pigcms{$vo.robot_name}</td>
-											<td><img style="width:60px;height:60px;" src="{pigcms{$vo.avatar}"></td>
+											<td><img style="width:60px;height:60px;" src="{pigcms{$vo.avatar|replace_file_domain=###}"></td>
 											<td>{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</td>
 										
 											<td style="text-align:center;"><a href="{pigcms{:U('del',array('id'=>$vo['id']))}">{pigcms{:L_("删除")}</a></td>

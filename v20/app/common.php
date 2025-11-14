@@ -530,11 +530,6 @@ function curlPost($url,$data,$timeout=45,$header = "Content-type: application/x-
     curl_setopt($ch ,CURLOPT_TIMEOUT ,$timeout);
     $result = curl_exec($ch);
     curl_close($ch);
-   //  $result = json_decode($result, true);
-    /*if ($result && $result['rstCode']) {
-        $rstCodeMsg = $this->a4_rstCode($result['rstCode']);
-        $result['rstCodeMsg'] = $rstCodeMsg;
-    }*/
     return $result;
 }
 
@@ -2027,12 +2022,15 @@ function base64_to_img($savePath,$file_name,$base64_file,$type='', $flags = '')
             $file_path = $savePath.$file_name;
         }
 	    // 从Base64字符串中移除数据类型和编码声明
-	    list($type, $data) = explode(';', $base64_file);
-	    list(, $base64_file) = explode(',', $data);
+        if(strpos($base64_file,';') && strpos($base64_file,',')){
+            list($type, $data) = explode(';', $base64_file);
+            list($tmp, $base64_file) = explode(',', $data);
+        }
+        $imgStr=base64_decode($base64_file);
         if ($flags) {
-            file_put_contents($file_path, base64_decode($base64_file), $flags);
+            file_put_contents($file_path,$imgStr, $flags);
         } else {
-            file_put_contents($file_path, base64_decode($base64_file));
+            file_put_contents($file_path,$imgStr);
         }
         $return_url = trim($file_path,'.');
     }catch (\Exception $exception){
@@ -2841,3 +2839,126 @@ function getExcelDataForUrl(string $file_url, array $keyData,array $jumpRow = [1
         yield $data;
     }
 }
+
+
+function toCamelCase($str) {
+	$array = explode('_', $str);
+	$result = $array[0];
+	for ($i = 1; $i < count($array); $i++) {
+		$result .= ucfirst($array[$i]);
+	}
+	return $result;
+}
+
+
+//楼宇系统交互post请求
+function building_request_post(string $path, array $data)
+{
+    $domain = cfg('building_domain');
+    $appkey = cfg('building_appkey');
+    if (empty($domain) || empty($appkey)) {
+        return false;
+    } else {
+        $data['org_id'] = cfg('building_org_id');
+        $data['appkey'] = $appkey;
+
+        if (strpos($path, 'http') === 0) {
+            $url = $path;
+        } else {
+            $url = $domain . $path;
+        }
+        return \net\Http::curlPostOwn($url, json_encode($data, JSON_UNESCAPED_UNICODE), 15, 'json');
+    }
+}
+
+//楼宇系统交互get请求
+function building_request_get(string $path)
+{
+    $domain = cfg('building_domain');
+    $appkey = cfg('building_appkey');
+    if (empty($domain) || empty($appkey)) {
+        return false;
+    } else {
+        if (strpos($path, 'http') === 0) {
+            $url = $path;
+        } else {
+            $url = $domain . $path;
+        }
+        return \net\Http::curlGet($url);
+    }
+}
+
+//省份简称
+function province_short_list()
+{
+    return ['北京' => '京', '天津' => '津', '上海' => '沪', '重庆' => '渝', '河北' => '冀', '河南' => '豫', '云南' => '云', '辽宁' => '辽', '黑龙' => '黑', '湖南' => '湘', '安徽' => '皖', '山东' => '鲁', '新疆' => '新', '江苏' => '苏', '浙江' => '浙', '江西' => '赣', '湖北' => '鄂', '广西' => '桂', '甘肃' => '甘', '山西' => '晋', '内蒙' => '蒙', '陕西' => '陕', '吉林' => '吉', '福建' => '闽', '贵州' => '贵', '广东' => '粤', '青海' => '青', '西藏' => '藏', '四川' => '川', '宁夏' => '宁', '海南' => '琼'];
+}
+
+
+//格式化时长
+function formate_park_duration($second)
+{
+    //将秒转换成X天X时Y分,精确到分即可
+    if ($second < 60) {
+        return '少于1分钟';
+    }
+    $day = floor($second / 86400);
+    $hour = floor($second / 3600) % 24;
+    $minute = floor($second / 60) % 60;
+
+    $duration = '';
+    if ($day > 0) {
+        $duration .= $day . '天';
+    }
+    if ($hour > 0) {
+        $duration .= $hour . '时';
+    }
+    if ($minute > 0) {
+        $duration .= $minute . '分';
+    }
+    return $duration;
+}
+
+//检查车牌号格式是否正确
+function is_valid_car_Numer($carNumber)
+{
+    // 普通车辆车牌：省份简称(1位汉字) + 字母(1位) + 字母数字组合(5位)
+    // 新能源车辆车牌：省份简称(1位汉字) + 字母(1位) + 字母数字组合(6位)
+    // 字母不包含I和O
+    $pattern = '/^[京津冀晋蒙辽吉黑沪苏浙皖闽赣鲁豫鄂湘粤桂琼渝川贵云藏陕甘青宁新][A-HJ-NP-Z](?:[A-HJ-NP-Z0-9]{5}|[A-HJ-NP-Z0-9]{6})$/u';
+    if (!preg_match($pattern, $carNumber)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+
+function createQrcode(array $qrcodeParams = [])
+{
+	require_once app()->getRootPath() . '/extend/phpqrcode/phpqrcode.php';
+	$qrcodeContent = $qrcodeParams['content'];
+	empty($qrcodeContent) && throw_exception('二维码内容不能为空', CustomException::class, 400);
+	$qrcodeSavePath = $qrcodeParams['save_path'];
+	empty($qrcodeSavePath) && throw_exception('二维码保存路径不能为空', CustomException::class, 400);
+	$qrcodeName = $qrcodeParams['file_name'];
+	empty($qrcodeName) && throw_exception('二维码文件名不能为空', CustomException::class, 400);
+
+	$level = $qrcodeParams['level'] ?? 'L';
+	$size = $qrcodeParams['size'] ?? '9';
+
+	$qrcodePath = app()->getRootPath() . '/../runtime/qrcode/' . $qrcodeSavePath;
+	if (!file_exists($qrcodePath)) {
+		mkdir($qrcodePath, 0755, true);
+	}
+	if (file_exists($qrcodePath . $qrcodeName)) {
+		$qrcodePath = str_replace('../', '', $qrcodePath . $qrcodeName);
+		return str_replace(app()->getRootPath(), cfg('site_url'), $qrcodePath);
+	}
+	$qrcode = new \QRcode();
+	$qrcode->png($qrcodeContent, $qrcodePath . $qrcodeName, $level, $size);
+	$qrcodePath = str_replace('../', '', $qrcodePath . $qrcodeName);
+	return str_replace(app()->getRootPath(), cfg('site_url'), $qrcodePath);
+}
+

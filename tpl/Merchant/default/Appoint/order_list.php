@@ -119,8 +119,10 @@
 										<td>
                                             <if condition="$vo['paid'] eq 0"><span style="color:red">{pigcms{:L_("未支付")}</span>
                                                 <elseif condition="$vo['paid'] eq 1" />
-                                                    <php>if ($vo['payment_status']!=1) {</php>
+                                                    <php>if ((floatval($vo['payment_money']) || floatval($vo['product_payment_price'])) && $vo['payment_status']!=1) {</php>
                                                         <span style="color:green">{pigcms{:L_("已支付")}</span>
+                                                    <php>} elseif (empty(floatval($vo['payment_money'])) && empty(floatval($vo['product_payment_price'])) && $vo['is_initiative']<=0) {</php>
+                                                        <span style="color:red">待支付</span>
                                                     <php>} elseif ($vo['service_status']<=0 && $vo['is_initiative']<=0) {</php>
                                                         <span style="color:green">定金已支付</span><span style="color:red">尾款待支付</span>
                                                     <php>} elseif ($vo['service_status']>0 && $vo['is_initiative']<=0) {</php>
@@ -132,7 +134,7 @@
                                                 <elseif condition="$vo['paid'] eq 2" /><span style="color:blue">{pigcms{:L_("已退款")}</span>
                                                 <elseif condition="$vo['paid'] eq 3" /><span style="color:green">{pigcms{:L_("已支付")}</span>
                                             </if>&nbsp;|&nbsp;
-                                            <if condition="$vo['is_del'] eq 0 AND ($vo['paid'] neq 3)"><span style="color:green">{pigcms{:L_("未取消")}</span>
+                                            <if condition="$vo['is_del'] eq 0 AND ($vo['paid'] neq 3) AND ($vo['paid'] neq 2)"><span style="color:green">{pigcms{:L_("未取消")}</span>
                                                 <elseif condition="($vo['is_del'] eq 1) || ($vo['is_del'] eq 5) || ($vo['paid'] eq 3)" /><span style="color:red">{pigcms{:L_("已取消【用户】")}</span>
                                                 <elseif condition="$vo['is_del'] eq 2" /><span style="color:red">{pigcms{:L_("已取消【平台】")}</span>
                                                 <elseif condition="$vo['is_del'] eq 3" /><span style="color:red">{pigcms{:L_("已取消【商家】")}</span>

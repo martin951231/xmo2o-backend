@@ -3651,7 +3651,7 @@ class PrintHaddle
                 }
             }
 
-            if (C('customization.feieyunPrintForWaimai') && $usePrinter['print_type'] == 4) {
+            if ($usePrinter['print_type'] == 4) {
                 return $this->feieyunPrintForWaimai($order_id, $status, $re, $isBookOrder,$usePrinter);
             }
             if ($usePrinter['print_type'] == 7) {
@@ -4195,7 +4195,7 @@ class PrintHaddle
                 }
             }
 
-            if (C('customization.feieyunPrintForWaimai') && $usePrinter['print_type'] == 4) {
+            if ($usePrinter['print_type'] == 4) {
                 return $this->feieyunPrintForWaimai($order_id, $status, $re, $isBookOrder,$usePrinter);
             }
             if ($usePrinter['print_type'] == 7) {

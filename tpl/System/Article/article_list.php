@@ -3,7 +3,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('Article/index')}" >分类列表</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Article/create')}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加分类</a>|
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Article/create')}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加分类</a>|
             <a href="{pigcms{:U('Article/article_list')}" class="on">文章列表</a>|
             <a href="{pigcms{:U('Article/comment_list')}">评论列表</a>
         </ul>
@@ -78,7 +78,7 @@
                                 </span>
                             </td>-->
                             <td style="text-align: center;">
-                                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Article/aricle_list_details',array('id'=>$vo['id'],'frame_show'=>true))}','查看',480,260,true,false,false,false,'detail',true);">查看</a> |
+                                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Article/aricle_list_details',array('id'=>$vo['id'],'frame_show'=>true))}','查看',480,260,true,false,false,false,'detail',true);">查看</a> |
                                 <a style="width:80px;height:26px;line-height:20px;" class="label label-sm label-info" title="查看评论" href="{pigcms{:U('comment_list',array('article_id'=>$vo['id']))}">查看评论</a>|
                                 <a style="width:80px;height:26px;line-height:20px;" class="label label-sm label-info" title="删除" href="javascript:void(0)" onclick="if(confirm('确认删除该文章及相关评论？')){location.href='{pigcms{:U('article_del',array('id'=>$vo['id']))}}'}">删除</a>
                             </td>

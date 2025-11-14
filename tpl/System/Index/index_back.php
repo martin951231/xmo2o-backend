@@ -7,7 +7,7 @@
 			<link rel="shortcut icon" href="{pigcms{$config.site_favicon}"/>
 		</if>
 		<title>后台管理 - {pigcms{$config.site_name}</title>
-		<script type="text/javascript">if(self!=top){window.top.location.href = "{pigcms{:U('Index/index')}";}var selected_module="{pigcms{:strval($_GET['module'])}",selected_action="{pigcms{:strval($_GET['action'])}",selected_url="{pigcms{:urldecode(strval(htmlspecialchars_decode($_GET['url'])))}";</script>
+		<script type="text/javascript">if(self!=top){window.o2oTop.location.href = "{pigcms{:U('Index/index')}";}var selected_module="{pigcms{:strval($_GET['module'])}",selected_action="{pigcms{:strval($_GET['action'])}",selected_url="{pigcms{:urldecode(strval(htmlspecialchars_decode($_GET['url'])))}";</script>
 		<script type="text/javascript" src="{pigcms{:C('JQUERY_FILE')}"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}js/artdialog/jquery.artDialog.js"></script>
 		<script type="text/javascript" src="{pigcms{$static_public}js/artdialog/iframeTools.js"></script>

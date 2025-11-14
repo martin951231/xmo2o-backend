@@ -351,6 +351,9 @@ class PileUserController extends CommunityBaseController
                 $order_id = $serviceHouseMeter->addOrderInfo($data);
                 if (!empty($order_id)) {
                     $link = get_base_url('pages/pay/check?order_id=' . $order_id.'&order_type=pile&is_weixin_pay='.$is_weixin_pay);
+                    if(in_array(request()->agent,array('iosapp','androidapp'))){
+                        $link = get_base_url('pages/pay/check?order_id=' . $order_id.'&order_type=pile');
+                    }
                     $is_hzhuizhisqcom=$this->hasCloudIntercom();
                     if($is_hzhuizhisqcom && $opt_pay_channel=='wx_mini' && $village_id==1){
                         $returnArr['jump_to_wx_mini']=1;

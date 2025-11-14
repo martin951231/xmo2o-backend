@@ -46,4 +46,9 @@ class UserLevelService
 
         return $result->toArray();
     }
+	
+	public static function levelList()
+	{
+		return UserLevel::field('id, level, lname')->select();
+	}
 }

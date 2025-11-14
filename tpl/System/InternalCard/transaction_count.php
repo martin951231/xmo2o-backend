@@ -83,7 +83,7 @@
 
             var url = '/admin.php?' + query + '&card_name=' + data.card_name + '&store_id=' + data.store_id + '&card_id=' + data.card_id;
 
-            window.top.artiframe(url,'交易明细',1000,560,true,false,false,null,'money_list',true);
+            window.o2oTop.artiframe(url,'交易明细',1000,560,true,false,false,null,'money_list',true);
         });
 
         $('.export-detail-excel').on('click', function() {

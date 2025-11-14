@@ -3,11 +3,11 @@
 		<div id="nav" class="mainnav_title">
 			<ul>
 				<a href="{pigcms{:U('Shop/sys_goods')}" class="on">商品列表</a>
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('goods_add')}','添加商品',600,420,true,false,false,addbtn,'add',true);">添加商品</a>
-				<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('goods_import')}','添加商品',600,420,true,false,false,addbtn,'add',true);">导入商品</a>
-                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('unzip')}','上传图片zip压缩包',750,460,true,false,false,addbtn,'add',true);" >上传图片zip压缩包</a>
-                <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('capture_store_goods')}','抓取店铺最新商品数据',800,600,true,false,false,addbtn,'capture_store_goods',true);" >抓取店铺最新商品数据</a>
-				<a href="javascript:void(0);" class="dblShow" style="display:none;-webkit-user-select:none;-webkit-touch-callout:none;" onclick="window.top.artiframe('{pigcms{:U('merchant_goods_unzip')}','上传商家商品图片',480,260,true,false,false,addbtn,'add',true);" >上传商家商品图片</a>
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('goods_add')}','添加商品',600,420,true,false,false,addbtn,'add',true);">添加商品</a>
+				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('goods_import')}','添加商品',600,420,true,false,false,addbtn,'add',true);">导入商品</a>
+                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('unzip')}','上传图片zip压缩包',750,460,true,false,false,addbtn,'add',true);" >上传图片zip压缩包</a>
+                <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('capture_store_goods')}','抓取店铺最新商品数据',800,600,true,false,false,addbtn,'capture_store_goods',true);" >抓取店铺最新商品数据</a>
+				<a href="javascript:void(0);" class="dblShow" style="display:none;-webkit-user-select:none;-webkit-touch-callout:none;" onclick="window.o2oTop.artiframe('{pigcms{:U('merchant_goods_unzip')}','上传商家商品图片',480,260,true,false,false,addbtn,'add',true);" >上传商家商品图片</a>
 			</ul>
 		</div>
 		<table class="search_table" width="100%">
@@ -34,7 +34,7 @@
                         <input type="button" value="批量删除" id="delete" class="button"/>
                         
 						<if condition="C('config.open_goods_status') eq 1">
-						<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Shop/goods_fast_status')}','快速审核',600,300,true,false,false,editbtn,'edit',true);" class="button" style="float:right;margin-right: 10px;">快速审核</a>
+						<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/goods_fast_status')}','快速审核',600,300,true,false,false,editbtn,'edit',true);" class="button" style="float:right;margin-right: 10px;">快速审核</a>
 						</if>
 					</form>
 				</td>
@@ -101,10 +101,10 @@
                                     </if>
 									<td class="textcenter">
                                         <if condition="$open_status eq 1">
-                                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id'],'frame_show'=>true,'is_status'=>1))}','查看商品信息',600,560,true,false,false,closebtn,'detail',true);"><if condition="$vo.status eq 0">审核<else/>重新审核</if></a> |
+                                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id'],'frame_show'=>true,'is_status'=>1))}','查看商品信息',600,560,true,false,false,closebtn,'detail',true);"><if condition="$vo.status eq 0">审核<else/>重新审核</if></a> |
                                         </if>
-                                        <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id'],'frame_show'=>true))}','查看商品信息',600,420,true,false,false,false,'detail',true);">查看</a> |
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id']))}','编辑商品信息',600,420,true,false,false,editbtn,'edit',true);">编辑</a> | 
+                                        <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id'],'frame_show'=>true))}','查看商品信息',600,420,true,false,false,false,'detail',true);">查看</a> |
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/goods_edit',array('goods_id'=>$vo['goods_id']))}','编辑商品信息',600,420,true,false,false,editbtn,'edit',true);">编辑</a> | 
 										<a href="javascript:void(0);" class="delete_row" parameter="goods_id={pigcms{$vo.goods_id}" url="{pigcms{:U('Shop/goods_del')}">删除</a>
 									</td>
 								</tr>

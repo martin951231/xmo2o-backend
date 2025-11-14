@@ -28,7 +28,7 @@ class MerchantMenuController extends AuthBaseController
      * @param string $method
      * @return array|mixed
      */
-    private function validateParameter($params,$scene): array
+	protected function validateParameter($params,$scene): array
     {
         $validate = validate(MerchantUserAccount::class);
         if (!$validate->scene($scene)->check($params)) {

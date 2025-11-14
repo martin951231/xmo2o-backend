@@ -88,15 +88,15 @@
                                             <td>{pigcms{$vo.pay_time|date='Y-m-d H:i:s',###}</td>
                                             <td>
 												<if condition="$_GET.type eq 'group'">
-												<a href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Group&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Group&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
 											<elseif condition="$_GET.type eq 'meal'" />
-												<a href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Foodshop&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Foodshop&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
 										
 											<elseif condition="$_GET.type eq 'appoint'" />
-												<a href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Appoint&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Appoint&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
 										
 											<elseif condition="$_GET.type eq 'shop'" />
-												<a href="javascript:void(0);" onclick="window.top.artiframe('/admin.php?g=System&c=Shop&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Shop&a=order_detail&order_id={pigcms{$vo.order_id}','查看订单详情',600,460,true,false,false,false,'order_edit',true);"><button>查看详情</button></a>
 										
 											</if>
 											

@@ -82,7 +82,7 @@
 										<td><if condition="$vo.create_time gt 0" >{pigcms{$vo.create_time|date="Y-m-d H:i:s",###}</if></td>
 										<td><if condition="$vo.last_time gt 0">{pigcms{$vo.last_time|date="Y-m-d H:i:s",###}<elseif condition="$vo.create_time gt 0" />{pigcms{$vo.create_time|date="Y-m-d H:i:s",###}</if></td>
 										<td>{pigcms{$vo.sort}</td>
-										<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/edit_sort',array('store_id' => $vo['store_id']))}','设置店铺',780,550,true,false,false,editbtn,'edit',true);">设置店铺</a></td>
+										<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/edit_sort',array('store_id' => $vo['store_id']))}','设置店铺',780,550,true,false,false,editbtn,'edit',true);">设置店铺</a></td>
 									</tr>
 								</volist>
 								<tr><td class="textcenter pagebar" colspan="14">{pigcms{$pagebar}</td></tr>

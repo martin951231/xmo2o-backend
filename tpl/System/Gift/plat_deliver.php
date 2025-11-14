@@ -127,14 +127,14 @@
         <tr>
             <th width="90">配送经纬度</th>
             <td>
-                <input class="col-sm-2" size="10" name="long_lat" id="long_lat" value="{pigcms{$now_shop['long']},{pigcms{$now_shop['lat']}" type="text" readonly="readonly" data-lat ="{pigcms{$now_shop['lat']}" data-long = "{pigcms{$now_shop['long']}" />
+                <input class="col-sm-2" size="20" name="long_lat" id="long_lat" value="{pigcms{$now_shop['long']},{pigcms{$now_shop['lat']}" type="text" readonly="readonly" data-lat ="{pigcms{$now_shop['lat']}" data-long = "{pigcms{$now_shop['long']}" />
                 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#modal-table" class="btn btn-sm btn-success" id="show_map_frame" data-toggle="modal">点击选取经纬度</a>
             </td>
         </tr>
         <tr>
             <th width="90">配送详细地址</th>
             <td>
-                <input class="col-sm-2" size="10" name="address"  value="{pigcms{$now_shop['address']}" type="text" />
+                <input class="col-sm-2" size="20" name="address"  value="{pigcms{$now_shop['address']}" type="text" />
                 
             </td>
         </tr>
@@ -149,7 +149,7 @@
         </tr>
         <tr class="delivery_range_type0">
             <th width="90">服务范围</th>
-            <td><input type="text" class="input fl" name="delivery_radius" value="{pigcms{$now_shop.delivery_radius|floatval}" id="reduce_money" size="10" tips="以店铺为起点的半径距离(单位：㎞)"/></td>
+            <td><input type="text" class="input fl" name="delivery_radius" value="{pigcms{$now_shop.delivery_radius|floatval}" id="reduce_money" size="20" tips="以店铺为起点的半径距离(单位：㎞)"/></td>
         </tr>
         <!--<tr class="delivery_range_type1">
             <th width="90">选择配送区域</th>
@@ -173,17 +173,17 @@
 
         <tr>
             <th width="90">配送时长</th>
-            <td><input type="text" class="input fl" name="s_send_time" value="{pigcms{$now_shop.s_send_time|intval}" size="10" tips="配送员从门店取货至送达用户所需要的时间(单位：分钟)"/></td>
+            <td><input type="text" class="input fl" name="s_send_time" value="{pigcms{$now_shop.s_send_time|intval}" size="20" tips="配送员从门店取货至送达用户所需要的时间(单位：分钟)"/></td>
         </tr>
 
         <!--<tr>
             <th width="90">起送价</th>
-            <td><input type="text" class="input fl" name="s_basic_price" value="{pigcms{$now_shop.s_basic_price|floatval}" size="10" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
+            <td><input type="text" class="input fl" name="s_basic_price" value="{pigcms{$now_shop.s_basic_price|floatval}" size="20" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
         </tr>
 
         <tr>
             <th width="90">加价送</th>
-            <td><input type="text" class="input fl" name="s_extra_price" value="{pigcms{$now_shop.s_extra_price|floatval}" size="10" tips="当订单的价格没有达到起送价的时候加价也可以配送"/></td>
+            <td><input type="text" class="input fl" name="s_extra_price" value="{pigcms{$now_shop.s_extra_price|floatval}" size="20" tips="当订单的价格没有达到起送价的时候加价也可以配送"/></td>
         </tr>
         <tr>
             <th width="90">开启虚拟配送费</th>
@@ -197,7 +197,7 @@
         <tr class="open_virtual">
             <th width="90">虚拟配送费</th>
             <td>
-                <input type="text" class="input fl" name="virtual_delivery_fee" value="{pigcms{$now_shop.virtual_delivery_fee|floatval}" size="10" tips="虚拟配送费"/>
+                <input type="text" class="input fl" name="virtual_delivery_fee" value="{pigcms{$now_shop.virtual_delivery_fee|floatval}" size="20" tips="虚拟配送费"/>
             </td>
         </tr>-->
         <!--<tr>
@@ -214,7 +214,7 @@
         </tr>
         <tr class="open_own">
             <th width="90">时段一起送价</th>
-            <td><input type="text" class="input fl" name="s_basic_price1" value="{pigcms{$now_shop.s_basic_price1|floatval}" size="10" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
+            <td><input type="text" class="input fl" name="s_basic_price1" value="{pigcms{$now_shop.s_basic_price1|floatval}" size="20" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
         </tr>
         <!--<tr class="open_own" >
             <th width="90">免配送费设置</th>
@@ -228,19 +228,19 @@
         </tr>-->
         <tr class="open_own free_type full_money">
             <th width="90">订单满</th>
-            <td><input type="text" class="input fl" name="s_full_money" value="{pigcms{$now_shop.s_full_money|floatval}" id="reduce_money" size="10" tips="（单位:{pigcms{$config['Currency_txt']}）上面一项选择了满免后，当订单达到该项指定金额免配送费"/></td>
+            <td><input type="text" class="input fl" name="s_full_money" value="{pigcms{$now_shop.s_full_money|floatval}" id="reduce_money" size="20" tips="（单位:{pigcms{$config['Currency_txt']}）上面一项选择了满免后，当订单达到该项指定金额免配送费"/></td>
         </tr>
         <tr class="open_own free_type">
             <th width="90">起步配送费</th>
-            <td><input type="text" class="input fl" name="s_delivery_fee" value="{pigcms{$now_shop.s_delivery_fee|floatval}" id="reduce_money" size="10" tips="在起步距离范围内的配送费（单位:{pigcms{$config['Currency_txt']}）"/></td>
+            <td><input type="text" class="input fl" name="s_delivery_fee" value="{pigcms{$now_shop.s_delivery_fee|floatval}" id="reduce_money" size="20" tips="在起步距离范围内的配送费（单位:{pigcms{$config['Currency_txt']}）"/></td>
         </tr>
         <tr class="open_own free_type">
             <th width="90">起步配送距离</th>
-            <td><input type="text" class="input fl" name="s_basic_distance" value="{pigcms{$now_shop.s_basic_distance|floatval}" id="reduce_money" size="10" tips="每单在起步距离（单位:公里）"/></td>
+            <td><input type="text" class="input fl" name="s_basic_distance" value="{pigcms{$now_shop.s_basic_distance|floatval}" id="reduce_money" size="20" tips="每单在起步距离（单位:公里）"/></td>
         </tr>
         <tr class="open_own free_type">
             <th width="90">每公里的配送费</th>
-            <td><input type="text" class="input fl" name="s_per_km_price" value="{pigcms{$now_shop.s_per_km_price|floatval}" id="reduce_money" size="10" tips="超出起步距离的路程每公里的单价，超出部分的配送费计算规则根据【配送条件>配送费计算方式中为准】，配送距离计算规格根据【配送条件>配送距离计算方式中为准】"/></td>
+            <td><input type="text" class="input fl" name="s_per_km_price" value="{pigcms{$now_shop.s_per_km_price|floatval}" id="reduce_money" size="20" tips="超出起步距离的路程每公里的单价，超出部分的配送费计算规则根据【配送条件>配送费计算方式中为准】，配送距离计算规格根据【配送条件>配送距离计算方式中为准】"/></td>
         </tr>
         <if condition="$is_have_two_time">
             <tr class="open_own" >
@@ -248,7 +248,7 @@
             </tr>
             <tr class="open_own">
                 <th width="90">时段二起送价</th>
-                <td><input type="text" class="input fl" name="s_basic_price2" value="{pigcms{$now_shop.s_basic_price2|floatval}" size="10" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
+                <td><input type="text" class="input fl" name="s_basic_price2" value="{pigcms{$now_shop.s_basic_price2|floatval}" size="20" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
             </tr>
             <!--<tr class="open_own" >
                 <th width="90">免配送费设置</th>
@@ -262,19 +262,19 @@
             </tr>-->
             <tr class="open_own free_type2 full_money2">
                 <th width="90">订单满</th>
-                <td><input type="text" class="input fl" name="s_full_money2" value="{pigcms{$now_shop.s_full_money2|floatval}" id="reduce_money" size="10" tips="（单位:{pigcms{$config['Currency_txt']}）上面一项选择了满免后，当订单达到该项指定金额免配送费"/></td>
+                <td><input type="text" class="input fl" name="s_full_money2" value="{pigcms{$now_shop.s_full_money2|floatval}" id="reduce_money" size="20" tips="（单位:{pigcms{$config['Currency_txt']}）上面一项选择了满免后，当订单达到该项指定金额免配送费"/></td>
             </tr>
             <tr class="open_own free_type2">
                 <th width="90">起步配送费</th>
-                <td><input type="text" class="input fl" name="s_delivery_fee2" value="{pigcms{$now_shop.s_delivery_fee2|floatval}" id="reduce_money" size="10" tips="在起步距离范围内的配送费（单位:{pigcms{$config['Currency_txt']}）"/></td>
+                <td><input type="text" class="input fl" name="s_delivery_fee2" value="{pigcms{$now_shop.s_delivery_fee2|floatval}" id="reduce_money" size="20" tips="在起步距离范围内的配送费（单位:{pigcms{$config['Currency_txt']}）"/></td>
             </tr>
             <tr class="open_own free_type2">
                 <th width="90">起步配送距离</th>
-                <td><input type="text" class="input fl" name="s_basic_distance2" value="{pigcms{$now_shop.s_basic_distance2|floatval}" id="reduce_money" size="10" tips="每单在起步距离（单位:公里）"/></td>
+                <td><input type="text" class="input fl" name="s_basic_distance2" value="{pigcms{$now_shop.s_basic_distance2|floatval}" id="reduce_money" size="20" tips="每单在起步距离（单位:公里）"/></td>
             </tr>
             <tr class="open_own free_type2">
                 <th width="90">每公里的配送费</th>
-                <td><input type="text" class="input fl" name="s_per_km_price2" value="{pigcms{$now_shop.s_per_km_price2|floatval}" id="reduce_money" size="10" tips="超出起步距离的路程每公里的单价，超出部分的配送费计算规则根据【配送条件>配送费计算方式中为准】，配送距离计算规格根据【配送条件>配送距离计算方式中为准】"/></td>
+                <td><input type="text" class="input fl" name="s_per_km_price2" value="{pigcms{$now_shop.s_per_km_price2|floatval}" id="reduce_money" size="20" tips="超出起步距离的路程每公里的单价，超出部分的配送费计算规则根据【配送条件>配送费计算方式中为准】，配送距离计算规格根据【配送条件>配送距离计算方式中为准】"/></td>
             </tr>
         </if>
         <if condition="$is_have_three_time">
@@ -283,7 +283,7 @@
             </tr>
             <tr class="open_own">
                 <th width="90">时段三起送价</th>
-                <td><input type="text" class="input fl" name="s_basic_price3" value="{pigcms{$now_shop.s_basic_price3|floatval}" size="10" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
+                <td><input type="text" class="input fl" name="s_basic_price3" value="{pigcms{$now_shop.s_basic_price3|floatval}" size="20" tips="每单达到这个价格才给予配送，设置为0和0以上生效，设置-1寻找上级设置"/></td>
             </tr>
             <!--<tr class="open_own" >
                 <th width="90">免配送费设置</th>
@@ -298,19 +298,19 @@
             </tr>-->
             <tr class="open_own free_type3 full_money3">
                 <th width="90">订单满</th>
-                <td><input type="text" class="input fl" name="s_full_money3" value="{pigcms{$now_shop.s_full_money3|floatval}" id="reduce_money" size="10" tips="（单位:{pigcms{$config['Currency_txt']}）上面一项选择了满免后，当订单达到该项指定金额免配送费"/></td>
+                <td><input type="text" class="input fl" name="s_full_money3" value="{pigcms{$now_shop.s_full_money3|floatval}" id="reduce_money" size="20" tips="（单位:{pigcms{$config['Currency_txt']}）上面一项选择了满免后，当订单达到该项指定金额免配送费"/></td>
             </tr>
             <tr class="open_own free_type3">
                 <th width="90">起步配送费</th>
-                <td><input type="text" class="input fl" name="s_delivery_fee3" value="{pigcms{$now_shop.s_delivery_fee3|floatval}" id="reduce_money" size="10" tips="在起步距离范围内的配送费（单位:{pigcms{$config['Currency_txt']}）"/></td>
+                <td><input type="text" class="input fl" name="s_delivery_fee3" value="{pigcms{$now_shop.s_delivery_fee3|floatval}" id="reduce_money" size="20" tips="在起步距离范围内的配送费（单位:{pigcms{$config['Currency_txt']}）"/></td>
             </tr>
             <tr class="open_own free_type3">
                 <th width="90">起步配送距离</th>
-                <td><input type="text" class="input fl" name="s_basic_distance3" value="{pigcms{$now_shop.s_basic_distance3|floatval}" id="reduce_money" size="10" tips="每单在起步距离（单位:公里）"/></td>
+                <td><input type="text" class="input fl" name="s_basic_distance3" value="{pigcms{$now_shop.s_basic_distance3|floatval}" id="reduce_money" size="20" tips="每单在起步距离（单位:公里）"/></td>
             </tr>
             <tr class="open_own free_type3">
                 <th width="90">每公里的配送费</th>
-                <td><input type="text" class="input fl" name="s_per_km_price3" value="{pigcms{$now_shop.s_per_km_price3|floatval}" id="reduce_money" size="10" tips="超出起步距离的路程每公里的单价，超出部分的配送费计算规则根据【配送条件>配送费计算方式中为准】，配送距离计算规格根据【配送条件>配送距离计算方式中为准】"/></td>
+                <td><input type="text" class="input fl" name="s_per_km_price3" value="{pigcms{$now_shop.s_per_km_price3|floatval}" id="reduce_money" size="20" tips="超出起步距离的路程每公里的单价，超出部分的配送费计算规则根据【配送条件>配送费计算方式中为准】，配送距离计算规格根据【配送条件>配送距离计算方式中为准】"/></td>
             </tr>
         </if>
     </table>
@@ -539,7 +539,7 @@
         }
     </script>
     <else />
-    <script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
     <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
     <script>
         var is_have_two_time = '{pigcms{$is_have_two_time}';
@@ -860,7 +860,7 @@
     var static_public="./static/",merchant_index="/merchant.php?g=Merchant&c=Index&a=index",choose_province="/merchant.php?g=Merchant&c=Area&a=ajax_province",choose_city="/merchant.php?g=Merchant&c=Area&a=ajax_city",choose_area="/merchant.php?g=Merchant&c=Area&a=ajax_area",choose_circle="/merchant.php?g=Merchant&c=Area&a=ajax_circle",choose_market="/merchant.php?g=Merchant&c=Area&a=ajax_market",choose_cat_fid="/merchant.php?g=Merchant&c=Merchant_category&a=ajax_cat_fid",choose_cat_id="/merchant.php?g=Merchant&c=Merchant_category&a=ajax_cat_id";
 </script>
 <script type="text/javascript" src="./tpl/Merchant/default/static/js/area.js"></script>
-<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
 <script type="text/javascript" src="./tpl/Merchant/default/static/js/map.js"></script><script type="text/javascript" src="./tpl/Merchant/default/static/js/merchant_category.js"></script>
 
 <link rel="stylesheet" href="./static/kindeditor/themes/default/default.css">

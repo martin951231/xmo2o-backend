@@ -785,5 +785,39 @@ class GiftAction extends BaseAction{
         }
     }
 
+    //积分商城平台配送发货
+    public function send_deliver()
+    {
+        $orderId = intval($_POST['order_id']);
+        if (empty($orderId)) {
+            $this->error('订单编号不能为空！');
+        }
+        $order = D('Gift_order')->where(array('order_id' => $orderId))->find();
+        if (empty($order)) {
+            $this->error('订单不存在！');
+        }
+        if ($order['status'] != 0) {
+            $this->error('订单已发货，请勿重复操作！');
+        }
+        if ($order['is_pick_in_store'] != 2) {
+            $this->error('非平台配送订单，无法发货！');
+        }
+
+        try {
+            D('Gift_order')->startTrans();
+            //获取平台配送设置
+            $plat_deliver = M('Gift_plat_deliver')->where(array('id' => 2))->find();
+            $result = D('Deliver_supply')->saveOrder($orderId, $plat_deliver, '', 'gift_order');
+
+            D('Gift_order')->where(array('order_id' => $orderId, 'status' => 0))->setField('status', 1);
+            D('System_order')->save_order_status("gift", $orderId, 1);
+            D('Gift_order')->commit();
+            $this->success('发货成功！');
+        } catch (Exception $e) {
+            D('Gift_order')->rollback();
+            $this->error($e->getMessage());
+        }
+    }
+
 }
 

@@ -19,7 +19,7 @@
 		<div class="count-down bg-cover" style="background-image: url({pigcms{$static_path}villagegroup/images/textBg.jpg);">
 			<if condition="$order.status eq 0">
 			<span class="font_size18">待付款</span>
-			<if condition="$order['status'] eq 0 AND $order['add_time'] GT 0 AND $order['add_time']+1800 gt time()"><span class="font_size12" >(剩余<em id="time"></em>)</span></if>
+			<if condition="$order['status'] eq 0 AND $order['add_time'] GT 0 AND $order['add_time']+$unpaid_timeout_seconds gt time()"><span class="font_size12" >(剩余<em id="time"></em>)</span></if>
 			<elseif condition="$order.status eq 1" />
 			<span class="font_size18">已支付，未发货</span>
 			<elseif condition="$order.status eq 2" />
@@ -459,8 +459,8 @@
 		}();		
 	
 		$(function(){
-			<if condition="$order['status'] eq 0 AND $order['add_time'] GT 0 AND $order['add_time']+1800 gt time()">
-				addTimer('time',"{pigcms{$order['add_time']+1800}");
+			<if condition="$order['status'] eq 0 AND $order['add_time'] GT 0 AND $order['add_time']+$unpaid_timeout_seconds gt time()">
+				addTimer('time',"{pigcms{$order['add_time']+$unpaid_timeout_seconds}");
 			</if>
 		});
 

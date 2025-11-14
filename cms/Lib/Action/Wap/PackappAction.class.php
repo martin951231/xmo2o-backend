@@ -482,7 +482,7 @@ class PackappAction extends BaseAction{
 			);
             fdump_api([$third_login,$from_type],'weixin_back_230105',1);
 			if($third_id = M('User_tmp_third')->data($third_login)->add()){
-                if ($from_type=='park_new'){
+                if (in_array($from_type, ['park_new','maiyatian'])){
 					isset($jsonrt['unionid']) && $jsonrt['union_id'] = $jsonrt['unionid'];
                     if ($uid = D('User')->autoreg($jsonrt)){
                         fdump_api([$uid,$jsonrt],'weixin_back_230105',1);

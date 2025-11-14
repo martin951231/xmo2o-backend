@@ -8,7 +8,7 @@
 <script src="{pigcms{$static_path}js/common.js" type="text/javascript"></script>
 <link href="{pigcms{$static_path}css/style.css" rel="stylesheet" type="text/css" />
 <script src="/static/js/jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=4c1bb2055e24296bbaef36574877b4e2"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak={pigcms{$config.baidu_map_ak_web}"></script>
 <link rel="stylesheet" type="text/css" href="{pigcms{$static_path}css/cymain.css" />
 <script type="text/javascript" src="./static/js/artdialog/jquery.artDialog.js"></script>
 <script type="text/javascript" src="./static/js/artdialog/iframeTools.js"></script>

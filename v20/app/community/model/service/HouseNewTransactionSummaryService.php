@@ -1913,15 +1913,15 @@ class HouseNewTransactionSummaryService
             $online_pay_type = array();
             $offline_pay_type_order = 0;
             $where_summary_pay_type = 0;
-            $exportTitle[] = $tvt['name'];
             $paytype_key = 'paytype_' . $tvt['id'];
             $userBalanceArr[$paytype_key] = 0;
-            $userBalanceArrTmp[$paytype_key] = '0';
-            $allTotalArr[$paytype_key] = 0;
             if ($pay_type_arr[0] == 4 && $pay_type_arr[1] == 0) {
                 //去掉线上支付-余额支付
                 continue;
             }
+            $exportTitle[] = $tvt['name'];
+            $userBalanceArrTmp[$paytype_key] = '0';
+            $allTotalArr[$paytype_key] = 0;
             $whereMoneyLogTmp = $whereMoneyLog;
             if ($pay_type_arr[0] == 1) {
                 $userBalanceArr[$paytype_key] = 0;
@@ -1970,6 +1970,15 @@ class HouseNewTransactionSummaryService
                 //建行支付
                 $online_pay_type[] = 'constructionPay';
                 $userBalanceArr[$paytype_key] = 0;
+                $whereMoneyLogTmp[] = array('pay_type', '=', 'constructionPay');
+                $userMoneyLogObj = $villageUserMoneyLogDb->getOne($whereMoneyLogTmp, 'sum(ROUND(money,2)) as t_money');
+                if ($userMoneyLogObj && !$userMoneyLogObj->isEmpty()) {
+                    $userBalanceArr[$paytype_key] = $userMoneyLogObj['t_money'] ? $userMoneyLogObj['t_money'] : 0;
+                    $userBalanceArrTmp[$paytype_key] = $userBalanceArr[$paytype_key];
+                    $userBalanceArr['all_pay_money'] += $userBalanceArr[$paytype_key];
+                    $allTotalArr[$paytype_key] += $userBalanceArr[$paytype_key];
+                }
+                
             } else if ($pay_type_arr[0] == 22) {
                 $pay_type_where_order[] = 22;
             } elseif ($pay_type_arr[0] == 9) {
@@ -2092,7 +2101,6 @@ class HouseNewTransactionSummaryService
                     $where_summary_pay_type = 0;
                     $paytype_key = 'paytype_' . $tt['id'];
                     $chargeProject[$pkk][$paytype_key] = 0;
-                    $tmpArr[$paytype_key] = '0';
                     $pay_type_arr = explode('-', $tt['id']);
                     $whereArrTmp = $whereArr;
                     $whereArrTmp[] = array('o.project_id', '=', $pvv['id']);
@@ -2130,6 +2138,9 @@ class HouseNewTransactionSummaryService
                         $where_summary_pay_type = 3;
                         $online_pay_type[] = '';
                     }
+                    if($is_user_balance<1){
+                        $tmpArr[$paytype_key] = '0';
+                    }
                     if ($pay_type_where_order) {
                         $pay_type_where_order = array_unique($pay_type_where_order);
                         $whereArrTmp[] = ['o.pay_type', 'in', $pay_type_where_order];
@@ -2160,11 +2171,14 @@ class HouseNewTransactionSummaryService
                         $all_pay_money_tmp = $sumOrderMoney['all_pay_money'] - $sumOrderMoney['all_refund_money']; //减去退款的
                         $all_pay_money_tmp = $all_pay_money_tmp > 0 ? round($all_pay_money_tmp, 2) : 0;
                         $chargeProject[$pkk][$paytype_key] = $all_pay_money_tmp;
-                        $tmpArr[$paytype_key] = $all_pay_money_tmp;
                         if ($is_user_balance == 1) {
                             $chargeProject[$pkk]['all_pay_money'] = $chargeProject[$pkk]['all_pay_money'] - $sumOrderMoney['all_pay_money'];
                             $chargeProject[$pkk]['all_pay_money'] = $chargeProject[$pkk]['all_pay_money'] > 0 ? round($chargeProject[$pkk]['all_pay_money'], 2) : 0;
+                            $tmpArr['all_pay_money']=$chargeProject[$pkk]['all_pay_money'];
+                            
                             $allTotalArr['all_pay_money'] = $allTotalArr['all_pay_money'] - $sumOrderMoney['all_pay_money'];
+                        }else{
+                            $tmpArr[$paytype_key] = $all_pay_money_tmp;
                         }
                     }
                     if ($is_user_balance == 1) {

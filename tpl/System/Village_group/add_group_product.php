@@ -39,7 +39,7 @@
 			<tr >
 				<th width="80">图片详情</th>
 				<td id="product_detail_td">
-                    <a href="javascript:void(0)" class="btn btn-sm btn-success J_selectImage" style="display:inline-block;">上传图片</a>&nbsp;&nbsp;建议尺寸：500*500或其他尺寸正方形,拖拽图片即可调整顺序
+                    <a href="javascript:void(0)" class="btn btn-sm btn-success J_selectImage" style="display:inline-block;">上传图片</a>&nbsp;&nbsp;建议尺寸：500*500或其他尺寸正方形,大小5M以下,拖拽图片即可调整顺序
                     <input type="hidden" class="input-image" name="pic_list" id="pic_list" value="<if condition="$group['pic_list'] neq ''">{pigcms{$group['pic_list']}<else />{pigcms{$group['image']}</if>"/>
                     <ul class="image_product_list" id="group_product_detail">
 
@@ -167,7 +167,7 @@
 			<tr>
 				<th width="80">商品佣金</th>
 				<td><input type="text" class="input fl" name="leader_money" id="leader_money" size="25" value="{pigcms{$group.leader_money|default='0'}" placeholder="" tips="可以不设置，不设置的情况下，团长佣金按团长的佣金配置计算，配置了就按商品独立的佣金配置计算，20  表示单位商品分给团长的佣金比例为百分之20（商品售价的百分比），0代表不设置 " validate="required:true"/>
-				</td>
+				%</td>
 			</tr>
 
 			<tr>
@@ -849,9 +849,9 @@
         //             console.log('info', result.info);
         //             alert(result.info)
         //         }else{
-        //             window.top.msg(1,result.info,true,3);
-        //             window.top.main_refresh();
-        //             window.top.closeiframe();
+        //             window.o2oTop.msg(1,result.info,true,3);
+        //             window.o2oTop.main_refresh();
+        //             window.o2oTop.closeiframe();
         //         }
         //     }, 'json');
         //     return false;
@@ -896,7 +896,7 @@
 				fileNumLimit: 20,
 				fileVal: 'imgFile',
 				fileSizeLimit: 5 * 1024 * 1024,    //200 M
-				fileSingleSizeLimit: 1 * 1024 * 1024    //50 M
+				fileSingleSizeLimit: 5 * 1024 * 1024    //50 M
 			});
 			
 			uploader.on( 'fileQueued', function( file ) {

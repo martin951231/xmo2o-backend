@@ -63,7 +63,7 @@
 									<td>{pigcms{$vo.addtime}</td>
 									<td class="textcenter">
 										<if condition="!empty($vo['play_url'])">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Live/livevideo_replay',array('video_id'=>$vo['video_id'],'frame_show'=>true))}','查看短视频详情',375,667,true,false,false,false,'detail',true);">播放</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Live/livevideo_replay',array('video_id'=>$vo['video_id'],'frame_show'=>true))}','查看短视频详情',375,667,true,false,false,false,'detail',true);">播放</a>
 										</if>
 										<a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.video_id}" url="{pigcms{:U('Live/delete_video')}">删除</a>	
 									</td>

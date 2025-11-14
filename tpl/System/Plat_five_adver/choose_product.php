@@ -12,11 +12,11 @@
 				$('.item_'+active_item).addClass('active');
 			
 				$('button.js-choose').live('click',function(){
-					var parentIframe = window.top.getParentIframe()
+					var parentIframe = window.o2oTop.getParentIframe()
 					if(parentIframe){
 						console.log($(this).data('data'));
 						parentIframe.choose_product($.parseJSON($(this).siblings('.data').text()));
-						window.top.closeiframe()
+						window.o2oTop.closeiframe()
 					}else{
 						alert('团购');
 					}

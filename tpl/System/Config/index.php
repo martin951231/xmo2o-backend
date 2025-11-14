@@ -57,7 +57,7 @@
 					<input type="button" value="修复店铺营业时间" class="button dblShow" id="repair_store_time" style="display:none;"/>
 					<if condition="$gid eq 8">
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="button" value="微信API接口填写信息" class="button" onclick="window.top.artiframe('{pigcms{:U('Config/show',array('id'=>$vo['id']))}','API接口信息',560,100,true,false,false,'','add',true);"/>
+						<input type="button" value="微信API接口填写信息" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Config/show',array('id'=>$vo['id']))}','API接口信息',560,100,true,false,false,'','add',true);"/>
 					</if>
 				</div>
 			</form>
@@ -93,73 +93,73 @@
 				}
 				
 				$('#im_key').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/im')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,3);
+							window.o2oTop.msg(0,data.msg,true,3);
 						}else{
-							window.top.msg(1,data.msg,true,3);
+							window.o2oTop.msg(1,data.msg,true,3);
 						}
 					},'json');
 				});
 				$('#change_https').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/change_https')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,3);
+							window.o2oTop.msg(0,data.msg,true,3);
 						}else{
-							window.top.msg(1,data.msg,true,5);
+							window.o2oTop.msg(1,data.msg,true,5);
 						}
 					},'json');
 				});
 				$('#check_baidu_map').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/check_baidu_map')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,3);
+							window.o2oTop.msg(0,data.msg,true,3);
 						}else{
-							window.top.msg(1,data.msg,true,3);
+							window.o2oTop.msg(1,data.msg,true,3);
 						}
 					},'json');
 				});
 				$('#live_service_key').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/live_service')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,3);
+							window.o2oTop.msg(0,data.msg,true,3);
 						}else{
-							window.top.msg(1,data.msg,true,3);
+							window.o2oTop.msg(1,data.msg,true,3);
 						}
 					},'json');
 				});
 				$('#get_wechat_code').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/get_wechat_code')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,10);
+							window.o2oTop.msg(0,data.msg,true,10);
 						}else{
-							window.top.msg(1,data.msg,true,6);
+							window.o2oTop.msg(1,data.msg,true,6);
 						}
 					},'json');
 				});
 				$('#repair_pc_qrcode').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/repair_pc_qrcode')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,3);
+							window.o2oTop.msg(0,data.msg,true,3);
 						}else{
-							window.top.msg(1,data.msg,true,3);
+							window.o2oTop.msg(1,data.msg,true,3);
 						}
 					},'json');
 				});
 
 				$('#repair_store_time').click(function(){
-					window.top.msg(2,'正在请求中,请稍等...',true,100);
+					window.o2oTop.msg(2,'正在请求中,请稍等...',true,100);
 					$.get("{pigcms{:U('Config/repair_store_time')}",function(data){
 						if(data.error_code){
-							window.top.msg(0,data.msg,true,3);
+							window.o2oTop.msg(0,data.msg,true,3);
 						}else{
-							window.top.msg(1,data.msg,true,3);
+							window.o2oTop.msg(1,data.msg,true,3);
 						}
 					},'json');
 				});
@@ -436,6 +436,54 @@
                 window.editor = K.create('#config_recruit_agreement',{pasteType : 1,resizeType : 1,width:"60%",height:"400px",uploadJson : "{pigcms{$config.site_url}/index.php?g=Index&c=Upload&a=editor_ajax_upload&upload_dir=recruit"});
                 window.editor = K.create('#config_merchant_recharge_agreement',{pasteType : 1,resizeType : 1,width:"60%",height:"400px",uploadJson : "{pigcms{$config.site_url}/index.php?g=Index&c=Upload&a=editor_ajax_upload&upload_dir=merchant_recharge"});
 			});
+
+            $(document).on('click', '.show-select-value', function(){
+                if ($(this).find('.list').attr('class').indexOf('active') != -1) {
+                    $(this).find('.list').removeClass('active');
+                    return
+                }
+                $(this).find('.list').addClass('active').css('bottom', -$(this).find('.list').height()-2)
+            })
+
+            $(document).on('click', '.show-select-value .list .item', function(){
+                var label_id = $(this).data('id');
+
+                var label_ids = $(this).closest('.show-select-value').find('.hidden_multi_select').val();
+                if (label_ids != '') {
+                    var label_ids_arr = label_ids.split(',');
+                    var selected = 0;
+                    $.each(label_ids_arr,function (index,j) {
+                        if(label_id == j){
+                            selected = 1;
+                        }
+                    })
+                    if (selected==0) {
+                        label_ids_arr.push(label_id);
+                        label_ids = label_ids_arr.join(',');
+                        $(this).closest('.show-select-value').find('.hidden_multi_select').val(label_ids);
+                    }else{
+                        $(this).closest('.show-select-value').find('.list').removeClass('active');
+                        return false;
+                    }
+                }else{
+                    $(this).closest('.show-select-value').find('.hidden_multi_select').val(label_id);
+                }
+                $(this).closest('.show-select-value').find('.select-list').append('<div class="item" data-id="'+label_id+'" >'+ $(this).html() +'<span class="icon">×</span></div>');
+                $(this).closest('.show-select-value').find('.list').removeClass('active');
+				return false
+            })
+
+            $(document).on('click', '.show-select-value .select-list .item .icon', function(){
+                var label_id = $(this).parent().attr("data-id");
+                var label_ids = $(this).closest('.show-select-value').find('.hidden_multi_select').val();
+                var label_ids_arr = label_ids.split(',');
+
+                label_ids_arr.splice($.inArray(label_id,label_ids_arr),1);
+                label_ids = label_ids_arr.join(',');
+                $(this).closest('.show-select-value').find('.hidden_multi_select').val(label_ids);
+                $(this).parents('.item').remove()
+                return false
+            })
 		</script>
 		<style>
 			.dblDom{
@@ -561,5 +609,14 @@
 				height: 22px;
 				margin-top: 6px !important;
 			}
+            .show-select-value{position: relative;float: left;border: 1px solid #d5d5d5;width: 400px;min-height: 30px;border-radius: 2px;background: #fff;}
+            .show-select-value .select-list{margin: 10px}
+            .show-select-value .select-list .item{float: left;border:1px solid #d5d5d5;background: #f2f2f2;padding:0 5px;margin: 0 10px 10px 0;border-radius: 2px;}
+            .show-select-value .select-list .item .icon{padding: 0 5px;font-weight: bold;cursor: pointer;}
+            .show-select-value .select-icon{position: absolute;right: 10px;top: 17px;vertical-align: middle;width: 0;height: 0;border: 5px solid transparent;border-top-color:#666;}
+            .show-select-value .list{position: absolute;bottom: -100px;width: 400px;border: 1px solid #1686ef;background: #fff;border-radius: 2px;display: none;z-index: 10;}
+            .show-select-value .list.active{display: block;}
+            .show-select-value .list .item{padding: 2px 10px}
+            .show-select-value .list .item:hover{background: #1686ef;color: #fff;}
 		</style>
 <include file="Public:footer"/>

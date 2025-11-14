@@ -449,7 +449,7 @@ class CashierController extends CommunityBaseController
             $group = 'p.project_id';
             $field = "j.name as charge_name,p.project_id,p.position_id,p.room_id,p.is_discard,sum(p.modify_money) as modify_money,sum(p.total_money) as total_money,sum(p.late_payment_day) as late_payment_day,sum(p.late_payment_money) as late_payment_money,p.order_id,p.modify_time,p.order_name,p.order_type,p.property_id,j.type,p.village_id,p.check_status,p.check_apply_id,p.pigcms_id,p.service_start_time,p.service_end_time,p.service_month_num,p.service_give_month_num,p.add_time,p.rule_id,p.unify_flage_id";
            
-            $field.=',p.ticket_number';
+            $field.=',p.ticket_number,p.meter_reading_id,p.order_type_flag';
            
             
             $where[] = ['p.room_id', '=', $room_id];
@@ -538,7 +538,7 @@ class CashierController extends CommunityBaseController
                 $whereArr[]=array('bp.user_id','=',$user_bind_pigcms_id);
                 $whereArr[]=array('bp.village_id','=',$village_id);
                 $whereArr[]=array('pp.village_id','=',$village_id);
-                $bindPosition=$service_house_village_parking->getUserBindPositionList($whereArr,'pp.position_id,pp.village_id,pp.garage_id,pp.position_num');
+                $bindPosition=$service_house_village_parking->getUserBindPositionList($whereArr,'pp.position_id,pp.village_id,pp.garage_id,pp.position_num,pp.position_type,pp.position_pattern');
                 if(!empty($bindPosition)){
                     $bindCars=$service_house_village_parking->handleBindCarAndPosition($bindCars,$bindPosition);
                 }
@@ -558,13 +558,13 @@ class CashierController extends CommunityBaseController
             }
         }else{
             $position_id = $key_info[0];
-            $position_info = $service_house_village_parking->getParkingPositionByCondition(['pp.position_id'=>$position_id],'pp.end_time,pp.position_pattern,pp.garage_id,pp.position_area,pg.garage_num,pp.position_num');
+            $position_info = $service_house_village_parking->getParkingPositionByCondition(['pp.position_id'=>$position_id],'pp.end_time,pp.position_pattern,pp.position_type,pp.garage_id,pp.position_area,pg.garage_num,pp.position_num');
             $where[] = ['p.position_id','=',$position_id];
             $whereJzOpen[] = ['o.position_id', '=', $position_id];
             $group = 'p.project_id';
             $field = "j.name as charge_name,p.project_id,p.position_id,p.room_id,p.is_discard,sum(p.modify_money) as modify_money,sum(p.total_money) as total_money,sum(p.late_payment_day) as late_payment_day,sum(p.late_payment_money) as late_payment_money,p.order_id,p.modify_time,p.order_name,p.order_type,p.property_id,j.type,p.village_id,p.check_status,p.check_apply_id,p.pigcms_id,p.service_start_time,p.service_end_time,p.service_month_num,p.service_give_month_num,p.add_time,p.rule_id,p.unify_flage_id";
             
-            $field.=',p.ticket_number';
+            $field.=',p.ticket_number,p.meter_reading_id,p.order_type_flag';
             
             $where['check_level_info']=$check_level_info;
             $where['modifyCheckLevelArr'] = $modifyCheckLevelArr;
@@ -600,7 +600,7 @@ class CashierController extends CommunityBaseController
             if(!empty($position_info) && !empty($position_info['position_pattern'])){
                 $user_info['position_pattern']=$position_info['position_pattern'];
             }
-            if(!empty($position_info) && !empty($position_info['garage_id']) && $position_info['garage_id']==9999){
+            if(!empty($position_info) && ($position_info['garage_id']==0 || ($position_info['position_type']==3 && $position_info['position_pattern']==1))){
                 $user_info['position_pattern']=99;
             }
             if(!empty($position_info) && !empty($position_info['position_area'])){
@@ -985,6 +985,7 @@ class CashierController extends CommunityBaseController
         if(in_array($this->login_role, $this->villageOrderCheckRole)){
             $role_id=$this->_uid;
         }
+        fdump_api(['order_id'=>$orderInfo['order_id'],'discard_reason'=>$discard_reason,'login_role'=>$this->login_role,'villageOrderCheckRole'=>$this->villageOrderCheckRole,'role_id'=>$role_id,'adminUser'=>$this->adminUser],'discardOrderHandle'.date('H'),1);
         $service_house_new_cashier = new HouseNewCashierService();
         $projectInfo = $service_house_new_cashier->getProjectInfo(['id'=>$orderInfo['project_id']],'type');
         if ($projectInfo['type']==2){
@@ -1086,7 +1087,15 @@ class CashierController extends CommunityBaseController
         $frozen_data=['order_id'=>$orderInfo['order_id'],'type'=>3];
         (new NewPayService())->editFrozenlog($frozen_data);
         $where = array('order_id' => $orderInfo['order_id']);
-        $res = $service_house_new_cashier->saveOrder($where, ['is_discard' => 2, 'discard_reason' => $discard_reason, 'update_time' => time(),'role_id'=>$role_id]);
+        
+        $role_id=$this->_uid;
+        $saveArr=['is_discard' => 2, 'discard_reason' => $discard_reason, 'update_time' => time(),'role_id'=>$role_id];
+        $saveArr['login_role']=$this->login_role;
+        $saveArr['role_name']='';
+        if($this->adminUser && isset($this->adminUser['user_name']) && $this->adminUser['user_name']){
+            $saveArr['role_name']= preg_replace('/【.*】$/', '', $this->adminUser['user_name']);
+        }
+        $res = $service_house_new_cashier->saveOrder($where,$saveArr);
         if(isset($orderInfo['primitive_order_id']) && $orderInfo['primitive_order_id']>0){
             $service_house_new_cashier->discardPaidOrderServiceTime($orderInfo['primitive_order_id']);
         }
@@ -1352,7 +1361,7 @@ class CashierController extends CommunityBaseController
             }
             $where[] = ['o.village_id','=',$village_id];
             $where[] = ['o.is_discard','=',2];
-            $field='o.village_id,o.update_time,o.property_id,o.project_id,o.last_ammeter,o.order_type,u.realname as account,o.now_ammeter,o.role_id,o.order_id,o.room_id,o.position_id,p.name as project_name,n.charge_number_name,o.modify_money as total_money,o.name as user_name,o.phone as user_phone,o.service_start_time,o.service_end_time,o.discard_reason,o.is_refund';
+            $field='o.village_id,o.update_time,o.property_id,o.project_id,o.last_ammeter,o.order_type,o.now_ammeter,o.role_id,o.login_role,o.role_name,o.order_id,o.room_id,o.position_id,p.name as project_name,n.charge_number_name,o.modify_money as total_money,o.name as user_name,o.phone as user_phone,o.service_start_time,o.service_end_time,o.discard_reason,o.is_refund';
             $list = $service_house_new_cashier->getCancelOrder1($where,'',$field,$page,$limit,'o.update_time desc');
             $site_url=cfg('site_url');
             $site_url=trim($site_url,'/');
@@ -1453,7 +1462,7 @@ class CashierController extends CommunityBaseController
             }
             $where[] = ['o.village_id', '=', $village_id];
             $where[] = ['o.is_discard', '=', 2];
-            $fieldStr = 'o.update_time,o.update_time,o.property_id,o.project_id,o.last_ammeter,o.order_type,u.realname as account,o.now_ammeter,o.role_id,o.order_id,o.room_id,o.position_id,p.name as project_name,n.charge_number_name,o.modify_money as total_money,o.name as user_name,o.phone as user_phone,o.service_start_time,o.service_end_time,o.discard_reason,o.is_refund,o.village_id';
+            $fieldStr = 'o.update_time,o.update_time,o.property_id,o.project_id,o.last_ammeter,o.order_type,o.now_ammeter,o.role_id,o.login_role,o.role_name,o.order_id,o.room_id,o.position_id,p.name as project_name,n.charge_number_name,o.modify_money as total_money,o.name as user_name,o.phone as user_phone,o.service_start_time,o.service_end_time,o.discard_reason,o.is_refund,o.village_id';
             $houseListDatasExportOutService= new HouseListDatasExportOutService();
             $exportParam=array();
             $exportParam['village_id']=$village_id;
@@ -1750,6 +1759,9 @@ class CashierController extends CommunityBaseController
         $service_end_time          = $this->request->post('service_end_time','','trim');
         $ticket_number          = $this->request->post('ticket_number','','trim');
         $single_id_arr    = $this->request->post('single_id_arr','');  //楼栋ids
+
+        $opt_id    = $this->request->post('opt_id','');  //opt_id 操作人员
+        
         $menus = (isset($this->adminUser['menus']) && !empty($this->adminUser['menus'])) ? (is_array($this->adminUser['menus']) ? $this->adminUser['menus'] : explode(',', $this->adminUser['menus'])) : [];
         if (empty($vacancy_id) && !empty($room_id)) {
             $vacancy_id = $room_id;
@@ -1884,9 +1896,23 @@ class CashierController extends CommunityBaseController
             $where[] = ['o.is_discard','=',1];
             $where[] = ['o.is_paid','=',1];
             $where[] = ['o.order_type','<>','non_motor_vehicle'];
-
+            if($opt_id=='pf_opt'){
+                $where[] = ['o.login_role','in',[303,304,104,105]];
+                if (empty($pay_type)) {
+                    $where[] = ['o.pay_type', '<>', 4];
+                }
+            }else if($opt_id=='user_opt'){
+                $where[] = ['o.role_id','<',1];
+                $where[] = ['o.login_role','=',0];
+                if (empty($pay_type)) {
+                    $where[] = ['o.pay_type', '=', '4-0'];
+                }
+            }else if($opt_id && is_numeric($opt_id)){
+                $opt_id=intval($opt_id);
+                $where[] = ['o.login_role','in',[0,401]];
+                $where[] = ['o.role_id','=',$opt_id];
+            }
             $where1 = '(`o`.`is_refund`=1 OR `o`.`refund_money`<`o`.`pay_money`)';
-//            $field='o.*,p.name as project_name,vuv.usernum';
             $field='o.*,p.name as project_name';
             
             $houseVillageCheckauthSetService =new HouseVillageCheckauthSetService();
@@ -1933,7 +1959,6 @@ class CashierController extends CommunityBaseController
             if($isfuncKaidalaicnSpecial){
                 $list['func_kaidalaicn_special']=1;
             }
-
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }
@@ -2334,9 +2359,11 @@ class CashierController extends CommunityBaseController
                 $pay_order_info = $service_house_new_cashier->getInfo($pay_where,'project_id,service_start_time,service_end_time','service_end_time DESC,order_id DESC');
             }
             if (cfg('new_pay_order')==1&&!empty($pay_order_info)&& $pay_order_info['service_end_time']>100){
+                /*
                 if ($pay_order_info['project_id']!=$info['charge_project_id']){
                     return api_output_error(1001,'当前房间的该类别下有其他项目的待缴账单，无法生成账单');
                 }
+                */
                 $postData['service_start_time'] = $pay_order_info['service_end_time']+100;
                 $postData['service_start_time'] = strtotime(date('Y-m-d',$postData['service_start_time']));
                 if($info['bill_create_set'] == 1){
@@ -2492,22 +2519,25 @@ class CashierController extends CommunityBaseController
                     $postData['car_number'] = !empty($car_info['car_number']) ? $car_info['province'].$car_info['car_number']:'';
                     $postData['car_id'] = $car_info['car_id'];
                     if($car_info['end_time']>$parking_end_time){
-                        $parking_end_time=$car_info['end_time']+2;
+                        $parking_end_time=$car_info['end_time']+10;
                     }
                 }
                 $postData['service_month_num'] =$cycle?$cycle:1 ;
                 if($parkingPosition && isset($parkingPosition['position_id'])){
                     if($parkingPosition['end_time']>$parking_end_time){
-                        $parking_end_time=$parkingPosition['end_time']+2;
+                        $parking_end_time=$parkingPosition['end_time']+10;
                     }
                     $postData['parking_lot']=$parkingPosition['position_num'];
                 }
                 if($service_start_time){
                     $parking_end_time=strtotime($service_start_time);
                 }
-                $postData['service_start_time'] =$parking_end_time;
+                
+                $parking_end_time_date=date('Y-m-d',$parking_end_time);
+                $parking_end_time_to_start=strtotime($parking_end_time_date);
+                $postData['service_start_time'] =$parking_end_time_to_start;
                 if($info['bill_create_set'] == 1){
-                    $postData['service_end_time'] = $postData['service_start_time']+86400*$cycle-3;
+                    $postData['service_end_time'] = $postData['service_start_time']+86400*$cycle-1;
                 }elseif ($info['bill_create_set'] == 2){
                     //todo 判断是不是按照自然月来生成订单
                     if(cfg('open_natural_month') == 1){
@@ -2520,13 +2550,13 @@ class CashierController extends CommunityBaseController
                             $end_date_time=strtotime($end_date);
                             $tmp_service_end_time=$end_date_time;
                         }
-                        $postData['service_end_time'] = $tmp_service_end_time-3;
+                        $postData['service_end_time'] = $tmp_service_end_time-1;
                     }else{
                         $cycle = $cycle*30;
-                        $postData['service_end_time'] = strtotime("+$cycle day",$postData['service_start_time'])-3;
+                        $postData['service_end_time'] = strtotime("+$cycle day",$postData['service_start_time'])-1;
                     }
                 }else{
-                    $postData['service_end_time'] = strtotime("+$cycle year",$postData['service_start_time'])-3;
+                    $postData['service_end_time'] = strtotime("+$cycle year",$postData['service_start_time'])-1;
                 }
             }
         }
@@ -2608,6 +2638,7 @@ class CashierController extends CommunityBaseController
             }
         }
         $res = $service_house_new_cashier->addOrder($postData);
+        fdump_api(['res'=>$res,'postData'=>$postData],'000manualCall',1);
         if($res){
             if($postData['order_type'] == 'property' && intval(cfg('cockpit')) && isset($postData['pigcms_id']) && !empty($postData['pigcms_id'])){
                 $system_remarks=(new StorageService())->getRoleData($this->_uid,$this->login_role,$this->adminUser);
@@ -3127,10 +3158,12 @@ class CashierController extends CommunityBaseController
      */
     public function goPay()
     {
-        $role_id=0;
+        $role_id=$this->_uid;
+        /*
         if(in_array($this->login_role,$this->villageOrderCheckRole)){
             $role_id=$this->_uid;
         }
+        */
         $village_id = $this->adminUser['village_id'];
         $pay_type = $this->request->post('pay_type',0);
         $offline_pay_type = $this->request->post('offline_pay_type','');
@@ -3162,7 +3195,12 @@ class CashierController extends CommunityBaseController
         $param['offline_pay_money'] = $offline_pay_money;
         $param['online_pay_money'] = $online_pay_money;
         $param['is_use_score'] = $is_use_score;
-
+        $param['role_id']=$role_id;
+        $param['login_role']=$this->login_role;
+        $param['role_name']= '';
+        if($this->adminUser && isset($this->adminUser['user_name']) && $this->adminUser['user_name']){
+            $param['role_name']= preg_replace('/【.*】$/', '', $this->adminUser['user_name']);
+        }
         if(empty($pay_type) || empty($order_list)){
             return api_output_error(1001,'缺少必传参数');
         }
@@ -3766,9 +3804,11 @@ class CashierController extends CommunityBaseController
 
         //新版生成账单逻辑,按照计费时间顺序来生成账单
         if (cfg('new_pay_order')==1&&!empty($pay_order_info)&& $pay_order_info['service_end_time']>100){
+            /*
             if ($pay_order_info['project_id']!=$info['charge_project_id']){
                 return api_output_error(1001,'当前房间的该类别下有其他项目的待缴账单，无法生成账单');
             }
+            */
             $postData['service_start_time'] = $pay_order_info['service_end_time']+100;
             $postData['service_start_time'] = strtotime(date('Y-m-d',$postData['service_start_time']));
         }else {
@@ -3941,6 +3981,7 @@ class CashierController extends CommunityBaseController
         $is_asyn_export= $this->request->post('is_asyn_export',0,'intval');  //1异步走队列
         $ticket_number          = $this->request->post('ticket_number','','trim');
         $single_id_arr    = $this->request->post('single_id_arr','');  //楼栋ids
+        $opt_id    = $this->request->post('opt_id',''); //opt_id 操作人员
         try{
             if (!empty($date)&&count($date)>0){
                 if (!empty($date[0])){
@@ -4046,8 +4087,23 @@ class CashierController extends CommunityBaseController
             $where[] = ['o.is_discard','=',1];
             $where[] = ['o.is_paid','=',1];
             $where[] = ['o.order_type','<>','non_motor_vehicle'];
+            if($opt_id=='pf_opt'){
+                $where[] = ['o.login_role','in',[303,304,104,105]];
+                if (empty($pay_type)) {
+                    $where[] = ['o.pay_type', '<>', 4];
+                }
+            }else if($opt_id=='user_opt'){
+                $where[] = ['o.role_id','<',1];
+                if (empty($pay_type)) {
+                    $where[] = ['o.pay_type', '=', '4-0'];
+                }
+            }else if($opt_id && is_numeric($opt_id)){
+                $opt_id=intval($opt_id);
+                $where[] = ['o.login_role','in',[0,401]];
+                $where[] = ['o.role_id','=',$opt_id];
+            }
              $where1 = '(`o`.`is_refund`=1 OR `o`.`refund_money`<`o`.`pay_money`)';
-            $field='o.*,p.name as project_name,n.charge_number_name';
+            $field='o.*,p.name as project_name,n.charge_number_name,r.charge_name';
             $order='o.room_id DESC,o.position_id DESC,o.service_start_time DESC,o.pay_time DESC';
             if($is_asyn_export==1){
                 $houseListDatasExportOutService= new HouseListDatasExportOutService();
@@ -4178,7 +4234,7 @@ class CashierController extends CommunityBaseController
             $where[] = ['o.is_paid','=',1];
             $where[] = ['o.is_online','=',1];
             $where1 = '`o`.`refund_money`<`o`.`pay_money`';
-            $field='o.*,p.name as project_name,n.charge_number_name';
+            $field='o.*,p.name as project_name,n.charge_number_name,r.charge_name';
             $order='o.pay_time DESC,o.room_id DESC,o.position_id DESC,o.project_id DESC';
             $list = $service_house_new_cashier->printPayOrder($where,$where1,$field,$order);
 
@@ -5381,7 +5437,8 @@ class CashierController extends CommunityBaseController
             $postDataCar['room_id'] = $post['room_id'];
         }
         $service_house_village_parking = new HouseVillageParkingService();
-        $postData['garage_id'] = 9999;
+        $postData=array();
+        $postData['garage_id'] = 0;
         $postData['position_status'] = 2;
         $postData['position_num'] = $car_number;
         $postData['position_type'] = 3;

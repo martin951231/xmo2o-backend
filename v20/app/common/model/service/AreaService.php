@@ -812,6 +812,11 @@ class AreaService
      */
     public function getAllAreaAndStreet($fields='*', $childName = 'children')
     {
+	    $cacheKey = 'area_street_'.date('Ymd');
+		if($data = cache($cacheKey)) {
+			return json_decode($data, true);
+		}
+	    $farr = [];
         $arr = $this->areaObj->getAreaListByCondition([['is_open', '=', 1], ['area_type', '<=', 3]], ['area_sort' => 'DESC', 'area_id' => 'ASC'],$fields);
         if (!empty($arr)) {//返回省市区商圈
             $arr = $arr->toArray();
@@ -848,7 +853,6 @@ class AreaService
                                 }
                             }
                         }
-
                         $garr[$key][$childName] = $streetArr;
                     }
                 }
@@ -876,8 +880,9 @@ class AreaService
                     }
                 }
             }
-
         }
+		cache($cacheKey, json_encode($farr, JSON_UNESCAPED_UNICODE));
+	    cache('area_street_'.date('Ymd', strtotime('-1 day')), null);
         return $farr;
     }
 

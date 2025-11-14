@@ -176,7 +176,7 @@
 									<label class="col-sm-1"><label>{pigcms{:L_("是否开启用户下单无需绑定桌台即可下单")}</label></label>
 									<label><input name="open_unbind_table" <if condition="$store_shop['open_unbind_table'] eq 0 ">checked="checked"</if> value="0" type="radio">&nbsp;&nbsp;{pigcms{:L_("不开启")}</label>&nbsp;&nbsp;&nbsp;
 									<label><input name="open_unbind_table" <if condition="$store_shop['open_unbind_table'] eq 1 ">checked="checked"</if> value="1" type="radio" >&nbsp;&nbsp;{pigcms{:L_("开启")}</label>
-									<span class="form_tips red">{pigcms{:L_("开启该配置后的餐饮店铺主页即可展示该店铺的菜品信息且用户可直接下单无需绑定桌台，必须用户支付后店员才可见该订单并且看到的订单就是已完成订单不支持退换菜，且支付成功后就自动打印。")}</span>
+									<span class="form_tips red">MERCHANT_FOODSHOP_SHOP_EDIT_1</span>
 								</div>
 								</if>
 								<div class="form-group">

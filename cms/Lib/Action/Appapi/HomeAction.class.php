@@ -1342,7 +1342,7 @@ class HomeAction  extends BaseAction{
         $this->_uid && $uid = $this->_uid;
         $page = I('post.page','','trim,addslashes');
         $city_id = I('now_city',0,'intval');
-        $nowActivity = (new SystemSendCouponActivityModel)->getNowActivity($uid,$page,$city_id);
+        $nowActivity = (new SystemSendCouponActivityModel)->getNowActivity($uid,$page,$city_id,1);
         if (empty($nowActivity)) {
             $this->returnCode(1, array(), L_('没有活动'));
         } else {

@@ -143,8 +143,10 @@ class ConfigController extends ApiBaseController
             $arr['register_url'] = cfg('site_url') . '/packapp/deliver_web/register.html?t='.time();
             $arr['open_wallet'] = cfg('open_deliver_wallet');  //0:关闭  1：全职配送员  2：兼职配送员   3：全职+兼职
             $arr['wallet_url'] = cfg('site_url') . '/packapp/deliver_web/wallet.html?t='.time();
+            $arr['deliver_minimum_withdrawal_amount'] = cfg('deliver_minimum_withdrawal_amount') ?: 0; //配送员提现最低金额
             $arr['wechat_name'] = cfg('wechat_name');
 
+            //弃用
             $arr['withdraw_type'] = [
                 [
                     'name'=>'微信' . (cfg('open_real_time_withdrawal') ? '('.L_('实时到账').')' : ''),

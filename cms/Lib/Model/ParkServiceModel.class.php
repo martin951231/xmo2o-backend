@@ -589,17 +589,19 @@ class ParkServiceModel extends Model
             $msg['msg'] = '没有查到停车纪录，请手动输入车牌查询！';
             return $msg;
         }
-        $park_sys_type = 'D3';
+
         $db_in_park = D('In_park');
         $db_house_village_park_temp = M('House_village_parking_temp');
         $db_house_village_park_charge = D('House_village_park_charge');
 
         
-        $parkConfigWhere = array('village_id' => $village_id, 'park_sys_type' => $park_sys_type);
+        $parkConfigWhere = array('village_id' => $village_id);
         $house_village_park_config = D('House_village_park_garage_config')->getVillageParkConfigByWhere($parkConfigWhere, $garage_id);
         if ($free_park_time <= 0 && $house_village_park_config && isset($house_village_park_config['free_park_time'])) {
             $free_park_time = $house_village_park_config['free_park_time'];
         }
+        $park_sys_type =$house_village_park_config ?  $house_village_park_config['park_sys_type']:'D3';
+        $park_sys_type = $park_sys_type=='HXT85' ? 'HXT85':'D3';
         $where = [];
         $where['car_number'] = $car_number;
         $where['park_id'] = $village_id;
@@ -632,6 +634,7 @@ class ParkServiceModel extends Model
                 $data_temp['park_sys_type'] = $park_sys_type;
                 $data_temp['is_pay_scene'] = $spread - 1;
                 $data_temp['coupon_id'] = 0;
+                $data_temp['garage_id']=$garage_id;
                 fdump_api([__LINE__, $data_temp, $spread], 'park_pay_order_0411_1', 1);
                 $query_order_no = M('House_village_parking_temp')->data($data_temp)->add();
                 if ($query_order_no) {
@@ -689,6 +692,7 @@ class ParkServiceModel extends Model
                 $data_temp['park_sys_type']=$park_sys_type;
                 $data_temp['is_pay_scene']=$spread-1;
                 $data_temp['coupon_id']=0;
+                $data_temp['garage_id']=$garage_id;
                 fdump_api([__LINE__,$data_temp,$spread],'park_pay_order_0411_1',1);
                 $query_order_no = M('House_village_parking_temp')->data($data_temp)->add();
                 if ($query_order_no) {
@@ -738,6 +742,8 @@ class ParkServiceModel extends Model
             $msg['msg'] ='该停车场未绑定收费规则';
             return $msg;
         }
+        $rule_id=$rule_info['id'];
+        $project_id=$rule_info['charge_project_id'];
         $where_out = [];
         $where_out['car_number'] = $car_number;
         $where_out['park_id'] = $village_id;
@@ -1039,6 +1045,9 @@ class ParkServiceModel extends Model
         }
         $data_temp['in_record_id'] = $in_record_id;
         $data_temp['out_record_id'] = $out_record_id;
+        $data_temp['garage_id']=$garage_id;
+        $data_temp['rule_id']=$rule_id;
+        $data_temp['project_id']=$project_id;
         fdump_api([$data_temp, $spread], 'park_pay_order_0411_1', 1);
         $query_order_no = M('House_village_parking_temp')->data($data_temp)->add();
         if ($query_order_no) {
@@ -1094,9 +1103,7 @@ class ParkServiceModel extends Model
         $nowtime=time();
         $tmptime=$nowtime-36000;
         $whereTemp['coupon_id'] = array('gt',0);
-        $whereTemp['add_time'] = array('gt',$tmptime);
-        $whereTemp['add_time'] = array('lt',$nowtime);
-        
+        $whereTemp['_string'] = ' (add_time>'.$tmptime.' AND add_time<'.$nowtime.')';
         $parkTemp = $db_house_village_park_temp->where($whereTemp)->field('id,coupon_id,duration,derate_money,price,total')->order('id DESC')->find();
         fdump_api([$car_number,'whereTemp'=>$whereTemp,'parkTemp'=>$parkTemp],'park_pay_order_0411_1',1);
         if($parkTemp && isset($parkTemp['coupon_id'])){
@@ -1188,6 +1195,10 @@ class ParkServiceModel extends Model
             $parkConfigWhere=array('village_id'=>$village_id,'park_sys_type'=>$park_sys_type);
             $park_config=D('House_village_park_garage_config')->getVillageParkConfigByWhere($parkConfigWhere);
         }
+        $garage_id =0;
+        if($park_config && isset($park_config['garage_id'])){
+            $garage_id =$park_config['garage_id'];
+        }
         $where = [];
         $where['car_number'] = $car_number;
         $where['park_id'] = $village_id;
@@ -1221,6 +1232,7 @@ class ParkServiceModel extends Model
                 $data_temp['park_sys_type']=$park_sys_type;
                 $data_temp['is_pay_scene']=$spread-1;
                 $data_temp['coupon_id']=0;
+                $data_temp['garage_id']=$garage_id;
                 fdump_api([__LINE__,$data_temp,$spread],'park_pay_order_0411_1',1);
                 $query_order_no = M('House_village_parking_temp')->data($data_temp)->add();
                 if ($query_order_no) {
@@ -1278,6 +1290,7 @@ class ParkServiceModel extends Model
                 $data_temp['park_sys_type']=$park_sys_type;
                 $data_temp['is_pay_scene']=$spread-1;
                 $data_temp['coupon_id']=0;
+                $data_temp['garage_id']=$garage_id;
                 fdump_api([__LINE__,$data_temp,$spread],'park_pay_order_0411_1',1);
                 $query_order_no = M('House_village_parking_temp')->data($data_temp)->add();
                 if ($query_order_no) {
@@ -1398,14 +1411,20 @@ class ParkServiceModel extends Model
         if (empty($rule_info)) {
             throw new \Exception('该停车场未绑定收费规则');
         }
+        $rule_id=$rule_info['id'];
+        $project_id=$rule_info['charge_project_id'];
         //查询当前车库信息
-        $garage_info=[];
-        $passage_info=M('Park_passage')->where(['id'=>$park_info['in_channel_id']])->find();
-        if (!empty($passage_info)&&!empty($passage_info['passage_area'])){
-            $garage_info=M('House_village_parking_garage')->where(['garage_id'=>$passage_info['passage_area']])->find();
+        $garage_info = [];
+        $passage_info = M('Park_passage')->where(['id' => $park_info['in_channel_id']])->find();
+        if ($passage_info && isset($passage_info['garage_id']) && $passage_info['garage_id'] > 0) {
+            $garage_id = $passage_info['garage_id'];
+        } else if ($passage_info && isset($passage_info['passage_area']) && !empty($passage_info['passage_area']) && $passage_info['area_type'] == 2) {
+            $garage_id = intval($passage_info['passage_area']);
         }
+        $garage_info = M('House_village_parking_garage')->where(['garage_id' => $garage_id])->find();
+        
         //查询当前车库是否是车辆绑定的车库
-        if (!empty($garage_info)&&!empty($car_info['garage_id'])&&$passage_info['passage_area']==$car_info['garage_id']){
+        if (!empty($garage_info)&&!empty($car_info['garage_id'])&& $garage_id==$car_info['garage_id']){
             if (!empty($car_info)&&$car_info['end_time']>1&&$park_info['in_time']<$car_info['end_time']){
                 $park_time = time() - $car_info['end_time'];
             }else{
@@ -1422,7 +1441,7 @@ class ParkServiceModel extends Model
             $park_info1 = $db_in_park->where($where_out)->order('id DESC')->find();
             if (!empty($park_info1)&&$park_info1['out_time']>$park_info['in_time']&&$park_info1['out_time']<time()){
                 $passage_info1=M('Park_passage')->where(['id'=>$park_info1['in_channel_id']])->find();
-                if (!empty($garage_info1)&&!empty($car_info['garage_id'])&&$passage_info1['passage_area']==$car_info['garage_id']){
+                if (!empty($garage_info1)&&!empty($car_info['garage_id']) && $garage_id==$car_info['garage_id']){
                     $park_time=time() - $park_info['in_time']-$park_info1['park_time'];
                 }
             }
@@ -1671,12 +1690,16 @@ class ParkServiceModel extends Model
         $data_temp['car_type'] = $car_type;
         $data_temp['park_charge'] = json_encode($park_charge_info, JSON_UNESCAPED_UNICODE);
         $data_temp['coupon_id'] = $coupon_id;
+        $data_temp['garage_id']=$garage_id;
         if ($pay_money == 0) {
             $data_temp['is_paid'] = 1;
             $data_temp['pay_time'] = time();
         }
         $data_temp['in_record_id'] = $in_record_id;
         $data_temp['out_record_id'] = $out_record_id;
+        $data_temp['rule_id']=$rule_id;
+        $data_temp['project_id']=$project_id;
+        
         fdump_api([$data_temp, $spread], 'park_pay_order_0411_1', 1);
         $query_order_no = M('House_village_parking_temp')->data($data_temp)->add();
         if ($query_order_no) {

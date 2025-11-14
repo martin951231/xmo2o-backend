@@ -9,7 +9,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td>
-						<input type="button" value="添加模板" class="button" onclick="window.top.artiframe('{pigcms{:U('Sms/add_ali_sms_template')}','添加模板',800,480,true,false,false,addbtn,'add',true);"/>
+						<input type="button" value="添加模板" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('Sms/add_ali_sms_template')}','添加模板',800,480,true,false,false,addbtn,'add',true);"/>
 					</td>
 					<td>
 						<form action="{pigcms{:U('Sms/ali_sms')}" method="get">
@@ -68,7 +68,7 @@
 										<td>{pigcms{$vo.simple_content}</td>			
 										<td><if condition="$vo.status eq 1"><font color="green">正常</font><else /><font color="red">禁止</font></if></td>							
 										<td class="textcenter">
-											<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Sms/add_ali_sms_template',array('id'=>$vo['id']))}','编辑',800,480,true,false,false,editbtn,'edit',true);">编辑</a> ｜ <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Sms/del_ali_sms_template')}">删除</a>
+											<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Sms/add_ali_sms_template',array('id'=>$vo['id']))}','编辑',800,480,true,false,false,editbtn,'edit',true);">编辑</a> ｜ <a class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Sms/del_ali_sms_template')}">删除</a>
 										</td>
 									</tr>
 								</volist>

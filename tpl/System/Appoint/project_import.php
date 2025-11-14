@@ -3,9 +3,9 @@
 	<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Appoint/project_list')}">项目名称列表</a>
-			<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/project_add', array('parentid' => $parentid))}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加项目名称</a>
+			<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/project_add', array('parentid' => $parentid))}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加项目名称</a>
 			<a href="{pigcms{:U('Appoint/project_city_list')}">项目城市列表</a>
-			<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Appoint/project_city_add', array('parentid' => $parentid))}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加项目城市</a>
+			<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Appoint/project_city_add', array('parentid' => $parentid))}','添加分类',480,260,true,false,false,addbtn,'add',true);">添加项目城市</a>
 			<a href="{pigcms{:U('Appoint/project_import')}" class="on">项目名称导入</a>
 		</ul>
 	</div>	

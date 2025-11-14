@@ -2,7 +2,7 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="javascript:void(0);" class="on" onclick="window.top.artiframe('{pigcms{:U('Card/create_add', array('id' => $thisCard['id']))}','创建会员卡号',560,350,true,false,false,addbtn,'add',true);">创建会员卡号</a>|
+					<a href="javascript:void(0);" class="on" onclick="window.o2oTop.artiframe('{pigcms{:U('Card/create_add', array('id' => $thisCard['id']))}','创建会员卡号',560,350,true,false,false,addbtn,'add',true);">创建会员卡号</a>|
 					<a href="javascript:void(0);" onclick="if(confirm('确定删除吗')){$('#info').submit()}">删除</a>
 				</ul>
 			</div>

@@ -142,7 +142,6 @@ class HouseVillageCarAccessRecord extends Model{
         }else{
             $data = $sql->order($order)->select();
         }
-       // echo $sql->getLastSql();
         return $data;
     }
 

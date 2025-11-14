@@ -87,11 +87,8 @@ class GroupRenovationCustomService
             $custom_info = $this->getOne($data);
             $custom_id = $custom_info['custom_id'];
         }
-        $res = (new GroupRenovationCustomStoreSortService())->getSome($where = ['custom_id' => $custom_id]);
-        if (empty($res)|| $custom_info['type'] != $custom_info['old_type']) {
-            (new GroupRenovationCustomStoreSort())->del($where = ['custom_id' => $custom_id]);
-            (new GroupRenovationCustomStoreSortService())->addCustomStoreSort($custom_id);
-        }
+        (new GroupRenovationCustomStoreSort())->del(['custom_id' => $custom_id]);
+        (new GroupRenovationCustomStoreSortService())->addCustomStoreSort($custom_id);
         return $msg;
     }
 

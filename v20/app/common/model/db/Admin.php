@@ -11,6 +11,13 @@ use think\Model;
 // use think\facade\Db;
 class Admin extends Model {
 
+	//账号等级（0:普通号，1：区域账号，2：超级号
+	const LEVEL_NORMAL = 0;
+	const LEVEL_AREA = 1;
+	const LEVEL_SUPER = 2;
+	
+	//账号状态（0:禁用，1：正常）
+	const STATUS_NORMAL = 1;
     /**
      * 根据用户名获取后端用户表的数据
      * @param $account

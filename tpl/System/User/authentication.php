@@ -60,11 +60,11 @@
 										</if>
 										<if condition="$vo['authentication_status'] eq 0">
 											<td class="textcenter">
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/check',array('authentication_id'=>$vo['authentication_id']))}','审核实名认证',680,560,true,false,false,editbtn,'edit',true);">审核</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/check',array('authentication_id'=>$vo['authentication_id']))}','审核实名认证',680,560,true,false,false,editbtn,'edit',true);">审核</a>
 											</td>
 										<else/>
 											<td class="textcenter">
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/check',array('authentication_id'=>$vo['authentication_id'],'status'=>1))}','查看实名认证',680,560,true,false,false);">查看</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/check',array('authentication_id'=>$vo['authentication_id'],'status'=>1))}','查看实名认证',680,560,true,false,false);">查看</a>
 											</td>
 										</if>
 									</tr>

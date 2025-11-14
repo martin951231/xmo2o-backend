@@ -14,24 +14,7 @@ class AppointNewsflashController extends AuthBaseController
 {
     //region 参数验证
     const STATUS_OK = 1000;//状态码 正常
-
-    /**
-     * 参数验证
-     * @param $scenario
-     * @param array $param
-     * @param string $method
-     * @return array|mixed
-     */
-    private function validateParameter(array $params = [], string $scenario = '', $method = 'post'): array
-    {
-        empty($params) && $params = input($method . '.');
-        $validate = validate(AppointNewsflashValidate::class);
-        if (!$validate->scene($scenario ?: Str::snake(request()->action()))->check($params)) {
-            throw_exception(L_($validate->getError()), ParametersException::class);
-        }
-
-        return $params;
-    }
+	protected $validateClass = AppointNewsflashValidate::class;
 
     //endregion
 

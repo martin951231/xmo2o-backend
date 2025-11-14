@@ -115,9 +115,9 @@ class Shop_order_logModel extends Model
                 $model->sendTempMsg('TM00017', array(
                     'href' => $href,
                     'wecha_id' => $now_user['openid'],
-                    'first' => $first,
+                    'first' => $status[$data['status']],
                     'OrderSn' => $order['real_orderid'],
-                    'OrderStatus' => $status[$data['status']],
+                    'OrderStatus' => $first,
                     'remark' => $fetchNumber.date('Y-m-d H:i:s')
                 ), $order['mer_id']);
             }

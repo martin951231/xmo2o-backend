@@ -59,7 +59,7 @@
 									<td><if condition="$vo['complete_time']">{pigcms{$vo['complete_time']|date='Y-m-d',###}</if></td>
 									<td><if condition="$vo['cancel_time']">{pigcms{$vo['cancel_time']|date='Y-m-d',###}</if></td>
 									<td>
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['user_id'],'ask'=>1,'ask_id'=>$vo['package_id']))}','查看用户余额',600,400,true,false,false,false,'detail',true);">用户余额</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['user_id'],'ask'=>1,'ask_id'=>$vo['package_id']))}','查看用户余额',600,400,true,false,false,false,'detail',true);">用户余额</a>
 									</td>
 								</tr>
 							</volist>

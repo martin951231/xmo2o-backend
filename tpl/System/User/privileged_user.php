@@ -3,10 +3,10 @@
 		<div class="mainbox">
 			<div id="nav" class="mainnav_title">
 				<ul>
-					<a href="{pigcms{:U('User/index')}">用户列表</a>
-					<a href="{pigcms{:U('User/label_index')}">用户标签管理</a>
-					<a href="{pigcms{:U('User/privileged_user')}" class="on">特权用户</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/privileged_import')}','导入特权用户',600,600,true,false,false,closebtn,'lang_add',true);">导入特权用户</a>
+					<a href="{pigcms{:U('User/index')}">SYSTEM_USER_PRIVILEGED_RULE_1</a>
+					<a href="{pigcms{:U('User/label_index')}">SYSTEM_USER_PRIVILEGED_RULE_2</a>
+					<a href="{pigcms{:U('User/privileged_user')}" class="on">SYSTEM_USER_PRIVILEGED_RULE_3</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/privileged_import')}','SYSTEM_USER_PRIVILEGED_RULE_4',600,600,true,false,false,closebtn,'lang_add',true);">SYSTEM_USER_PRIVILEGED_RULE_4</a>
 					<a href="{pigcms{:U('User/set_privileged_rule')}">设置特权派发规则</a>
 				</ul>
 			</div>
@@ -52,8 +52,8 @@
 									<th>所在城市</th>
 								</if>
 								<th class="textcenter">特权类型</th>
-								<th class="textcenter">开始发送<if condition="file_exists('conf/is_hake.no_delete')">hark<else />平台</if>特权</th>
-								<th class="textcenter">结束发送<if condition="file_exists('conf/is_hake.no_delete')">hark<else />平台</if>特权</th>
+								<th class="textcenter">开始发送<if condition="file_exists('conf/is_hake.no_delete')">hark<else />SYSTEM_USER_PRIVILEGED_1</if>特权</th>
+								<th class="textcenter">结束发送<if condition="file_exists('conf/is_hake.no_delete')">hark<else />SYSTEM_USER_PRIVILEGED_1</if>特权</th>
 							</tr>
 						</thead>
 						<tbody>

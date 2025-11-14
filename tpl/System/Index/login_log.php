@@ -42,7 +42,7 @@
 						<td >{pigcms{$vo.browser_name}</td>
 						<td >{pigcms{$vo.browser_version}</td>
 						<td >{pigcms{$vo.reson|htmlspecialchars}</td>
-						<td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Index/login_log_detail',array('log_id'=>$vo['id'],'frame_show'=>true))}','操作详情',900,'90%',true,false,false,false,'detail',true);">详情</a></td>
+						<td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Index/login_log_detail',array('log_id'=>$vo['id'],'frame_show'=>true))}','操作详情',900,'90%',true,false,false,false,'detail',true);">详情</a></td>
 					</tr>
 				</volist>
 				<tr><td class="textcenter pagebar" colspan="13">{pigcms{$pagebar}</td></tr>

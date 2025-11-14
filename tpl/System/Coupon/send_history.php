@@ -6,7 +6,7 @@
 			<div id="nav" class="mainnav_title">
 		<ul>
 			<a href="{pigcms{:U('Coupon/index')}">平台优惠券列表</a>
-			<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Coupon/add')}','添加平台优惠券',800,500,true,false,false,addbtn,'edit',true);">添加平台优惠券</a>
+			<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Coupon/add')}','添加平台优惠券',800,500,true,false,false,addbtn,'edit',true);">添加平台优惠券</a>
 			<a href="{pigcms{:U('Coupon/had_pull')}" >领取列表</a>
 			<a href="{pigcms{:U('Coupon/send_coupon')}"  class="on" >派发优惠券</a>
 		</ul>
@@ -96,7 +96,7 @@
 			art.dialog.open($(this).attr('href'),{
 				init: function(){
 					var iframe = this.iframe.contentWindow;
-					window.top.art.dialog.data('iframe_handle',iframe);
+					window.o2oTop.art.dialog.data('iframe_handle',iframe);
 				},
 				id: 'handle',
 				title:'查看渠道二维码',

@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('ActivityOffline/manage')}">分类列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('ActivityOffline/add')}','添加分类',800,560,true,false,false,addbtn,'add',true);">添加分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('ActivityOffline/add')}','添加分类',800,560,true,false,false,addbtn,'add',true);">添加分类</a>
 					<a href="{pigcms{:U('ActivityOffline/activity_list')}">线下活动列表</a>|
 					<a href="{pigcms{:U('ActivityOffline/examine_refundList')}">退款审核列表</a>|
 					<a href="{pigcms{:U('ActivityOffline/ActivityOffline_config')}"  class="on">配置项</a>|

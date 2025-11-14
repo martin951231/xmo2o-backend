@@ -323,9 +323,9 @@
             if($(this).data('target')){
                 parent.addIframe(_this.siblings('.name').text(),_this.data('page_id'),_this.data('url'));
             }else if($(this).data('edit')){
-                window.top.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,480,true,false,false,editbtn,'store_add',true);
+                window.o2oTop.artiframe(_this.data('url'),_this.siblings('.name').text(),1000,480,true,false,false,editbtn,'store_add',true);
             }else{
-                window.top.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true);
+                window.o2oTop.artiframe(_this.data('url')+'&frame_show=true&from_page=viewpage',_this.siblings('.name').text(),1000,600,true,false,false,false,'viewpage',true);
             }
         });
 

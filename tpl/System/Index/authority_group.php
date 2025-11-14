@@ -4,7 +4,7 @@
 				<ul>
 					<a href="{pigcms{:U('Index/account')}" >账号列表</a>|
 					<a href="{pigcms{:U('Index/authority_group')}" class="on">权限套餐</a>|
-					<a href="javascript:void(0);"  onclick="window.top.artiframe('{pigcms{:U('Index/authority_add')}','添加权限分组',800,500,true,false,false,addbtn,'add',true);">添加权限套餐</a>
+					<a href="javascript:void(0);"  onclick="window.o2oTop.artiframe('{pigcms{:U('Index/authority_add')}','添加权限分组',800,500,true,false,false,addbtn,'add',true);">添加权限套餐</a>
 				</ul>
 			</div>
 			
@@ -30,7 +30,7 @@
 										<td><if condition="$vo['add_time']">{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}<else/>无</if></td>
 										<td class="textcenter">
 									
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Index/authority_add',array('id'=>$vo['id']))}','编辑管理账号信息',800,500,true,false,false,editbtn,'edit',true);">编辑</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Index/authority_add',array('id'=>$vo['id']))}','编辑管理账号信息',800,500,true,false,false,editbtn,'edit',true);">编辑</a>
 										
 										</td>
 									</tr>
@@ -54,7 +54,7 @@ $(document).ready(function(){
 		test = art.dialog.open($(this).attr('href'),{
 			init: function(){
 				var iframe = this.iframe.contentWindow;
-				window.top.art.dialog.data('iframe_handle',iframe);
+				window.o2oTop.art.dialog.data('iframe_handle',iframe);
 			},
 			id: 'handle',
 			title:'扫描二维码绑定微信号',

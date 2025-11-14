@@ -12,7 +12,7 @@
 			<table class="search_table" width="100%">
 				<tr>
 					<td>
-						<input type="button" value="添加拼团商品" class="button" onclick="window.top.artiframe('{pigcms{:U('add_group_product')}&group_id={pigcms{$_GET['group_id']}','添加拼团商品',800,480,true,false,false,addbtn,'add',true);"/>　　
+						<input type="button" value="添加拼团商品" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_group_product')}&group_id={pigcms{$_GET['group_id']}','添加拼团商品',800,480,true,false,false,addbtn,'add',true);"/>　　
 					</td>
 			
 				
@@ -70,7 +70,7 @@ white-space: nowrap;}
 									
 										<td class="textcenter">
 										
-										<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id']))}','编辑',800,480,true,false,false,editbtn,'edit',true);">编辑</a>  | <a href="{pigcms{:U('Village_group/del_group',array('group_id'=>$vo['group_id']))}">删除</a>
+										<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id']))}','编辑',800,480,true,false,false,editbtn,'edit',true);">编辑</a>  | <a href="{pigcms{:U('Village_group/del_group',array('group_id'=>$vo['group_id']))}">删除</a>
 										
 										</td>
 									</tr>

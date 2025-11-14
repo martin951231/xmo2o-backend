@@ -1432,7 +1432,7 @@ class A11Service
         $out_park_info=[];
         $out_time = $now_time;
         if (!empty($in_park_info)) {
-            if ($in_park_info['in_time'] > ($now_time - 60)) {
+            if ($in_park_info['in_time'] > ($now_time - 10)) {
                 return false;
             }
             $out_data['in_time'] = $in_park_info['in_time'];
@@ -3306,6 +3306,8 @@ class A11Service
             fdump_api(['02计算停车费', 'err' => '该停车场未绑定收费规则', 'where_rule' => $where_rule], 'a11_temp_pay/log_' . $car_number, 1);
             throw new \Exception('该停车场未绑定收费规则');
         }
+        $rule_id=$rule_info['id'];
+        $project_id=$rule_info['charge_project_id'];
         //查询当前车库信息
         $garage_info = [];
         $passage_info = $db_park_passage->getFind(['id' => $park_info['in_channel_id']]);
@@ -3597,6 +3599,8 @@ class A11Service
         }
         $data_temp['car_type'] = $car_type;
         $data_temp['park_charge'] = json_encode($park_charge_info,JSON_UNESCAPED_UNICODE);
+        $data_temp['rule_id']=$rule_id;
+        $data_temp['project_id']=$project_id;
         fdump_api(['29计算停车费', 'data_temp' => $data_temp], 'a11_temp_pay/log_' . $car_number, 1);
         $id1 = $db_house_village_park_temp->addOne($data_temp);
         fdump_api(['30计算停车费', 'id1' => $id1], 'a11_temp_pay/log_' . $car_number, 1);

@@ -71,7 +71,7 @@ class MerchantStoreStaffService
 	    	}      
             $newOrder = true;
 
-            $href = "miniapp://__UNI__8799035&pages/foodshop/index/index";
+            $href = "miniapp://".cfg('staff_uni_appid')."&pages/foodshop/index/index";
             $hrefH5 = cfg('site_url') . "/packapp/staff/#/pages/foodshop/index/index";
             $title =  L_('X1新订单提醒', cfg('meal_alias_name'));
             $msg = L_('X1新订单提醒，请及时查看！', cfg('meal_alias_name'));
@@ -82,7 +82,7 @@ class MerchantStoreStaffService
         	if ($order['order_from'] == 2) { //店员下单不提示
 	    		return false;
 	    	}
-            $href = "miniapp://__UNI__8799035&pages/foodshop/index/index";
+            $href = "miniapp://".cfg('staff_uni_appid')."&pages/foodshop/index/index";
             $hrefH5 = cfg('site_url') . "/packapp/staff/#/pages/foodshop/index/index";
 	    	
             $title = L_('X1订单支付成功',cfg('meal_alias_name'));
@@ -105,11 +105,11 @@ class MerchantStoreStaffService
                 }
             }
         }else {
-            $href = "miniapp://__UNI__8799035&pages/foodshop/index/index";
+            $href = "miniapp://".cfg('staff_uni_appid')."&pages/foodshop/index/index";
             $hrefH5 = cfg('site_url') . "/packapp/staff/#/pages/foodshop/index/index";
 
             if (!isset($order['status']) || !in_array($order['status'], [1, 4])) {
-                $href = "miniapp://__UNI__8799035&pages/foodshop/index/index?orderType=2";
+                $href = "miniapp://".cfg('staff_uni_appid')."&pages/foodshop/index/index?orderType=2";
                 $hrefH5 = cfg('site_url') . "/packapp/staff/#/pages/foodshop/index/index?orderType=2";
             }
             $title =  L_('X1上菜提醒', cfg('meal_alias_name'));

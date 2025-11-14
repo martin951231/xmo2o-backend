@@ -5,7 +5,7 @@
         <ul>
             <a href="{pigcms{:U('MerchantSpread/audit')}" class="on">已审核推广商</a>|
             <a href="{pigcms{:U('MerchantSpread/notAudit')}">待审核推广商</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('MerchantSpread/setting')}','推广商奖励设置',550,300,true,false,false,editbtn,'edit',true);">推广商奖励设置</a>|
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('MerchantSpread/setting')}','推广商奖励设置',550,300,true,false,false,editbtn,'edit',true);">推广商奖励设置</a>|
             <a href="{pigcms{:U('MerchantSpread/index')}">推广商申请设置</a>
         </ul>
     </div>
@@ -72,7 +72,7 @@
                                     <a href="javascript:void(0);" class="delete_row" parameter="uid={pigcms{$vo.uid}" url="{pigcms{:U('MerchantSpread/del',array('id'=>$vo['id']))}">删除</a>
                                 <else/>
                                     <if condition="C('config.open_city_merchant_spread') eq 1">
-                                    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('MerchantSpread/edit',array('uid'=>$vo['uid']))}','推广商信息',860,100,true,false,false,editbtn,'edit',true);">编辑</a> |
+                                    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('MerchantSpread/edit',array('uid'=>$vo['uid']))}','推广商信息',860,100,true,false,false,editbtn,'edit',true);">编辑</a> |
                                     </if>
                                     <a href="javascript:void(0);" class="delete_row" parameter="uid={pigcms{$vo.uid}" url="{pigcms{:U('MerchantSpread/del',array('id'=>$vo['id']))}">删除</a>
                                 </if>

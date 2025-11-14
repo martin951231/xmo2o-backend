@@ -168,10 +168,10 @@ class HouseFaceDevice extends Model
     );
 
 
-    public function getWhereList($where = [], $field = true, $order = true, $page = 0, $listRows = 0)
+    public function getWhereList($where = [], $field = '*', $order = 'device_id desc', $page = 0, $listRows = 20)
     {
         $sql = $this->field($field)->where($where)->order($order);
-        if ($listRows) {
+        if ($page>0) {
             $sql->page($page, $listRows);
         }
         $result = $sql->select();

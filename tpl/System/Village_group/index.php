@@ -16,12 +16,12 @@
                     <if condition="$city_manage eq 1 and $level eq 1">
                         <if condition="$origin neq null">
                             <td>
-                                <input type="button" value="添加拼团商品" class="button" onclick="window.top.artiframe('{pigcms{:U('add_group_product')}&group_id={pigcms{$_GET['group_id']}&cat_id={pigcms{$_GET['cat_fid']}&city_id={pigcms{$city_id}','添加拼团商品','80%','90%',true,false,false,addbtn,'add',true);"/>
+                                <input type="button" value="添加拼团商品" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_group_product')}&group_id={pigcms{$_GET['group_id']}&cat_id={pigcms{$_GET['cat_fid']}&city_id={pigcms{$city_id}','添加拼团商品','80%','90%',true,false,false,addbtn,'add',true);"/>
                             </td>
                         </if>
                     <else />
                         <td>
-                            <input type="button" value="添加拼团商品" class="button" onclick="window.top.artiframe('{pigcms{:U('add_group_product')}&group_id={pigcms{$_GET['group_id']}&cat_id={pigcms{$_GET['cat_fid']}','添加拼团商品','80%','90%',true,false,false,addbtn,'add',true);"/>
+                            <input type="button" value="添加拼团商品" class="button" onclick="window.o2oTop.artiframe('{pigcms{:U('add_group_product')}&group_id={pigcms{$_GET['group_id']}&cat_id={pigcms{$_GET['cat_fid']}','添加拼团商品','80%','90%',true,false,false,addbtn,'add',true);"/>
                         </td>
                     </if>
 			
@@ -155,14 +155,14 @@
 										
 										</td-->
 										<td class="textcenter">
-										<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id'],'cat_id'=>$_GET['cat_fid'],'edit'=>1,'copy'=>1))}','复制（提示：当前在进行“复制”操作，请确认商品信息无误后提交）','80%','90%',true,false,false,editbtn,'add',true);">复制</a>  | 
-										<a onclick="window.top.artiframe('{pigcms{:U('Village_group/send_list',array('goods_id'=>$vo['goods_id'],'is_menu_hide'=>1))}&cat_fid={pigcms{$_GET['cat_fid']}','发货单','80%','80%',true,false,false,'','add',true)">发货单</a>
+										<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id'],'cat_id'=>$_GET['cat_fid'],'edit'=>1,'copy'=>1))}','复制（提示：当前在进行“复制”操作，请确认商品信息无误后提交）','80%','90%',true,false,false,editbtn,'add',true);">复制</a>  | 
+										<a onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/send_list',array('goods_id'=>$vo['goods_id'],'is_menu_hide'=>1))}&cat_fid={pigcms{$_GET['cat_fid']}','发货单','80%','80%',true,false,false,'','add',true)">发货单</a>
                                             <if condition="$level eq 1 and $city_manage eq 1"> <!-- 非区域管理员账号 -->
                                                 <if condition="$origin neq null">
-                                                |<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id'],'cat_id'=>$_GET['cat_fid'],'edit'=>1))}&city_id={pigcms{$city_id}','编辑','80%','80%',true,false,false,editbtn,'add',true);">编辑</a>  | <a class="delete_row" tip="城市绑定的对应商品也会被删除" parameter="goods_id={pigcms{$vo.goods_id}&city_id={pigcms{$city_id}" url="{pigcms{:U('Village_group/del_group')}">删除</a>
+                                                |<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id'],'cat_id'=>$_GET['cat_fid'],'edit'=>1))}&city_id={pigcms{$city_id}','编辑','80%','80%',true,false,false,editbtn,'add',true);">编辑</a>  | <a class="delete_row" tip="城市绑定的对应商品也会被删除" parameter="goods_id={pigcms{$vo.goods_id}&city_id={pigcms{$city_id}" url="{pigcms{:U('Village_group/del_group')}">删除</a>
                                                 </if>
                                                 <else />
-                                                |<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id'],'cat_id'=>$_GET['cat_fid'],'edit'=>1))}','编辑','80%','90%',true,false,false,editbtn,'add',true);">编辑</a>  | <a class="delete_row" tip="城市绑定的对应商品也会被删除" parameter="goods_id={pigcms{$vo.goods_id}" url="{pigcms{:U('Village_group/del_group')}">删除</a>
+                                                |<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('Village_group/add_group_product',array('goods_id'=>$vo['goods_id'],'group_id'=>$_GET['group_id'],'cat_id'=>$_GET['cat_fid'],'edit'=>1))}','编辑','80%','90%',true,false,false,editbtn,'add',true);">编辑</a>  | <a class="delete_row" tip="城市绑定的对应商品也会被删除" parameter="goods_id={pigcms{$vo.goods_id}" url="{pigcms{:U('Village_group/del_group')}">删除</a>
                                             </if>
 										</td>
 									</tr>

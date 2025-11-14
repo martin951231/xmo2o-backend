@@ -122,8 +122,8 @@
 										<td class="red">已审核&nbsp;&nbsp;&nbsp;<input type="button" value="更新成未审核" style="" class="button" onclick="upStatus({pigcms{$vo.id})"></td>
 										<td class="textcenter">
                                             <a href="{pigcms{:U('Classify/replyList',array('vid'=>$vo['id']))}">评论列表</a>&nbsp; |
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Classify/infodetail',array('vid'=>$vo['id']))}','查看信息详情',680,560,true,false,false,closebtn,'edit',true);">查看详细</a>&nbsp; |
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Classify/attrSet',array('vid'=>$vo['id']))}','设置操作',550,350,true,false,false,confirmbtn,'add',true);">设置操作</a>&nbsp; | &nbsp;
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Classify/infodetail',array('vid'=>$vo['id']))}','查看信息详情',680,560,true,false,false,closebtn,'edit',true);">查看详细</a>&nbsp; |
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Classify/attrSet',array('vid'=>$vo['id']))}','设置操作',550,350,true,false,false,confirmbtn,'add',true);">设置操作</a>&nbsp; | &nbsp;
                                             <a href="javascript:void(0);" onclick="toDelItem({pigcms{$vo.id});">删除</a>
                                         </td>
 									</tr>

@@ -81,6 +81,9 @@ class CouponAction extends BaseAction
                 if ($isDouyinActivity) {
                     $coupon_list_mer[$key]['coupon_url'] = $coupon_list_mer[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/activity/probeShop/couponDetail?hadpull_id=' . $value['id'] . '&activity_id=' . $activity_id;
                 }
+                if($value['store_direct_verification']==1){
+                    $coupon_list_mer[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=mer&user_had_id='.$value['id'].'&get_store_list=1';
+                }
             }
             $coupon_list_mer = array_values($coupon_list_mer);
 
@@ -125,7 +128,9 @@ class CouponAction extends BaseAction
                 } else { //多店铺
                     $coupon_list_mer[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/storeList?coupon_id=' . $value['coupon_id'];
                 }
-
+                if($value['store_direct_verification']==1){
+                    $coupon_list_mer[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=mer&user_had_id='.$value['id'].'&get_store_list=1';
+                }
             }
             $coupon_list_mer = array_values($coupon_list_mer);
 
@@ -135,7 +140,9 @@ class CouponAction extends BaseAction
 
 //        $coupon_list_system_my = [];
             foreach ($coupon_list_system as $key => $value) {
+                $get_store_list = 0;
                 if ($value['use_type'] == 1) {
+                    $get_store_list = 1;
                     $store_ids = M('System_coupon_store')->field('store_id')->where(['coupon_id' => $value['coupon_id']])->select();
                     if (count($store_ids) == 1) { //单店铺
                         $coupon_list_system[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/homePage?store_id=' . $store_ids[0]['store_id'];
@@ -149,7 +156,9 @@ class CouponAction extends BaseAction
                         $coupon_list_system[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . D('House_village')->home_url;;
                     }
                 }
-
+                if($value['store_direct_verification']==1){
+                    $coupon_list_system[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=system&user_had_id='.$value['id'].'&get_store_list='.$get_store_list;
+                }
             }
 
             //合并
@@ -277,7 +286,6 @@ class CouponAction extends BaseAction
             if ($v['is_use'] == 0) { //未使用的 去除掉 过期的
                 unset($tmp[2]);
             }
-//            $tmp_combine[$v['is_use']][] = $tmp[$v['is_use']][$v['coupon_id']];
             $tmp_combine[] = $tmp[$v['is_use']][$v['coupon_id']];
             unset($tmp[$v['is_use']][$v['coupon_id']]);
         }
@@ -287,8 +295,6 @@ class CouponAction extends BaseAction
         foreach ($tmp_combine as $kk => $vv) {
             $coupon_list_my[$kk]['is_discount'] = intval($vv['is_discount']); //是否是折扣券
             $coupon_list_my[$kk]['discount_value'] = floatval($vv['discount_value']); //折扣
-
-
             $coupon_list_my[$kk]['img'] = $vv['img']?replace_file_domain($vv['img']):C('config.site_url').'/static/images/coupon.png'; //优惠券图片  或者  img_coupon
             $coupon_list_my[$kk]['name'] = $vv['name']; //优惠券名称
             $coupon_list_my[$kk]['des_detial'] = $vv['des_detial']; //使用说明
@@ -306,7 +312,6 @@ class CouponAction extends BaseAction
                 $coupon_list_my[$kk]['coupon_type'] = 'merchant'; //商家优惠券    优惠券类型 system-平台优惠券 ，merchant-商家优
                 $coupon_list_my[$kk]['use_start_time'] = date('Y.m.d', $vv['receive_time']); //使用开始时间 (领取时间)
                 $coupon_list_my[$kk]['use_end_time'] = date('Y.m.d', $vv['end_time']); //使用结束时间 (优惠券过期时间)
-
             } elseif ($vv['coupon_type'] == 'system') { //平台券
                 $coupon_list_my[$kk]['store_img'] = C('config.wechat_share_img'); //平台正方形logo
                 $coupon_list_my[$kk]['plat_name'] = C('config.site_name'); //平台或商家名称
@@ -341,7 +346,6 @@ class CouponAction extends BaseAction
             $coupon_list_my[$kk]['coupon_start_time'] = date('Y.m.d', $vv['start_time']); //优惠券有效期-开始时间
             $coupon_list_my[$kk]['coupon_end_time'] = date('Y.m.d', $vv['end_time']); //优惠券有效期-结束时间
 
-
             if (!empty($vv['cate_name'])) {
                 if($vv['cate_name']  == 'new_user') {
                     $coupon_list_my[$kk]['use_limit'] = '新人券';
@@ -354,21 +358,19 @@ class CouponAction extends BaseAction
                     }
                 }
             }
+            $coupon_list_my[$kk]['user_had_id'] = $vv['id']; //优惠券领取id
         }
+		M('User_notice')->where(['uid' => $this->_uid, 'is_read' => 0, 'business' => 'mer_coupon'])->save(['is_read' => 1, 'read_time' => time()]);
         if (!empty($mer_id) || $isDouyinActivity) {
             $coupon_button = [];
             $coupon_button['mer_jump_url'] = $mer_jump_url;
             $coupon_button['is_store_list'] = $is_store_list;
-
             $this->returnCode(0, ['coupon_list' => array_values($coupon_list_my), 'coupon_button' => $coupon_button]);
         } else {
-
             //转赠券
             $coupon_list_my = array_merge($coupon_list_my,$card_new_coupon_list);
-
             $this->returnCode(0, ['coupon_list' => array_values($coupon_list_my)]);
         }
-
     }
     /*
      *  淼迈领券列表
@@ -587,16 +589,8 @@ class CouponAction extends BaseAction
      */
         public function getCouponIndex()
     {
-
         $tm = time();
         $city_id = intval($_POST['city_id']);
-
-//        /*模拟数据 start */
-//        $this->_uid = '112358756';
-//        $this->user_session['phone'] = '17744407629';
-//        $city_id = 105;
-//        /*模拟数据 end */
-
         if (empty($city_id)) {
             $this->returnCodeError('请选择城市');
         }
@@ -739,14 +733,6 @@ class CouponAction extends BaseAction
     {
         $city_id = intval($_POST['city_id']);
         $coupon_type = $_POST['coupon_type'];
-
-//        /* 模拟数据 start */
-//        $this->_uid = 112358756;
-//        $city_id = 105;
-//        $coupon_type = 'merchant';
-//
-//        /* 模拟数据 end */
-
         if (empty($city_id)) {
             $this->returnCodeError('请选择城市');
         }
@@ -757,12 +743,6 @@ class CouponAction extends BaseAction
         $where = [];
         //mer_id 存在时  只显示商家券
         $mer_id = $_POST['mer_id'];
-
-
-//        /** 模拟数据 */
-//        $mer_id = 811;
-//        /** 模拟数据 */
-
         $mer_id && $where['mer_id'] = $mer_id;
 
         $coupon_list = [];
@@ -902,6 +882,9 @@ class CouponAction extends BaseAction
                                         $coupon_list_system[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . D('House_village')->home_url;
                                     }
                                 }
+                                if($value['store_direct_verification']==1){
+                                    $coupon_list_system[$key]['jump_url'] = get_base_url('pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=system&get_store_list='.($value['use_type']==1?1:0).'&user_had_id=');
+                                }
                             }
 
                             if ($this->_uid) {
@@ -909,6 +892,9 @@ class CouponAction extends BaseAction
                                 foreach ($now_user_coupon as $vv) {
                                     if (!empty($coupon_list_system[$vv['coupon_id']])) {
                                         $coupon_list_system[$vv['coupon_id']]['selected'] = 1;
+                                        if($vv['is_use'] == 0 && $coupon_list_system[$vv['coupon_id']]['store_direct_verification']==1){
+                                            $coupon_list_system[$vv['coupon_id']]['jump_url'] .= $vv['id'];
+                                        }
                                     }
                                 }
                             }
@@ -929,6 +915,9 @@ class CouponAction extends BaseAction
                             } else { //多店铺
                                 $coupon_list_mer[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/storeList?coupon_id=' . $value['coupon_id'];
                             }
+                            if($value['store_direct_verification']==1){
+                                $coupon_list_mer[$key]['jump_url'] = get_base_url('pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=mer&get_store_list=1&user_had_id=');
+                            }
                         }
 
                         if (!empty($this->_uid)) {
@@ -937,6 +926,9 @@ class CouponAction extends BaseAction
                             foreach ($now_user_coupon as $vv) {
                                 if (!empty($coupon_list_mer[$vv['coupon_id']])) {
                                     $coupon_list_mer[$vv['coupon_id']]['selected'] = 1;
+                                    if($vv['is_use'] == 0 && $coupon_list_mer[$vv['coupon_id']]['store_direct_verification']==1){
+                                        $coupon_list_mer[$vv['coupon_id']]['jump_url'] .= $vv['id'];
+                                    }
                                 }
                             }
                         }
@@ -1077,7 +1069,9 @@ class CouponAction extends BaseAction
                     $coupon_list_system[$key]['coupon_type_name'] = '平台券';
                     $coupon_list_system[$key]['selected'] = 0;
 
+                    $get_store_list = 0;
                     if ($value['use_type'] == 1) {
+                        $get_store_list = 1;
                         $store_ids = M('System_coupon_store')->field('store_id')->where(['coupon_id' => $value['coupon_id']])->select();
                         if (count($store_ids) == 1) { //单店铺
                             $coupon_list_system[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/homePage?store_id=' . $store_ids[0]['store_id'];
@@ -1091,6 +1085,9 @@ class CouponAction extends BaseAction
                             $coupon_list_system[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . D('House_village')->home_url;
                         }
                     }
+                    if($value['store_direct_verification']==1){
+                        $coupon_list_system[$key]['jump_url'] = get_base_url('pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=system&get_store_list=' . $get_store_list . '&user_had_id=');
+                    }
                 }
 
                 if ($this->_uid) { //登录后
@@ -1098,6 +1095,9 @@ class CouponAction extends BaseAction
                     foreach ($now_user_coupon as $vv) {
                         if (!empty($coupon_list_system[$vv['coupon_id']])) {
                             $coupon_list_system[$vv['coupon_id']]['selected'] = 1;
+                            if($coupon_list_system[$vv['coupon_id']]['store_direct_verification']==1 && $vv['is_use']==0){
+                                $coupon_list_system[$vv['coupon_id']]['jump_url'] .= $vv['id'];
+                            }
                         }
                     }
 
@@ -1207,6 +1207,7 @@ class CouponAction extends BaseAction
                         $condition['allow_im_get'] = 0;
                         $condition['only_assign'] = 0;
                         $condition['is_live'] = 0;
+                        $condition['is_partition'] = 0;
                         $condition['is_receive_full_reduction'] = 0;
                         $condition['send_type'] = array('neq', 2);
 
@@ -1235,6 +1236,9 @@ class CouponAction extends BaseAction
                                             } else { //多店铺
                                                 $coupon_list_mer[$key]['jump_url'] = $this->config['site_url'] . D('House_village')->base_url . 'pages/store/storeList?coupon_id=' . $value['coupon_id'];
                                             }
+                                            if($value['store_direct_verification']==1){
+                                                $coupon_list_mer[$key]['jump_url'] = get_base_url('pages/store/storeList?coupon_id=' . $value['coupon_id'] . '&coupon_type=mer&get_store_list=1&user_had_id=');
+                                            }
                                         }
                                         if (!empty($this->_uid)) {
                                             $now_user_coupon = D('Card_new_coupon')->get_coupon_category_by_uid($this->_uid);
@@ -1242,6 +1246,9 @@ class CouponAction extends BaseAction
                                             foreach ($now_user_coupon as $vv) {
                                                 if (!empty($coupon_list_mer[$vv['coupon_id']])) {
                                                     $coupon_list_mer[$vv['coupon_id']]['selected'] = 1;
+                                                    if($coupon_list_mer[$vv['coupon_id']]['store_direct_verification']==1 && $vv['is_use']==0){
+                                                        $coupon_list_mer[$vv['coupon_id']]['jump_url'] .= $vv['id'];
+                                                    }
                                                 }
                                             }
                                         }
@@ -1356,9 +1363,17 @@ class CouponAction extends BaseAction
 //                    $coupon_list_my[$kk]['use_start_time'] = date('Y.m.d', $vv['receive_time']); //使用开始时间 (领取时间)
 //                    $coupon_list_my[$kk]['use_end_time'] = date('Y.m.d', $vv['end_time']); //使用结束时间 (优惠券过期时间)
                 if($coupon_list_my[$kk]['is_had']==1){
-                    $no_use = D('Card_new_coupon_hadpull')->where(['uid'=>$this->_uid,'coupon_id'=>$val['coupon_id'],'status'=>0])->find();
+                    $no_use = D('Card_new_coupon_hadpull')->where(['uid'=>$this->_uid,'coupon_id'=>$val['coupon_id'],'is_use'=>0])->find();
                     if(!$no_use){
                         $coupon_list_my[$kk]['is_use'] = 1;
+                    } else {
+                        if ($val['store_direct_verification'] == 1) {
+                            $had_pull_id = $val['jump_url'] ? explode('=', $val['jump_url']) : [];
+                            $had_pull_id = $had_pull_id ? $had_pull_id[count($had_pull_id) - 1] : 0;
+                            if (!$had_pull_id) {
+                                $val['jump_url'] .= $no_use['id'];
+                            }
+                        }
                     }
                 }
 
@@ -1372,6 +1387,14 @@ class CouponAction extends BaseAction
                     $no_use = D('System_coupon_hadpull')->where(['uid'=>$this->_uid,'coupon_id'=>$val['coupon_id'],'is_use'=>0])->find();
                     if(!$no_use){
                         $coupon_list_my[$kk]['is_use'] = 1;
+                    } else {
+                        if ($val['store_direct_verification'] == 1) {
+                            $had_pull_id = $val['jump_url'] ? explode('=', $val['jump_url']) : [];
+                            $had_pull_id = $had_pull_id ? $had_pull_id[count($had_pull_id) - 1] : 0;
+                            if (!$had_pull_id) {
+                                $val['jump_url'] .= $no_use['id'];
+                            }
+                        }
                     }
                 }
             }
@@ -1382,8 +1405,6 @@ class CouponAction extends BaseAction
             $coupon_list_my[$kk]['can_get_num'] = $val['can_get_num']; //可领取数量，为0标识已抢完
             $coupon_list_my[$kk]['had_percent'] = intval(($val['had_pull'] / $val['num']) * 100)??0; //已领取的百分比
 //                $coupon_list_my[$kk]['is_used'] = $vv['is_use']; //是否已使用 0-正常，1-已使用，2-不能使用，3-赠送中
-
-
             //判断是否快过期
             if (time() > $val['end_time']) { //已过期
                 $is_discount = 1;
@@ -1426,7 +1447,6 @@ class CouponAction extends BaseAction
             $coupon_list_my[$kk]['cardsign'] = $val['cardsign']??'';
             $coupon_list_my[$kk]['allow_new'] = $val['allow_new']; //允许新用户使用 0-不允许 1-允许 默认1
             $coupon_list_my[$kk]['status'] = $val['status']; //0 未启用 1 启用 2过期 3领完了
-
         }
 
 
@@ -1758,6 +1778,14 @@ class CouponAction extends BaseAction
             $this->returnCode(1001,[], '请先登录~');
         }elseif(empty($now_user['phone'])){
             $this->returnCode(1002,[], '未绑定手机号码');
+        }
+
+        //限制领取频率，避免接口被刷
+        $uniqueKey = md5('coupon_getCoupon' . $this->_uid);
+        $lockRs = setLock($uniqueKey, 2);
+        if ($lockRs['error_no']) {
+            setLock($uniqueKey, 2);
+            $this->returnCodeError($lockRs['error_msg']);
         }
 
         //是否一次领取最多可领取数量

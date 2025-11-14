@@ -245,7 +245,7 @@
 						top.msg(0,'为了保证网页打开速度，优惠券最多只能添加9个。',true);
 						return false;
 					}
-					window.top.artiframe("{pigcms{:U('choose_shop_coupon')}",'选择优惠券',800,500,true,false,'black',null,'choose_shop_coupon');
+					window.o2oTop.artiframe("{pigcms{:U('choose_shop_coupon')}",'选择优惠券',800,500,true,false,'black',null,'choose_shop_coupon');
 				});
 				$('.addProductBtn2').click(function(){
 					var index=$('.addCategoryBtn li.curr').index();
@@ -253,7 +253,7 @@
 						top.msg(0,'请选择需要增加商品的分类！',true);
 						return false;
 					}
-					window.top.artiframe("{pigcms{:U('choice_mall_goods')}",'选择商品',800,500,true,false,'black',null,'choose_shop');
+					window.o2oTop.artiframe("{pigcms{:U('choice_mall_goods')}",'选择商品',800,500,true,false,'black',null,'choose_shop');
 				});
 				
 				$('.js-fields-region .action.delete').live('click',function(){

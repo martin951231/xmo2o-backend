@@ -94,7 +94,7 @@ class AddressController extends CommonBaseController
     /**
      * 自动识别手机 号码等信息（新）
      * @param $info
-     * @return array
+     * @return \think\response\Json
      */
     public function formatInfoNew()
     { 

@@ -38,7 +38,7 @@ class MerchantShopManagementController extends AuthBaseController
      * @param string $method
      * @return array|mixed
      */
-    private function validateParameter($method = 'post', array $params = [], string $scenario = ''): array
+	protected function validateParameter(string $method = 'post', array $params = [], string $scenario = ''): array
     {
         empty($params) && $params = input($method . '.');
         $validate = validate(AddressSettingValidate::class);
@@ -203,9 +203,6 @@ class MerchantShopManagementController extends AuthBaseController
                 if ($now_store['mer_id'] != $mer_id) {
                     return api_output_error(1002, '请商家与店铺信息不匹配,请重新登录');
                 }
-                /*else {
-                    $now_store = $now_store->toArray();
-                }*/
                 if (!empty($now_store['logo'])) {
                     $now_store['logo'] =  $now_store['image_logo'] = replace_file_domain($now_store['logo']);
                 }
@@ -240,9 +237,6 @@ class MerchantShopManagementController extends AuthBaseController
                     $now_store['discount_limit'] = isset($arr['discount_limit']) ? $arr['discount_limit'] : "";
                     $now_store['discount_limit_percent'] = isset($arr['discount_limit_percent']) ? $arr['discount_limit_percent'] : "";
                 }
-                /* if(!empty($now_store['plat_recommend_info'])){
-                     $now_store['plat_recommend_type_group']=
-                 }*/
                 $where_keywords = [['third_type', '=', 'Merchant_store'], ['third_id', '=', $store_id]];
 
                 $keywords = (new MerchantStoreService())->getKeyWordSome($where_keywords);
@@ -298,9 +292,7 @@ class MerchantShopManagementController extends AuthBaseController
                     $store_trade_ticket['use_scene'] = 0;
                 }
                 $now_store['store_trade_ticket'] = $store_trade_ticket;
-
                 //判断平台推荐
-
                 if ($now_store['plat_recommend_info']) {
                     $tmp_plat_recommend_info = explode('_', $now_store['plat_recommend_info']);
                     if (count($tmp_plat_recommend_info) > 1) {
@@ -413,12 +405,12 @@ class MerchantShopManagementController extends AuthBaseController
                 'open_merchant_wxapp_score_plugin'=>customization('open_merchant_wxapp_score_plugin') ? true : false, //微信商圈积分兑换比例
                 'open_tuwei_sync' => intval(customization('open_tuwei_sync')),
             ];
-            
-            return api_output(1000, $assign, 'success');
-
         } catch (\Exception $e) {
-            dd($e);
+            fdump_api([$e->getMessage(),$e->getFile(),$e->getTraceAsString()], 'merchant/store_edit', 1);
+			throw_exception($e->getMessage());
         }
+        $assign['store_open_meal'] = cfg('store_open_meal') ?: 0;
+        return api_output(1000, $assign, 'success');
     }
 
     /**
@@ -1806,6 +1798,19 @@ class MerchantShopManagementController extends AuthBaseController
         $data = app(MerchantService::class)->addressSettingEdit($params);
 
         return api_output(0, $data);
+    }
+
+    //自动登录店员
+    public function staffLogin()
+    {
+        $orderService = new \app\merchant\model\service\storestaff\LoginService();
+        $staffId = $this->request->param("staff_id", "0", "intval");
+        try {
+            $arr = $orderService->autoLoginFromMerchant($staffId,$this->merId);
+            return api_output(0, $arr, 'success');
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
     }
 
 }

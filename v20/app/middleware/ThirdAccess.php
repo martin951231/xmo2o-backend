@@ -43,6 +43,7 @@ class ThirdAccess
                 $request->thirdBusinessId = $thirdAccess['businessId'];
                 $request->thirdType = $thirdAccess['thirdType'];
                 $request->thirdSite = $thirdAccess['thirdSite'];
+                $request->secretCheckId = $thirdAccess['checkId'];
             }
         }
         return $next($request);

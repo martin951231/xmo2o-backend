@@ -160,6 +160,7 @@ class WorkUserController extends AuthBaseController
 	public function recordServiceInfo(): Json
 	{
 		$params = input();
+		fdump_api($params, 'appoint_worker/recordServiceInfo', 1);
 		$this->validate($params, [
 			'supply_id|服务ID' => 'require',
 		]);

@@ -20,7 +20,7 @@ class MallPlatformDeliveryController extends AuthBaseController
      * @param string $scenario
      * @return array
      */
-    private function validateParameter($method = 'post', array $params = [], string $scenario = ''): array
+    protected function validateParameter(array $params = [], string $scenario = '', string $method = 'post'): array
     {
         empty($params) && $params = input($method . '.');
         $validate = validate(MallDeliveryValidate::class);

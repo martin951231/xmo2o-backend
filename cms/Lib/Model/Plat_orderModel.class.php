@@ -744,12 +744,17 @@ class Plat_orderModel extends Model{
 		}
 
 		if($now_order['system_balance']>0){
-			if($refund_money !=''){
-				$result = D('User')->add_money($now_order['uid'],$refund_money, $operation_info . $now_order['order_name'] . '商品退款,增加余额,订单编号' . $tOrder['order_id']);
-			}else{
-				$result = D('User')->add_money($now_order['uid'],$now_order['system_balance'], $operation_info . $now_order['order_name'] . '商品退款,增加余额,订单编号' . $tOrder['real_orderid']);
+			if($now_order['business_type'] == 'service') {
+				$maiyatianDelivery = M('MaiyatianDelivery')->where(['publish_id' => $now_order['order_id']])->find();
+				$maiyatianDelivery && $result['error_code'] = 0;
 			}
-
+			if(empty($maiyatianDelivery)) {//麦芽田配送订单，不是用户下单，不退用户余额
+				if($refund_money !=''){
+					$result = D('User')->add_money($now_order['uid'],$refund_money, $operation_info . $now_order['order_name'] . '商品退款,增加余额,订单编号' . $tOrder['order_id']);
+				}else{
+					$result = D('User')->add_money($now_order['uid'],$now_order['system_balance'], $operation_info . $now_order['order_name'] . '商品退款,增加余额,订单编号' . $tOrder['real_orderid']);
+				}
+			}
 			$param = array('refund_time' => time());
 			if($result['error_code']){
 				$param['err_msg'] = $result['msg'];

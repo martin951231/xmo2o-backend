@@ -163,7 +163,8 @@ class ShopGoodsService
         if($param['source'] == 'mall_goods'){
             $condition[] = ['t.is_del', '=', 0];
         }
-        $goodsList = $this->getGoodsListByModule($param['source'], $condition, [], $param['limit']);
+        $field = $param['source'] == 'mall_goods' ? 't.common_goods_id' : 't.goods_id';
+        $goodsList = $this->getGoodsListByModule($param['source'], $condition, [], $param['limit'], 1, $field);
 
         if($param['source'] == 'mall_goods'){
             $goodsIds = array_column($goodsList, 'common_goods_id');
@@ -324,18 +325,18 @@ class ShopGoodsService
      * @param $where array 条件
      * @return array
      */
-    public function getGoodsListByModule($tableName, $where = [], $order = [], $limit = '0', $page = '1')
+    public function getGoodsListByModule($tableName, $where = [], $order = [], $limit = '0', $page = '1', $field = '*')
     {
         ini_set('memory_limit', '512M');
         if (!$tableName) {
             return [];
         }
-        $goodsList = $this->shopGoodsModel->getGoodsListByModule($tableName, $where, $order, $limit, intval($page));
+        $goodsList = $this->shopGoodsModel->getGoodsListByModule($tableName, $where, $order, $limit, intval($page), $field);
 //		var_dump($this->shopGoodsModel->getLastSql());die;
         if (!$goodsList) {
             return [];
         }
-        return $goodsList->toArray();
+        return is_array($goodsList) ? $goodsList : $goodsList->toArray();
     }
 
     /**
@@ -385,7 +386,7 @@ class ShopGoodsService
         if (!$sortList) {
             return [];
         }
-        return $sortList->toArray();
+        return is_array($sortList) ? $sortList : $sortList->toArray();
     }
 
 

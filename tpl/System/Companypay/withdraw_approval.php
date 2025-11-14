@@ -90,7 +90,7 @@
                             <td>{pigcms{$vo.nickname}</td>
                             <td>
                                 {pigcms{$vo.phone}&nbsp;
-                                <a class="btn" style=" border: 1px solid #ddd;background: #fff;padding: 4px" href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">查看余额记录</a>
+                                <a class="btn" style=" border: 1px solid #ddd;background: #fff;padding: 4px" href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/money_list',array('uid'=>$vo['uid']))}','余额记录列表',680,560,true,false,false,null,'money_list',true);">查看余额记录</a>
                             </td>
                             <td>{pigcms{$vo.user_id_number|default='--'}</td>
                             <if condition="$config['open_user_distributor']">
@@ -119,7 +119,7 @@
                                     付款
                                     </if>
                                 </font>
-                                <font color="grey" class="link refuse"  onclick="window.top.artiframe('/admin.php?g=System&c=Companypay&a=edit_reason&id={pigcms{$vo.pigcms_id}','编辑',400,200,true,false,false,editbtn,'edit',true);">拒绝</font>
+                                <font color="grey" class="link refuse"  onclick="window.o2oTop.artiframe('/admin.php?g=System&c=Companypay&a=edit_reason&id={pigcms{$vo.pigcms_id}','编辑',400,200,true,false,false,editbtn,'edit',true);">拒绝</font>
                                 <elseif condition="$withdraw_apply eq 1 && $vo.can_get_apply_status eq 1"/>
                                 <font color="blue" class="link refuse" id="update_apply_atatus" data-id="{pigcms{$vo['pigcms_id']}">更新提现状态</font>
                                 <else />

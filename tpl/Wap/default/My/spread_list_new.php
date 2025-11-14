@@ -226,7 +226,7 @@
             if (spread_lists[i].status == 0 && (spread_lists[i].order_type == 'store' || spread_lists[i].order_type == 'cash')) {
                 //空
             } else if (spread_lists[i].status == 0 && spread_lists[i].order_type != 'store') {
-                if (spread_lists[i].order_info.status == 0 || spread_lists[i].order_info.status > 3) {
+                if (spread_lists[i].order_type != 'mall' && (spread_lists[i].order_info.status == 0 || spread_lists[i].order_info.status > 3)) {
                     _html += '待消费';
                 }
             } else if (spread_lists[i].status == 1 || spread_lists[i].order_type == 'store' || spread_lists[i].order_type == 'cash' || spread_lists[i].order_type == 'meal') {

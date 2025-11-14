@@ -40,7 +40,7 @@
 										<td>{pigcms{$vo.uid}</td>
 										<td>{pigcms{$vo.name}</td>
 										<td>{pigcms{$vo.user_id_number}</td>
-										<td><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/car_authority_img',array('car_id'=>$vo['car_id']))}','查看证件图片',680,560,true,false,false);" ><img style="width:70px;height:70px;" src="{pigcms{$vo.authentication_img}" /></a></td>
+										<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/car_authority_img',array('car_id'=>$vo['car_id']))}','查看证件图片',680,560,true,false,false);" ><img style="width:70px;height:70px;" src="{pigcms{$vo.authentication_img}" /></a></td>
 										<if condition="$vo['status'] eq 0">
 											<td style="color:blue">待审核</td>
 										<elseif condition="$vo['status'] eq 1"/>
@@ -60,11 +60,11 @@
 										</if>
 										<if condition="$vo['status'] eq 0">
 											<td class="textcenter">
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/car_check',array('car_id'=>$vo['car_id']))}','审核实名认证',680,560,true,false,false,editbtn,'edit',true);">审核</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/car_check',array('car_id'=>$vo['car_id']))}','审核实名认证',680,560,true,false,false,editbtn,'edit',true);">审核</a>
 											</td>
 										<else/>
 											<td class="textcenter">
-												<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('User/car_check',array('car_id'=>$vo['car_id'],'statuss'=>1))}','查看实名认证',680,560,true,false,false);">查看</a>
+												<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('User/car_check',array('car_id'=>$vo['car_id'],'statuss'=>1))}','查看实名认证',680,560,true,false,false);">查看</a>
 											</td>
 										</if>
 									</tr>

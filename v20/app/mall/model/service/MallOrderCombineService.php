@@ -473,12 +473,29 @@ class MallOrderCombineService
                
             }
 
+            if(cfg('add_spread_by_system_commission')){// 根据平台抽成获得佣金
+                $getSystemTakeMoney = 0;
+                // 获取平台抽成金额
+                try {
+                    $sysTakeMoneyRes = (new MallOrderService())->merchantAddMoney($order['order_id'], 0, 2, true);
+                    fdump_api([$order['order_id'],$sysTakeMoneyRes],'mallOrder/mall_order_getsystem_take_money',1);
+                    if($sysTakeMoneyRes['status'] == 0){
+                        $getSystemTakeMoney = $sysTakeMoneyRes['res'];
+                        $getSystemTakeMoney = $getSystemTakeMoney>0?$getSystemTakeMoney:0;
+                    }else{
+                        fdump_api([$order['order_id'],$sysTakeMoneyRes],'mallOrder/mall_order_getsystem_take_money',1);
+                    }
+                }catch (\Exception $e){
+                    fdump_api([$order['order_id'],$e->getMessage()],'mallOrder/mall_order_getsystem_take_money',1);
+                }
+            }
             //获取订单明细
             $details = (new MallOrderDetailService)->getByOrderId(true, $order['order_id']);
             $is_prepare = 0;
             $is_prepare_end = 0;//是否是预售尾款（因为牵扯到二次支付，所以预售比较特殊）
             $change_status = true;
             $order_detail_goods_name = '';
+            $order_total_goods_money = array_sum(array_column($details,'money_total'));
             foreach ($details as $detail) {
                 switch ($detail['activity_type']) {
                     case 'group'://修改拼团状态
@@ -500,9 +517,19 @@ class MallOrderCombineService
                         break;
                 }
                 $spread = (new MallGoodsService)->getSpreadRate($detail['goods_id']);
-                $level1_money += $detail['money_total']*$spread['first_rate']/100;
-                $level2_money += $detail['money_total']*$spread['second_rate']/100;
-                $level3_money += $detail['money_total']*$spread['third_rate']/100;
+                if(cfg('add_spread_by_system_commission')){
+                    if($getSystemTakeMoney > 0){
+                        $level1_money += $getSystemTakeMoney * ($detail['money_total'] / $order_total_goods_money)  * $spread['first_rate'] / 100;
+                        $level2_money += $getSystemTakeMoney * ($detail['money_total'] / $order_total_goods_money)  * $spread['second_rate'] / 100;
+                        $level3_money += $getSystemTakeMoney * ($detail['money_total'] / $order_total_goods_money)  * $spread['third_rate'] / 100;
+                    }
+                    $spread_total_money = $getSystemTakeMoney;
+                }else {
+                    $level1_money += $detail['money_total'] * $spread['first_rate'] / 100;
+                    $level2_money += $detail['money_total'] * $spread['second_rate'] / 100;
+                    $level3_money += $detail['money_total'] * $spread['third_rate'] / 100;
+                    $spread_total_money = $detail['money_total'];
+                }
                 $userBehaviorGoodsData[] = [
                     'business_type'=>'mall',
                     'goods_id'=>$detail['goods_id'],
@@ -568,7 +595,29 @@ class MallOrderCombineService
                 }
             }
             //增加佣金
-            (new UserSpreadListService)->userToSpread($order['uid'], 'mall', $order['order_id'], $order['order_no'], $level1_money, $level2_money, $level3_money);
+            $spreadInfo = [
+                'order_id' => $order['order_id'],
+                'pay_order_id' => 0,
+                'mer_id' => $order['mer_id'],
+                'store_id' => $order['store_id'],
+                'uid' => $order['uid'],
+                'spread_total_money' => $spread_total_money,
+                'order_type' => 'mall',
+                'real_orderid' => $order['order_no'],
+                'level_money'=>[
+                    'level1'=>$level1_money,
+                    'level2'=>$level2_money,
+                    'level3'=>$level3_money,
+                ]
+            ];
+
+            try {
+                (new UserSpreadListService)->addSpreadList($spreadInfo);
+            } catch (\Exception $e) {
+                fdump_api([$spreadInfo, $e->getMessage()], 'mall/spreadListError', 1);
+            }
+            
+            //(new UserSpreadListService)->userToSpread($order['uid'], 'mall', $order['order_id'], $order['order_no'], $level1_money, $level2_money, $level3_money);
             //直播/短视频增加销量
             if((($order['is_liveshow'] > 0 && $order['liveshow_id'] > 0) || ($order['is_livevideo'] > 0 && $order['livevideo_id'] > 0)) && $status == 10){
                 foreach ($details as $detail) {
@@ -618,7 +667,6 @@ class MallOrderCombineService
                 $href = get_base_url('pages/shopmall_third/orderDetails?order_id=' . $order['order_id']);
                 $model->sendTempMsg('OPENTM201752540', array('href' => $href, 'wecha_id' => $now_user['openid'], 'first' => cfg('mall_alias_name_new') . L_('提醒'), 'keyword1' => $order_detail_goods_name, 'keyword2' => $order['order_no'], 'keyword3' => getFormatNumber($order['money_real']), 'keyword4' => date('Y-m-d H:i:s'), 'remark' => L_("X1订单支付成功，您的订单号：X2", array("X1" => cfg('mall_alias_name_new'), "X2" => $order['order_no']))));
             }
-            
         }
         (new MallOrderCombine)->updateThis(['combine_id'=>$combine_id], ['paid' => 1]);
         //用户行为记录

@@ -29,11 +29,14 @@ class PrintService {
     {
         if (empty($content)) return false;
 
-        if ($type==0 && $usePrinter['is_big'] == 1) {
-            $content = '<FH><FW>' . $content . '</FW></FH>';
-        } elseif ($usePrinter['is_big'] == 2) {
-            $content = '<FH2><FW2>' . $content . '</FW2></FH2>';
-        }
+		if($usePrinter['print_type'] != 7){  //排除大趋智能打印机
+			if ($type==0 && $usePrinter['is_big'] == 1) {
+				$content = '<FH><FW>' . $content . '</FW></FH>';
+			} elseif ($usePrinter['is_big'] == 2) {
+				$content = '<FH2><FW2>' . $content . '</FW2></FH2>';
+			}
+		}
+        
 		
 		// 执行打印推送的钩子
 		$hook_result = (new HookService())->hookExec('plan.store_print_before',['print'=>$usePrinter,'msg'=>$content]);
@@ -83,7 +86,31 @@ class PrintService {
 
             $url = $this->serverUrl.'server.php?m=server&c=orderPrint&a=printit&size='.($usePrinter['paper'] ? '80' : '58').'&productid=3&count=' . $usePrinter['count'] . '&mkey=' . $usePrinter['mkey'] . '&mcode=' . $usePrinter['mcode'] . '&name=' . $usePrinter['username'] . '&qr=' . urlencode($qrlink) . '&domain=' . $this->topdomain;
 			$rt = $this->apiNoticeIncrement($url, $data);
-        } else {
+        } elseif ($usePrinter['trenditiot_appid']) {
+			//大趋智能云打印机
+			//底部增加平台小程序码显示
+			if (cfg('wxapp_qrcode')) {
+				$content .= '<BR>';
+				$content .= '<C><IMG>0</IMG></C>';
+			}
+			$data = array(
+				"sn" => $usePrinter['mcode'],
+				"content" => $content,
+				"copies" => $usePrinter['count']
+			);
+			\printer\Trenditiot::print($usePrinter['trenditiot_appid'], $usePrinter['trenditiot_appkey'], $data);
+
+			if (cfg('wxapp_qrcode')) {
+				//每次打印都同步下图片
+				$qrcode = base64_encode(file_get_contents(replace_file_domain(cfg('wxapp_qrcode'))));
+				$imageData = [
+					"sn" => $usePrinter['mcode'],
+					"index" => 0,
+					"imageBase64" => $qrcode
+				];
+				\printer\Trenditiot::setImage($usePrinter['trenditiot_appid'], $usePrinter['trenditiot_appkey'], $imageData);
+			}
+		}else {
             /***WIFI小票打印机****/
             $data = array('content' => $content, 'machine_code' => $usePrinter['mcode'], 'machine_key' => $usePrinter['mkey'], 'own_print_type'=>$usePrinter['print_type']);
 			

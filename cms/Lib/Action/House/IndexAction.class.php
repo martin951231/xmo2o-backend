@@ -598,6 +598,15 @@ class IndexAction extends BaseAction{
             if(isset($village_about_info['grab_order_time']) && $village_about_info['grab_order_time']<1){
                 $village_about_info['grab_order_time']=1;
             }
+            $meter_apiset=array();
+            if(isset($village_about_info['meter_extended_data']) && $village_about_info['meter_extended_data']){
+               $meter_extended_data = json_decode($village_about_info['meter_extended_data'],true);
+               if($meter_extended_data && isset($meter_extended_data['meter_apiset'])){
+                   $meter_apiset=$meter_extended_data['meter_apiset'];
+               }
+               unset($village_about_info['meter_extended_data']);
+            }
+            $this->assign('meter_apiset',$meter_apiset);
             $this->assign('village_about_info',$village_about_info);
             $whereArr=array('village_id'=>$village_id,'property_id'=>$village_info['property_id'],'xtype'=>'order_refund_check');
             $order_refund_check=D('House_village_checkauth_set')->get_one_set($whereArr);
@@ -798,6 +807,8 @@ class IndexAction extends BaseAction{
             $orderModifyDiscount=json_decode($village_about_info['order_modify_discount'],true);
         }
         $this->assign('orderModifyDiscount',$orderModifyDiscount);
+        $isYumenLaoSpecialMeter=D('Config_customization')->getFuncYumenLaoSpecialMeter();
+        $this->assign('isYumenLaoSpecialMeter',$isYumenLaoSpecialMeter);
 		$this->display();
     }
 
@@ -1439,8 +1450,11 @@ class IndexAction extends BaseAction{
                 $village_about_data['is_limit_date'] = trim($_POST['is_limit_date']);
                 unset($_POST['is_new_storage']);
             }
-
-
+            $meter_apiset='';
+            if(isset($_POST['meter_apiset'])){
+                $meter_apiset=$_POST['meter_apiset'];
+                unset($_POST['meter_apiset']);
+            }
             $village_about_data['repair_wid'] = 0;
             $village_about_data['advise_wid'] = 0;
             if(intval($_POST['handle_type']) == 1){
@@ -1566,14 +1580,23 @@ class IndexAction extends BaseAction{
                     M('House_village_single')->where(array('village_id'=>$village_id))->data(['area'=>''])->save();
                  //   print_r(M('House_village_single')->_sql());exit;
                 }
-                $info_id = M('House_village_info')->where(array('village_id'=>$village_id))->getField('info_id');
-                if ($info_id) {
+                $vinfo = M('House_village_info')->where(array('village_id'=>$village_id))->find();
+                if (!empty($vinfo) && isset($vinfo['info_id'])) {
                     $village_about_data['add_time'] = time();
-                    M('House_village_info')->where(array('info_id'=>$info_id))->save($village_about_data);
+                    if($meter_apiset) {
+                        $meter_extended_data = $vinfo['meter_extended_data'] ? json_decode($vinfo['meter_extended_data'], true):array();
+                        $meter_extended_data=is_array($meter_extended_data) ? $meter_extended_data:array();
+                        $meter_extended_data['meter_apiset']=$meter_apiset;
+                        $village_about_data['meter_extended_data']=json_encode($meter_extended_data,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+                    }
+                    M('House_village_info')->where(array('info_id'=>$vinfo['info_id']))->save($village_about_data);
                 } else {
                     $village_about_data['village_id'] = $village_id;
                     $village_about_data['property_id'] = $village_info['property_id'];
                     $village_about_data['add_time'] = time();
+                    if($meter_apiset){
+                        $village_about_data['meter_extended_data']=json_encode(array('meter_apiset'=>$meter_apiset),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+                    }
                     M('House_village_info')->data($village_about_data)->add();
                 }
                 D('House_new_repair_cate')->check_bind_worker($village_id,$village_about_data);

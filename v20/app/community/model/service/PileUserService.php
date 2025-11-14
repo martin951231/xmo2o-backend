@@ -29,6 +29,7 @@ use app\community\model\db\HouseVillageHaokuaichongRegion;
 use app\community\model\db\HouseVillageHaokuaichongRate;
 use app\community\model\db\HouseVillagePileUserBalance;
 use app\community\model\db\HouseVillagePileUserBalanceLog;
+use app\community\model\db\VillageMoneyList;
 use app\community\model\db\User;
 use app\pay\model\db\PayOrderInfo;
 use app\traits\CommonLogTraits;
@@ -2852,8 +2853,8 @@ class PileUserService
             $service_equipment = new HouseVillagePileEquipment();
             $equipment_info = $service_equipment->getInfo(['id' => $order_info['equipment_id']]);
             $user = new User();
-            $openid = $user->getOne(['uid' => $order_info['uid']]);
-            if ((!empty($openid['openid']) || $order_info['pay_type']==4) && !empty($equipment_info)) {
+            $openid = $user->getOne(['uid' => $order_info['uid']],'*');
+            if ((!empty($openid['openid']) || $openid['wxapp_openid'] || $order_info['pay_type']==4) && !empty($equipment_info)) {
                 $href = get_base_url('pages/village/smartCharge/chargeDetails?order_id=' . $order_info['id'] . '&status=1');
                 if ($data['endType'] == 1) {
                     if(!empty($openid['openid'])) {
@@ -3004,6 +3005,10 @@ class PileUserService
                 $tparam=array('energy_type'=>$equipment_info['energy_type'],'comfrom'=>'lvcc_notification');
                 $this->handlePileChargeConsumePoint($order_info['id'],$tparam,'lvv');
             }
+            if(isset($order_info['is_fenzhang']) && $order_info['is_fenzhang']==1 && $order_info['fz_type']=='lakala_divide'){
+                $this->handleOrderPileChargeLakalaDivide($order_info);
+            }
+            
             return $order_id;
         }
         fdump_api(['order数据=='.__LINE__,$order_data,$order_info],'lvcc/notification',1);
@@ -3099,8 +3104,8 @@ class PileUserService
         }
         //增加积分处理
         $userComService = new UserService();
-        $param=array('order_id'=>$order_id,'house_type'=>1,'order_type'=>'house_pile','opt_level'=>'sys_platform');
-        $ret=$userComService->addScore($uid,$consumePoint,$desc,0,$param);
+        $scoreParam=array('order_id'=>$order_id,'score_type'=>20,'house_type'=>1,'order_type'=>'village_pile_pay','village_id'=>$order_pile['village_id'],'opt_level'=>'sys_platform');
+        $ret=$userComService->addScore($uid,$consumePoint,$desc,0,$scoreParam);
         if($ret && is_array($ret) && !$ret['error_code']){
             $consume_point_arr['is_add_score']=1;
         }
@@ -3144,6 +3149,100 @@ class PileUserService
         return true;
     }
 
+    public function handleTaskPileChargeLakalaDivide()
+    {
+        $service_order_pile = new HouseVillagePilePayOrder();
+        try {
+            $nowtime = time();
+            $end_time_tmp = $nowtime - 1000; //已经结束 20分钟后的订单
+            $end_time_start = $nowtime - 7 * 24 * 3600;
+            $whereArr = array(['fz_type', '=', 'lakala_divide'], ['is_fenzhang', '=', 1], ['status', '=', 1], ['use_money', '>', 0], ['end_time', '>', $end_time_start], ['end_time', '<', $end_time_tmp]);
+            $order_pile_obj = $service_order_pile->getList($whereArr, '*', 1, 3, 'end_time ASC');
+            if ($order_pile_obj && !$order_pile_obj->isEmpty()) {
+                $order_piles = $order_pile_obj->toArray();
+                foreach ($order_piles as $povv) {
+                    $this->handleOrderPileChargeLakalaDivide($povv);
+                }
+            }
+        } catch (\Exception $ee) {
+            fdump_api(['e_msg' => $ee->getMessage(), 'whereArr' => $whereArr], 'pay/handleTaskPileChargeLakalaDivide');
+        }
+        return true;
+    }
+    public function handleOrderPileChargeLakalaDivide($order_pile=array(),$pay_order_info_id=0){
+        $service_paid_order = new PayOrderInfo();
+        $service_order_pile_db = new HouseVillagePilePayOrder();
+        fdump_api(['order_pile_id'=>$order_pile['id']], 'pay/villageLakalaPileFenzhang', 1);
+        if(!isset($order_pile['is_fenzhang']) || $order_pile['is_fenzhang']!=1){
+            return false;
+        }
+        try {
+            $villageMoneyListDb=new VillageMoneyList();
+            if($pay_order_info_id>0){
+                $pay_order_info_obj=$service_paid_order->getOneOrder(array('id'=>$pay_order_info_id));
+            }elseif (isset($order_pile['pay_orderid']) && $order_pile['pay_orderid']){
+                $pay_order_info_obj=$service_paid_order->getByOrderNo($order_pile['pay_orderid']);
+            }
+            $pay_order_info='';
+            if (!empty($pay_order_info_obj) && !$pay_order_info_obj->isEmpty()){
+                $pay_order_info=$pay_order_info_obj->toArray();
+            }
+            if(empty($pay_order_info) || empty($pay_order_info['pay_config'])){
+                return false;
+            }
+            $pay_env = $pay_order_info['env'];
+            $pay_config = json_decode($pay_order_info['pay_config'], true);
+            $lakalaService = new   \app\pay\model\service\channel\LakalaService($pay_env, $pay_config);
+            $paid_order_no = $pay_order_info['paid_extra'];
+            $refund_money=$order_pile['refund_money']*100;
+            $refund_money=intval($refund_money);   //退掉的钱
+            $pay_money = $pay_order_info['paid_money']-$refund_money;
+            $mer_get = $pay_money;
+            if($pay_money<=0){
+                return false;
+            }
+            $plat_get = 0;
+            $serviceHouseVillage = new HouseVillageService();
+            $now_village_info = $serviceHouseVillage->getHouseVillageInfo(array('village_id' => $order_pile['village_id']), '*');
+            if ($now_village_info['percent'] > 0) {
+                $percent = $now_village_info['percent'];
+            } else {
+                $percent = cfg('platform_get_village_percent');
+            }
+            $system_take = 0;
+            if ($percent > 0 && $percent < 100) {
+                $system_take = ($pay_money * $percent) / 100;
+                $system_take = round($system_take);
+                $plat_get = $system_take;
+                $mer_get = $pay_money - $system_take;
+            }
+
+            $lakalafz_ret = $lakalaService->fenzhang($paid_order_no, $mer_get, $plat_get);
+            $order_data_pile=array('is_fenzhang'=>2);
+            $service_order_pile_db->saveOne(['id' => $order_pile['id']], $order_data_pile);
+            $mer_get_tmp = $mer_get / 100;
+            $mer_get_tmp = round($mer_get_tmp, 2);
+            $plat_get_tmp = $plat_get / 100;
+            $plat_get_tmp = $plat_get_tmp > 0 ? round($plat_get_tmp, 2) : 0;
+            $xdesc ="【拉卡拉分账】订单号：".$pay_order_info['orderid']." 小区：".$mer_get_tmp." 平台：".$plat_get_tmp;
+            $whereArr=array(['village_id','=',$order_pile['village_id']],['order_id','=',$order_pile['order_id']],['type','=','village_pile_pay']);
+            $moneyListObj=$villageMoneyListDb->getOneData($whereArr);
+            if($moneyListObj && !$moneyListObj->isEmpty() && $moneyListObj['id']){
+                $extra_data=array('lakala_divide_info'=>array('paid_order_no'=>$paid_order_no,'lakalafz_ret'=>$lakalafz_ret));
+                $extra_data_json=json_encode($extra_data,JSON_UNESCAPED_UNICODE);
+                $saveInfo=array('desc'=>$xdesc,'percent'=>$percent,'extra_data'=>$extra_data_json);
+                $villageMoneyListDb->saveData(array('id'=>$moneyListObj['id']),$saveInfo);
+            }
+            fdump_api(['order_id'=>$order_pile['id'],'percent'=>$percent,'pay_money'=>$pay_money,'refund_money'=>$refund_money,'paid_order_no'=>$paid_order_no,'xdesc'=>$xdesc ,'lakalafz_ret'=>$lakalafz_ret], 'pay/villageLakalaPileFenzhang', 1);
+        } catch (\Exception $ee) {
+            $order_data_pile=array('is_fenzhang'=>3);
+            $service_order_pile_db->saveOne(['id' => $order_pile['id']], $order_data_pile);
+            fdump_api([$paid_order_no, $ee->getMessage(), 'pay_order_info' => $pay_order_info], 'pay/villageLakalaPileFenzhangErr', 1);
+
+        }
+        return true;
+    }
+    
     /**
      * 艾特充充电结束通知
      * @author:zhubaodi
@@ -5461,14 +5560,16 @@ class PileUserService
                     }
                 }
             }
-
+            
             if($pile_charge_consume_point>0){
                 $this->handleTaskPileChargeConsumePoint();
             }
+            $this->handleTaskPileChargeLakalaDivide();
         } catch (\Exception $e) {
             if($pile_charge_consume_point>0){
                 $this->handleTaskPileChargeConsumePoint();
             }
+            $this->handleTaskPileChargeLakalaDivide();
             return api_output_error(-1, $e->getMessage());
         }
         return api_output(0, [], '成功');
@@ -5517,7 +5618,51 @@ class PileUserService
         return $url;
     }
 
+    public function getEquipmentSocketStatus($village_id = 0, $e_id = 0)
+    {
+        $service_equipment = new HouseVillagePileEquipment();
+        $where = array(['id', '=', $e_id]);
+        $where[] = ['village_id', '=', $village_id];
+        $where[] = ['status', '=', 1];
+        $where[] = ['is_del', '=', 1];
+        $equipmentObj = $service_equipment->getInfo($where, '*');
+        $equipmentInfo = array();
+        if ($equipmentObj && !$equipmentObj->isEmpty()) {
+            $equipmentInfo = $equipmentObj->toArray();
+        }
+        $returnArr = array('e_id' => $e_id, 'village_id' => $village_id, 'free_socket_num' => 0, 'work_socket_num' => 0, 'e_name' => '');
+        if (!empty($equipmentInfo)) {
+            $returnArr['free_socket_num'] = $equipmentInfo['socket_num'];
+            $returnArr['e_name'] = $equipmentInfo['equipment_name'];
+        }
+        if (!empty($equipmentInfo) && $equipmentInfo['type'] == 1) {
+            $equipment_sn = '';
+            if (!empty($equipmentInfo['equipment_num'])) {
+                $equipment_sn = $equipmentInfo['equipment_num'];
+            } elseif (!empty($equipmentInfo['equipment_sn'])) {
+                $equipment_sn = $equipmentInfo['equipment_sn'];
+            } elseif (!empty($equipmentInfo['equipment_serial'])) {
+                $equipment_sn = $equipmentInfo['equipment_serial'];
+            }
 
+            $socket_arr = $this->deviceStatus($equipment_sn, 1);
+            unset($socket_arr[0]);
+            if (!empty($socket_arr)) {
+                $free_socket_num = 0;
+                $work_socket_num = 0;
+                foreach ($socket_arr as $val) {
+                    if ($val == 0) {
+                        $free_socket_num++;
+                    } elseif ($val == 1) {
+                        $work_socket_num++;
+                    }
+                }
+                $returnArr['free_socket_num'] = $free_socket_num;
+                $returnArr['work_socket_num'] = $work_socket_num;
+            }
+        }
+        return $returnArr;
+    }
     /**
      * 查询充电桩列表
      * @author:zhubaodi
@@ -5676,7 +5821,7 @@ class PileUserService
                         }
 
                     }
-                    
+
                     $equipment_list[] = [
                         'id' => $v['id'],
                         'type' => $v['type'],

@@ -1972,9 +1972,7 @@ class MyAction extends BaseAction{
 		}
         $model_addr = $order_from=='fromWorkerOrder'?D('Merchant_workers_address'):D('User_adress');
 		$return	= $model_addr->post_form_save($this->_uid);
-        
-        // echo D('User_adress')->getlastsql();exit;
-		if($return){
+		if($return !== false){
 			$this->returnCodeOk($_POST['adress_id'] ? $_POST['adress_id'] : $return);
 		}else{
 			fdump($_POST,'user_adress_save',true);
@@ -5203,7 +5201,7 @@ class MyAction extends BaseAction{
 								$data[$key]['btn_arr'][] = [
 									'important' => true,
 									'text' => L_('核销二维码'),
-									'url' => $this->config['site_url'] . '/wap.php?c=Groupnew&a=eticket&order_id=' . $value['order_id'],
+									'url' => $this->config['site_url'] . '/wap.php?c=Groupnew&a=order_detail&order_id=' . $value['order_id'],
 								];
 							}
                         }
@@ -5216,7 +5214,7 @@ class MyAction extends BaseAction{
 							$data[$key]['btn_arr'][] = [
 								'important' => true,
 								'text' => L_('核销二维码'),
-								'url' => $this->config['site_url'] . '/wap.php?c=Groupnew&a=eticket&order_id=' . $value['order_id'],
+								'url' => $this->config['site_url'] . '/wap.php?c=Groupnew&a=order_detail&order_id=' . $value['order_id'],
 							];
 						}
                     }
@@ -5519,10 +5517,13 @@ class MyAction extends BaseAction{
     //删除各个业务的订单
     public function del_order(){
         $id = I("id");
-        $where = ['id'=>$id];
         if(empty($id)){
             $this->returnCode(1, array(), L_('参数缺失！'));
         }
+        $where = [
+            'id' => $id,
+            'uid' => $this->_uid,
+        ];
         $order = M("System_order")->where($where)->find();
         if (empty($order)) {
             $this->returnCode(1, array(), L_('订单不存在！'));

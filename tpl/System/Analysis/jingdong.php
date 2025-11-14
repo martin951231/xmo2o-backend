@@ -251,19 +251,19 @@
 
             if(type=='part_mer' || type=='part_store'){
                 if(type=='part_mer'){
-                    window.top.art.dialog.data('mer_list', $(obj).val());
+                    window.o2oTop.art.dialog.data('mer_list', $(obj).val());
                     var href= $(obj).attr('href')+'&province='+$('#choose_provincess').val()+'&city='+$('#choose_cityss').val()+'&area='+$('#choose_areass').val()+'&type'+type+'&mer_list='+$(obj).val()+'&jd=jd';
                     $('#edit_mer').show();
                 }else{
-                    window.top.art.dialog.data('store_list', $(obj).val());
+                    window.o2oTop.art.dialog.data('store_list', $(obj).val());
                     var href= $(obj).attr('href')+'&province='+$('#choose_provincess').val()+'&city='+$('#choose_cityss').val()+'&area='+$('#choose_areass').val()+'&type'+type+'&store_list='+$(obj).val()+'&mer_list='+$('#part_mer').val()+'&jd=jd';
                     $('#edit_store').show();
                 }
 
-                window.top.art.dialog.open(href,{
+                window.o2oTop.art.dialog.open(href,{
                     init: function(){
                         var iframe = this.iframe.contentWindow;
-                        window.top.art.dialog.data('iframe_handle',iframe);
+                        window.o2oTop.art.dialog.data('iframe_handle',iframe);
                     },
                     id: type,
                     title:title,
@@ -281,14 +281,14 @@
                     opacity:'0.4',
                     close:function(){
                         if(type=='part_mer'){
-                            var mer_list = window.top.art.dialog.data('mer_list');
+                            var mer_list = window.o2oTop.art.dialog.data('mer_list');
                             $(obj).val(mer_list)
                             $('#part_store').val(0)
                             $("input[name='store_list']:eq(0)").attr("checked",'checked');
                             $("input[name='store_list']:eq(1)").removeAttr("checked");
                             $('#edit_store').hide();
                         }else{
-                            var store_list = window.top.art.dialog.data('store_list');
+                            var store_list = window.o2oTop.art.dialog.data('store_list');
                             $(obj).val(store_list)
 
 
@@ -310,13 +310,13 @@
             var obj = $('#part_mer');
             var title= '选择商家'
             var type= $(obj).data('type')
-            window.top.art.dialog.data('mer_list', $(obj).val());
+            window.o2oTop.art.dialog.data('mer_list', $(obj).val());
             var href= $(obj).attr('href')+'&province='+$('#choose_provincess').val()+'&city='+$('#choose_cityss').val()+'&area='+$('#choose_areass').val()+'&type'+type+'&mer_list='+$(obj).val()+'&jd=jd';
 
-            window.top.art.dialog.open(href,{
+            window.o2oTop.art.dialog.open(href,{
                 init: function(){
                     var iframe = this.iframe.contentWindow;
-                    window.top.art.dialog.data('iframe_handle',iframe);
+                    window.o2oTop.art.dialog.data('iframe_handle',iframe);
                 },
                 id: type,
                 title:title,
@@ -333,7 +333,7 @@
                 top: '38.2%',
                 opacity:'0.4',
                 close:function(){
-                    var mer_list = window.top.art.dialog.data('mer_list');
+                    var mer_list = window.o2oTop.art.dialog.data('mer_list');
                     $(obj).val(mer_list)
                     $('#part_store').val(0)
                     $("input[name='store_list']:eq(0)").attr("checked",'checked');
@@ -348,13 +348,13 @@
             var obj = $('#part_store');
             var title= '选择店铺'
             var type= $(obj).data('type')
-            window.top.art.dialog.data('store_list', $(obj).val());
+            window.o2oTop.art.dialog.data('store_list', $(obj).val());
             var href= $(obj).attr('href')+'&province='+$('#choose_provincess').val()+'&city='+$('#choose_cityss').val()+'&area='+$('#choose_areass').val()+'&type'+type+'&store_list='+$(obj).val()+'&mer_list='+$('#part_mer').val()+'&jd=jd';
 
-            window.top.art.dialog.open(href,{
+            window.o2oTop.art.dialog.open(href,{
                 init: function(){
                     var iframe = this.iframe.contentWindow;
-                    window.top.art.dialog.data('iframe_handle',iframe);
+                    window.o2oTop.art.dialog.data('iframe_handle',iframe);
                 },
                 id: type,
                 title:title,
@@ -371,7 +371,7 @@
                 top: '38.2%',
                 opacity:'0.4',
                 close:function(){
-                    var store_list = window.top.art.dialog.data('store_list');
+                    var store_list = window.o2oTop.art.dialog.data('store_list');
                     console.log(store_list)
                     $(obj).val(store_list)
                 }

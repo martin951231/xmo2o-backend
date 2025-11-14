@@ -48,8 +48,8 @@
 	                            <td>'+res[i].area_name+'</td>\
 								<td>'+res[i].last_time+'</td>\
 								<td>\
-	                                <a href="javascript:void(0);" onclick=\'window.top.artiframe("'+add_shop_center_type_img_url+'&id='+res[i].id+'","查看图文详情",800,560,true,false,false,editbtn,"edit",true);\'>查看详情</a>\
-								    <a href="javascript:void(0);" onclick=\'window.top.artiframe("'+del_shop_center_type_img_url+'&id='+res[i].id+'");\'>删除</a>\
+	                                <a href="javascript:void(0);" onclick=\'window.o2oTop.artiframe("'+add_shop_center_type_img_url+'&id='+res[i].id+'","查看图文详情",800,560,true,false,false,editbtn,"edit",true);\'>查看详情</a>\
+								    <a href="javascript:void(0);" onclick=\'window.o2oTop.artiframe("'+del_shop_center_type_img_url+'&id='+res[i].id+'");\'>删除</a>\
 	                            </td>\
 							</tr>';
 					}
@@ -64,7 +64,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Shop/main_page')}" class="on">{pigcms{$config['shop_alias_name']}首页配置</a>
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/add_shop_center_type_img')}','添加中部导航',600,400,true,false,false,addbtn,'edit',true);">添加中部导航</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/add_shop_center_type_img')}','添加中部导航',600,400,true,false,false,addbtn,'edit',true);">添加中部导航</a>
 				</ul>
 			</div>
 			 <form id="myform" method="post" action="/admin.php?g=System&c=Shop&a=save_main_page" refresh="true">
@@ -100,7 +100,7 @@
 									<option value="4" <if condition="$_GET['type'] eq 4">selected</if>>4图 纯图片模式</option>
 									<option value="5" <if condition="$_GET['type'] eq 5">selected</if>>5图 纯图片模式</option>
 								</select>
-								<a href="javascript:void(0)" onclick="window.top.artiframe('{pigcms{:U('image_show')}','示例图',1320,825,true,false,false,'','show',true);" style="color:blue">示例图,用户前台广告位显示顺序按照排序值由高到低，从上往下，从左往右原则排序。</a>
+								<a href="javascript:void(0)" onclick="window.o2oTop.artiframe('{pigcms{:U('image_show')}','示例图',1320,825,true,false,false,'','show',true);" style="color:blue">示例图,用户前台广告位显示顺序按照排序值由高到低，从上往下，从左往右原则排序。</a>
 						  	</td>
 					 	</tr>
 					 	<input type="hidden" name="shop_main_page_show_type" id="shop_main_page_show_type" value="<if condition="isset($_GET['type'])"><if condition="$_GET['type'] gt 0">0<else />1</if><else />{pigcms{$config.shop_main_page_show_type}</if>">
@@ -148,8 +148,8 @@
                                         <td>{pigcms{$vo['area_name']}</td>
 										<td>{pigcms{$vo['last_time']|date='Y-m-d H:i:s',###}</td>
 										<td>
-                                            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/add_shop_center_type_img',array('id'=>$vo['id']))}','查看图文详情',800,560,true,false,false,editbtn,'edit',true);">查看详情</a>
-										    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/del_shop_center_type_img',array('id'=>$vo['id']))}');">删除</a>
+                                            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/add_shop_center_type_img',array('id'=>$vo['id']))}','查看图文详情',800,560,true,false,false,editbtn,'edit',true);">查看详情</a>
+										    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/del_shop_center_type_img',array('id'=>$vo['id']))}');">删除</a>
                                         </td>
 									</tr> -->
 								</volist>

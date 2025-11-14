@@ -72,11 +72,11 @@
                                     <td>{pigcms{$vo.addtime|date='Y-m-d H:i:s',###}</td>
                                     <td>{pigcms{$vo.pay_time|date='Y-m-d H:i:s',###}</td>
                                     <td>
-									<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Miaomai/order_detail',array('id'=>$vo['id']))}','查看淼迈订单详情',1000,'90%',true,false,false,false,'detail',true);">订单详情</a>&nbsp;&nbsp;
+									<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Miaomai/order_detail',array('id'=>$vo['id']))}','查看淼迈订单详情',1000,'90%',true,false,false,false,'detail',true);">订单详情</a>&nbsp;&nbsp;
 									
 									<if condition="$vo['has_refund']">
 										|&nbsp;&nbsp;
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Miaomai/order_refund_detail',array('order_code'=>$vo['order_code']))}','查看淼迈订单退货详情',1000,'90%',true,false,false,false,'detail',true);">退货详情</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Miaomai/order_refund_detail',array('order_code'=>$vo['order_code']))}','查看淼迈订单退货详情',1000,'90%',true,false,false,false,'detail',true);">退货详情</a>
 									</if>
 									</td>
 								</tr>

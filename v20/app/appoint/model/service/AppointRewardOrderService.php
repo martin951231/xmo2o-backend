@@ -207,7 +207,7 @@ class AppointRewardOrderService
                 'ip' => get_client_ip(0),
                 'desc' => '用户打赏您'.$work_money.'元',
                 'order_id' => 0,
-                'from_type' => 3
+                'from_type' => 1
             ];
             (new MerchantWorkersMoney())->save($saveData);
             (new MerchantWorkers())->where(['merchant_worker_id'=>$rewardOrder['reward_id']])->inc('reward_money',$work_money)->inc('now_money',$work_money)->update();

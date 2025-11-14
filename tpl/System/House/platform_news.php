@@ -37,9 +37,9 @@
     <div class="page_tips" style="margin-bottom: 10px;">该功能可针对平台中所有小区的用户发布公告通知，发布后，业主可在新闻列表页固定分类“平台通知”中查看通知详情。 </div>
 
 
-<!--    onclick="window.top.artiframe('{pigcms{:U('House/platform_news_add')}','新增新闻','80%',600,true,false,false,addbtn,'add',true);"-->
+<!--    onclick="window.o2oTop.artiframe('{pigcms{:U('House/platform_news_add')}','新增新闻','80%',600,true,false,false,addbtn,'add',true);"-->
 <!--    onclick="CreateCategory()"-->
-    <button class="btn btn-success"  onclick="window.top.artiframe('{pigcms{:U('House/platform_news_add')}','新增新闻','90%','95%',true,false,false,addbtn,'add',true);" style="margin-bottom: 15px">新增新闻</button>
+    <button class="btn btn-success"  onclick="window.o2oTop.artiframe('{pigcms{:U('House/platform_news_add')}','新增新闻','90%','95%',true,false,false,addbtn,'add',true);" style="margin-bottom: 15px">新增新闻</button>
 
     <form name="myform" id="myform" action="" method="post">
         <div class="table-list">
@@ -74,7 +74,7 @@
 
                             <td class="button-column">
 
-                                <a style="width: 60px;" class="label label-sm label-info" title="编辑" onclick="window.top.artiframe('{pigcms{:U('House/platform_news_edit',array('news_id'=>$vo['news_id']))}','编辑新闻','90%','95%',true,false,false,editbtn,'add',true);"  href="javascript:;">编辑</a>&nbsp;|
+                                <a style="width: 60px;" class="label label-sm label-info" title="编辑" onclick="window.o2oTop.artiframe('{pigcms{:U('House/platform_news_edit',array('news_id'=>$vo['news_id']))}','编辑新闻','90%','95%',true,false,false,editbtn,'add',true);"  href="javascript:;">编辑</a>&nbsp;|
                                 <if condition="$vo['is_notice'] eq 0">
                                     <if condition=" $vo['status'] eq 0 ">
                                         <a style="width: 100px;" class="label label-sm label-info" href="javascript:;">此新闻已被关闭</a>

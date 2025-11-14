@@ -514,14 +514,14 @@ class GiftAction extends BaseAction{
             }else{
                 $result = $database_gift_order->save_post_form($gift_detail,$this->user_session['uid'] , 0);
             }
+           
+            if($result['error']==1){
+                $this->error_tips($result['msg']);
+            }
 
             if(!empty($result['flag'])){
                 $this->redirect('chk_buy',array('order_id'=>$result['order_id'],'num'=>$_POST['num']));
                 exit;
-            }
-
-            if($result['error']==1){
-                $this->error_tips($result['msg']);
             }
 
             $this->redirect(U('success_order'),array('order_id'=>$result['order_id']));

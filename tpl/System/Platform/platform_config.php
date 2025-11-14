@@ -4,7 +4,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Platform/manage')}">平台分类列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Platform/add')}','添加分类',800,560,true,false,false,addbtn,'add',true);">添加分类</a>
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Platform/add')}','添加分类',800,560,true,false,false,addbtn,'add',true);">添加分类</a>
 					<a href="{pigcms{:U('Platform/activity_list')}">平台活动列表</a>|
 					<a href="{pigcms{:U('Platform/checkList')}">分类管理员审核列表</a>|
 					<a href="{pigcms{:U('Platform/examine_refundList')}">退款审核列表</a>|

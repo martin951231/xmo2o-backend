@@ -3667,8 +3667,8 @@ class MallGoodsService
             $qrcodePath = cfg('site_url') . '/index.php?g=Index&c=Recognition&a=get_own_qrcode&qrCon=' . urlencode(get_base_url('pages/shopmall_third/commodity_details?goods_id=' . $param['goods_id'] . $addParamStr));
         }
 
-        // 生成图片路径
-        $tmpDir = app()->getRootPath() . 'runtime/mall_goods_share/' . $param['goods_id'];
+        // 生成图片路径 
+        $tmpDir = app()->getRootPath() . 'runtime/mall_goods_share/' . $param['goods_id'].'_'.$param['uid'];
         $saveDir = app()->getRootPath() . '../upload/mall_goods_share';
 
         // 生成图片名称

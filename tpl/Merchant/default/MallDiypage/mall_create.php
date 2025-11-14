@@ -81,7 +81,7 @@
 </div>
 <div style="display:none;" id="edit_data"></div>
 <div style="display:none;" id="edit_custom"></div>
-<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
 <link rel="stylesheet" href="../../../System/Static/css/mall_custom-ui.css"/>
 <link rel="stylesheet" href="{pigcms{$static_path}diypage/css/mallCustomField.css?t=1"/>
 <link rel="stylesheet" href="{pigcms{$static_path}diypage/css/pc-1.css?t=1"/>

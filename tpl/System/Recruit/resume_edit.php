@@ -1,1 +1,289 @@
-<include file="Public:header"/>	<form id="myform" method="post" action="{pigcms{:U('resume_edit')}" enctype="multipart/form-data" frame="true" refresh="true">		<input type="hidden" name="resume_id" value="{pigcms{$detail.resume_id}" />		<table cellpadding="0" cellspacing="0" class="frame_form" width="100%">			<tr>				<th width="15%">头像</th>                <td>                	<a href="javascript:void(0)" class="btn btn-sm btn-success J_selectImage" style="background: #87b87f!important;border-color: #87b87f;color:#fff;" >上传图片</a>&nbsp;&nbsp;	                <input type="hidden" class="input-image" name="avatar" id="pic_list" value="{pigcms{$detail['avatar']}">	                <ul class="image_product_list" id="avatar_detail">	                </ul>	                <ul class="avatar_list" id="avatar_show" >		                <if condition="$detail.avatar neq ''">		                    <li  class="upload_pic_li1" style="float:left;list-style:none;"><img src="{pigcms{:file_domain().$detail['avatar']}" style="width:90px;height:50px;margin-right:5px;"></li>		                   		                </if>	                </ul>                </td>			</tr>			<tr>				<th width="15%">简历名</th>				<td><input type="text" class="input fl" name="resume_name" size="20" validate="maxlength:20,required:true" tips="法人姓名" value="{pigcms{$detail['resume_name']}"/></td>			</tr>			<tr>				<th width="15%">姓名</th>				<td><input type="text" class="input fl" name="name" size="20" validate="maxlength:20,required:true" tips="手机号" value="{pigcms{$detail['name']}"/></td>			</tr>			<tr>				<th width="15%">性别</th>				<td>					<label><input type="radio" class="input" name="sex" value="1" <if condition="$detail['sex'] neq 2">checked</if>/>男</label>					<label><input type="radio" class="input" name="sex" value="2" <if condition="$detail['sex'] eq 2">checked</if>/>女</label>				</td>			</tr>			<tr>				<th width="15%">手机号</th>				<td><input type="text" class="input fl" name="phone" size="20" validate="maxlength:20,required:true" tips="手机号" value="{pigcms{$detail['phone']}"/></td>			</tr>			<tr>				<th width="15%">出生日期</th>				<td><input type="text" class="input fl" name="birthday" size="20" validate="maxlength:20,required:true" tips="身份证号" value="{pigcms{$detail['birthday']}" value="{pigcms{$_GET.begin_time}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})"/></td>			</tr>			<tr>				<th width="15%">学历</th>				<td width="35%">                    <select name="qualifications" id="qualifications">                    	<volist name="qualifications_arr" id="vo">                        <option value="{pigcms{$key}" <if condition="$key eq $detail['qualifications']">selected</if>>{pigcms{$vo}</option>                    	</volist>                    </select>				</td>			</tr>							<tr>				<th width="15%">工作时间</th>				<td width="35%">                    <select name="work_years" id="work_years">                    	<volist name="work_years_arr" id="vo">                        <option value="{pigcms{$key}" <if condition="$key eq $detail['work_years']">selected</if>>{pigcms{$vo}</option>                    	</volist>                    </select>				</td>			</tr>			<tr>				<th width="15%">期望职位</th>				<td width="35%">                    <select name="position_cat" id="position_cat" onchange="change_category(this)">                    	<volist name="position_category" id="vo">                        <option value="{pigcms{$vo.id}" <if condition="$vo['id'] eq $detail['position_cat_id']">selected</if>>{pigcms{$vo['name']}</option>                    	</volist>                    </select>                    <select name="position_cat_id" id="position_cat_id">                    	<option value="0" >请选择子分类</option>                    </select>				</td>			</tr>			<tr>				<th width="15%">期望薪资</th>				<td width="35%">                    <select name="salary" id="salary">                    	<volist name="salary_arr" id="vo">                        <option value="{pigcms{$key}" <if condition="$key eq $detail['salary']">selected</if>>{pigcms{$vo}</option>                    	</volist>                    </select>				</td>			</tr>			<tr>				<th width="15%">求职区域</th>				<td width="35%"><input type="text" class="input fl" size="50"  readonly="readonly" name="address" id="adress" validate="required:true" value="{pigcms{$detail['address']}" placeholder="请在下方地图中选择位置" /></td>			</tr>				<tr>				<th width="15%">经纬度</th>				<td width="35%" class="radio_box"><input class="input fl" size="50" name="long_lat" id="long_lat" type="text" readonly="readonly" validate="required:true" value="{pigcms{$detail['lng']},{pigcms{$detail['lat']}" /></td>			</tr>						<tr>				<th width="15%">自我介绍</th>				<td>					<textarea class="textarea fl" name="self_introduction" validate="maxlength:20,required:true" tips="自我介绍">{pigcms{$detail['self_introduction']}</textarea>				</td>			</tr>			<tr>				<th width="15%">工作经历</th>				<td>					<ul class="work_experience">						<volist name="detail['work_experience']" id="vo">							<li>								<p>									<label>工作时间：</label><input type="text" class="input" name="w_start_time[]" value="{pigcms{$vo['start_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />									到									<input type="text" class="input" name="w_end_time[]" value="{pigcms{$vo['end_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" validate="maxlength:20,required:true"/>								</p>								<p>公司名称：<input type="text" class="input fr" name="company_name[]" validate="maxlength:20,required:true" value="{pigcms{$vo['name']}"></p>								<p>职位：<input type="text" class="input flr" name="company_position[]" validate="maxlength:20,required:true" value="{pigcms{$vo['desc']}"></p>								<a href="javascript:void(0);" onclick="del_work(this)" class="button">删除</a>							</li>						</volist>					</ul>					<a href="javascript:void(0);" class="button add_work" style="margin-top: 20px;">添加</a>									</td>			</tr>			<tr>				<th width="15%">教育经历</th>				<td>					<ul class="education_experience">						<volist name="detail['education_experience']" id="vo">							<li>								<p>									<label>时间：</label><input type="text" class="input" name="q_start_time[]" value="{pigcms{$vo['start_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />									到									<input type="text" class="input" name="q_end_time[]" value="{pigcms{$vo['end_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" validate="maxlength:20,required:true"/>								</p>								<p>学校名称：<input type="text" class="input fr" name="q_name[]" validate="maxlength:20,required:true" value="{pigcms{$vo['name']}"></p>								<p>学历：									<select name="q_qualifications[]" id="q_qualifications" validate="maxlength:20,required:true">				                    	<volist name="qualifications_arr" id="q">				                        <option value="{pigcms{$key}" <if condition="$vo['desc'] eq $q">selected=selected</if>>{pigcms{$q}</option>				                    	</volist>				                    </select>				                </p>								<a href="javascript:void(0);" onclick="del_education(this)" class="button">删除</a>							</li>						</volist>					</ul>					<a href="javascript:void(0);" class="button add_education" style="margin-top: 20px;">添加</a>				</td>			</tr>				</table>		<div class="btn hidden">			<input type="submit" name="dosubmit" id="dosubmit" value="提交" class="button" />			<input type="reset" value="取消" class="button" />		</div>	</form>	<div class="modal-content" style="width:100%;">		<div class="modal-header no-padding" style="width:100%;">			<div class="table-header" style="padding-left:10px;">拖动红色图标，经纬度框内将自动填充经纬度。</div>		</div>		<div class="modal-body no-padding" style="width:100%;">			<form id="map-search" style="margin:10px;">				<input id="map-keyword" type="textbox" style="width:300px;border:1px solid #ccc;height:24px;line-height:24px;padding-left:6px;" placeholder="尽量填写城市、区域、街道名"/>				<input type="submit" value="搜索" class="button" style="margin-left:0px;"/>			</form>			<div style="width:750px;height:400px;margin-left:10px;" id="cmmap"></div>		</div>	</div>	<script type="text/javascript">		var static_public="{pigcms{$static_public}",static_path="{pigcms{$static_path}",merchant_index="{pigcms{:U('Index/index')}",choose_province="{pigcms{:U('Area/ajax_province')}",choose_city="{pigcms{:U('Area/ajax_city')}",choose_area="{pigcms{:U('Area/ajax_area')}",choose_circle="{pigcms{:U('Area/ajax_circle')}";		var default_lng = 117.2285309;		var default_lat = 31.8291397;	</script>	<if condition="$default_city['area_lng']">		<script type="text/javascript">			default_lng = {pigcms{$default_city.area_lng};			default_lat = {pigcms{$default_city.area_lat};		</script>	</if>    <if condition="$config['map_config'] eq 'google' AND $config['google_map_ak']">        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,drawing&key={pigcms{$config.google_map_ak}&language=en"></script>        <script type="text/javascript" src="{pigcms{$static_path}js/map_google.js"></script>    <else />		<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>		<script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>		<script type="text/javascript">var polygonMap = 1;</script>		<script type="text/javascript" src="{pigcms{$static_path}js/map.js"></script>    </if>    <script type="text/javascript">    	function change_category(){			var fid = $('#position_cat').val();			$.ajax({				'type':'post',				'dataType':'json',				data:{fid:fid},				'url':'{pigcms{:U("ajax_position_category")}',				success:function(data){					var html = '<option value="0">请选择子分类</option>';					var position_cat_id = {pigcms{$detail.position_cat_id|intval};					if (data.length) {						for (var i = 0; i < data.length; i++) {							if (data[i].id == position_cat_id) {								html += '<option value="'+data[i].id+'" selected=selected>'+data[i].name+'</option>';							}else{								html += '<option value="'+data[i].id+'">'+data[i].name+'</option>';							}						}					}					$('#position_cat_id').html(html)				}			})		}		change_category();		function del_work(obj){			$(obj).parent('li').remove();		}		function del_education(obj){			$(obj).parent('li').remove();		}		$('.add_work').click(function(){			var html = '<li>\							<p>\								<label>工作时间：</label><input type="text" class="input" name="w_start_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" />\								到\								<input type="text" class="input" name="w_end_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" validate="maxlength:20,required:true"/>\							</p>\							<p>公司名称：<input type="text" class="input fr" name="company_name[]" validate="maxlength:20,required:true"></p>\							<p>职位：<input type="text" class="input flr" name="company_position[]" validate="maxlength:20,required:true"></p>\							<a href="javascript:void(0);" onclick="del_work(this)" class="button">删除</a>\						</li>';			$('.work_experience').append(html)		})		$('.add_education').click(function(){			var html = '<li><p>\							<label>时间：</label>\							<input type="text" class="input" name="q_start_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" validate="maxlength:20,required:true"/>\							到\							<input type="text" class="input" name="q_end_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" validate="maxlength:20,required:true"/>\						</p>\						<p>学校名称：<input type="text" class="input fr" name="q_name[]" validate="maxlength:20,required:true"></p>\						<p>学历： \							<select name="q_qualifications[]" id="q_qualifications" validate="maxlength:20,required:true">\		                    	<volist name="qualifications_arr" id="vo">\		                        <option value="{pigcms{$key}">{pigcms{$vo}</option>\		                    	</volist>\		                    </select>\		                </p><a href="javascript:void(0);" onclick="del_education(this)" class="button">删除</a></li>';			$('.education_experience').append(html)		})    </script>	<link rel="stylesheet" href="{pigcms{$static_public}kindeditor/themes/default/default.css">	<script src="{pigcms{$static_public}kindeditor/kindeditor.js"></script>	<script src="{pigcms{$static_public}kindeditor/lang/zh_CN.js"></script>	<script type="text/javascript">		KindEditor.ready(function(K){			var editor = K.editor({				allowFileManager : true			});            $('.J_selectImage').click(function(){                var upload_file_btn = $(this);                editor.uploadJson = "{pigcms{:U('Config/ajax_upload_pic')}&type=recruit";                editor.loadPlugin('image', function(){                    editor.plugin.imageDialog({                        showRemote : false,                        clickFn : function(url, title, width, height, border, align) {                            var avatar_detail_length = $('#avatar_detail').find('li').length;                            var li_length = upload_file_btn.siblings('.avatar_list').find('li').length+avatar_detail_length;                                $('#avatar_show').show();                                                              upload_file_btn.siblings('.input-image').val(url);                                                                var html='<li class="upload_pic_li" style="float:left;list-style:none;"><img src="'+url+'" style="width:90px;height:50px;margin-right:5px;"><br></li>';                                upload_file_btn.siblings('.avatar_list').html(html)                                editor.hideDialog();                                                        }                    });                });            });        })			</script>	<include file="Public:footer"/>
+<include file="Public:header"/>
+	<form id="myform" method="post" action="{pigcms{:U('resume_edit')}" enctype="multipart/form-data" frame="true" refresh="true">
+		<input type="hidden" name="resume_id" value="{pigcms{$detail.resume_id}" />
+		<table cellpadding="0" cellspacing="0" class="frame_form" width="100%">
+			<tr>
+				<th width="15%">头像</th>
+                <td>
+                	<a href="javascript:void(0)" class="btn btn-sm btn-success J_selectImage" style="background: #87b87f!important;border-color: #87b87f;color:#fff;" >上传图片</a>&nbsp;&nbsp;
+	                <input type="hidden" class="input-image" name="avatar" id="pic_list" value="{pigcms{$detail['avatar']}">
+	                <ul class="image_product_list" id="avatar_detail">
+
+	                </ul>
+	                <ul class="avatar_list" id="avatar_show" >
+		                <if condition="$detail.avatar neq ''">
+		                    <li  class="upload_pic_li1" style="float:left;list-style:none;"><img src="{pigcms{:file_domain().$detail['avatar']}" style="width:90px;height:50px;margin-right:5px;"></li>
+		                   
+		                </if>
+	                </ul>
+                </td>
+			</tr>
+			<tr>
+				<th width="15%">简历名</th>
+				<td><input type="text" class="input fl" name="resume_name" size="20" validate="maxlength:20,required:true" tips="法人姓名" value="{pigcms{$detail['resume_name']}"/></td>
+			</tr>
+			<tr>
+				<th width="15%">姓名</th>
+				<td><input type="text" class="input fl" name="name" size="20" validate="maxlength:20,required:true" tips="手机号" value="{pigcms{$detail['name']}"/></td>
+			</tr>
+			<tr>
+				<th width="15%">性别</th>
+				<td>
+					<label><input type="radio" class="input" name="sex" value="1" <if condition="$detail['sex'] neq 2">checked</if>/>男</label>
+					<label><input type="radio" class="input" name="sex" value="2" <if condition="$detail['sex'] eq 2">checked</if>/>女</label>
+				</td>
+			</tr>
+			<tr>
+				<th width="15%">手机号</th>
+				<td><input type="text" class="input fl" name="phone" size="20" validate="maxlength:20,required:true" tips="手机号" value="{pigcms{$detail['phone']}"/></td>
+			</tr>
+			<tr>
+				<th width="15%">出生日期</th>
+				<td><input type="text" class="input fl" name="birthday" size="20" validate="maxlength:20,required:true" tips="身份证号" value="{pigcms{$detail['birthday']}" value="{pigcms{$_GET.begin_time}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})"/></td>
+			</tr>
+			<tr>
+				<th width="15%">学历</th>
+				<td width="35%">
+                    <select name="qualifications" id="qualifications">
+                    	<volist name="qualifications_arr" id="vo">
+                        <option value="{pigcms{$key}" <if condition="$key eq $detail['qualifications']">selected</if>>{pigcms{$vo}</option>
+                    	</volist>
+                    </select>
+				</td>
+			</tr>				
+			<tr>
+				<th width="15%">工作时间</th>
+				<td width="35%">
+                    <select name="work_years" id="work_years">
+                    	<volist name="work_years_arr" id="vo">
+                        <option value="{pigcms{$key}" <if condition="$key eq $detail['work_years']">selected</if>>{pigcms{$vo}</option>
+                    	</volist>
+                    </select>
+				</td>
+			</tr>
+			<tr>
+				<th width="15%">期望职位</th>
+				<td width="35%">
+                    <select name="position_cat" id="position_cat" onchange="change_category(this)">
+                    	<volist name="position_category" id="vo">
+                        <option value="{pigcms{$vo.id}" <if condition="$vo['id'] eq $detail['position_cat_id']">selected</if>>{pigcms{$vo['name']}</option>
+                    	</volist>
+                    </select>
+                    <select name="position_cat_id" id="position_cat_id">
+                    	<option value="0" >请选择子分类</option>
+                    </select>
+				</td>
+			</tr>
+			<tr>
+				<th width="15%">期望薪资</th>
+				<td width="35%">
+                    <select name="salary" id="salary">
+                    	<volist name="salary_arr" id="vo">
+                        <option value="{pigcms{$key}" <if condition="$key eq $detail['salary']">selected</if>>{pigcms{$vo}</option>
+                    	</volist>
+                    </select>
+				</td>
+			</tr>
+			<tr>
+				<th width="15%">求职区域</th>
+				<td width="35%"><input type="text" class="input fl" size="50"  readonly="readonly" name="address" id="adress" validate="required:true" value="{pigcms{$detail['address']}" placeholder="请在下方地图中选择位置" /></td>
+			</tr>	
+			<tr>
+				<th width="15%">经纬度</th>
+				<td width="35%" class="radio_box"><input class="input fl" size="50" name="long_lat" id="long_lat" type="text" readonly="readonly" validate="required:true" value="{pigcms{$detail['lng']},{pigcms{$detail['lat']}" /></td>
+			</tr>			
+			<tr>
+				<th width="15%">自我介绍</th>
+				<td>
+					<textarea class="textarea fl" name="self_introduction" validate="maxlength:20,required:true" tips="自我介绍">{pigcms{$detail['self_introduction']}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<th width="15%">工作经历</th>
+				<td>
+					<ul class="work_experience">
+						<volist name="detail['work_experience']" id="vo">
+							<li>
+								<p>
+									<label>工作时间：</label><input type="text" class="input" name="w_start_time[]" value="{pigcms{$vo['start_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />
+									到
+									<input type="text" class="input" name="w_end_time[]" value="{pigcms{$vo['end_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" validate="maxlength:20,required:true"/>
+								</p>
+								<p>公司名称：<input type="text" class="input fr" name="company_name[]" validate="maxlength:20,required:true" value="{pigcms{$vo['name']}"></p>
+								<p>职位：<input type="text" class="input flr" name="company_position[]" validate="maxlength:20,required:true" value="{pigcms{$vo['desc']}"></p>
+								<a href="javascript:void(0);" onclick="del_work(this)" class="button">删除</a>
+							</li>
+						</volist>
+					</ul>
+					<a href="javascript:void(0);" class="button add_work" style="margin-top: 20px;">添加</a>
+					
+				</td>
+			</tr>
+			<tr>
+				<th width="15%">教育经历</th>
+				<td>
+					<ul class="education_experience">
+						<volist name="detail['education_experience']" id="vo">
+							<li>
+								<p>
+									<label>时间：</label><input type="text" class="input" name="q_start_time[]" value="{pigcms{$vo['start_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" />
+									到
+									<input type="text" class="input" name="q_end_time[]" value="{pigcms{$vo['end_time']|date='Y-m-d',###}" onfocus="WdatePicker({readOnly:true,dateFmt:'yyyy-MM-dd'})" validate="maxlength:20,required:true"/>
+								</p>
+								<p>学校名称：<input type="text" class="input fr" name="q_name[]" validate="maxlength:20,required:true" value="{pigcms{$vo['name']}"></p>
+								<p>学历：
+									<select name="q_qualifications[]" id="q_qualifications" validate="maxlength:20,required:true">
+				                    	<volist name="qualifications_arr" id="q">
+				                        <option value="{pigcms{$key}" <if condition="$vo['desc'] eq $q">selected=selected</if>>{pigcms{$q}</option>
+				                    	</volist>
+				                    </select>
+				                </p>
+								<a href="javascript:void(0);" onclick="del_education(this)" class="button">删除</a>
+							</li>
+						</volist>
+					</ul>
+					<a href="javascript:void(0);" class="button add_education" style="margin-top: 20px;">添加</a>
+				</td>
+			</tr>
+		
+		</table>
+		<div class="btn hidden">
+			<input type="submit" name="dosubmit" id="dosubmit" value="提交" class="button" />
+			<input type="reset" value="取消" class="button" />
+		</div>
+	</form>
+	<div class="modal-content" style="width:100%;">
+		<div class="modal-header no-padding" style="width:100%;">
+			<div class="table-header" style="padding-left:10px;">拖动红色图标，经纬度框内将自动填充经纬度。</div>
+		</div>
+		<div class="modal-body no-padding" style="width:100%;">
+			<form id="map-search" style="margin:10px;">
+				<input id="map-keyword" type="textbox" style="width:300px;border:1px solid #ccc;height:24px;line-height:24px;padding-left:6px;" placeholder="尽量填写城市、区域、街道名"/>
+				<input type="submit" value="搜索" class="button" style="margin-left:0px;"/>
+			</form>
+			<div style="width:750px;height:400px;margin-left:10px;" id="cmmap"></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var static_public="{pigcms{$static_public}",static_path="{pigcms{$static_path}",merchant_index="{pigcms{:U('Index/index')}",choose_province="{pigcms{:U('Area/ajax_province')}",choose_city="{pigcms{:U('Area/ajax_city')}",choose_area="{pigcms{:U('Area/ajax_area')}",choose_circle="{pigcms{:U('Area/ajax_circle')}";
+		var default_lng = 117.2285309;
+		var default_lat = 31.8291397;
+	</script>
+	<if condition="$default_city['area_lng']">
+		<script type="text/javascript">
+			default_lng = {pigcms{$default_city.area_lng};
+			default_lat = {pigcms{$default_city.area_lat};
+		</script>
+	</if>
+    <if condition="$config['map_config'] eq 'google' AND $config['google_map_ak']">
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,drawing&key={pigcms{$config.google_map_ak}&language=en"></script>
+        <script type="text/javascript" src="{pigcms{$static_path}js/map_google.js"></script>
+    <else />
+		<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
+		<script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+		<script type="text/javascript">var polygonMap = 1;</script>
+		<script type="text/javascript" src="{pigcms{$static_path}js/map.js"></script>
+    </if>
+    <script type="text/javascript">
+    	function change_category(){
+			var fid = $('#position_cat').val();
+			$.ajax({
+				'type':'post',
+				'dataType':'json',
+				data:{fid:fid},
+				'url':'{pigcms{:U("ajax_position_category")}',
+				success:function(data){
+					var html = '<option value="0">请选择子分类</option>';
+					var position_cat_id = {pigcms{$detail.position_cat_id|intval};
+
+					if (data.length) {
+						for (var i = 0; i < data.length; i++) {
+							if (data[i].id == position_cat_id) {
+								html += '<option value="'+data[i].id+'" selected=selected>'+data[i].name+'</option>';
+							}else{
+								html += '<option value="'+data[i].id+'">'+data[i].name+'</option>';
+							}
+						}
+					}
+					$('#position_cat_id').html(html)
+				}
+			})
+		}
+		change_category();
+
+		function del_work(obj){
+			$(obj).parent('li').remove();
+		}
+
+		function del_education(obj){
+			$(obj).parent('li').remove();
+		}
+
+		$('.add_work').click(function(){
+			var html = '<li>\
+							<p>\
+								<label>工作时间：</label><input type="text" class="input" name="w_start_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" />\
+								到\
+								<input type="text" class="input" name="w_end_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" validate="maxlength:20,required:true"/>\
+							</p>\
+							<p>公司名称：<input type="text" class="input fr" name="company_name[]" validate="maxlength:20,required:true"></p>\
+							<p>职位：<input type="text" class="input flr" name="company_position[]" validate="maxlength:20,required:true"></p>\
+							<a href="javascript:void(0);" onclick="del_work(this)" class="button">删除</a>\
+						</li>';
+			$('.work_experience').append(html)
+		})
+		$('.add_education').click(function(){
+			var html = '<li><p>\
+							<label>时间：</label>\
+							<input type="text" class="input" name="q_start_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" validate="maxlength:20,required:true"/>\
+							到\
+							<input type="text" class="input" name="q_end_time[]" onfocus="WdatePicker({readOnly:true,dateFmt:\'yyyy-MM-dd\'})" validate="maxlength:20,required:true"/>\
+						</p>\
+						<p>学校名称：<input type="text" class="input fr" name="q_name[]" validate="maxlength:20,required:true"></p>\
+						<p>学历： \
+							<select name="q_qualifications[]" id="q_qualifications" validate="maxlength:20,required:true">\
+		                    	<volist name="qualifications_arr" id="vo">\
+		                        <option value="{pigcms{$key}">{pigcms{$vo}</option>\
+		                    	</volist>\
+		                    </select>\
+		                </p><a href="javascript:void(0);" onclick="del_education(this)" class="button">删除</a></li>';
+			$('.education_experience').append(html)
+		})
+
+    </script>
+
+	<link rel="stylesheet" href="{pigcms{$static_public}kindeditor/themes/default/default.css">
+	<script src="{pigcms{$static_public}kindeditor/kindeditor.js"></script>
+	<script src="{pigcms{$static_public}kindeditor/lang/zh_CN.js"></script>
+	<script type="text/javascript">
+		KindEditor.ready(function(K){
+			var editor = K.editor({
+				allowFileManager : true
+			});
+            $('.J_selectImage').click(function(){
+                var upload_file_btn = $(this);
+                editor.uploadJson = "{pigcms{:U('Config/ajax_upload_pic')}&type=recruit";
+                editor.loadPlugin('image', function(){
+                    editor.plugin.imageDialog({
+                        showRemote : false,
+                        clickFn : function(url, title, width, height, border, align) {
+                            var avatar_detail_length = $('#avatar_detail').find('li').length;
+                            var li_length = upload_file_btn.siblings('.avatar_list').find('li').length+avatar_detail_length;
+                                $('#avatar_show').show();
+                              
+                                upload_file_btn.siblings('.input-image').val(url);
+                                
+                                var html='<li class="upload_pic_li" style="float:left;list-style:none;"><img src="'+url+'" style="width:90px;height:50px;margin-right:5px;"><br></li>';
+                                upload_file_btn.siblings('.avatar_list').html(html)
+                                editor.hideDialog();
+                                
+
+                        }
+                    });
+                });
+            });
+        })
+		
+	</script>
+	
+<include file="Public:footer"/>

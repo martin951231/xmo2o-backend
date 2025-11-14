@@ -18,11 +18,12 @@ class ThirdRobotDeliveryOrderController extends AuthBaseController
      * 参数验证
      * @param array $params
      * @param string $scenario
+     * @param string $method
      * @return array
      */
-    private function validateParameter(array $params = [], string $scenario = ''): array
+	protected function validateParameter(array $params = [], string $scenario = '', string $method = 'post'): array
     {
-        empty($params) && $params = input('post.');
+        empty($params) && $params = input($method . '.');
 
         $validate = validate(DeliveryOrder::class);
         if (!$validate->scene($scenario ?: 'platform_' . Str::snake(request()->action()))->check($params)) {

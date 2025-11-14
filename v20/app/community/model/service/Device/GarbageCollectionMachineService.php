@@ -983,6 +983,9 @@ class GarbageCollectionMachineService
                 $info = [
                     'order_id' => $add,
                     'order_type' => 'garbage_collection',
+                    'score_type'=>20,
+                    'village_id'=>$villageId,
+                    'house_type'=>1,
                 ];
                 $ret=(new UserService())->addScore($uid,$scoreAll,L_("垃圾分类投递获取").cfg('score_name'),0,$info);
                 if($ret['error_code']){

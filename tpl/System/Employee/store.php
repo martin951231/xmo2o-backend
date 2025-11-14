@@ -6,7 +6,7 @@
             <a href="{pigcms{:U('Employee/check_store')}">审核店铺列表</a>|
             <a href="{pigcms{:U('Employee/check_refuse_store')}">审核拒绝店铺列表</a>|
             <a href="{pigcms{:U('Employee/store_import')}">店铺信息导入</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Employee/store_add')}','添加店铺',620,440,true,false,false,addbtn,'store_add',true);">添加店铺</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Employee/store_add')}','添加店铺',620,440,true,false,false,addbtn,'store_add',true);">添加店铺</a>
 
         </ul>
     </div>
@@ -37,7 +37,7 @@
                             <td><if condition="$vo['last_time']">{pigcms{$vo.last_time|date='Y-m-d H:i:s',###}<else/>无</if></td>
                             <td>{pigcms{$vo.hits}</td>
                             <td><if condition="$vo['claim_status'] eq 1"><font color="green">启用</font><elseif condition="$vo['claim_status'] eq 2"/><font color="red">审核中</font><elseif condition="$vo['claim_status'] eq 3"/><font color="red">审核拒绝</font><else/><font color="red">关闭</font></if></td>
-                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Employee/store_edit',array('store_id'=>$vo['store_id'],'frame_show'=>true))}','查看店铺信息',720,600,true,false,false,false,'detail',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Employee/store_edit',array('store_id'=>$vo['store_id']))}','编辑店铺信息',720,600,true,false,false,editbtn,'store_edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="store_id={pigcms{$vo.store_id}" url="{pigcms{:U('Employee/store_del')}">删除</a></td>
+                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Employee/store_edit',array('store_id'=>$vo['store_id'],'frame_show'=>true))}','查看店铺信息',720,600,true,false,false,false,'detail',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Employee/store_edit',array('store_id'=>$vo['store_id']))}','编辑店铺信息',720,600,true,false,false,editbtn,'store_edit',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="store_id={pigcms{$vo.store_id}" url="{pigcms{:U('Employee/store_del')}">删除</a></td>
                         </tr>
                     </volist>
                     <tr><td class="textcenter pagebar" colspan="11">{pigcms{$pagebar}</td></tr>

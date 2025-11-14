@@ -4,7 +4,7 @@
 				<ul>
 					<a href="{pigcms{:U('NewHouse/index')}">楼盘列表</a>|
 					<a href="{pigcms{:U('NewHouse/cate')}" class="on">聚合首页新房分类</a>|
-					<a href="javascript:;" onclick="window.top.artiframe('/admin.php?g=System&c=NewHouse&a=add_cate','添加新房分类',600,400,true,false,false,addbtn,'store_add',true);">添加新房分类</a>
+					<a href="javascript:;" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=NewHouse&a=add_cate','添加新房分类',600,400,true,false,false,addbtn,'store_add',true);">添加新房分类</a>
 				</ul>
 			</div>
 			<form name="myform" id="myform" action="" method="post">
@@ -37,7 +37,7 @@
 											<if condition="$vo['status'] eq 1"><font color="red">禁止</font><elseif condition="$vo['status'] eq 0"/><font color="green">正常</font></if>
 										</td>
 										<td>
-											<a href="javascript:;" onclick="window.top.artiframe('/admin.php?g=System&c=NewHouse&a=add_cate&cate_id={pigcms{$vo.id}','编辑新房分类',600,400,true,false,false,addbtn,'store_add',true);">编辑</a>
+											<a href="javascript:;" onclick="window.o2oTop.artiframe('/admin.php?g=System&c=NewHouse&a=add_cate&cate_id={pigcms{$vo.id}','编辑新房分类',600,400,true,false,false,addbtn,'store_add',true);">编辑</a>
 										</td>
 									</tr>
 								</volist>

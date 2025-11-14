@@ -2,13 +2,28 @@
 
 namespace app\building\service;
 
+use app\api\model\service\building\BuildingApiService;
 use app\building\model\ShoppingMall;
+use app\building\model\ShoppingMallBindAdmin;
+use app\building\model\ShoppingMallBuilding;
+use app\building\model\ShoppingMallMembershipBenefits;
+use app\building\model\ShoppingMallPark;
+use app\building\model\ShoppingMallWifi;
 use app\building\model\ShoppingTicketPointApply;
+use app\common\model\db\Admin;
 use pinyin\Pinyin;
 use think\facade\Db;
+use think\facade\Validate;
 
 class ShoppingMallService
 {
+    protected $shoppingMallMod;
+
+    public function __construct()
+    {
+        $this->shoppingMallMod = new ShoppingMall();
+    }
+
     public function getNearestMall($lng, $lat, $uid = 0, $mallId = 0)
     {
         if ($mallId) {
@@ -68,13 +83,20 @@ class ShoppingMallService
         if (!$mallId) {
             return [];
         }
+        $mall = (new ShoppingMall())->where(['id' => $mallId])->findOrEmpty()->toArray();
+        if (!$mall) {
+            throw new \think\Exception('商场不存在');
+        }
         $where  = [
             ['mall_id', '=', $mallId],
             ['status', '=', 1],
         ];
-
-        //获取商场所有楼栋
-        $allBuildings = Db::name('merchant_store')->where($where)->column('building,0 AS selected', 'building');
+        if ($mall['is_self']) {
+            $allBuildings = (new ShoppingMallBuilding())->where([['mall_id', '=', $mallId]])->column('id,name as building,0 AS selected', 'name');
+        } else {
+            //获取商场所有楼栋
+            $allBuildings = Db::name('merchant_store')->where($where)->column('building,0 AS selected', 'building');
+        }
         if (empty($allBuildings)) {
             return [];
         }
@@ -203,7 +225,7 @@ class ShoppingMallService
 
         //中间导航
         $collectCount = Db::name('merchant_user_relation')->where('uid', $uid)->whereIn('type', 'store,group,appoint,mallgoods')->count();
-        $systemOrderData = Db::name('system_order')->where('uid', $uid)->where('type','<>','membership_card')->field('SUM(IF(paid=1,price,0)) as total_price,SUM(IF(is_del=0,1,0)) as count')->find();
+        $systemOrderData = Db::name('system_order')->where('uid', $uid)->where('type', '<>', 'membership_card')->field('SUM(IF(paid=1,price,0)) as total_price,SUM(IF(is_del=0,1,0)) as count')->find();
         $rs['user_info']['total_consume_money'] = getFormatNumber($systemOrderData['total_price']);
         $rs['user_links'] = [
             [
@@ -320,7 +342,7 @@ class ShoppingMallService
         // }
 
         $data = [
-            'mall_id'=> $mallId,
+            'mall_id' => $mallId,
             'uid' => $uid,
             'business' => $business,
             'real_orderid' => $realOrderid,
@@ -361,6 +383,15 @@ class ShoppingMallService
             })
             ->toArray();
         return $lists;
+    }
+
+    //同步商场猜你喜欢任务
+    public function syncMallGuessYouLikeTask()
+    {
+        $malls = Db::name('shopping_mall')->where('status', 1)->select()->toArray();
+        foreach ($malls as $mall) {
+            $this->syncMallGuessYouLikeItems($mall['id']);
+        }
     }
 
     //定时更新商城猜你喜欢推荐
@@ -559,7 +590,7 @@ class ShoppingMallService
                 $group && $result[] = [
                     'group_id' => $group['group_id'],
                     'name' => $group['name'],
-                    'image' => $group['pic'] ? replace_file_domain(explode(';',$group['pic'])[0]) : '',
+                    'image' => $group['pic'] ? replace_file_domain(explode(';', $group['pic'])[0]) : '',
                     'type' => 'group_goods',
                     'tag' => cfg('group_alias_name'),
                     'price' => getFormatNumber($group['price']),
@@ -567,8 +598,232 @@ class ShoppingMallService
                     'url' => get_base_url('pages/group/v1/groupDetail/index?group_id=' . $group['group_id'], true)
                 ];
             }
-            
         }
+        return $result;
+    }
+
+
+    //获取WiFi列表
+    public function getWifiList($mallId)
+    {
+        return (new ShoppingMallWifi())
+            ->where('mall_id', $mallId)
+            ->where('status', 1)
+            ->field('ssid,password')
+            ->select();
+    }
+
+    public function saveShoppingMall(array $params)
+    {
+        return Db::transaction(function () use ($params) {
+            if (!empty($params['id'])) {
+                $shoppingMall = ShoppingMall::where('id', $params['id'])->find();
+                empty($shoppingMall) && throw_exception('商场不存在');
+                unset($params['is_self']);
+            } else {
+                $shoppingMall = new ShoppingMall();
+                $params['is_self'] = ShoppingMall::SELF_MALL;
+            }
+            if ($shoppingMall->save($params)) {
+                ShoppingMallBindAdmin::where('mall_id', $shoppingMall->id)->delete();
+                foreach ($params['admin_ids'] as $adminId) {
+                    ShoppingMallBindAdmin::create([
+                        'mall_id' => $shoppingMall->id,
+                        'admin_id' => $adminId,
+                    ]);
+                }
+            }
+
+            return $shoppingMall;
+        });
+    }
+
+    public function getCanBindAdminUser(): array
+    {
+        return Admin::where([
+            ['level', 'IN', [Admin::LEVEL_NORMAL, Admin::LEVEL_AREA]],
+            ['status', '=', Admin::STATUS_NORMAL],
+        ])
+            ->field('id, account')
+            ->select()
+            ->toArray();
+    }
+
+    //获取商场停车场所有优惠券信息
+    public function getBuildingSystemCoupon($mallId)
+    {
+        $parkList = (new ShoppingMallPark())->where('mall_id', $mallId)->select()->toArray();
+        if (empty($parkList)) {
+            return [];
+        }
+
+        $couponLists = [];
+        foreach ($parkList as $park) {
+            $path = '/work_park/api/merchant/coupon/list';
+            $businessData = [
+                'merchant_id' => $park['merchant_id'],
+                'api_key' => $park['api_key'],
+                'park_id' => $park['park_id'],
+            ];
+            $data = (new BuildingApiService())->invoke($path, $businessData);
+            $couponLists = array_merge($couponLists, $data['list']);
+        }
+        return $couponLists;
+    }
+
+
+    //获取用户商场会员权益
+    public function getUserLevelMallBenefits($mallId, $uid)
+    {
+        //当前会员是否还在有效期
+        $userLevelInfo = (new \app\common\model\service\UserService())->getLevelByUid($uid);
+        if (!$userLevelInfo['is_level']) {
+            return [];
+        }
+        $res = (new ShoppingMallMembershipBenefits())->alias('mb')
+            ->join('shopping_mall_benefits b', 'b.id=mb.b_id')
+            ->where('mb.level', $userLevelInfo['level'])
+            ->where('mb.mall_id', $mallId)
+            ->field('b.*,mb.coupon_id,mb.coupon_name,mb.merchant_id')
+            ->select()
+            ->toArray();
+        return $res;
+    }
+
+    //获取楼宇支付积分使用规则
+    public function getScoreRule($params)
+    {
+        $rules = [
+            'phone|手机号' => ['require', 'mobile'],
+            'mall_id|商场ID' => ['require'],
+            'cost_type|费用类型' => ['require'],
+            'amount|金额' => ['require', 'gt' => 0]
+        ];
+        $result = [
+            'score_use_count' => 0,
+            'score_reduce_amount' => 0,
+            'get_score_per_yuan' => 0
+        ];
+
+        if (validate($rules)->check($params)) {
+            $phone = $params['phone'] ?? '';
+            $mallId = $params['mall_id'] ?? 0;
+            $costType = $params['cost_type'] ?? '';
+            $amount = $params['amount'] ?? 0;
+
+            $user = Db::name('user')->where('phone', $phone)->where('status', 1)->find();
+            if (empty($user) || $user['score_count'] == 0) {
+                return $result;
+            }
+            //使用和获取积分规则
+            $useSetting = $this->getScoreUseSetting($user['uid'], $mallId, $costType, $amount);
+            $paidSetting = $this->getScorePaidSetting($user['uid'], $mallId, $costType, $amount);
+
+            $result['score_use_count'] = $useSetting['score_use_count'];
+            $result['score_reduce_amount'] = $useSetting['score_reduce_amount'];
+            $result['get_score_per_yuan'] = $paidSetting['get_score_per_yuan'];
+        }
+        return $result;
+    }
+
+    //根据缴费类型获取积分使用规则
+    public function getScoreUseSetting($uid, $mallId, $costType, $amount)
+    {
+        $result = [
+            'score_use_count' => 0,
+            'score_reduce_amount' => 0
+        ];
+        $user = Db::name('user')->where('uid', $uid)->where('status', 1)->find();
+        if (empty($user) || $user['score_count'] == 0) {
+            return $result;
+        }
+
+        $mallScoreSet = Db::name('shopping_mall_score_setting')->alias('score')
+            ->join('shopping_mall m', 'm.id=score.mall_id')
+            ->where('m.status', 1)
+            ->where('score.mall_id', $mallId)
+            ->field('score.*')
+            ->find();
+        if (empty($mallScoreSet) || $mallScoreSet['is_online'] == 0) {
+            return $result;
+        }
+        //匹配费用类型设置的积分规则
+        $costTypeScoreRule = [];
+        $useScoreRule = json_decode($mallScoreSet['use_score_rule'], true);
+        foreach ($useScoreRule as $item) {
+            if ($item['cost_type'] == $costType) {
+                $costTypeScoreRule = $item;
+                break;
+            }
+        }
+        if (empty($costTypeScoreRule)) {
+            return $result;
+        }
+        $useScoreCondition = cfg('user_score_use_condition'); //积分使用条件
+        $scoreCountPerYuan = cfg('user_score_use_percent'); //抵扣1元所需积分数量
+        if ($useScoreCondition < 0 || $scoreCountPerYuan < 0 || $amount < $useScoreCondition) {
+            return $result;
+        }
+
+        if ($mallScoreSet['use_max_percent'] > 0) {
+            //设置了全局的，按照全局的规则
+            $maxUseScore = bcmul($amount, $mallScoreSet['use_max_percent'] / 100, 2);
+            $result['score_use_count'] = min($maxUseScore, $user['score_count']);
+        } else if ($costTypeScoreRule['score_type'] == 'count') {
+            //按照积分数量
+            $result['score_use_count'] = min($costTypeScoreRule['score_value'], $user['score_count']);
+        } else if ($costTypeScoreRule['score_type'] == 'percent') {
+            //按照积分百分比
+            $maxUseScore = bcmul($amount, $costTypeScoreRule['score_value'] / 100, 2);
+            $result['score_use_count'] = min($maxUseScore, $user['score_count']);
+        }
+        $result['score_reduce_amount'] = bcdiv($result['score_use_count'], $scoreCountPerYuan, 2);
+        return $result;
+    }
+
+    //获取支付后获取积分规则
+    public function getScorePaidSetting($uid, $mallId, $costType, $amount)
+    {
+        $result = [
+            'get_score_per_yuan' => 0,
+            'get_score_count' => 0
+        ];
+        $user = Db::name('user')->where('uid', $uid)->where('status', 1)->find();
+        if (empty($user)) {
+            return $result;
+        }
+
+        $mallScoreSet = Db::name('shopping_mall_score_setting')->alias('score')
+            ->join('shopping_mall m', 'm.id=score.mall_id')
+            ->where('m.status', 1)
+            ->where('score.mall_id', $mallId)
+            ->field('score.*')
+            ->find();
+        if (empty($mallScoreSet) || $mallScoreSet['is_online'] == 0) {
+            return $result;
+        }
+        //匹配费用类型设置的积分规则
+        $costTypeScoreRule = [];
+        $getScoreRule = json_decode($mallScoreSet['get_score_rule'], true);
+        foreach ($getScoreRule as $item) {
+            if ($item['cost_type'] == $costType) {
+                $costTypeScoreRule = $item;
+                break;
+            }
+        }
+        if (empty($costTypeScoreRule)) {
+            return $result;
+        }
+
+        $scacle = cfg('score_round_two') ? 2 : 0;
+        if ($costTypeScoreRule['score_type'] == 'count') {
+            //按照积分数量
+            $result['get_score_per_yuan'] = $costTypeScoreRule['score_value'];
+        } else if ($costTypeScoreRule['score_type'] == 'percent') {
+            //按照积分百分比
+            $result['get_score_per_yuan'] = bcdiv($costTypeScoreRule['score_value'], 100, 2);
+        }
+        $result['get_score_count'] = bcmul($result['get_score_per_yuan'], $amount, $scacle);
         return $result;
     }
 }

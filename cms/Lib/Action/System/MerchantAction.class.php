@@ -922,7 +922,7 @@ class MerchantAction extends BaseAction{
 					);
 					$add	=	M('Scenic_list')->data($arr)->add();
 					if(empty($add)){
-						$this->error('开通景区失败，请联系管理员！');
+						//$this->error('开通景区失败，请联系管理员！');
 					}
 				}
 			}

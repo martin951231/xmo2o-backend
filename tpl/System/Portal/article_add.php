@@ -318,8 +318,8 @@
                 return;
             }
             layer.msg(response.msg, {time: 1000}, function () {
-                window.top.main_refresh();
-                parent.window.top.closeiframe();
+                window.o2oTop.main_refresh();
+                parent.window.o2oTop.closeiframe();
             });
 
         }, 'json');

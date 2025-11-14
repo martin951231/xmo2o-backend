@@ -23,9 +23,9 @@
                             <thead>
                                 <tr>
                                     <th width="70%">分类名称</th>
-                                    <th width="10%">排序</th>
-                                    <th width="10%">分类状态</th>
-                                    <th class="button-column" width="10%">操作</th>
+                                    <th width="8%">排序</th>
+                                    <th width="8%">分类状态</th>
+                                    <th class="button-column" width="14%">操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,6 +37,8 @@
                                             <td><div class="shopNameDiv"><if condition="$vo.cat_status eq '1' ">正常<else />关闭</if></div></td>
                                             <td class="button-column">
                                                 <a style="width: 60px;" class="label label-sm label-info" title="编辑" href="{pigcms{:U('NewsSreet/cate_edit',array('cat_id'=>$vo['cat_id'],'iframe'=> $_GET['iframe']))}">编辑</a>
+
+                                                <a style="width: 60px;margin-left: 20px;" class="label label-sm label-info" title="删除" href="javascript:void(0)" onclick="if(confirm('确认要删除【{pigcms{$vo.cat_name}】？此分类下的新闻也将会一并删除掉，不可恢复！')){location.href='{pigcms{:U('NewsSreet/cate_del',array('cat_id'=>$vo['cat_id']))}'}">删除</a>
                                             </td>
                                         </tr>
                                     </volist>

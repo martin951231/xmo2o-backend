@@ -979,6 +979,11 @@ class PayAction extends BaseAction{
                     }
 				}
 
+				//子商户设置不允许使用平台优惠抵扣
+                if ($now_merchant['open_sub_mchid'] && $now_merchant['sub_mch_id'] > 0 && $now_merchant['sub_mch_discount'] != 1) {
+                    $tmp_coupon = array();
+                }
+
 				if($tmp_coupon){
 					$system_coupon['had_id'] = $tmp_coupon['id'];
 					//	$system_coupon['coupon_id'] = $tmp_coupon['coupon_id'];

@@ -74,7 +74,7 @@
 
     function add() {
 
-        window.top.artiframe('{pigcms{:U('House/jg_add')}','添加极光群发',900,600,true,false,false,addbtn,'add',true,'refreshPage');
+        window.o2oTop.artiframe('{pigcms{:U('House/jg_add')}','添加极光群发',900,600,true,false,false,addbtn,'add',true,'refreshPage');
 
     }
     function close_all_page() {

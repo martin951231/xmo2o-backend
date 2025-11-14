@@ -29,8 +29,8 @@
                     </if>
 					<a href="javascript:void(0);" class="on">配送员评论列表</a>|
                     <a href="{pigcms{:U('Deliver/cancel')}">配送员扔回订单列表</a>|
-					<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
-					<!-- <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
+					<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('user_add')}','添加配送员',900,560,true,false,false,editbtn,'edit',true);">添加配送员</a>
+					<!-- <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('field')}','配送员注册自定义字段',580,360,true,false,false,false,'detail',true);">配送员注册自定义字段</a> -->
                     <if condition="$show_merchant_user eq 1">
                         <a href="{pigcms{:U('Deliver/merchant_user')}">商家配送员管理</a>
                     </if>
@@ -117,9 +117,9 @@
 								
 										<td width="80">
 										<if condition="$vo['item'] eq 3">
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Service/offer_info',array('publish_id' => $vo['order_id'],'frame_show'=>true))}','查看订单信息',600,600,true,false,false,false,'detail',true);">查看详情</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Service/offer_info',array('publish_id' => $vo['order_id'],'frame_show'=>true))}','查看订单信息',600,600,true,false,false,false,'detail',true);">查看详情</a>
 										<elseif condition="$vo['item'] eq 2" />
-										<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.shop_alias_name}订单详情',720,520,true,false,false,false,'detail',true);">查看详情</a>
+										<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看{pigcms{$config.shop_alias_name}订单详情',720,520,true,false,false,false,'detail',true);">查看详情</a>
 										</if>
 										</td>
 									</tr>

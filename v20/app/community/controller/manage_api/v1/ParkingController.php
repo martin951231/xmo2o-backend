@@ -220,7 +220,7 @@ class ParkingController extends BaseController
         }
         $where['garage_id'] = $garage_id;
         $house_village_parking_garage = new HouseVillageParkingService();
-        $data = $house_village_parking_garage->getParkingPositionLists(['pp.garage_id' => $garage_id], 'pp.garage_id,pp.position_id');
+        $data = $house_village_parking_garage->getParkingPositionLists(['pp.garage_id' => $garage_id], 'pp.garage_id,pp.position_id,pp.position_type,pp.position_pattern');
         if (!empty($data)) {
             return api_output_error(1001, '该车库有车位');
         }
@@ -259,7 +259,7 @@ class ParkingController extends BaseController
         if (!empty($position_num) || strlen($position_num) > 0) {
             $where[] = ['pp.position_num', 'like', '%' . $position_num . '%'];
         }
-        $field = 'pp.children_type,pp.parent_position_id,pp.position_id,pp.position_num,pp.position_area,pp.position_note,pp.position_status,pp.garage_id';
+        $field = 'pp.children_type,pp.parent_position_id,pp.position_id,pp.position_num,pp.position_area,pp.position_note,pp.position_status,pp.garage_id,pp.position_type,pp.position_pattern';
         $data = $house_village_parking_position->getParkingPositionLists($where, $field, $page, $limit);
         return api_output(0, $data, '获取成功');
     }

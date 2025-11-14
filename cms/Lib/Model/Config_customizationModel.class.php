@@ -601,7 +601,9 @@ class Config_customizationModel extends Model
         $config = $this->get_config();
         return isset($config['func_kaidalaicn_special']) && $config['func_kaidalaicn_special'] == 1 ? 1 : 0;
     }
-    public function getQrcodeRecordExportDetails(){
+
+    public function getQrcodeRecordExportDetails()
+    {
         $config = $this->get_config();
         return isset($config['qrcode_record_export_details']) && $config['qrcode_record_export_details'] == 1 ? 1 : 0;
 
@@ -613,6 +615,31 @@ class Config_customizationModel extends Model
         $config = $this->get_config();
         $is_func_yougejianet_special = isset($config['func_yougejianet_special']) && $config['func_yougejianet_special'] == 1 ? 1 : 0;
         return $is_func_yougejianet_special;
+    }
+
+    public function getFuncParkDevHxt85Customized()
+    {
+        /** 小红马华夏t85车闸设备定制定制 */
+        $config = $this->get_config();
+        $park_dev_hxt85_customized = isset($config['park_dev_hxt85_customized']) && $config['park_dev_hxt85_customized'] == 1 ? 1 : 0;
+        return $park_dev_hxt85_customized;
+    }
+
+    public function getFuncCloudmrsqfwSpecial()
+    {
+        /** cloud.mrsqfw.com 定制 */
+        $config = $this->get_config();
+        $is_func_cloudmrsqfw_special = isset($config['func_cloudmrsqfw_special']) && $config['func_cloudmrsqfw_special'] == 1 ? 1 : 0;
+        return $is_func_cloudmrsqfw_special;
+    }
+
+    public function getFuncYumenLaoSpecialMeter()
+
+    {
+        /** 玉门市老市区管委会定制 */
+        $config = $this->get_config();
+        $is_func_yumenlao_special_meter = isset($config['func_yumenlao_special_meter']) && $config['func_yumenlao_special_meter'] == 1 ? 1 : 0;
+        return $is_func_yumenlao_special_meter;
     }
 }
 ?>

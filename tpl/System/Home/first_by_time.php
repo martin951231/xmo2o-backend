@@ -5,7 +5,7 @@
 					<a href="{pigcms{:U('Home/first_by_time')}" class="on" >分时段关注自动回复</a>
 				
 					<a href="{pigcms{:U('Home/first')}" >其他时段关注自动回复</a>
-						<!--a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Group/cat_add',array('cat_fid'=>intval($_GET['cat_fid'])))}','添加子分类',520,370,true,false,false,addbtn,'add',true);">添加子分类</a-->
+						<!--a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Group/cat_add',array('cat_fid'=>intval($_GET['cat_fid'])))}','添加子分类',520,370,true,false,false,addbtn,'add',true);">添加子分类</a-->
 					</if>
 				</ul>
 			</div>

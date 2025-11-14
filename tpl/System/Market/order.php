@@ -134,7 +134,7 @@
                                         </td>
                                     </if>
 									<td>
-									    <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Market/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看订单详情',720,520,true,false,false,false,'detail',true);">查看</a> 
+									    <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Market/order_detail',array('order_id'=>$vo['order_id'],'frame_show'=>true))}','查看订单详情',720,520,true,false,false,false,'detail',true);">查看</a> 
 									    <if condition="$vo['status'] eq 2">
 									    <span>|</span> <a href="javascript:void(0);" data-href="{pigcms{:U('Market/pull', array('order_id'=>$vo['order_id']))}" class="refund">确认收货</a>
 									    </if>
@@ -157,7 +157,7 @@ $(function(){
     var se_cid = "{pigcms{$cid}";
 	$('.refund').click(function(){
 		var get_url = $(this).data('href'), obj = $(this);
-		window.top.art.dialog({
+		window.o2oTop.art.dialog({
 			content: '您确定要将此单改成已收货吗',
 			lock: true,
 			ok: function () {
@@ -171,7 +171,7 @@ $(function(){
 						obj.prev('span').remove();
 						obj.remove();
 					} else {
-						window.top.msg('',response.msg);
+						window.o2oTop.msg('',response.msg);
 					}
 				},'json');
 				return false;

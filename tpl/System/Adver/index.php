@@ -3,7 +3,7 @@
 			<div id="nav" class="mainnav_title">
 				<ul>
 					<a href="{pigcms{:U('Adver/index')}" class="on">广告分类列表</a>|
-					<!--<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Adver/cat_add')}','添加广告分类',500,320,true,false,false,addbtn,'add',true);">添加广告分类</a>-->
+					<!--<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Adver/cat_add')}','添加广告分类',500,320,true,false,false,addbtn,'add',true);">添加广告分类</a>-->
                     <if condition="empty(C('customization.system_adver'))">
                     <a href="javascript:void(0);" onclick="goUrl('{pigcms{$config.site_url}/v20/public/platform/#/activity/platform/adver/List','1','','')">平台弹窗广告</a>|
                     </if>
@@ -54,7 +54,7 @@
 										<td>{pigcms{$vo.cat_key}</td>
 										<td><a href="{pigcms{:U('Adver/adver_list',array('cat_id'=>$vo['cat_id']))}">广告列表</a></td>
 										<td class="textcenter">
-											<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Adver/cat_edit',array('cat_id'=>$vo['cat_id'],'frame_show'=>true))}','查看广告分类',500,320,true,false,false,false,'add',true);">查看</a><if condition="$system_session['level'] eq 2">&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Adver/cat_edit',array('cat_id'=>$vo['cat_id']))}','编辑广告分类',500,320,true,false,false,editbtn,'add',true);">编辑</a>&nbsp;|&nbsp;<a href="javascript:void(0);" class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Adver/cat_del')}">删除</a></if>
+											<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Adver/cat_edit',array('cat_id'=>$vo['cat_id'],'frame_show'=>true))}','查看广告分类',500,320,true,false,false,false,'add',true);">查看</a><if condition="$system_session['level'] eq 2">&nbsp;|&nbsp;<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Adver/cat_edit',array('cat_id'=>$vo['cat_id']))}','编辑广告分类',500,320,true,false,false,editbtn,'add',true);">编辑</a>&nbsp;|&nbsp;<a href="javascript:void(0);" class="delete_row" parameter="cat_id={pigcms{$vo.cat_id}" url="{pigcms{:U('Adver/cat_del')}">删除</a></if>
 										</td>
 									</tr>
 								</volist>
@@ -75,9 +75,9 @@
             top.openNewTab(url)
 
         }else if(new_page>0){
-            window.top.location.href = url
+            window.o2oTop.location.href = url
         }else{
-            window.top.contentScrollToTop()
+            window.o2oTop.contentScrollToTop()
             location.href=url
         }
     }

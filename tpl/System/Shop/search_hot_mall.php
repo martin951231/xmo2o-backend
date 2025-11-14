@@ -3,7 +3,7 @@
     <div id="nav" class="mainnav_title">
         <ul>
             <a href="{pigcms{:U('Shop/search_hot_mall')}" class="on">热门搜索词列表</a>|
-            <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/search_hot_mall_add')}','添加热门搜索词',500,200,true,false,false,addbtn,'add',true);">添加热门搜索词</a>
+            <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/search_hot_mall_add')}','添加热门搜索词',500,200,true,false,false,addbtn,'add',true);">添加热门搜索词</a>
         </ul>
     </div>
     <form name="myform" id="myform" action="" method="post">
@@ -29,7 +29,7 @@
                             <td>{pigcms{$vo.name}</td>
                             <td><if condition="$vo.hottest eq 1">是<else/>否</if></td>
                             <td>{pigcms{$vo.add_time|date='Y-m-d H:i:s',###}</td>
-                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/search_hot_mall_edit',array('id'=>$vo['id'],'frame_show'=>true))}','查看详细信息',500,200,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.top.artiframe('{pigcms{:U('Shop/search_hot_mall_edit',array('id'=>$vo['id']))}','编辑热门搜索词',500,200,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Shop/search_hot_mall_del')}">删除</a></td>
+                            <td class="textcenter"><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/search_hot_mall_edit',array('id'=>$vo['id'],'frame_show'=>true))}','查看详细信息',500,200,true,false,false,false,'add',true);">查看</a> | <a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Shop/search_hot_mall_edit',array('id'=>$vo['id']))}','编辑热门搜索词',500,200,true,false,false,editbtn,'add',true);">编辑</a> | <a href="javascript:void(0);" class="delete_row" parameter="id={pigcms{$vo.id}" url="{pigcms{:U('Shop/search_hot_mall_del')}">删除</a></td>
                         </tr>
                     </volist>
                     <tr><td class="textcenter pagebar" colspan="8">{pigcms{$pagebar}</td></tr>

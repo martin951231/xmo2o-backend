@@ -21,8 +21,8 @@ function show_provincess(){
 			$('#choose_cityareass').prepend(area_dom);
 			show_cityss(result.id,result.name,0);
 		}else{
-			window.top.msg(0,result.info,true);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true);
+			window.o2oTop.closeiframe();
 		}
 	});
 }
@@ -67,8 +67,8 @@ function show_cityss(id,name,type){
 				'shop_main_page_center_type':result.shop_main_page_center_type,
 			}
 		}else{
-			window.top.msg(0,result.info,true,5);
-			window.top.closeiframe();
+			window.o2oTop.msg(0,result.info,true,5);
+			window.o2oTop.closeiframe();
 		}
 
 		if (result.error != 1 && (typeof init_data_shop_adv != 'undefined' && init_data_shop_adv == 1)) {

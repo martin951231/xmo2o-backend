@@ -2209,27 +2209,7 @@ class DiningOrderService
             (new MerchantService())->saveRelation($nowUser['openid'], $nowOrder['mer_id'], 7);
         }
 
-        // 用户推广分佣
-        $spreadInfo = [
-            'order_id' => $nowOrder['order_id'],
-            'pay_order_id' => $payParam['pay_order_id'],
-            'mer_id' => $nowOrder['mer_id'],
-            'store_id' => $nowOrder['store_id'],
-            'uid' => $nowOrder['uid'],
-            'system_balance' => $payParam['system_balance'],
-            'pay_money' => $payParam['pay_money'],
-            'system_score_money' => $payParam['system_score_money'],
-            'system_coupon_price' => $payParam['system_coupon_price'],
-            'merchant_balance_pay' => $payParam['merchant_balance_pay'],
-            'order_type' => 'dining',
-            'real_orderid' => $nowOrder['real_orderid'],
-        ];        
-        
-        try{
-            $res = (new UserSpreadListService())->addSpreadList($spreadInfo);
-        } catch (\Exception $e) {
-            fdump_sql($e->getMessage(),'addSpreadList_error');
-        }
+       
 
 
         if ($nowOrder['is_temp'] == 1) { //临时订单
@@ -2308,6 +2288,29 @@ class DiningOrderService
             (new ScrollMsgService())->addMsg('foodshop', $nowOrder['uid'], L_('用户x1于x2购买x3成功', array('x1' => str_replace_name($payParam['nickname']), 'x2' => date('Y-m-d H:i', time()), 'x3' => cfg('meal_alias_name'))));
         }
 
+        // 用户推广分佣
+        $spreadInfo = [
+            'order_id' => $nowOrder['order_id'],
+            'pay_order_id' => $payParam['pay_order_id'],
+            'mer_id' => $nowOrder['mer_id'],
+            'store_id' => $nowOrder['store_id'],
+            'uid' => $nowOrder['uid'],
+            'system_balance' => $payParam['system_balance'],
+            'pay_money' => $payParam['pay_money'],
+            'system_score_money' => $payParam['system_score_money'],
+            'system_coupon_price' => $payParam['system_coupon_price'],
+            'merchant_balance_pay' => $payParam['merchant_balance_pay'],
+            'order_type' => 'dining',
+            'real_orderid' => $nowOrder['real_orderid'],
+        ];
+        if (cfg('add_spread_by_system_commission') != 1) {
+            try {
+                $res = (new UserSpreadListService())->addSpreadList($spreadInfo);
+            } catch (\Exception $e) {
+                fdump_sql($e->getMessage(), 'addSpreadList_error');
+            }
+        }
+        
         return true;
 
         //商家推广分佣
