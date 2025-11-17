@@ -335,15 +335,23 @@ class ExpressPickUpApiController extends CommunityBaseController
             }
         }
 
-        //如果设置了限制申请时间, 则判断当前时间是否在限制时间内
+        //如果设置了限制申请时间, 则判断当前时间是否在限制时间内, 如果在时间范围内则不允许提交申请
         $express_apply_start_time = $service_house_village_info['express_project_startDate'];
         $express_apply_end_time = $service_house_village_info['express_project_endDate'];
 
         if ($express_apply_start_time || $express_apply_end_time) {
             //判断当前时间是否在限制时间内
             $is_includes = $this->isTimeInRange($express_apply_start_time, $express_apply_end_time);
-            if (!$is_includes) {
-                return api_output_error(1001, '申请时间不在限制时间内,请在' . $express_apply_start_time . '-' . $express_apply_end_time . '之间申请!');
+            if ($is_includes) {
+                $phase1 = '';
+                $phase2 = '';
+                if( $express_apply_start_time != '00:00' ){
+                    $phase1 = '00:00-'. $express_apply_start_time . '及';
+                }
+                if( $express_apply_end_time < '23:59' ){
+                    $phase2 = $express_apply_end_time . '-23:59';
+                }
+                return api_output_error(1001, '申请时间不在限制时间内,请在' . $phase1 . ' ' . $phase2 . '之内提交申请!');
             }
         }
 
