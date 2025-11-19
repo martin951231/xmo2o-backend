@@ -8559,6 +8559,7 @@ class HouseNewCashierService
                     if (!empty($room)) {
                         $room1 = $room[0];
                         $order_field['room_num']=(new HouseVillageService())->word_replce_msg(array('single_name'=>$room1['single_name'],'floor_name'=>$room1['floor_name'],'layer'=>$room1['layer_name'],'room'=>$room1['room']),$room1['village_id']);
+                        $order_field['room_num'] = str_replace('号楼', "", $room1['single_name']).'-'.str_replace('单元','',$room1['floor_name'])."-".$room1['room'];
                         $order_field['housesize'] = $room1['housesize'].' ㎡';
                     }
                 }
@@ -8637,7 +8638,7 @@ class HouseNewCashierService
             }
         }
         // 新版打印模板处理表格器数据
-        
+
         $tab_list = [];
         if(!empty($order_body) && !empty($printList2)){
             foreach ($order_body as $value){
