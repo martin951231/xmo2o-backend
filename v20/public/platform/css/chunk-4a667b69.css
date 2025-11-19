@@ -1,0 +1,28 @@
+
+.ant-modal-body[data-v-4b3eb2ca] {
+  padding: 24px 0 24px 24px !important;
+}
+
+
+section#contentView[data-v-51480ba6] {
+  background-color: #fff !important;
+}
+#title[data-v-51480ba6] {
+  font-size: 15px;
+  font-weight: bold;
+}
+iframe[data-v-51480ba6] {
+  height: 600px;
+  width: 318px;
+}
+.refresh[data-v-51480ba6] {
+  top: 568px;
+  right: -156px;
+}
+button.ant-switch[data-v-51480ba6] {
+  position: relative;
+  bottom: -38px;
+  right: -66px;
+}
+
+

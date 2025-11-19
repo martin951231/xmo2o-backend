@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+    <title>编辑活动商品</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link href="css/mui.poppicker.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/imange-view.css"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+    <link href="css/mui.picker.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/border.css"/>
+    <link href="css/dropload.css" rel="stylesheet"/>
+    <link href="css/cropper.min.css" rel="stylesheet"/>
+    <link href="css/main_1.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/edit_goods_discount.css"/>
+    <style type="text/css"></style>
+</head>
+<body>
+<div class="show_modal"></div>
+<div>
+    <div id="createActivity" >
+        <header class="mui-bar mui-bar-nav">
+            <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="true"></div>
+            <h1 class="mui-title"><L_>编辑活动商品</L_></h1>
+        </header>
+        <div class="mui-content">
+            <div class="content-container">
+                <!--活动日期-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><span class="star">★</span><L_>活动日期</L_></div>
+                    <div class="right-container">
+                        <div class="flex-container">
+                            <div class="date-pick begin_date" name="startDate">
+                                <i></i>
+                                <span id="begin_date" class='activity_start_date' style='flex:1;'><L_>开始日期</L_></span>
+                                <b></b>
+                            </div>
+                            <span style="margin:5px 10px">至</span>
+                            <div class="date-pick end_date" id="endDate" >
+                                <i></i>
+                                <span id="end_date" class='activity_end_date' style='flex:1;'><L_>结束日期</L_></span>
+                                <b></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--活动周期-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><L_>活动周期</L_></div>
+                    <div class="right-container mui-clearfix week-tag-container">
+                        <div data-id=1 class="week-tag ">周一</div>
+                        <div data-id=2 class="week-tag ">周二</div>
+                        <div data-id=3 class="week-tag ">周三</div>
+                        <div data-id=4 class="week-tag ">周四</div>
+                        <div data-id=5 class="week-tag ">周五</div>
+                        <div data-id=6 class="week-tag ">周六</div>
+                        <div data-id=0 class="week-tag ">周日</div>
+                    </div>
+                </div>
+                <!--活动时间-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><L_>活动时间</L_></div>
+                    <div class="right-container">
+                        <div class="flex-container time-manager">
+                            <div class="time-pick begin_time"  name="startTime">
+                                <h4 data-options='{"type":"time"}' id="startTime">00:00</h4>
+                            </div>
+                            <span style="margin:2px 10px">至</span>
+                            <div class="time-pick end_time"  name="endTime">
+                                <h4 data-options='{"type":"time"}' id="endTime">23:59</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--每单限购-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><span class="star">★</span><L_>每单限购</L_></div>
+                    <div class="right-container">
+                        <div class="radio-container mui-clearfix sale-limit">
+                            <div data-type="0" class="radio-style bu-xian active"><i><b></b></i><L_>不限</L_></div>
+                            <div data-type="1" class="radio-style zi-ding-yi"><i><b></b></i> <L_>自定义</L_></div>
+                        </div>
+                        <div class="limit-num-input" style="display: none;">
+                            <input  id='limit-num' type="number" value="1" name='purchase_limit_num' class="limit-input " placeholder="请输入每单限购量"  />
+                            份
+                        </div>
+                    </div>
+                </div>
+                <!--库存类型-->
+                <div class="row-container">
+                    <div class='left_text stock_type'><L_>库存类型</L_><i></i></div>
+                    <div class="right-container">
+                        <div class="radio-container mui-clearfix stock-type">
+                            <div data-type="0" class="radio-style every-stock active" ><i><b></b></i><L_>每日库存</L_></div>
+                            <div data-type="1" class="radio-style total-stock"><i><b></b></i> <L_>总库存</L_></div>
+                        </div>
+                    </div>
+                </div>
+                <!--活动商品-->
+                <div class="row-container activity_goods">
+                    <div class='left_text'><L_>活动商品</L_></div>
+                    <div class="right-container">
+                        <div class="goods-card">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="mui-bar mui-bar-tab save-btn">
+            <a href="javascript:;"><L_>保存</L_></a>
+        </nav>
+    </div>
+
+</div>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+
+<!--图片滚动-->
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script src="js/mui.picker.js"></script>
+<!--筛选用到js-->
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="js/dropload.js"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  src="js/iscroll-zoom.js"></script>
+<script type="text/javascript"  src="js/hammer.js"></script>
+<script type="text/javascript"  src="js/lrz.all.bundle.min.js"></script>
+<script type="text/javascript" src="js/jquery.photoClip.js"></script>
+<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/cropper.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-plugin-form.js" type="text/javascript" charset="utf-8"></script>
+<!--商品列表-->
+<script id="goodsList" type="text/html">
+{{# for(let i = 0, len = d.length; i < len; i++){ }}
+<div class="goods-table-row goods-info">
+    <span class="table-goods-name">{{d[i].name}}</span>
+    <span class="table-goods-price">￥{{d[i].price}}</span>
+    <span class="table-option mui-checkbox" data-goods-id="{{d[i].goods_id}}">
+        <input name="checkbox" type="checkbox">
+    </span>
+</div>
+{{# } }}
+</script>
+<!--活动商品卡片列表-->
+<script id="activityGoodsList" type="text/html">
+    <div class="goods-basic-info">
+        <img class="goods-pic" src="{{d.image}}"/>
+        <div class="detail-info">
+            <span class="goods-name">{{d.goods_name}}</span>
+            {{# if(!d.spec_list.length){}}
+            <span class="goods-price"><L_>原价</L_><b>￥{{d.price}}</b></span>
+            {{# }else{}}
+            <span class="spec-tag"><L_>多规格</L_></span>
+            {{#}}}
+        </div>
+    </div>
+    {{# if(d.spec_list.length){}}
+    {{# for(let j = 0, len = d.spec_list.length; j < len; j++){ }}
+    <div class="spec-box"  data-speckey="{{d.spec_list[j].id}}">
+        <div class="spec-name">{{d.spec_list[j].str}}</div>
+        <div class="discount-content spec-discount-content">
+            <div class="row-content">
+                <span class="content-title"><L_>原价</L_></span>
+                <span style="padding: 0 10px">{{d.spec_list[j].price}}元</span>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>活动价</L_></span>
+                <input data-price="{{d.spec_list[j].price}}"  type="number" value="{{d.spec_list[j].limit_price}}" name='activity_price' class="discount-input activity-price " placeholder="请输入活动价格"  />
+                <span>元</span>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>折扣</L_></span>
+                <b class="discount-b" style="color: red;margin: 0 10px;">{{((d.spec_list[j].limit_price/d.spec_list[j].price)*10).toFixed(2)}}折</b>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>当前库存</L_></span>
+                <input  type="number" value="{{d.spec_list[j].stock}}"  name='current_stock' class="discount-input current_stock" placeholder="请输入当前库存"  />
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>原始库存</L_></span>
+                <input  type="number" value="{{d.spec_list[j].origin_stock}}" name='origin_stock' class="discount-input origin_stock" placeholder="请输入原始库存"  />
+            </div>
+        </div>
+    </div>
+    {{# } }}
+    {{#}else{}}
+    <div class="spec-box"  data-speckey="">
+        <div class="spec-name"></div>
+        <div class="discount-content">
+            <div class="row-content">
+                <span class="content-title"><L_>活动价</L_></span>
+                <input data-price="{{d.price}}"   type="number" value="{{d.limit_price}}" name='activity_price' class="discount-input activity-price" placeholder="请输入活动价格"  />
+                <span>元</span>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>折扣</L_></span>
+                <b class="discount-b" style="color: red;margin: 0 10px;">{{((d.limit_price/d.price)*10).toFixed(2)}}折</b>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>当前库存</L_></span>
+                <input  type="number" value="{{d.stock}}" name='current_stock' class="discount-input current_stock" placeholder="请输入当前库存"  />
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>原始库存</L_></span>
+                <input  type="number" value="{{d.origin_stock}}" name='origin_stock' class="discount-input origin_stock" placeholder="请输入原始库存"  />
+            </div>
+        </div>
+    </div>
+    {{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    let ticket = common.getCache('ticket');
+    let store_id = $.getUrlParam('store_id');
+    let limit_id = $.getUrlParam('limit_id');
+    let deviceId = common.getDeviceId();
+    let weekArr = [0,1,2,3,4,5,6];
+    let details = {};
+    getData();
+
+    //监听商品数据变化
+    $(".goods-card").on('change',".spec-box",function(){
+      // 活动商品规格key
+      let specKey = $(this).data('speckey');
+      let discount_dom = $(this).find('.discount-b');
+      let price_dom = $(this).find('.activity-price');
+      $(price_dom).blur(function(){ // 活动价格失去焦点
+        let old_price = $(this).attr('data-price');
+        let cur_price = $(this).val();
+        if(cur_price <= 0) {
+          mui.toast('活动价格不能为0和负数');
+        }else {
+          if(parseFloat(cur_price)  > parseFloat(old_price) ){
+            mui.toast('活动价格应该低于原价');
+            $(this).val(old_price);
+            cur_price = old_price;
+            discount_dom.html('10.00折')
+          }else {
+            let discount = ((cur_price/old_price)*10).toFixed(2);
+            discount_dom.html(discount+'折');
+          }
+        }
+      });
+      let current_stock_dom = $(this).find('.current_stock');
+      $($(this).find('.origin_stock')).blur(function(){ // 原始库存失去焦点
+        let current_stock = current_stock_dom.val();
+        let origin_stock = $(this).val();
+        if(origin_stock != -1) {
+          if(current_stock == -1) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }else if(parseInt(current_stock) > parseInt(origin_stock)) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }
+        }
+      });
+      let origin_stock_dom = $(this).find('.origin_stock')
+      $($(this).find('.current_stock')).blur(function(){ //当前库存失去焦点
+        let origin_stock = origin_stock_dom.val();
+        let current_stock = $(this).val();
+        if(origin_stock != -1) {
+          if(current_stock == -1) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }else if(parseInt(current_stock) > parseInt(origin_stock)) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }
+        }
+      });
+      // console.log('spec key',specKey);
+      // console.log('current price',$(price_dom).val());
+      // console.log('current stock',$(current_stock_dom).val());
+      // console.log('origin stock',$(origin_stock_dom).val());
+
+      if(specKey == '') { //单规格商品
+        details.limit_price = $(price_dom).val();
+        details.stock =  $(current_stock_dom).val();
+        details.origin_stock =  $(origin_stock_dom).val();
+      }else { // 多规格商品
+        details.spec_list.map((item) => {
+          if (item.id == specKey) {
+            item.limit_price = $(price_dom).val();
+            item.stock = $(current_stock_dom).val();
+            item.origin_stock = $(origin_stock_dom).val();
+          }
+        });
+      }
+      // console.log(details);
+    });
+
+
+
+    // 选择日期
+    (function ($, doc) {
+      $('.begin_date')[0].addEventListener('tap', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = document.getElementById('begin_date').innerText;
+        // let optionsJson = '{"type":"time","value":"2012-01-01 '+timeValue+'"}';
+        let optionsJson = '{"type":"date","beginYear":2014,"beginMonth":5,"beginDay":1,"endYear":2025}';
+        let options = JSON.parse(optionsJson);
+        let id = this.getAttribute('id');
+        let picker = new $.DtPicker(options);
+        picker.setSelectedValue(timeValue);
+        picker.show(function (rs) {
+          $('#begin_date')[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+
+      $('.end_date')[0].addEventListener('tap', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = document.getElementById('end_date').innerText;
+        let optionsJson = '{"type":"date","beginYear":2014,"endYear":2025}';
+        let options = JSON.parse(optionsJson);
+        let id = this.getAttribute('id');
+        let picker = new $.DtPicker(options);
+        picker.setSelectedValue(timeValue);
+        picker.show(function (rs) {
+          $('#end_date')[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+    })(mui, document);
+
+    //选择时间
+    (function ($, doc) {
+      mui('.time-manager').on('tap', '.time-pick', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = this.children[0].innerText
+        let me = this;
+        let optionsJson = '{"type":"time","value":"2012-01-01 ' + timeValue + '"}';
+        let options = JSON.parse(optionsJson);
+        let picker = new $.DtPicker(options);
+        picker.show(function (rs) {
+          $(me)[0].children[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+    })(mui, document);
+
+    // 选择周期
+    mui('.week-tag-container').on('tap','.week-tag',function(e){
+      let id = $(this).attr('data-id');
+      if ($(this).is('.week-active')) {
+        $(this).removeClass('week-active');
+        weekArr.splice(weekArr.findIndex(item => item == id), 1); // 移除元素
+      } else {
+        $(this).addClass('week-active');
+        weekArr.push(Number(id));
+      }
+      console.log(weekArr)
+    });
+    // 选择每单限购
+    mui('.right-container').on('tap','.sale-limit',function(e){
+      if ($('.sale-limit div:eq(0)').is('.active')) {
+        //选择自定义
+        $('.sale-limit div:eq(0)').removeClass('active');
+        $('.sale-limit div:eq(1)').addClass('active');
+        $(".limit-num-input").show();
+        $("#limit-num").val('')
+        details.limit_type = $('.sale-limit div:eq(1)').data('type');
+      } else {
+        //选择不限
+        $('.sale-limit div:eq(1)').removeClass('active');
+        $('.sale-limit div:eq(0)').addClass('active');
+        $(".limit-num-input").hide();
+        $("#limit-num").val(-1)
+        details.limit_type = $('.sale-limit div:eq(0)').data('type');
+      }
+    });
+
+    //点击保存按钮
+    mui('#createActivity').on('tap', '.save-btn', function () {
+      submitData();
+    });
+
+    //接口
+    function getData () {
+      let params = {
+        ticket,
+        "Device-Id": deviceId,
+        store_id,
+        limit_id,
+      };
+      common.http('Marketing&a=detail', params, function (data) {
+        console.log(data);
+        details = data;
+        //赋值
+        $('#begin_date')[0].innerText = details.start_date;
+        $('#end_date')[0].innerText = details.end_date;
+        $('.begin_time')[0].children[0].innerText = details.start_time;
+        $('.end_time')[0].children[0].innerText = details.end_time;
+        let week_id =0;
+        weekArr = details.week_arr;
+        for(var i = 0; i< details.week_arr.length;i++){
+          $.each($('.week-tag-container .week-tag'),function(j,val){
+            week_id = $(this).data('id');
+            if(details.week_arr[i] == week_id) {
+              console.log('test')
+              $(this).addClass('week-active')
+            }
+          });
+        }
+        if(details.limit_type == 1){
+          $('.zi-ding-yi').addClass('active');
+          $('.bu-xian').removeClass('active');
+          $(".limit-num-input").show();
+          $("#limit-num").val(details.limit_num)
+        }else {
+          $('.zi-ding-yi').removeClass('active');
+          $('.bu-xian').addClass('active');
+          $(".limit-num-input").hide();
+          $("#limit-num").val(0)
+        }
+        if(details.stock_type == 1) {
+          $('.every-stock').hide();
+          $('.total-stock').addClass('active');
+        }else {
+          $('.total-stock').hide();
+          $('.every-stock').addClass('active');
+        }
+        //商品详情
+        laytpl(document.getElementById('activityGoodsList').innerHTML).render(details, function (html) {
+          $('.goods-card').html(html)
+        });
+      })
+    };
+
+    function submitData () {
+      let sf = true;
+      let start_date = $('#begin_date').html();
+      let end_date = $('#end_date').html();
+      let start_time = $('#startTime').html();
+      let end_time = $('#endTime').html();
+      let params = {
+        id:details.id,
+        store_id,
+        limit_type: details.limit_type,
+      };
+      if(details.limit_type == 1) { // 自定义限购
+        params.limit_num = $('#limit-num').val();
+      }
+      // 日期判断
+      if(pareDate(start_date,end_date)) {
+        params.start_date = start_date;
+        params.end_date = end_date;
+      }else {
+        sf = false;
+        return;
+      }
+      //时间判断
+      if(pareTime(start_time,end_time)) {
+        params.start_time = start_time;
+        params.end_time = end_time;
+      }else {
+        sf = false;
+        return;
+      }
+      //周期判断
+      if(weekSelect(weekArr)){
+        weekArr.sort();
+        params.week = weekArr.join(',');
+      }else {
+        sf = false;
+        return;
+      }
+      console.log(weekArr)
+      //活动商品
+      let limit_price =[];
+      let stock = [];
+      let origin_stock = [];
+      let spec_id =[];
+      let specList = details.spec_list;
+      if(specList.length){//多规格
+        console.log(111);
+        specList.map((spec)=>{
+          spec_id.push(spec.id);
+          limit_price.push(spec.limit_price);
+          stock.push(spec.stock);
+          origin_stock.push(spec.origin_stock);
+        })
+      }else { // 单规格
+        limit_price.push(details.limit_price);
+        stock.push(details.stock);
+        origin_stock.push(details.origin_stock);
+        spec_id.push('');
+      }
+
+      params={
+        ...params,
+        limit_price,
+        stock,
+        origin_stock,
+        spec_id
+      }
+      // console.log('details', details);
+      // console.log('整理后params', params);
+      if(sf) {
+        common.http('Marketing&a=editTimeLimitedDiscount', params, function (data) {
+          console.log(data);
+          if(data) {
+            history.go(-1);
+          }
+        })
+      }
+    };
+
+    //点击小红点弹出遮罩层
+    mui('.mui-content').on('tap', '.stock_type', function (e) {
+      e.stopPropagation();
+      $("input").blur();
+      mui.alert('每日库存即每天自动置满固定量的库存；总库存即固定的总库存，会不断减少，不会每天自动置满库存', function (e) {
+      });
+    });
+    //时间比较
+    function pareTime(start, end) {
+      let t1 = start.split(":");
+      let t2 = end.split(":");
+      let t11 = parseInt(t1[0]);
+      let t12 = parseInt(t1[1]);
+      let t21 = parseInt(t2[0]);
+      let t22 = parseInt(t2[1]);
+      if (t11 > t21) {
+        mui.toast('开始时间不能大于结束时间');
+        return false
+      } else if (t11 == t21) {
+        if (t12 > t22) {
+          mui.toast('开始时间不能大于结束时间');
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    };
+    //日期比较
+    function pareDate (start,end) {
+      if (start != '开始日期' && end != '结束日期') {
+        let today = new Date(new Date(new Date().toLocaleDateString()).getTime());
+        let s = new Date(start.replace(/-/g, "\/"));
+        let e = new Date(end.replace(/-/g, "\/"));
+        // if(s<today || e<today) {
+        //   mui.toast('开始日期和结束日期不能小于今天');
+        //   return false;
+        // }else {
+          if (s > e) {
+            mui.toast('开始日期不能大于结束日期');
+            return false;
+          }else {
+            return true;
+          }
+        // }
+      } else {
+        mui.toast('请选择活动开始日期和结束日期');
+        return false;
+      }
+    };
+    // 周期必选
+    function weekSelect (week) {
+      if(week.length) {
+        return true;
+      }else {
+        mui.toast('请选择活动周期');
+        return false;
+      }
+    }
+
+</script>
+</body>
+</html>

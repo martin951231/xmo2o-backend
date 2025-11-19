@@ -1,0 +1,2 @@
+php application\start_register.php application\start_gateway.php application\start_businessworker.php
+pause

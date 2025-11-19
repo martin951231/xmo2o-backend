@@ -1,0 +1,12 @@
+.form_con .form_item[data-v-61316788] {
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 10px;
+}
+.form_con .form_item .form_lable[data-v-61316788] {
+  width: 100px;
+}
+.form_con .form_item .form_value[data-v-61316788] {
+  width: calc(100% - 180px);
+}
+

@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Market/index')}" >批发市场</a>		<a href="{pigcms{:U('Goods/config')}" class="on">批发市场配置</a>	</ul></div>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<title>营业分析</title>
+	<link href="css/mui.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/add_bank.css" />
+	<link rel="stylesheet" type="text/css" href="css/businessAnalysis.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+</head>
+
+<body style="background: #fff;">
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+		<h1 class="mui-title">
+			<L_>营业分析</L_>
+		</h1>
+	</header>
+	<div class="mui-content">
+		<div class="tab_fen">
+			<a href="businessAnalysis_shop.html?tabType=shop" data-url-type="self" data-type="shop">
+				<L_>外卖</L_>
+			</a>
+			<a href="businessAnalysis_mall.html?tabType=mall" data-url-type="self" data-type="mall">
+				<L_>商城</L_>
+			</a>
+			<a href="businessAnalysis_market.html?tabType=market" data-url-type="self" data-type="market">
+				<L_>营销</L_>
+			</a>
+			<a href="businessAnalysis_pro.html" data-url-type="self" class="cur">
+				<L_>商品</L_>
+			</a>
+		</div>
+
+		<ul class="tab_conEcharts ul_selectOption">
+			<li><span id='showUserPicker'> </span></li>
+			<li><span id="showPickerSelect"> </span></li>
+			<li><span id="showPickerStore"> </span></li>
+		</ul>
+
+		<ul class="ul_proSelect">
+			<li class="cur" data-second_type="sale_money">
+				<L_>销售额最高</L_>
+			</li>
+			<li data-second_type="sale_count">
+				<L_>销量最高</L_>
+			</li>
+			<li data-second_type="is_goods" class="is_goods">
+				<L_>点赞</L_>
+			</li>
+			<li data-second_type="sale_percent">
+				<L_>占比最高</L_>
+			</li>
+		</ul>
+
+		<div>
+			<ul class="ul_businessAnalysisPro"></ul>
+		</div>
+
+	</div>
+	<script src="js/fastclick.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/mui.dtpicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/work/businessAnalysis_pro.js?t=1" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/city.data.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+</body>
+
+</html>

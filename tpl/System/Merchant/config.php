@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Merchant/config')}" class="on">商家配置</a>	</ul></div>

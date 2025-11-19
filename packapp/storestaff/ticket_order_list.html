@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>店员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/pigcms.css" rel="stylesheet"/>
+		<style type="text/css">
+		.red{
+			color: red;
+		}
+		.green{
+			color: green;
+		}
+		</style>
+	</head>
+	<body>
+		<section class="public pageSliderHide">
+			<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+			<div class="content"><L_>景区门票订单</L_></div>
+		</section>
+		<section class="order">
+			<div class="cable pageSliderHide">
+				<div class="cable_n">
+					<form id="searchForm" method="post">
+						<div class="input">
+							<input type="search" id="find_value" placeholder="请输入搜索内容" />
+						</div>
+						<div class="select">
+							<select id="find_type">
+								<option value="1" class="L_">消费密码</option>
+								<option value="2" class="L_">订单ID</option>
+								<option value="3" class="L_">用户ID</option>
+								<option value="4" class="L_">用户昵称</option>
+								<option value="5" class="L_">手机号码</option>
+							</select>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="order_list" id="order_list"><ul></ul></div>
+		</section>
+		
+		<section class="consum_tc">
+            <div class="consum_tc_n">
+                <div class="tc_top"><L_>消费码验证</L_></div>
+                <div class="scroll">
+                    <ul></ul>
+                </div>
+
+                <div class="all">
+                    <span id="allVerify"><L_>全部验证</L_></span>
+                </div>
+
+                <div class="del"></div>
+            </div>
+        </section>
+        <div class="mask"></div>
+        <script id="passList" type="text/html">
+            {{# for(var i = 0, len = d.length; i < len; i++){ }}
+            <li class="clr">
+                <span class="fl">{{ d[i].code }}</span>
+                {{# if (d[i].status == 1) { }}
+                <span class="fr a39" data-com_id="{{ d[i].com_id }}" data-order_id="{{ d[i].order_id }}">{{ L_('验证') }}</span>
+                {{# } else if(d[i].status==2) { }}
+                	<span class="fr ecc">{{ L_('已消费') }}</span>
+                {{# }else{ }}
+                	<span class="fr ecc">{{ L_('已退款') }}</span>
+                {{# } }}
+            </li>
+            {{# } }}
+        </script>
+		<script id="listTpl" type="text/html">
+			{{# for(var i = 0, len = d.length; i < len; i++){ }}
+				<li>
+					<a href="ticket_order_details.html?order_id={{ d[i].order_id }}" class="clr" data-webview="true">
+						<div class="img fl">
+							<img src="{{ d[i].pic }}">
+						</div>
+						<div class="content">
+							<h2>{{ d[i].ticket_title }}</h2>
+							<div class="clr price">
+								<div class="fl">{{ L_('总价') }}：{{ currency_symbol }}{{ parseFloat(d[i].order_total) }}</div>
+								<div class="fl">{{ L_('数量') }}：{{ d[i].ticket_num }}</div>
+							</div>
+							<div class="state">
+								{{# if(d[i].paid==1){ }}
+									<span class='red'>{{ L_('未支付') }}</span>
+								{{# }else if(d[i].order_status==1){ }}
+									<span class='green'>{{ L_('已支付 未入园') }}</span>
+								{{# }else if(d[i].order_status==2){ }}
+									<span class='green'>{{ L_('已消费 未评论') }}</span>
+								{{# }else if(d[i].order_status==3){ }}
+									<span class='green'>{{ L_('已评论 已完成') }}</span>
+								{{# }else if(d[i].order_status==4){ }}
+									<span class='red'>{{ L_('已退款') }}</span>
+								{{# }else if(d[i].order_status==5){ }}
+									<span class='red'>{{ L_('已过期 未付款') }}</span>
+								{{# }else if(d[i].order_status==6){ }}
+									<span class='red'>{{ L_('已过期 未入园') }}</span>
+								{{# } }}
+							</div>
+						</div>
+					</a>
+					{{# if(d[i].state==1){ }}
+						<div class="consum" data-type="{{ d[i].type }}" data-order_id="{{ d[i].order_id }}">{{ L_('消费验证') }}</div>
+					{{# } }}
+				</li>
+			{{# } }}
+		</script>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/ticket_order_list.js"></script>
+	</body>
+</html>

@@ -1,0 +1,236 @@
+<html lang="zh-CN">
+	<head>
+        <meta charset="utf-8">
+        <title>快店订单</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover">
+        <meta http-equiv="pragma" content="no-cache">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-touch-fullscreen" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="format-detection" content="address=no">
+        <link rel="stylesheet" href="css/mui.css" />
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.picker.min.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+        <link href="css/pigcms.css" rel="stylesheet"/>
+    	<link rel="stylesheet" type="text/css" href="css/fastList.css"/>
+	</head>
+    <body>
+        <div class="remind" style="">
+        	您有部分商品库存小于10，请<span class="rem_see"><L_>点击查看！</L_></span>
+        	<div class="del"></div>
+       	</div>
+        <header class="mui-bar mui-bar-nav">
+            <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+             <h1 class="mui-title"><span class="ashop"><L_>快店</L_></span><L_>订单</L_></h1>
+         </header>
+        <section class="section-fixed-top">
+            <div class="input-wrap">
+                <div class="input">
+                    <input class="L_P" type="text" id="find_value" name="fv" placeholder="请输入搜索内容"/>
+                </div>
+                <div class="select" id="selects">
+                    <span id="selectsText"><L_>订单号</L_></span>
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="drop_select">
+                    <div class="pos order_from">
+                        <span id="order_fromText"><L_>订单来源</L_></span>
+                        
+                    </div>
+                </div>
+                <div class="drop_select" id="status1">
+                    <div class="pos status">
+                        <span id="statusText"><L_>订单状态</L_></span>
+                    </div>
+                </div>
+                <div class="drop_select">
+                    <div class="pos pay_type">
+                        <span id="pay_typeText"><L_>支付方式</L_></span>
+                    </div>
+                </div>
+            </div>
+            <div class="kd_time" style="display: flex;justify-content: space-between;align-items: center;">
+                <div class="pos begin_date" >
+                    <input type="text" placeholder="开始时间" readonly="" id="stime">
+                </div>
+                <div class="pos end_date">
+                    <input type="text" placeholder="结束时间" readonly="" id="etime">
+                </div>
+            </div>
+        </section>
+        <section class="store mui-content">
+            <div class="entry kd_entry" >
+            	<ul id="masgs">          
+            	</ul>
+                <!-- 上拉刷新 -->
+				<div class="pullup" style="display:none;"><L_>上拉加载更多</L_>...</div>
+				<div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""/><L_>正在加载</L_></div>
+            </div>
+        </section>
+
+        <section class="amend">
+            <div class="alter">
+                <h2><L_>修改金额</L_></h2>
+                <div class="del"></div>
+            </div>
+            <div class="correct">
+                <ul>
+                    <li class="clr">
+                        <div class="fl"><L_>修改金额</L_></div>
+                        <div class="fr">
+                            <input type="number" class="L_P" placeholder="请输入修改金额" id="change_price"/>
+                            <input type="hidden" id="order_id">
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>备注</L_></div>
+                        <div class="fr">
+                            <input type="text" class="L_P" placeholder="请输入您修改的理由" id="change_price_reason"/>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前值</L_></div>
+                        <div class="fr e93" id="now_price"></div>
+                    </li>
+                </ul>
+                <div class="clr button">
+                    <div class="fl recovery" data-type="r"><L_>恢复初始价格</L_></div>
+                    <div class="fr ensure" data-type="c"><L_>确定修改</L_></div>
+                </div>
+            </div>
+        </section>
+       
+
+        <section class="since"></section>
+
+        <section class="stock" style=" margin-top: -208px;">         
+            <div class="h2"><L_>库存报警商品列表（12）</L_></div>        
+			<div class="ul">            
+				<ul>                     
+					<li>      
+						<div class="tit">          
+							<span class="fl"><L_>商品条形码：</L_></span>           
+							<div class="p65">2017154587820</div>      
+						</div>      
+						<div class="bot">           
+							<div class="name">               
+								<span class="fl"><L_>商品名称：</L_></span>               
+								<div class="p65">品牌 (11,单层)</div>          
+							</div>           
+							<div class="name">              
+								<span class="fl"><L_>商品价格：</L_></span>               
+								<div class="p65 clr"> 
+									<div class="fl f86">￥1</div>
+									<div class="fr f86">剩余库存：1</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>         
+			<div class="del"></div> 
+			<div class="report">
+				<span><L_>如需导出报表，请到电脑版店员中心操作</L_></span>
+			</div>
+		</section>
+    <div class="flat roof"></div>
+    <script src="js/fastclick.js"></script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/mui.zoom.js"></script>
+    <script src="js/mui.picker.js"></script> 
+    <script src="js/mui.dtpicker.js"></script>
+    <script src="js/mui.poppicker.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/fastclick.js"></script>
+    <!--<script src="js/layer/layer.m.js"></script>-->
+    <script src="js/common.js"></script>
+    <script src="js/work/fastList.js" type="text/javascript" charset="utf-8"></script>
+    
+    <script id="listTpl" type="text/html">
+    {{# for (var i = 0, len = d.length; i < len; i++){ }}
+        <li data-id="{{d[i].order_id}}">
+           <div class="top clr">
+               <div class="fl">{{ L_('下单时间') }}：{{d[i].create_time}}</div>
+               <div class="fr cancel">{{d[i].pay_status}}</div>
+           </div>
+           <div class="con">
+               <div class="con_top">
+    				{{# if(d[i].status != 2 && d[i].status != 3 && d[i].status != 4 && d[i].status != 5 && d[i].fetch_number != '0'){ }}
+    					<h2>{{ L_('取单编号') }}：{{d[i].fetch_number}}</h2>
+    				{{# } }}
+                    {{# if(d[i].username){ }}
+                        <h2>{{ L_('下 单 人') }}：{{d[i].username}}  
+                            {{# if(d[i].virtual_phone_arr){ }}
+                                {{# if(d[i].virtual_phone_overtime==1){ }}
+                                    {{d[i].userphone}}
+                                {{# }else{ }}
+                                <a href="tel:{{d[i].virtual_phone_arr[0][0]}}" class="pho callPhone" data-phone="{{d[i].virtual_phone_arr[0][0]}}">{{d[i].userphone}} {{d[i].virtual_phone_str}}</a>
+                                {{# } }}
+                            {{# }else{ }}
+                                <a href="tel:{{d[i].userphone}}" class="pho callPhone" data-phone="{{d[i].userphone}}">{{d[i].userphone}}</a>
+                            {{# } }}
+                        </h2>
+                    {{# } }}
+    			   {{# if (d[i].order_from != 6) { }}
+                   <p>{{ L_('配送方式') }}：{{# if (d[i].is_pick_in_store == 0) { }}{{ L_('平台配送') }}{{# } else if (d[i].is_pick_in_store == 1) { }}{{ L_('商家配送') }}{{# } else if (d[i].is_pick_in_store == 2) { }}{{ L_('用户自提') }}{{# } else { }}{{ L_('快递配送') }}{{# } }}</p>
+                    {{# if(d[i].expect_use_time){ }}
+                        <p>{{ L_('期望送达时间') }}：{{d[i].expect_use_time}}</p>
+                    {{# } }}
+                   {{# } }}
+    				{{# if(d[i].address){ }}<p>{{ L_('配送地址') }}：{{d[i].address}}{{# } }}</p>
+                   <p>{{ L_('订单总价') }}：<span class="red">{{ L_('￥') }}{{d[i].total_price}} {{# if (d[i].paid > 0) { }}{{d[i].pay_type_str}} {{# } }}</span></p>
+                   <p>{{ L_('应收总额') }}：<span class="red change_{{d[i].order_id}}" >{{ L_('￥') }}{{d[i].price}} {{# if (d[i].change_price_reason != '') {}}<em class="xgh">（{{d[i].change_price_reason}}）</em>{{# } }}</span></p>
+              
+               </div>
+               <div class="remark">
+                    <div class="source">{{ L_('订单来源') }}：{{d[i].order_from_name}}</div>
+                    {{# if(d[i].status == 0 && d[i].paid == 1) { }}
+                       <div class="overtime kd_order">{{ L_('待接单') }}</div>
+                    {{# } else if (d[i].status == 1) { }}
+                        <div class="overtime kd_order">{{ L_('已确认') }}</div>
+                    {{# } else if (d[i].status == 2) { }}
+                        <div class="overtime kd_cons">{{ L_('已消费') }}</div>
+                    {{# } else if (d[i].status == 3) { }}
+                        <div class="overtime kd_cons">{{ L_('已评价') }}</div>
+                    {{# } else if (d[i].status == 4) { }}
+                        {{# if (d[i].cancel_type == 7) { }}
+                        <div class="overtime kd_cons">{{ L_('超时退款') }}</div>
+                        {{# } else { }}
+                        <div class="overtime kd_cons">{{ L_('已退款') }}</div>
+                        {{# } }}
+                    {{# } else if (d[i].status == 5) { }}
+                        {{# if (d[i].cancel_type == 7) { }}
+                        <div class="overtime">{{ L_('超时取消') }}</div>
+                        {{# } else { }}
+                        <div class="overtime">{{ L_('已取消') }}</div>
+                        {{# } }}
+                    {{# } else if (d[i].status == 7 && d[i].paid == 1) { }}
+                        <div class="overtime kd_rob send" data-id="{{d[i].order_id}}">{{ L_('发货到自提') }}</div>
+                    {{# } else if (d[i].status == 8) { }}
+                        <div class="overtime kd_hair">{{ L_('已发货到自提') }}</div>
+                    {{# } else if (d[i].status == 9) { }}
+                        <div class="overtime kd_hair">{{ L_('自提点接货') }}</div>
+                    {{# } else if (d[i].status == 10) { }}
+                        <div class="overtime kd_distri">{{ L_('配送中') }}</div>
+                    {{# } else if (d[i].status == 11) { }}
+                        <div class="overtime">{{ L_('申请取消') }}</div>
+                    {{# } else { }}
+                        {{# if (d[i].order_from == 6) { }}
+                        <div class="overtime">{{ L_('已取消') }}</div>
+                        {{# } else { }}
+                        <div class="overtime">{{ L_('未支付') }}</div>
+                        {{# } }}
+                    {{# } }}
+               </div>
+           </div>
+        </li>
+    {{# } }}
+    </script>
+    
+</body></html>

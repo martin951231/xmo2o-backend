@@ -1,0 +1,22 @@
+.robot-list-wrap[data-v-1eba78c9] {
+  width: 240px;
+  height: 600px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.robot-list-wrap .list[data-v-1eba78c9] {
+  overflow-y: auto;
+}
+.confirm-btn[data-v-1eba78c9] {
+  padding: 20px 20px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+

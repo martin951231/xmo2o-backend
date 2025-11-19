@@ -1,0 +1,27 @@
+
+.statistical_data{
+  margin: 20px 20px;
+  padding: 14px 0;
+  text-align: center;
+  background-color: #eee;
+  font-size: 14px;
+}
+.statistical_fir_p{
+  font-size: 16px;
+}
+.statistical_data p{
+  margin: 0 0;
+}
+.tab_list{
+  padding: 14px 0;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+.ant-modal{
+  top: 20px !important;
+}
+.container .vote_add_top{
+  display: none;
+}
+

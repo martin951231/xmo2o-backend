@@ -1,0 +1,29 @@
+.parking_lot[data-v-63edcf91] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.parking_lot .header_search[data-v-63edcf91] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.parking_lot .header_search .search_item[data-v-63edcf91] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.parking_lot .table_content[data-v-63edcf91] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

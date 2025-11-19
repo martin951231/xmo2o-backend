@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>个人中心</title>
+    <link href="css/mui.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" href="css/vant/vant@2.12.47.css" />
+    <link rel="stylesheet" type="text/css" href="css/persomal_center.css?t=002" />
+    <link href="css/mui.css?t=1" rel="stylesheet" />
+    <script src="js/vant/vue@2.6.14.min.js"></script>
+    <script src="js/vant/vant@2.12.14.min.js"></script>
+    <style>
+        .van-nav-bar {
+            background-color: #ffa200 !important;
+            color: #fff;
+        }
+
+        .van-nav-bar__title {
+            color: #fff;
+        }
+
+        .van-nav-bar .van-icon {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" style="display: none">
+        <van-nav-bar :title="L_('个人中心')" :safe-area-inset-top="true" left-arrow @click-left="onClickLeft"></van-nav-bar>
+        <div class="content">
+            <div class="mui-card" style="margin: 10px 0 5px;">
+                <div id="lang" class="mui-card-header modify_password" @click="langClick" style="display: none;">
+                    <span><i :style="'background: url('+requestStaticDomain+'/static/merchant_index/lang.png)center no-repeat;background-size: 16px;'"></i> {{langValue?langValue:'简体中文'}}</span>
+                    <b class="mui-pull-right"></b>
+                </div>
+                <div class="mui-card-header modify_password" @click="goUrl('modify_password.html')">
+                    <span><i></i> {{L_('修改密码')}}</span>
+                    <b class="mui-pull-right"></b>
+                </div>
+
+                <div class="mui-card-header modify_phone" @click="goUrl('modify_phone.html')" v-if="config && config.open_merchant_change_phone && config.open_merchant_change_phone == '1'">
+                    <span><i></i> {{L_('修改手机')}}</span>
+                    <b class="mui-pull-right"></b>
+                </div>
+
+                <div class="mui-card-header sign_out" @click="sign_out">
+                    <span><i></i> {{L_('安全退出')}}</span>
+                    <b class="mui-pull-right"></b>
+                </div>
+                <div class="mui-card-header cancel" @click="cancel" v-if="pageInfo && pageInfo.cancel_app == 1">
+                    <span><i></i> {{L_('注销商家')}}</span>
+                    <b class="mui-pull-right"></b>
+                </div>
+            </div>
+        </div>
+        <van-popup v-model="showPicker" round position="bottom">
+            <van-picker show-toolbar :columns="columns" @confirm="onConfirm" :default-index="defaultIndex"></van-picker>
+        </van-popup>
+
+    </div>
+</body>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/weui/weui.min.js"></script>
+<script src="js/common.js?t=4" type="text/javascript" charset="utf-8"></script>
+<script src="js/work/merchant_index_setting.js?t=30"></script>
+
+</html>

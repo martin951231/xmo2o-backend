@@ -1,0 +1,211 @@
+.login-form[data-v-58b49324] {
+  padding: 20px 10px 0 10px;
+}
+.login-form .login-form-button[data-v-58b49324] {
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+}
+
+#merchantLogin[data-v-75c53fa5] {
+  width: 100%;
+  height: 100%;
+  background: url(../img/login_bg.8bfa15d3.png) top left no-repeat;
+  background-size: cover;
+  color: #666;
+  font-family: Microsoft YaHei, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  position: relative;
+}
+#merchantLogin #header[data-v-75c53fa5] {
+  position: fixed;
+  width: 100%;
+  height: 80px;
+  top: 0;
+  background-color: #ffffff;
+  -webkit-box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.4);
+          box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.4);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+#merchantLogin #header .item[data-v-75c53fa5] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  height: 80px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  margin: 0 20px;
+}
+#merchantLogin #header .left .logo[data-v-75c53fa5] {
+  position: relative;
+  width: 300px;
+  height: 50px;
+  background: url(https://o2o-demo-img.oss-cn-hangzhou.aliyuncs.com/upload/config/000/000/030/5c6116472db32894.png);
+  background-repeat: no-repeat;
+  background-size: 160px auto;
+  background-position: center left;
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+}
+#merchantLogin #header .left .logo .title[data-v-75c53fa5] {
+  cursor: default;
+  position: absolute;
+  left: 180px;
+  border-left: 2px solid rgba(0, 0, 0, 0.1);
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  padding-left: 20px;
+  font-size: 16px;
+}
+#merchantLogin #content[data-v-75c53fa5] {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+#merchantLogin #content .form-card[data-v-75c53fa5] {
+  width: 430px;
+  border: none;
+  border-radius: 6px;
+  -webkit-box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.07);
+          box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.07);
+}
+#merchantLogin #content .form-card .ant-card-actions[data-v-75c53fa5] {
+  border: none;
+  color: #b61d1d;
+}
+#merchantLogin #content .form-card .code-container[data-v-75c53fa5] {
+  text-align: center;
+  margin-top: 20px;
+}
+#merchantLogin #content .form-card .code-container .code-img[data-v-75c53fa5] {
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+  line-height: 160px;
+  vertical-align: middle;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+#merchantLogin #content .form-card .tip[data-v-75c53fa5] {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+}
+#merchantLogin #content .form-card .tip .link[data-v-75c53fa5]:hover {
+  color: #1890ff;
+}
+#merchantLogin #content .form-card .characteristic[data-v-75c53fa5] {
+  text-align: center;
+  margin: 15px 40px 0 40px;
+  font-size: 12px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  font-size: 14px;
+  color: #999999;
+}
+#merchantLogin #content .form-card .characteristic .item[data-v-75c53fa5] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+#merchantLogin #content .form-card .characteristic .item .item-icon[data-v-75c53fa5] {
+  margin-right: 10px;
+  border-radius: 50%;
+  border: 1px solid #dcdcdc;
+  padding: 4px;
+}
+#merchantLogin #content .form-card .register-title[data-v-75c53fa5] {
+  height: 56px;
+  line-height: 56px;
+  vertical-align: middle;
+  text-align: center;
+  color: #1890ff;
+  border-bottom: 1px solid #e8e8e8;
+  font-weight: 500;
+  font-size: 16px;
+}
+#merchantLogin .footer[data-v-75c53fa5] {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  padding: 0 16px;
+  margin: 48px 0 24px;
+  text-align: center;
+}
+#merchantLogin .footer .copyright[data-v-75c53fa5] {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+}
+#merchantLogin #btns[data-v-75c53fa5] {
+  position: fixed;
+  width: 80px;
+  height: 320px;
+  bottom: 80px;
+  right: 20px;
+  background: #ffffff;
+  -webkit-box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
+          box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+#merchantLogin #btns .item[data-v-75c53fa5] {
+  width: 80px;
+  height: 80px;
+  -webkit-box-shadow: 0px -4px 4px 0px #f1f1f1;
+          box-shadow: 0px -4px 4px 0px #f1f1f1;
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+#merchantLogin #btns .item .tip-icon[data-v-75c53fa5] {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+#merchantLogin #btns .item[data-v-75c53fa5]:hover {
+  background: #1890ff;
+  color: #ffffff;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+#merchantLogin #btns .active[data-v-75c53fa5] {
+  background: #1890ff;
+  color: #ffffff;
+}
+

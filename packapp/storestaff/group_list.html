@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8" />
+	<title>店员中心</title>
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover"/>
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name='apple-touch-fullscreen' content='yes' />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="format-detection" content="address=no" />
+	<link href="css/pigcms.css?t=5" rel="stylesheet" />
+	<link href="css/mobiscroll.2.13.2.css" rel="stylesheet"/>
+</head>
+<style>
+	.cu-modal {
+		position: fixed;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 999;
+		opacity: 0;
+		outline: 0;
+		text-align: center;
+		-ms-transform: scale(1.185);
+		transform: scale(1.185);
+		backface-visibility: hidden;
+		perspective: 1000px;
+		background: rgba(0, 0, 0, 0.6);
+		transition: all 0.3s ease-in-out 0s;
+		pointer-events: none;
+	}
+
+	.cu-modal::before {
+		content: "\200B";
+		display: inline-block;
+		height: 100%;
+		vertical-align: middle;
+	}
+
+	.cu-modal.show {
+		opacity: 1;
+		transition-duration: 0.3s;
+		-ms-transform: scale(1);
+		transform: scale(1);
+		overflow-x: hidden;
+		overflow-y: auto;
+		pointer-events: auto;
+	}
+
+	.cu-dialog {
+		padding: 20px 10px;
+		position: relative;
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: auto;
+		margin-right: auto;
+		width: 300px;
+		max-width: 100%;
+		background-color: #f8f8f8;
+		border-radius: 15px;
+		overflow: hidden;
+		box-sizing: border-box;
+	}
+
+	.text-bold {
+		font-weight: bold;
+	}
+
+	.group-combine-btn {
+		margin: 40px auto 0;
+		width: 120px;
+		padding: 0 10px;
+		height: 36px;
+		line-height: 36px;
+		text-align: center;
+		background: #2ecc71;
+		border-radius: 44px;
+		color: #ffffff;
+		box-sizing: border-box;
+		font-size: 14px;
+		font-weight: bold;
+	}
+
+	.text-wrap {
+		white-space: wrap;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
+
+	.group-pass {
+		margin-top: 10px;
+	}
+	.header-nav{
+		overflow: hidden;
+		background-color: #f5f4f9;
+	}
+	.nav {
+		height: 44px;
+		background-color: #fff;
+		display: flex;
+		align-items: center;
+		width: 100%;
+		border-bottom: 1px solid #ececec;
+	}
+
+	.cable_fixed {
+		display: flex;
+		position: relative;
+		width: 100%;
+	}
+
+	.nav .nav-item {
+		flex: 1;
+		text-align: center;
+		color: #666;
+		position: relative;
+		line-height: 44px;
+	}
+
+	.nav .nav-item-active {
+		color: #2ecc71;
+	}
+
+	.nav .nav-item-active::before {
+		position: absolute;
+		content: "";
+		bottom: 6px;
+		border-bottom: 2px solid #2ecc71;
+		width: 20%;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.order {
+		position: relative;
+	}
+
+	.order .order_list {
+		height: calc(100vh - env(safe-area-inset-top) - 44px - 96px);
+        height: calc(100vh - 44px - 96px);
+		height: calc(100vh - constant(safe-area-inset-top) - 44px - 96px);
+		margin-top: 0!important;
+        border-top: none!important;
+	}
+
+	#searchForms {
+		display: flex;
+		align-items: center;
+		padding: 8px 15px;
+		background: #fff;
+		line-height: 32px;
+		height: 34px;
+	}
+
+	#searchForms .inputs {
+		flex: 1;
+	}
+
+	#searchForms .inputs input {
+		width: 100%;
+		border-radius: 30px;
+		height: 12px;
+		border: #f1f1f1 1px solid;
+		width: 100%;
+		background: url(./images/sst_06.png) 5px center no-repeat #fff;
+		background-size: 15px;
+		text-indent: 30px;
+		font-size: 12px;
+		box-sizing: border-box;
+		padding: 15px 0;
+	}
+
+	#searchForms .filter img {
+		width: 20px;
+		height: 20px;
+		padding-left: 10px;
+	}
+	#searchForms .filter{
+		display: flex;
+		align-items: center;
+	}
+
+	/* 核销列表样式 */
+	.write-item {
+		background-color: #fff;
+		border-radius: 4px;
+		margin: 10px;
+	}
+
+	.write-item .header {
+		color: #ababab;
+		font-size: 12px;
+		border-bottom: 1px solid #f1f1f1;
+		padding: 10px;
+	}
+
+	.order_list_active {
+		background: transparent !important
+	}
+
+	.write-item .write-content {
+		padding: 10px;
+	}
+
+	.write-item .write-content .title {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.write-item .write-content .title .title-span {
+		font-weight: bold;
+		color: #333;
+		font-size: 15px;
+	}
+
+	.write-item .write-content .title .time {
+		font-size: 12px;
+	}
+
+	.write-item .write-content .desc {
+		margin: 6px 0 10px 0;
+		color: #ababab;
+		font-size: 12px;
+	}
+	.write-filter{
+		width: 100%;
+	}
+	.write-filter-pop {
+		position: fixed;
+		right: 0;
+		width: 60%;
+		bottom: 0;
+		top: 0;
+		background-color: #fff;
+		z-index: 999;
+		padding: 20px;
+		padding-top: calc(env(safe-area-inset-top) + 20px);
+        padding-top: calc(constant(safe-area-inset-top) + 20px);
+		transition: all .3s;
+		transform: translateX(100%)
+	}
+
+	.write-filter-pop-btn {
+		display: flex;
+		justify-content: center;
+	}
+	.write-filter-pop .write-filter-item{
+	margin: 20px 0;
+}
+.write-filter-pop .write-filter-item .title{
+	color: #333;
+	margin-bottom: 10px;
+}
+	.write-filter-pop-btn .item {
+	width: 50%;
+	padding: 6px 10px;
+	border-radius: 20px;
+	background-color: #f2f2f2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #808080;
+}
+
+.write-filter-pop-btn .write-filter-pop-active {
+	background-color: #2ecc71;
+	color: #fff;
+}
+
+.write-filter-pop-btn .item:last-child {
+	margin-right: 0;
+}
+.write-filter-pop .footer-btn{
+	position: absolute;
+	bottom: 10%;
+	border-radius: 20px;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	left: 15%;
+	right: 15%;
+}
+.write-filter-pop .footer-btn .rest,.complete{
+	padding: 10px 20px;
+	flex: 1;
+	text-align: center;
+}
+.write-filter-pop .footer-btn .rest{
+	background-color: #d4d4d4;
+}
+.write-filter-pop .footer-btn .complete{
+	background-color: #2ecc71;
+}
+.consum_tc .scroll li:last-child{
+	border-bottom: 0;
+}
+.consum_tc .scroll{
+	overflow-y: scroll;
+	border-bottom: 0
+}
+.cable_n{
+	width: 100%;
+	padding: 8px 10px;
+	border-bottom: 1px solid #ececec;
+}
+.cable_fixed .input{ padding-right: 80px; }
+.cable_fixed .input input {
+    height: 12px;
+    border: #f1f1f1 1px solid;
+    width: 100%;
+    background: url(../images/sst_06.png) 5px center no-repeat #fff;
+    background-size: 15px;
+    text-indent: 30px;
+    font-size: 12px;
+    box-sizing: border-box;
+    padding: 15px 0;
+}
+.cable_fixed .select{  position: absolute; right: 10px; top: 8px;   }
+.cable_fixed .select select{height: 34px; background: #fff; border: #f1f1f1 1px solid; appearance:none;  -moz-appearance:none;  -webkit-appearance:none; color: #808080; padding: 0 10px 0 5px; font-size: 12px;  max-width: 120px; }
+.cable_fixed .select:after{display: block;content: "";border-top: 1px solid #838383;border-left: 1px solid #838383;width: 5px;height: 5px;-webkit-transform: rotate(225deg);background-color: transparent;position: absolute;top: 50%;right: 5px;top: 11px;}
+</style>
+
+<body>
+	<section class="public pageSliderHide">
+		<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+		<div class="content">
+			<L_>团购订单</L_>
+		</div>
+	</section>
+	<div class="nav-height"></div>
+	<section class="order">
+		<div class="header-nav pageSliderHide">
+			<div class="nav pageSliderHide">
+				<div class="nav-item nav-item-active" id="order">
+					<L_>订单管理</L_>
+				</div>
+				<div class="nav-item" id="write">
+					<L_>核销记录</L_>
+				</div>
+			</div>
+			<div class="cable_fixed pageSliderHide">
+				<div class="cable_n">
+					<form id="searchForm" method="post" action="">
+						<div class="input">
+							<input type="search" id="find_value" placeholder="请输入搜索内容" />
+						</div>
+						<div class="select">
+							<select id="find_type">
+								<option value="1" class="L_">消费密码</option>
+								<option value="2" class="L_">快递单号</option>
+								<option value="3" class="L_">订单ID</option>
+								<option value="5" class="L_">用户ID</option>
+								<option value="6" class="L_">用户昵称</option>
+								<option value="7" class="L_">手机号码</option>
+							</select>
+						</div>
+					</form>
+				</div>
+				<div class="write-filter" style="display: none;">
+					<form id="searchForms" method="post" action="">
+						<div class="inputs">
+							<input type="search" id="find_value" placeholder="请输入核销码或卡券名称或核销人" />
+						</div>
+						<div class="filter"><img src="./images/filter.png" alt=""></div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="order_list" id="order_list">
+			<ul></ul>
+		</div>
+	</section>
+
+	<section class="consum_tc">
+		<div class="consum_tc_n">
+			<div class="tc_top">
+				<L_>消费码验证</L_>
+			</div>
+			<div class="scroll">
+				<ul></ul>
+			</div>
+
+			<div class="all">
+				<span id="allVerify">
+					<L_>全部验证</L_>
+				</span>
+			</div>
+
+			<div class="del"></div>
+		</div>
+	</section>
+	<div class="mask"></div>
+	<div class="cu-modal" id="groupCombineModal"></div>
+
+	<!-- 筛选 -->
+	<div class="write-filter-pop" style="display: none;">
+		<h3>
+			<L_>筛选</L_>
+		</h3>
+		<div class="write-filter-item">
+			<div class="title"><L_>下单时间</L_></div>
+			<div class="write-filter-pop-btn">
+				<div class="item start" id="start_add_time">
+					<L_>起始时间</L_>
+				</div>
+				<span style="margin: 0 10px;display: flex;align-items: center;">-</span>
+				<div class="item end" id="end_add_time">
+					<L_>终止时间</L_>
+				</div>
+			</div>
+		</div>
+		<div class="write-filter-item">
+			<div class="title"><L_>核销时间</L_></div>
+			<div class="write-filter-pop-btn">
+				<div class="item start" id="start_verify_time">
+					<L_>起始时间</L_>
+				</div>
+				<span style="margin: 0 10px;display: flex;align-items: center;">-</span>
+				<div class="item end" id="end_verify_time">
+					<L_>终止时间</L_>
+				</div>
+			</div>
+		</div>
+		<div class="footer-btn">
+			<div class="rest"><L_>重置</L_></div>
+			<div class="complete"><L_>完成</L_></div>
+		</div>
+	</div>
+
+	<script id="passList" type="text/html">
+		{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<li class="clr">
+			<span class="fl">{{ d[i].group_pass }}</span>
+			{{# if (d[i].status == 0) { }}
+			<span class="fr a39" data-pass="{{ d[i].group_pass }}" data-order_id="{{ d[i].order_id }}">{{ L_('验证') }}</span>
+			{{# } else { }}
+			<span class="fr ecc">{{ L_('已消费') }}</span>
+			{{# } }}
+		</li>
+		{{# } }}
+	</script>
+	<script id="listTpl" type="text/html">
+		{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<li>
+			<a href="group_detail.html?order_id={{ d[i].order_id }}" class="clr" data-webview="true">
+				<div class="img fl">
+					<img src="{{ d[i].pic }}">
+				</div>
+				<div class="content">
+					<h2>{{ d[i].s_name }}</h2>
+					<div class="clr price">
+						<div class="fl">{{ L_('总价') }}：{{ currency_symbol }}{{ parseFloat(d[i].total_money) }}</div>
+						<div class="fl">{{ L_('数量') }}：{{ d[i].num }}</div>
+					</div>
+					<div class="state">
+						{{# if(d[i].group_start_status == 0){ }}
+						<span class="ff0">{{ L_('未成团') }}</span>
+						{{# } else if (d[i].group_start_status == 2) { }}
+						<span class="ff0"> {{ L_('已过期') }}</span>
+						{{# } else { }}
+						{{# if(d[i].type == 1){ }}
+						<span class="ff0">{{ L_('未消费') }}</span>
+						{{# }else if(d[i].type == 2){ }}
+						<span class="ff0">{{ L_('未发货') }}</span>
+						{{# }else if(d[i].type == 3){ }}
+						<span class="ecc">{{ L_('已消费') }}</span>
+						{{# } else if (d[i].type == 4 && d[i].is_pick_in_store == 1) { }}
+						<span class="ef6">{{ L_('未取货') }}</span>
+						{{# }else if(d[i].type == 4){ }}
+						<span class="ecc">{{ L_('已发货') }}</span>
+						{{# }else if(d[i].type == 8){ }}
+						<span class="ecc">{{ L_('已取货') }}</span>
+						{{# } }}
+
+
+						{{# if(d[i].status == 1){ }}
+						<span class="ff0">{{ L_('已取消') }}</span>
+						{{# }else if(d[i].status == 2){ }}
+						<span class="ff0">{{ L_('线下未支付') }}</span>
+						{{# }else if(d[i].type == 1 && d[i].third_id == 0 && d[i].pay_type == 'offline' && d[i].status != 2 && d[i].status != 6){ }}
+						<span class="ff0">{{ L_('线下支付未消费') }}</span>
+						{{# }else if(d[i].status == 3){ }}
+						<span class="ecc">{{ L_('已付款') }}</span>
+						{{# }else if(d[i].status == 4){ }}
+						<span class="ff0">{{ L_('待评论') }}</span>
+						{{# }else if(d[i].status == 5){ }}
+						<span class="ecc">{{ L_('已完成') }}</span>
+						{{# }else if(d[i].status == 6){ }}
+						<span class="ff0">{{ L_('未付款') }}</span>
+						{{# }else if(d[i].status == 9){ }}
+						<span class="ff0">{{ L_('已过期') }}</span>
+						{{# } }}
+						{{# } }}
+					</div>
+				</div>
+			</a>
+			{{# if(d[i].type == 1 && d[i].tuan_type != 2 && (d[i].group_start_status==1 || d[i].group_start_status==3)){ }}
+			<div class="consum" data-type="{{ d[i].pass_array }}" data-order_id="{{ d[i].order_id }}">{{ L_('消费验证') }}</div>
+			{{# }else if(d[i].type == 2){ }}
+			<a href="group_detail.html?order_id={{ d[i].order_id }}" class="consum">{{ L_('去发货') }}</a>
+			{{# } }}
+		</li>
+		{{# } }}
+	</script>
+	<!-- 团购优惠组合弹框 -->
+	<script id="groupCombine" type="text/html">
+		<div class="cu-dialog" id="groupCombineDialog">
+			<h3 class="text-bold text-wrap">{{d.title}}</h3>
+			<div class="text-wrap group-pass">
+				<L_>消费码:</L_><span>{{d.group_pass}}</span>
+			</div>
+			<div class="group-combine-btn" id="groupCombineBtn" data-id="{{d.order_id}}">
+				<L_>验证</L_>
+			</div>
+		</div>
+	</script>
+	<!-- 核销记录 -->
+	<script id="writeList" type="text/html">
+		{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<li class="write-item">
+			<div class="header">{{d[i].verify_date +' '+ d[i].verify_week}}</div>
+			<div class="write-content">
+				<div class="title">
+					<span class="title-span">{{d[i].s_name}}</span>
+					<span class="time">{{d[i].verify_time}}</span>
+				</div>
+				<div class="desc">
+					<span class="group_pass">序列号：</span>
+					<span>{{d[i].group_pass}}</span>
+				</div>
+				<div class="desc" style="margin-bottom: 0;">
+					<span class="staff_name">核券人：</span>
+					<span>{{d[i].staff_name}}</span>
+				</div>
+			</div>
+		</li>
+		{{# } }}
+	</script>
+	<script src="scripts/jquery-1.8.3.min.js"></script>
+	<script src="scripts/fastclick.js"></script>
+	<script src="scripts/layer/layer.m.js"></script>
+	<script src="scripts/common.js?t=12"></script>
+	<script src="scripts/mobiscroll.2.13.2.js"></script>
+	<script src="scripts/work/group_list.js?t=016"></script>
+</body>
+
+</html>

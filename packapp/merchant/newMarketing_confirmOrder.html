@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title></title>
+		<link href="css/mui.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/newMarketing_confirmOrder.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+			<h1 class="mui-title"></h1>
+		</header>
+   
+		<div class="mui-content">
+            <div class="wrap detail-wrap">
+                <div class="flex" style="align-items:normal;">
+                    <div class="img-wrap">
+                        <img src="" alt="">
+                    </div>
+                    <div class="detail-content flex-1">
+                        <div class="name text-wrap"></div>
+                        <div class="desc text-wrap"></div>
+                        <div class="price cr-orange">￥<span class="year_price"></span>/<L_>年</L_></div>
+                    </div>
+                </div>
+                <div class="service-wrap">
+                    <div class="text-wrap title"><L_>服务周期</L_></div>
+                    <div class="service-list"></div>
+                </div>
+                <div class="num-wrap flex align-center justify-between" id="selectNum">
+                    <div class="label"><L_>选择数量</L_></div>
+                    <div class="flex align-center" >
+                        <span class="mui-icon mui-icon-minus cr-gray" id="minus"></span>
+                        <span id="num" class="num"> 1 </span>
+                        <span class="mui-icon mui-icon-plus cr-orange" id="plus"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wrap order-wrap">
+                <div class="text-wrap title"><L_>订单信息</L_></div>
+                <div class="item flex align-center justify-between" style="display: none !important;" id="storeTotalNum">
+                    <div class="text-wrap label"><L_>店铺总数量</L_></div>
+                    <div class="text-wrap value"></div>
+                </div>
+                <div class="item flex align-center justify-between" id="totalMoney">
+                    <div class="text-wrap label"><L_>总价格</L_></div>
+                    <div class="text-wrap value cr-orange"></div>
+                </div>
+                <div class="item flex align-center justify-between" id="discountMoney">
+                    <div class="text-wrap label"><L_>已优惠</L_></div>
+                    <div class="text-wrap value cr-orange"></div>
+                </div>
+                <div class="total-price" id="payMoney">
+                    <span><L_>总计：</L_></span>
+                    <span class="cr-orange value"></span>
+                </div>
+            </div>
+
+            <div class="wrap order-wrap payType-wrap">
+                <div class="text-wrap title"><L_>支付方式</L_></div>
+                <div class="payType-list"></div>
+            </div>
+
+            <div class="submit-btn flex align-center justify-center"><L_>立即支付</L_></div>
+
+		</div>
+
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/work/newMarketing_confirmOrder.js" type="text/javascript" charset="utf-8"></script>
+        <script id="serviceList" type="text/html">
+            {{# for(var i = 0, len = d.length; i < len; i++){  }}
+                <div class="item text-nowrap" data-years="{{d[i].years}}">{{d[i].label}}{{# if(d[i].discount) { }}<span class="discount">{{d[i].discount}}</span>{{# } }}</div>
+            {{# } }}
+        </script>
+        <script id="payListList" type="text/html">
+            {{# for(var i = 0, len = d.length; i < len; i++){  }}
+            {{# var item = d[i];}}
+                <div class="item flex align-center justify-between" data-type="{{item.value}}">
+                    <span class="label text-wrap flex align-center">
+                        <img src="{{item.icon}}" class="payType-icon" alt="">
+                        <span>{{item.label}}</span>
+                        {{# if(item.value == 'balance') { }}
+                        <span class="balance-no text-wrap"><L_>(余额不足)</L_></span>
+                        {{# } }}
+                    </span>
+                    <span class="select-icon mui-icon mui-icon-checkmarkempty"></span>
+                </div>
+            {{# } }}
+        </script>
+	</body>
+</html>

@@ -1,0 +1,53 @@
+
+.status-item[data-v-46e53562] .ant-badge {
+  margin-bottom: 12px;
+}
+.status-item[data-v-46e53562] .ant-badge-status-text {
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: bolder;
+  color: black;
+}
+.content-title[data-v-46e53562] {
+  border-left: 4px solid black;
+  padding-left: 6px;
+  color: black;
+  font-weight: bolder;
+  height: 16px;
+  line-height: 16px;
+}
+.pay-money[data-v-46e53562] {
+  color: darkred;
+}
+.discount-money[data-v-46e53562] {
+  font-weight: bolder;
+}
+.goods-content[data-v-46e53562] {
+  margin-bottom: 10px;
+  border: 1px dashed #e8e8e8;
+}
+.goods-conten[data-v-46e53562]:last-child {
+  margin-bottom: 40px;
+}
+.detail-bottom[data-v-46e53562] {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  background-color: #ffffff;
+}
+.refund-image[data-v-46e53562] {
+  width: 30px;
+  margin-left: 30px;
+}
+.status-item[data-v-46e53562] {
+  margin-bottom: 15px;
+}
+
+
+.detail-content[data-v-135a02c8] .ant-drawer-body {
+  padding: 0;
+}
+.ant-table td[data-v-135a02c8] {
+  white-space: nowrap;
+}
+

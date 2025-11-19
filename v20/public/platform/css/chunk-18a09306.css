@@ -1,0 +1,21 @@
+
+.width-auto[data-v-271e7cbb] {
+    width: 100%;
+}
+.deliver-item[data-v-271e7cbb] {
+    width: calc(100%/7);
+}
+.date-num[data-v-271e7cbb] {
+    margin-bottom: 5px;
+    padding: 14px 18px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    line-height: 1;
+}
+.date-num.active[data-v-271e7cbb] {
+    border-color: orange;
+    color: orange;
+}
+

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<title>商品搜索</title>
+	<link href="css/mui.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/market_search.css"/>
+</head>
+<style>
+	.mui-card {
+		min-height: 330px;
+	}
+	.keyword {
+		float: left;
+		margin: 5px 10px;
+		background-color: white;
+		border-radius: 3px;
+		font-size: 14px;
+		padding: 3px 15px;
+	}
+	body{
+		background-color: white;
+	}
+	.mui-content {
+		background-color: white;
+	}
+	.pullup1, .loading1 {
+		text-align: center;
+		padding: 10px 0 10px 0;
+		font-size: 14px;
+		color: #999;
+	}
+	.pullup1, .loading1 {
+		text-align: center;
+		padding: 10px 0 10px 0;
+		font-size: 14px;
+		color: #999;
+	}
+	.loading1 img {
+		height: 14px;
+		vertical-align: middle;
+		margin-right: 2px;
+	}
+	.mui-bar .mui-title {
+		left: 3%;
+		right: 3%;
+		width: 88%;
+	}
+	.vip {
+		display: inline-block;
+		width: 18px;height: 18px;
+		background: url(images/vip.png) center no-repeat;
+		background-size: contain;
+		vertical-align: middle;
+		position: relative;
+		top: -3px;
+		margin: 0;
+	}
+	.vip_price {
+		color: #FD1946;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 18px;
+	}
+	.del-line{
+		text-decoration: line-through;
+	}
+	.virtual_msg {
+		clear: both;
+		width: 100%;
+		text-align: center;
+		padding: 10px;
+		position: absolute;
+		bottom: 0px;
+	}
+	.virtual_msg .virtual_push {
+		background: #ffa200;
+		color: white;
+		padding: 5px 15px;
+		border-radius: 15px;
+	}
+</style>
+<body>
+<header class="mui-bar mui-bar-nav">
+	<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="1"></div>
+	<h1 class="mui-title">
+		<i></i>
+		<input type="search" class="mui-input-clear" id="keywords" placeholder="商品名称"/>
+	</h1>
+</header>
+<div id="hot_search" style="background-color: white;padding-top: 55px;display: none;">
+	<span style="margin-left: 10px;font-size:12px">热门搜索</span>
+	<div class="hot_key" style="margin-left: 10px;margin-top:10px">
+	</div>
+</div>
+
+<div class="mui-content">
+	<div class="allGoods">
+		<div class="goods_news" id="data">
+
+		</div>
+
+		<div class="pullup1" style="clear: both;display:none;">上拉加载更多...</div>
+		<div class="loading1" style="clear: both;display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_><div>
+	</div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="hot_search_key" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		{{# if (d[i]['hottest']==1) { }}
+			<div class="hot_word keyword" style="color:#f23030;background:#FFEDEB;"> {{ d[i]['name'] }}</div>
+		{{# } else { }}
+			<div class="hot_word keyword" style="color:#000; "> {{ d[i]['name'] }}</div>
+		{{# } }}
+	{{# } }}
+</script>
+<script id="pluscardLists" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+
+	<div class="mui-card" data-id="{{ d[i].goods_id }}">
+		<div class="mui-card-content" data-id="{{ d[i].goods_id }}">
+			<a href="./market_buy_detail.html?goods_id={{d[i]['goods_id']}}">
+				<img src="{{ d[i].pic }}"/>
+				<ul style="width: 100%;">
+					<li><span style="    color: #333;font-size: 12px;font-weight: 600;">{{ d[i].name }}</span></li>
+					{{# if(d[i].vip_wholesale_price>0){ }}
+					<li class="mui-pull-left" style="width: 100%;">
+						<i class="vip"></i>
+						<span class="vip_price">
+								{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].vip_wholesale_price) }}
+							</span>
+
+						{{# if (d[i]['shop_goods_price'] && d[i]['shop_goods_price']>0 && parseFloat(d[i]['shop_goods_price'])>parseFloat(d[i].vip_wholesale_price)) { }}
+						<span class="mui-pull-right del-line" style="font-size: 10px; color: #999;">
+									{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i]['shop_goods_price']) }}
+								</span>
+						{{# } }}
+					</li>
+					<li class="mui-pull-left" style="font-size: 10px;">
+						{{L_('普通批发')}}:
+						<span class="normal_price">{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].price) }}</span>
+					</li>
+					{{# if (d[i].sell_count>0) { }}
+					<li class="mui-pull-right" style="font-size: 10px;line-height: 20px;">{{L_('已售')}}:{{ d[i].sell_count }}</li>
+					{{# } }}
+					{{# } else { }}
+					<li class="mui-pull-left" style="width: 100%;color: #333;font-size: 10px;">
+						{{L_('批发')}}:{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i].price) }}
+						{{# if (d[i]['shop_goods_price'] && d[i]['shop_goods_price']>0 && parseFloat(d[i]['shop_goods_price'])>parseFloat(d[i].price)) { }}
+						<span class="mui-pull-right del-line" style="font-size: 10px; color: #999;">
+										{{ d[i]['Currency_symbol'] }}{{ parseFloat(d[i]['shop_goods_price']) }}
+									</span>
+						{{# } }}
+					</li>
+					{{# if (d[i].sell_count>0) { }}
+					<li class="mui-pull-left" style="width: 100%;font-size: 10px;">{{L_('已售')}}:{{ d[i].sell_count }}</li>
+					{{# } }}
+					{{# } }}
+				</ul>
+			</a>
+		</div>
+		{{# if (d[i]['is_publish_integral_mall']==1 && !d[i]['integral_mall_goods_id'] && (d[i]['express_is_type']==1 || d[i]['express_is_type']==2)) { }}
+		<div class="virtual_msg"  data-id="{{ d[i].goods_id }}">
+			<a class="virtual_push"  data-id="{{ d[i].goods_id }}">{{L_('虚拟批发')}}</a>
+		</div>
+		{{# } }}
+	</div>
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+	mui.init();
+	var ticket = common.getCache('ticket');
+	var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+    var pindex=1;
+	var validate=function(res,is_global){
+		var result=res.replace(/(^\s+)|(\s+$)/g,"");
+		if(is_global.toLowerCase()=="g") {
+			if(result==''){
+				return false
+			}else{
+				return true
+			}
+		}
+	};
+	hot_keyword();
+
+	function hot_keyword() {
+        common.http('Merchantapp&a=market_search',{'ticket':ticket,'client':client},function(data){
+            console.log('data',data);
+            if(data && data.search_hot_list){
+                laytpl(document.getElementById('hot_search_key').innerHTML).render(data.search_hot_list, function(html){
+                    $('#hot_search').show();
+                    $('.hot_key').append(html);
+                });
+            }
+
+        });
+    }
+
+    mui('.hot_key').on('tap','.hot_word',function(e){
+        $('#hot_search').hide();
+        $('#keywords').val($(this).text());
+        market_index(1, $(this).text());
+    });
+
+
+	$('#keywords').val('');
+	var bind_name = 'input';
+	if (navigator.userAgent.indexOf("MSIE") != -1){ bind_name = 'propertychange' }
+
+	$('#keywords').bind(bind_name ,function(){
+		var val=$(this).val();
+		if(validate(val,'g')){
+            $('#hot_search').hide();
+            if (pindex==1) {
+                $('.goods_news').html('');
+			}
+            market_index(pindex, val);
+		}else{
+            $('#hot_search').hide();
+			$('.goods_news').html('');
+            $('#hot_search').show();
+		}
+	});
+
+
+    function market_index(page,search){
+        common.http('Merchantapp&a=market_index',{'ticket':ticket,'client':client,'goods_name':search},function(data){
+            console.log('data',data);
+            if (data.orders.length!=0) {
+                data.orders.length<=19&&$('.pullup1').html(L_('没有更多数据啦'));
+                $('.loading1').hide();
+                $('.pullup1').show();
+                laytpl(document.getElementById('pluscardLists').innerHTML).render(data.orders, function(html){
+                    $('.goods_news').append(html);
+                    setTimeout(function () {
+                        if (data.is_integral_mall!=1) {
+                            $('.mui-card').css('min-height','290px');
+                        }
+                    },800)
+                });
+                if(data.orders.length>19){
+                    var flag = false;
+                    $(window).scroll(function(e) {
+                        e.stopPropagation();
+                        if(flag){
+                            //数据加载中
+                            return false;
+                        }
+                        //上拉加载
+                        if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+                            $('.pullup1').hide();
+                            $('.loading1').show();
+                            flag = true;
+                            pindex++;
+                            market_index(pindex);
+                        }
+                    });
+                }
+            }else{
+                $('.pullup1').html(L_('没有更多数据啦'));
+                $('.loading1').hide();
+                $('.pullup1').show();
+            }
+        });
+    }
+
+
+
+	$('body').off('click','.mui-input-clear').on('click','.mui-input-clear',function(e){
+		e.stopPropagation();
+		var val=$(this).val();
+		if(val==''){
+			$('.goods_news').html('');
+		}
+	});
+
+
+    // 点击返回按钮
+    $('.mui-icon-left-nav').click(function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        var href=$(this).attr('data-url');
+        var index=$(this).attr('data-index');
+        if(href == 'back'){
+            if( (common.checkApp() && window.history.length <= 1) ||(common.checkApp() && index!=undefined)){
+
+                if(common.checkAndroidApp()){
+                    window.pigcmspackapp.closewebview(2);
+                }else{
+                    common.iosFunction('closewebview/2', {name:'closewebview', type: '2'});
+                }
+            }else{
+                window.history.go(-1);
+                window.document.execCommand('Refresh');
+            }
+            return false;
+        }
+    });
+
+    // 进入虚拟批发页面
+    mui('.mui-content').on('tap','.virtual_msg .virtual_push',function(e){
+        var goods_id=$(this).attr('data-id');
+        openWindow({
+            url:'market_virtual_push.html?goods_id='+goods_id+'&type=virtual_market',
+            id:'market_virtual_push'
+        });
+    });
+</script>
+</body>
+</html>

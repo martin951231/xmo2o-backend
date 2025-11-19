@@ -1,0 +1,43 @@
+.form_title[data-v-74a438b6] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.ant-form-item[data-v-74a438b6] {
+  margin-bottom: 2px;
+}
+.form_line[data-v-74a438b6] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-74a438b6] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-74a438b6] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+.ant-form-item-control .a_radio[data-v-74a438b6] {
+  display: block;
+  height: 15px;
+  line-height: 15px;
+}
+

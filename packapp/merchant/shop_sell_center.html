@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+    <title>营销中心</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/shop_discount.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+    <h1 class="mui-title">
+        <L_>营销中心</L_>
+    </h1>
+</header>
+<div class="mui-content">
+
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<!--列表渲染-->
+<script id="sellList" type="text/html">
+<ul class="mui-table-view time-discount" style="margin-top: 0;">
+    {{# for(var i = 0, len = d.length; i < len; i++){ }}
+    <li class="mui-table-view-cell mui-media" style="padding: 18px 15px" data-name="{{ d[i].name }}">
+        <a href="javascript:;">
+            <img class="mui-media-object mui-pull-left" src="{{ d[i].pic }}">
+            <div class="mui-media-body">
+                {{ d[i].title }}
+                <p class='mui-ellipsis'>{{ d[i].describe }}</p>
+            </div>
+        </a>
+    </li>
+    {{# } }}
+</ul>
+</script>
+<script type="text/javascript" charset="utf-8">
+if (urlParam.shop_type == 'undefined' || urlParam.shop_type == '') {
+    motify.log('参数有误');
+}
+
+mui.init();
+let store_id = $.getUrlParam('store_id')
+let params = {}
+params.ticket = common.getCache('ticket', true)
+params['Device-Id'] = common.getDeviceId()
+//获取数据
+common.http('Marketing&a=index', params, function (data) {
+  if (data.length) {
+    laytpl(document.getElementById('sellList').innerHTML).render(data, function (html) {
+      $('.mui-content').html(html)
+    })
+  }
+})
+//点击跳转
+mui('.mui-content').on('tap', '.mui-media', function () {
+  let name = $(this).attr('data-name');
+  console.log(name);
+  let url = ''
+  if (name) {
+    url = name+'.html?data=' + store_id +'&shop_type='+urlParam['shop_type'];
+  }
+  // if(name == 'time_limited_discount') { // 限时优惠
+  //   url = 'time_limited_discount.html?data=' + store_id;
+  // }else if(name == 'store_discount'){ // 店铺优惠
+  //   url = 'shop_discount.html?data=' + store_id;
+  // }
+  openWindow({
+    url,
+  })
+});
+
+</script>
+</body>
+</html>

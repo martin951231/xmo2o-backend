@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>注册配送员</title>
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/vant.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/register.css">
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/vue@2.6.10.min.js"></script>
+    <script src="scripts/vant.min.js"></script>
+	<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <script>
+        // 初始化
+        var vConsole = new VConsole();
+    </script> -->
+    <style>
+        .content{
+            padding-top: 1rem;
+        }
+        .intended_work_address .address_box{
+            height: calc(75vh - 44px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .wrap{
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <section id="header" class="header"></section> -->
+        <div class="set-background"></div>
+        <section id="content" class="content">
+            <div class="card">
+                <van-form @submit="onSubmit" validate-trigger="onSubmit" :show-error="false">
+                    <van-field class="wrap" v-model="form.phone" name="phone" :label="L_('手机号')" :placeholder="L_('请输入您的手机号码')" type="tel"
+                        :formatter="telFormatter" :rules="[{ required: true, message:L_('请输入您的手机号码') }]">
+                    </van-field>
+                    <van-field class="mt-10 wrap" v-model="form.name" name="name" :label="L_('真实姓名')" :placeholder="L_('请输入您的姓名')"
+                        :rules="[{ required: true, message: L_('请输入您的姓名')}]">
+                    </van-field>
+                    <van-field class="mt-10 wrap" v-model="form.idCard" name="idCard" :label="L_('身份证号')" :placeholder="L_('请输入您的身份证号')"
+                        :error-message="idMessage" maxlength="18" :formatter="idFormatter" format-trigger="onBlur"
+                        :rules="[{ required: true,message:L_('请输入您的身份证号') }]">
+                        <!-- <span class="input-tip"></span> -->
+                    </van-field>
+                    <van-field class="wrap" v-model="form.intended_cities_name" @click="openPopup('intended_cities')" :label="L_('意向工作城市')" :placeholder="L_('选择意向工作城市')" :rules="[{ required: true, message:L_('请选择意向工作城市') }]" readonly clickable></van-field>
+                    <van-field class="wrap" v-model="form.adress" @click="openPopup('intended_work_address')" :label="L_('意向工作地址')" :placeholder="L_('选择意向工作地址')" :rules="[{ required: true, message:L_('请选择意向工作地址') }]" readonly clickable></van-field>
+                    <van-field  class="wrap" name="face_img" v-model="form.face_img" :label="L_('人像认证')" v-if="showFaceIn" :rules="[{ required: true, message:L_('请添加人像验证')}]">
+                        <template #input v-if="form.face_img">
+                            <img :src="form.face_img" style="width: auto;height: 70px;" />
+                        </template>
+                        <template #button>
+                            <span @click="addFaceRecognition" class="get-code" style="border: none">
+                                {{form.face_img ? L_('认证成功') : L_('立刻添加') }}
+                            </span>
+                        </template>
+                    </van-field>
+                    <van-field class="mt-10 wrap" v-model="form.code" name="code" center clearable :label="L_('短信验证码')"
+                    :placeholder="L_('请输入验证码')" type="tel" :rules="[{ required: true, message:L_('请输入短信验证码')}]">
+                        <template #button>
+                            <span v-if="showCodeBtn" @click="getCode" class="get-code">{{L_('获取验证码')}}</span>
+                            <span v-else @click="getCode" class="get-code">{{codeTime}}s</span>
+                        </template>
+                    </van-field>
+                    <div style="margin-top: 40px;">
+                        <van-button round block color="#27A3F7" native-type="submit">
+                            {{L_('注册')}}
+                        </van-button>
+                    </div>
+                    <van-checkbox v-model="agreeCheck" shape="square" class="mt-10" icon-size="12px">
+                        <div class="agree">
+                            {{L_('注册代表您已同意')}}<span @click.stop="goUrl('agreement')">{{L_('用户协议')}}</span>
+                            {{L_('和')}}
+                            <span @click.stop="goUrl('policy')">{{L_('隐私政策')}}</span>
+                        </div>
+                    </van-checkbox>
+                </van-form>
+            </div>
+        </section>
+        <van-popup v-model="popupShow" position="bottom" round safe-area-inset-bottom :closeable="popupActionType == 'intended_work_address'?true:false" close-icon="close">
+            <div v-show="popupActionType == 'intended_cities'">
+                <van-picker show-toolbar :title="L_('选择意向工作城市')" :columns="pickerColumns" @confirm="pickerConfirm" @cancel="()=>{popupShow=false}"></van-picker>
+            </div>
+            <div v-show="popupActionType == 'intended_work_address'" class="intended_work_address">
+                <div style="margin: 20px 0 10px 0;text-align: center;font-size: 16px;">{{L_('选择意向工作地址')}}</div>
+                <van-search v-model="addressValue" :placeholder="L_('输入关键字查询')" shape="round" @search="addressSearch" @input="addressSearch"></van-search>
+                <div class="address_box">
+                    <van-cell-group v-if="addressList.length>0">
+                        <van-cell v-for="(item,index) in addressList" :key="index" :title="item.name" :label="item.city + ' ' + item.address" clickable @click="selectAddress(item)"></van-cell>
+                    </van-cell-group>
+                    <div v-else>
+                        <van-empty image="search"></van-empty>
+                    </div>
+                </div>
+            </div>
+        </van-popup>
+    </div>
+</body>
+<script src="scripts/common.js?t=2"></script>
+<script src="./scripts/work/register.js?t=9"></script>
+
+</html>

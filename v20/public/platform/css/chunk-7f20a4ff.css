@@ -1,0 +1,75 @@
+
+[data-v-43cba591] .imgname {
+  width: 100px;
+}
+[data-v-43cba591] .balance_info .textarea {
+  width: 80% !important;
+}
+[data-v-43cba591] .label_col {
+  width: 75px;
+  display: inline-block;
+}
+[data-v-43cba591] .balance_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-43cba591] .balance_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-43cba591] .balance_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-43cba591] .balance_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+
+
+/deep/ .imgname{
+    width: 100px;
+}
+
+
+.imgname {
+  width: 100px;
+}
+
+
+/deep/ .imgname{
+    width: 100px;
+}
+.content-p1{
+    color: #52A5FF;font-weight: bold;padding: 0px 10px 0 10px;
+}
+
+
+[data-v-e283b81e] .but_1 {
+  margin-right: 10px;
+  display: inline-block;
+}
+.content-p1[data-v-e283b81e] {
+  color: #52A5FF;
+  font-weight: bold;
+  padding: 10px 10px 0 10px;
+}
+.message-suggestions-list-box[data-v-e283b81e] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-e283b81e] {
+  padding: 5px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-e283b81e] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-e283b81e] {
+  padding: 20px;
+}
+[data-v-e283b81e] .message-suggestions-list-box .message_box {
+  padding: 20px;
+}
+[data-v-e283b81e] .lbsf {
+  float: right;
+  margin-right: 24px;
+}
+

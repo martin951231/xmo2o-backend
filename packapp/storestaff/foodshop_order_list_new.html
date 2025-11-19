@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>店员中心</title>
+<meta name="viewport"
+	content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name='apple-touch-fullscreen' content='yes' />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="format-detection" content="address=no" /> 
+<link href="css/pigcms.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="css/css_whir.css">
+<link href="css/mobiscroll.2.13.2.css" rel="stylesheet"/> 
+<script src="scripts/swiper-3.3.1.jquery.min.js"></script>
+<script src="scripts/work/foodshop_calll.js"></script>
+<style>
+	.elastic .Switch li.on {
+	    background: #2ecc71;
+	}
+	.Resersub input{
+	    background: #2ecc71;
+	}
+	.elastic .swiper-wrapper .on {
+	    border-bottom: #2ecc71 1px solid;
+	    color: #2ecc71;
+	}
+	.stay {
+	    margin-top: 172px;
+	}
+	.kd_entry li .top {
+	    border-bottom: #2ecc71 1px solid;
+	    background: #2ecc71;
+	    color: #fff;
+	}
+	.kd_entry li .top .cancel {
+	    color: #fff;
+	    font-size: 14px;
+	}
+	.dw-persp, .dwo{
+		    position: fixed;
+	}
+	.change_table_div select {
+	    margin-right: 10px;
+	    border: solid 1px #ddd;
+	    font-size: 15px;
+	    padding: 5px 40px;
+	    margin-top: 30px;
+	    -webkit-appearance: menulist;
+	}
+	.entry li .canc .cancel {
+	    background: #e1e1e1;
+	    border: #e1e1e1 1px solid;
+	}
+	.kd_entry li .kd_since {
+	    width: 60px;
+	}
+	.kd_entry li .kd_cancel {    
+		border: #ec5252 1px solid;
+	    color: #ec5252;
+	    background: #fff;
+	    width: 60px;
+	}
+	.kd_entry li .kd_complete {
+	    border: #999 1px solid;
+	    color: #999;
+	}
+	.kd_entry li .kd_since1 {
+    border: #ec5252 1px solid;
+    color: #fff;
+    background: #ec5252;
+}
+
+
+</style>
+</head>
+<body>
+	<section class="public">
+		<div class="return link-url" data-url-type="openLeftWindow" data-url="back" data-closewebview="true"></div>
+		<div class="content"><L_>堂食订单</L_></div>
+	</section>
+
+	<section class="reserve stay">
+		<div class="reserve_tab">
+			<form id="searchForm" method="post" action="">
+			<!--div class="search">
+				<input placeholder="搜索预订人、手机号码" id="find_value">
+			</div-->
+			  <div class="cable cable_kd">
+					<div class="input">
+                        <input type="text" id="find_value" name="fv" placeholder="请输入搜索内容" />
+                    </div>
+					<div class="select" style="right:25px;">
+							<select name="ft" id="searchType" style="height:32px">
+								<option value="dh"><L_>用户电话</L_></option>
+								<option value="nm"><L_>用户昵称</L_></option>
+								<option value="zt"><L_>桌台名称</L_></option>
+								<option value="id"><L_>订单编号</L_></option>
+							</select>
+					</div> 
+				</div>
+			</form>
+		</div>
+		<div class="fix">
+            <div class="dropdown">
+                <div class="drop_select">
+                    <div class="pos order_status">
+                    	<select name="order_status">
+                    		<option value="-1" class="L_">全部状态</option>
+                    		<option value="88" class="L_">未接单/已接单</option>
+                    		<option value="0" class="L_">未接单</option>
+                    		<option value="1" class="L_">已接单</option>
+                    		<option value="2" class="L_">已完成</option>
+                    		<option value="3" class="L_">已退款</option>
+                    	</select>
+                    </div>
+                </div>
+            </div>
+            <div class="kd_time clr">
+                <div class="pos fl">
+                    <input type="text" placeholder="开始时间" readonly="readonly" id="stime" class='datas'/>
+                </div>
+                <div class="pos fr">
+                    <input type="text" placeholder="结束时间" readonly="readonly" id="etime" class='datas'/>
+                </div>
+            </div>
+        </div>
+		<div class="entry kd_entry">
+			<ul></ul>
+		</div>
+	</section>
+
+	<div class="cease">
+		<div class="within">
+			<div class="cease_top clr">
+				<h2 class="fl"><L_>已点菜品</L_></h2>
+				<!--div class="fl notice"><L_>暂未通知上菜</L_></div-->
+			</div>
+			<div class="surface">
+				<ul></ul>
+			</div>
+			<div class="tol_price clr">
+				<div class="fl"><L_>共12份</L_></div>
+				<div class="fr price">总计：<span>￥488</span></div>
+				<div class="fr go"><L_>去确认</L_></div>
+			</div>
+		</div>
+		<div class="del"></div>
+	</div>
+
+	<div class="seek book">
+		<div class="within">
+			<h2><L_>取消订单</L_></h2>
+			<div class="con">
+				<div class="img">
+					<img src="images/tct_03.jpg">
+				</div>
+				<div class="tit">
+					<p class="on"><L_>重要提示</L_></p>
+					<p><L_>确定取消预订之前，请及时联系顾客哦！</L_></p>
+				</div>
+				<div class="button">
+					<div class="clr p20">
+						<input type="hidden" id="order_id" />
+						<div class="fl close shut"><L_>关闭</L_></div>
+						<div class="fr ensure shut"><L_>确定取消</L_></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="del shut"></div>
+	</div>
+
+	<div class="seek prints">
+		<div class="within">
+			<h2><L_>打印菜单</L_></h2>
+			<div class="con">
+				<div class="img">
+					<img src="images/tct_04.jpg">
+				</div>
+				<div class="tit">
+					<p>
+						<span class="red"><L_>确定打印？</L_></span>
+					</p>
+				</div>
+				<div class="button">
+					<div class="clr p20">
+						<div class="fl close shut"><L_>关闭</L_></div>
+						<div class="fr ensure shut"><L_>确定打印</L_></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="del shut"></div>
+	</div>
+
+
+	<div class="seek change_status">
+		<div class="within">
+			<h2><L_>提示</L_></h2>
+			<div class="con">
+				<div class="img">
+					<img src="images/tct_03.jpg">
+				</div>
+				<div class="tit">
+					<p class="on"><L_>重要提示</L_></p>
+					<p class="message"><L_>是否确认接单？</L_></p>
+				</div>
+				<div class="button">
+					<div class="clr p20">
+						<input type="hidden" id="order_id" />
+						<div class="fl close shut"><L_>关闭</L_></div>
+						<div class="fr ensure shut"><L_>确定</L_></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="del shut"></div>
+	</div>
+
+	<div class="seek change_table_div">
+		<div class="within">
+			<h2><L_>修改桌号</L_></h2>
+			<div class="con">
+				<div class="content">
+					<select name="table_id">
+					</select>
+				</div>
+				<div class="button">
+					<div class="clr p20">
+						<input type="hidden" id="order_id" />
+						<div class="fl close shut"><L_>关闭</L_></div>
+						<div class="fr ensure shut"><L_>确定</L_></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="del shut"></div>
+	</div>
+
+	<div class="mask"></div>
+	<div class="Mask"></div>
+
+	<div class="time_content" style="position: fixed;top: 0;left: 0;bottom: 0;right: 0;background: rgba(0, 0, 0, .6);z-index: 1000;display: none;">
+		<section class="elastic" style="height: 667px; overflow: hidden;">
+		<div class="swiper-container swiper-container2 swiper-container-horizontal">
+			<div class="swiper-wrapper">
+			</div>
+			<div class="swiper-button-prev"></div> 
+			<div class="swiper-button-next"></div> 
+		</div>
+		<div class="Switch" style="height: 557px;">
+		</div>
+		<div class="Resersub" style=""><input type="submit" value="确认选择" class=""></div>
+		</section>
+	</div>
+
+	<script src="scripts/jquery-1.8.3.min.js"></script>
+	<script src="scripts/fastclick.js"></script>
+	<script src="scripts/layer/layer.m.js"></script>
+	<script src="scripts/common.js"></script>
+	<script src="scripts/JRoll.js"></script>
+    <script src="scripts/mobiscroll.2.13.2.js"></script>
+	<script src="scripts/work/foodshop_create.js"></script>
+	<script src="scripts/work/foodshop_order_list_new.js"></script>
+	<script src="scripts/work/storestaffAppoint.js"></script>
+	<script type="text/javascript">
+		var open_meal_electronic_menu = 1;
+	</script>
+	<!--  canc check  -->
+	<script id="listTpl" type="text/html">
+	{{# for (var i = 0, len = d.length; i < len; i++){ }}
+	<li id="li_{{ d[i].order_id }}">
+		<div class="top check clr">
+			<div class="fl">{{ L_('预定餐位') }}：<span class="table_txt">{{ d[i].table_type_name }} {{ d[i].table_name }} {{ d[i].min_max }}<span></div>
+           	<div class="fr cancel">
+				{{# if (d[i].status > 0) { }}
+				<p>{{ L_('已支付') }}</p>
+				{{# } }}
+           	</div> 
+		</div>
+		<div class="con">
+			<div class="con_top"  data-order_id="{{ d[i].order_id }}">
+				<!-- <h2>{{ L_('预订人') }}：{{ d[i].register_name }} {{ d[i].register_phone }}</h2> -->
+				<h2>{{ L_('预订人') }}：{{ d[i].register_name }} {{ d[i].phone }}</h2>
+				<p>{{ L_('订单编号') }}：{{ d[i].real_orderid }}</p>
+				<!-- <p>{{ L_('就餐人数') }}：{{ d[i].book_num }}</p> -->
+				<!-- <p>{{ L_('下单时间') }}：{{ d[i].date }}</p> -->
+				<p>{{ L_('下单时间') }}：{{ d[i].pay_time_formart }}</p>
+				{{# if (d[i].order_from == 0) { }}
+				<p>{{ L_('订单来源：在线预订') }}</p>
+				{{# } else if (d[i].order_from == 1) { }}
+				<p>{{ L_('订单来源：扫桌台码预订') }}</p>
+				{{# } else if (d[i].order_from == 2) { }}
+				<p>{{ L_('订单来源：店员下单') }}</p>
+				{{# } }}
+				<p>{{ L_('订单总计') }}：{{ d[i].price }}</p>
+				<div style="color: red">{{ L_('备注') }}：{{ d[i].note }}</div>
+			</div>
+			<div class="remark">
+				<div class="source">
+				  	{{# if (d[i].order_from == 0) { }}
+					<p>{{ L_('订单来源：在线预订') }}</p>
+					{{# } else if (d[i].order_from == 1) { }}
+					<p>{{ L_('订单来源：扫桌台码预订') }}</p>
+					{{# } else if (d[i].order_from == 2) { }}
+					<p>{{ L_('订单来源：店员下单') }}</p>
+					{{# } }}
+				</div>
+				{{# if(d[i].operate_status == 0 && d[i].status>1 && d[i].status !=5) { }} 
+				<div class="operate overtime kd_since since_{{d[i].order_id}}" data-order_id="{{d[i].order_id}}" data-status="1" style="right: 75px">{{ L_('接单') }}</div>
+				<div class="operate overtime kd_cancel since_{{d[i].order_id}}" data-order_id="{{d[i].order_id}}" data-status="3">{{ L_('拒单') }}</div>
+				{{# } else if(d[i].operate_status == 1) { }}	
+				<div class="operate overtime kd_since1" data-order_id="{{d[i].order_id}}" data-status="2">{{ L_('订单已完成') }}</div>
+				{{# } else if(d[i].operate_status == 2) { }}	
+				<div class="overtime kd_complete" data-order_id="{{d[i].order_id}}">{{ L_('已完成') }}</div>
+				{{# } else if(d[i].operate_status == 3 || d[i].status ==5) { }}	
+				<div class="overtime kd_complete" data-order_id="{{d[i].order_id}}">{{ L_('已退款') }}</div>
+				{{# } }}
+			</div>
+		</div>
+		
+		{{# if(d[i].operate_status == 1) { }} 
+		<div class="click">
+			<dl>
+				<dd class="change_table edit" data-order_id="{{d[i].order_id}}">
+					<span>{{ L_('修改桌号') }}</span>
+				</dd>
+			</dl>
+		</div>
+		{{# } }}
+
+		{{# if(d[i].operate_status > 0) { }} 
+		<div class="click">
+			<dl>
+				<dd class="print" data-order_id="{{ d[i].order_id }}">
+					<span>{{ L_('重打小票') }}</span>
+				</dd>
+			</dl>
+		</div>		
+		{{# } }}
+	</li>
+	{{# } }}
+	</script>
+	
+	<script id="orderDetailTpl" type="text/html">
+	{{# if(d.package_list != null) { }} 
+	{{# for (var i in d.package_list){ }}
+	<li>
+		<div class="flex">
+			<div class="w5">
+				<h2>{{d.package_list[i].name}}</h2>
+			</div>
+			<div class="w1">
+				<!-- <em class="end">{{ L_('已确认') }}</em> -->
+			</div>
+			<div class="w3">x{{d.package_list[i].num}}</div>
+			<div class="w4">{{ L_('￥') }}{{d.package_list[i].price}}</div>
+		</div>
+		<div class="sheath">
+			<dl>
+				{{# for (var ii in d.package_list[i].list){ }}
+				<dd>
+					<div class="w5">{{d.package_list[i].list[ii].name}}</div>
+					<div class="w1"></div>
+					<div class="w3">x{{d.package_list[i].list[ii].num}}</div>
+					<div class="w4">{{ L_('￥') }}{{d.package_list[i].list[ii].price}}</div>
+				</dd>
+				{{# } }}
+			</dl>
+		</div>
+	</li>
+	{{# } }}
+	{{# } }}
+	{{# if(d.goods_list != null) { }} 
+	{{# for (var i = 0, len = d.goods_list.length; i < len; i++){ }}
+	<li>
+		<div class="flex">
+			<div class="w5">
+				<h2>{{d.goods_list[i].name}}</h2>
+				{{# if (d.goods_list[i].spec != null) { }}
+				<p>{{d.goods_list[i].spec}}</p>
+				{{# } }}
+			</div>
+			<div class="w1">
+				<!-- <em class="end">{{ L_('已确认') }}</em> -->
+			</div>
+			<div class="w3">x{{d.goods_list[i].num}}</div>
+			<div class="w4">{{ L_('￥') }}{{d.goods_list[i].price}}</div>
+		</div>
+	</li>
+	{{# } }}
+	{{# } }}
+	{{# if(d.temp_list != null) { }} 
+	{{# for (var i = 0, len = d.temp_list.length; i < len; i++){ }}
+	<li>
+		<div class="flex">
+			<div class="w5">
+				<h2>{{d.temp_list[i].name}}</h2>
+				{{# if (d.temp_list[i].spec != null) { }}
+				<p>{{d.temp_list[i].spec}}</p>
+				{{# } }}
+			</div>
+			<div class="w1">
+				<em class="stay">{{ L_('待确认') }}</em>
+			</div>
+			<div class="w3">x{{d.temp_list[i].num}}</div>
+			<div class="w4">{{ L_('￥') }}{{d.temp_list[i].price}}</div>
+		</div>
+	</li>
+	{{# } }}
+	{{# } }}
+	</script>
+</body>
+</html>

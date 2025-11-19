@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8"/>
+        <title>店员中心</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover"/>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name='apple-touch-fullscreen' content='yes'/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="format-detection" content="address=no"/>
+        <link href="css/pigcms.css?t=6" rel="stylesheet"/>
+        <link href="css/mobiscroll.2.13.2.css" rel="stylesheet"/>
+    </head>
+    <style type="text/css">
+      .amend .button div.ensure_change {
+          background: #ef584e;
+      }
+      .kd_entry li .query_con .change_price {
+          color: #fff;
+          background: #2ecc71;
+          border: #2ecc71 1px solid;
+      }
+    .kd_entry li .change_price {
+        line-height: 25px;
+        width: 80px;
+        border: #999999 1px solid;
+        border-radius: 5px;
+        text-align: center;
+        position: absolute;
+        left: 0px;
+        top: 9px;
+    }
+      .h140 {
+          height: auto;
+          overflow: hidden;
+      }
+      .cable{
+        border-bottom: #f1f1f1 1px solid;
+        position: inherit;
+        top: inherit;
+        left: inherit;
+        z-index: 85;
+    }
+    .cable .input{
+        padding-right: 0;
+        margin-right: 8px;
+    }
+    .cable .input input{
+        width: 100% !important;
+    }
+    .cable .select{
+        position: relative;
+        top: inherit !important;
+        left: inherit;
+        right: inherit;
+    }
+
+    .kd_entry li .remark {
+        height: auto;
+        line-height: 1;
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    .kd_entry li .remark div {
+        margin: 4px;
+        width: 72px;
+        position: unset;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .kd_entry li .overtime {
+        width: auto;
+    }
+    .change_worker {
+        position: fixed;
+        z-index: 999;
+        top: 50%;
+        margin-top: -148px;
+        width: 84%;
+        left: 8%;
+        display: none;
+        background: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .change_worker .alter {
+        text-align: center;
+        line-height: 40px;
+        color: #fff;
+        background: #2ecc71;
+        font-size: 16px;
+        position: relative;
+    }
+    .change_worker .alter .del {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        background: url(./images/x.png) center no-repeat;
+        background-size: 12px;
+    }
+    .change_worker .worker_list_wrap {
+        min-height: 160px;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+    .change_worker .worker_list_wrap li {
+        padding: 8px 12px;
+        margin: 12px 16px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        color: #333;
+        white-space: pre-wrap;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    .change_worker .worker_list_wrap li.active {
+        background-color: #2ecc71;
+        color: #fff;
+    }
+    .change_worker .btn-wrap {
+        padding: 10px 20px 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .change_worker .btn-wrap .cancel-btn,.change_worker .btn-wrap .confirm-btn {
+        width: 45%;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: #fff;
+        border-radius: 5px;
+    }
+    .change_worker .btn-wrap .cancel-btn {
+        background-color: #d1d1d1;
+    }
+    .change_worker .btn-wrap .confirm-btn {
+        background-color: #ef584e;
+    }
+    </style>
+
+    <body>
+        <section class="public">
+            <div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+            <div class="content"><L_>预约订单</L_></div>
+        </section>
+        <div class="nav-height"></div>
+        <section class="h140">
+            <div class="cable">
+                <div class="cable_n cable_kd" style="display: flex;">
+                    <div class="input" style="flex: 2;">
+                        <input type="text" style="width: 88%;" placeholder="请输入搜索内容" id="find_value"/>
+                    </div>
+                    <div class="select">
+                        <select name="searchtype">
+                        <option value="order_id" class="L_">订单ID</option>
+                        <option value="real_orderid" class="L_">订单编号</option>
+                        <option value="orderid" class="L_">订单流水号</option>
+                        <option value="third_id" class="L_">第三方支付流水号</option>
+                        <option value="name" class="L_">客户名称</option>
+                        <option value="phone" class="L_">客户电话</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+                <div class="kd_time clr">
+                    <div class="pos fl">
+                        <input type="text" placeholder="请选择开始日期" readonly="readonly" id="stime" />
+                    </div>
+                    <div class="pos fr">
+                        <input type="text" placeholder="请选择结束日期" readonly="readonly" id="etime"/>
+                    </div>
+                </div>
+                <div class="kd_select  clr">
+                    <div class="select">
+                        <div class="selsct_paid">
+                            <select name="paid">
+                                <option value="-1"><L_>全部</L_></option>
+                                <option value="-2"><L_>未支付</L_></option>
+                                <option value="1"><L_>已支付</L_></option>
+                                <option value="5"><L_>退款中</L_></option>
+                                <option value="2"><L_>已退款</L_></option>
+                                <option value="3"><L_>已取消</L_></option>
+                                <option value="-10"><L_>尾款待支付</L_></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="kd_select  clr">
+                    <div class="select">
+                        <div class="selsct_service_status">
+                            <select name="service_status">
+                                <option value="-1"><L_>全部服务状态</L_></option>
+                                <option value="0"><L_>未服务</L_></option>
+                                <option value="1"><L_>已服务</L_></option>
+                                <option value="2"><L_>已评价</L_></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="kd_select  clr">
+                    <div class="select">
+                        <div class="selsct_pad">
+                            <select>
+                                <option><L_>全部支付方式</L_></option>
+                                <option><L_>支付宝支付</L_></option>
+                                <option><L_>微信支付</L_></option>
+                            </select>
+                        </div>
+                        <div class="query"><L_>查询</L_></div>
+                    </div>
+                    
+                </div>
+        </section>
+
+        <section class="store" style="margin-top: 10px;">
+            <div class="entry kd_entry ">
+                <ul>
+                </ul>
+            </div>
+        </section>
+        <div class="mask"></div>
+
+        <section class="seek">
+            <div class="within">
+                <h2><L_>验证服务</L_></h2>
+                <div class="con">
+                    <div class="img">
+                        <img src="images/tct_06.jpg">   
+                    </div>
+                    <div class="tit">
+                        <p class="on"><L_>重要提示</L_></p>
+                        <p class="p rig_p">验证服务后，订单状态将修改为已完成，并且不能恢复，<span class="red"><L_>确定验证？</L_></span></p>
+                    </div>
+                    <div class="button">
+                        <input type="hidden" id="order_id" value="0"/>
+                        <div class="clr p20">
+                            <div class="fl close"><L_>点错了</L_></div>
+                            <div class="fr ensure"><L_>确认消费</L_></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="del"></div>
+        </section>
+        <section class="amend" id="change_order_price" style="height: 280px;">
+            <div class="alter">
+                <h2><L_>修改金额</L_></h2>
+                <div class="del"></div>
+            </div>
+            <div class="correct">
+                <ul>
+                    <li class="clr">
+                        <div class="fl"><L_>修改金额</L_></div>
+                        <div class="fr">
+                            <input type="number" id="change_price" placeholder="请输入修改金额"/>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前值</L_></div>
+                        <div class="fr e93" id="order_money_now"></div>
+                    </li>
+                </ul>
+                <div class="clr button">
+                    <div class="fr ensure_change"><L_>确定修改</L_></div>
+                </div>
+            </div>
+        </section>
+        <section class="change_worker" id="change_worker">
+            <div class="alter">
+                <div><L_>更换技师</L_></div>
+                <div class="del" @click="closeChangeWorker()"></div>
+            </div>
+            <ul class="worker_list_wrap">
+            </ul>
+            <div class="btn-wrap">
+                <div class="cancel-btn" @click="closeChangeWorker()"><L_>取消</L_></div>
+                <div class="confirm-btn" @click="confirmChangeWorker()"><L_>确认</L_></div>
+            </div>
+        </section>
+        <script src="scripts/jquery-1.8.3.min.js"></script>
+        <script src="scripts/fastclick.js"></script>
+        <script src="scripts/layer/layer.m.js"></script>
+        <script src="scripts/common.js?t=2"></script>
+        <script src="scripts/iscroll.js"></script>
+        <script src="scripts/mobiscroll.2.13.2.js"></script>
+        <script src="scripts/work/appoint_order_list.js?t=4"></script>
+        <script id="listTpl" type="text/html">
+        {{# for (var i in d) { }}
+        <li class="link-url" data-url="appoint_detail.html?order_id={{d[i].order_id}}"  data-webview="true">
+           <div class="top query_top clr">
+               <div class="fl">{{ L_('预订时间') }}：{{d[i].appoint_date}}&nbsp;{{d[i].appoint_time}}</div>
+               {{# if (d[i].appoint_type == 1) { }}
+               <div class="fr cancel smfw">{{ L_('上门服务') }}</div>
+               {{# } else { }}
+               <div class="fr cancel ddfw">{{ L_('到店服务') }}</div>
+               {{# } }}
+               
+           </div>
+           <div class="con query_con">
+               <div class="con_top">
+                   <h2>{{ L_('预 订 人') }}：{{d[i].nickname}} <span class="pho callPhone" data-phone="{{ d[i].phone }}">{{d[i].phone}}</span></h2>
+                   <p>
+                       <span class="fl">{{ L_('预约项目') }}：</span>
+                       <span class="p60">{{d[i].appoint_name}}</span>
+                   </p>
+                   <p>
+                       <span class="fl">{{ L_('预付定金') }}：</span>
+                       <span class="p60">
+                           <span class="red">{{ L_('￥') }}{{# if (d[i].product_id > 0) { }} {{ parseFloat(d[i].product_payment_price) }} {{# } else { }}{{ parseFloat(d[i].payment_money) }}{{# } }}{{# if (d[i].paid == 1) { }} （{{ L_('已支付') }}） {{# } else if (d[i].paid == 0) { }}（{{ L_('未支付') }}）{{# } }}</span>
+                       </span>
+                   </p>
+                   <p>
+                       <span class="fl">{{ L_('订单总价') }}：</span>
+                       <span class="p60">
+                           <span class="red">{{ currency_symbol }}<label class="old_price" data-orderid="{{d[i].order_id}}">{{# if (d[i].product_id > 0) { }} {{ parseFloat(d[i].product_price) }} {{# } else { }}{{ parseFloat(d[i].appoint_price) }}{{# } }}</label> {{# if (d[i].is_initiative > 0) { }} （{{ L_('已支付') }}） {{# } else { }}（{{ L_('未支付') }}）{{# } }}</span>
+                       </span>
+                   </p>
+                   <p>
+                       <span class="fl">{{ L_('下单时间') }}：</span>
+                       <span class="p60">{{d[i].order_time}}</span>
+                   </p>
+                   <p>
+                       <span class="fl">{{ L_('服务状态') }}：</span>
+                       <span class="p60">
+                    {{# if (d[i].is_del == 5) { }}
+                           <span class="red">{{ L_('订单已取消') }}</span>
+                    {{# } else if (d[i].paid == 0) { }}
+                        {{# if (d[i].service_status == 0) { }}<span class="red">{{ L_('未服务') }}</span>
+                        {{# } else if (d[i].service_status == 1) { }}<span class="red">{{ L_('已服务') }}</span>
+                        {{# } else if (d[i].service_status == 2) { }}<span class="red">{{ L_('已评价') }}</span>
+                        {{# } }}
+                    {{# } else if (d[i].paid == 1) { }}
+                           {{# if (d[i].appoint_order_status == 4) { }}
+                           <span class="red">{{ L_('用户申请退款') }}</span>
+                           {{# } }}
+                           {{# if ((Number(d[i]['payment_money']) || Number(d[i]['product_payment_price'])) && d[i]['payment_status']!=1) { }}
+                                <span style="color:green">{{ L_('已支付') }}</span>
+                           {{# } else if (Number(d[i]['payment_money']) <=0 && Number(d[i]['product_payment_price'])<=0 && d[i]['is_initiative']<=0) { }}
+                                <span style="color:green">{{ L_('待支付') }}</span>
+                            {{# }else if (d[i]['service_status']<=0 && d[i]['is_initiative']<=0) { }}
+                                <span style="color:green">{{ L_('定金已支付') }}</span><span style="color:red">{{ L_('尾款待支付') }}</span>
+                            {{# } else if (d[i]['service_status']>0 && d[i]['is_initiative']<=0) { }}
+                                <span style="color:red">{{ L_('尾款待支付') }}</span>
+                            {{# } else { }}
+                                <span color="green">{{ L_('已支付') }}</span>
+                            {{# } }}
+                        {{# if (d[i].complete_source == 2) { }}
+                            {{# if (d[i].service_status == 1) { }}<span class="red">{{ L_('已服务') }}</span>
+                            {{# } else { }}<span class="red">{{d[i].appoint_worker_name}}{{ L_('已服务') }}</span>
+                            {{# } }}
+                        {{# } else if (d[i].service_status == 0) { }}<span class="red">{{ L_('未服务') }}</span>
+                        {{# } else if (d[i].service_status == 1) { }}<span class="red">{{ L_('已服务') }}</span>
+                        {{# } else if (d[i].service_status == 2) { }}<span class="red">{{ L_('已评价') }}</span>
+                        {{# } }}
+                    {{# } else if (d[i].paid == 2) { }}<span class="red">{{ L_('已退款') }}</span>
+                    {{# } else if (d[i].paid == 3) { }}<span class="red">{{ L_('用户已取消') }}</span>
+                    {{# } else { }}<span class="red">{{ L_('订单异常') }}</span>
+                    {{# } }}
+                       </span>
+                   </p>
+               </div>
+               <div class="remark">
+                   {{# if (d[i].is_del == 5) { }}
+                   {{# } else { }}
+                   {{# if (d[i].type == 1) { }}
+                   <div class="source">{{ L_('平台分配') }}</div>
+                   {{# } }}
+                   {{# if (d[i].is_initiative == 0&&d[i].service_status==0) { }}
+                   <div class="change_price" data-id="{{d[i].order_id}}" data-old_price="{{# if (d[i].product_id > 0) { }} {{ parseFloat(d[i].product_price) }} {{# } else { }}{{ parseFloat(d[i].appoint_price) }}{{# } }}">{{ L_('修改金额') }}</div>
+                   {{# } }}
+                   {{# if (d[i].is_initiative == 0) { }}
+                   <div style="color: #fff;background: #2ecc71;border: #2ecc71 1px solid;line-height: 25px;border-radius: 5px;text-align: center;" class=" pay_order overtime_{{d[i].order_id}}" data-id="{{d[i].order_id}}">{{ L_('扫码支付') }}</div>
+                   {{# } }}
+                   {{# if (d[i].service_status == 0 && d[i].is_del == 0 && d[i].paid==1) { }}
+                   <div class="overtime yanzhen overtime_{{d[i].order_id}}" data-id="{{d[i].order_id}}">{{ L_('完成订单') }}</div>
+                   {{# } else if (d[i].service_status == 1) { }}
+                    <div class="overtime kd_cons">{{ L_('已验证') }}</div>
+                   {{# } }}
+                   {{# if (d[i].service_status == 0 && d[i].merchant_worker_id != '0') { }}
+                   <div class="overtime changeworker change_worker_{{d[i].order_id}}" data-id="{{d[i].order_id}}" data-merchant_worker_id="{{d[i].merchant_worker_id}}">{{ L_('更换技师') }}</div>
+                   {{# } }}
+                   {{# } }}
+               </div>
+           </div>
+       </li>
+       {{# } }}
+        </script>
+    </body>
+</html>

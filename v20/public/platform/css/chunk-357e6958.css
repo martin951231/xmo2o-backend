@@ -1,0 +1,41 @@
+
+.label-font-size[data-v-3ea7d167] {
+    font-size: 16px;
+    font-weight: bold;
+}
+.font-color[data-v-3ea7d167] {
+    color: lightgrey
+}
+.button-big[data-v-3ea7d167] {
+    width: 140px;
+    height: 50px;
+    border-radius: 15px;
+    font-size: 22px;
+}
+
+
+.label-font-size[data-v-5f838a0e] {
+    font-size: 16px;
+    font-weight: bold;
+}
+.font-color[data-v-5f838a0e] {
+    color: lightgrey
+}
+.button-big[data-v-5f838a0e] {
+    width: 140px;
+    height: 50px;
+    border-radius: 15px;
+    font-size: 22px;
+}
+
+
+.label-sm-1-blue[data-v-ecab25e0] {
+    padding: 7px;
+    color: #1890ff;
+    border: 1px dashed #a09da2 !important;
+}
+.span-tyle[data-v-ecab25e0] {
+    width: 80px;
+    padding-top: 5px;
+}
+

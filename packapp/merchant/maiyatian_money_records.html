@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>余额明细</title>
+    <link rel="stylesheet" href="./js/vant/vant2.12.css">
+    <link href="css/mui.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #07C160;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #eee;
+            --bg-color: #f7f8fa;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mui-bar-nav {
+            background: #FFA200;
+            color: white;
+        }
+
+        .page-container {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mui-title {
+            color: #fff;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .date-filter {
+            flex: 1;
+            margin-right: 15px;
+        }
+
+        .record-list {
+            padding: 10px 15px;
+        }
+
+        .record-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .record-header {
+            text-align: right;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .record-amount {
+            font-size: 18px;
+            font-weight: 500;
+            color: #79cc6e;
+        }
+
+        .record-status {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background-color: #f0f9eb;
+            color: var(--primary-color);
+        }
+
+        .record-amount.positive {
+            color: #79cc6e;
+        }
+
+        .record-amount.negative {
+            color: #ff4d4f;
+        }
+
+        .record-detail {
+            display: flex;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .detail-label {
+            width: 70px;
+            color: var(--text-dark);
+        }
+
+        .loading-text {
+            text-align: center;
+            padding: 10px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .filter-bar {
+            padding: 10px;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #d4e6dd;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="mui-bar mui-bar-nav">
+        <div class="mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+        <h1 class="mui-title">
+            <L_>余额明细</L_>
+        </h1>
+    </header>
+    <div class="mui-content"></div>
+    <div id="app" style="display:none;" class="page-container">
+        <div class="filter-container">
+            <div class="filter-bar" style="width: 100%;">
+                <van-cell class="date-filter" readonly clickable :value="dateRangeText" title="选择时间范围"
+                    :label="dateRangeText ? '' : '请选择时间范围'" @click="showDatePicker = true" style="width: 20%;" />
+                <div>{{dateRangeText}}</div>
+            </div>
+        </div>
+
+        <van-pull-refresh v-model="isRefreshing" @refresh="refreshData">
+            <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getMoneyRecords"
+                :immediate-check="false">
+                <div v-if="records.length === 0 && !loading" class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <p>暂无记录</p>
+                </div>
+
+                <div v-if="records.length > 0" class="record-list">
+                    <div class="record-card" v-for="(record, index) in records" :key="index">
+                        <div class="record-header">
+                            <div class="record-amount" :class="record.type == 2 ? 'negative' : 'positive'">
+                                {{ record.type == 1 ? '+' : '-' }}￥{{ record.money }}
+                            </div>
+                        </div>
+                        <div class="record-detail">
+                            <div class="detail-label">时间</div>
+                            <div>{{ record.create_time || '暂无时间' }}</div>
+                        </div>
+                        <div class="record-detail" v-if="record.paotui_order_no">
+                            <div class="detail-label">配送单号</div>
+                            <div>{{ record.paotui_order_no }}</div>
+                        </div>
+                        <div class="record-detail" v-if="record.recharge_pay_no">
+                            <div class="detail-label">充值单号</div>
+                            <div>{{ record.recharge_pay_no }}</div>
+                        </div>
+                        <div class="record-detail">
+                            <div class="detail-label">备注</div>
+                            <div>{{ record.remark || '暂无备注' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </van-list>
+        </van-pull-refresh>
+
+        <van-popup v-model="showDatePicker" position="bottom">
+            <van-calendar v-model="showDatePicker" type="range" :min-date="minDate" :max-date="maxDate"
+                @confirm="onDateConfirm" />
+        </van-popup>
+    </div>
+
+    <script src="js/mui.min.js"></script>
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./js/common.js?t=43" type="text/javascript" charset="utf-8"></script>
+    <script src="./js/vant/vue@2.6.14.min.js"></script>
+    <script src="./js/vant/vant@2.12.14.min.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                const now = new Date();
+                const minDate = new Date(now.getFullYear() - 10, 0, 1);
+                const maxDate = new Date(now.getFullYear(), 11, 31);
+
+                return {
+                    records: [],
+                    loading: false,
+                    finished: false,
+                    isRefreshing: false,
+                    page: 1,
+                    pageSize: 10,
+                    showDatePicker: false,
+                    currentDateRange: [minDate, maxDate],
+                    minDate,
+                    maxDate,
+                    filterStartDate: new Date(now.getFullYear(), now.getMonth() - 3, 1),
+                    filterEndDate: new Date(now.getFullYear(), now.getMonth() + 1, 0),
+                    dateRangeText: ''
+                };
+            },
+            created() {
+                common.vue_render_show(".loading", "#app");
+                this.dateRangeText = `${this.formatDate(this.filterStartDate)} - ${this.formatDate(this.filterEndDate)}`;
+                this.getMoneyRecords();
+            },
+            methods: {
+                getMoneyRecords() {
+                    // 转换日期为字符串格式，避免直接传递Date对象可能的问题
+                    const startDateStr = this.filterStartDate ? this.formatDate(this.filterStartDate) : null;
+                    const endDateStr = this.filterEndDate ? this.formatDate(this.filterEndDate) : null;
+
+                    common.http('Merchantapp&a=maiyatianMoneyList', {
+                        start_time: startDateStr,
+                        end_time: endDateStr,
+                        page: this.page,
+                        pageSize: this.pageSize
+                    }, (data) => {
+                        // 使用箭头函数保持this上下文
+                        if (data && data.length > 0) {
+                            if (this.page === 1) {
+                                this.records = data;
+                            } else {
+                                this.records = [...this.records, ...data];
+                            }
+                            // 根据返回的数据量判断是否还有更多数据
+                            this.finished = data.length < this.pageSize;
+                        } else {
+                            // 没有数据时的处理
+                            if (this.page === 1) {
+                                this.records = [];
+                            }
+                            this.finished = true;
+                        }
+                        this.loading = false;
+                        this.isRefreshing = false;
+                        this.page += 1;
+                    }, (error) => {
+                        // 添加错误处理
+                        console.error('获取充值记录失败:', error);
+                        this.loading = false;
+                        this.isRefreshing = false;
+                        layer.msg('获取数据失败，请重试', { icon: 2 });
+                    });
+                },
+                refreshData() {
+                    this.page = 1;
+                    this.finished = false;
+                    this.loading = true;
+                    this.records = [];
+                    this.showDatePicker = false;
+                    this.getMoneyRecords();
+                },
+                onDateConfirm(value) {
+                    this.filterStartDate = value[0];
+                    this.filterEndDate = value[1];
+                    this.showDatePicker = false;
+                    this.dateRangeText = `${this.formatDate(this.filterStartDate)} - ${this.formatDate(this.filterEndDate)}`;
+                    this.refreshData();
+                },
+                // 优化日期格式化，包含年份
+                formatDate(date) {
+                    if (!date) return '';
+                    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>

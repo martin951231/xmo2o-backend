@@ -1,0 +1,198 @@
+<html lang="zh-CN">
+	<head>
+        <meta charset="utf-8">
+        <title>积分商品兑换列表</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+        <meta http-equiv="pragma" content="no-cache">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-touch-fullscreen" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="format-detection" content="address=no">
+        <link rel="stylesheet" href="css/mui.css" />
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.picker.min.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+        <link href="css/pigcms.css" rel="stylesheet"/>
+    	<link rel="stylesheet" type="text/css" href="css/integral_mall_order.css?t=0001"/>
+	</head>
+    <body>
+        <section class="h130">
+            <header class="mui-bar mui-bar-nav">
+               <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+                <h1 class="mui-title"><span><L_>积分商品兑换列表</L_></span></h1>
+            </header>
+            <!--<div class="cable">-->
+                <!--<div class="cable_n cable_kd mui-clearfix">-->
+                    <!--<div class="input">-->
+                        <!--<input class="L_P" type="text" id="find_value" name="keyword" placeholder="请输入搜索内容"/>-->
+                    <!--</div>-->
+                    <!--<div class="select mui-pull-right" id="selects">-->
+                        <!--<span id="selectsText"><L_>商品名称</L_></span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            
+            <div class="fix">
+                <!--<div class="dropdown">-->
+                    <!--<div class="drop_select" id="status1">-->
+                        <!--<div class="pos status">-->
+                            <!--<span id="statusText"><L_>商品状态</L_></span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="drop_select" id="add_goods" style="background-color: #ffa200;color: white;">-->
+                        <!--<div class="add_goods">-->
+                            <!--<span id="add_info"><L_>添加商品</L_></span>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="kd_time clr">-->
+                    <!--<div class="pos fl begin_date">-->
+                        <!--<input type="text" placeholder="开始时间" readonly="" id="stime">-->
+                    <!--</div>-->
+                    <!--<div class="pos fr end_date">-->
+                        <!--<input type="text" placeholder="结束时间" readonly="" id="etime">-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </section>
+        <section class="store">
+            <div class="entry kd_entry" >
+            	<ul id="masgs">          
+            	</ul>
+                <!-- 上拉刷新 -->
+				<div class="pullup" style="display:none;"><L_>上拉加载更多</L_>...</div>
+				<div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""/><L_>正在加载</L_></div>
+            </div>
+        </section>
+
+        <section class="amend">
+            <div class="alter">
+                <h2><L_>修改金额</L_></h2>
+                <div class="del"></div>
+            </div>
+            <div class="correct">
+                <ul>
+                    <li class="clr">
+                        <div class="fl"><L_>修改金额</L_></div>
+                        <div class="fr">
+                            <input type="number" class="L_P" placeholder="请输入修改金额" id="change_price"/>
+                            <input type="hidden" id="order_id">
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>备注</L_></div>
+                        <div class="fr">
+                            <input type="text" class="L_P" placeholder="请输入您修改的理由" id="change_price_reason"/>
+                        </div>
+                    </li>
+                    <li class="clr">
+                        <div class="fl"><L_>当前值</L_></div>
+                        <div class="fr e93" id="now_price"></div>
+                    </li>
+                </ul>
+                <div class="clr button">
+                    <div class="fl recovery" data-type="r"><L_>恢复初始价格</L_></div>
+                    <div class="fr ensure" data-type="c"><L_>确定修改</L_></div>
+                </div>
+            </div>
+        </section>
+       
+
+        <section class="since"></section>
+
+        <section class="stock" style=" margin-top: -208px;">         
+            <div class="h2"><L_>库存报警商品列表（12）</L_></div>        
+			<div class="ul">            
+				<ul>                     
+					<li>      
+						<div class="tit">          
+							<span class="fl"><L_>商品条形码：</L_></span>           
+							<div class="p65">2017154587820</div>      
+						</div>      
+						<div class="bot">           
+							<div class="name">               
+								<span class="fl"><L_>商品名称：</L_></span>               
+								<div class="p65">品牌 (11,单层)</div>          
+							</div>           
+							<div class="name">              
+								<span class="fl"><L_>商品价格：</L_></span>               
+								<div class="p65 clr"> 
+									<div class="fl f86">￥1</div>
+									<div class="fr f86">剩余库存：1</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>         
+			<div class="del"></div> 
+			<div class="report">
+				<span><L_>如需导出报表，请到电脑版店员中心操作</L_></span>
+			</div>
+		</section>
+    <div class="flat roof"></div>
+    <script src="js/fastclick.js"></script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/mui.zoom.js"></script>
+    <script src="js/mui.picker.js"></script> 
+    <script src="js/mui.dtpicker.js"></script>
+    <script src="js/mui.poppicker.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/fastclick.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/work/integral_mall_order.js?t=0009" type="text/javascript" charset="utf-8"></script>
+    
+    <script id="listTpl" type="text/html">
+    {{# for (var i = 0, len = d.length; i < len; i++){ }}
+        <li data-id="{{d[i].goods_id}}" data-goods_source_type="{{d[i]['goods_source_type']}}">
+           <div class="top clr">
+               <div class="fl">{{ L_('下单时间') }}：{{d[i].create_time}}</div>
+               <div class="fr cancel" style="width: auto;">
+                   {{d[i].status_txt}}
+               </div>
+           </div>
+           <div class="con">
+               <div class="con_top">
+                   <h2>{{ L_('编号') }}：{{d[i].order_id}}</h2>
+                   <p>{{L_('积分')}}：{{d[i]['payment_pure_integral']}}</p>
+                   <p>{{L_('兑换数量')}}：{{d[i]['num']}}</p>
+                   <p>{{L_('总计积分')}}：{{d[i]['payment_pure_integral']}}</p>
+                   <p>{{L_('运费')}}：
+                       {{# if(d[i].is_pick_in_store == 1){ }}
+                       {{ d[i]['Currency_symbol']}}{{ d[i]['freight_charge']}}
+                           {{# if(d[i].freight_charges == 1 && d[i].freight_charge>0){ }}
+                                <span style="font-size: 12px;color: red;">({{ L_('商户承担') }})</span>
+                           {{# } }}
+                       {{# } }}
+                   </p>
+
+                   <p>{{L_('联系人')}}：{{d[i]['username']}}</p>
+                   <p>{{L_('联系电话')}}：{{d[i]['userphone']}}</p>
+                   {{# if(d[i].is_pick_in_store == 1){ }}
+                        <p>{{L_('收货地址')}}：{{d[i]['address']}}</p>
+                   {{# } else{ }}
+                        <p>{{L_('自提地址')}}：{{d[i]['address']}}</p>
+                   {{# } }}
+               </div>
+               <div class="remark">
+                   {{# if(d[i].is_pick_in_store == 1 && (d[i]['status'] == 1 || d[i]['status'] == 2) && (d[i]['goods_source_type'] != 3 || d[i]['look_mer_id'] == d[i]['virtual_wholesale_mer_id'])){ }}
+                   <div class="overtime kd_hair integral_push" data-goods_id="{{d[i]['goods_id']}}" data-order_id="{{d[i]['order_id']}}" style="right: 6rem;width: 2.5rem;">{{ L_('发货') }}</div>
+                   {{# } }}
+                   {{# if(d[i]['is_pick_in_store'] == 1 && (d[i]['status'] == 1 || d[i]['status'] == 2) && d[i]['goods_source_type'] == 3 && d[i]['look_mer_id'] != d[i]['virtual_wholesale_mer_id']){ }}
+                   <div class="overtime kd_hair virtual_wholesale_mer" data-merchant_name="{{d[i]['virtual_merchant']['name']}}" style="right: 6rem;width: 4.5rem;">{{ L_('虚拟批发') }}</div>
+                   {{# } }}
+                   {{# if(d[i]['is_pick_in_store'] == 0 && d[i]['status'] == 1){ }}
+                   <div class="overtime kd_hair integral_self_mention" data-goods_id="{{d[i]['goods_id']}}" data-order_id="{{d[i]['order_id']}}" style="right: 6rem;width: 5.5rem;">{{ L_('用户自提') }}</div>
+                   {{# } }}
+                   <div class="overtime kd_order integral_order_detail" data-goods_id="{{d[i]['goods_id']}}" data-order_id="{{d[i]['order_id']}}" style="width: 5.5rem">{{ L_('订单详情') }}</div>
+               </div>
+           </div>
+        </li>
+    {{# } }}
+    </script>
+    
+</body></html>

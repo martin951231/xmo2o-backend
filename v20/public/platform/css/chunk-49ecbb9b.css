@@ -1,0 +1,17 @@
+@media print {
+.no-print[data-v-ca071d92] {
+    display: none;
+}
+}
+.main_body[data-v-ca071d92] {
+  position: absolute;
+  z-index: -1;
+  height: 0;
+  top: 0;
+  left: 0;
+  margin-left: 36%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+

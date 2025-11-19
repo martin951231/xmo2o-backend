@@ -1,0 +1,118 @@
+// 区域卡片
+.card {
+	margin: 10px;
+	background: #FFFFFF;
+	border-radius: 10px;
+	padding: 10px;
+	.card-title {
+		font-size: 30rpx;
+		font-weight: bold;
+		color: #4B4B4B;
+		line-height: 60rpx;
+		height: 60rpx;
+		vertical-align: middle;
+		.desc {
+			font-size: 24rpx;
+			color: #7A7A7A;
+			font-weight: normal;
+		}
+	}
+	.card-title-flex {
+		display: flex;
+		justify-content: space-between;
+		.right-btn {
+			font-size: 26rpx;
+			font-weight: bold;
+			color: #4B4B4B;
+			line-height: 60rpx;
+			padding: 0 20rpx;
+			min-width: 120rpx;
+			text-align: center;
+			border: 1px solid #E8E8E8;
+			border-radius: 40rpx;
+		}
+	}
+	.card-line {
+		padding: 10px 0;
+		line-height: 50rpx;
+		vertical-align: middle;
+		display: flex;
+		justify-content: space-between;
+		font-size: 28rpx;
+		align-items: center;
+		border-bottom: 1px solid #F1F1F1;
+		.title {
+			color: #666666;
+			white-space: nowrap;
+			width: 120px;
+		}
+		.content {
+			font-weight: bold;
+			color: #4B4B4B;
+			flex: 1;
+			margin-left: 10px;
+			text-align: right;
+			.avator {
+				width: 66rpx;
+				height: 66rpx;
+				border-radius: 50%;
+			}
+		}
+		&:last-child {
+			border: none;
+		}
+	}
+	
+	.bottom-line {
+		// border-bottom: 1px solid #F1F1F1;
+	}
+	.fold-card {
+		background: #F4F4F4;
+		border-radius: 4px;
+		padding: 10px;
+		margin: 10px 0;
+		.fold-card-title {
+			display: flex;
+			justify-content: space-between;
+			font-size: 26rpx;
+			line-height: 60rpx;
+			.title-left {
+				font-weight: bold;
+				color: #333333;
+			}
+			.title-right {
+				color: #999999;
+			}
+		}
+		.fold-card-line {
+			display: flex;
+			line-height: 60rpx;
+			vertical-align: middle;
+			justify-content: space-between;
+			.left-title {
+				width: 100px;
+				font-size: 24rpx;
+				color: #999999;
+			}
+			.right-content {
+				flex: 1;
+				font-size: 24rpx;
+				color: #4B4B4B;
+			}
+		}
+	}
+}
+
+.no-data {
+	height: 30px;
+	line-height: 30px;
+	vertical-align: middle;
+	color: #999999;
+	font-size: 14px;
+	text-align: center;
+	margin-top: 100px;
+	.img {
+		width: 40%;
+		max-width: 300rpx;
+	}
+}

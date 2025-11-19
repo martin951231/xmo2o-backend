@@ -1,0 +1,49 @@
+
+#components-form-demo-validate-other .dropbox {
+  height: 180px;
+  line-height: 1.5;
+}
+.ant-form-item {
+  margin-bottom: 5px;
+}
+.delete-pointer {
+  font-size: 13px;
+  color: gray;
+  position: absolute;
+  left: 62px;
+}
+.ant-upload.ant-upload-select-picture-card {
+  width: 75px;
+  height: 75px;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+.pcButton[data-v-0935c6b5] {
+  color: #1890ff;
+  border: 1px dashed #ccc;
+}
+
+
+section#contentView[data-v-63d5078b] {
+  background-color: #fff !important;
+}
+#title[data-v-63d5078b] {
+  font-size: 15px;
+  font-weight: bold;
+}
+iframe[data-v-63d5078b] {
+  height: 600px;
+  width: 318px;
+}
+.refresh[data-v-63d5078b] {
+  top: 568px;
+  right: -156px;
+}
+button.ant-switch[data-v-63d5078b] {
+  position: relative;
+  bottom: -38px;
+  right: -66px;
+}
+
+

@@ -1,0 +1,81 @@
+
+
+
+/*底部*/
+.mui-bar-tab .market-home{
+	display: inline-block;
+	width: 22px;
+	height: 20.5px;
+	background: url(../images/market-home.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+
+.mui-tab-item span{
+	font-size: 11px;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.mui-bar-tab .market-plus{
+	display: inline-block;
+	width: 27px;
+	height: 20.5px;
+	background: url(../images/market-plus.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+.mui-bar-tab .market-take{
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background: url(../images/market-take.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+.mui-bar-tab .market-my{
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background: url(../images/market-my.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+.mui-active span{
+	color:#FFA200;
+}
+.mui-active .market-home{
+	display: inline-block;
+	width: 22px;
+	height: 20.5px;
+	background: url(../images/market-home_active.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+.mui-active .market-plus{
+	display: inline-block;
+	width: 27px;
+	height: 20.5px;
+	background: url(../images/market-plus_active.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+.mui-active .market-my{
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background: url(../images/market-my_active.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}
+.mui-bar-tab {
+	background: #FFFFFF;
+}
+.mui-active .market-take{
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background: url(../images/market-take_active.png) center no-repeat;
+	background-size: contain;
+	vertical-align: -webkit-baseline-middle;
+}

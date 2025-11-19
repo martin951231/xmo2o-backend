@@ -1,0 +1,221 @@
+.wrap {
+	width: 100%;
+	height: 100%;
+	min-height: 100vh;
+	overflow-y: auto;
+    .pl-30 {
+        padding-left: 30rpx;
+        padding-right: 30rpx;
+        box-sizing: border-box;
+    }
+	.pl-15 {
+		padding-left: 15rpx;
+		padding-right: 15rpx;
+		box-sizing: border-box;
+	}
+    .color-666 {
+        color: #666666;
+    }
+    .text-cut {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .nowrap {
+        white-space: nowrap;
+    }
+    .overflow-x {
+        overflow-x: hidden;
+    }
+	.mt-20 {
+		margin-top: 20rpx;
+	}
+	.mr-5 {
+		margin-right: 5rpx;
+	}
+	.justify-center {
+		justify-content: center;
+	}
+    // 基础信息
+    .base-info {
+        padding-top: 30rpx;
+        padding-bottom: 20rpx;
+        width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+        .avatar {
+            margin-right: 20rpx;
+            width: 108rpx;
+            height: 108rpx;
+            border-radius: 50%;
+            box-sizing: border-box;
+            overflow: hidden;
+			background-color: #eeeeee;
+            image {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .other-info {
+            margin-top: 10rpx;
+            font-size: 26rpx;
+            font-weight: 500;
+            .tag {
+                flex: 0 1 auto;
+                padding: 0 20rpx;
+                height: 32rpx;
+				line-height: 32rpx;
+                background: linear-gradient(0deg, #fca433 0%, #ffcd5e 100%);
+                border-radius: 16rpx 16rpx 16rpx 2rpx;
+                font-size: 20rpx;
+            }
+        }
+        .invite-icon {
+            width: 42rpx;
+            height: 42rpx;
+        }
+    }
+
+    // 业绩
+    .achievements-wrap {
+        padding: 20rpx 30rpx;
+        width: 100%;
+        box-sizing: border-box;
+        .achievements {
+            padding: 0 40rpx;
+            min-height: 325rpx;
+            box-shadow: 0px 0px 29rpx 6rpx rgba(177, 181, 190, 0.13);
+            border-radius: 10rpx;
+            box-sizing: border-box;
+            .total {
+                padding: 40rpx 0 32rpx 0;
+                .label {
+                    font-size: 24rpx;
+                    font-weight: 500;
+                }
+                .price {
+                    font-size: 60rpx;
+                }
+            }
+			.other-price {
+				padding: 36rpx 0;
+				border-top: 1rpx solid rgba(244, 244, 244, 0.32);
+				.item {
+					.value {
+						font-size: 40rpx;
+					}
+					.label {
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						font-weight: 500;
+						color: #E9FFFD;
+					}
+				}
+			}
+        }
+		.no-team {
+			margin-bottom: 20rpx;
+			height: 180rpx;
+			background: #FFFFFF;
+			box-shadow: 0px 0px 29rpx 6rpx rgba(177, 181, 190, 0.13);
+			border-radius: 10rpx;
+			font-size: 28rpx;
+			font-weight: bold;
+			color: #202020;
+		}
+    }
+	
+	// 业务数据
+	.business-wrap {
+		width: 100%;
+		.title {
+			padding: 40rpx 0 20rpx 0;
+			font-size: 36rpx;
+			font-weight: bold;
+			color: #000000;
+		}
+		.detail {
+			padding: 28rpx;
+			width: 100%;
+			box-sizing: border-box;
+			.item {
+				.label {
+					font-size: 22rpx;
+					font-weight: 500;
+				}
+				.value {
+					margin-top: 10rpx;
+					font-size: 40rpx;
+				}
+			}
+		}
+	}
+	
+	// 绑定团队
+	.team-wrap {
+		width: 100%;
+		.title {
+			padding-top: 44rpx;
+			padding-bottom: 44rpx;
+			font-size: 36rpx;
+			.iconfont {
+				color: rgba(184, 189, 200, 1);
+				transform: rotate(180deg);
+				transition: all 0.3s;
+				vertical-align: middle;
+				&.show {
+					transform: rotate(360deg);
+				}
+			}
+		}
+		.show-list {
+			padding: 0 30rpx 44rpx 30rpx;
+			width: 100%;
+			overflow: hidden;
+			box-sizing: border-box;
+			display: none;
+			&.show {
+				display: block;
+			}
+			&.member-list {
+				padding: 0 6rpx 44rpx 6rpx;
+			}
+		}
+		
+	}
+	
+	// 菜单
+	.menu-wrap {
+		width: 100%;
+		box-sizing: border-box;
+		.item {
+			padding: 36rpx 42rpx;
+			width: 100%;
+			box-sizing: border-box;
+			.left {
+				margin-right: 20rpx;
+				.icon {
+					margin-right: 32rpx;
+					width: 32rpx;
+					height: 32rpx;
+				}
+				.title {
+					font-size: 28rpx;
+				}
+			}
+			.right {
+				.iconfont {
+					color: rgba(184, 189, 200, 1);
+				}
+				.content {
+					font-size: 24rpx;
+					font-weight: 500;
+				}
+			}
+		}
+		&.noTeam-menu-wrap {
+			min-height: 400rpx;
+		}
+	}
+}

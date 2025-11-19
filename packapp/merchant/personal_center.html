@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>个人中心</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/persomal_center.css?t=002"/>
+	<style>
+		#selects{
+			border-radius: 5px;
+			height: 28px;
+			width: 85px;
+			padding: 0 10px;
+			line-height: 28px;
+			margin-right: 5px;
+		}
+		
+		.select:after {
+			display: block;
+			content: "";
+			border-top: 1px solid #838383;
+			border-left: 1px solid #838383;
+			width: 5px;
+			height: 5px;
+			-webkit-transform: rotate(225deg);
+			background-color: transparent;
+			position: absolute;
+			right: 12px;
+			margin-top: 9px;
+		}
+		.color_info {
+			color: #666;
+		}
+		.font_size12 {
+			font-size: 12px !important;
+		}
+		.my_wholesale_detail div{
+			text-align: center;
+		}
+        .p_ban{
+            text-align:center;
+            color: #ddd;
+            padding-top: 20px;
+        }
+         .merchant_type_info {
+			 position: absolute;
+			 right: 2rem;
+			 top: 55px;
+		 }
+		.merchant_type_info{
+			padding: 0 10px;
+			height: 21px;
+			font-size: 12px;
+			border: 1px solid #25ADFF;
+			border-radius: 30px;
+			text-align: center;
+			color: #25ADFF;
+			line-height: 21px;
+		}
+		.fixedAgreement {
+			margin: 40px 0 5px 0;
+			text-align: center;
+			font-size: 14px;
+			/* display: none; */
+		}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <h1 class="mui-title"><L_>个人中心</L_></h1>
+		<em class="now_lang" id="now_lang">简体中文</em>
+	</header>
+	<div class="mui-content">
+	    <div class="center">
+	    	<ul class="mui-table-view">
+				<li class="mui-media" style="padding: 15px;">
+					<span>
+						<img class="mui-pull-left" src="./images/empty.png" onerror="javascript:this.src='./images/empty.png';"/>
+						<div class="mui-media-body" style="width: 9rem;">
+							<p class="names">&nbsp;</p>
+							<p class="fans_num"><i></i> <L_>粉丝数</L_> <span class="plus">0</span></p>
+						</div>
+						<div class="merchant_type_info" style="display: none"></div>
+					</span>
+				</li>
+			</ul>
+			<ul class="all_order mui-clearfix">
+				<li class="mui-pull-left">
+					<ul>
+						<li class="today">0</li>
+						<li><span><L_>今日订单</L_><span></li>
+					</ul>
+				</li>
+				<li class="mui-pull-left">
+					<ul>
+						<li class="month">0</li>
+						<li><span><L_>本月订单</L_><span></li>
+					</ul>
+				</li>
+				<li class="mui-pull-left">
+					<ul>
+						<li class="alls">0</li>
+						<li><span><L_>全部订单</L_><span></li>
+					</ul>
+				</li>
+			</ul>
+	    </div>
+	    <!--打印机管理-->
+	    <div class="mui-card" style="margin: 10px 0 5px;">
+			<div class="mui-card-header auth_package_buy" style="padding-left: 10px;display:none;">
+				<span><i></i> <L_>权限套餐购买</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header my_market_goods" style="padding-left: 10px;display:none;">
+				<span><i></i> <L_>我发布的商品</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header my_sell_wholesale_order" style="padding-left: 10px;display:none;">
+				<span><i></i> <L_>我的批发销售订单</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header my_buy_wholesale_order" style="padding-left: 10px;display:none;">
+				<span><i></i> <L_>我的批发进货订单</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header integral_mall_order" style="padding-left: 10px;display:none;">
+				<span><i></i> <L_>积分商城兑换订单</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header my_address" style="padding-left: 10px;display:none;">
+				<span><i></i> <L_>我的收货地址</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header my_spread_merchant" style="padding-left: 5px;display:none;">
+				<span><i></i> <L_>我推广的商家</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+	    	<div class="mui-card-header printer">
+	    		<span><i></i> <L_>打印机管理</L_></span>
+	    		<b class="mui-pull-right"></b>
+	    	</div>
+	    	<div class="mui-card-header modify_password">
+	    		<span><i></i> <L_>修改密码</L_></span>
+	    		<b class="mui-pull-right"></b>
+	    	</div>
+			
+			<div class="mui-card-header modify_phone" style="display:none">
+	    		<span><i></i> <L_>修改手机</L_></span>
+	    		<b class="mui-pull-right"></b>
+	    	</div>
+	    	
+	    	<div class="mui-card-header fun_group">
+	    		<span><i></i> <L_>粉丝群发</L_></span>
+	    		<b class="mui-pull-right"></b>
+	    	</div>
+			<div class="mui-card-header bank_card">
+				<span><i></i> <L_>银行卡管理</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header platform_score" style="display: none;">
+				<span><i></i> <L_>商户平台积分</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header system_score" style="display: none;">
+				<span><i></i> <L_>平台商户积分</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			<div class="mui-card-header gift_order" style="display: none;">
+				<span><i></i> <L_>积分商城订单</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			
+			<div class="mui-card-header invit_code_admin" style="display:none">
+	    		<span class="admin_set"><i></i><L_>去绑定业务员</L_>(<L_>绑定后不能修改</L_>)</span>
+				<span class="admin_info" style="display:none"><i></i><L_>业务员信息</L_></span>
+	    		<b class="mui-pull-right" ></b>
+	    	</div>
+			
+			<div class="mui-card-header contactPhone" style="display: none;">
+				<span><i></i> <L_>联系平台客服</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+
+			<div class="mui-card-header contract" style="display: none;">
+				<span><i></i> <L_>合同管理</L_></span>
+				<b class="mui-pull-right"></b>
+			</div>
+			
+	    	<div class="mui-card-header sign_out">
+	    		<span><i></i> <L_>安全退出</L_></span>
+	    		<b class="mui-pull-right"></b>
+	    	</div>
+	    	<div class="mui-card-header cancel" style="display: none;">
+	    		<span><i></i> <L_>注销商家</L_></span>
+	    		<b class="mui-pull-right"></b>
+	    	</div>
+		</div>
+		
+		<!-- 协议和隐私 -->
+	    <div class="fixedAgreement"> 
+			<a><span id="goUserAgreement"><L_>用户协议</L_></span>
+				<span style="margin: 0 5px;color: #999999">|</span>
+				<span id="goAgreement"><L_>隐私政策</L_></span>
+			</a>
+		</div> 
+
+	    <!--底部栏-->  
+	</div>
+	<div id="tabbar_margin_top" style="padding-bottom:60px;"></div>
+	<nav class="mui-bar mui-bar-tab">
+		<div class="mui-tab-item shop_home">
+			<span class="shop-home"></span>
+			<span class="mui-tab-label"><L_>首页</L_></span>
+		</div>
+		<div class="mui-tab-item shop_plus" style="display:none;">
+			<span class="shop-plus"></span>
+			<span class="mui-tab-label"><L_>会员</L_></span>
+		</div>
+		<div class="mui-tab-item shop_take">
+			<span class="shop-take"></span>
+			<span class="mui-tab-label"><L_>评价</L_></span>
+		</div>
+		<div class="mui-tab-item mui-active shop_my">
+			<span class="shop-my"></span>
+			<span class="mui-tab-label"><L_>我的</L_></span>
+		</div>
+	</nav>
+	<!-- 手机号拨打弹框 -->
+	<div class="callPhones" id="callPhones">
+		<div id="quxiao">取消</div>
+	</div>
+	<div class="backgroundDiv" id="backgroundDiv"></div>
+	<script src="js/fastclick.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.dtpicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/work/personal_center.js?t=004" type="text/javascript" charset="utf-8"></script>
+	<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+	<!-- android=appbackmonitor -->
+	</body>
+</html>

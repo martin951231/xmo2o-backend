@@ -1,0 +1,16 @@
+.form_con[data-v-477bc0ee] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.form_con .form_item[data-v-477bc0ee] {
+  width: 50%;
+}
+.many_water_electric_meter .water_item .form_item[data-v-477bc0ee],
+.many_water_electric_meter .electric_item .form_item[data-v-477bc0ee] {
+  width: 48%;
+  display: inline-block;
+}
+

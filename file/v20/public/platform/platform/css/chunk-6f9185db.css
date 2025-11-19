@@ -1,0 +1,33 @@
+
+.ant-form-item label {
+  width: 150px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+.add-banner{
+  font-size: 15px;
+  margin: 13px;
+}
+hr{
+  border:1px solid #eee;
+}
+.sel{
+  border-bottom: 2px solid #3283FA;
+  padding-bottom: 8px;
+}
+.prompt{
+  border: 1px solid #d6e9c6;
+  width: 95.5%;
+  padding: 15px;
+  margin-left: 25px;
+  background-color: #dff0d8;
+}
+

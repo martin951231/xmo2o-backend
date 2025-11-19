@@ -1,0 +1,12 @@
+.form_con .form_item[data-v-dee0fbf6] {
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 10px;
+}
+.form_con .form_item .form_lable[data-v-dee0fbf6] {
+  width: 100px;
+}
+.form_con .form_item .form_value[data-v-dee0fbf6] {
+  width: calc(100% - 180px);
+}
+

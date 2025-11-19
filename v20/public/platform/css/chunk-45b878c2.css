@@ -1,0 +1,22 @@
+.user_label .label_con[data-v-cfc260c4] {
+  margin-top: 20px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-left: 20px;
+}
+.user_label .label_con[data-v-cfc260c4]:nth-child(1) {
+  margin-top: 0;
+}
+.user_label .label_con .title[data-v-cfc260c4] {
+  font-weight: bold;
+}
+.user_label .label_con .radio_con[data-v-cfc260c4] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  margin-left: 10px;
+}
+

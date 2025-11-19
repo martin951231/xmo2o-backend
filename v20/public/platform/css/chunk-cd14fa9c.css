@@ -1,0 +1,68 @@
+
+.content[data-v-2688b9f4] {
+  overflow: hidden;
+}
+.code-box[data-v-2688b9f4] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+}
+.code[data-v-2688b9f4] {
+  margin: 10px;
+}
+.code img[data-v-2688b9f4] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+.error-msg[data-v-2688b9f4] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+
+
+.label-sm-1[data-v-8c8d6810] {
+    color: green;
+}
+.label-sm-1.red[data-v-8c8d6810] {
+    color: red;
+}
+.label-sm-1.yellow[data-v-8c8d6810] {
+    color: #f89406 !important;
+    border: 1px solid #f89406 !important;
+}
+.label-sm-1.purple[data-v-8c8d6810] {
+    color: #9585bf !important;
+    border: 1px solid #9585bf !important;
+}
+.label-sm-1.blue[data-v-8c8d6810] {
+    color: #1890ff !important;
+}
+.label-sm-1.purplish-red[data-v-8c8d6810] {
+    color: #d6487e !important;
+    border: 1px solid #d6487e !important;
+}
+.label-sm-1-blue[data-v-8c8d6810] {
+    color: #1890ff;
+    border: 1px solid #1890ff !important;
+}
+
+/*资质图片样式*/
+/* you can make up upload button and sample style by using stylesheets */
+.ant-upload-select-picture-card i[data-v-8c8d6810] {
+    font-size: 32px;
+    color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text[data-v-8c8d6810] {
+    margin-top: 8px;
+    color: #666;
+}
+

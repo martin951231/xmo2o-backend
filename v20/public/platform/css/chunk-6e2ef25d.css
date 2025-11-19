@@ -1,0 +1,19 @@
+.order_review_set[data-v-8f1dfc20] {
+  width: 100%;
+}
+.order_review_set .select_container[data-v-8f1dfc20] {
+  width: 100%;
+  -webkit-transform: translateY(-5px);
+          transform: translateY(-5px);
+}
+.order_review_set .select_container .select_item[data-v-8f1dfc20] {
+  width: 500px;
+  margin-top: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+

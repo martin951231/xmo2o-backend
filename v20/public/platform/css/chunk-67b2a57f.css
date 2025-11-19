@@ -1,0 +1,37 @@
+.title[data-v-acf145d2] {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 10px;
+}
+.title span[data-v-acf145d2] {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+.card[data-v-acf145d2] {
+  width: 100%;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  color: #31708f;
+  border-radius: 6px;
+  padding: 10px;
+  padding-bottom: 0;
+  position: relative;
+}
+.card .end[data-v-acf145d2] {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+.color-1[data-v-acf145d2] {
+  color: #979797;
+}
+[data-v-acf145d2] .commodity {
+  margin-top: 20px;
+}
+[data-v-acf145d2] .commodity .ant-table-column-title .ant-table-selection {
+  display: none !important;
+}
+

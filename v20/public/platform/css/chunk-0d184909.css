@@ -1,0 +1,118 @@
+.workshop_canvas[data-v-62d6bb6c] {
+  width: 100vw;
+  height: 100vh;
+  cursor: pointer;
+  position: relative;
+}
+.workshop_canvas .back_image[data-v-62d6bb6c] {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.workshop_canvas .my_canvas[data-v-62d6bb6c] {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.workshop_canvas .draw_btn[data-v-62d6bb6c] {
+  left: 20px;
+  top: 20px;
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #409EFF;
+  padding: 3px 10px;
+  color: #ffffff;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 99;
+}
+.workshop_canvas .reset_btn[data-v-62d6bb6c] {
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  left: 150px;
+  top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #409EFF;
+  padding: 3px 10px;
+  color: #ffffff;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 99;
+}
+.workshop_canvas .grey[data-v-62d6bb6c] {
+  background-color: #999999;
+}
+.workshop_canvas .select_container[data-v-62d6bb6c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.workshop_canvas .menu_con[data-v-62d6bb6c] {
+  position: absolute;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.workshop_canvas .menu_con .menu_item[data-v-62d6bb6c] {
+  padding: 5px 15px;
+  margin: 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-bottom: 0.5px solid #999999;
+}
+.workshop_canvas .menu_con .menu_item[data-v-62d6bb6c]:nth-last-child(1) {
+  border: 0;
+}
+.workshop_canvas .menu_con .menu_item .menu_name[data-v-62d6bb6c] {
+  font-size: 16px;
+  margin-left: 5px;
+}
+.workshop_canvas .menu_con .menu_item[data-v-62d6bb6c]:hover {
+  background-color: rgba(0, 255, 255, 0.3);
+  border-radius: 5px;
+}
+.workshop_canvas .draw_desc[data-v-62d6bb6c] {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  right: 10px;
+  top: 20px;
+  z-index: 999;
+}
+.workshop_canvas .draw_desc .desc_title[data-v-62d6bb6c] {
+  color: #ffffff;
+}
+.workshop_canvas .draw_desc .desc_content[data-v-62d6bb6c] {
+  color: #ffffff;
+}
+

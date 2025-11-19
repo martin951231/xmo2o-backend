@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>店员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/pigcms.css" rel="stylesheet"/>
+	</head>
+	<body>
+		<section class="public pageSliderHide">
+			<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+			<div class="content"><L_>订单详情</L_></div>
+		</section>
+		<section class="g_details p40">
+			<div class="commod detail_list"></div>
+			<!-- 导游信息 -->	
+			<div class="guide detail_list">
+				
+			</div>
+			<!-- 车辆信息 -->
+			<div class="park detail_list">
+			</div>
+
+			<!-- 用户信息 -->
+			<div class="user detail_list">
+			</div>
+
+			<!-- 门票信息 -->
+			<div class="ticket detail_list">
+			</div>
+
+			<div class="distri detail_list" id="distriBox">
+				<!--div class="top clr">
+					<h2 class="fl"><L_>配送信息</L_></h2>
+				</div>
+				<div class="distri_list">
+					<ul>
+						<li class="clr address">
+							<div class="tit">
+								<div class="tit_top clr">
+									<div class="fl"><L_>收件人：吴倩</L_></div>
+									<div class="fr blue callPhone" data-phone="18010860157 18010860157">18010860157</div>
+								</div>
+								<div class="tit_bot openMap" data-type="baidu" data-lng="117.235447" data-lat="31.826870" data-name="收件人：吴倩" data-address="黄上路和潜山路交口 华地·学府公馆东202米">
+									收货地址：安徽 合肥 蜀山区 黄上路和潜山路交口 华地·学府公馆东202米 
+								</div>
+							</div>
+						</li>
+						<li class="clr express">
+							<h2><L_>快递信息</L_></h2>
+							<div class="expressage clr">
+								<div class="select">
+									<select>
+										<option><L_>申通快递</L_></option>
+										<option><L_>圆通快递</L_></option>
+									</select>
+								</div>
+								<div class="input">
+									<input type="text" placeholder="点击输入快递号"/>
+								</div>
+								<div class="preser"><L_>保存</L_></div>
+							</div>
+						</li>
+						<li class="clr express additional">
+							<h2>额外信息 <span class="modify"><L_>修改</L_></span></h2>
+							<div class="textarea">
+								<textarea placeholder="点击进行修改信息"></textarea>
+							</div>
+						</li>
+					</ul>
+				</div-->
+			</div>
+
+            <div class="hotel detail_list"></div>
+
+            <div class="order detail_list"></div>
+
+			<div class="payment detail_list" id="paymentBox"></div>
+
+			<div class="leaving detail_list">
+				<!--div class="top clr"><h2 class="fl"><L_>买家留言</L_></h2></div><div class="textarea"><textarea placeholder="暂无" readonly="readonly"></textarea></div-->
+			</div>
+		</section>
+
+		<section class="consum_tc">
+			<div class="consum_tc_n">
+				<div class="tc_top"><L_>消费码验证</L_></div>
+				<div class="scroll">
+					<ul>
+						<!--li class="clr">
+							<span class="fl">05150516493538</span>
+							<span class="fr ecc"><L_>已消费</L_></span>
+						</li>
+						<li class="clr">
+							<span class="fl">05150516493538</span>
+							<span class="fr a39"><L_>验证</L_></span>
+						</li-->
+					</ul>
+				</div>
+
+				<div class="all">
+					<span id="allVerify"><L_>全部验证</L_></span>
+				</div>
+
+				<div class="del"></div>
+			</div>
+		</section>
+		<div class="mask"></div>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/jroll.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/ticket_order_detail.js"></script>
+		
+		
+		<script id="passList" type="text/html">
+			{{# for(var i = 0, len = d.length; i < len; i++){ }}
+			<li class="clr">
+				<span class="fl">{{ d[i].group_pass }}</span>
+				{{# if (d[i].status == 0 ) { }}
+				<span class="fr a39" data-pass="{{ d[i].group_pass }}">{{ L_('验证') }}</span>
+				{{# } else { }}
+				<span class="fr ecc">{{ L_('已消费') }}</span>
+				{{# } }}
+			</li>
+			{{# } }}
+		</script>
+		<script id="goodsDetail" type="text/html">
+				<div class="top clr">
+					<h2 class="fl">{{ L_('商品信息') }}</h2>
+					{{# if ((d.type==4 || d.type == 7) && d.is_pick_in_store == 1) { }}
+					<div class="consum fr" data-type="0">{{ L_('用户取货确认') }}</div>
+					{{# } else if (d.type == 1 && d.tuan_type != 2 ) { }}
+					<div class="consum fr " id="consume" data-type="{{ d.pass_array }}">{{ L_('消费验证') }}</div>
+					{{# } }}
+				</div>
+				<div class="commod_list">
+					<div class="img fl">
+						<img src="{{ d.pic }}">
+					</div>
+					<div class="content">
+						<h2>{{ d.title }}</h2>
+						<div class="clr price">
+							<div class="fl">{{ L_('单价') }}：{{ currency_symbol }}{{ d.price }}</div>
+							<div class="fl">{{ L_('数量') }}：{{ d.num}}</div>
+						</div>
+						<div class="clr">
+							<div class="fl total" style="font-size:14px">{{ L_('共计') }}：{{ currency_symbol }}{{ d.ticket_price }}</div>
+							<div class="state fr">
+								<span style='color:#ff5260;'>{{d.order_state}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+		</script>
+		<script id="guideDetail" type="text/html">
+		<div class="top clr">
+			<h2 class="fl">{{ L_('景区内导游信息') }}</h2>
+		</div>
+		<div class="user_list">
+			<ul>
+				<li class="clr">
+					<span class="fl">{{ L_('姓名') }}</span>
+					<span class="fr">{{ d.guide_name }}</span>
+				</li>
+				<li class="clr">
+					<span class="fl">{{ L_('年龄') }}</span>
+					<span class="fr">{{ d.guide_age }}</span>
+				</li>
+				<li class="clr">
+					<span class="fl">{{ L_('性别') }}</span>
+					<span class="fr">{{# if(d.guide_gender==1){  }}{{ L_('男') }}{{# } else { }}{{ L_('女') }}{{# } }}</span>
+				</li>
+				<li class="clr">
+					<span class="fl">{{ L_('手机号') }}</span>
+					<span class="fr blue callPhone" data-phone="{{ d.guide_phone }}">{{ d.guide_phone }}</span>
+				</li>
+				<li class="clr">
+					<span class="fl">{{ L_('价格') }}</span>
+					<span class="fr"><span style='color:#2ecc71;'>{{ currency_symbol }}{{ d.guide_price }}</span>/{{ L_('次数') }}</span>
+				</li>
+			</ul>
+		</div>
+		</script>
+		
+		<script id="parkDetail" type="text/html">
+			{{# if(d){ }}
+			<div class="top clr">
+				<h2 class="fl">{{ L_('停车信息') }}</h2>
+			</div>		
+			<div class="user_list">
+				<ul>
+					<li class="clr">
+					<p class='fl'>
+						{{# for(var i in d.list){ }}
+							{{# if (d.list[i]){ }}							
+								<span >{{ L_('车牌号') }}：{{ d.list[i].code }}</span><br/>							
+							{{# } }}						
+						{{# } }}
+					</p>
+					<p class='fr'><span style='color:#2ecc71;'>{{ currency_symbol }}{{d.prak_price}}</span>×{{d.prak_count}}{{ L_('辆') }}</p>
+					</li>
+				</ul>
+			</div>
+			{{# } }}
+		</script>
+
+		<script id="userDetail" type="text/html">
+			<div class="user_list">
+				<ul>
+					{{# if(d.family_list){ }}
+						<div class="top clr">
+							<h2 class="fl">{{ L_('出行消息') }}</h2>
+						</div>
+						<li class="clr">
+						{{# for(var i in d.family_list){ }}
+							{{# if (d.family_list[i]){ }}
+								<p style='padding:0 6px;overflow:auto;'>	
+									<span class="fl">{{ d.family_list[i].family_name }}</span>
+									<span class="fr">{{ d.family_list[i].certificates }}</span>
+								</p>
+							{{# } }}
+						{{# } }}
+						</li>
+					{{# } }}
+					{{# if(d.img_list){ }}
+						<div class="top clr">
+							<h2 class="fl">{{ L_('出行消息') }}</h2>
+						</div>
+						<li class="clr" style='padding:0;'>
+						{{# for(var m in d.img_list){ }}
+							{{# if (d.img_list[m]){ }}
+								<img src="{{d.img_list[m]}}" style='max-height:80px;max-width:80px;padding:10px;'/>
+							{{# } }}
+						{{# } }}
+						</li>
+					{{# } }}
+					{{# if(d.ticket_list){ }}
+						<div class="top clr">
+							<h2 class="fl">{{ L_('确认码') }}</h2>
+						</div>
+						{{# for(var j in d.ticket_list){ }}
+							{{# if (d.ticket_list[j]){ }}
+								<li class="clr">
+									<span class="fl">{{ d.ticket_list[j].code }}</span>
+									<b style='color:#f00;margin-left:10px;'>
+										{{# if (d.ticket_list[j].stype==1) { }}
+											{{ L_('可用次数') }}：{{d.ticket_list[j].num}}
+										{{# } else if (!isNaN(d.ticket_list[j].num) && d.ticket_list[j].num>=0) { }}
+											{{ L_('已使用') }}：{{d.ticket_list[j].num}} {{ L_('次') }}
+										{{# }else if(d.ticket_list[j].num===-1) { }}
+											{{ L_('可用次数已用完') }}
+										{{# } }}
+									</b>
+									<span class="fr" style='color:#f00;'>{{ d.ticket_list[j].state }}</span>
+								</li>
+							{{# } }}
+						{{# } }}
+					{{# } }}
+				</ul>
+			</div>			
+		</script>
+
+        <script id="ticketDetail" type="text/html">
+        <div class="top clr">
+            <h2 class="fl">{{ L_('使用方式') }}</h2>
+        </div>
+        <div class="user_list">
+            <ul>
+                <li class="clr">
+                    <span class="fl">{{ L_('门票名称') }}</span>
+                    <span class="fr">{{ d.title }}</span>
+                </li>
+                <li class="clr">
+                    <span class="fl">{{ L_('有效日期') }}</span>
+                    <span class="fr">{{ d.sdate }} {{ L_('至') }} {{ d.fdate }}</span>
+                </li>              
+            </ul>
+        </div>
+        </script>		
+	</body>
+</html>

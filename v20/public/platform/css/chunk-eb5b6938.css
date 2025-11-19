@@ -1,0 +1,135 @@
+
+.content[data-v-2807086e] {
+  height: 600px;
+}
+.img-list[data-v-2807086e] {
+  width: 94px;
+  height: 94px;
+  padding: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #d9d9d9;
+  float: left;
+  position: relative;
+}
+.img-list .goods-img[data-v-2807086e] {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.img-list .selected[data-v-2807086e] {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -6px;
+  top: -6px;
+}
+.no-data[data-v-2807086e] {
+  text-align: center;
+  padding-top: 40px;
+  font-size: 14px;
+  color: #999999;
+}
+.scroll_content1[data-v-2807086e]{
+    height: 700px;
+    border-right: 1px solid #eeeeee;
+    overflow-y: scroll;
+}
+.scroll_content[data-v-2807086e] .ant-upload-list-picture-card{
+    margin-bottom: 0 !important;
+}
+
+.ant-form-item[data-v-18e417dc] {
+  margin-bottom: 0;
+}
+.ant-table td[data-v-18e417dc] {
+  white-space: nowrap;
+}
+.classify_div[data-v-18e417dc] {
+  height: 200px;
+  overflow-y: scroll;
+}
+.Abutton[data-v-18e417dc] {
+  margin-bottom: 25px;
+}
+.pcButton[data-v-18e417dc] {
+  color: #1890ff;
+  border: 1px dashed #ccc;
+}
+.editOrMore[data-v-18e417dc] {
+  border: 0;
+  color: #1890ff;
+  margin-left: 5px;
+}
+.statusSwitch[data-v-18e417dc] {
+  margin-left: 3.125rem;
+  color: #000000;
+}
+.classify[data-v-18e417dc] {
+  color: #1890ff;
+}
+.circle[data-v-18e417dc] {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -10px;
+  left: 150px;
+  border: 1px solid #cccccc;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+  color: #fff;
+}
+.classifyLabel[data-v-18e417dc] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 10px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.circles[data-v-18e417dc] {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 118px;
+  left: 215px;
+  border: 1px solid #cccccc;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  font-size: 16px;
+  color: #fff;
+  line-height: 1;
+}
+.Input[data-v-18e417dc] {
+  cursor: pointer;
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.margins[data-v-18e417dc] {
+  margin-left: 20px;
+  color: #1890ff;
+}
+.MAR[data-v-18e417dc] {
+  margin-left: 20px;
+}
+.marg[data-v-18e417dc] {
+  margin-bottom: 20px;
+  margin-right: 10px;
+  color: #1890ff;
+}
+.Picimage_tubiao[data-v-18e417dc] {
+  width: 3.125rem;
+  height: 3.125rem;
+}
+.Picimage_tubiao[data-v-18e417dc]:hover {
+  content: url(../img/replace.9cc5c740.png);
+}
+

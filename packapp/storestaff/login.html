@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8" />
+	<title>店员中心</title>
+	<meta name="viewport"
+		content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name='apple-touch-fullscreen' content='yes' />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="format-detection" content="address=no" />
+	<link href="scripts/weui/weui.min.css" rel="stylesheet" />
+	<link href="css/pigcms.css" rel="stylesheet" />
+</head>
+
+<body style="background: url(images/dlbj_03.jpg) center no-repeat #2ecc71; background-size: 100% 100%;">
+	<section class="signin">
+		<div class="land_pos">
+			<div class="land">
+				<div class="logo">
+					<img src="images/logo.png" />
+				</div>
+				<div class="clerk">
+					<div class="clr clerk_input">
+						<div class="fl pos number"></div>
+						<div class="input">
+							<input type="text" placeholder="请输入您的店员账号" id="account" autocomplete="off" />
+						</div>
+					</div>
+					<div class="clr clerk_input">
+						<div class="fl pos password"></div>
+						<div class="input">
+							<input type="password" placeholder="请输入您的店员密码" id="passwd" autocomplete="off" />
+						</div>
+					</div>
+					<div class="remember clr" style="display:none;" id="reg_account">
+						<div class="fr"><a style="color:#fff" href="reg.html">
+								<L_>注册账号</L_> >
+							</a></div>
+					</div>
+				</div>
+				<div class="sign_bun">
+					<L_>登 录</L_>
+				</div>
+				<div class="remember clr" style="display:none;">
+					<div class="fl">
+						<input type="checkbox" id="checkbox_c1" class="chk" checked="checked" />
+						<label for="checkbox_c1"></label>
+					</div>
+					<div class="fl">
+						<L_>记住密码</L_>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="fixedAgreement">
+			<input class="weui-form-checkbox" id="login_agreement" type="checkbox" />
+			<label style="display: flex;align-items: center; justify-content: center;" for="login_agreement">
+				<i class="weui-icon-checkbox"></i>
+				<p style="color: #fff;">登录代表你已经同意<span id="goAgreement">隐私政策</span></p>
+			</label>
+		</div>
+		<div class="mark">
+			<div class="noAgree">
+				<img src="images/notice.png" style="width:60px" />
+				<p class="textP">
+					<L_>若不同意则不能正常使用本软件！</L_>
+				</p>
+				<button class="seen">知道了</button>
+			</div>
+		</div>
+		<style>
+			.fixedAgreement {
+				position: absolute;
+				bottom: 20px;
+				text-align: center;
+				width: 100%;
+				left: 0;
+				z-index: 0;
+
+
+				display: none;
+			}
+
+			.fixedAgreement #goAgreement {
+				color: red;
+				display: inline-block;
+				border: none;
+				margin: 0;
+				border: none;
+				border-radius: 0px;
+				font-size: 14px;
+				width: auto;
+			}
+
+			.mark {
+				width: 100%;
+				height: 100%;
+				position: fixed;
+				left: 0;
+				top: 0;
+				z-index: 999;
+				display: none;
+				background-color: rgba(0, 0, 0, 0.7);
+			}
+
+			.noAgree {
+				width: 70%;
+				padding: 10px;
+				margin: 60% auto;
+				text-align: center;
+				background: #fff;
+				border-radius: 4px;
+				padding: 20px 0 0 0;
+			}
+
+			.textP {
+				padding: 10px 0;
+			}
+
+			.seen {
+				color: #1b9dff;
+				background: #fff;
+				font-size: 16px;
+				padding: 20px 0;
+			}
+
+			.weui-icon-checkbox {
+				display: inline-block;
+				box-sizing: border-box;
+				width: 16px;
+				height: 16px;
+				margin-right: 5px;
+				border: 1px solid #b8b8b8;
+				background-color: #fafafa;
+				vertical-align: top;
+				cursor: pointer;
+			}
+
+			.weui-form-checkbox[type="checkbox"]:checked+label .weui-icon-checkbox {
+				background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDE0IDc5LjE1Njc5NywgMjAxNC8wOC8yMC0wOTo1MzowMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkY0MTI1RkFBQjJCNzExRTU5NzE3RDMyNDM3NTgzRTE4IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkY0MTI1RkFCQjJCNzExRTU5NzE3RDMyNDM3NTgzRTE4Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RjQxMjVGQThCMkI3MTFFNTk3MTdEMzI0Mzc1ODNFMTgiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RjQxMjVGQTlCMkI3MTFFNTk3MTdEMzI0Mzc1ODNFMTgiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5UDJTUAAABUElEQVR42mL8//8/w0ACJoYBBqMOGHEOsB0oB/AC8UIgPgTEZvR2gDYQnwXiOChfH0UWVA7QEPsA8af/CDAJXQ0tLS8G4r9Ili8BYkZ6OaD9Pyo4AcQc2NRS22ImIJ6OZvltIBbFpYealjMD8WI0y78CsS4+fdS0fNl/TBBOSC8uCVBiyQViASItX4HF8j5iHI/LwIVQQ+4CsQEeA1iAeBUWyw9AzSHLAS1ohn0H4hQs6liBeDUWy58AsTix0YdNUBiIz2AxeD4Qc0HVsAHxOixqfgKxNSnpB5cEPxAfw2LBeWiq3vofO8gjNQHjk+QF4kNYLPmHw/Kl5OQgQgpAQb77P2FwDil6qOoABmgRuhWP5a+AWJbcMoRYhaBEtx5HorOjpBAjRTEo261Ec0AKpaUoOUUurJDqpEYxTm6Nl05sSUcIM472jEYdMOIdABBgAFfZNpPCdKCTAAAAAElFTkSuQmCC);
+				background-size: 100%;
+				background-color: #07c160;
+				border: 1px solid #07c160;
+				cursor: pointer;
+			}
+		</style>
+	</section>
+	<script src="scripts/jquery-1.8.3.min.js"></script>
+	<!-- <script src="scripts/fastclick.js"></script> -->
+	<script src="scripts/layer/layer.m.js"></script>
+	<script src="scripts/common.js"></script>
+	<script src="scripts/weui/weui.min.js"></script>
+	<script src="scripts/work/login.js?t=11233"></script>
+	<!-- android=appbackmonitor -->
+</body>
+
+</html>

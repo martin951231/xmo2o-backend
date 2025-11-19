@@ -1,0 +1,200 @@
+ <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>营业分析</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/add_bank.css"/>
+	<link rel="stylesheet" type="text/css" href="css/businessAnalysis.css"/>
+	<style>
+		.mui-popup-title + .mui-popup-text{
+			text-align: left;
+			padding: 0 20px;
+		}
+	</style>
+</head>
+<body style="background: #fff;">
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+		<h1 class="mui-title"><L_>今日实时看板</L_></h1>
+	</header> 
+	<div class="mui-content"> 
+		<!-- 外卖 -->
+		<div class="shop_analysis">
+			<div class="top_xialaSelect" style="margin: 0 20px;"  > 
+				<a href="#selectStroe"><L_>全部店铺</L_></a>
+			</div>
+			<h3 class="shishi_til"><L_>营销今日实时看板</L_></h3>
+			<ul class="ul_list_Analysis todayData"></ul> 
+			
+			<ul class="tab_conEcharts tab_conEchartChange">
+				<li class="cur" data-data_type='0'><span><L_>活动总营业额趋势</L_></span></li>
+				<li data-data_type='1'><span><L_>带动订单趋势</L_></span></li> 
+			</ul>
+			
+			<ul class="ul_changeFen">
+				 <span class="cur" data-is_add_up='1'><L_>累计</L_></span> <span  data-is_add_up='0'><L_>分时</L_></span> 
+			</ul>
+			
+			<div id="container" style="height: 300px"></div>
+			
+		</div>
+		<!-- 外卖 end --> 
+		<div id="selectStroe" class="mui-popover mui-popover-action mui-popover-bottom"> 
+			<ul class="mui-table-view ul_selectStore"> 
+			</ul>  
+			<ul class="mui-table-view" style="margin: 0; border-radius: 0;">
+				<li class="mui-table-view-cell" >
+					<a href="#picture"><b style="color: #999;"><L_>确定</L_></b></a>
+				</li> 
+			</ul>
+			
+		</div>
+		 
+	</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script> 
+<script src="js/work/businessAnalysis.js?t=1" type="text/javascript" charset="utf-8"></script> 
+<script id="todayData" type="text/html">
+	<li style="width: 100%;">
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hdzyye"><L_>活动总营业额</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle_xia" id="price_xia_hdzyye" data-merchant_reduce_order_money={{ d.merchant_reduce_order_money }} data-card_price_order_money={{ d.card_price_order_money }}><i class="Currency_symbol"></i>{{ d.market_total_money_0 }}{{ d.market_total_money_1 }} </label></div>
+	    <div class="grayColor">{{ d.market_total_money_text.text }}
+		{{# if(d.market_total_money_text.diff > 0){ }} 
+			<label class="goUp"> {{ d.market_total_money_text.diff }} </label>
+		{{# } else if(d.market_total_money_text.diff == 0) { }}
+		   <L_>持平</L_>  
+		{{# }  else{ }} 
+			<label class="goDown">{{ d.market_total_money_text.diff }} </label>
+		{{# } }} 
+		</div>
+	</li>  
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hdzyzc"><L_>活动总支出</L_> </span></div>
+	    <div class=""><label class="priceStyle priceStyle1 priceStyle_xia" id="price_xia_hdzyzc" data-merchant_reduce={{ d.merchant_reduce }} data-card_price={{ d.card_price }}><i class="Currency_symbol"></i>{{ d.mer_total_money_0 }}{{ d.mer_total_money_1 }}</label></div>
+	    <div class="grayColor">{{ d.mer_total_money_text.text }}
+	    {{# if(d.mer_total_money_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.mer_total_money_text.diff }} </label>
+	    {{# } else if(d.mer_total_money_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# } else { }} 
+	    	<label class="goDown">{{ d.mer_total_money_text.diff }} </label>
+	    {{# } }} 
+	    </div>
+	</li>
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_dddd"><L_>带动订单</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle1 priceStyle_xia" id="price_xia_dddd" data-merchant_reduce_count={{ d.merchant_reduce_count }} data-card_price_count={{ d.card_price_count }}>{{ d.market_count_0 }}{{ d.market_count_1 }}<L_>单</L_></label></div>
+	    <div class="grayColor">{{ d.market_count_text.text }}
+	    {{# if(d.market_count_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.market_count_text.diff }}<L_>单</L_></label>
+	    {{# } else if(d.market_count_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.market_count_text.diff }}<L_>单</L_></label>
+	    {{# } }} 
+	    </div> 
+	</li> 
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hdyl"><L_>活动盈利</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle1 "><i class="Currency_symbol"></i>{{ d.mer_income_0 }}{{ d.mer_income_1 }}</label></div> 
+	    <div class="grayColor">{{ d.mer_income_text.text }}
+	    {{# if(d.mer_income_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.mer_income_text.diff }} </label>
+	    {{# } else if(d.mer_income_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.mer_income_text.diff }} </label>
+	    {{# } }} 
+	    </div> 
+	</li>
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hdykdj"><L_>活动客单价</L_> </span></div>
+	    <div class=""><label class="priceStyle priceStyle1 " id="price_xia_hdbt">{{ d.unit_price_0 }}{{ d.unit_price_1 }}<L_>人</L_></label></div>
+	    <div class="grayColor">{{ d.unit_price_text.text }}
+	    {{# if(d.unit_price_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.unit_price_text.diff }} </label>
+	    {{# } else if(d.unit_price_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.unit_price_text.diff }} </label>
+	    {{# } }} 
+	    </div>  
+	</li>
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hdxks"><L_>活动新客数</L_> </span></div>
+	    <div class=""><label class="priceStyle priceStyle1">{{ d.regular_customer_0 }}{{ d.regular_customer_1 }}<L_>人</L_></label></div>
+	    <div class="grayColor">{{ d.regular_customer_text.text }}
+	    {{# if(d.regular_customer_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.regular_customer_text.diff }} </label>
+	    {{# } else if(d.regular_customer_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.regular_customer_text.diff }} </label>
+	    {{# } }} 
+	    </div> 
+	</li>
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hdylks"> <L_>活动老客数</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle1">{{ d.new_customer_0 }}{{ d.new_customer_1 }}<L_>人</L_></label></div>
+	    <div class="grayColor">{{ d.new_customer_text.text }}
+	    {{# if(d.new_customer_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.new_customer_text.diff }} </label>
+	    {{# } else if(d.new_customer_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.new_customer_text.diff }} </label>
+	    {{# } }} 
+	    </div>  
+	</li>
+	
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_trccb"><L_>投入产出比</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle1">{{ d.input_output_rate_0 }}{{ d.input_output_rate_1 }}%</label></div>
+	    <div class="grayColor">{{ d.input_output_rate_text.text }}
+	    {{# if(d.input_output_rate_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.input_output_rate_text.diff }} </label>
+	    {{# } else if(d.input_output_rate_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.input_output_rate_text.diff }} </label>
+	    {{# } }} 
+	    </div> 
+	</li>
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_lqsl"> <L_>领券数量</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle1">{{ d.card_new_coupon_hadpull_0 }}{{ d.card_new_coupon_hadpull_1 }}</label></div>
+	    <div class="grayColor">{{ d.card_new_coupon_hadpull_text.text }}
+	    {{# if(d.card_new_coupon_hadpull_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.card_new_coupon_hadpull_text.diff }} </label>
+	    {{# } else if(d.card_new_coupon_hadpull_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.card_new_coupon_hadpull_text.diff }} </label>
+	    {{# } }} 
+	    </div> 
+	</li>
+	<li>
+	    <div class="grayColor"><span class="has_wen" id="market_tan_hxl"> <L_>核销率</L_></span></div>
+	    <div class=""><label class="priceStyle priceStyle1">{{ d.coupon_use_rate_0 }}{{ d.coupon_use_rate_1 }}%</label></div>
+	    <div class="grayColor">{{ d.coupon_use_rate_text.text }}
+	    {{# if(d.coupon_use_rate_text.diff > 0){ }} 
+	    	<label class="goUp"> {{ d.coupon_use_rate_text.diff }} </label>
+	    {{# } else if(d.coupon_use_rate_text.diff == 0) { }}
+	        <L_>持平</L_>  
+	    {{# }  else { }} 
+	    	<label class="goDown">{{ d.coupon_use_rate_text.diff }} </label>
+	    {{# } }} 
+	    </div> 
+	</li>
+	
+</script>
+ 
+</body>
+</html>

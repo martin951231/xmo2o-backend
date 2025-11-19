@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>店员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/pigcms.css" rel="stylesheet"/>
+		<style type="text/css">
+			.rfd{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<section class="public pageSliderHide">
+			<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+			<div class="content"><L_>订单详情</L_></div>
+		</section>
+		<section class="g_details p40">
+			<div class="user detail_list">
+				<div class="top clr">
+					<h2 class="fl"><L_>订单信息</L_></h2>
+				</div>
+				<div class="user_list">
+					<ul>
+						<li class="clr">
+							<span class="fl"><L_>订单号</L_></span>
+							<span class="fr" id="order-order_id"></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>总价</L_></span>
+							<span class="fr"><em class="ecc"><span class="currency_symbol">￥</span><span id="order-total_price" data-exec="parseFloat"></span>元</em></span>
+						</li>
+						<li class="clr ticketBox" style="display:none;">
+							<span class="fl"><L_>单张票价格</L_></span>
+							<span class="fr"><em class="ecc"><span class="currency_symbol">￥</span><span id="order-ticketPrice" data-exec="parseFloat"></span>元</em></span>
+						</li>
+						<li class="clr ticketBox" style="display:none;">
+							<span class="fl"><L_>购票数量</L_></span>
+							<span class="fr"><em class="ecc"><span id="order-ticketNum"></span></em></span>
+						</li>
+						<li class="clr ticketBox" id="ticketInsureLi" style="display:none;">
+							<span class="fl"><L_>单张票保险价</L_></span>
+							<span class="fr"><em class="ecc"><span class="currency_symbol">￥</span><span id="order-ticketInsure"></span>元</em></span>
+						</li>
+						<li class="clr" id="noDiscountBox">
+							<span class="fl"><L_>不可优惠金额</L_></span>
+							<span class="fr"><em class="ecc"><span class="currency_symbol">￥</span><span id="order-no_discount_money" data-exec="parseFloat"></span>元</em></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>优惠金额</L_></span>
+							<span class="fr"><em class="f33"><span class="currency_symbol">￥</span><span id="order-discount_price" data-exec="parseFloat"></span>元</em></span>
+						</li>
+						<li class="clr" id="merchantCardDiscountBox">
+							<span class="fl"><L_>商家会员卡折扣</L_></span>
+							<span class="fr"><em class="ecc">-<span class="currency_symbol">￥</span><span id="order-merchantCardDiscount"></span></em></span>
+						</li>
+						<div id="pay_info"></div>
+						<li class="clr">
+							<span class="fl"><L_>应收总额</L_></span>
+							<span class="fr"><em class="ecc"><span class="currency_symbol">￥</span><span id="order-price" data-exec="parseFloat"></span>元</em></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>买单时间</L_></span>
+							<span class="fr" id="order-pay_time"></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>支付类型</L_></span>
+							<span class="fr" id="order-pay_type"></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>备注</L_></span>
+							<span class="fr" id="order-remark"></span>
+						</li>
+						<li class="clr rfd">
+							<span class="fl"><L_>状态</L_></span>
+							<span class="fr" id="order-refund_txt"></span>
+						</li>
+						<li class="clr rfd">
+							<span class="fl"><L_>退款时间</L_></span>
+							<span class="fr" id="order-refund_time"></span>
+						</li>
+						<li class="clr rfd">
+                            <span class="fl"><L_>退款操作人</L_></span>
+                            <span class="fr" id="order-refund_staff_name"></span>
+                        </li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="user detail_list">
+				<div class="top clr">
+					<h2 class="fl"><L_>用户信息</L_></h2>
+				</div>
+				<div class="user_list">
+					<ul>
+						<li class="clr">
+							<span class="fl">用户ID</span>
+							<span class="fr" id="user-uid"></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>用户名</L_></span>
+							<span class="fr" id="user-nickname"></span>
+						</li>
+						<li class="clr">
+							<span class="fl"><L_>手机号</L_></span>
+							<span class="fr blue callPhone" id="user-phone" data-data="phone"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="verification" style="display: none;">取消订单</div>
+		</section>
+
+		<div class="mask"></div>
+		<section class="seek">
+            <div class="within">
+                <h2><L_>取消订单</L_></h2>
+                <div class="con">
+                    <div class="img">
+                        <img src="images/tct_06.jpg">   
+                    </div>
+                    <div class="tit">
+                        <p class="on"><L_>重要提示</L_></p>
+                        <p class="p rig_p">取消订单后，用户支付金额将原路返回，并且不能恢复，<span class="red"><L_>确定取消吗？</L_></span></p>
+                    </div>
+                    <div class="button">
+                        <input type="hidden" id="order_id" value="0"/>
+                        <div class="clr p20">
+                            <div class="fl close"><L_>点错了</L_></div>
+                            <div class="fr ensure"><L_>确认取消</L_></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="del"></div>
+        </section>
+
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/store_detail.js?t=1"></script>
+		<script id="pay_info_list" type="text/html">
+			{{# for (var i in d.pay_info) { }}
+				<li class="clr">
+					<span class="fl"><L_>{{d.pay_info[i].text}}</L_></span>
+					<span class="fr">
+						<em class="ecc"><span class="currency_symbol">￥</span><span id="value" data-exec="parseFloat">{{d.pay_info[i].pay_money}}</span>元</em>
+					</span>
+				</li>
+			{{# } }}
+        </script>
+	</body>
+</html>

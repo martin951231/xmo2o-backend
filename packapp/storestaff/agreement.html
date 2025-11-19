@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<title>隐私政策</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name='apple-touch-fullscreen' content='yes' />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="format-detection" content="address=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="css/pigcms.css" rel="stylesheet" />
+	</head>
+	<body>
+		<section class="public pageSliderHide">
+			<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+			<div class="content">
+				<L_>隐私政策</L_>
+			</div>
+		</section>
+		<div style="height: 100px; width: 100px;"></div>
+		<div style="padding:10px;" class="agreementBox">
+		</div>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js?t=2"></script>
+		<script>
+			common.http('Storestaff&a=get_privacy_policy', {
+				noTip: true
+			}, function(data) {
+				$('.agreementBox').html(data.privacy_policy);
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta charset="utf-8">
+    <title>在线签名</title>
+    <link rel="stylesheet" href="https://www.jq22.com/jquery/bootstrap-4.2.1.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            border: 2px dotted #ccc;
+            box-sizing: border-box;
+        }
+
+        .buttons-x {
+            position: absolute;
+            transform: rotate(90deg) translateX(-50%) !important;
+            /*设置元素顺时针旋转正90度*/
+            transform-origin: 0 100%;
+            /*设置元素以右上角为原点进行旋转*/
+            left: 0 !important;
+            bottom: 50% !important;
+            top: inherit !important;
+        }
+
+        .buttons {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body>
+    <!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+    <script src="js/fastclick.js"></script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/mui.picker.js"></script>
+    <script src="js/mui.poppicker.js"></script>
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/work/sign.js?t=3"></script>
+
+    <script>
+        //初始化
+        var width = document.documentElement.clientWidth || 400
+        var docHeight = document.documentElement.clientHeight
+        let flag = false
+        var sign = new Draw({
+            // canvas:document.getElementById('canvas'),
+            lineWidth: 5, // 线条宽度
+            width: width, // canvas 宽
+            height: docHeight - 100, //canvas 高    
+            strokeStyle: '#333333' // 线条颜色
+        });
+
+        window.onload = function () {
+            // 点击输出图片
+            document.querySelector('.ouput').onclick = function () {
+                if (sign.state.undopath.length < 1) {
+                    alert("请签名后再提交");
+                    return false;
+                }
+                if (flag) {
+                    //横板签名就反转图片
+                    rotateBase64Img(sign.ouput(), -90, function (base64data) {
+                        //生成的base64内容
+                        common.http('Merchantapp&a=saveSign', {
+                            sign_name_base64: base64data
+                        }, function (data) {
+                            if (common.checkApp()) {
+                                if (common.checkAndroidApp()){
+                    				window.pigcmspackapp.closewebview(3);
+                    			}else{
+                    				common.iosFunction('closewebview/2', {name:'closewebview', type: '3'});
+                    			}
+                            } else {
+                                redirect_self('contract.html?hideSign=1');
+                            }
+                        }, err => {
+                            alert(err.errorMsg);
+
+                        });
+                    })
+                } else {
+                    common.http('Merchantapp&a=saveSign', {
+                        sign_name_base64: sign.ouput()
+                    }, function (data) {
+                        if (common.checkApp()) {
+                                if (common.checkAndroidApp()){
+                    				window.pigcmspackapp.closewebview(3);
+                    			}else{
+                    				common.iosFunction('closewebview/2', {name:'closewebview', type: '3'});
+                    			}
+                            } else {
+                                redirect_self('contract.html?hideSign=1');
+                            }
+                    }, err => {
+                        alert(err.errorMsg);
+
+                    });
+                }
+                return false;
+
+                var img = new Image();
+                img.style.width = '200px';
+                img.src = sign.ouput();
+                img.onload = function () {
+                    document.body.appendChild(img);
+                }
+                document.querySelector('img') && document.querySelector('img').remove();
+            }
+            // 点击清除
+            document.querySelector('.clear').onclick = function () {
+                sign.clear();
+            }
+            // 点击撤销
+            /*document.querySelector( '.undo' ).onclick = function () {
+                if ( sign.state.undopath.length > 0 ) {
+                    sign.undo();
+                } else {
+                    console.log( '还没有签名' );
+                }
+            }*/
+        }
+        //签完名的图片旋转处理
+        function rotateBase64Img(src, edg, callback) {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var imgW; //图片宽度
+            var imgH; //图片高度
+            var size; //canvas初始大小
+            if (edg % 90 != 0) {
+                console.error("旋转角度必须是90的倍数!");
+                throw '旋转角度必须是90的倍数!';
+            }
+            (edg < 0) && (edg = (edg % 360) + 360)
+            const quadrant = (edg / 90) % 4; //旋转象限
+            const cutCoor = {
+                sx: 0,
+                sy: 0,
+                ex: 0,
+                ey: 0
+            }; //裁剪坐标
+            var image = new Image();
+            image.crossOrigin = "anonymous"
+            image.src = src;
+            image.onload = function () {
+                imgW = image.width;
+                imgH = image.height;
+                size = imgW > imgH ? imgW : imgH;
+                canvas.width = size * 2;
+                canvas.height = size * 2;
+                switch (quadrant) {
+                    case 0:
+                        cutCoor.sx = size;
+                        cutCoor.sy = size;
+                        cutCoor.ex = size + imgW;
+                        cutCoor.ey = size + imgH;
+                        break;
+                    case 1:
+                        cutCoor.sx = size - imgH;
+                        cutCoor.sy = size;
+                        cutCoor.ex = size;
+                        cutCoor.ey = size + imgW;
+                        break;
+                    case 2:
+                        cutCoor.sx = size - imgW;
+                        cutCoor.sy = size - imgH;
+                        cutCoor.ex = size;
+                        cutCoor.ey = size;
+                        break;
+                    case 3:
+                        cutCoor.sx = size;
+                        cutCoor.sy = size - imgW;
+                        cutCoor.ex = size + imgH;
+                        cutCoor.ey = size + imgW;
+                        break;
+                }
+                ctx.translate(size, size);
+                ctx.rotate(edg * Math.PI / 180);
+                //drawImage向画布上绘制图片
+                ctx.drawImage(image, 0, 0);
+                //getImageData() 复制画布上指定矩形的像素数据
+                var imgData = ctx.getImageData(cutCoor.sx, cutCoor.sy, cutCoor.ex, cutCoor.ey);
+                if (quadrant % 2 == 0) {
+                    canvas.width = imgW;
+                    canvas.height = imgH;
+                } else {
+                    canvas.width = imgH;
+                    canvas.height = imgW;
+                }
+                //putImageData() 将图像数据放回画布
+                ctx.putImageData(imgData, 0, 0);
+                callback(canvas.toDataURL())
+            }
+        }
+    </script>
+    <div class="buttons" id="buttons">
+        <button type="button" class="btn btn-primary ouput">完成</button>
+        <!--    <button type="button" class="btn btn-light undo">撤销</button>-->
+        <button type="button" class="btn btn-light clear">重写</button>
+        <button type="button" class="btn btn-light" id="switch">横板</button>
+    </div>
+    <script>
+        $('#buttons').css('top', docHeight - 70)
+        $('#switch').click(function () {
+            flag = !flag;
+            $('canvas') && $('canvas').remove();
+            if (flag) {
+                sign = new Draw({
+                    // canvas:document.getElementById('canvas'),
+                    lineWidth: 5, // 线条宽度
+                    width: width, // canvas 宽
+                    height: docHeight, //canvas 高    
+                    strokeStyle: '#333333' // 线条颜色
+                });
+                $('canvas').addClass('transverse')
+                $('.buttons').addClass('buttons-x')
+                $('#switch').html('竖版')
+            } else {
+                sign = new Draw({
+                    // canvas:document.getElementById('canvas'),
+                    lineWidth: 5, // 线条宽度
+                    width: width, // canvas 宽
+                    height: docHeight - 100, //canvas 高    
+                    strokeStyle: '#333333' // 线条颜色
+                });
+                $('canvas').removeClass('transverse')
+                $('.buttons').removeClass('buttons-x')
+                $('#switch').html('横板')
+
+            }
+        })
+    </script>
+</body>
+
+</html>

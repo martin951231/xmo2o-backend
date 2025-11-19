@@ -1,0 +1,11 @@
+.basice_set[data-v-4b899540] {
+  width: 100%;
+}
+.basice_set .input_style_240[data-v-4b899540] {
+  width: 360px;
+}
+[data-v-4b899540] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+

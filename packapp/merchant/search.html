@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<title>商品搜索</title>
+	<link href="css/mui.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/search.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+	<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	<h1 class="mui-title">
+		<i></i>
+		<input type="search" class="mui-input-clear" id="keywords" placeholder="商品名称"/>
+	</h1>
+</header>
+<div class="mui-content">
+	<ul class="goods_news"></ul>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="add" type="text/html">
+	{{# for(var i = 0; i < d.length; i++){ }}
+	<li class="mui-clearfix" data-goodid="{{ d[i].goods_id }}">
+		<img class="mui-pull-left" src="{{ d[i].image }}"/>
+		{{# if( d[i].status==0 ){ }}
+		<sub class="floor">{{ L_('已下架') }}</sub>
+		{{# } else { }}
+		<sub class="floor" style="display:none;">{{ L_('已下架') }}</sub>
+		{{# } }}
+		<ul class="mui-pull-left">
+			<li>{{ d[i].name}}</li>
+			<li>
+				{{# if( d[i].stock_num == -1 ){ }}
+				<sapn>{{ L_('无限量库存') }}</sapn>
+				{{# } else { }}
+				<sapn>{{ L_('原始库存') }}：{{ d[i].original_stock }}</sapn>
+				{{# } }}
+				<span>{{ L_('月售') }}：{{ d[i].sell_count }}</span>
+			</li>
+			<li><b>{{ L_('￥') }}{{ d[i].price }}</b> <span>{{ L_('当前库存') }}：{{# if( d[i].stock_num == -1 ){ }}{{ L_('无限量') }}{{# } else { }}{{ d[i].stock_num }}{{# } }}</span></li>
+		</ul>
+
+		<div class="mui-media-body hide_btn">
+			<button data-goodid="{{ d[i].goods_id }}" type="button" class="goods_modify">{{ L_('修改') }}</button>
+			{{# if( d[i].status==0 ){ }}
+			<button data-goodid="{{ d[i].goods_id }}" type="button" class="goods_off">{{ L_('上架') }}</button>
+			{{# } else { }}
+			<button data-goodid="{{ d[i].goods_id }}" type="button" class="goods_off">{{ L_('下架') }}</button>
+			{{# } }}
+			<button data-goodid="{{ d[i].goods_id }}" type="button" class="goods_size">{{ L_('规格') }}</button>
+		</div>
+
+	</li>
+
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+	mui.init();
+	var ticket = common.getCache('ticket');
+	var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+	var store_id=$.getUrlParam('data');
+	var validate=function(res,is_global){
+		var result=res.replace(/(^\s+)|(\s+$)/g,"");
+		if(is_global.toLowerCase()=="g") {
+			if(result==''){
+				return false
+			}else{
+				return true
+			}
+		}
+	}
+
+	$('#keywords').val('');
+	var bind_name = 'input';
+	if (navigator.userAgent.indexOf("MSIE") != -1){ bind_name = 'propertychange' }
+	$('#keywords').bind(bind_name ,function(){
+		var val=$(this).val();
+		if(validate(val,'g')){
+			common.http('WapMerchant&a=searchGoods',{'ticket':ticket,'client':client,'store_id':store_id,'keyword':val},function(data){
+				if(data!=null){
+					laytpl(document.getElementById('add').innerHTML).render(data, function(html){
+						$('.goods_news').html(html);
+						console.log(data);
+					});
+				}
+
+			});
+		}else{
+			$('.goods_news').html('');
+		}
+	})
+	$('body').off('click','.mui-input-clear').on('click','.mui-input-clear',function(e){
+		e.stopPropagation();
+		var val=$(this).val();
+		if(val==''){
+			$('.goods_news').html('');
+		}
+	});
+	//点击修改
+	mui('.mui-content').on('tap','.goods_modify',function(e){
+		common.setCache('addType',1);
+		var id=$(this).attr('data-goodid');
+		//common.setCache('goods_id',id);
+		openWindow({
+			url:'add_goods.html?store_id='+store_id+'&goods_id='+id,
+			id:'add_goods'
+		});
+	});
+	//点击规格
+	mui('.mui-content').on('tap','.goods_size',function(e){
+		var id=$(this).attr('data-goodid');
+		common.setCache('goods_id',id);
+		openWindow({
+			url:'goods_size.html',
+			id:'goods_size'
+		});
+	});
+	//商品上下架点击
+	$('.mui-content').unbind('click','.goods_off').on('click','.goods_off',function(e){
+		e.stopPropagation();
+		var goods_ids=$(this).attr('data-goodid');
+		var me=this;
+		if($(this).text()=="上架"){
+			common.http('WapMerchant&a=updateGoodsStatus',{'ticket':ticket,'client':client,'store_id':store_id,'goods_ids':goods_ids,'status':1},function(data){
+				mui.toast(L_('上架成功'));
+				$(me).parents('li.mui-clearfix').find('.floor').hide();
+				$(me).text(L_('下架'));
+			});
+		}else{
+
+			common.http('WapMerchant&a=updateGoodsStatus',{'ticket':ticket,'client':client,'store_id':store_id,'goods_ids':goods_ids,'status':0},function(data){
+				mui.toast(L_('下架成功'));
+				$(me).parents('li.mui-clearfix').find('.floor').show();
+				$(me).text(L_('上架'));
+			});
+
+		}
+		// return false;
+	});
+</script>
+</body>
+</html>

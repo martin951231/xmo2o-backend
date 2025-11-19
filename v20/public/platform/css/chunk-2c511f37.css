@@ -1,0 +1,48 @@
+
+.color-picker-wrap[data-v-6c4edf64] {
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+}
+.color-picker-label[data-v-6c4edf64] {
+    width: 80px;
+    height: 30px;
+    border: 1px solid #666666;
+}
+.color-picker-label input[type='color'][data-v-6c4edf64] {
+    opacity: 0;
+}
+.color-name[data-v-6c4edf64] {
+    height: 30px;
+    line-height: 30px;
+    min-width: 60px;
+    text-align: left;
+    margin-right: 20px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+}
+.custom-page-index-decorate[data-v-6c4edf64] .flex-end.ant-form-item.ant-row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+}
+.upload-wrap[data-v-6c4edf64] {
+    width: 200px;
+    border: 1px dashed #e7e7e7;
+    background: #fafafa;
+    overflow: hidden;
+}
+.upload-wrap-wechat[data-v-6c4edf64] {
+    height: 160px;
+}
+.upload-wrap-h5[data-v-6c4edf64] {
+    height: 200px;
+}
+.custom-page-index-decorate[data-v-6c4edf64] .ant-card-head-title {
+    font-weight: bold;
+}
+

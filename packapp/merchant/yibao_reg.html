@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<title>汇付账户入网</title>
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link rel="stylesheet" href="css/vant/vant@2.12.47.css" />
+	<script src="js/vant/vue@2.6.14.min.js"></script>
+	<script src="js/vant/vant@2.12.14.min.js"></script>
+</head>
+<style>
+	body {
+		background-color: #f0eff4;
+	}
+
+	.van-nav-bar .van-icon {
+		color: #fff;
+	}
+
+	.van-nav-bar__title {
+		color: #fff;
+	}
+
+	.form-box {
+		padding-top: calc(constant(safe-area-inset-top) + 50px);
+		padding-top: calc(env(safe-area-inset-top) + 50px);
+	}
+
+	.status {
+		height: 30px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 0 0 4px 0;
+		font-size: 14px;
+		background-color: #fff;
+	}
+
+	.status-warning {
+		color: #FFA200;
+	}
+
+	.status-success {
+		color: #07c160;
+	}
+
+	.status-error {
+		color: #ee0a24;
+	}
+
+	.trip {
+		font-size: 14px;
+		display: flex;
+		justify-content: center;
+		margin: 10px 0;
+	}
+</style>
+
+<body>
+	<div id="app" styly="display:none">
+		<van-nav-bar z-index="99" :title="L_('汇付账户入网')" style="background-color: #FFA200;" fixed
+			safe-area-inset-top="true" left-arrow @click-left="onClickLeft"></van-nav-bar>
+		<div class="form-box">
+			<div class="status status-warning" v-if="form.audit_state==0">{{L_('审核中')}}</div>
+			<div class="status status-success" v-if="form.audit_state==1">{{L_('通过')}}</div>
+			<div class="status status-error" v-if="form.audit_state==2">{{L_('失败')}}</div>
+			<van-form @submit="onSubmit">
+				<van-field maxlength="11" required v-model="form.phone" type="tel" :label="L_('子商户手机号')"
+					:placeholder="L_('请输入子商户手机号')" :rules="[{ required: true, message: L_('请输入子商户手机号') }]"></van-field>
+
+				<van-field required v-model="form_value_name.userType_name" :label="L_('子商户类型')"
+					:placeholder="L_('请选择子商户类型')" :rules="[{ required: true, message: L_('请选择子商户类型') }]"
+					right-icon="arrow-down" readonly clickable @click="formClick('userType')"></van-field>
+
+				<van-field maxlength="64" required v-model="form.userName" :label="L_('子商户名称')"
+					:placeholder="L_('请输入子商户名称')" :rules="[{ required: true, message: L_('请输入子商户名称') }]"></van-field>
+
+				<van-field maxlength="20" required v-model="form.certId" :label="L_('身份证号码')"
+					:placeholder="L_('请输入身份证号码')" :rules="[{ required: true, message: L_('请输入身份证号码') }]"></van-field>
+
+				<van-field maxlength="200" :required="form.userType == 0?false:true" v-model="form.businessScope"
+					:label="L_('经营范围')" :placeholder="L_('请输入经营范围')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请输入经营范围') }]"></van-field>
+
+				<van-field maxlength="18" :required="form.userType == 0?false:true" v-model="form.socialCreditCode"
+					:label="L_('统一社会信用码')" :placeholder="L_('请输入统一社会信用码')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请输入统一社会信用码') }]"></van-field>
+
+				<van-field :required="form.userType == 0?false:true" v-model="form.socialCreditCodeExpires"
+					:label="L_('统一社会信用证有效期')" :placeholder="L_('请选择统一社会信用证有效期')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请选择统一社会信用证有效期') }]"
+					right-icon="arrow-down" readonly clickable @click="formClick('socialCreditCodeExpires')">
+				</van-field>
+
+				<van-field :required="form.userType == 0?false:true" v-model="form.certIdExpires"
+					:label="L_('法人身份证有效期')" :placeholder="L_('请选择法人身份证有效期')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请选择法人身份证有效期') }]"
+					right-icon="arrow-down" readonly clickable @click="formClick('certIdExpires')"></van-field>
+
+				<van-field maxlength="20" :required="form.userType == 0?false:true" v-model="form.legalPerson"
+					:label="L_('法人姓名')" :placeholder="L_('请输入法人姓名')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请输入法人姓名') }]"></van-field>
+
+				<van-field maxlength="11" :required="form.userType == 0?false:true" v-model="form.legalPhone"
+					:label="L_('法人手机号')" :placeholder="L_('请输入法人手机号')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请输入法人手机号') }]"></van-field>
+
+				<van-field maxlength="256" :required="form.userType == 0?false:true" v-model="form.address"
+					:label="L_('企业地址')" :placeholder="L_('请输入企业地址')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请输入企业地址') }]"></van-field>
+
+				<van-field :required="form.userType == 0?false:true" v-model="form_value_name.area_name"
+					:label="L_('省份及地区编码')" :placeholder="L_('请选择省份及地区编码')"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请选择省份及地区编码') }]"
+					right-icon="arrow-down" readonly clickable @click="formClick('area')"></van-field>
+
+				<van-field :required="form.userType == 0?false:true"
+					:rules="[{ required: form.userType == 0?false:true, message: L_('请上传附件') }]" :label="L_('上传附件')"
+					v-model="form.fileNo">
+					<template #input>
+						<div>
+							<van-uploader :max-count="5" accept=".jpg, .jpeg, .png, .bmp, .gif" v-model="uploader"
+								:after-read="afterRead"></van-uploader>
+							<div style="display: flex" v-if="uploader.length">
+								<van-button type="primary" size="small" @click="upLoadClick">{{L_('点击上传')}}</van-button>
+							</div>
+						</div>
+					</template>
+				</van-field>
+
+				<van-field :required="form.userType == 0?false:true" v-model="form.fileNo" :label="L_('附件编号')" readonly>
+				</van-field>
+
+				<!-- 绑定结算账户 -->
+				<div v-if="form.audit_state==1" style="margin-bottom: 40px;display: block;">
+					<div class="trip">{{L_('银行卡信息')}}</div>
+					<div style="background-color: #fff;overflow: hidden;">
+						<van-field maxlength="64" :required="true" v-model="form.cardName" :label="L_('银行卡户名')"
+							:placeholder="L_('请输入银行卡户名')" :rules="[{ required: true, message: L_('请输入银行卡户名') }]">
+						</van-field>
+
+						<van-field maxlength="32" :required="true" v-model="form.cardNo" :label="L_('银行卡号')"
+							:placeholder="L_('请输入银行卡号')" :rules="[{ required: true, message: L_('请输入银行卡号') }]">
+						</van-field>
+
+						<van-field maxlength="32" :required="true" v-model="form.bankPhone" :label="L_('银行预留手机号')"
+							:placeholder="L_('请输入银行预留手机号')" :rules="[{ required: true, message: L_('请输入银行预留手机号') }]">
+						</van-field>
+
+						<van-field :required="true" v-model="form_value_name.bankAcctType_name" :label="L_('银行账户类型')"
+							:placeholder="L_('请选择银行账户类型')" :rules="[{ required: true, message: L_('请选择银行账户类型') }]"
+							right-icon="arrow-down" readonly clickable @click="formClick('bankAcctType')"></van-field>
+
+						<van-field maxlength="64" v-model="form.bankName" :label="L_('开户银行名称')"
+							:placeholder="L_('请输入开户银行名称')">
+						</van-field>
+
+						<van-field :required="true" v-model="form_value_name.bankCode_name" :label="L_('银行编码')"
+							:placeholder="L_('请选择银行编码')" :rules="[{ required: true, message: L_('请选择银行编码') }]"
+							right-icon="arrow-down" readonly clickable @click="formClick('bankCode')"></van-field>
+
+						<van-field :required="form.bankAcctType == 2?false:true" v-model="form_value_name.bankArea_name"
+							:label="L_('账户开户银行所在省以及区编码')" :placeholder="L_('请选择账户开户银行所在省以及区编码')"
+							:rules="[{ required: form.bankAcctType == 2?false:true, message: L_('请选择账户开户银行所在省以及区编码') }]"
+							right-icon="arrow-down" readonly clickable @click="formClick('bankArea')"></van-field>
+
+						<div style="margin: 10px auto;width: 50%;">
+							<van-button size="small" round block type="info" color="#FFA200" @click="bindBank">
+								{{L_('绑定银行卡')}}</van-button>
+						</div>
+					</div>
+				</div>
+
+				<div style="margin: 16px;">
+					<van-button round block type="info" native-type="submit" color="#FFA200">{{L_('提交')}}</van-button>
+				</div>
+			</van-form>
+		</div>
+		<van-popup v-model="popupShow" position="bottom">
+			<van-picker
+				v-if="form_value_type == 'userType' || form_value_type =='bankAcctType' || form_value_type == 'bankCode'"
+				show-toolbar :columns="columns" @confirm="onPickerConfirm" @cancel="()=>{popupShow=false}"></van-picker>
+			<van-datetime-picker
+				v-else-if="form_value_type == 'socialCreditCodeExpires' || form_value_type == 'certIdExpires'"
+				v-model="currentDate" type="date" :title="L_('选择年月日')" :min-date="minDate" :max-date="maxDate"
+				@cancel="()=>{popupShow=false}" @confirm="onPickerConfirm">
+			</van-datetime-picker>
+
+			<van-cascader active-color="#FFA200" v-if="form_value_type == 'area' || form_value_type == 'bankArea'"
+				v-model="cascaderValue" :title="L_('请选择所在地区')" :options="columns" @close="popupShow = false"
+				@finish="cascaderFinish"></van-cascader>
+		</van-popup>
+	</div>
+
+	<script src="js/mui.min.js"></script>
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/weui/weui.min.js"></script>
+	<script src="js/common.js?t=3" type="text/javascript" charset="utf-8"></script>
+	<script src="js/work/yibao_reg.js?t=137"></script>
+</body>
+
+</html>

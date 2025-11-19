@@ -1,0 +1,28 @@
+.DS_Store
+node_modules
+/dist
+/api/
+/runtime/
+/v20/runtime/
+/upload/
+/source/plan/
+/source/plan/sub_plan/
+/v20/public/platform/
+# local env files
+.env.local
+.env.*.local
+/v20/app/community/controller/manage_api/v1/my.cnf
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*

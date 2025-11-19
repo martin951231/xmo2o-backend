@@ -1,0 +1,223 @@
+
+[data-v-425560b8] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.owner_msg .label_con[data-v-701394f0] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-701394f0]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-701394f0] {
+  font-weight: bold;
+}
+.owner_msg .label_con .choose_con[data-v-701394f0] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.owner_msg .label_con[data-v-69d727fe] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-69d727fe]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-69d727fe] {
+  font-weight: bold;
+}
+.owner_msg .label_con .checkbox_con[data-v-69d727fe] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.user_label .label_con[data-v-dbb68476] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.user_label .label_con[data-v-dbb68476]:nth-child(1) {
+  margin-top: 0;
+}
+.user_label .label_con .title[data-v-dbb68476] {
+  font-weight: bold;
+}
+.user_label .label_con .radio_con[data-v-dbb68476] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.form_con[data-v-477bc0ee] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.form_con .form_item[data-v-477bc0ee] {
+  width: 50%;
+}
+.many_water_electric_meter .water_item .form_item[data-v-477bc0ee],
+.many_water_electric_meter .electric_item .form_item[data-v-477bc0ee] {
+  width: 48%;
+  display: inline-block;
+}
+
+
+[data-v-66c58380] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.detail_con[data-v-45aa56d1] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.detail_con .detail_item[data-v-45aa56d1] {
+  width: 49%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 10px;
+}
+.detail_con .detail_item .label[data-v-45aa56d1] {
+  font-size: 14px;
+  color: #666;
+}
+.detail_con .detail_item .value[data-v-45aa56d1] {
+  font-size: 14px;
+  color: #999;
+}
+
+
+[data-v-3ba5ae10] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.warranty_details .btn_con[data-v-2574b57a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 20px;
+}
+.warranty_details .form_con[data-v-2574b57a] {
+  margin-top: 10px;
+}
+.warranty_details .form_con .form_item[data-v-2574b57a] {
+  margin-top: 20px;
+}
+.warranty_details .form_con .form_item .cate_list .cate_item[data-v-2574b57a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.warranty_details .form_con .form_item .cate_list .cate_item .label[data-v-2574b57a] {
+  font-size: 14px;
+  color: #333;
+}
+.warranty_details .form_con .form_item .bottom_con[data-v-2574b57a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 10px;
+}
+.warranty_details .form_con .form_item .bottom_con .repaire_range[data-v-2574b57a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.warranty_details .form_con .form_item .bottom_con .repaire_range .label[data-v-2574b57a] {
+  font-size: 14px;
+  color: #333;
+}
+.warranty_details .form_con .form_item .bottom_con .bind_order_cate[data-v-2574b57a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 15px;
+}
+.warranty_details .form_con .form_item .bottom_con .bind_order_cate .label[data-v-2574b57a] {
+  font-size: 14px;
+  color: #333;
+}
+.warranty_details .form_con .form_item .bottom_2con .repaire_range[data-v-2574b57a] {
+  width: 30%;
+}
+.warranty_details .form_con .form_item .bottom_2con .repaire_range .value[data-v-2574b57a] {
+  width: 80%;
+}
+.warranty_details .form_con .form_item .bottom_2con .repaire_range .desc_value[data-v-2574b57a] {
+  width: 98%;
+}
+
+.owner_content[data-v-5bb8b416] {
+  background-color: #ffffff;
+}
+.owner_content .top_con[data-v-5bb8b416] {
+  margin: 10px 0;
+  padding: 20px 10px;
+}
+.owner_content .status-color-ok[data-v-5bb8b416] {
+  color: green;
+  font-weight: bold;
+}
+.owner_content .status-color-fail[data-v-5bb8b416] {
+  color: red;
+  font-weight: bold;
+}
+

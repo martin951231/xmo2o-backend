@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>评价列表</title>
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name='apple-touch-fullscreen' content='yes'/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="address=no"/>
+    <link rel="stylesheet" href="../css/swiper@3.4.2.min.css">
+    <link rel="stylesheet" href="../scripts/weui/weui.min.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="./index.css">
+    <script src="../scripts/swiper.min.js"></script>
+    <script src="../scripts/vue@2.6.10.min.js"></script>
+    <script src="../scripts/weui/weui.min.js"></script>
+    <script src="../scripts/jquery-1.8.3.min.js"></script>
+    <script src="../scripts/common.js"></script>
+</head>
+<body>
+<div class="container hidden" id="app" :class='reply_list.length > 0 ? "show" : "" '>
+    <div class="bg-f reply" ref="tabContent2" v-if="reply_list.length > 0">
+        <div class="type-title">评价({{ totalNum }})</div>
+        <ul class="list">
+            <li class="item" v-for="(item, index) in reply_list" :key="index" v-if='item.pigcms_id'>
+                <div class="flex flex-y-center user">
+                    <div class="img-box"><img class="img" :src="item.avatar" alt=""></div>
+                    <div class="desc">
+                        <div class="name">{{ item.nickname }}</div>
+                        <div class="color-9 mt10">{{ item.add_time }}</div>
+                    </div>
+                </div>
+                <div class="flex mt10 star-wrapper">
+                    <span class="color-9">评分：</span>
+                    <div class="star-box" v-if='item.scoreArr'>
+                        <img class="star" src="./imgs/star-full.png" alt="" v-for=" full in item.scoreArr[0] ">
+                        <img class="star" src="./imgs/star-half.png" alt="" v-for=" half in item.scoreArr[1] ">
+                        <img class="star" src="./imgs/star-empty.png" alt="" v-for=" empty in item.scoreArr[2] ">
+                    </div>
+                </div>
+                <div class="mt10 reply-desc">{{ item.comment }}</div>
+                <div class="mt10 color-9" v-if=' item.goods_arr.length > 0 '>
+                    <span>推荐菜：</span>
+                    <span class="goods-item" v-for=" goodsItem in item.goods_arr">{{ goodsItem }}</span>
+                </div>
+                <div class="flex flex-wrap reply-img">
+                    <div class="img-box rel" v-for='(imgItem, i) in item.pic'><img class="img" :src="imgItem" alt="" @click="checkBigImg(index, i)"></div>
+                </div>
+            </li>
+        </ul>
+        <div class="bottom-txt" ref="bottomTxt">
+            <span class="loading" v-if="isLoading">加载更多数据</span>
+            <span class="complete" v-if="isComplete && reply_list.length > 5">没有更多数据了</span>
+        </div>
+    </div>
+    <div class="flex flex-x-center flex-y-center bigImgBox" v-if='showBigImgBox' @click="closeBigImg">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(item, index) in imgs" :key="index" >
+                    <div class="swiper-zoom-container">
+                        <img class="img" :src="item" @click.stop="prevent">
+                    </div>
+                </div>
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination swiper-pagination-white"></div>
+        </div>
+    </div>
+</div>
+<script src="./reply.js"></script>
+</body>
+</html>

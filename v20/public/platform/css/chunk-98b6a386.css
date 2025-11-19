@@ -1,0 +1,92 @@
+/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
+/* stylelint-disable no-duplicate-selectors */
+/* stylelint-disable */
+/* stylelint-disable declaration-bang-space-before,no-duplicate-selectors,string-no-newline */
+.ant-statistic {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  font-feature-settings: 'tnum';
+}
+.ant-statistic-title {
+  margin-bottom: 4px;
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+}
+.ant-statistic-content {
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+.ant-statistic-content-value-decimal {
+  font-size: 16px;
+}
+.ant-statistic-content-prefix,
+.ant-statistic-content-suffix {
+  display: inline-block;
+}
+.ant-statistic-content-prefix {
+  margin-right: 4px;
+}
+.ant-statistic-content-suffix {
+  margin-left: 4px;
+  font-size: 16px;
+}
+
+.card-box[data-v-78b2a638] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin-top: 30px;
+}
+.card-box .card-list[data-v-78b2a638] {
+  width: 25%;
+}
+.card-box .card-item[data-v-78b2a638] {
+  border: 1px solid #eee;
+  width: 80%;
+  padding: 15px;
+  min-width: 200px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+.card-box .card-item .title[data-v-78b2a638] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.card-box .card-item .price[data-v-78b2a638] {
+  font-weight: bold;
+  margin-top: 5px;
+}
+.card-box .card-item .percentage[data-v-78b2a638] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin: 18px 0;
+}
+.card-box .card-item .info[data-v-78b2a638] {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+.table-box[data-v-78b2a638] {
+  margin-top: 30px;
+}
+.nowrap[data-v-78b2a638] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  white-space: nowrap;
+}
+

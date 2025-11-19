@@ -1,0 +1,41 @@
+
+[data-v-13b8c64e] textarea {
+  overflow-y: scroll !important;
+}
+[data-v-13b8c64e] textarea::-webkit-scrollbar {
+  width: 0;
+}
+
+.intelligent_alart[data-v-512a4b6c] {
+  padding: 20px;
+  background-color: #fff;
+  height: 100%;
+}
+.intelligent_alart .top_search[data-v-512a4b6c] {
+  margin-top: 10px;
+}
+.intelligent_alart .top_search .form_con[data-v-512a4b6c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.intelligent_alart .top_search .form_con .form_item[data-v-512a4b6c] {
+  width: 200px;
+  margin-left: 10px;
+}
+.intelligent_alart .bth_con[data-v-512a4b6c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.intelligent_alart .table_con[data-v-512a4b6c] {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+

@@ -1,0 +1,32 @@
+.wrap {
+	width: 100%;
+	height: 100%;
+	background: #f6f7f7;
+}
+
+.list {
+	.item {
+		display: flex;
+		border-bottom: 1px solid #F1F1F1;
+		padding: 10rpx 0;
+		margin: 0 20rpx;
+		
+		.info{
+			flex: 1;
+			overflow: hidden;
+			.name{
+				display: flex;
+				justify-content: space-between;
+				.time{
+					font-size: 28rpx;
+					color: #999;
+				}
+			}
+			.desc{
+				font-size: 28rpx;
+				color: #999;
+				margin-top: 10rpx;
+			}
+		}
+	}
+}

@@ -1,0 +1,286 @@
+.table_card_items[data-v-40afcadf] {
+  height: 1.04166667rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0.078125rem 0;
+}
+.table_card_items .card_container[data-v-40afcadf] {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  border-radius: 0.05208333rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+.table_card_items .card_container .topbadge[data-v-40afcadf] {
+  width: 0.16666667rem;
+  height: 0.16666667rem;
+  position: absolute;
+  background: #ff3434;
+  border-radius: 50%;
+  z-index: 10;
+  top: -0.0625rem;
+  right: -0.0625rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.table_card_items .card_container .topbadge div[data-v-40afcadf] {
+  font-size: 0.08333333rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+.table_card_items .card_container .topcontent[data-v-40afcadf] {
+  width: 100%;
+  height: 0.72916667rem;
+  padding: 0 0.10416667rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.table_card_items .card_container .topcontent .tableinfo[data-v-40afcadf] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-top: 0.078125rem;
+}
+.table_card_items .card_container .topcontent .tableinfo .tablenumber[data-v-40afcadf] {
+  width: 100%;
+  font-size: 0.13541667rem;
+  font-weight: bold;
+  color: #333333;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  z-index: 3;
+}
+.table_card_items .card_container .topcontent .minCounts[data-v-40afcadf] {
+  height: 0.15625rem;
+  font-size: 0.11458333rem;
+  width: 100%;
+  color: #666666;
+}
+.table_card_items .card_container .topcontent .food_price[data-v-40afcadf] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.table_card_items .card_container .topcontent .food_price .left[data-v-40afcadf] {
+  font-size: 0.13541667rem;
+  color: #666666;
+}
+.table_card_items .card_container .topcontent .food_price .only_straff[data-v-40afcadf] {
+  width: 0.421875rem;
+  height: 0.140625rem;
+  border: 0.01041667rem solid #91a9bc;
+  border-radius: 0.07291667rem;
+  position: relative;
+}
+.table_card_items .card_container .topcontent .food_price .only_straff span[data-v-40afcadf] {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  white-space: nowrap;
+  text-align: center;
+  top: -50%;
+  left: -50%;
+  font-size: 0.14583333rem;
+  font-weight: bold;
+  color: #91a9bc;
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+}
+.table_card_items .card_container .status_text[data-v-40afcadf] {
+  width: 100%;
+  padding: 0 0.10416667rem;
+  border-bottom-left-radius: 0.05208333rem;
+  border-bottom-right-radius: 0.05208333rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #f7f7f7;
+}
+.table_card_items .card_container .status_text .acs_food_tips[data-v-40afcadf] {
+  width: 0.13020833rem;
+  height: 0.13020833rem;
+  border: 0.00520833rem solid #00cbb3;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 0.02083333rem;
+  position: relative;
+  background-color: #ffffff;
+}
+.table_card_items .card_container .status_text .acs_food_tips span[data-v-40afcadf] {
+  width: 200%;
+  height: 200%;
+  left: -50%;
+  top: -50%;
+  display: block;
+  font-size: 0.1875rem;
+  font-weight: 500;
+  color: #00cbb3;
+  line-height: 0.20833333rem;
+  text-align: center;
+  position: absolute;
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+}
+.table_card_items .card_container .status_text .food_fullname[data-v-40afcadf] {
+  width: 0.67708333rem;
+  height: 0.3125rem;
+  line-height: 0.3125rem;
+  font-size: 0.125rem;
+  margin-left: 0.05208333rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table_card_items .card_container .card_shadow[data-v-40afcadf] {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+.table_card_items .card_container .shortSale_tips[data-v-40afcadf] {
+  position: absolute;
+  width: 0.20833333rem;
+  height: 0.20833333rem;
+  border-radius: 50%;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+.table_card_items .card_container .shortSale_tips img[data-v-40afcadf] {
+  width: 100%;
+  height: 100%;
+}
+.goods_item[data-v-40afcadf] {
+  width: 20%;
+  padding: 0 0.078125rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.package_goods_item[data-v-40afcadf] {
+  width: 50%;
+  padding: 0 0.078125rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.package_goods_item .package_goods_container[data-v-40afcadf] {
+  padding: 0.078125rem 0.10416667rem;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.package_goods_item .package_goods_container .package_name_price[data-v-40afcadf] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-size: 0.13541667rem;
+  color: #333333;
+}
+.package_goods_item .package_goods_container .package_name_price .package_name[data-v-40afcadf] {
+  margin-right: 4px;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.package_goods_item .package_goods_container .package_name_price .package_price[data-v-40afcadf] {
+  white-space: nowrap;
+}
+.package_goods_item .package_goods_container .subsidiary_piece[data-v-40afcadf] {
+  width: 100%;
+}
+.package_goods_item .package_goods_container .subsidiary_piece .subsidiary_piece_wrap[data-v-40afcadf] {
+  margin-top: 0.05208333rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 0.11458333rem;
+}
+.package_goods_item .package_goods_container .subsidiary_piece .subsidiary_piece_wrap .subsidiary_piece_name[data-v-40afcadf] {
+  white-space: nowrap;
+  color: #000000;
+}
+.package_goods_item .package_goods_container .subsidiary_piece .subsidiary_piece_wrap .subsidiary_goods_wrap[data-v-40afcadf] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.package_goods_item .package_goods_container .subsidiary_piece .subsidiary_piece_wrap .subsidiary_goods_wrap .subsidiary_goods[data-v-40afcadf] {
+  margin-left: 0.078125rem;
+}
+

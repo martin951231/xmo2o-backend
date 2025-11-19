@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>银联余额提现</title>
+    <link href="css/mui.css" rel="stylesheet" />
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.css" />
+    <link rel="stylesheet" type="text/css" href="css/black_figure.css" />
+</head>
+
+<body>
+    <header class="mui-bar mui-bar-nav">
+        <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+        <h1 class="mui-title">
+            <L_>银联余额提现</L_>
+        </h1>
+    </header>
+    <div class="mui-content">
+        <!--提现金额-->
+        <div class="mui-card">
+            <!--页眉，放置标题-->
+            <div class="mui-card-header">
+                <span class="left_style">
+                    <L_>提现金额</L_>
+                </span>
+            </div>
+            <!--内容区-->
+            <div class="mui-card-content withdrawals_money">
+                <span>
+                    <b class="L_">￥</b>
+                    <input class="L_P" id="money" type="number" value="" placeholder="请输入提现金额" />
+                    <i class="mui-pull-right" id="withdrawAll">
+                        <L_>全部提现</L_>
+                    </i>
+                </span>
+                <p><L_>可提现余额</L_><span class="now total_money" style="margin-left: 0;">0.00</span><span class="nowType" style="margin-left: 0;"></span></p>
+            </div>
+        </div>
+        <div class="mui-card withdrawals_marks">
+            <!--内容区-->
+            <div class="mui-card-content" style="padding:10px ;display:flex">
+                <span>
+                    <L_>提现备注</L_>
+                </span>
+                <textarea class="L_P" name="remark" id="remark" rows="3" cols="3" placeholder="请输入备注内容"
+                    style="padding:0px 10px 10px 10px"></textarea>
+            </div>
+        </div>
+        <div class="mui-card">
+            <div class="mui-card-content kefu">
+                <span class="left_style" style="width: 25%">
+                    <L_>平台客服热线</L_>
+                </span>
+                <a href="javascript:;" style="color: #3DD0BE;"><input class="phone" type="text" readonly=""
+                        style="width: 62%;"></a>
+            </div>
+        </div>
+        <a href="javascript:void(0);" class="withdrawals">
+            <L_>提现</L_>
+        </a>
+    </div>
+    <script src="js/mui.min.js"></script>
+    <!--筛选用到js-->
+    <script src="js/fastclick.js"></script>
+    <script src="js/mui.picker.js"></script>
+    <script src="js/mui.dtpicker.js"></script>
+    <script src="js/mui.poppicker.js"></script>
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        var app_config = common.getCache('config', true);
+        var ticket = common.getCache('ticket');
+        var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+        var flag = false;
+        var merchant_money_info = null
+        var company_least_money = 0; //当前最低提现金额
+
+        //获取当前可提现金额
+        common.http('Merchantapp&a=merchant_money_info', {
+            'ticket': ticket,
+            'client': client
+        }, function (data) {
+            merchant_money_info = data;
+            company_least_money = data.company_least_money != undefined ? data.company_least_money : 1
+            $('.total_money').text(data.chinaums_money_txt)
+
+            $('.nowType').text(
+                `，${L_('最低提现额：') + company_least_money + merchant_money_info.fh}`
+            )
+        });
+
+        if (app_config && app_config.site_phone && app_config.site_phone != '') {
+            $(".kefu input").val(app_config.site_phone);
+            $(".kefu a").attr('href', 'tel:' + app_config.site_phone)
+        }
+
+
+        $('#withdrawAll').click(function () {
+            $('#money').val(merchant_money_info.chinaums_money)
+        })
+
+        $('.withdrawals').click(function () {
+            let money = $('#money').val()
+            let remark = $('#remark').val()
+            money = money ? Number(money) : 0
+
+            if (money <= 0) {
+                mui.toast(L_('金额要大于0'));
+                return false
+            }
+
+            if (money > Number(merchant_money_info.chinaums_money)) {
+                mui.toast(L_('提现金额不能大于可提现余额'));
+                return false
+            }
+
+            if (money < Number(company_least_money)) {
+                mui.toast(L_('提现金额不能低于最低提现额'));
+                return false
+            }
+
+            if (!remark) {
+                mui.toast(L_('请输入备注'));
+                return false
+            }
+
+            if (flag) {
+                mui.toast('您已提交提现申请');
+                return false;
+            }
+
+            var index = layer.open({
+                type: 2,
+                content: '提交中',
+                shadeClose: false
+            });
+
+            setTimeout(() => {
+                //开始请求接口提现
+                common.http('Merchantapp&a=applyChinaumsWithdraw', {
+                    'ticket': ticket,
+                    'client': client,
+                    'money': money,
+                    'remark': remark,
+                    noTip: true,
+                }, function (data) {
+                    flag = true
+                    layer.close(index);
+                    mui.toast('提交成功');
+                    if (common.checkApp()) {
+                        setTimeout(function () {
+                            if (common.checkAndroidApp()) {
+                                window.pigcmspackapp.closewebview(2);
+                            } else {
+                                common.iosFunction('closewebview/2', {
+                                    name: 'closewebview',
+                                    type: '2'
+                                });
+                            }
+                        }, 2000);
+                    } else {
+                        setTimeout(function () {
+                            history.go(-1);
+                            document.execCommand('Refresh');
+                        }, 2000);
+                    }
+                }, err => {
+                    if (err.errorCode == '1302') {
+                        if (common.checkApp()) {
+                            if (common.checkAndroidApp()) {
+                                window.pigcmspackapp.closewebview(3);
+                            } else {
+                                common.iosFunction('closewebview/2', {
+                                    name: 'closewebview',
+                                    type: '3'
+                                });
+                            }
+                        } else {
+                            location.replace(err.result)
+                        }
+                    } else {
+                        mui.toast(err.errorMsg);
+                    }
+                    layer.close(index);
+                });
+            }, 300)
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1968 @@
+<html lang="zh-CN"><head>
+	<meta charset="utf-8">
+	<title>订单详情</title>
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-touch-fullscreen" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="address=no">
+	<link href="css/mui.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link href="css/pigcms.css" rel="stylesheet">
+	<style>
+		.spec_list table td {
+			text-align: center;
+		}
+		.mg_50 {
+			margin-bottom: 50px;
+		}
+		#middlePopover.mui-popover {
+			width: 100%;
+			background: #fff;
+			position: fixed;
+			bottom: 0;
+			border-radius: 5px;
+		}
+		.mui-popover sub {
+			display: inline-block;
+			width: 43px;
+			height: 43px;
+			background: url(./images/icon_del.png) center no-repeat;
+			background-size: 30px 30px;
+			margin-top: -6px;
+		}
+
+		.mui-popover .rel {
+			position: relative;
+		}
+		.mui-popover .abs {
+			position: absolute;
+		}
+		.mui-popover .cursor {
+			cursor: pointer !important;
+		}
+		.mui-popover .h100 {
+			height: 100%;
+		}
+		.mui-popover .w100 {
+			width: 100%;
+		}
+		.mui-popover .pb0 {
+			padding-bottom: 0px !important;
+		}
+		.mui-popover .ui-list-info {
+			-webkit-box-flex: 1;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-box-pack: center;
+		}
+		.mui-popover .title {
+			position: relative;
+		}
+		.mui-popover .flex_baseline {
+			align-items: flex-start !important;
+		}
+		.mui-popover .flex {
+			display: flex !important;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			align-items: center;
+		}
+		.mui-popover .title h2 {
+			color: #343434;
+			font-size: 16px;
+			line-height: 1.5;
+		}
+		.mui-popover .flex_one {
+			flex: 1;
+			-webkit-box-flex: 1;
+			-webkit-flex: 1;
+		}
+		.mui-popover .ui-nowrap-multi {
+			display: -webkit-box;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+		}
+		.mui-popover .title_Price {
+			font-size: 12px;
+			position: relative;
+			line-height: 18px;
+			margin-top: 12px;
+			overflow: auto;
+		}
+		.mui-popover .title_Price .tuftof {
+			color: #ff4d45;
+			float: left;
+		}
+		.mui-popover .title_Price .tuftof i {
+			font-size: 20px;
+		}
+		.mui-popover .goods_price i.unit {
+			color: #999999;
+			font-size: 12px !important;
+			float: right;
+			line-height: 20px;
+		}
+		.mui-popover .ml10 {
+			margin-left: 10px !important;
+		}
+		.mui-popover .color_f {
+			color: #999999 !important;
+		}
+		.mui-popover .left {
+			float: left;
+		}
+		.mui-popover .inline {
+			display: inline-block !important;
+		}
+		.mui-popover .mg1_3 {
+			margin: 1px 3px;
+		}
+		.mui-popover .pd1_3 {
+			padding: 1px 3px;
+		}
+		.mui-popover .title_Price .Surplus {
+			color: #999999;
+			margin-left: 10px;
+			line-height: 20px;
+		}
+		.mui-popover .fl {
+			float: left;
+			display: inline;
+		}
+		.mui-popover .cations {
+			padding: 10px 0;
+			line-height: 24px;
+			overflow: auto;
+		}
+		.mui-popover .cations span.cas_left {
+			display: block;
+			text-align: center;
+			color: #666666;
+			font-size: 12px;
+			margin-bottom: 5px;
+		}
+		.mui-popover .cations span.wt_name {
+			min-width: 35%;
+			text-align: left;
+		}
+
+
+		.clear {
+			clear: both;
+		}
+		.mui-popover .right {
+			float: right;
+		}
+		.mui-popover .cations .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.mui-popover .cations .wrap .plus input {
+			width: 65px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+		.mui-popover .spec-btn {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+		}
+		.mui-popover .purchase_right100 {
+			width: 100%;
+		}
+		.mui-popover .purchase_right {
+			line-height: 50px;
+		}
+		.mui-popover .purchase_right a.shops100 {
+			width: 100%;
+		}
+		.mui-popover  .purchase_right a.shops {
+			background: #f23030;
+		}
+		.mui-popover .purchase_right a {
+			color: #fff;
+			font-size: 14px;
+			text-align: center;
+			display: block;
+			width: 50%;
+		}
+		.mui-popover .purchase_right a.cars {
+			background: #ffb12e;
+		}
+		.mui-popover .purchase_right a {
+			color: #fff;
+			font-size: 14px;
+			text-align: center;
+			width: 50%;
+		}
+		.mui-popover .purchase_right a.shops {
+			background: #f23030;
+		}
+		.mui-popover .purchase_right a.add_cart_info {
+			background: #FC5E77 !important;
+		}
+		.mui-popover .purchase_right a {
+			color: #fff;
+			font-size: 14px;
+			text-align: center;
+			display: block;
+			width: 50%;
+		}
+
+		.plus_class {
+			position: fixed;
+			height: 50px;
+			width: 100%;
+			bottom: 0;
+			line-height: 50px;
+			background: #EFEFF4;
+		}
+		.plus_class .btn_content{
+			display: flex !important;
+			width: 100%;
+			background-color: #fff;
+		}
+		.plus_class a.in_cart {
+			margin-left: 1%;
+		}
+		.plus_class a.add_cart {
+			background: #06CCAB;
+			border-radius: 5px;
+		}
+		.plus_class a.now_buy {
+			background: #FFA200;
+			border-radius: 5px;
+		}
+		.plus_class  .tip{
+			width: 38%;
+			height: 100%;
+			color: #777;
+			font-size: 12px;
+			line-height: 30px;
+			text-align: center;
+		}
+		.plus_class  .tip.two{
+			padding: 5px 15px;
+			width: 62%;
+		}
+		.in_cart .Number {
+			position: absolute;
+			background: #f23030;
+			font-size: 12px;
+			color: #fff;
+			border-radius: 50px;
+			top: 2px;
+			left: 19%;
+			padding: 0 5px;
+			line-height: 15px;
+			z-index: 1;
+		}
+		.in_cart em.cart_info {
+			background-image: url(./images/cart.png);
+		}
+		.in_cart em.cart_info {
+			display: block;
+			height: 20px;
+			width: 22px;
+			margin-top: 3px;
+			margin-bottom: 2px;
+			background-repeat: no-repeat;
+			background-size: 100%;
+			border-bottom: 0;
+			left: 42%;
+			top: 5px;
+		}
+		.cart_info {
+			position: relative;
+		}
+		em {
+			color: #ff8444;
+		}
+		.in_cart em.cart_info {
+			color: #777;
+			line-height: 20px;
+			text-align: center;
+			font-size: 12px;
+		}
+		.plus_class .add_cart {
+			border-bottom-left-radius: 30px;
+			border-top-left-radius: 30px;
+			height: 38px !important;
+			line-height: 38px !important;
+			color: #fff;
+			width: 50%;
+		}
+		.plus_class .bg_pink {
+			background: #FC5E77 !important;
+		}
+		.plus_class .now_buy {
+			border-bottom-right-radius: 30px;
+			border-top-right-radius: 30px;
+			height: 38px !important;
+			line-height: 38px !important;
+			color: #fff;
+			width: 50%;
+		}
+		.plus_class .bg_r {
+			background: #f23030 !important;
+		}
+		.cursor {
+			cursor: pointer !important;
+		}
+		.swiper-container110 .swiper-slide>div{width:100%}
+		.detail_list  .color_red {
+			color: #f23030 !important;
+		}
+		.detail_list .ui-nowrap {
+			max-width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.detail_list h4 {
+			line-height: 2;
+		}
+		.detail_list .msg {
+			padding-left: 10px;
+		}
+		.detail_list .mb_0 {
+			margin-bottom: 0px !important;
+		}
+		.detail_list .ui-list {
+			background-color: #fff;
+			width: 100%;
+		}
+		.detail_list .discount_info {
+			padding-top: 10px;
+		}
+		.content_box {
+			padding: 20px 12px !important;
+			background: #fff;
+			box-sizing: border-box;
+		}
+
+
+		.spec_list .flex {
+			display: flex !important;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			align-items: center;
+		}
+		.spec_list .flex_grow {
+			flex-grow: 1;
+			text-align: center
+		}
+
+		.spec_list .spec_val_name {
+			padding: 1px 0;
+		}
+		.spec_list .list_spec_name {
+			font-size: 14px;
+			line-height: 22px;
+			border-radius: 5px;
+			padding: 2px 5px;
+			margin-top: 2px;
+			color: #fff;
+			background: #f23030;
+		}
+		.spec_list .spec_val_name div {
+			font-size: 14px;
+			line-height: 22px;
+			color: #fff;
+			background: #f23030;
+		}
+		.spec_list .spec_price {
+			color: #ff4d45;
+			width: 100%;
+		}
+		.right {
+			float: right;
+		}
+		.clr {
+			zoom: 1;
+		}
+		.spec_buy_num .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.spec_buy_num .wrap .plus input {
+			width: 65px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+		.spec_list_info {
+			border-bottom: #f1f1f1 1px solid;
+		}
+		.spec_list_info .ui-list-single>li {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+		.spec_list_info .ui-list>li {
+			position: relative;
+			margin-left: 12px;
+			display: -webkit-box;
+		}
+		.spec_list_info .ui-list-link>li:after {
+			content: "";
+			display: block;
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			margin-top: -7px;
+			width: 8px;
+			height: 14px;
+			background: url(http://i.gtimg.cn/vipstyle/qui/2.0.0/img/icon_arrowlink.png) no-repeat;
+			-webkit-background-size: 100% auto;
+			background-size: 100% auto;
+		}
+		.spec_list_info .ui-list-single .ui-list-info {
+			-webkit-box-orient: horizontal;
+			-webkit-box-align: center;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.spec_list_info .ui-list-link .ui-list-info, .ui-list-link-iconfont .ui-list-info {
+			padding-right: 30px;
+		}
+		.spec_list_info .ui-list li h4 {
+			line-height: 24px;
+			font-weight: normal;
+		}
+		.spec_list_info .ui-list-single h4 {
+			-webkit-box-flex: 1;
+		}
+		.spec_list_info .font_size15 {
+			font-size: 15px !important;
+		}
+		.vip {
+			display: inline-block;
+			width: 22px;height: 22px;
+			background: url(./images/vip.png) center no-repeat;
+			background-size: contain;
+			vertical-align: middle;
+			position: relative;
+			top: -2px;
+			margin: 0;
+		}
+		.vip_price {
+			color: #FD1946;
+			font-weight: 600;
+			font-size: 22px;
+			line-height: 22px;
+		}
+		.currency_txt {
+			font-size: 10px;
+			color: #999c9e;
+		}
+		.del-line{
+			text-decoration: line-through;
+		}
+
+		.commod .flex {
+			display: flex !important;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			align-items: center;
+		}
+		.commod .flex_grow {
+			flex-grow: 1;
+			text-align: center
+		}
+		.commod .mb_0 {
+			margin-bottom: 0px !important;
+		}
+		.commod .ui-border-t:before {
+			border-top: 1px solid #e9e9e9;
+			content: '';
+			display: block;
+			width: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.commod .ui-border-t, .commod .ui-border-l, .commod .ui-border-b, .commod .ui-border-r, .commod .ui-border-tb {
+			position: relative;
+		}
+		.commod .ui-list li.ui-arrowlink {
+			padding-right: 12px;
+		}
+		.commod .flex_star {
+			align-items: baseline !important;
+		}
+		.commod .ui-list-link>li:after {
+			content: "";
+			display: block;
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			margin-top: -7px;
+			width: 8px;
+			height: 14px;
+			background: url(http://i.gtimg.cn/vipstyle/qui/2.0.0/img/icon_arrowlink.png) no-repeat;
+			-webkit-background-size: 100% auto;
+			background-size: 100% auto;
+		}
+		.commod .ui-arrowlink:after {
+			content: "";
+			display: block;
+			position: absolute;
+			right: 12px;
+			top: 50%;
+			margin-top: -7px;
+			width: 8px;
+			height: 14px;
+			background: url(http://i.gtimg.cn/vipstyle/qui/2.0.0/img/icon_arrowlink.png) no-repeat;
+			-webkit-background-size: 100% auto;
+		}
+		.commod .ui-list-single .ui-list-info {
+			-webkit-box-orient: horizontal;
+			-webkit-box-align: center;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.commod .ui-list-link .ui-list-info, .ui-list-link-iconfont .ui-list-info {
+			padding-right: 30px;
+		}
+		.commod .pl0 {
+			padding-left: 0px !important;
+		}
+		.commod .w100 {
+			width: 100%;
+		}
+		.commod .ui-list-info {
+			-webkit-box-flex: 1;
+			padding-top: 8px;
+			padding-bottom: 8px;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-box-pack: center;
+			padding-right: 12px;
+		}
+		.width_48 {
+			min-width: 48px;
+			padding-left: 10px;
+		}
+		.color_9 {
+			color: #999;
+		}
+		.font_size15 {
+			font-size: 15px !important;
+		}
+		.width0 {
+			width: 0px;
+		}
+		.pr0 {
+			padding-right: 0px !important;
+		}
+		.flex_one {
+			flex: 1;
+			-webkit-box-flex: 1;
+			-webkit-flex: 1;
+		}
+		.commod .ui-list-info p {
+			color: #777;
+			font-size: 14px;
+		}
+		.commod .ui-nowrap {
+			max-width: 100%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		.commod .chuxiao {
+			padding: 1px 3px;
+			border-radius: 7px;
+			border: 1px solid #f23030;
+			color: #f23030;
+		}
+		.mg_r5 {
+			margin-right: 5px !important;
+		}
+		.font_size11 {
+			font-size: 11px !important;
+		}
+		.mg_r10 {
+			margin-right: 10px !important;
+		}
+		.color_7 {
+			color: #000 !important;
+		}
+		.rel {
+			position: relative;
+		}
+		.coupon_mask {
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			background: rgba(0,0,0,0.7);
+			z-index: 888;
+			width: 100%;
+			height: 100%;
+			display: none;
+		}
+		.coupon.active {
+			transform: translateY(0);
+			-webkit-transform: translateY(0);
+		}
+		.coupon {
+			-webkit-transition: all .3s;
+			transition: all .3s;
+			-webkit-transform: translateY(100%);
+			transform: translateY(100%);
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			z-index: 999;
+			border: none;
+			margin: 0;
+			display: none;
+		}
+		.bg_f {
+			background: #fff !important;
+		}
+		.none {
+			display: none;
+		}
+		.pt15 {
+			padding-top: 15px !important;
+		}
+		.pb15 {
+			padding-bottom: 15px !important;
+		}
+		.font_b {
+			font-weight: bold !important;
+		}
+		.align_center {
+			text-align: center;
+		}
+		.abs {
+			position: absolute;
+		}
+
+		.coupon .ui-list-single>li {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+		.coupon .ui-list>li {
+			position: relative;
+			margin-left: 12px;
+		}
+		.coupon .ui-list-single .ui-list-info {
+			-webkit-box-orient: horizontal;
+			-webkit-box-align: center;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.coupon ul {
+			margin-top: 0;
+		}
+		.deliver div {
+			flex: 1;
+			padding: 5px 0px;
+			background: #fff;
+			border: 1px solid #ddd;
+		}
+		.deliver {
+			text-align: center;
+			padding-right: 20px;
+		}
+		.deliver .flexActive {
+			background: #2999f1 !important;
+			color: #fff !important;
+		}
+
+		.spec_list .cations .p35 li.on {
+			color: #fff;
+			background: #f23030;
+			border: none;
+		}
+		.spec_list .cations .p35 li {
+			float: left;
+			font-size: 14px;
+			color: #000;
+			line-height: 22px;
+			margin-bottom: 10px;
+			background: #F1F1F1;
+			padding: 2px 15px;
+			border-radius: 5px;
+			margin-right: 10px;
+		}
+		.mui-popover .title_Price .Surplus {
+			color: #999999;
+			margin-left: 10px;
+			line-height: 20px;
+		}
+		.mui-popover .show_stock_num {
+			font-size: 8px;
+		}
+	</style>
+<body>
+<header class="mui-bar mui-bar-nav">
+	<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	<h1 class="mui-title"><L_>商品详情</L_></h1>
+</header>
+<div class="mui-content">
+	<div class="detail_swiper">
+
+	</div>
+	<section class="g_details allHtml mg_50">
+
+	</section>
+</div>
+<nav class="plus_class">
+	<div class="btn_content">
+		<div class="tip market_cart">
+			<a href="javascript:;" class="in_cart">
+				<em class="Number">1</em>
+				<em class="cart_info"></em>
+				购物车
+			</a>
+		</div>
+		<div class="tip two">
+			<div class="add_cart mui-pull-left bg_pink cursor">加入购物车</div>
+			<div class="now_buy mui-pull-left bg_r cursor">马上购买</div>
+		</div>
+	</div>
+
+</nav>
+<!--马上购买-->
+<div id="middlePopover" class="mui-popover">
+	<div style="padding-left:10px" class="buyDetail">
+	</div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/fastclick.js"></script>
+<script src="js/swiper.js"></script>
+<script src="js/jRoll.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js"></script>
+
+<script id="detail_buy" type="text/html">
+	<div class="demo-block comment_item detail_buy">
+		<ul class="ui-list ui-list-link mb_0" style="background-color: transparent;">
+			<li class="after  ml_0 clear">
+				<div style="width: 90px;height: 90px;margin-right:10px;float:left" class="pics rel">
+					<img src="{{d.now_order.pic}}" data-pics="{{d.now_order.pic}}" style="top:-35px;   border-radius: 5px;" data-index="0" class="w100 h100 abs cursor" id="reg_img">
+				</div>
+				<div class="ui-list-info ui-border-t  pb0 " style="padding-top:0px;padding-right:0px;float:left;width: calc(100% - 100px);">
+					<div class="title " style="padding:10px 10px 0px 0px;margin: 0px">
+						<div class="flex flex_baseline">
+							<h2 class="flex_one ui-nowrap-multi">{{d.now_order.name}}</h2>
+						</div>
+						<div class="">
+							<div class="title_Price clr">
+                                       <span class="tuftof goods_price">{{d.config['Currency_symbol']}}
+										   {{# if (d.is_vip) { }}
+										   	   <i class="show_format_price">{{d.now_order.vip_wholesale_price}}</i>
+										   {{# } else { }}
+										   	   <i class="show_format_price">{{d.now_order.price}}</i>
+										   {{# } }}
+                                           <i class="unit">/{{d.now_order.unit}}</i>
+                                        </span>
+								<div class="left color_f inline ml10 tip_box2">
+									<span class="Discount mg1_3 pd1_3 showDiscount">{{L_('最少购买')}}<b class="showMin">{{d.now_order.min_num}}</b>个</span>
+								</div>
+								{{# if (d.now_order.stock_num==-1) { }}
+								<span class="Surplus fl show_stock_num">{{L_('库存充足')}} </span>
+								{{# } else if (d.now_order.stock_num<=0) { }}
+								<span class="Surplus fl show_stock_num">{{L_('库存为')}}0</span>
+								{{# } else { }}
+								<span class="Surplus fl show_stock_num">{{L_('剩余')}}{{d.now_order.stock_num}}</span>
+								{{# } }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<sub class="mui-pull-right" style="position: absolute;top: 5px;right: 0;"></sub>
+	</div>
+	<div class="clear"></div>
+	<div style="overflow: auto; width: 100%; border: none; margin-bottom: 165px; max-height: 339.2px;" class="check_info_title">
+	</div>
+	<div class="cations clr" style="border:none;bottom: 115px;position: absolute;  width: 100%;">
+		<span class="fl cas_left">{{L_('数量')}}</span>
+		<div class="wrap right" style="padding-right:20px">
+			<div class="plus clr" style="position:relative;">
+				<a href="javascript:void(0)" class="jian" style="color: rgb(191, 191, 191);">-</a>
+				<input class="buy_num" type="text" value="{{d.now_order.min_num}}" data-min_num="{{d.now_order.min_num}}" data-min_unit="{{d.now_order.min_unit}}" data-stock_num="{{d.now_order.stock_num}}"/>
+				<a href="javascript:void(0)" class="jia">+</a>
+			</div>
+		</div>
+	</div>
+	<div class="cations clr" style="border:none;bottom: 55px;position: absolute;  width: 100%;">
+		<div class="cas_left">{{L_('配送方式')}}</div>
+		<div class="flex tabs deliver">
+			{{# if (d.is_pick) {}}
+			<div {{# if (d.has_check=='pick') {}} class="flexActive" {{# } }} data-is_pick_in_store="0">{{L_('到店自提')}}</div>
+			{{# } }}
+			{{# if (d.is_type==1 || d.is_type==3) {}}
+			<div {{# if (d.has_check=='express') {}} class="flexActive" {{# } }} style="border-left:none" data-is_pick_in_store="1">{{L_('快递配送')}}</div>
+			{{# } }}
+			{{# if (d.is_type==2 || d.is_type==3) {}}
+			<div {{# if (d.has_check=='logistics') {}} class="flexActive" {{# } }} style="border-left:none" data-is_pick_in_store="2">{{L_('物流配送')}}</div>
+			{{# } }}
+			{{# if (!d.is_pick && d.is_type!=1 && d.is_type!=2 && d.is_type!=3) {}}
+			<div class="flexActive" style="border-left:none" data-is_pick_in_store="1">{{L_('快递配送')}}</div>
+			{{# } }}
+		</div>
+	</div>
+	<div class="purchase_right  purchase_right100 clr spec-btn"  style="z-index: 999999;">
+		<a href="javascript:void(0);" class="fl shops shops100 add_cart_info" style="display:none;" data-store_id="350" data-type="add">{{L_('加入购物车')}}</a>
+		<a href="javascript:void(0);" class="fl shops shops100 true_btn" style="" data-store_id="350" data-type="true">{{L_('确定')}}</a>
+	</div>
+</script>
+
+
+<script id="spec_detail_buy_bak" type="text/html">
+	<div class="demo-block comment_item"  id="check_info_title_spec_bak">
+		<ul class="ui-list ui-list-link mb_0" style="background-color: transparent;">
+			<li class="after  ml_0 clear">
+				<div style="width: 90px;height: 90px;margin-right:10px;float:left" class="pics rel">
+					<img src="{{d.now_order.pic}}" data-pics="{{d.now_order.pic}}" style="top:-35px;   border-radius: 5px;" data-index="0" class="w100 h100 abs cursor" id="reg_img_bak">
+				</div>
+				<div class="ui-list-info ui-border-t  pb0 " style="padding-top:0px;padding-right:0px;float:left;width: calc(100% - 100px);">
+					<div class="title " style="padding:10px 10px 0px 0px;margin: 0px">
+						<div class="flex flex_baseline">
+							<h2 class="flex_one ui-nowrap-multi">{{d.now_order.name}}</h2>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<sub class="mui-pull-right" style="position: absolute;top: 5px;right: 0;"></sub>
+	</div>
+	<div class="clear"></div>
+	<!--<div style="overflow: auto; width: 100%; border: none; margin-bottom: 120px; max-height: 339.2px;overflow-y: auto;" id="check_info_title_spec_bak">-->
+	<!--</div>-->
+	<div class="mui-scroll-wrapper" style="max-height: 160px;top: 50px;text-align: -webkit-center;">
+		<div class="mui-scroll">
+
+			<div class="spec_tb">
+				<div class="user_list spec_list">
+					<div style="width: 94%;margin-bottom:10px;">
+						{{# for(var j in d.now_order['list']) { }}
+						<div class="flex" >
+							<div class="list_spec_name flex">
+								{{# for(var m in d.now_order['list'][j]['spec']) { }}
+								{{# if (d.now_order['list'][j]['spec'][m]) { }}
+								<div class="spec_val_name">
+									<div>
+										{{# if (m>0) { }}
+										/
+										{{# } }}
+										{{d.now_order['list'][j]['spec'][m]['spec_val_name']}}
+									</div>
+								</div>
+								{{# } }}
+								{{# } }}
+							</div>
+							<div class="flex flex_grow">
+								{{# if (d.is_vip && d.now_order['list'][j]['vip_wholesale_price']>0) { }}
+								<div class="spec_price">{{d.config['Currency_symbol']}}{{d.now_order['list'][j]['vip_wholesale_price']}}</div>
+								{{# } else { }}
+								<div class="spec_price">{{d.config['Currency_symbol']}}{{d.now_order['list'][j]['price']}}</div>
+								{{# } }}
+							</div>
+
+							<div class="flex spec_buy_num">
+								<div class="wrap right">
+									{{# if (d.now_order['list'][j]['stock_num']<d.now_order['list'][j]['buy_num'] && d.now_order['list'][j]['stock_num']!=-1) { }}
+									<div style="width: 122px;text-align: center;color: #999;line-height: 30px;">库存不足</div>
+									{{# } else { }}
+									<div class="plus clr plus_{{d.now_order['list'][j]['index']}}" style="position:relative;">
+										<a href="javascript:void(0)" class="jian" style="color: rgb(191, 191, 191);" data-index="{{d.now_order['list'][j]['index']}}">-</a>
+										<input class="buy_nums_pay buy_index_{{d.now_order['list'][j]['index']}}" style="margin:0;" type="text" data-min_unit="{{d.now_order.min_unit}}" data-min_num="{{d.now_order['list'][j]['min_num']}}" value="{{d.now_order['list'][j]['buy_num']}}" name="buy_nums" data-index="{{d.now_order['list'][j]['index']}}" data-stock_num="{{d.now_order['list'][j]['stock_num']}}"/>
+										<a href="javascript:void(0)" class="jia" data-index="{{d.now_order['list'][j]['index']}}">+</a>
+									</div>
+									{{# } }}
+								</div>
+							</div>
+						</div>
+						{{# } }}
+					</div>
+				</div>
+			</div>
+
+			<div class="cations clr" style="border:none;padding: 10px 0 25px;position: relative;  width: 94%;">
+				<div class="cas_left" style="text-align: left;">{{L_('配送方式')}}</div>
+				<div class="flex tabs deliver" style="padding-right: 0px;">
+					{{# if (d.is_pick) {}}
+					<div {{# if (d.has_check=='pick') {}} class="flexActive" {{# } }} data-is_pick_in_store="0">{{L_('到店自提')}}</div>
+					{{# } }}
+					{{# if (d.is_type==1 || d.is_type==3) {}}
+					<div {{# if (d.has_check=='express') {}} class="flexActive" {{# } }} style="border-left:none" data-is_pick_in_store="1">{{L_('快递配送')}}</div>
+					{{# } }}
+					{{# if (d.is_type==2 || d.is_type==3) {}}
+					<div {{# if (d.has_check=='logistics') {}} class="flexActive" {{# } }} style="border-left:none" data-is_pick_in_store="2">{{L_('物流配送')}}</div>
+					{{# } }}
+					{{# if (!d.is_pick && d.is_type!=1 && d.is_type!=2 && d.is_type!=3) {}}
+					<div class="flexActive" style="border-left:none" data-is_pick_in_store="1">{{L_('快递配送')}}</div>
+					{{# } }}
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="purchase_right  purchase_right100 clr spec-btn"  style="z-index: 999999;">
+		<a href="javascript:void(0);" class="fl shops shops100 add_cart_info" style="display:none;" data-type="add">{{L_('加入购物车')}}</a>
+		<a href="javascript:void(0);" class="fl shops shops100 true_btn" style="" data-type="true">{{L_('确定')}}</a>
+	</div>
+</script>
+
+
+
+<script id="spec_detail_buy" type="text/html">
+	<div class="demo-block comment_item"  id="check_info_title_spec">
+		<ul class="ui-list ui-list-link mb_0" style="background-color: transparent;">
+			<li class="after  ml_0 clear">
+				<div style="width: 90px;height: 90px;margin-right:10px;float:left" class="pics rel">
+					<img src="{{d.now_order.pic}}" data-pics="{{d.now_order.pic}}" style="top:-35px;   border-radius: 5px;" data-index="0" class="w100 h100 abs cursor" id="reg_img">
+				</div>
+				<div class="ui-list-info ui-border-t  pb0 " style="padding-top:0px;padding-right:0px;float:left;width: calc(100% - 100px);">
+					<div class="title " style="padding:10px 10px 0px 0px;margin: 0px">
+						<div class="flex flex_baseline">
+							<h2 class="flex_one ui-nowrap-multi">{{d.now_order.name}}</h2>
+						</div>
+					</div>
+					<div class="">
+						<div class="title_Price clr">
+						   <span class="tuftof goods_price">{{d.config['Currency_symbol']}}
+							   {{# if (d.is_vip) { }}
+								   <i class="show_format_price">{{d.now_order.vip_wholesale_price}}</i>
+							   {{# } else { }}
+								   <i class="show_format_price">{{d.now_order.price}}</i>
+							   {{# } }}
+							   <i class="unit">/{{d.now_order.unit}}</i>
+							</span>
+
+							<div class="left color_f inline ml10 tip_box2">
+								<span class="Discount mg1_3 pd1_3 showDiscount">{{L_('最少购买')}}<b class="showMin">{{d.now_order.min_num}}</b>个</span>
+							</div>
+							{{# if (d.now_order.stock_num==-1) { }}
+							<span class="Surplus fl show_stock_num">{{L_('选择规格后查看库存')}} </span>
+							{{# } else if (d.now_order.stock_num<=0) { }}
+							<span class="Surplus fl show_stock_num">{{L_('选择规格后查看库存')}}</span>
+							{{# } else { }}
+							<span class="Surplus fl show_stock_num">{{L_('选择规格后查看库存')}}</span>
+							{{# } }}
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+		<sub class="mui-pull-right" style="position: absolute;top: 5px;right: 0;"></sub>
+	</div>
+	<div class="clear"></div>
+	<!--<div style="overflow: auto; width: 100%; border: none; margin-bottom: 120px; max-height: 339.2px;overflow-y: auto;" id="check_info_title_spec">-->
+	<!--</div>-->
+	<div class="mui-scroll-wrapper" id="mui_scroll_wrapper_info" style="max-height: 180px;top: 50px;text-align: -webkit-center; margin-top: 20px;">
+		<div class="mui-scroll">
+
+			<div class="spec_tb">
+				<div class="user_list spec_list">
+					<div style="width: 94%;margin-bottom:10px;">
+						{{# for(var j in d.now_order['spec_list']) { }}
+						    {{# var spec = d.now_order['spec_list'][j]; }}
+							<div class="cations clr spec"  style="text-align: left;width: 100%;">
+								<span class=" cas_left cursor inline">{{spec['name']}}</span>
+								<div class="p35 pl0">
+									<ul class="" data-id="{{spec['id']}}" data-name="{{spec['name']}}" data-num="1" data-type="spec">
+										{{# for(var k in spec['list']) { }}
+										{{# var msg = spec['list'][k]; }}
+											<li data-id="{{msg['id']}}" data-name="{{msg['name']}}" class="cursor">{{msg['name']}}</li>
+										{{# } }}
+									</ul>
+								</div>
+							</div>
+						{{# } }}
+
+						{{# for(var n in d.now_order['list']) { }}
+							{{# var list_index = d.now_order['list'][n]; }}
+							<input type="hidden" class="index_{{ n }}" value="{{list_index['index']}}">
+							<input type="hidden" class="min_num_{{ n }}" value="{{ list_index['min_num'] }}">
+							<input type="hidden" class="stock_num_{{ n }}" value="{{ list_index['stock_num'] }}">
+						    {{# if(d['is_vip'] && list_index['vip_wholesale_price']>0) { }}
+								<input type="hidden" class="price_{{ n }}" value="{{ list_index['vip_wholesale_price'] }}">
+							{{# } else { }}
+								<input type="hidden" class="price_{{ n }}" value="{{ list_index['price'] }}">
+							{{# } }}
+						{{# } }}
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="cations clr" style="border:none;position: relative;  width: 94%;padding-bottom: 0;">
+				<span class="fl cas_left">{{L_('数量')}}</span>
+				<div class="wrap right" style="padding-right:20px">
+					<div class="plus clr" style="position:relative;">
+						<a href="javascript:void(0)" class="jian" style="color: rgb(191, 191, 191);">-</a>
+						<input class="buy_nums_input" type="text" value="{{d.now_order.min_num}}"/>
+						<a href="javascript:void(0)" class="jia">+</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="cations clr" style="border:none;padding: 10px 0 70px;position: relative;  width: 94%;">
+				<div class="cas_left" style="text-align: left;">{{L_('配送方式')}}</div>
+				<div class="flex tabs deliver" style="padding-right: 0px;">
+					{{# if (d.is_pick) {}}
+					<div {{# if (d.has_check=='pick') {}} class="flexActive" {{# } }} data-is_pick_in_store="0">{{L_('到店自提')}}</div>
+					{{# } }}
+					{{# if (d.is_type==1 || d.is_type==3) {}}
+					<div {{# if (d.has_check=='express') {}} class="flexActive" {{# } }} style="border-left:none" data-is_pick_in_store="1">{{L_('快递配送')}}</div>
+					{{# } }}
+					{{# if (d.is_type==2 || d.is_type==3) {}}
+					<div {{# if (d.has_check=='logistics') {}} class="flexActive" {{# } }} style="border-left:none" data-is_pick_in_store="2">{{L_('物流配送')}}</div>
+					{{# } }}
+					{{# if (!d.is_pick && d.is_type!=1 && d.is_type!=2 && d.is_type!=3) {}}
+					<div class="flexActive" style="border-left:none" data-is_pick_in_store="1">{{L_('快递配送')}}</div>
+					{{# } }}
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="purchase_right  purchase_right100 clr spec-btn"  style="z-index: 999999;">
+		<a href="javascript:void(0);" class="fl shops shops100 add_cart_info" style="display:none;" data-store_id="350" data-type="add">{{L_('加入购物车')}}</a>
+		<a href="javascript:void(0);" class="fl shops shops100 true_btn" style="" data-store_id="350" data-type="true">{{L_('确定')}}</a>
+	</div>
+</script>
+
+
+
+<script id="detail_swiper_info" type="text/html">
+	{{# if (d.pic_arr) { }}
+	<div class="head title_data"  data-price="{{d.price}}" data-name="{{d.name}}" data-vip_wholesale_price="{{d.vip_wholesale_price}}" data-stock="{{d.stock_num}}" data-goods_id="{{d.goods_id}}" data-min_num="{{d.min_num}}" data-sell_count="{{d.sell_count}}" data-unit="{{d.unit}}">
+		<div class="homepage closeItem rel" id="listBanner">
+			<div class="swiper-container swiper-container110 swiper-container-horizontal">
+				<div class="swiper-wrapper pics" id="scroll_img">
+					<!-- 商品视频 -->
+					{{# for(var i = 0, len = d.pic_arr.length; i < len; i++){ }}
+					<div class="swiper-slide w100 swiper-slide-active">
+						<img src="{{d.pic_arr[i]['url']}}" data-pics="{{d.pic_arr[i]['url']}}" alt="" data-index="{{i}}" class="w100 cursor" style="height: auto;width: 100%;">
+					</div>
+					{{# } }}
+				</div>
+			</div>
+		</div>
+	</div>
+	{{# } }}
+</script>
+
+<script id="pluscardLists" type="text/html">
+	{{# var data=d; }}
+	<div class="commod detail_list">
+		<div class="top clr">
+			<h2 class="fl">{{data.now_order.name}}</L_></h2>
+		</div>
+
+		<div class="clr msg" style="padding: 10px;border-bottom: #f1f1f1 1px solid;">
+
+
+			{{# if(data.now_order.vip_wholesale_price>0){ }}
+			<div class="mui-pull-left flex" style="width: 100%;">
+				<i class="vip"></i>
+				<span class="vip_price font_size32">
+                    {{ data.config['Currency_symbol'] }}{{ parseFloat(data.now_order.vip_wholesale_price) }}
+					{{# if(data.now_order.unit){ }}
+					<span style="font-size: 14px;">{{'/' + data.now_order.unit }}</span>
+					{{# } }}
+                </span>
+				{{# if (data.now_order.o_price>0) { }}
+				<span class="flex_grow" style=" color: #666;">普通批发：{{ data.config['Currency_symbol'] }}{{ parseFloat(data.now_order.o_price) }}
+					{{# if(data.now_order.unit){ }}
+					<span style="font-size: 14px;">{{'/' + data.now_order.unit }}</span>
+					{{# } }}
+				</span>
+				{{# } else if (data.now_order.price>0) {}}
+				<span class="flex_grow" style=" color: #666;">普通批发：{{ data.config['Currency_symbol'] }}{{ parseFloat(data.now_order.price) }}
+					{{# if(data.now_order.unit){ }}
+					<span style="font-size: 14px;">{{'/' + data.now_order.unit }}</span>
+					{{# } }}
+				</span>
+				{{# } }}
+				{{# if (data.now_order['shop_goods_price'] && data.now_order['shop_goods_price']>0 && parseFloat(data.now_order['shop_goods_price'])>parseFloat(data.now_order.vip_wholesale_price)) { }}
+				<span class="mui-pull-right del-line" style="font-size: 10px; color: #999;">
+                    {{ data.config['Currency_symbol'] }}{{ parseFloat(data.now_order['shop_goods_price']) }}
+					{{# if(data.now_order.unit){ }}
+					<span style="font-size: 14px;">{{'/' + data.now_order.unit }}</span>
+					{{# } }}
+                </span>
+				{{# } }}
+			</div>
+
+
+			{{# } else { }}
+
+			{{# if (data.now_order.price) { }}
+			<div class="mui-pull-left" style="width: 100%;line-height: 24px;">
+				{{L_('批发')}}：{{ data.config['Currency_symbol'] }}{{ data.now_order.price }}
+				{{# if (data.now_order['shop_goods_price'] && data.now_order['shop_goods_price']>0 && parseFloat(data.now_order['shop_goods_price'])>parseFloat(data.now_order.vip_wholesale_price)) { }}
+				<span class="mui-pull-right del-line" style="font-size: 12px; color: #999;line-height: 24px;">
+									{{ data.config['Currency_symbol'] }}{{ parseFloat(data.now_order['shop_goods_price']) }}
+								</span>
+				{{# } }}
+			</div>
+			{{# } }}
+			{{# } }}
+
+			<div class="mui-pull-left flex" style="width: 100%;padding-top: 10px;">
+				{{# if (data.now_order.sell_count>0) { }}
+				<div style="font-size: 12px;line-height: 24px;color: #666;text-align: left;min-width: 50%;">{{L_('已售')}}：{{ data.now_order.sell_count }}</div>
+				{{# } }}
+				{{# if (data.now_order.province!='' || data.now_order.city!='' || data.now_order.area!='') { }}
+				<div style="font-size: 12px;line-height: 24px;color: #666;">
+					{{data.now_order.province}}&nbsp;&nbsp;{{data.now_order.city}}&nbsp;&nbsp;{{data.now_order.area}}
+				</div>
+				{{# } }}
+			</div>
+			{{# if (d.merchant_store_info) {}}
+				<div class="mui-pull-left flex" style="width: 100%;padding-top: 10px;">
+					{{L_('来自店铺')}}：&nbsp;
+					{{# if (data.merchant_store_info.logo) { }}
+						<img style="width: 35px; border-radius: 2px;" src="{{data.merchant_store_info.logo}}">&nbsp;&nbsp;&nbsp;
+					{{# } }}
+					{{# if (data.merchant_store_info.name) { }}
+					<div style="font-size: 12px;line-height: 24px;color: #666;">
+						{{data.merchant_store_info.name}}
+					</div>
+					{{# } }}
+				</div>
+			{{# } }}
+		</div>
+
+
+
+
+		{{# if (d.now_order.discount_info) { }}
+
+		<div class="demo-block activity_chuxiao  cursor">
+			<ul class="ui-list ui-list-link ui-list-nospace ui-border-t mb_0">
+				<li class=" ui-arrowlink flex flex_star ui-list-single">
+					<div class="ui-list-info pl0 w100">
+						<div class="width_48">
+							<span class="font_size15 color_9">{{L_('促销')}}</span>
+						</div>
+						<div class=" explain flex_one width0 pl0 pr0">
+							<div class="tjt_two">
+								<p class="ui-nowrap coupon_nav" style="margin-right:10px;">
+									<span class="chuxiao font_size11 mg_r5">{{L_('批发满折')}}</span>
+									{{# for(var j = 0, len = d.now_order.discount_info.length; j < len; j++){ }}
+									<span class="sever rel  mg_r10  color_7">
+                                                    {{L_('满')}}{{d.now_order.discount_info[j]['num']}}{{d.now_order.unit}}{{L_('享受')}}{{d.now_order.discount_info[j].discount}}折
+                                                </span>
+									{{# } }}
+
+								</p>
+							</div>
+						</div>
+				</li>
+			</ul>
+		</div>
+
+		{{# } }}
+
+		{{# if (data.now_order['spec_list']!='') { }}
+		<div class="demo-block spec_list_info">
+			<ul class="ui-list ui-list-single ui-list-link ui-border-t mb_0">
+				<li class=" Choice">
+					<div class="ui-list-info cursor show_detail">
+						<h4 class="ui-nowrap font_size15 ">
+							<span class="opt">请选择</span>
+							<span class="namic">规格/属性</span>
+						</h4>
+					</div>
+				</li>
+			</ul>
+		</div>
+		{{# } }}
+
+
+		{{# if (data.now_order['des']) { }}
+		<div class="merchant detail_list">
+			<div class="top clr">
+				<h2 class="fl">{{L_('商品详情')}}</h2>
+			</div>
+			<div class="user_list">
+				<div class="content_box">{{data.now_order['des']}}</div>
+			</div>
+		</div>
+		{{# } }}
+
+
+	</div>
+
+	</div>
+
+	{{# if (d.now_order.discount_info) { }}
+	<div class="coupon_mask cursor"></div>
+	<div class="coupon bg_f w100 active y_i" style="width: 100%;">
+		<div class="w100">
+			<div class="pt15 pb15 align_center font_b rel">促销<img src="images/icon_del.png" class="abs coupon_mask_close cursor" style="width:30px;height:30px;right:10px"></div>
+
+			<!-- 优惠信息 -->
+			<div class="demo-block" id="coupon_box">
+				<ul class="ui-list ui-list-single ui-border-t mb_0" style="overflow-y: scroll; height: 368px;">
+					<!-- 满多少，包邮 -->
+					{{# for(var j = 0, len = d.now_order.discount_info.length; j < len; j++){ }}
+					<li class="ui-border-t " style="height: 40px;margin-bottom: 0;">
+						<div class="ui-list-info flex">
+							<div class="flex flex_one">
+								<h4 class=" font_size11 mg_r5" style="min-width:60px">
+									<span style=" border: 1px solid #f23030; padding: 1px 3px; color: #f23030; border-radius: 100px;">{{L_('批发满折')}}</span>
+								</h4>
+								<div class="font_size14 color_7">
+									<span>{{L_('满')}}{{d.now_order.discount_info[j]['num']}}{{d.now_order.unit}}{{L_('享受')}}{{d.now_order.discount_info[j].discount}}折</span>
+								</div>
+							</div>
+						</div>
+					</li>
+					{{# } }}
+
+				</ul>
+			</div>
+		</div>
+	</div>
+	{{# } }}
+
+</script>
+<script>
+    mui.init();
+    var ticket = common.getCache('ticket');
+    var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+    var goods_id = urlParam.goods_id;
+    console.log('goods_id',goods_id);
+    var shopList = [];
+    var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+    var fareTemplet = []; // 快递配送公司信息
+    var Currency_txt = '元';
+    var is_group = '';
+    var team_id = '';
+    common.removeCache('buy_num');
+    common.removeCache('buy_nums');
+
+    var wh=$(window).width();
+    var h=$(window).height();
+
+
+    var spec_stock_num = 0;
+    var spec_min_num = 1;
+    var spec_price = 1;
+    var spec_ids = '';
+    var spec_indexs = '';
+    var is_spec = true;
+    var is_choose = false;
+    var spec_min_unit=1;
+
+
+    $(document).on('blur', '.buy_num', function () {
+        console.log('离开1');
+        setTimeout(function () {
+            window.scrollTo(0,0);
+        },1);
+    });
+    $(document).on('blur', '.buy_nums_pay', function () {
+        console.log('离开2');
+        setTimeout(function () {
+            window.scrollTo(0,0);
+        },1);
+    });
+
+    $(document).on('click', '.spec li', function(){
+        $(this).addClass("on").siblings().removeClass("on");
+        //获取当前的操作
+        show_select_txt(this);
+    });
+
+
+    function show_select_txt(index)
+    {
+        var choose = false;
+        spec_ids = '';
+        spec_indexs = '';
+        $('.cations ul').find('li.on').each(function(){
+            if (!spec_ids) {
+                spec_ids = $(this).data('id');
+            } else {
+                spec_ids += '_' + $(this).data('id');
+            }
+            if (!spec_indexs) {
+                spec_indexs = 'id_'+$(this).data('id');
+            } else {
+                spec_indexs += '_id_' + $(this).data('id');
+            }
+        });
+        var index_msg = $('.index_'+spec_ids).val();
+        var price_old = $('.price_'+spec_ids).val();
+        var stock_num_old = $('.stock_num_'+spec_ids).val();
+        var min_num_old = $('.min_num_'+spec_ids).val();
+        if (parseInt(min_num_old)>parseInt(stock_num_old)) {
+            $(index).removeClass("on");
+            is_choose = false;
+            mui.toast('当前关联规格库存不足，请选择其他规格');
+            return false;
+		}
+
+        console.log('spec_ids', spec_ids);
+        console.log('price_old', price_old);
+        console.log('stock_num_old', stock_num_old);
+        console.log('min_num_old', min_num_old);
+        if (parseInt(min_num_old)>0) {
+            spec_min_num = min_num_old;
+            $('#check_info_title_spec .showMin').html(spec_min_num);
+            $('.buy_nums_input').val(spec_min_num);
+        }
+
+        if (spec_ids) {
+            spec_price = price_old;
+            if (!price_old) {
+                spec_price = 0;
+            }
+            $('#check_info_title_spec .show_format_price').html(spec_price);
+            choose = true;
+        }
+        if (stock_num_old) {
+            spec_stock_num = stock_num_old;
+            if (spec_stock_num>0) {
+                $('#check_info_title_spec .show_stock_num').html('剩余' + spec_stock_num + '份')
+            } else if (spec_stock_num==0) {
+                $('#check_info_title_spec .show_stock_num').html('库存不足')
+            }else if (spec_stock_num==-1) {
+                $('#check_info_title_spec .show_stock_num').html('库存充足')
+            }
+            choose = true;
+        }
+        if (choose && index_msg) {
+            is_choose = true;
+        } else {
+            is_choose = false;
+        }
+        console.log('is_choose', is_choose);
+    }
+
+
+    mui('body').on('tap','.plus a',function(e){
+        if (is_spec) {
+            if (is_spec && (!is_choose || !spec_ids)) {
+                mui.toast('请先选择对应规格属性');
+                return false;
+            }
+            var num = parseInt($('.buy_nums_input').val());
+            spec_min_num = parseInt(spec_min_num);
+            spec_min_unit = parseInt(spec_min_unit);
+            spec_stock_num = parseInt(spec_stock_num);
+            console.log('spec_min_unit', spec_min_unit);
+            console.log('spec_min_num', spec_min_num);
+            console.log('num', num);
+            console.log('spec_stock_num', spec_stock_num);
+            if ($(this).attr('class') == 'jia') {
+                var n = Math.ceil(spec_min_num/spec_min_unit);
+                if (spec_min_num<=0) {
+                    n = 1;
+				}
+				if (spec_min_unit == 1) {
+                    num ++;
+				} else if (spec_min_unit > 0 && num == spec_min_num) {
+                    num += spec_min_unit * n - spec_min_num;
+                } else if (spec_min_unit > 0) {
+                    num += spec_min_unit;
+                } else {
+                    num ++;
+                }
+                //限购校验(最多购买数量)
+                if(typeof spec_stock_num!='undefined' && !isNaN(spec_stock_num) && spec_stock_num>0){
+                    if(num>spec_stock_num){
+                        mui.toast('最多购买数为'+spec_stock_num);
+                        return false;
+                    }
+                }
+            } else {
+                console.log('爬起那', num-spec_min_unit < spec_min_num);
+                if (spec_min_unit > 0 && num-spec_min_unit < spec_min_num) {
+                    num = spec_min_num;
+                } else if (spec_min_unit > 0) {
+                    num -= spec_min_unit;
+                } else {
+                    num --;
+                }
+                //限购校验(最少购买数量)
+                if(typeof spec_min_num!='undefined' && !isNaN(spec_min_num) && spec_min_num>0){
+                    if(num<spec_min_num){
+                        mui.toast('最少购买数为'+spec_min_num);
+                        return false;
+                    }
+                }
+            }
+            if (num < 0) {
+                num = 0;
+            }
+            if (num >spec_min_num) {
+                $("#check_info_title_spec a.jian").css("color","#333333");
+            }else if(num==spec_min_num){
+                $("#check_info_title_spec a.jian").css("color","#bfbfbf");
+            }else{
+                $("#check_info_title_spec a.jian").css("color","#bfbfbf");
+                return false;
+            }
+            $('.buy_nums_input').val(num);
+            console.log('num',num);
+            return;
+        } else {
+            var num = parseInt($('.plus input').val());
+            var min_num = $('.plus input').data('min_num');
+            var min_unit = $('.plus input').data('min_unit');
+            console.log('min_unit1', min_unit);
+            if ($(this).attr('class') == 'jia') {
+                var n = Math.ceil(min_num/min_unit);
+                if (min_unit == 1) {
+                    num ++;
+                } else if (parseInt(min_unit) > 0 && parseInt(num) == parseInt(min_num) && (min_unit * n>min_num)) {
+                    num += min_unit * n - min_num;
+                } else if (min_unit > 0) {
+                    num += min_unit;
+                } else {
+                    num ++;
+                }
+            } else {
+                if (min_unit > 0 && num-min_unit < min_num) {
+                    num = min_num;
+                } else if (min_unit > 0) {
+                    num -= min_unit;
+                } else {
+                    num --;
+                }
+                //限购校验(最少购买数量)
+                var minNum=$('#showMin').text();
+                if(typeof minNum!='undefined' && !isNaN(minNum) && minNum>0){
+                    minNum=parseInt(minNum);
+                    if(num<minNum){
+                        mui.toast('最少购买数为'+minNum);
+                        return false;
+                    }
+                }
+            }
+            if (num < 1) {
+                num = 1;
+            }
+            var min_num=$('.title_data').data('min_num');
+            if (num >min_num) {
+                $(".plus a.jian").css("color","#333333");
+            }else if(num==min_num){
+                $(".plus a.jian").css("color","#bfbfbf");
+            }else{
+                $(".plus a.jian").css("color","#bfbfbf");
+                return false;
+            }
+            $('.plus input').val(num);
+        }
+    });
+
+    mui('body').on('tap','.market_cart',function(e){
+        openWindow({
+            url:'market_cart.html',
+            id:'market_cart'
+        });
+    });
+
+
+    $(document).on("click",'.deliver div',function(){
+        $(this).addClass("flexActive").siblings().removeClass("flexActive");
+    });
+
+
+    $(document).on("click",'.activity_chuxiao',function(){
+        $(".coupon.y_i").show();
+        $(".coupon").addClass("active");
+        $(".coupon_mask").show()
+    });
+
+    $(document).on("click",'.coupon_mask_close',function(){
+        $(".coupon").removeClass("active");
+        $(".coupon_mask").hide();
+    });
+
+    $(document).on("click",'.coupon_mask',function(e){
+        $(".coupon").removeClass("active");
+        $(".coupon_mask").hide();
+    });
+
+
+    function reload_msg() {
+        $('.buy_nums_pay').blur(function () {
+            // 输入值，离开后判断
+            spec_min_num = parseInt(spec_min_num);
+            spec_min_unit = parseInt(spec_min_unit);
+            spec_stock_num = parseInt(spec_stock_num);
+            var val = $.trim($(this).val());
+            if (parseInt(val)%parseInt(spec_min_unit) != 0 && val != spec_min_num) {
+                var msg = '批量批发请填写' + spec_min_unit + '的整数倍';
+                mui.toast(msg);
+                $(this).val(spec_min_num);
+                return false;
+            }
+            if (!val || parseInt(val)<parseInt(spec_min_num)) {
+                mui.toast('购买份数不能小于'+spec_min_num);
+                $(this).val(spec_min_num);
+                return false;
+            }
+            if (parseInt(val)>parseInt(spec_stock_num)) {
+                mui.toast('购买份数不能大于'+spec_stock_num);
+                $(this).val(spec_stock_num);
+            }
+        });
+
+        $(".buy_nums_input").blur(function () {
+            if (!is_choose || !spec_ids) {
+                mui.toast('请先选择对应规格属性');
+                $.trim($(this).val());
+                return false;
+            }
+            // 输入值，离开后判断
+            var val = $.trim($(this).val());
+            if (parseInt(val)%parseInt(spec_min_unit) != 0 && val != spec_min_num) {
+                var msg = '批量批发请填写' + spec_min_unit + '的整数倍';
+                mui.toast(msg);
+                $(this).val(spec_min_num);
+                return false;
+            }
+            if (!val || parseInt(val)<parseInt(spec_min_num)) {
+                mui.toast('购买份数不能小于'+spec_min_num);
+                $(this).val(spec_min_num);
+                return false;
+            }
+            if (parseInt(val)>parseInt(spec_stock_num)) {
+                mui.toast('购买份数不能大于'+spec_stock_num);
+                $(this).val(spec_stock_num);
+            }
+        });
+
+        $('.buy_num').blur(function () {
+            // 输入值，离开后判断
+            var min_num = $.trim($(this).data('min_num'));
+            var stock_num = $.trim($(this).data('stock_num'));
+            var min_unit = $.trim($(this).data('min_unit'));
+            if (min_num<=0) {
+                min_num = 1;
+            }
+            console.log('buy_num_blur',stock_num);
+            var val = $.trim($(this).val());
+            if (parseInt(val)%parseInt(min_unit) != 0 && val != min_num) {
+                var msg = '批量批发请填写' + min_unit + '的整数倍';
+                mui.toast(msg);
+                $(this).val(min_num);
+                return false;
+            }
+            if (!val || parseInt(val)<parseInt(min_num)) {
+                mui.toast('购买份数不能小于'+min_num);
+                $(this).val(min_num);
+            }
+            if (parseInt(val)>parseInt(stock_num)) {
+                mui.toast('购买份数不能大于'+stock_num);
+                $(this).val(stock_num);
+            }
+        });
+    }
+    // 渲染数据
+    common.http('Merchantapp&a=market_buy_detail', {
+        'ticket': ticket,
+        'client': client,
+        'goods_id': goods_id
+    }, function (data) {
+        if (data && data.now_order) {
+            is_group=data.now_order.is_group;
+            team_id=data.now_order.team_id;
+            if (parseInt(data.now_order.goods_id)>0 && goods_id != parseInt(data.now_order.goods_id)) {
+                goods_id = parseInt(data.now_order.goods_id);
+            }
+        }
+        if (data.now_order.stock_num) {
+            spec_stock_num = data.now_order.stock_num;
+        }
+        if (data.now_order.min_num) {
+            spec_min_num = data.now_order.min_num;
+        }
+        if (data.now_order.min_unit) {
+            spec_min_unit = data.now_order.min_unit;
+        }
+        Currency_txt = data.config['Currency_txt'];
+
+        if (data['cartCount']>0) {
+            $('.Number').html(data['cartCount']);
+        } else {
+            $('.Number').html('');
+        }
+
+        laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+            $('.allHtml').html(html);
+        });
+
+        laytpl(document.getElementById('detail_swiper_info').innerHTML).render(data.now_order, function (html) {
+            $('.detail_swiper').html(html);
+            swiper_reload();
+        });
+
+        if (data.now_order && data.now_order['spec_list']) {
+            is_spec = true;
+            setTimeout(function () {
+                var m_b =  parseInt(data.now_order.spec_list_count);
+                if (m_b > 3) {
+                    m_b = 3;
+                }
+                if (m_b < 2) {
+                    m_b = 2;
+                }
+                m_b = m_b * 200;
+                if (0.6*h < m_b) {
+                    m_b = 0.6*h;
+				}
+                console.log('m_b',m_b);
+                $('#middlePopover #check_info_title_spec').css('height', m_b+'px');
+                $('#middlePopover #mui_scroll_wrapper_info').css('max-height', m_b+'px');
+            }, 100);
+            laytpl(document.getElementById('spec_detail_buy').innerHTML).render(data, function (html) {
+                $('.buyDetail').html(html);
+                setTimeout(function () {
+                    reload_msg();
+                    mui('.mui-scroll-wrapper').scroll({
+                        deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+                    });
+                }, 100);
+            });
+        } else {
+            is_spec = false;
+            laytpl(document.getElementById('detail_buy').innerHTML).render(data, function (html) {
+                $('.buyDetail').html(html);
+                setTimeout(function () {
+                	reload_msg();
+                }, 100);
+            });
+        }
+
+    });
+
+    function swiper_reload() {
+        $(".swiper-container110").css("height",wh+'px');
+        $(".swiper-container110 .swiper-slide").css("height",wh+'px');
+        $(".swiper-container110 .swiper-slide .h100").css("height",wh+'px');
+        var myswiper = new Swiper('.swiper-container110', {
+            pagination: '.swiper-container110 .swiper-pagination',
+            autoplay: false,
+            loop:true,
+            grabCursor: true,
+            paginationClickable: true,
+            autoplayDisableOnInteraction:false,
+            simulateTouch:false,
+            parent:'.swiper-container110',
+            paginationType:'fraction'
+        });
+    }
+
+    function selectChange(lists) {
+        $.each(lists, function (i, val) {
+            var goods_id_list = {'value': '', 'text': ''};
+            goods_id_list.text = val.name;
+            goods_id_list.value = val.store_id;
+            shopList.push(goods_id_list);
+        });
+    }
+
+
+
+
+    // 添加到购物车
+    mui('.plus_class').on('tap', '.add_cart', function (e) {
+
+        mask.show();
+        $('.add_cart_info').show();
+        $('.true_btn').hide();
+        mui('#middlePopover').popover('show');
+        $('body').css('overflow','hidden');
+
+    });
+
+    // 显示规格
+    mui('body').on('tap', '.spec_list_info', function (e) {
+
+        mask.show();
+        $('.add_cart_info').show();
+        $('.true_btn').hide();
+        mui('#middlePopover').popover('show');
+        $('body').css('overflow','hidden');
+
+    });
+
+    // 添加到购物车
+    mui('body').on('tap', '.add_cart_info', function (e) {
+        console.log('add_cart');
+        if (is_spec && (!is_choose || !spec_ids)) {
+            mui.toast('请先选择对应规格属性');
+            return false;
+        }
+
+        // var len = $('.buy_nums_pay').length;
+        var buy_nums = {};
+        var buy_num = 0;
+        var is_pick_in_store = $('.deliver .flexActive').data('is_pick_in_store');
+        console.log('is_pick_in_store', is_pick_in_store);
+        if (spec_ids) {
+            var num = $('.buy_nums_input').val();
+            if (parseInt(spec_min_num)>0 && parseInt(num)<parseInt(spec_min_num)) {
+                mui.toast('购买份数不能小于'+spec_min_num);
+                return false;
+            }
+            if (parseInt(spec_stock_num)>0  && parseInt(num)>parseInt(spec_stock_num)) {
+                mui.toast('购买份数不能大于'+spec_stock_num);
+                return false;
+            }
+            buy_nums[spec_indexs]=num;
+            console.log('buy_nums', buy_nums)
+            // var is_min = 0;
+            // var is_max = 0;
+            // $('.buy_nums_pay').each(function(){
+            //     var index = $.trim($(this).data('index'));
+            //     var min_num = $.trim($(this).data('min_num'));
+            //     var stock_num = $.trim($(this).data('stock_num'));
+            //     console.log('stock_num',stock_num);
+            //     var val = $.trim($(this).val());
+            //     if (parseInt(val)<parseInt(min_num)) {
+            //         is_min = min_num;
+            //         $(this).val(min_num);
+            //     }
+            //     if (parseInt(val)>parseInt(stock_num)) {
+            //         is_max = stock_num;
+            //         $(this).val(stock_num);
+            //     }
+            //     if (parseInt(is_min)>0) {
+            //         mui.toast('购买份数不能小于'+is_min);
+            //         return false;
+            //     }
+            //     if (parseInt(is_max)>0) {
+            //         mui.toast('购买份数不能大于'+is_max);
+            //         return false;
+            //     }
+            //     buy_nums[index]=val;
+            // });
+        } else {
+
+            var val = $('.buy_num').val();
+            var min_num = $('.title_data').data('min_num');
+            if (parseInt(val)<parseInt(min_num)) {
+                mui.toast('购买份数不能小于'+min_num);
+                $(this).val(min_num);
+                return false;
+            }
+            console.log('val', val);
+            buy_num = val;
+        }
+        console.log('buy_nums', buy_nums);
+		var param_info = {};
+        param_info['ticket'] = ticket;
+        param_info['client'] = client;
+        param_info['goods_id'] = goods_id;
+        param_info['buy_nums'] = buy_nums;
+        param_info['buy_num'] = buy_num;
+        if (is_pick_in_store==null) {
+            is_pick_in_store = -1;
+		}
+        param_info['is_pick_in_store'] = is_pick_in_store;
+        common.http('Merchantapp&a=add_market_cart', param_info, function (data) {
+            console.log('add_market_cart', data);
+            mui.toast('添加成功');
+            setTimeout(function() {
+                realod_info();
+            },1)
+        });
+    });
+
+    // 跳转支付
+
+    mui('body').on('tap', '.true_btn', function (e) {
+        if (is_spec && (!is_choose || !spec_ids)) {
+            mui.toast('请先选择对应规格属性');
+            return false;
+        }
+        // var len = $('.buy_nums_pay').length;
+        var buy_nums = {};
+        var buy_num = 0;
+        var is_pick_in_store = $('.deliver .flexActive').data('is_pick_in_store');
+        console.log('is_pick_in_store', is_pick_in_store);
+        if (spec_ids) {
+            var num = $('.buy_nums_input').val();
+            if (parseInt(spec_min_num)>0 && parseInt(num)<parseInt(spec_min_num)) {
+                mui.toast('购买份数不能小于'+spec_min_num);
+                return false;
+            }
+            if (parseInt(spec_stock_num)>0  && parseInt(num)>parseInt(spec_stock_num)) {
+                mui.toast('购买份数不能大于'+spec_stock_num);
+                return false;
+            }
+            buy_nums[spec_ids]=num;
+            // $('.buy_nums_pay').each(function(){
+            //     var index = $.trim($(this).data('index'));
+            //     var min_num = $.trim($(this).data('min_num'));
+            //     var stock_num = $.trim($(this).data('stock_num'));
+            //     console.log('stock_num',stock_num);
+            //     var val = $.trim($(this).val());
+            //     if (parseInt(val)<parseInt(min_num)) {
+            //         is_min = min_num;
+            //         $(this).val(min_num);
+            //     }
+            //     if (parseInt(val)>parseInt(stock_num)) {
+            //         is_max = stock_num;
+            //         $(this).val(stock_num);
+            //     }
+            //     buy_nums[index]=val;
+            // });
+        } else {
+
+            var val = $('.buy_num').val();
+            var min_num = $('.title_data').data('min_num');
+            var stock_num = $.trim($(this).data('stock_num'));
+            if (parseInt(val)<parseInt(min_num)) {
+                mui.toast('购买份数不能小于'+min_num);
+                $(this).val(min_num);
+                return false;
+            }
+            if(typeof stock_num!='undefined' && !isNaN(stock_num) && stock_num>0){
+                stock_num=parseInt(stock_num);
+                if(val>stock_num){
+                    mui.toast('最多购买数为'+stock_num);
+                    return false;
+                }
+            }
+            console.log('val', val);
+            buy_num = val;
+        }
+        common.setCache('buy_nums',buy_nums);
+        common.setCache('buy_num',buy_num);
+
+        openWindow({
+            url:'market_buy.html?goods_id='+goods_id+'&is_pick='+is_pick_in_store,
+            id:'market_buy'
+        });
+    });
+
+
+    //添加填写发货信息
+    mui('body').on('tap','.now_buy',function(e){
+        mask.show();
+        $('.add_cart_info').hide();
+        $('.true_btn').show();
+        mui('#middlePopover').popover('show');
+        $('body').css('overflow','hidden');
+    });
+
+
+
+    //点击蒙版
+    mui('body').on('tap','.mui-backdrop',function(){
+        mui('#middlePopover').popover('hide');
+        mui('#payPopover').popover('hide');
+        mask.close();
+        $('body').css('overflow-y','scroll');
+    });
+
+    //点击关闭按钮
+    mui('#middlePopover').on('tap','sub',function(){
+        mui('#middlePopover').popover('hide');
+        mask.close();
+        $('body').css('overflow-y','scroll');
+    });
+
+
+
+    (function ($, doc) {
+        $.init();
+        mui('.freight').on('tap', '#freight', function (e) {
+            var userPicker = new $.PopPicker();
+            userPicker.setData(fareTemplet);
+            var that = this;
+            userPicker.show(function (items) {
+                that.children[0].innerHTML = items[0].text;
+                that.children[0].style.color = "#333333";
+                document.getElementById('freight_template').value = items[0].value;
+                pindex = 1;
+            }, false);
+
+        });
+    })(mui, document);
+    function realod_info(){
+        window.location.href = window.location.href;
+        // window.location.reload();
+    };
+
+
+    function clock(t){
+        var d=Math.floor(t/(24*3600));
+        var h=Math.floor((t-d*24*3600)/3600);
+        var m=Math.floor(t%3600/60);
+        var s=Math.floor(t%60);
+        var time_str='';
+        if(d>0){
+            time_str+=d+'天';
+        }
+        if(time_str || h>0){
+            time_str+=h+'{pigcms{:L_("小时")}';
+        }
+        if(time_str || m>0){
+            time_str+=m+'{pigcms{:L_("分钟")}';
+        }
+        if(time_str || s>0){
+            time_str+=s+'秒';
+        }
+        $('.pin_market_info .time_box').text('{pigcms{:L_("倒计时：")}'+time_str);
+    }
+
+
+</script>
+
+</body></html>

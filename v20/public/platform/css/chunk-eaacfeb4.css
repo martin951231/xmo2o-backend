@@ -1,0 +1,31 @@
+.content .text-wrap[data-v-1a0b7dd7] {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.content .text-nowrap[data-v-1a0b7dd7] {
+  white-space: nowrap;
+}
+.content .border-all[data-v-1a0b7dd7] {
+  border: 1px solid #f1f1f1;
+}
+.content .title[data-v-1a0b7dd7] {
+  padding: 8px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-bottom: 1px solid #f1f1f1;
+}
+.content .content[data-v-1a0b7dd7] {
+  padding: 10px 30px 20px 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.content .mt-10[data-v-1a0b7dd7] {
+  margin-top: 16px;
+}
+.content[data-v-1a0b7dd7] .ant-col {
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+

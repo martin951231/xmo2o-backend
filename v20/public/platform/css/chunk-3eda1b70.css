@@ -1,0 +1,16 @@
+.search[data-v-7171135a] {
+  margin-bottom: 54px;
+}
+.fold[data-v-7171135a] {
+  width: calc(100% - 216px);
+  display: inline-block;
+}
+.operator[data-v-7171135a] {
+  margin-bottom: 18px;
+}
+@media screen and (max-width: 900px) {
+.fold[data-v-7171135a] {
+    width: 100%;
+}
+}
+

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>内容引擎</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name='apple-touch-fullscreen' content='yes' />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="format-detection" content="address=no" />
+		<link rel="stylesheet" href="./css/reset.css">
+		<link rel="stylesheet" href="./css/development.css">
+		<link rel="stylesheet" href="./scripts/weui/weui.min.css">
+	</head>
+	<body>
+		<div class="container" id="app" v-show="isShowPage">
+			<div class="weui-flex flex_box">
+				<div class="input_row">
+					<img class="search_img" src="./images/search.png">
+					<input type="text" @keyup.enter="onSubmit" v-model="searchwords" class="input_clear" placeholder="请输入素材名称">
+				</div>
+				<div class="text_search" @click="searchClick">搜索</div>
+			</div>
+			<div class="weui-flex select_box" @click="showPicker">
+				<div class="text_1">选择分组：</div>
+				<div class="text_2">{{menu_label}}</div>
+			</div>
+			<div class="assort">
+				<div class="topNav" id="topNav">
+					<ul id="topNavUl">
+						<li v-for="(i,index) in tabitem" :key="index" @click="goCenter(i.type,index,$event)" :class="{current: index === currentTopNav}">{{ i.title }}</li>
+					</ul>
+				</div>
+			</div>
+			<div class="item_scroll" id="item_scroll">
+				<div v-if="current == 0 && !no_data" class="list_item" @click.stop="selectitem(index,item)" :style="num==index?'border: 2px solid rgba(61, 151, 222,1);':''"
+				 v-for="(item,index) in listdata">
+					<div class="weui-flex top_flex">	
+						<div class="left_text">{{item.title}}</div>
+						<div class="img_box" @click="seedetails($event,item)">
+							<img class="right_img" src="./images/pointBt1.png">
+						</div>
+					</div>
+					<div class="bottom_flex">{{item.content?item.content:'无'}}</div>
+				</div>
+				<div v-if="current == 1 && !no_data" class="list_item" @click="selectitem(index,item)" :style="num==index?'border: 2px solid rgba(61, 151, 222,1);':''"
+				 v-for="(item,index) in listdata">
+					<div class="weui-flex top_flex">
+						<div class="left_text">{{item.title}}</div>
+					</div>
+					<div class="bottom_flex_1">
+						<img class="img_1" :src="item.content" alt="" @click="previewImage($event,item.content)">
+					</div>
+				</div>
+				<div v-if="current == 2 && !no_data" class="list_item_1" @click="selectitem(index,item)" :style="num==index?'border: 2px solid rgba(61, 151, 222,1);':''"
+				 v-for="(item,index) in listdata">
+					<div class="weui-flex top_flex_1">
+						<img class="right_img" :src="item.ico_url">
+						<div class="left_text">{{item.title}}</div>
+					</div>
+				</div>
+				<div v-if="current == 3 && !no_data" class="list_item_2" @click="selectitem(index,item)" :style="num==index?'border: 2px solid rgba(61, 151, 222,1);':''"
+				 v-for="(item,index) in listdata">
+					<div class="weui-flex top_flex_1">
+						<div class="left_text">{{item.title}}</div>
+					</div>
+				</div>
+				<div class="tip" v-if="pageLoading">
+					<div>加载中</div>
+				</div>
+				<div class="tip" v-if="pageLoadings">
+					<div>没有更多记录</div>
+				</div>
+				<div class="tip_box_no_data" v-if="no_data">
+					<image class="no_data_img" src="./images/no_data.png"></image>
+					<div class='no_tip_content'>暂无搜索结果</div>
+				</div>
+			</div>
+			<div class="btn" @click="sendMsg">发送</div>
+			<div :style="show?'display: block;':'display: none;'" style="display: none;">
+				<div class="weui-mask" @click="isShow">
+				</div>
+				<div class="weui-half-screen-dialog">
+					<div class="weui-half-screen-dialog__hd">
+						<div class="weui-half-screen-dialog__hd__main hd_flex">
+							<!-- <strong class="weui-half-screen-dialog__title_center">标题</strong> -->
+							<div class="cancel" @click="isclose">取消</div>
+							<div class="confirm" @click="sendtext">发送</div>
+						</div>
+					</div>
+					<div class="weui-half-screen-dialog__bd">
+						<div class="popup_title">{{title}}</div>
+						<div class="content_box">{{content}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--<script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+		<script>
+			// 初始化
+			var vConsole = new VConsole();
+			console.log('uniapp打开')
+			console.debug('consoledebug')
+		</script>-->
+		<script src="./scripts/jquery-1.8.3.min.js"></script>
+		<script src="./scripts/common.js?t=15482"></script>
+		<script src="./scripts/weui/weui.min.js"></script>
+		<script src="./scripts/vue@2.6.10.min.js"></script>
+		<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+		<script src="https://work.weixin.qq.com/wework_admin/jweixin"></script>
+		<script src="https://open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js"></script>
+		<script src="./scripts/development.js?t=50"></script>
+	</body>
+</html>

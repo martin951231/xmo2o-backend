@@ -1,0 +1,67 @@
+.IOTSensingEquipment[data-v-ade7be48] {
+  width: 100%;
+  height: calc(17.5vh - 32px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48] {
+  width: 33.3%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48]:nth-child(1) {
+  -webkit-transform: translateX(24.5px);
+          transform: translateX(24.5px);
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48]:nth-child(2) {
+  -webkit-transform: translateX(10.5px);
+          transform: translateX(10.5px);
+}
+.IOTSensingEquipment .chart_item[data-v-ade7be48]:nth-last-child(1) {
+  -webkit-transform: translateX(-3px);
+          transform: translateX(-3px);
+}
+.IOTSensingEquipment .chart_item .top_con[data-v-ade7be48] {
+  width: 75px;
+  height: 75px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #F0E32A;
+  font-size: 20px;
+  font-weight: bold;
+  background-size: 100% 100%;
+}
+.IOTSensingEquipment .chart_item .bottom_title[data-v-ade7be48] {
+  color: #fff;
+  font-size: 14px;
+  margin-top: 10px;
+}
+

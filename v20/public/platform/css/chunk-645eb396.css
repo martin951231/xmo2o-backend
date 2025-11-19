@@ -1,0 +1,95 @@
+#party_organization[data-v-f2eff05e] {
+  width: calc(100vw/4 - 20px);
+  height: calc((100vh - 90px - 6px) / 3 - 42px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+  margin: 0 auto;
+  overflow-y: scroll;
+}
+#party_organization[data-v-f2eff05e]::-webkit-scrollbar {
+  display: none;
+}
+#party_organization .organization_item[data-v-f2eff05e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 12px 10px;
+  cursor: pointer;
+}
+#party_organization .organization_item .left_icon[data-v-f2eff05e] {
+  width: 78px;
+  height: 70px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+#party_organization .organization_item .left_icon .image[data-v-f2eff05e] {
+  width: 78px;
+  height: 70px;
+}
+#party_organization .organization_item .right_content[data-v-f2eff05e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+#party_organization .organization_item .right_content .top_title[data-v-f2eff05e] {
+  font-size: 15px;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #00FAFB;
+  margin-top: 10px;
+}
+#party_organization .organization_item .right_content .bottom_value[data-v-f2eff05e] {
+  margin-top: 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+#party_organization .organization_item .right_content .bottom_value .value[data-v-f2eff05e] {
+  font-size: 30px;
+  font-family: DIN Condensed;
+  font-weight: bold;
+  color: #EE7413;
+}
+#party_organization .organization_item .right_content .bottom_value .unit[data-v-f2eff05e] {
+  font-size: 16px;
+  font-family: Adobe Heiti Std;
+  font-weight: normal;
+  color: #FFFFFF;
+  margin-left: 3px;
+  margin-top: 6px;
+}
+

@@ -1,0 +1,95 @@
+.select-goods[data-v-31f19d46] {
+  width: 1000px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.select-goods .left[data-v-31f19d46] {
+  width: 200px;
+  height: 700px;
+  border-right: 1px solid #eeeeee;
+}
+.select-goods .right[data-v-31f19d46] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.select-goods .right .top[data-v-31f19d46] {
+  height: 50px;
+  border-bottom: 1px solid #eeeeee;
+}
+.select-goods .right .top .search[data-v-31f19d46] {
+  width: 200px;
+  float: right;
+  margin-right: 10px;
+}
+.select-goods .right .bottom[data-v-31f19d46] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding: 10px;
+}
+.select-goods .right .bottom .product-info[data-v-31f19d46] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.select-goods .right .bottom .product-info img[data-v-31f19d46] {
+  width: 80px;
+  height: 80px;
+  margin-right: 15px;
+}
+.select-goods .right .bottom .pagination[data-v-31f19d46] {
+  float: right;
+  margin-top: 10px;
+}
+.scrollbar[data-v-31f19d46] {
+  overflow-y: auto;
+}
+.scrollbar[data-v-31f19d46]::-webkit-scrollbar {
+  width: 6px;
+  background-color: rgba(217, 217, 217, 0.3);
+}
+.scrollbar[data-v-31f19d46]::-webkit-scrollbar-thumb {
+  background-color: rgba(217, 217, 217, 0.3);
+  border-radius: 6px;
+}
+.scrollbar[data-v-31f19d46]::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(217, 217, 217, 0.3);
+  background-color: #fff;
+}
+
+
+.stock-content[data-v-ea7a0084] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.stock-content[data-v-ea7a0084] .ant-checkbox-wrapper {
+  position: relative;
+  top: 2px;
+  height: 32px;
+  border: 1px solid #d9d9d9;
+  padding-left: 14px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-left: none;
+  line-height: 32px;
+}
+.time_space[data-v-ea7a0084] {
+  padding: 0 4px;
+}
+

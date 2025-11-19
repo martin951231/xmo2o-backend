@@ -1,0 +1,334 @@
+$theme_color: (
+        blackTheme:#000000,
+        redTheme:#FA0029,
+        orangeTheme:#FF5C1C,
+        blueTheme:#0098F8,
+        pinkDarkTheme:#FF007C,
+        purpleTheme:#7948FD,
+        brownTheme:#B7A392
+);
+
+$theme_color_gradient: (
+        blackTheme:#595959,
+        redTheme:#F45C43,
+        orangeTheme:#F06A0B,
+        blueTheme:#43B4FC,
+        pinkDarkTheme:#FC6767,
+        purpleTheme:#E100FF,
+        brownTheme:#CBBCAF
+);
+.al-title{
+  background-color: #fff;
+  font-size: 16px;
+  margin: 10px 0 0 10px;
+}
+
+.al-container {
+  background-color: #fff;
+  .al-item {
+    display: block;
+    width: 300.37px;
+    margin-left: 9.81px;
+    padding: 14.08px 3.84px 3.84px 0;
+  }
+  .al-main-img {
+    width: 292.69px;
+    height: 164.27px;
+    border-top-left-radius: 1.28px;
+    border-top-right-radius: 1.28px;
+  }
+  .al-buy-btn {
+    float: right;
+    margin-right: 17.07px;
+  }
+  .al-board {
+    color: #ffffff;
+    display: flex;
+    width: 292.69px;
+    height: 34.13px;
+    line-height: 34.13px;
+    text-align: center;
+    border-bottom-left-radius: 1.28px;
+    border-bottom-right-radius: 1.28px;
+  }
+  .al-type-name {
+    flex: 1;
+    width: 28.59px;
+    height: 13.65px;
+    margin-top: 10.24px;
+    font-size: 14.51px;
+    line-height: 13.65px;
+    letter-spacing: 0px;
+    color: #ffffff;
+    p {
+      font-weight: bold;
+    }
+  }
+  .al-time-count {
+    flex: 2;
+    line-height: 35.01px;
+    p {
+      font-size: 10.24px;
+    }
+  }
+  .al-remain-sku {
+    flex: 1;
+    width: 57.60px;
+    height: 12.80px;
+    line-height: 12.80px;
+    margin-top: 10.67px;
+    background-color: #ffffff;
+    border-radius: 6.40px;
+    font-size: 7.68px;
+    text-align: center;
+  }
+  .al-action-list {
+    height: 27.31px;
+    text-align: left;
+  }
+  .al-buy-btn {
+    display: inline-block;
+    width: 52.91px;
+    height: 22.19px;
+    border-radius: 3.41px;
+    font-size: 10.24px;
+    line-height: 22.19px;
+    text-align: center;
+  }
+  .al-good-name {
+    margin-left: 8.53px;
+    margin-right: 21.33px;
+    font-size: 12.80px;
+    font-weight: normal;
+    font-stretch: normal;
+    height: 25.60px;
+    line-height: 25.60px;
+    text-align: left;
+    color: #333333;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .al-price {
+    display: inline-block;
+    height: 22.19px;
+    line-height: 22.19px;
+    margin-left: 8.53px;
+    text-align: left;
+    p{
+      display:inline-block;
+    }
+  }
+  .al-price-prefix {
+    font-size: 10.24px;
+  }
+  .al-current-price {
+    font-size: 15.36px;
+  }
+  .al-original-price {
+    color: #6d6d6d;
+    font-size: 10.24px;
+    text-decoration: line-through;
+  }
+  .al-btn-buy-lg {
+    width: 163.84px;
+  }
+  .al-btn-buy-md {
+    width: 133px;
+  }
+  &.al-display-style-1 {
+    .al-main-image-size-style-2.al-main-img {
+      height: 292.69px;
+    }
+  }
+
+  &.al-display-style-2 {
+    white-space: nowrap;
+    .al-item {
+      display: inline-block;
+      width: 267.09px;
+      padding: 1.71px 0.00px 0.00px 2.56px;
+    }
+    .al-board {
+      width: 258.56px;
+    }
+    .al-main-img {
+      width: 258.56px;
+    }
+    .al-main-image-size-style-2.al-main-img {
+      height: 258.56px;
+    }
+  }
+  &.al-display-style-4 {
+    white-space: nowrap;
+    .al-item {
+      display: inline-block;
+      float: left;
+      width: 153.60px;
+      margin: 0;
+      padding: 0;
+      margin-bottom: 12.80px;
+      &:nth-child(2n-1) {
+        margin-left: 12.80px;
+      }
+    }
+    .al-type-name {
+      width: 30.72px;
+      height: 9.39px;
+      font-size: 10.24px;
+      font-weight: normal;
+      line-height: 6.83px;
+    }
+    .al-time-count {
+      line-height: 26.48px;
+      p {
+        font-size: 7.25px;
+        transform: scale(0.725);
+      }
+    }
+    .al-remain-sku {
+      display: inline-block;
+      margin-top: 0;
+      margin-left: 4.27px;
+    }
+    .al-main-img {
+      width: 140.80px;
+      height: 85.33px;
+    }
+    .al-board {
+      width: 140.80px;
+      height: 25.60px;
+      line-height: 25.60px;
+    }
+    .al-good-name {
+      font-size: 11.95px;
+      line-height: 16.64px;
+      width: 136.53px;
+      margin-left: 4.27px;
+      height: 29.87px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal
+    }
+    .al-price {
+      margin-left: 4.27px;
+    }
+    .al-price-prefix, .al-original-price {
+      font-size: 8.53px;
+    }
+    .al-current-price {
+      font-size: 12.80px;
+    }
+  }
+  &.al-display-style-5 {
+    .al-item {
+      width: 299.52px;
+      height: 100.69px;
+      padding: 11.52px 11.52px 8.53px 2.56px;
+      margin: 0;
+      margin-left: 10.24px;
+      border-bottom: 0.43px solid #eeeeee;
+    }
+    .al-left, .al-right {
+      display: inline-block;
+      height: 93.87px;
+      float: left;
+    }
+    .al-right {
+      margin-left: 6.83px;
+    }
+    .al-time-count {
+      line-height: 20.08px;
+      p {
+        font-size: 6.40px;
+        transform: scale(0.64);
+      }
+    }
+    .al-remain-sku {
+      display: inline-block;
+      margin-top: 0;
+      margin-left: 4.27px;
+    }
+    .al-main-img {
+      width: 102.40px;
+      height: 72.53px;
+    }
+    .al-board {
+      width: 102.40px;
+      height: 21.33px;
+      line-height: 21.33px;
+    }
+    .al-good-name {
+      font-size: 11.95px;
+      line-height: 16.64px;
+      width: 164.69px;
+      margin-left: 4.27px;
+      margin-top: 5.55px;
+      height: 29.87px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal
+
+    }
+    .al-price {
+      margin-top: 5.55px;
+    }
+    .al-price-prefix, .al-original-price {
+      font-size: 9.39px;
+    }
+    .al-current-price {
+      font-size: 14.51px;
+    }
+    .al-remain-sku {
+      margin-top: 10.67px;
+    }
+    .al-buy-btn {
+      margin-top: 7.68px;
+    }
+  }
+}
+
+@each $theme, $t_color in $theme_color {
+  .#{$theme} .al-container {
+    color: $t_color;
+    .al-board {
+      background-image: linear-gradient(-90deg,
+              map_get($theme_color_gradient, $theme) 0%,
+              $t_color 71%),
+      linear-gradient(
+                      #da3c3f,
+                      #da3c3f);
+      background-blend-mode: normal,
+      normal;
+    }
+    .al-remain-sku {
+      color: $t_color;
+    }
+    &.al-display-style-4, &.al-display-style-5 {
+      .al-remain-sku {
+        border: 0.43px solid $t_color;
+      }
+    }
+    .al-buy-btn-style-1, .al-buy-btn-style-3 {
+      background-color: #fff;
+      color: $t_color;
+      height: 21.33px;
+      border: 0.85px solid $t_color;
+    }
+    .al-buy-btn-style-2, .al-buy-btn-style-4 {
+      background-color: $t_color;
+      color: #ffffff;
+    }
+    .al-buy-btn-style-3, .al-buy-btn-style-4 {
+      border-radius: 11.09px;
+    }
+    .al-price {
+      color: map_get($theme_color_gradient, $theme);
+    }
+  }
+}

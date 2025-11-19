@@ -1,0 +1,58 @@
+
+.page[data-v-9fb27a5a] {
+    width: 100%;
+    min-height: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+}
+.page-header[data-v-9fb27a5a] {
+    background-color: #eef0f3;
+    padding: 14px 16px;
+}
+.page-header.ant-page-header[data-v-9fb27a5a] .ant-page-header-heading-title {
+    font-size: 18px !important;
+    color: #333333;
+}
+.ant-form[data-v-9fb27a5a] .ant-input-number {
+    width: 70px;
+    margin: 0 6px;
+}
+.ant-form[data-v-9fb27a5a] .ant-form-item label {
+    margin-right: 20px;
+}
+.ant-upload-select-picture-card i[data-v-9fb27a5a] {
+    font-size: 20px;
+    color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text[data-v-9fb27a5a] {
+    margin-top: 8px;
+    color: #999;
+}
+.clearfix[data-v-9fb27a5a] .ant-upload-list {
+    margin-bottom: 0 !important;
+}
+.input-class[data-v-9fb27a5a] {
+    width: calc(100% - 80px);
+}
+.ant-card[data-v-9fb27a5a] .ant-card-body {
+    padding: 10px 24px;
+}
+.questionIcon[data-v-9fb27a5a] {
+    width: 14px;
+    height: 14px;
+    border-radius: 14px;
+    background-color: #dddddd;
+    margin-left: 4px;
+}
+.singleSpecDel[data-v-9fb27a5a] {
+    position: absolute;
+    right: 0;
+    margin-right: -50px;
+    color: red;
+}
+.spec-tab[data-v-9fb27a5a] {
+    width: 90%;
+    min-height: 50px;
+    background-color: #f8f9fa;
+}
+

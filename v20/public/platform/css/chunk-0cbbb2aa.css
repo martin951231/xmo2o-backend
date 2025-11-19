@@ -1,0 +1,102 @@
+
+.font-red[data-v-6e2d32d5] {
+    color: #ff3d0d;
+}
+.page-bar[data-v-6e2d32d5] {
+    margin: 40px;
+}
+ul[data-v-6e2d32d5],
+li[data-v-6e2d32d5] {
+    margin: 0px;
+    padding: 0px;
+}
+li[data-v-6e2d32d5] {
+    list-style: none;
+}
+.page-bar li:first-child > a[data-v-6e2d32d5] {
+    margin-left: 0px;
+}
+.page-bar a[data-v-6e2d32d5] {
+    border: 1px solid #ddd;
+    text-decoration: none;
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    cursor: pointer;
+}
+.page-bar a[data-v-6e2d32d5]:hover {
+    background-color: #eee;
+}
+.page-bar a.banclick[data-v-6e2d32d5] {
+    cursor: not-allowed;
+}
+.page-bar .active a[data-v-6e2d32d5] {
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.page-bar i[data-v-6e2d32d5] {
+    font-style: normal;
+    color: #d44950;
+    margin: 0px 4px;
+    font-size: 12px;
+}
+
+
+.page[data-v-03008e88] {
+    width: 100%;
+    min-height: 100%;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    background: #ffffff;
+}
+.page-header[data-v-03008e88] {
+    background-color: #eef0f3;
+    padding: 14px 16px;
+}
+.page-header.ant-page-header[data-v-03008e88] .ant-page-header-heading-title {
+    font-size: 18px !important;
+    color: #333333;
+}
+.ant-form[data-v-03008e88] .ant-input-number {
+    width: 70px;
+    margin: 0 6px;
+}
+.ant-form[data-v-03008e88] .ant-form-item label {
+    margin-right: 20px;
+}
+.ant-upload-select-picture-card i[data-v-03008e88] {
+    font-size: 20px;
+    color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text[data-v-03008e88] {
+    margin-top: 8px;
+    color: #999;
+}
+.clearfix[data-v-03008e88] .ant-upload-list {
+    margin-bottom: 0 !important;
+}
+.input-class[data-v-03008e88] {
+    width: calc(100% - 80px);
+}
+.ant-card[data-v-03008e88] .ant-card-body {
+    padding: 10px 24px;
+}
+.questionIcon[data-v-03008e88] {
+    width: 14px;
+    height: 14px;
+    border-radius: 14px;
+    background-color: #dddddd;
+    margin-left: 4px;
+}
+.singleSpecDel[data-v-03008e88] {
+    position: absolute;
+    right: 0;
+    margin-right: -50px;
+    color: red;
+}
+

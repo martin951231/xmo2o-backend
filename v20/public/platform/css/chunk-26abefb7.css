@@ -1,0 +1,48 @@
+
+.wrap[data-v-9947987e] {
+    padding: 0 26px 20px;
+    border-bottom: 1px solid #F2F4F6;
+}
+.title[data-v-9947987e] {
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #323233;
+}
+.desc[data-v-9947987e] {
+    font-size: 14px;
+    font-weight: 400;
+    color: #969799;
+    line-height: 22px;
+}
+.borderNone[data-v-9947987e] {
+    border: none;
+}
+
+
+.content[data-v-0e80dd3e] {
+    padding: 24px;
+    width: 100%;
+}
+.map-set[data-v-0e80dd3e] {
+    font-size: 14px;
+    font-weight: 400;
+    color: #323233;
+}
+.address-name[data-v-0e80dd3e] {
+    color: #155bd4;
+    padding: 0 10px 0 4px;
+}
+.bm-view[data-v-0e80dd3e] {
+    width: 650px;
+    height: 500px;
+}
+.bm-view[data-v-0e80dd3e] .searchRes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 120px;
+    width: 260px;
+    margin-left: 24px;
+}
+

@@ -1,0 +1,101 @@
+.face_upload[data-v-b9370a6c] {
+  padding: 20px;
+}
+.face_upload .upload_con[data-v-b9370a6c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin-top: 10px;
+}
+.face_upload .upload_con .images_list[data-v-b9370a6c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.face_upload .upload_con .images_list .img_con[data-v-b9370a6c] {
+  width: 100px;
+  height: 100px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-left: 5px;
+  position: relative;
+}
+.face_upload .upload_con .images_list .img_con img[data-v-b9370a6c] {
+  width: 100%;
+  height: 100%;
+}
+.face_upload .upload_con .images_list .img_con .delete_btn[data-v-b9370a6c] {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 17px;
+}
+.face_upload .upload_con .right_operate[data-v-b9370a6c] {
+  margin-left: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.face_upload .upload_con .right_operate .dele_btn[data-v-b9370a6c] {
+  margin-top: 12px;
+}
+.avatar-upload-preview[data-v-b9370a6c] {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate(50%, -50%);
+          transform: translate(50%, -50%);
+  width: 295px;
+  height: 413px;
+  -webkit-box-shadow: 0 0 4px #ccc;
+          box-shadow: 0 0 4px #ccc;
+  overflow: hidden;
+}
+.avatar-upload-preview img[data-v-b9370a6c] {
+  width: 100%;
+  height: 100%;
+}
+.avatar-uploader > .ant-upload[data-v-b9370a6c] {
+  width: 108px;
+  height: 108px;
+}
+.ant-upload-select-picture-card i[data-v-b9370a6c] {
+  font-size: 32px;
+  color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text[data-v-b9370a6c] {
+  margin-top: 8px;
+  color: #666;
+}
+

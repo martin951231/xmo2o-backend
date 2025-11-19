@@ -1,0 +1,23 @@
+<?php
+
+namespace app\community\model\db\Device;
+use think\Model;
+
+class HouseDeviceGateway extends Model
+{
+    use \app\common\model\db\db_trait\CommonFunc;
+
+    public function deleteInfo($where) {
+        return $this->where($where)->delete();
+    }
+    
+    public function getList($where = [], $field = true, $order = true, $page = 0, $listRows = 0)
+    {
+        $sql = $this->field($field)->where($where)->order($order);
+        if ($listRows) {
+            $sql->page($page, $listRows);
+        }
+        $result = $sql->select();
+        return $result;
+    }
+}

@@ -1,0 +1,34 @@
+.imgname[data-v-0c62e5e0] {
+  width: 100px;
+}
+[data-v-0c62e5e0] .project_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-0c62e5e0] .project_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-0c62e5e0] .project_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-0c62e5e0] .project_info .ant-upload-picture-card-wrapper {
+  width: 15% !important;
+}
+[data-v-0c62e5e0] .draggable-tree .ant-tree-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 307px;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+[data-v-0c62e5e0] .draggable-tree .icon_size {
+  width: 16px;
+}
+

@@ -1,0 +1,158 @@
+body {
+    background-color: #f5f4f9;
+}
+
+.msg-list-page .van-nav-bar__title,
+.msg-list-page .van-nav-bar .van-icon,
+.msg-list-page .van-nav-bar__text {
+    color: #ffffff;
+}
+
+.van-nav-bar {
+    background-color: #2ecc71;
+}
+
+.msg-list-page .van-nav-bar__left,
+.van-nav-bar__right {
+    padding-left: 10px;
+}
+
+.msg-list-page .van-nav-bar__arrow {
+    font-size: 20px;
+}
+
+.box-list .box-list-collapse {
+    display: none;
+}
+
+.box-list .item {
+    margin: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.box-list .item .read-box {
+    color: #969799;
+}
+
+.text-wrap,
+.box-list .item .van-cell__title {
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.box-list .item .van-cell,
+.box-list .item .van-collapse-item__content {
+    padding: 16px;
+}
+
+.box-list .item .van-cell--clickable:active {
+    background-color: #ffffff;
+}
+
+.box-list {
+    padding-top: calc(constant(safe-area-inset-top));
+    padding-top: calc(env(safe-area-inset-top));
+}
+
+select,.input {
+    height: 30px;
+    color: #606266;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    display: inline-block;
+    transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    outline: none;
+}
+.input{
+    font-size: 12px;
+}
+.header-box {
+    position: sticky;
+    top: calc(constant(safe-area-inset-top) + 46px);
+    top: calc(env(safe-area-inset-top) + 46px);
+    box-shadow: 0 0 6px rgba(0, 0, 0, .1);
+}
+
+.filter-box {
+    padding-bottom: 10px;
+    background-color: #fff;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+}
+
+.select-box {
+    display: flex;
+    padding: 0 10px;
+}
+
+.select-box .item {
+    flex: 1;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.select-box .item select {
+    flex: 1;
+}
+
+.select-box .item span {
+    font-size: 12px;
+    min-width: 40px;
+}
+
+.select-box .item:last-child {
+    margin-right: 0;
+}
+
+.select-box .item .date {
+    color: #888;
+    height: 30px;
+    line-height: 30px;
+    flex: 1;
+}
+
+.box-list .item {
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 10px 0;
+}
+
+.box-list .item .add-time {
+    padding: 0 10px;
+    color: #888;
+    font-size: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.box-list .item .desc span:first-child {
+    min-width: 70px;
+    display: inline-block;
+}
+
+.box-list .item .desc {
+    padding: 0 10px;
+    color: #333;
+    font-size: 14px;
+    padding: 8px 10px;
+    display: flex;
+}
+
+.box-list .item .footer {
+    padding: 0 10px;
+    color: #333;
+    font-size: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    display: flex;
+    justify-content: space-between;
+}

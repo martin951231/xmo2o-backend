@@ -1,0 +1,42 @@
+
+.ant-form-item label {
+  width: 50px;
+}
+.ant-checkbox-group{
+  width: 700px;
+}
+.ant-checkbox-group label {
+  width: 103px;
+}
+#radio-labels label{
+  width: 80px;
+}
+.imgname{
+  width: 80px;
+}
+.tab-panes{
+  border: 1px solid #ddd;
+  border-top-style:none;
+}
+.tab-panes:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 40px;
+  /*bottom: 5px;*/
+  right: 0;
+  height: 20px;
+  width: 1px;
+  background-color: #ddd;
+}
+.tab-panes:before {
+  content: '';
+  position: absolute;
+  left: auto;
+  top: 40px;
+  right: 0;
+  height: 20px;
+  width: 1px;
+  background-color: #ddd;
+}
+

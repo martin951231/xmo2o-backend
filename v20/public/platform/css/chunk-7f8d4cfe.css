@@ -1,0 +1,26 @@
+.status[data-v-55bd81c7] {
+  margin-left: 4%;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.status p[data-v-55bd81c7] {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+.info[data-v-55bd81c7] {
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 24px;
+}
+.info span[data-v-55bd81c7]:first-child {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  margin-right: 8px;
+}
+.info .ant-input[data-v-55bd81c7] {
+  width: 50%;
+}
+

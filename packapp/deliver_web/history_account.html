@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>历史账单</title>
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/vant.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/history_account.css">
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/vue@2.6.10.min.js"></script>
+    <script src="scripts/vant.min.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <script>
+        // 初始化
+        var vConsole = new VConsole();
+    </script> -->
+</head>
+
+<body>
+    <div id="app">
+        <!-- <section id="header" class="header bg-white">
+            <van-icon @click="redirect('back')" class="back" name="arrow-left"></van-icon>
+            <span>历史账单</span>
+        </section> -->
+        <!-- <div id="content"> -->
+        <section id="filter" class="filter">
+            <van-dropdown-menu active-color="#27A3F7">
+                <!-- 类型 -->
+                <van-dropdown-item v-model="type" :options="typeList" @change="onTypeChange">
+                </van-dropdown-item>
+                <!-- 日期 -->
+                <van-dropdown-item :title="dateTitle" ref="datePicker">
+                    <div class="bg-white">
+                        <div @click="allDateClick" class="all-date" :class="selectAllDate? 'btn-active': ''">{{L_('全部日期')}}
+                        </div>
+                        <van-calendar :max-date="endDate" :min-date="startDate" :formatter="formatterDate"
+                            :show-title="false" :show-subtitle="false" color="#27A3F7" :poppable="false"
+                            :show-confirm="false" :default-date="selectedDate" :style="{ height: '400px' }"
+                            @select="onDateSelect">
+                        </van-calendar>
+                    </div>
+                </van-dropdown-item>
+            </van-dropdown-menu>
+        </section>
+        <section id="content" class="content" :style="noData ? 'overflow:hidden': 'background: #ffffff'">
+            <div v-if="noData" class="no-data">
+                <img src="./images/no_record.png" />
+                <span>{{L_('暂无账单')}}~</span>
+            </div>
+            <div v-else>
+                <div class="line h-50 flex flex-center pl-10 pr-10">
+                    <span class="ml-10 mr-10 cr-99">{{L_('支出X1X2',{X1:currency,X2:expend})}}</span>
+                    <span class="cr-99">{{L_('收入X1X2',{X1:currency,X2:income})}}</span>
+                </div>
+                <div v-for="item of recordList" :key="item.id" class="mt-10 pb-10 br-f1 pl-20 pr-20 bg-white">
+                    <div class="flex flex-center space-between cr-black fw-bold">
+                        <span class="fs-14">{{item.note}}</span>
+                        <span class="fs-18" style="color:#22282E;"> {{item.money_txt}}</span>
+                    </div>
+                    <div class="mt-10 fs-11 cr-66">
+                        {{item.date}}
+                    </div>
+                </div>
+                <div class="load-tips">
+                    {{loadTips}}
+                </div>
+            </div>
+        </section>
+        <!-- </div> -->
+
+    </div>
+
+</body>
+<script src="scripts/common.js?t=1"></script>
+<script src="./scripts/work/history_account.js?t=1"></script>
+
+</html>

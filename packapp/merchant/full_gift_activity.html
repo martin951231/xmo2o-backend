@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+    <title>满赠活动</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/time_limited_discount.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+    <h1 class="mui-title">
+        <L_>满赠活动</L_>
+    </h1>
+    <a class="mui-pull-right create-activity" href="javascript:;"><i></i></a>
+    <a class="mui-pull-right search-goods" href="javascript:;"><i></i></a>
+</header>
+<div class="mui-content">
+<!--    tab container-->
+    <div id="slider" class="mui-slider">
+
+
+    </div>
+<!--    list container-->
+    <div class="data_list">
+
+    </div>
+<!--    load more-->
+    <div class="pullup1" style="display:none;">
+        <L_>上拉加载更多</L_>
+        ...
+    </div>
+    <div class="loading1" style="display:none;"><img src="images/xubox_loading2.gif" alt="">
+        <L_>正在加载</L_>
+    </div>
+</div>
+
+<!--效果数据弹框-->
+<div id="middlePopover" class="mui-popover">
+    <div class="mui-card">
+        <!--页眉，放置标题-->
+        <div class="mui-card-header">
+            <p class="L_">选择要查看的单个规格效果数据</p> <sub class="mui-pull-right"></sub>
+        </div>
+        <!--内容区-->
+        <div class="mui-card-content">
+            <div class="mui-scroll-wrapper">
+                <div class="mui-scroll">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<!--tab栏-->
+<script id="tabList" type="text/html">
+<div id="sliderSegmentedControl"
+     class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+    <ul class="mui-control-item {{# if(d.status==1){ }}mui-active{{# } }}" data-status="1" href="#item1mobile" data-wid="tab-top-subpage-1.html">
+        <li>{{d.to_do}}</li>
+        <li>
+            <L_>待生效</L_>
+        </li>
+    </ul>
+    <ul class="mui-control-item {{# if(d.status==2){ }}mui-active{{# } }}" data-status="2" href="#item2mobile" data-wid="tab-top-subpage-2.html">
+        <li>{{d.doing}}</li>
+        <li>
+            <L_>进行中</L_>
+        </li>
+    </ul>
+    <ul class="mui-control-item {{# if(d.status==3){ }}mui-active{{# } }}" data-status="3" href="#item3mobile" data-wid="tab-top-subpage-4.html">
+        <li>{{d.finish}}</li>
+        <li>
+            <L_>已结束</L_>
+        </li>
+    </ul>
+    <ul class="mui-control-item {{# if(d.status==4){ }}mui-active{{# } }}" data-status="4" href="#item4mobile" data-wid="tab-top-subpage-4.html">
+        <li>{{d.cancel}}</li>
+        <li>
+            <L_>已关闭</L_>
+        </li>
+    </ul>
+</div>
+</script>
+<!--商品列表-->
+<script id="goodsList" type="text/html">
+{{# for(var i = 0, len = d.length; i < len; i++){ }}
+<div class="mui-card">
+    <div class="card-top">
+        <div class="card-left">
+            <img src="{{d[i].image_url}}">
+        </div>
+        <div class="card-right">
+            <div class="goods-name">{{d[i].name}}</div>
+            <div class="desc-1" style="line-height: normal; padding: 4px 2px 0 0">
+                <span>{{d[i].begin_time}}<L_>~</L_>{{d[i].end_time}}</span>
+                <!-- <span class="desc-1-sales-volume"><L_>今日已售</L_>{{d[i].today_sale}}</span> -->
+            </div>
+            <div class="desc-2-period ">
+
+            </div>
+            <div class="desc-3">
+                {{# if(d[i].setting.length>0){}}
+                    {{# for(var j = 0, len2 = d[i].setting.length; j < len2; j++){ }}
+                    <div class="desc" style="color: #666;font-size: 12px;"><L_>满</L_>{{d[i].setting[j].price}}<L_>赠</L_>{{d[i].setting[j].goods_name}}【<L_>库存：</L_>{{d[i].setting[j].stock_num}}】</div>
+                    {{# } }}
+                {{# } }}
+
+            </div>
+        </div>
+    </div>
+    <div class="card-bottom">
+        <div class="btn-container" data-id="{{ d[i].id }}">
+            {{# if(d[i].status==0){}}
+                <button class="del-data" type="button"><i></i>{{ L_('删除') }}</button>
+            {{# }else{ }}
+                <button class="edit-data" type="button"><i></i>{{ L_('编辑') }} </button>
+                <button class="invalid-data" type="button"><i></i>{{ L_('设为失效') }} </button>
+            {{# } }}
+        </div>
+    </div>
+</div>
+{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+mui.init()
+let mask = mui.createMask();
+
+
+let store_id = $.getUrlParam('data');
+let page = 1;
+let status = 2;
+let ticket = common.getCache('ticket', true);
+let deviceId = common.getDeviceId();
+let flag = 1; // 标识是否第一次请求，第一次请求添加tabList上的数字，否则tab切换不成功
+let list = [];
+getGoodsList();
+
+
+// 切换tab
+mui('.mui-content').on('tap','.mui-control-item',function(e){
+  page = 1;
+  status = $(this).attr('data-status');
+  $('.data_list').html('');
+  getGoodsList();
+});
+
+//删除活动
+mui('.mui-content').on('tap','.del-data',function(e){
+  let id = $(this).parents('.btn-container').attr('data-id');
+  mui.confirm('您确认删除此满赠活动吗?',function(e) {
+    if (e.index == 1) {
+      common.http('WapMerchant&a=full_gift_del', {id,store_id}, function (data) {
+        if(data) {
+          mui.toast(L_('删除成功'))
+          flag = 1;
+          getGoodsList();
+        }
+      })
+    }
+  });
+});
+
+//编辑优惠
+mui('.mui-content').on('tap','.edit-data',function(e){
+  let id = $(this).parents('.btn-container').attr('data-id');
+  openWindow({
+    url:'full_gift_activity_edit.html?store_id='+store_id+'&&full_id='+id,
+  })
+});
+
+//设为失效
+mui('.mui-content').on('tap','.invalid-data',function(e){
+  let id = $(this).parents('.btn-container').attr('data-id');
+  mui.confirm('您确认将此满赠活动设为失效吗?',function(e) {
+    if (e.index == 1) {
+      common.http('WapMerchant&a=full_gift_invalid', {id,store_id}, function (data) {
+        if(data) {
+          mui.toast(L_('设置成功'))
+          flag = 1;
+          getGoodsList();
+        }
+      })
+    }
+  });
+});
+//点击蒙版
+mui('body').on('tap', '.mui-backdrop', function () {
+  closeMiddlePopover();
+});
+//点击关闭按钮
+mui('#middlePopover').on('tap', 'sub', function () {
+  closeMiddlePopover();
+});
+
+//关闭操作记录弹层
+function closeMiddlePopover () {
+  mui('#middlePopover').popover('hide')
+  mask.close()
+  $('body').css('overflow-y', 'scroll')
+}
+
+//搜索 search-goods
+mui('.mui-bar').on('tap','.search-goods',function(e){
+  openWindow({
+    url:'full_gift_activity_search.html?store_id='+store_id,
+  })
+});
+//创建活动
+mui('.mui-bar').on('tap','.create-activity',function(e){
+  openWindow({
+    url:'full_gift_activity_edit.html?type=add&&store_id='+store_id,
+  })
+});
+
+//获取商品列表
+function getGoodsList (type) {
+  let params = {
+    keyword: '',
+    store_id,
+    page,
+    status,
+    ticket,
+    'Device-Id': deviceId
+  }
+  common.http('WapMerchant&a=full_gift_list', params, function (data) {
+    if (flag == 1) { //第一次调接口
+      data.count.status = status;
+      laytpl(document.getElementById('tabList').innerHTML).render(data.count, function (html) {
+        $('.mui-slider').html(html)
+      });
+    }
+    flag = 2;
+    if (data.lists) {
+      let l = data.lists.length;
+      if(type == 'more') {
+        list = [...list, ...data.lists];
+      }else {
+        list = data.lists;
+      }
+      if(l<10) {
+          laytpl(document.getElementById('goodsList').innerHTML).render(list, function (html) {
+            $('.data_list').html(html)
+          });
+          $('.loading1').hide();
+          $('.pullup1').html(L_('没有更多数据啦'));
+          $('.pullup1').show();
+      }else {
+        $('.pullup1').html(L_('上拉加载更多数据'));
+        laytpl(document.getElementById('goodsList').innerHTML).render(list, function (html) {
+          $('.data_list').html(html)
+        });
+        //加载中禁用上拉
+        let load = false;
+        $(window).scroll(function (e) {
+          e.stopPropagation();
+          if (load) {
+            //数据加载中
+            return false;
+          }
+          if ($(document).scrollTop() <= 0) {
+            return false;
+          }
+          //上拉加载
+          if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+            $('.pullup1').hide();
+            $('.loading1').show();
+            load = true;
+            page++;
+            getGoodsList('more');
+          }
+        });
+      }
+    }
+  })
+}
+
+</script>
+</body>
+</html>

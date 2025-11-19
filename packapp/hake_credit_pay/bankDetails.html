@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>添加银行卡</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>  
+		<link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/pigcms.css" rel="stylesheet"/> 
+		<style>
+			.ccv_tip_div .weui-dialog__hd{
+				text-align:left;		
+			}
+			.ccv_tip_div .weui-dialog__title{
+				font-weight:500;
+			}
+			.close{
+				position: absolute;
+				right:15px;
+				top:15px; 
+			}
+			.help_click{
+				width: 30px;
+				background: url('images/help.png') left center no-repeat;
+				background-size:30px auto;
+				display: inline-block;
+				height: 30px;
+				padding: .5em 15px .5em 0;
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+	<body>  
+		<div class="bankDetailsBox">
+			<div class="flex pd15" style="justify-content: flex-start">
+				<div class="addBankImg">
+					<img src="images/add_card.png"/>
+				</div>
+				<div class="addBankInfo">
+					<p class="p1 "><L_>银行卡详情</L_></p>
+					<p class="p2 "><L_>请填写以及认证您的卡片信息</L_></p>
+				</div>
+			</div> 
+			 
+			<div class="weui-cells weui-cells_form"> 
+				<div class="weui-cell">
+				    <div class="weui-cell__bd">
+                        <!-- jian liang -->
+						<input class="weui-input"  name="card_name" type="text" value="" placeholder="持卡人姓名 例：Jonas Chung"/> 
+						
+				    </div>
+				</div>  
+				<div class="weui-cell">
+				    <div class="weui-cell__bd">
+                        <!-- 5163 6600 0699 2773 -->
+						<input class="weui-input"  name="card_number" value="" onkeyup="formatBankNo(this)" onkeydown="formatBankNo(this)" type="text" placeholder="卡号" />  
+				    </div>
+				</div> 
+				
+				<div class="weui-cell">
+				    <div class="weui-cell__hd"><label class="weui-label "><L_>过期时间</L_></label></div>
+				    <div class="weui-cell__bd">
+						<input class="weui-input" type="text" id="datePicker" name="card_expiry"  placeholder="MM/YY" readonly="readonly"/>
+				    </div>
+				</div>
+				  
+				<div class="weui-cell">
+				    <div class="weui-cell__hd"><label class="weui-label "><L_>CCV</L_></label></div>
+				    <div class="weui-cell__bd">
+						<input class="weui-input" type="tel" placeholder="e.g.123"   name="card_cvv"/>
+					</div>
+					<div class="notice"><img src="images/ccv_help_icon.png" style="width:20px; height:20px;"></div>
+				</div>  
+			</div>
+			
+			<div class="checked_box flex" style="justify-content: flex-start">
+				<label for="weuiAgree" class="weui-agree" style=" padding-bottom: 0; display: block; padding-right:0">
+					<input id="weuiAgree" type="checkbox" class="weui-agree__checkbox"/>
+					<span class="weui-agree__text "><L_>开通哈客快捷支付，安全便捷，放心省心</L_></span> 
+				</label> 
+				<span class="help_click"></span> 
+			</div> 
+			 
+			<div class="flex  warningBlock" style="justify-content: flex-start">
+			  	<div class="warningImg">
+			  		<img src="images/warning.png">
+			  	</div>
+			  	<div class="warningTxt"><L_>根据澳洲法规，您的信用卡信息由银行等专业金融机构保存，HarkHark不会存储您的信用卡的有效信息</L_></div>  
+			</div> 
+			<button class="btn_next "><L_>下一步</L_></button>  
+		</div> 
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/weui/weui.min.js"></script>
+		<script src="scripts/work/bankDetails.js?999"></script>   
+	</body>
+</html>

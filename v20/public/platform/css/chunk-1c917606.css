@@ -1,0 +1,58 @@
+.fee-summary-list-box[data-v-394b240e] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.fee-summary-list-box .search-box[data-v-394b240e] {
+  padding: 20px 20px 0;
+}
+.fee-summary-list-box .add-box[data-v-394b240e] {
+  padding: 20px 20px 0;
+}
+.fee-summary-list-box .components-table-demo-nested[data-v-394b240e] {
+  padding: 20px;
+}
+.fee-summary-list-box .message_box[data-v-394b240e] {
+  padding: 20px;
+}
+.lbsf[data-v-394b240e] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-394b240e] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.fee-summary-list-tip-box[data-v-394b240e] {
+  padding: 0px 4px;
+}
+.fee-summary-list-summary-box[data-v-394b240e] {
+  color: white;
+  margin: 10px 0;
+  padding-left: 20px;
+}
+.fee-summary-list-summary-box .ant-col.ant-col-4[data-v-394b240e] {
+  border-radius: 5px;
+  padding: 10px;
+}
+.fee-summary-list-summary-box .title-box[data-v-394b240e] {
+  font-size: 10px;
+}
+.fee-summary-list-summary-box .summary_number-box[data-v-394b240e] {
+  font-size: 22px;
+  text-align: center;
+  font-weight: 600;
+  padding: 18px 0;
+}
+.fee-summary-page-summary-box[data-v-394b240e] {
+  margin-top: 20px;
+  padding-left: 20px;
+}
+.fee-summary-page-summary-box .page-title-box[data-v-394b240e] {
+  font-size: 12px;
+  font-weight: 600;
+}
+.fee-summary-page-summary-box .page-number-box[data-v-394b240e] {
+  font-size: 16px;
+  font-weight: 600;
+}
+

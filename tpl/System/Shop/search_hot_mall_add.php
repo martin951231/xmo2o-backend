@@ -1,0 +1,25 @@
+<include file="Public:header"/>
+<form id="myform" method="post" action="{pigcms{:U('Shop/search_hot_mall_modify')}" frame="true" refresh="true">
+    <table cellpadding="0" cellspacing="0" class="frame_form" width="100%">
+        <tr>
+            <th width="80">关键词</th>
+            <td><input type="text" class="input fl" name="name" size="20" placeholder="请输入关键词" validate="maxlength:50,required:true"/></td>
+        </tr>
+        <tr>
+            <th width="80">最热</th>
+            <td>
+                <span class="cb-enable"><label class="cb-enable"><span>启用</span><input type="radio" name="hottest" value="1" /></label></span>
+                <span class="cb-disable"><label class="cb-disable selected"><span>关闭</span><input type="radio" name="hottest" value="0" checked="checked" /></label></span><input type="hidden" tips="开启靠前显示并标红">
+            </td>
+        </tr>
+        <tr>
+            <th width="80">链接排序</th>
+            <td><input type="text" class="input fl" name="sort" size="10" value="0" validate="required:true,number:true,maxlength:6" tips="数值越大，排序越前"/></td>
+        </tr>
+    </table>
+    <div class="btn hidden">
+        <input type="submit" name="dosubmit" id="dosubmit" value="提交" class="button" />
+        <input type="reset" value="取消" class="button" />
+    </div>
+</form>
+<include file="Public:footer"/>

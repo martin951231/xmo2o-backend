@@ -1,0 +1,23 @@
+.ant-form-item label[data-v-e827092c] {
+  width: 150px;
+}
+.tip-txt[data-v-e827092c] {
+  margin-left: 4px;
+  font-size: 12px;
+}
+.add-box-tip[data-v-e827092c] {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+[data-v-e827092c] .adress_box {
+  padding: 5px;
+  color: white;
+  background: #87B87F;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+

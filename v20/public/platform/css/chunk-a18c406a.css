@@ -1,0 +1,52 @@
+.basice_set[data-v-4b899540] {
+  width: 100%;
+}
+.basice_set .input_style_240[data-v-4b899540] {
+  width: 360px;
+}
+[data-v-4b899540] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.fuction_set[data-v-2a20d0c4] {
+  width: 100%;
+}
+.fuction_set .input_style_240[data-v-2a20d0c4] {
+  width: 360px;
+}
+
+.bind_wx[data-v-5a137364] {
+  width: 100%;
+}
+.bind_wx .container[data-v-5a137364] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+
+.order_review_set[data-v-0db8dbd0] {
+  width: 100%;
+}
+
+.village_info_set[data-v-8c725d9a] {
+  width: 100%;
+}
+.village_info_set .input_style_240[data-v-8c725d9a] {
+  width: 360px;
+}
+[data-v-8c725d9a] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.base_config[data-v-105b2052] {
+  width: 100%;
+  margin-top: 10px;
+  padding: 20px 0;
+  background-color: #fff;
+}
+

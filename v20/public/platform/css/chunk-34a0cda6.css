@@ -1,0 +1,148 @@
+
+.ant-form-item label {
+  width: 150px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+.add-banner{
+  font-size: 15px;
+  margin: 13px;
+}
+hr{
+  border:1px solid #eee;
+}
+.sel{
+  border-bottom: 2px solid #3283FA;
+  padding-bottom: 8px;
+}
+.prompt{
+  border: 1px solid #d6e9c6;
+  width: 95.5%;
+  padding: 15px;
+  margin-left: 25px;
+  background-color: #dff0d8;
+}
+
+
+.avatar-uploader > .ant-upload {
+  width: 128px;
+  height: 128px;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+.imgname{
+  width: 80px;
+}
+
+
+.ant-form-item label {
+  width: 150px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+.add-banner{
+  font-size: 15px;
+  margin: 13px;
+}
+hr{
+  border:1px solid #eee;
+}
+.sel{
+  border-bottom: 2px solid #3283FA;
+  padding-bottom: 8px;
+}
+.prompt{
+  border: 1px solid #d6e9c6;
+  width: 95.5%;
+  padding: 15px;
+  margin-left: 25px;
+  background-color: #dff0d8;
+}
+
+
+.ant-form-item label {
+  width: 150px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+.add-banner{
+  font-size: 15px;
+  margin: 13px;
+}
+hr{
+  border:1px solid #eee;
+}
+.sel{
+  border-bottom: 2px solid #3283FA;
+  padding-bottom: 8px;
+}
+.prompt{
+  border: 1px solid #d6e9c6;
+  width: 95.5%;
+  padding: 15px;
+  margin-left: 25px;
+  background-color: #dff0d8;
+}
+
+
+.tab-head{
+  /*border:1px solid red;*/
+  background-color: #fff;
+  margin: 20px 10px 10px 10px;
+  padding: 10px;
+}
+.tab-list{
+  /*border:1px solid red;*/
+  margin: 15px;
+  width: 60%;
+  float: left;
+}
+.rights{
+  border:1px solid #ccc;
+  width: 25%;
+  height: 1600px;
+  margin: 10px 40px 10px 10px;
+  float: right;
+}
+.zhez{
+  /*position: absolute;*/
+  width: 310px;
+  height: 1600px;
+  top: 0px;
+  right: 70px;
+  z-index: 2;
+  position:fixed;
+  background-color:#eee;
+  opacity:0.01;
+}
+

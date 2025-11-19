@@ -1,0 +1,152 @@
+.video_preview[data-v-85fd2436] {
+  width: 100vw;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.video_preview .left_menu[data-v-85fd2436] {
+  width: 12vw;
+  height: 100vh;
+  background: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow-y: scroll;
+}
+.video_preview .left_menu .search_con[data-v-85fd2436] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-top: 14px;
+  position: fixed;
+  background-color: #ffffff;
+  z-index: 2;
+}
+.video_preview .left_menu .menu_list[data-v-85fd2436] {
+  width: 200px;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-top: 10px;
+  font-size: 17px;
+  background-color: transparent;
+  color: #333333;
+  cursor: pointer;
+}
+.video_preview .left_menu .menu_list[data-v-85fd2436]:nth-child(2) {
+  margin-top: 50px;
+}
+.video_preview .left_menu .active[data-v-85fd2436] {
+  background-color: #5091F9;
+  color: #ffffff;
+}
+.video_preview .left_menu[data-v-85fd2436]::-webkit-scrollbar {
+  width: 0;
+}
+.video_preview .right_container[data-v-85fd2436] {
+  height: 100vh;
+}
+.video_preview .right_container .top_tab[data-v-85fd2436] {
+  height: 60px;
+  width: 100%;
+  margin: 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.video_preview .right_container .top_tab .left_view[data-v-85fd2436] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.video_preview .right_container .top_tab .left_view .tab_list[data-v-85fd2436] {
+  padding: 5px 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  color: #ffffff;
+  border: 1px solid #dddddd;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.video_preview .right_container .top_tab .left_view .active[data-v-85fd2436] {
+  background-color: #333;
+}
+.video_preview .right_container .top_tab .left_view .search_con[data-v-85fd2436] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: 30px;
+}
+.video_preview .right_container .top_tab .left_view .search_con .search_input[data-v-85fd2436] {
+  width: 200px;
+}
+.video_preview .right_container .top_tab .right_view[data-v-85fd2436] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+.video_preview .right_container .bottom_container[data-v-85fd2436] {
+  width: 100%;
+  margin: 0 auto;
+  height: calc(100vh - 60px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  overflow-y: hidden;
+}
+.video_preview .right_container .bottom_container .video_list[data-v-85fd2436] {
+  color: #fff;
+  background-color: #999;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #dddddd;
+  position: relative;
+}
+

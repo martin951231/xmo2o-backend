@@ -1,0 +1,24 @@
+
+.flex_text_box[data-v-1e203be6] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.margin_top_10[data-v-1e203be6] {
+  margin-top: 10px;
+}
+.text_1[data-v-1e203be6] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.input_style[data-v-1e203be6] {
+  width: 100px;
+}
+.cascader_style[data-v-1e203be6] {
+  width: 120px;
+}
+
+

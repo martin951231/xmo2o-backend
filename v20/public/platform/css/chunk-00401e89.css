@@ -1,0 +1,42 @@
+.content-p1[data-v-17c8d72f] {
+  color: #52A5FF;
+  font-weight: bold;
+  padding: 10px 10px 0 10px;
+}
+.message-suggestions-list-box[data-v-17c8d72f] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-17c8d72f] {
+  padding: 5px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-17c8d72f] {
+  padding: 10px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-17c8d72f] {
+  padding: 20px;
+}
+[data-v-17c8d72f] .message-suggestions-list-box .message_box {
+  padding: 20px;
+}
+[data-v-17c8d72f] .input1 {
+  width: 60% !important;
+}
+[data-v-17c8d72f] .but-box {
+  width: 240px !important;
+  padding-left: 0 !important;
+}
+[data-v-17c8d72f] .but-box button {
+  margin-right: 20px !important;
+}
+[data-v-17c8d72f] .ant-calendar-picker {
+  width: 75%;
+}
+[data-v-17c8d72f] .pdno {
+  padding: 0 !important;
+}
+[data-v-17c8d72f] .but_sty {
+  display: inline-block;
+  margin-right: 10px;
+}
+

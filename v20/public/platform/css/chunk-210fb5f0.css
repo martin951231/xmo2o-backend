@@ -1,0 +1,31 @@
+
+.header-func{
+  border: 1px solid #ffdf84;
+  background-color: #fbffca;
+  padding: 10px;
+}
+.header-title{
+  font-size: 17px;
+  margin: 10px;
+}
+.body-item{
+  margin-top: 10px;
+  height: 100%;
+}
+.items{
+  height: 30px;
+  width: 31.5%;
+  float: left;
+  background-color: #eee;
+  font-size: 15px;
+  margin: 5px;
+}
+.items-left{
+  float: left;
+  padding: 5px 5px 5px 10px;
+}
+.items-right{
+  float: right;
+  padding: 5px 10px 5px 5px;
+}
+

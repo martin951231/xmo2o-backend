@@ -1,0 +1,23 @@
+
+section#contentView[data-v-2a6f2394] {
+  background-color: #fff !important;
+}
+#title[data-v-2a6f2394] {
+  font-size: 15px;
+  font-weight: bold;
+}
+iframe[data-v-2a6f2394] {
+  height: 600px;
+  width: 318px;
+}
+.refresh[data-v-2a6f2394] {
+  top: 568px;
+  right: -156px;
+}
+button.ant-switch[data-v-2a6f2394] {
+  position: relative;
+  bottom: -38px;
+  right: -66px;
+}
+
+

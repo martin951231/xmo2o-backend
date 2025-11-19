@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <title>通读在线阅读</title>
+  <link href="../jquery.touchPDF.css" rel="stylesheet" media="screen" />
+	<style>
+		body , html{
+			background-color: #FFFFFF;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
+        .tab-main{
+            width: 100%;
+            height:60px;
+            position: fixed;
+            z-index: 222;
+            left: 0;
+            bottom: 0;
+            background-color: #333333;
+        }
+	</style>
+</head>
+<body>
+
+<div id="myPDF" style="height:100%; width:100%; margin: auto;position: relative"></div>
+
+<!--<div class="tab-main">
+    <div style="color: #f1f1f1" id="next">下一章</div>
+</div>-->
+
+<script type="text/javascript" src="../pdf.compatibility.js"></script>
+<script type="text/javascript" src="../pdf.js"></script>
+<script type="text/javascript" src="../jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.touchSwipe.js"></script>
+<script type="text/javascript" src="../jquery.touchPDF.js"></script>
+<script type="text/javascript" src="../jquery.panzoom.js"></script>
+<script type="text/javascript" src="../jquery.mousewheel.js"></script>
+
+<script type="text/javascript">
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); // 构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); // 匹配目标参数
+        //window.console.log(r)
+        if (r != null) return r[2];
+        return null; // 返回参数值
+    };
+	$(function() {
+	    let url=decodeURIComponent(getUrlParam('url'))
+        let name = getUrlParam('tname');
+        window.console.log(name);
+        document.title = decodeURIComponent(name);
+		$("#myPDF").pdf( {
+			source: url,
+            title:'',
+            showToolbar:true,
+            pdfScale:1,
+            quality:2,
+            loadingWidth:750,
+            loadingHeight:1134,
+/*			tabs: [
+				{title: "章节一", page: 2, color: "orange"},
+				{title: "章节二", page: 3, color: "green"},
+				{title: "章节三", page: 5, color: "blue"},
+			]*/
+		});
+	});
+
+</script>
+</body>
+</html>

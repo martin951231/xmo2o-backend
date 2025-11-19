@@ -1,0 +1,8 @@
+
+[data-v-13b8c64e] textarea {
+  overflow-y: scroll !important;
+}
+[data-v-13b8c64e] textarea::-webkit-scrollbar {
+  width: 0;
+}
+

@@ -1,0 +1,181 @@
+.page[data-v-3dd6809e] {
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+}
+.top[data-v-3dd6809e] {
+  /* width: 100%; */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 30px 30px;
+  margin-bottom: 10%;
+}
+.top_left[data-v-3dd6809e] {
+  font-size: 10px;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #ABABA1;
+  line-height: 30px;
+}
+.top_left img[data-v-3dd6809e] {
+  width: 15px;
+  height: 15px;
+}
+.top_right img[data-v-3dd6809e] {
+  width: 35px;
+  height: 35px;
+}
+.center[data-v-3dd6809e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.center_click[data-v-3dd6809e] {
+  width: 190px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin-left: 50px;
+}
+.center_img[data-v-3dd6809e] {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.center_text[data-v-3dd6809e] {
+  font-size: 13px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.cancel_img[data-v-3dd6809e] {
+  width: 160px;
+  height: 79px;
+  margin: 0 auto;
+}
+.cancel_img img[data-v-3dd6809e] {
+  width: 160px;
+  height: 79px;
+}
+.cancel_text[data-v-3dd6809e] {
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: #161616;
+  line-height: 30px;
+  text-align: center;
+}
+.container[data-v-3dd6809e] {
+  width: 420px;
+  height: 300px;
+  margin: 0 auto;
+  padding-top: 20px;
+  background-color: #ffffff;
+}
+.action[data-v-3dd6809e] {
+  text-align: right;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid #eeeeee;
+  margin-top: 20px;
+  padding: 8px 20px 0 0;
+}
+.cancel[data-v-3dd6809e] {
+  width: 249px;
+  height: 210px;
+  background: #FFFFFF;
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 0 auto;
+}
+.cancel .cancel_img[data-v-3dd6809e] {
+  width: 160px;
+  height: 79px;
+  margin-bottom: 15px;
+}
+.cancel .cancel_text[data-v-3dd6809e] {
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: #161616;
+  line-height: 26px;
+}
+.cancel .cancel_btn[data-v-3dd6809e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  width: 100%;
+}
+.cancel .cancel_btn .btn[data-v-3dd6809e] {
+  width: 190px;
+  height: 60px;
+  background: #18C6B6;
+  border-radius: 30px;
+  font-size: 26px;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 52px;
+  border-color: #18C6B6;
+}
+.serial_input[data-v-3dd6809e] {
+  margin-bottom: 10px;
+}
+.input_a[data-v-3dd6809e] {
+  width: 300px;
+  border: 1px solid #a9a7a7;
+  -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
+  border-radius: 2px;
+}
+.input_a[data-v-3dd6809e]:focus {
+  border-color: #66afe9 !important;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+

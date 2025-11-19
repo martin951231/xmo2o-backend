@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>营业时间</title>
+	<link href="css/mui.css" rel="stylesheet"/>
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/imange-view.css"/>
+	<link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link rel="stylesheet" type="text/css" href="css/mui.picker.css" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mapqird.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/shop_manger_penci.css"/>
+	<style type="text/css">
+		.showImg{
+			width:100%;
+			height: 52px;  
+		}
+		#shap_manger img{width:85px; height: 57px;}
+		.adress_detail{
+			max-height: 50px;
+			padding: 0px 5px 1px 3px;
+			color: #000;
+			min-height: 35px;
+			margin: 0 3%;
+			width: 94%;
+			font-size: 15px;
+		}
+		.adres_no_check:before{
+			font-family: Muiicons;
+			font-size: 28px;
+			font-weight: normal;
+			line-height: 1;
+			text-decoration: none;
+			color: #aaa;
+			border-radius: 0;
+			background: none;
+			-webkit-font-smoothing: antialiased;
+			content: '\e411';
+		}
+		.adres_check:before{
+			font-family: Muiicons;
+			font-size: 28px;
+			font-weight: normal;
+			line-height: 1;
+			text-decoration: none;
+			border-radius: 0;
+			background: none;
+			-webkit-font-smoothing: antialiased;
+			content: '\e441';
+			color: #FFA200;
+		}
+		.un_set{
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 1;
+			white-space: unset !important;
+		}
+		.ad_name{
+			display: block !important;
+			white-space: unset !important;
+		}
+
+		.close_map .dot {
+			display: none;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 19px;
+			height: 25px;
+			margin-top: -25px;
+			margin-left: -10px;
+			background: url(images/marker_red_sprite_ec1a2a9.png) 0 0 no-repeat;
+		}
+		#map_baidu .map_header{
+			position: relative;
+			height: 100%;
+		}
+		#map_baidu .map_header>header{
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: flex;
+			position: absolute;
+			z-index: 500;
+			top: 0;
+			width: 100%;
+
+		}
+		#map_baidu  .mui-icon {
+			font-size: 24px;
+			position: relative;
+			z-index: 20;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			margin-left: -10px;
+			padding-right: 10px;
+			padding-left: 10px;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+ 
+<div id="shap_manger"> 
+	<div class="mui-content"> 
+		<!--营业时间-->
+		<div class="business_time">   
+		</div>   
+	</div> 
+	<a href="javascript:void(0);" class="shop_keep">保存</a> 
+</div>
+
+<script id="listWeek" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+	    <div class="mui-card"  data-id="{{ d[i].week }}">
+			<!--页眉，放置标题-->
+			<div class="mui-card-header">
+				<span class="zhuContent">{{ d[i].week_show }} </span>
+				<div class="mui-switch ismain">
+					<div class="mui-switch-handle"></div>
+				</div>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<div class="mui-row">
+					<div class="mui-col-sm-3">{{ L_('营业时间') }}</div>
+					<div class="mui-col-sm-9 timeManger">
+					{{# if(d[i].time_list.length == 0){ }}
+						<div class="mui-clearfix"> 
+							<ul class="mui-pull-left date_btn">
+								<li><sapn class="time_show">{{ L_('开始时间') }}</sapn></li>
+								<li> <h4   class="btn time_active openTime">00:00</h4> </li>
+							</ul>
+							<ul class="mui-pull-left">
+								<li></li>
+								<li class="time_zhi">{{ L_('至') }}</li>
+							</ul>
+							<ul class="mui-pull-left date_btn">
+								<li><sapn class="time_show">{{ L_('停业时间') }}</sapn></li>
+								<li> <h4   class="btn time_active closeTime">00:00</h4> </li>
+							</ul>
+							<ul class="mui-pull-right addTime">
+								<li> <i></i></li>
+							</ul>
+						</div> 
+					{{# }else{ }} 
+						{{# for(var j = 0, len1 = d[i].time_list.length; j < len1; j++){ }} 
+							<div class="mui-clearfix"> 
+								<ul class="mui-pull-left date_btn">
+									<li><sapn class="time_show">{{ L_('开始时间') }}</sapn></li>
+									<li> <h4 data-options='{"type":"time"}' class="btn time_active openTime">{{ d[i].time_list[j].open_time}} </h4> </li>
+								</ul>
+								<ul class="mui-pull-left">
+									<li></li>
+									<li class="time_zhi">{{ L_('至') }}</li>
+								</ul>
+								<ul class="mui-pull-left date_btn">
+									<li><sapn class="time_show">{{ L_('停业时间') }}</sapn></li>
+									<li> <h4  data-options='{"type":"time"}' class="btn time_active closeTime">{{ d[i].time_list[j].close_time}}</h4> </li>
+								</ul>
+								{{# if(j== 0){ }}
+								<ul class="mui-pull-right addTime "><li> <i></i></li></ul>
+								{{# }else{ }}  
+								<ul class="mui-pull-right jianTime"><li> <i></i></li></ul>
+								{{# } }} 
+							</div>
+						{{# } }}  
+					{{# } }} 
+					</div>
+				</div>
+			</div>
+			<!--页脚，放置补充信息或支持的操作--> 
+		</div>  
+	{{# } }}
+</script>
+ 
+ 
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js"></script> 
+<script src="js/mui.picker.js"></script>
+<!--筛选用到js-->
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script> 
+<script type="text/javascript" src="js/work/shop_manger_penciDetails.js" charset="utf-8"></script>
+<script>
+ // 添加时间点击
+ var obj = document.getElementsByTagName(".business_time .mui-card");
+mui('.mui-content').on('tap','.addTime',function(e){  
+	var length=$(this).parents('.timeManger').find('.mui-clearfix').length;
+	var indexId=$(this).parents('.mui-card').data('id'); 
+	indexId++
+    if(length<3){
+        var str='<div class="mui-clearfix">	<ul class="mui-pull-left date_btn"><li><sapn class="time_show">开始时间</sapn></li><li> <h4  data-options={"type":"time"} class="btn time_active">00:00</h4> </li></ul><ul class="mui-pull-left"><li></li><li class="time_zhi">至</li></ul><ul class="mui-pull-left date_btn"><li><sapn class="time_show">停业时间</sapn></li><li> <h4  data-options={"type":"time"} class="btn time_active">00:00</h4> </li></ul><ul class="mui-pull-right jianTime"><li> <i></i></li></ul></div>';
+		$('.business_time  .mui-card:nth-child('+indexId+') .timeManger').append(str);
+		replace_html_lang();
+    }else{
+        mui.toast(L_("最多只能选择3个时间段"));
+    } 
+     
+});
+//删除时间点击
+mui('.mui-content').on('tap','.jianTime',function(e){
+    $(this).parents('.mui-clearfix').remove();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>商家账户充值</title>
+    <link rel="stylesheet" href="./scripts/weui/weui.min.css">
+    <style>
+        :root {
+            --primary-color: #07C160;
+            --primary-dark: #06AD56;
+            --primary-light: #E8F8F0;
+            --header-bg: #07C160;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --text-white: #ffffff;
+            --border-color: #e0e0e0;
+            --bg-color: #f8f9fa;
+            --white: #ffffff;
+            --selection-color: #2CDB87;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .page {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: var(--text-white);
+            padding: 20px 15px;
+            position: relative;
+        }
+
+        .merchant-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .merchant-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .merchant-name {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .merchant-desc {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        .balance-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .balance-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), #34e0a0);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .balance-title {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .balance-refresh {
+            color: var(--primary-color);
+            font-size: 12px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin: 20px 0 15px 5px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+            margin-right: 10px;
+        }
+
+        .amount-options-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .amount-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .amount-option {
+            flex: 1;
+            margin: 0 5px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px 5px;
+            text-align: center;
+            transition: all 0.2s;
+            min-width: 0;
+        }
+
+        .amount-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+            position: relative;
+        }
+
+        .amount-option.selected::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--selection-color);
+        }
+
+        .amount-value {
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .custom-amount {
+            margin-bottom: 20px;
+        }
+
+        .weui-btn_primary {
+            background-color: var(--primary-color);
+        }
+
+        .weui-btn_primary:not(.weui-btn_disabled):active {
+            background-color: var(--primary-dark);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="page">
+        <div class="header">
+            <div class="merchant-info">
+                <img :src="merchant.avatar" class="merchant-avatar" alt="商家头像">
+                <div>
+                    <div class="merchant-name">{{ merchant.name }}</div>
+                    <div class="merchant-desc">配送账户充值</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="balance-card">
+                <div class="balance-title">
+                    <span>当前配送账户余额</span>
+                    <span class="balance-refresh" @click="refreshBalance">刷新</span>
+                </div>
+                <div class="balance-amount">¥ {{ merchant.balance }}</div>
+            </div>
+
+            <div class="section-title">选择充值金额</div>
+            <div class="amount-options-container">
+                <div class="amount-row">
+                    <div class="amount-option" :class="{ selected: selectedAmount === 50 }" @click="selectAmount(50)">
+                        <div class="amount-value">¥50</div>
+                    </div>
+                    <div class="amount-option" :class="{ selected: selectedAmount === 100 }" @click="selectAmount(100)">
+                        <div class="amount-value">¥100</div>
+                    </div>
+                </div>
+                <div class="amount-row">
+                    <div class="amount-option" :class="{ selected: selectedAmount === 200 }" @click="selectAmount(200)">
+                        <div class="amount-value">¥200</div>
+                    </div>
+                    <div class="amount-option" :class="{ selected: selectedAmount === 500 }" @click="selectAmount(500)">
+                        <div class="amount-value">¥500</div>
+                    </div>
+                </div>
+                <div class="amount-row">
+                    <div class="amount-option" :class="{ selected: selectedAmount === 1000 }"
+                        @click="selectAmount(1000)">
+                        <div class="amount-value">¥1000</div>
+                    </div>
+                    <div class="amount-option" :class="{ selected: isCustomAmount }" @click="selectCustomAmount">
+                        <div class="amount-value">自定义</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="custom-amount" v-show="isCustomAmount">
+                <div class="weui-cell">
+                    <div class="weui-cell__hd">
+                        <label class="weui-label">金额</label>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <input class="weui-input" type="number" v-model="customAmount" placeholder="请输入充值金额"
+                            @input="validateCustomAmount">
+                    </div>
+                </div>
+            </div>
+
+            <a href="javascript:;" class="weui-btn weui-btn_primary" @click="submitRecharge"
+                :class="{ 'weui-btn_disabled': !isValidAmount }">
+                立即充值
+            </a>
+
+            <div class="footer">
+                <p>充值问题请联系客服</p>
+            </div>
+        </div>
+
+        <div id="toast" style="opacity: 0;"></div>
+    </div>
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/weui/weui.min.js"></script>
+    <script src="scripts/vue@2.6.10.min.js"></script>
+    <script src="scripts/common.js?t=9"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                merchant: {
+                    name: "商家名称",
+                    avatar: "",
+                    balance: 0.00,
+                    mer_id: 0
+                },
+                selectedAmount: null,
+                customAmount: '',
+                isCustomAmount: false
+            },
+            created() {
+                this.getMerchant();
+            },
+            computed: {
+                isValidAmount() {
+                    if (this.isCustomAmount) {
+                        return this.customAmount > 0;
+                    }
+                    return this.selectedAmount !== null;
+                },
+                rechargeAmount() {
+                    if (this.isCustomAmount) {
+                        return parseFloat(this.customAmount);
+                    }
+                    return this.selectedAmount;
+                }
+            },
+            methods: {
+                getMerchant() {
+                    let that = this;
+                    //获取用户临时信息
+                    common.http('maiyatian/v1/merchant', { shop_id: urlParam.shop_id, v20_request: 1 }, function (data) {
+                        that.merchant = {
+                            name: data.name,
+                            avatar: data.logo,
+                            balance: data.mer_money,
+                            mer_id: data.mer_id
+                        };
+                    });
+                },
+                refreshBalance() {
+                    this.getMerchant();
+                },
+                selectAmount(amount) {
+                    this.selectedAmount = amount;
+                    this.isCustomAmount = false;
+                    this.customAmount = '';
+                },
+                selectCustomAmount() {
+                    this.isCustomAmount = true;
+                    this.selectedAmount = null;
+                    this.$nextTick(() => {
+                        document.querySelector('.weui-input').focus();
+                    });
+                },
+                validateCustomAmount() {
+                    if (this.customAmount < 0) {
+                        this.customAmount = '';
+                    }
+                },
+                submitRecharge() {
+                    if (!this.isValidAmount) {
+                        weui.topTips('请选择或输入充值金额');
+                        return;
+                    }
+                    if (!this.merchant.mer_id) {
+                        weui.topTips('商家未授权配送平台，无法充值');
+                        return;
+                    }
+                    if (this.rechargeAmount < 0.1) {
+                        weui.topTips('充值金额不能小于0.1元');
+                        return;
+                    }
+                    const orderData = {
+                        mer_id: this.merchant.mer_id,
+                        shop_id: urlParam.shop_id,
+                        money: this.rechargeAmount,
+                        v20_request: 1
+                    };
+
+                    weui.dialog({
+                        title: '确认充值',
+                        content: `确认向 ${this.merchant.name}  充值 ¥${this.rechargeAmount}  元？`,
+                        className: 'custom-classname',
+                        buttons: [{
+                            label: '取消',
+                            type: 'default',
+                            onClick: () => {
+                            }
+                        }, {
+                            label: '确认',
+                            type: 'primary',
+                            onClick: () => {
+                                this.saveOrder(orderData);
+                            }
+                        }]
+                    });
+                },
+                saveOrder(orderData) {
+                    common.http('maiyatian/v1/save_recharge_order', orderData, function (data) {
+                        console.log(data);
+                        if (data.order_id) {
+                            window.location.href = '/packapp/plat/pages/pay/check?order_id=' + data.order_id + '&order_type=' + data.order_type;
+                        } else {
+                            weui.topTips('充值失败');
+                        }
+                    });
+
+                },
+            }
+        });
+    </script>
+</body>
+
+</html>

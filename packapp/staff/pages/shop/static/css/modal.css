@@ -1,0 +1,170 @@
+/* ==================
+         模态窗口
+ ==================== */
+
+.cu-modal {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 999;
+	opacity: 0;
+	outline: 0;
+	text-align: center;
+	-ms-transform: scale(1.185);
+	transform: scale(1.185);
+	backface-visibility: hidden;
+	perspective: 2000upx;
+	background: rgba(0, 0, 0, 0.6);
+	transition: all 0.3s ease-in-out 0s;
+	pointer-events: none;
+}
+
+.cu-modal::before {
+	content: "\200B";
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.cu-modal.show {
+	opacity: 1;
+	transition-duration: 0.3s;
+	-ms-transform: scale(1);
+	transform: scale(1);
+	overflow-x: hidden;
+	overflow-y: auto;
+	pointer-events: auto;
+}
+
+.cu-dialog {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: auto;
+	margin-right: auto;
+	width: 600upx;
+	max-width: 100%;
+	background-color: #f8f8f8;
+	border-radius: 20upx;
+	overflow: hidden;
+}
+.cu-dialog-lg {
+	width: 680upx;
+}
+/* 没有背景色的弹框 */
+.cu-dialog-transparent {
+	background-color: rgba(0,0,0,0);
+}
+
+.cu-dialog-transparent .middle-modal-content {
+	border-radius: 0 0 10px 10px;
+}
+
+.cu-modal.bottom-modal::before {
+	vertical-align: bottom;
+}
+
+.cu-modal.bottom-modal .cu-dialog {
+	width: 100%;
+	border-radius: 0;
+}
+
+.cu-modal.bottom-modal .top-radius {
+	border-radius: 20rpx 20rpx 0 0;
+	background-color: #FFFFFF;
+}
+
+.cu-modal.bottom-modal {
+	margin-bottom: -1000upx;
+}
+
+.cu-modal.bottom-modal.show {
+	margin-bottom: 0;
+}
+
+.cu-modal.drawer-modal {
+	transform: scale(1);
+	display: flex;
+}
+
+.cu-modal.drawer-modal .cu-dialog {
+	height: 100%;
+	min-width: 200upx;
+	border-radius: 0;
+	margin: initial;
+	transition-duration: 0.3s;
+}
+
+.cu-modal.drawer-modal.justify-start .cu-dialog {
+	transform: translateX(-100%);
+}
+
+.cu-modal.drawer-modal.justify-end .cu-dialog {
+	transform: translateX(100%);
+}
+
+.cu-modal.drawer-modal.show .cu-dialog {
+	transform: translateX(0%);
+}
+.cu-modal .cu-dialog>.cu-bar:first-child .action{
+  min-width: 100rpx;
+  margin-right: 0;
+  min-height: 100rpx;
+}
+
+/* @Liz */
+.bottom-modal-title {
+	padding: 10px 20px;
+	font-size: 16px;
+	color: #333333;
+	font-weight: bold;
+	text-align: left;
+	background-color: #FFFFFF;
+}
+.bottom-modal-content {
+	padding: 20px;
+	text-align: left;
+	background-color: #FFFFFF;
+}
+
+.middle-modal-title {
+	background-color: #F4F4F4;
+	text-align: left;
+	padding: 10px;
+}
+
+.middle-modal-content {
+	background-color: #FFFFFF;
+	text-align: left;
+	padding: 10px;
+}
+
+.middle-modal-bottom {
+	background-color: #FFFFFF;
+}
+.bottom-btns {
+	display: flex;
+	align-items: center;
+	height: 60px;
+}
+.bottom-btns .btn {
+	flex: 1;
+	height: 40px;
+	border-radius: 20px;
+	color: #FFFFFF;
+}
+.bottom-btns .cancel {
+	background-color: #D9D9D9;
+	margin-left: 20px;
+}
+.bottom-btns .confirm {
+	background-color: #62A0FF;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+.close-icon {
+	margin-top: 20px;
+	font-size: 24px;
+}

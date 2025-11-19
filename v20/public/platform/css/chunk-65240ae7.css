@@ -1,0 +1,26 @@
+.detail_con[data-v-01c8bf6a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.detail_con .detail_item[data-v-01c8bf6a] {
+  width: 49%;
+  margin-top: 10px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.detail_con .detail_item .left_leble[data-v-01c8bf6a] {
+  font-size: 15px;
+  color: #666;
+}
+.detail_con .detail_item .right_value[data-v-01c8bf6a] {
+  font-size: 15px;
+  color: #999;
+}
+

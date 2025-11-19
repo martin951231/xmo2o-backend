@@ -1,0 +1,35 @@
+.msg-list-page .van-nav-bar__title,
+.msg-list-page .van-nav-bar .van-icon,
+.msg-list-page .van-nav-bar__text {
+    color: #ffffff;
+}
+.msg-list-page .van-nav-bar__left, .van-nav-bar__right {
+    padding-left: 10px;
+}
+.msg-list-page .van-nav-bar__arrow {
+    font-size: 20px;
+}
+.box-list .box-list-collapse {
+    display: none;
+}
+.box-list .item {
+    margin: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.box-list .item  .read-box {
+    color: #969799;
+}
+.text-wrap,
+.box-list .item .van-cell__title {
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.box-list .item .van-cell,
+.box-list .item .van-collapse-item__content {
+    padding: 16px;
+}
+.box-list .item  .van-cell--clickable:active {
+    background-color: #ffffff;
+}

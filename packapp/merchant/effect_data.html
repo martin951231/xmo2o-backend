@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+    <title>效果数据</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/effect_data.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+    <h1 class="mui-title">
+        <L_>效果数据</L_>
+    </h1>
+</header>
+<div class="mui-content">
+    <div class="info-card">
+
+    </div>
+    <div class="data-card">
+        <div>
+            <ul class="tab_conEcharts tab_conEchartsHistory">
+                <li class="cur" data-type="1"><span><L>昨天</L></span></li>
+                <li  data-type="2"><span><L>近7日</L></span></li>
+                <li  data-type="3"><span><L>近30天</L></span></li>
+            </ul>
+           <div class="history-data">
+
+           </div>
+            <div>
+                <div class="grayColor"><L>每日活动详情</L></div>
+                <div class="activity-row-header">
+                    <span class="col-1">日期</span>
+                    <span class="col-2">活动本日销量</span>
+                    <span class="col-3">活动本日带动净收入</span>
+                </div>
+                <div class="activity-detail">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--操作记录-->
+<div id="middlePopover" class="mui-popover">
+    <div class="mui-card">
+        <!--页眉，放置标题-->
+        <div class="mui-card-header">
+            <p class="L_">操作记录</p> <sub class="mui-pull-right"></sub>
+        </div>
+        <!--内容区-->
+        <div class="mui-card-content">
+            <div class="option-row option-header">
+                <span>时间</span>
+                <span>操作内容</span>
+                <span>备注</span>
+            </div>
+            <div class="mui-scroll-wrapper">
+                <div class="mui-scroll">
+
+                </div>
+            </div>
+        </div>
+        <div class="mui-card-footer">
+            <button type="button" class="L_">确 定</button>
+        </div>
+    </div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<!--基本信息渲染-->
+<script id="basicInfo" type="text/html">
+<div>
+    <div class="row-container">
+        <div class="row-left"><L_>商品名称</L_></div>
+        <div class="row-right">{{d.goods_name}}</div>
+    </div>
+    <div class="row-container">
+        <div class="row-left"><L_>创建时间</L_></div>
+        <div class="row-right">{{d.create_time}}</div>
+        <div class="operation-record"><span class="detail-arrow"></span><L_>操作记录</L_></div>
+    </div>
+    <div class="row-container">
+        <div class="row-left"><L_>活动状态</L_></div>
+        <div class="row-right">{{d.status_str}}
+            {{# if(d.status == '2'){}}
+            <span>（{{d.days_end}}<L_>天后结束</L_>）</span>
+            {{#}}}
+        </div>
+    </div>
+    <div class="row-container">
+        <div class="row-left"><L_>活动时间</L_></div>
+        <div class="row-right">{{d.start_date}} <L_>至</L_> {{d.end_date}}</div>
+    </div>
+    <div class="row-container">
+        <div class="row-left"><L_>活动周期</L_></div>
+        <div class="row-right">{{d.week_str}}<L_>的</L_>{{d.start_time}}~{{d.end_time}}</div>
+    </div>
+    <div class="row-container">
+        <div class="row-left"><L_>优惠信息</L_></div>
+        <div class="row-right">{{d.discount_str}}</div>
+    </div>
+</div>
+</script>
+<!--统计数据渲染-->
+<script id="dataInfo" type="text/html">
+<ul class="ul_list_Analysis ">
+    <li>
+        <div class="grayColor"><span class="has_wen" data-type="1"> <L>商品销量</L></span></div>
+        <div ><label class="priceStyle priceStyle1">{{d.sale_num}}</label></div>
+        <div class="grayColor">
+            <L>商品总量：</L>{{d.total_sale_num}}
+        </div>
+    </li>
+
+    <li>
+        <div class="grayColor"><span class="has_wen" data-type="2"> <L>活动有效订单数</L></span></div>
+        <div ><label class="priceStyle priceStyle1">{{d.order_num}}</label></div>
+        <div class="grayColor">
+            <L>订单总量：</L>{{d.total_order_num}}
+        </div>
+    </li>
+    <li>
+        <div class="grayColor"><span class="has_wen" data-type="3"> <L>活动订单净收入</L></span></div>
+        <div >￥<label class="priceStyle priceStyle1">{{d.order_price}}</label></div>
+        <div class="grayColor">
+            <L>活动订单总收入：￥</L>{{d.total_order_price}}
+        </div>
+    </li>
+    <li>
+        <div class="grayColor"><span class="has_wen" data-type="4"> <L>活动订单补贴支出</L></span></div>
+        <div >￥<label class="priceStyle priceStyle1">{{d.order_subsidy_price}}</label></div>
+        <div style="height: 31px;">
+        </div>
+    </li>
+    <li>
+        <div class="grayColor"><span class="has_wen" data-type="5"> <L>平均客单价</L></span></div>
+        {{#if(d.average_price == '0'){}}
+        <div ><label class="priceStyle priceStyle1">--</label></div>
+        {{#}else{}}
+        <div >￥<label class="priceStyle priceStyle1">{{d.average_price}}</label></div>
+        {{#}}}
+    </li>
+    <li>
+        <div class="grayColor"><span class="has_wen" data-type="6"> <L>平均投入产生比</L></span></div>
+        {{#if(d.input_output_ratio == '0%'){}}
+        <div ><label class="priceStyle priceStyle1">--</label></div>
+        {{#}else{}}
+        <div ><label class="priceStyle priceStyle1">{{d.input_output_ratio}}</label></div>
+        {{#}}}
+    </li>
+    <div class="clear"></div>
+</ul>
+</script>
+<!--每日活动详情-->
+<script id="activityDetail" type="text/html">
+{{# for(var i = 0, len = d.length; i < len; i++){ }}
+<div class="activity-row">
+    <span class="col-1">{{d[i].datetime}}</span>
+    <span class="col-2">{{d[i].sale_num}}</span>
+    <span class="col-3">{{d[i].sale_price}}</span>
+</div>
+{{#}}}
+</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+let record_id = $.getUrlParam('record_id');
+let spec_id = $.getUrlParam('spec_id');
+let ticket = common.getCache('ticket', true);
+let deviceId = common.getDeviceId();
+let days = 1;
+getData();
+let mask = mui.createMask();
+console.log(spec_id);
+
+//切换历史数据tab
+$('.tab_conEchartsHistory li').click(function(){
+  $(this).addClass('cur').siblings().removeClass('cur')
+  let type = $(this).data('type');
+  if(type == '1'){ // 昨日
+    days = 1;
+  }else if(type == '2'){ //近7天
+    days = 7;
+  }else { // 近30天
+    days = 30;
+  };
+  getData();
+})
+//弹框提示
+mui('.history-data').on('tap','.has_wen',function(e){
+  let type = $(this).attr('data-type');
+  let str = '';
+  switch (type) {
+    case '1': // 1.商品销量
+      str='<p class="tanPtil">'+L_('统计时间内所有有效订单中的商品销量')+'</p>';
+      break;
+    case '2': //2.活动有效订单数
+      str='<p class="tanPtil">'+L_('统计时间内所有有效订单中活动订单总数')+'</p>';
+      break;
+    case '3': //3.活动订单净收入
+      str='<p class="tanPtil">'+L_('统计时间内所有有效活动订单中的商家净收入，包含自有支付')+'</p>';
+      break;
+    case '4': //4.活动订单补贴支出
+      str='<p class="tanPtil">'+L_('统计时间内所有有效活动订单中的活动补贴总额')+'</p>';
+      break;
+    case '5': //5.平均客单价
+      str='<p class="tanPtil">'+L_('统计时间内所有有效订单中活动订单的平均单价，计算公式为： 统计时间内有效活动订单净收入  /  统计时间内有效活动订单总数')+'</p>';
+      break;
+    case '6': //6.投入产出比
+      str='<p class="tanPtil">'+L_('统计时间内活动订单净收入  /  活动订单补贴总支出，投入产出比越高效果越好，说明通过较少的投入，得到较多的盈利')+'</p>';
+      break;
+    default:
+      break;
+  }
+  mui.alert(str,'',
+    function(e){
+    });
+});
+
+//操作记录
+mui('.info-card').on('tap','.operation-record',function (e) {
+  mask.show();
+  mui('#middlePopover').popover('show');
+  $('body').css('overflow-y', 'hidden');
+  // 获取操作记录
+  common.http('Marketing&a=logs', { ticket, 'Device-Id': deviceId,id:record_id }, function (data) {
+    console.log(data);
+    let str = '';
+   if(data.length) {
+     $.each(data, function (i, val) {
+         console.log('暂无')
+         isclosed = false
+         str += '<div class="option-row"><span>' + val.time + '</span><span>'+ val.action + '</span><span>'+ val.remark + '</span></div>'
+     })
+   } else {
+     str = '<div class="option-row"><span style="border:none;">暂无数据</span></div>'
+   }
+   $('.mui-scroll').html(str)
+
+
+  });
+  //点击确定按妞
+  mui('#middlePopover').on('tap', 'button', function () {
+    closeMiddlePopover();
+  })
+});
+//点击蒙版
+mui('body').on('tap', '.mui-backdrop', function () {
+  closeMiddlePopover();
+});
+//点击关闭按钮
+mui('#middlePopover').on('tap', 'sub', function () {
+  closeMiddlePopover();
+});
+
+//关闭操作记录弹层
+function closeMiddlePopover () {
+  mui('#middlePopover').popover('hide')
+  mask.close()
+  $('body').css('overflow-y', 'scroll')
+}
+
+//获取数据
+function getData() {
+  let params ={
+    ticket,
+    'Device_Id': deviceId,
+    days,
+    limit_id:record_id,
+  }
+  if(spec_id != null) {
+    params.limit_spec_id = spec_id;
+  }
+  common.http('Marketing&a=timeLimitedDiscountDetail', params, function (data) {
+    //基本信息
+    laytpl(document.getElementById('basicInfo').innerHTML).render(data.detail, function (html) {
+      $('.info-card').html(html)
+    });
+    // 统计数据信息
+    laytpl(document.getElementById('dataInfo').innerHTML).render(data.report, function (html) {
+      $('.history-data').html(html)
+    });
+  })
+  // 每日活动信息
+  common.http('Marketing&a=getSaleRecord', params, function (data) {
+    laytpl(document.getElementById('activityDetail').innerHTML).render(data, function (html) {
+      $('.activity-detail').html(html)
+    });
+
+  })
+}
+
+
+</script>
+</body>
+</html>

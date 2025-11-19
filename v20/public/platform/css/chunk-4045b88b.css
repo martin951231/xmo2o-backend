@@ -1,0 +1,77 @@
+/*/deep/ .map{*/
+/*width: 500px !important;*/
+/*height: 500px !important;*/
+/*}*/
+
+
+[data-v-4df6b77b] .cont_box .ant-form-item-control {
+  line-height: 25px !important;
+}
+[data-v-4df6b77b] .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-4df6b77b] .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-4df6b77b] .box_width {
+  display: inline-block;
+  width: 97px !important;
+}
+[data-v-4df6b77b] .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-4df6b77b] .ant-select {
+  width: 300px !important;
+}
+[data-v-4df6b77b] .ant-input-number {
+  width: 300px !important;
+  display: inline-block;
+}
+[data-v-4df6b77b] .adress_box {
+  padding: 5px;
+  color: white;
+  background: #87B87F;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+[data-v-4df6b77b] .times_but {
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+}
+[data-v-4df6b77b] .el-date-editor {
+  margin-right: 5px !important;
+}
+[data-v-4df6b77b] .time_box {
+  display: inline-block;
+  margin-bottom: 5px !important;
+}
+[data-v-4df6b77b] .set_time {
+  display: inline-block;
+  margin-left: 30px !important;
+}
+[data-v-4df6b77b] .time_right {
+  display: inline-block;
+  width: 80% !important;
+  margin-left: 1px !important;
+  position: relative;
+}
+[data-v-4df6b77b] .ant-upload-list {
+  margin-bottom: 0 !important;
+}
+
+
+[data-v-4df6b77b] .ant-time-picker{
+    width: 160px;
+}
+[data-v-4df6b77b] .tip{
+    margin: 0 10px;
+}
+[data-v-4df6b77b] .times_but{
+    margin-left: 10px;
+}
+

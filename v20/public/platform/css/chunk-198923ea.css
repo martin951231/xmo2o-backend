@@ -1,0 +1,29 @@
+
+.imgname{
+    width: 100px;
+}
+.page_top{
+    background-color: #e6f7ff;
+    display: inline-block;
+    width: 100%;
+    padding: 20px 20px;
+    margin-bottom: 20px;
+    color: #666666;
+}
+
+
+[data-v-e89919d4] .rule_info .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-e89919d4] .rule_info .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-e89919d4] .rule_info .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-e89919d4] .rule_info .ant-select {
+  width: 20% !important;
+}
+

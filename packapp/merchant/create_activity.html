@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+    <title>新建活动</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link href="css/mui.poppicker.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/imange-view.css"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+    <link href="css/mui.picker.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/border.css"/>
+    <link href="css/dropload.css" rel="stylesheet"/>
+    <link href="css/cropper.min.css" rel="stylesheet"/>
+    <link href="css/main_1.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/create_activity.css"/>
+    <style type="text/css"></style>
+</head>
+<body>
+<div class="show_modal"></div>
+<div>
+    <div id="createActivity" >
+        <header class="mui-bar mui-bar-nav">
+            <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" data-index="true"></div>
+            <h1 class="mui-title"><L_>新建活动</L_></h1>
+        </header>
+        <div class="mui-content">
+            <div class="content-container">
+                <!--活动日期-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><span class="star">★</span><L_>活动日期</L_></div>
+                    <div class="right-container">
+                        <div class="flex-container">
+                            <div class="date-pick begin_date" name="startDate">
+                                <i></i>
+                                <span id="begin_date" class='activity_start_date' style='flex:1;color: #333333'><L_>开始日期</L_></span>
+                                <b></b>
+                            </div>
+                            <span style="margin:5px 10px">至</span>
+                            <div class="date-pick end_date" id="endDate" >
+                                <i></i>
+                                <span id="end_date" class='activity_end_date' style='flex:1;color: #333333'><L_>结束日期</L_></span>
+                                <b></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--活动周期-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><L_>活动周期</L_></div>
+                    <div class="right-container mui-clearfix week-tag-container">
+                        <div data-id=1 class="week-tag week-active">周一</div>
+                        <div data-id=2 class="week-tag week-active">周二</div>
+                        <div data-id=3 class="week-tag week-active">周三</div>
+                        <div data-id=4 class="week-tag week-active">周四</div>
+                        <div data-id=5 class="week-tag week-active">周五</div>
+                        <div data-id=6 class="week-tag week-active">周六</div>
+                        <div data-id=0 class="week-tag week-active">周日</div>
+                    </div>
+                </div>
+                <!--活动时间-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><L_>活动时间</L_></div>
+                    <div class="right-container">
+                        <div class="flex-container time-manager">
+                            <div class="time-pick begin_time"  name="startTime">
+                                <h4 data-options='{"type":"time"}' id="startTime">00:00</h4>
+                            </div>
+                            <span style="margin:2px 10px">至</span>
+                            <div class="time-pick end_time"  name="endTime">
+                                <h4 data-options='{"type":"time"}' id="endTime">23:59</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--每单限购-->
+                <div class="row-container">
+                    <div class='left_text activity_date'><span class="star">★</span><L_>每单限购</L_></div>
+                    <div class="right-container">
+                        <div class="radio-container mui-clearfix sale-limit">
+                            <div data-type="0" class="radio-style active"><i><b></b></i><L_>不限</L_></div>
+                            <div data-type="1" class="radio-style"><i><b></b></i> <L_>自定义</L_></div>
+                        </div>
+                        <div class="limit-num-input" style="display: none;">
+                            <input  id='limit-num' type="number" value="1" name='purchase_limit_num' class="limit-input " placeholder="请输入每单限购量"  />
+                            份
+                        </div>
+                    </div>
+                </div>
+                <!--库存类型-->
+                <div class="row-container">
+                    <div class='left_text stock_type'><L_>库存类型</L_><i></i></div>
+                    <div class="right-container">
+                        <div class="radio-container mui-clearfix stock-type">
+                            <div data-type="0" class="radio-style active" ><i><b></b></i><L_>每日库存</L_></div>
+                            <div data-type="1" class="radio-style"><i><b></b></i> <L_>总库存</L_></div>
+                        </div>
+                    </div>
+                </div>
+                <!--活动商品-->
+                <div class="row-container activity_goods">
+                    <div class='left_text'><L_>活动商品</L_></div>
+                    <div class="right-container">
+                        <div class="goods-card">
+
+                        </div>
+                        <div id="selectGoods" class="select-goods-btn">+ <L_>选择商品</L_></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="mui-bar mui-bar-tab save-btn">
+            <a href="javascript:;"><L_>保存</L_></a>
+        </nav>
+    </div>
+
+    <!--选择商品-->
+    <div id="middlePopover" class="mui-popover">
+        <div class="mui-card">
+            <!--页眉，放置标题-->
+            <div class="mui-card-header">
+                <p class="L_">选择您要添加的商品(可多选)</p> <sub class="mui-pull-right"></sub>
+            </div>
+            <!--内容区-->
+            <div class="mui-card-content">
+            <!--搜索框-->
+                <div class="search-bar">
+                    <input type="search" class="mui-input-clear search-input" id="keywords" placeholder="请输入商品名称"/>
+                    <button type="button" id="searchGoods" class="L_ search-btn"><L_>搜索</L_></button>
+                </div>
+                <!-- table header-->
+                <div class="goods-table-row table-header">
+                    <span class="table-goods-name"><L_>商品名称</L_></span>
+                    <span class="table-goods-price"><L_>商品价格</L_></span>
+                    <span class="table-option"><L_>操作</L_></span>
+                </div>
+                <div class="mui-scroll-wrapper" id="scrollView">
+                    <div id="goodsListContainer" class="goodsList" style="padding-bottom: 10px" >
+
+
+                    </div>
+                    <!--    load more-->
+<!--                    <div class="pullup1" style="display:none;">-->
+<!--                        <L_>上拉加载更多</L_>-->
+<!--                        ...-->
+<!--                    </div>-->
+<!--                    <div class="loading1" style="display:none;"><img src="images/xubox_loading2.gif" alt="">-->
+<!--                        <L_>正在加载</L_>-->
+<!--                    </div>-->
+                </div>
+            </div>
+            <!--页脚-->
+            <div class="mui-card-footer">
+                <button type="button" class="L_"><L_>确 定</L_></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+
+<!--图片滚动-->
+<script src="js/mui.zoom.js"></script>
+<script src="js/mui.previewimage.js"></script>
+<script src="js/mui.picker.js"></script>
+<!--筛选用到js-->
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="js/dropload.js"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript"  src="js/iscroll-zoom.js"></script>
+<script type="text/javascript"  src="js/hammer.js"></script>
+<script type="text/javascript"  src="js/lrz.all.bundle.min.js"></script>
+<script type="text/javascript" src="js/jquery.photoClip.js"></script>
+<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/cropper.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery-plugin-form.js" type="text/javascript" charset="utf-8"></script>
+<!--商品列表-->
+<script id="goodsList" type="text/html">
+{{# for(let i = 0, len = d.length; i < len; i++){ }}
+<div class="goods-table-row goods-info" data-goodsid="{{d[i].goods_id}}">
+    <span class="table-goods-name">{{d[i].name}}</span>
+    <span class="table-goods-price">￥{{d[i].price}}</span>
+    <span class="table-option mui-checkbox" data-goodsid="{{d[i].goods_id}}">
+        {{# if(d[i].selected){}}
+        <input class="input-checkbox" checked name="checkbox" type="checkbox">
+        {{#}else{}}
+         <input class="input-checkbox" name="checkbox" type="checkbox">
+        {{#}}}
+    </span>
+</div>
+{{# } }}
+</script>
+<!--活动商品卡片列表-->
+<script id="activityGoodsList" type="text/html">
+{{# for(let i = 0, len = d.length; i < len; i++){ }}
+<div class="goods-selected-list">
+    <div class="goods-basic-info">
+        <img class="goods-pic" src="{{d[i].image}}"/>
+        <div class="detail-info">
+            <span class="goods-name">{{d[i].name}}</span>
+            {{# if(!d[i].spec_list.length){}}
+            <span class="goods-price"><L_>原价</L_><b>￥{{d[i].price}}</b></span>
+            {{# }else{}}
+            <span class="spec-tag"><L_>多规格</L_></span>
+            {{#}}}
+        </div>
+        <img data-goods-id="{{d[i].goods_id}}" class="delete" src="./images/activity_goods_delete.png"/>
+    </div>
+    {{# if(d[i].spec_list.length){}}
+    {{# for(let j = 0, len2 = d[i].spec_list.length; j < len2; j++){ }}
+    <div class="spec-box" data-goodsid="{{d[i].goods_id}}" data-speckey="{{d[i].spec_list[j].key}}">
+        <div class="spec-name">{{d[i].spec_list[j].str}}</div>
+        <div class="discount-content spec-discount-content">
+            <div class="row-content">
+                <span class="content-title"><L_>原价</L_></span>
+                <span style="padding: 0 10px">{{d[i].spec_list[j].price}}元</span>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>活动价</L_></span>
+                <input data-price="{{d[i].spec_list[j].price}}"  type="number" value="0" name='activity_price' class="discount-input activity-price " placeholder="请输入活动价格"  />
+                <span>元</span>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>折扣</L_></span>
+                <b class="discount-b" style="color: red;margin: 0 10px;">--折</b>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>当前库存</L_></span>
+                <input  type="number" value="-1"  name='current_stock' class="discount-input current_stock" placeholder="请输入当前库存"  />
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>原始库存</L_></span>
+                <input  type="number" value="-1" name='origin_stock' class="discount-input origin_stock" placeholder="请输入原始库存"  />
+            </div>
+        </div>
+    </div>
+    {{# } }}
+    {{#}else{}}
+    <div class="spec-box" data-goodsid="{{d[i].goods_id}}" data-speckey="">
+        <div class="spec-name" style="display:none;"></div>
+        <div class="discount-content">
+            <div class="row-content">
+                <span class="content-title"><L_>活动价</L_></span>
+                <input data-price="{{d[i].price}}"   type="number" value="0" name='activity_price' class="discount-input activity-price" placeholder="请输入活动价格"  />
+                <span>元</span>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>折扣</L_></span>
+                <b class="discount-b" style="color: red;margin: 0 10px;">--折</b>
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>当前库存</L_></span>
+                <input  type="number" value="-1" name='current_stock' class="discount-input current_stock" placeholder="请输入当前库存"  />
+            </div>
+            <div class="row-content">
+                <span class="content-title"><L_>原始库存</L_></span>
+                <input  type="number" value="-1" name='origin_stock' class="discount-input origin_stock" placeholder="请输入原始库存"  />
+            </div>
+        </div>
+    </div>
+    {{# } }}
+</div>
+{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    let mask = mui.createMask()
+    // let type = $.getUrlParam('type'); // add 为添加 edit 为编辑
+    let ticket = common.getCache('ticket');
+    let store_id = $.getUrlParam('store_id');
+    let page = 1;
+    let deviceId = common.getDeviceId();
+    let keyword = '';
+    let goodsList = []; // 总的商品列表
+    let checkedList = []; // 已选择的商品
+    let checkedIds = []; // 已选择的商品id
+    let weekArr = [0,1,2,3,4,5,6];
+    let saleType= 0;// 限购类型
+    let stockType = 0; // 库存类型
+    let goodsParams = []; // 活动价格
+
+
+    //监听商品数据变化
+    $(".goods-card").on('change',".spec-box",function(){
+      // 商品id和活动商品规格key
+      let goodsId = $(this).data('goodsid');
+      let specKey = $(this).data('speckey');
+      let discount_dom = $(this).find('.discount-b');
+      let price_dom = $(this).find('.activity-price');
+      $(price_dom).blur(function(){ // 活动价格失去焦点
+        let old_price = $(this).attr('data-price');
+        let cur_price = $(this).val();
+        if(cur_price <= 0) {
+          mui.toast('活动价格不能为0和负数');
+        }else {
+          if(parseFloat(cur_price)  > parseFloat(old_price) ){
+            mui.toast('活动价格应该低于原价');
+            $(this).val(old_price);
+            cur_price = old_price;
+            discount_dom.html('10.00折')
+          }else {
+            let discount = ((cur_price/old_price)*10).toFixed(2);
+            discount_dom.html(discount+'折');
+          }
+        }
+      });
+      let current_stock_dom = $(this).find('.current_stock');
+      $($(this).find('.origin_stock')).blur(function(){ // 原始库存失去焦点
+        let current_stock = current_stock_dom.val();
+        let origin_stock = $(this).val();
+        if(origin_stock != -1) {
+          if(current_stock == -1) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }else if(parseInt(current_stock) > parseInt(origin_stock)) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }
+        }
+      });
+      let origin_stock_dom = $(this).find('.origin_stock')
+      $($(this).find('.current_stock')).blur(function(){ //当前库存失去焦点
+        let origin_stock = origin_stock_dom.val();
+        let current_stock = $(this).val();
+        if(origin_stock != -1) {
+          if(current_stock == -1) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }else if(parseInt(current_stock) > parseInt(origin_stock)) {
+            mui.toast('当前库存应小于原始库存');
+            // current_stock_dom.val(origin_stock);
+          }
+        }
+      });
+      // console.log('goods id',goodsId);
+      // console.log('spec key',specKey);
+      // console.log('current price',$(price_dom).val());
+      // console.log('current stock',$(current_stock_dom).val());
+      // console.log('origin stock',$(origin_stock_dom).val());
+
+      if(specKey == '') { //单规格商品
+        // alert(2)
+        let obj ={
+          id: goodsId,
+          l_price: $(price_dom).val(),
+          c_stock: $(current_stock_dom).val(),
+          o_stock:$(origin_stock_dom).val()
+        };
+        // console.log('obj',obj);
+        if(goodsParams.length) {
+            if(checkId(goodsParams,goodsId)){ // 已存在，更新即可
+              for(let g=0; g<goodsParams.length; g++) {
+                if(goodsParams[g].id == goodsId) {
+                  goodsParams[g] = obj;
+                }
+              }
+            }else { // 不存在，添加
+              goodsParams.push(obj)
+            }
+        }else {
+          goodsParams.push(obj)
+        }
+        // console.log('obj goodsParams',goodsParams);
+      }else { // 多规格商品
+       let obj2 = {
+         id: specKey,
+         l_price: $(price_dom).val(),
+         c_stock: $(current_stock_dom).val(),
+         o_stock:$(origin_stock_dom).val()
+       }
+       // console.log('obj2',obj2)
+        if(goodsParams.length) {
+          if(checkId(goodsParams,goodsId)){ // 已存在，更新即可
+            for(let i=0;i<goodsParams.length;i++) {
+              let item = goodsParams[i];
+              if(item.id == goodsId) {
+                if(item.specs.length){
+                  if(checkId(item.specs,specKey)) {
+                    for(let j=0;j<item.specs.length;j++) {
+                      let sp = item.specs[j];
+                      if(sp.id == specKey){
+                        item.specs[j] = obj2;
+                      }
+                    }
+                  }else {
+                    item.specs.push(obj2);
+                  }
+                }else {
+                  item.specs.push(obj2);
+                }
+              }
+            }
+          }else { // 不存在，添加
+            goodsParams.push({
+              id: goodsId,
+              specs: [obj2]
+            })
+          }
+        }else {
+          goodsParams.push({
+            id: goodsId,
+            specs: [obj2]
+          })
+        }
+      }
+      // console.log('参数数组：', goodsParams);
+
+    });
+
+    function checkId (arr,id) {
+      let flag = false;
+      arr.map((item) =>{
+        if(item.id == id) {
+          flag = true;
+        }
+      })
+      return flag;
+    }
+
+    $("#goodsListContainer").on('change',".goods-info",function(){
+      let input_dom = $(this).find('.input-checkbox');
+      let id=$(this).data('goodsid');
+      let isChecked = $(input_dom).is(':checked');
+      // console.log($(this).data('goodsid'));
+      // console.log($(input_dom).is(':checked'));
+      goodsList.map((item)=>{
+        if(item.goods_id == id) {
+          if(isChecked) {
+            item.selected = true;
+          }else {
+            item.selected = false;
+          }
+        }
+      })
+    });
+
+
+
+    // 选择日期
+    (function ($, doc) {
+      $('.begin_date')[0].addEventListener('tap', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = document.getElementById('begin_date').innerText;
+        // let optionsJson = '{"type":"time","value":"2012-01-01 '+timeValue+'"}';
+        let optionsJson = '{"type":"date","beginYear":2014,"beginMonth":5,"beginDay":1,"endYear":2025}';
+        let options = JSON.parse(optionsJson);
+        let id = this.getAttribute('id');
+        let picker = new $.DtPicker(options);
+        picker.setSelectedValue(timeValue);
+        picker.show(function (rs) {
+          $('#begin_date')[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+
+      $('.end_date')[0].addEventListener('tap', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = document.getElementById('end_date').innerText;
+        let optionsJson = '{"type":"date","beginYear":2014,"endYear":2025}';
+        let options = JSON.parse(optionsJson);
+        let id = this.getAttribute('id');
+        let picker = new $.DtPicker(options);
+        picker.setSelectedValue(timeValue);
+        picker.show(function (rs) {
+          $('#end_date')[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+    })(mui, document);
+
+    //选择时间
+    (function ($, doc) {
+      mui('.time-manager').on('tap', '.time-pick', function (e) {
+        e.stopPropagation();
+        jQuery("input").blur();
+        let timeValue = this.children[0].innerText
+        let me = this;
+        let optionsJson = '{"type":"time","value":"2012-01-01 ' + timeValue + '"}';
+        let options = JSON.parse(optionsJson);
+        let picker = new $.DtPicker(options);
+        picker.show(function (rs) {
+          $(me)[0].children[0].innerText = rs.text;
+          picker.dispose();
+        });
+      });
+    })(mui, document);
+
+    // 选择周期
+    mui('.week-tag-container').on('tap','.week-tag',function(e){
+      let id = $(this).attr('data-id');
+      if ($(this).is('.week-active')) {
+        $(this).removeClass('week-active');
+        weekArr.splice(weekArr.findIndex(item => item == id), 1); // 移除元素
+      } else {
+        $(this).addClass('week-active');
+        weekArr.push(Number(id));
+      }
+    });
+    // 选择每单限购
+    mui('.right-container').on('tap','.sale-limit',function(e){
+      // console.log(11,type);
+      if ($('.sale-limit div:eq(0)').is('.active')) {
+        //选择自定义
+        $('.sale-limit div:eq(0)').removeClass('active');
+        $('.sale-limit div:eq(1)').addClass('active');
+        $(".limit-num-input").show();
+        $("#limit-num").val(1)
+        saleType = $('.sale-limit div:eq(1)').data('type');
+      } else {
+        //选择不限
+        $('.sale-limit div:eq(1)').removeClass('active');
+        $('.sale-limit div:eq(0)').addClass('active');
+        $(".limit-num-input").hide();
+        $("#limit-num").val(-1)
+        saleType = $('.sale-limit div:eq(0)').data('type');
+      }
+    });
+    // 选择库存类型
+    mui('.right-container').on('tap','.stock-type',function(e){
+      if ($('.stock-type div:eq(0)').is('.active')) {
+        //选择总库存
+        $('.stock-type div:eq(0)').removeClass('active');
+        $('.stock-type div:eq(1)').addClass('active');
+        stockType = $('.stock-type div:eq(1)').data('type');
+      } else {
+        //选择每日库存
+        $('.stock-type div:eq(1)').removeClass('active');
+        $('.stock-type div:eq(0)').addClass('active');
+        stockType = $('.stock-type div:eq(0)').data('type');
+      }
+    });
+
+    //点击选择商品
+    mui('.activity_goods').on('tap', '.select-goods-btn', function () {
+      $('#keywords').val('');
+      keyword = '';
+      page = 1;
+      goodsList = []; // 商品列表重置为空数组
+      mui('#middlePopover').popover('show');
+      $('body').css('overflow-y', 'hidden')
+      mask.show();
+      mui('.mui-scroll-wrapper').pullRefresh().refresh(true);
+      getGoodsList();
+      $('#goodsListContainer').css('transform','translate3d(0px, 0px, 0px) ');
+      //点击确定按妞
+      mui('.mui-card-footer').on('tap', 'button', function () {
+        let ids = [];
+        let resultIds;
+        $.each($('.goods-info>.table-option'), function (i, val) {
+          if ($(this).find('input').is(':checked')) {
+            ids.push($(this).attr('data-goodsid'))
+          }
+        });
+        resultIds = ids;
+        if(checkedIds.length) { // 检查商品是否已经选择，已经选择就不重复添加了,取出还未添加的id
+          let sameIds=checkedIds.filter(item=>ids.includes(item)); //重复元素
+          resultIds=ids.filter(item=>!sameIds.includes(item));
+        }
+        checkedIds = [...checkedIds,...resultIds];
+        //根据goods_id找到对应的商品信息
+        goodsList.map(item => {
+          resultIds.map(id=>{
+            if(id == item.goods_id){
+              checkedList.push(item);
+            }
+          });
+        });
+        activityGoodsRender();
+        mui('#middlePopover').popover('hide')
+        mask.close()
+        $('body').css('overflow-y', 'scroll')
+      });
+    });
+    //搜索商品
+    mui('#middlePopover').on('tap', '#searchGoods', function () {
+      keyword = $('#keywords').val();
+      page = 1;
+      mui('.mui-scroll-wrapper').pullRefresh().refresh(true);
+      getGoodsList('search');
+      mui('.mui-scroll-wrapper').scroll().scrollTo(0, 0, 500);
+
+    });
+    //上拉加载商品
+    mui.init({
+      pullRefresh : {
+        container:'.mui-scroll-wrapper',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+        up : {
+          height:50,//可选.默认50.触发上拉加载拖动距离
+          auto:false,//可选,默认false.自动上拉加载一次
+          callback : function () {
+            // console.log( $('.pullup1'))
+            // $('.pullup1').show();
+            console.log('上拉了');
+            page++;
+            getGoodsList();
+          }
+        }
+      }
+    });
+
+
+
+    //点击蒙版
+    mui('body').on('tap', '.mui-backdrop', function () {
+      mui('#middlePopover').popover('hide')
+      mask.close()
+      $('body').css('overflow-y', 'scroll')
+    });
+    //点击关闭按钮
+    mui('#middlePopover').on('tap', 'sub', function () {
+      mui('#middlePopover').popover('hide')
+      mask.close()
+      $('body').css('overflow-y', 'scroll')
+    });
+    // 删除商品
+    mui('.goods-card').on('tap', '.delete', function () {
+      let id = $(this).attr('data-goods-id');
+      mui.confirm('您确认移除此商品的优惠活动吗?',function(e) {
+        if (e.index == 1) {
+          checkedList.map((item,index)=>{
+            if(id == item.goods_id) {
+              checkedList.splice(index,index+1);
+              activityGoodsRender();
+            }
+          });
+          checkedIds.map((item,index)=>{
+            if(id == item) {
+              checkedIds.splice(index,index+1);
+            }
+          });
+          goodsParams.map((item,index)=>{
+            if(id == item.id){
+              goodsParams.splice(index,index+1);
+            }
+          })
+        }
+      });
+    });
+    //渲染活动商品
+    function activityGoodsRender () {
+      // console.log(checkedList);
+      if(checkedList.length) {
+        $('#selectGoods').addClass('.goods-more');
+      }
+      laytpl(document.getElementById('activityGoodsList').innerHTML).render(checkedList, function (html) {
+        $('.goods-card').html(html)
+      });
+    };
+    //点击保存按钮
+    mui('#createActivity').on('tap', '.save-btn', function () {
+      submitData();
+    });
+    //接口
+    //1.商品信息
+    function getGoodsList (type) {
+      let params = {
+        ticket,
+        "Device-Id": deviceId,
+        store_id,
+        keyword,
+        page
+      };
+      common.http('Marketing&a=goodsList', params, function (data) {
+        // console.log(data);
+        let list = data.lists;
+        list.map((item)=>{
+          item.selected = false;
+        })
+        if(type == 'search' || page == 1) {
+          goodsList = list;
+        }else {
+          goodsList = [...goodsList, ...list];
+        }
+        if(list.length == 0) {
+          document.getElementById('goodsListContainer').innerHTML='<div class="no-data">暂无数据</div>'
+          mui('.mui-scroll-wrapper').pullRefresh().endPullupToRefresh(true);
+        }else {
+          if(list.length < 10) {
+            mui('.mui-scroll-wrapper').pullRefresh().endPullupToRefresh(true);
+          }else {
+            mui('.mui-scroll-wrapper').pullRefresh().endPullupToRefresh(false);
+          }
+          // 渲染数据
+          laytpl(document.getElementById('goodsList').innerHTML).render(goodsList, function (html) {
+            $('.goodsList').html(html)
+          });
+        }
+      })
+    };
+    // 2.提交数据
+    function submitData () {
+      let sf = true;
+      let start_date = $('#begin_date').html();
+      let end_date = $('#end_date').html();
+      let start_time = $('#startTime').html();
+      let end_time = $('#endTime').html();
+      let params = {
+        store_id,
+        limit_type: saleType,
+        stock_type: stockType,
+      };
+      if(saleType == 1) { // 自定义限购
+        if($('#limit-num').val() == '') {
+          mui.toast('请填写自定义限购数量');
+          sf = false;
+          return
+        }else {
+          params.limit_num = $('#limit-num').val();
+        }
+      }
+      // 日期判断
+      if(pareDate(start_date,end_date)) {
+        params.start_date = start_date;
+        params.end_date = end_date;
+      }else {
+        sf = false;
+        return
+      }
+      //时间判断
+      if(pareTime(start_time,end_time)) {
+        params.start_time = start_time;
+        params.end_time = end_time;
+      }else {
+        sf = false;
+        return
+      }
+      //周期判断
+      if(weekSelect(weekArr)){
+        params.week = weekArr.join(',');
+      }else {
+        sf = false;
+        return
+      }
+      //活动商品
+      if(!checkedIds.length){
+        mui.toast('请选择活动商品');
+        return
+      }else {
+        params.goods_id = checkedIds;
+        let limit_price ={};
+        let stock = {};
+        let origin_stock = {};
+        let spec_index ={};
+        if(!goodsParams.length || goodsParams.length < checkedIds.length) { // 未填写 或 某些商品没填
+          mui.toast('商品活动价格必须低于原价且不能小于等于0');
+          sf = false;
+          return
+        }else {
+          //  转化为后端需要的参数格式
+          goodsParams.map((goods,index) =>{
+            limit_price[goods.id] = [];
+            stock[goods.id] = [];
+            origin_stock[goods.id] = [];
+            spec_index[goods.id] = [];
+
+            if(goods.l_price == 0) {
+              mui.toast('商品活动价格必须低于原价且不能小于等于0')
+              sf=false
+            }
+            if(goods.specs && goods.specs.length) { // 多规格
+
+              goods.specs.map(spec=>{
+                if(spec.l_price == 0 && sf) {
+                  mui.toast('商品活动价格必须低于原价且不能小于等于0');
+                  sf = false;
+                }else {
+                  checkedList.map(item=>{ // 商品里有些规格商品价格为0（没填）
+                    if(item.spec_list.length > goods.specs.length && sf) {
+                      mui.toast('您还有商品的规格的活动价格等于0');
+                      sf = false;
+                    }
+                  })
+                }
+                limit_price[goods.id].push(spec.l_price);
+                stock[goods.id].push(spec.c_stock);
+                origin_stock[goods.id].push(spec.o_stock);
+                spec_index[goods.id].push(spec.id);
+              })
+            }else { // 单规格
+              limit_price[goods.id].push(goods.l_price);
+              stock[goods.id].push(goods.c_stock);
+              origin_stock[goods.id].push(goods.o_stock);
+              spec_index[goods.id].push('');
+            }
+          })
+        }
+
+        params={
+          ...params,
+          limit_price,
+          stock,
+          origin_stock,
+          spec_index
+        }
+        // console.log('goodsParams', goodsParams);
+        // console.log('整理后goodsParams', params);
+        if(sf) {
+          common.http('Marketing&a=addTimeLimitedDiscount', params, function (data) {
+            // console.log(data);
+            if(data) {
+              history.go(-1);
+            }
+          })
+        }
+      }
+
+    }
+    //点击小红点弹出遮罩层
+    mui('.mui-content').on('tap', '.stock_type', function (e) {
+      e.stopPropagation();
+      $("input").blur();
+      mui.alert('每日库存即每天自动置满固定量的库存；总库存即固定的总库存，会不断减少，不会每天自动置满库存', function (e) {
+      });
+    });
+    //时间比较
+    function pareTime(start, end) {
+      let t1 = start.split(":");
+      let t2 = end.split(":");
+      let t11 = parseInt(t1[0]);
+      let t12 = parseInt(t1[1]);
+      let t21 = parseInt(t2[0]);
+      let t22 = parseInt(t2[1]);
+      if (t11 > t21) {
+        mui.toast('开始时间不能大于结束时间');
+        return false
+      } else if (t11 == t21) {
+        if (t12 > t22) {
+          mui.toast('开始时间不能大于结束时间');
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return true
+      }
+    };
+    //日期比较
+    function pareDate (start,end) {
+      if (start != '开始日期' && end != '结束日期') {
+        let today = new Date(new Date(new Date().toLocaleDateString()).getTime());
+        let s = new Date(start.replace(/-/g, "\/"));
+        let e = new Date(end.replace(/-/g, "\/"));
+        if(s<today || e<today) {
+          mui.toast('开始日期和结束日期不能小于今天');
+          return false;
+        }else {
+          if (s > e) {
+            mui.toast('开始日期不能大于结束日期');
+            return false;
+          }else {
+            return true;
+          }
+        }
+      } else {
+        mui.toast('请选择活动开始日期和结束日期');
+        return false;
+      }
+    };
+    // 周期必选
+    function weekSelect (week) {
+      if(week.length) {
+        return true;
+      }else {
+        mui.toast('请选择活动周期');
+        return false;
+      }
+    }
+
+</script>
+</body>
+</html>

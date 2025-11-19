@@ -1,0 +1,58 @@
+.fee-summary-list-box[data-v-f274d826] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.fee-summary-list-box .search-box[data-v-f274d826] {
+  padding: 20px 20px 0;
+}
+.fee-summary-list-box .add-box[data-v-f274d826] {
+  padding: 20px 20px 0;
+}
+.fee-summary-list-box .components-table-demo-nested[data-v-f274d826] {
+  padding: 20px;
+}
+.fee-summary-list-box .message_box[data-v-f274d826] {
+  padding: 20px;
+}
+.lbsf[data-v-f274d826] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-f274d826] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.fee-summary-list-tip-box[data-v-f274d826] {
+  padding: 0px 4px;
+}
+.fee-summary-list-summary-box[data-v-f274d826] {
+  color: white;
+  margin: 10px 0;
+  padding-left: 20px;
+}
+.fee-summary-list-summary-box .ant-col.ant-col-4[data-v-f274d826] {
+  border-radius: 5px;
+  padding: 10px;
+}
+.fee-summary-list-summary-box .title-box[data-v-f274d826] {
+  font-size: 10px;
+}
+.fee-summary-list-summary-box .summary_number-box[data-v-f274d826] {
+  font-size: 22px;
+  text-align: center;
+  font-weight: 600;
+  padding: 18px 0;
+}
+.fee-summary-page-summary-box[data-v-f274d826] {
+  margin-top: 20px;
+  padding-left: 20px;
+}
+.fee-summary-page-summary-box .page-title-box[data-v-f274d826] {
+  font-size: 12px;
+  font-weight: 600;
+}
+.fee-summary-page-summary-box .page-number-box[data-v-f274d826] {
+  font-size: 16px;
+  font-weight: 600;
+}
+

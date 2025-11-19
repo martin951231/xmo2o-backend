@@ -1,0 +1,99 @@
+.fixed_box[data-v-52220898] {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  z-index: 999;
+}
+.fixed_box .popup_box[data-v-52220898] {
+  width: 4.640625rem;
+  background: #0B4071;
+  border-radius: 0.04166667rem;
+}
+.fixed_box .popup_box .header[data-v-52220898] {
+  width: 100%;
+  height: 0.41666667rem;
+  background-image: url(../img/cockpit_popupbg.edfc8aa7.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 0 0.078125rem;
+}
+.fixed_box .popup_box .header .flex_box_1[data-v-52220898] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.fixed_box .popup_box .header .flex_box_1 .text_1[data-v-52220898] {
+  font-size: 0.11458333rem;
+  font-family: SimHei;
+  font-weight: bold;
+  color: #FFFFFF;
+  margin-left: 0.078125rem;
+}
+.fixed_box .popup_box .bottom_btn[data-v-52220898] {
+  height: 60px;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.fixed_box .popup_box .bottom_btn .btn_text[data-v-52220898] {
+  width: 100px;
+  height: 30px;
+  padding: 0 3px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #fff;
+  background-color: orangered;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 15px;
+}
+

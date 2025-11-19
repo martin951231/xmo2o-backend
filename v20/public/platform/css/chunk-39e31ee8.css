@@ -1,0 +1,107 @@
+.upload-img-container[data-v-a127712e] {
+  width: 102px;
+  height: 102px;
+}
+.file-upload[data-v-a127712e] .ant-upload-list-item-name {
+  color: #999999 !important;
+}
+
+.color-picker[data-v-8e58703e] {
+  margin: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.color-picker .color-box[data-v-8e58703e] {
+  z-index: 999;
+}
+.color-picker .color-box[data-v-8e58703e] .colorBtn {
+  width: 80px;
+  height: 30px;
+  border: 1px solid #666666;
+}
+.color-picker .color-name[data-v-8e58703e] {
+  display: inline-block;
+  margin: 0px 20px;
+  line-height: 30px;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.handle[data-v-786f264e] {
+  cursor: pointer;
+}
+.handle[data-v-786f264e]:hover {
+  color: #1890ff;
+}
+.first-box[data-v-786f264e],
+.second-box[data-v-786f264e],
+.third-box[data-v-786f264e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.second-box[data-v-786f264e] {
+  margin-left: 20px;
+}
+.third-box[data-v-786f264e] {
+  margin-left: 40px;
+}
+.img-container[data-v-786f264e] {
+  width: 40px;
+  height: 40px;
+}
+.img-container img[data-v-786f264e] {
+  width: 16px;
+  height: 16px;
+  margin: 12px;
+}
+.img-container .drag-img[data-v-786f264e] {
+  cursor: move;
+}
+.title-con[data-v-786f264e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: calc(100% - 90px);
+}
+.title-con .title[data-v-786f264e] {
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+.active[data-v-786f264e] {
+  background: #1890ff20;
+  -webkit-box-shadow: 2px 0px 0px 0px #1890ff;
+          box-shadow: 2px 0px 0px 0px #1890ff;
+  color: #1890ff;
+}
+.parentactive[data-v-786f264e] {
+  color: #1890ff;
+}
+
+.drag-box[data-v-6774c60e] {
+  width: 100%;
+  cursor: default;
+  color: #333333;
+}
+

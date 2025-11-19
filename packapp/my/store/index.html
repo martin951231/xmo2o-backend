@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>店铺主页</title>
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name='apple-touch-fullscreen' content='yes'/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=yes"/>
+    <meta name="format-detection" content="address=no"/>
+    <link rel="stylesheet" href="../css/swiper@3.4.2.min.css">
+    <link rel="stylesheet" href="../scripts/weui/weui.min.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="./index.css">
+    
+</head>
+<body>
+<div class="container hidden" id="app" v-if='pageInfo' :class='pageInfo ? "show" : "" '>
+    <div class="header bg-f">
+        <div class="title flex flex-x-between">
+            <div class="left">{{ pageInfo.now_store.name }}</div>
+            <div class="right rel" @click='collectStore'>
+                <i class="icon iconfont active"  v-if=' pageInfo.now_store.is_collect'>&#xe6b8;</i>
+                <i class="icon iconfont" v-else>&#xe6b7;</i>
+            </div>
+        </div>
+        <div class="title flex flex-x-between title-fixed" ref='storeName' :class=" showStoreNameFixed ? 'fixed' : '' ">
+            <div class="left">{{ pageInfo.now_store.name }}</div>
+            <div class="right rel" @click='collectStore'>
+                <i class="icon iconfont active"  v-if=' pageInfo.now_store.is_collect '>&#xe6b8;</i>
+                <i class="icon iconfont" v-else>&#xe6b7;</i>
+            </div>
+        </div>
+        <div class="flex flex-y-center star-wrapper">
+            <div class="star-box" @click="goUrl('/packapp/my/store/reply.html?store_id=' + store_id + '&total=' + pageInfo.reply_count)">
+                <img class="star" src="./imgs/star-full.png" alt="" v-for=" fullNum in store_score[0]">
+                <img class="star" src="./imgs/star-half.png" alt="" v-if="store_score[1]" v-for=" halfNum in store_score[1]">
+                <img class="star" src="./imgs/star-empty.png" alt="" v-if="store_score[2]" v-for=" emptyNum in store_score[2]">
+                <span class="num">{{ pageInfo.reply_count }}条<i class="icon iconfont">&#xe617;</i></span>
+            </div>
+            <span v-if=" pageInfo.now_store.permoney > 0 ">人均{{ pageInfo.now_store.permoney }}元</span>
+            <i v-if=" pageInfo.now_store.permoney > 0 " class="icon iconfont color-c">&#xe7af;</i>
+            <span>{{ pageInfo.now_store.cat_name }}</span>
+        </div>
+        <!-- Swiper -->
+        <div class="swiper-container small">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(item, index) in pageInfo.now_store.all_pic" :key="index" @click='checkBigImg(index)'>
+                    <div class="img-box">
+                        <img class="img" :src="item" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-x-between flex-y-center line border-b time-box" @click='openTimeBox'>
+            <div class="left">
+                <i class="icon iconfont first">&#xe69a;</i>
+                <span>{{ pageInfo.now_store.open_status }}</span>
+                <i class="icon iconfont color-c">&#xe7af;</i>
+                <span>{{ pageInfo.now_store.time }}</span>
+            </div>
+            <div class="right">
+                <i class="icon iconfont color-9">&#xe660;</i>
+            </div>
+        </div>
+        <div class="flex flex-x-between flex-y-center line">
+            <div class="left flex-grow1 ellipsis-one">
+                <div class="ellipsis-one">
+                    <i class="icon iconfont first">&#xe601;</i>
+                    <span>{{ pageInfo.now_store.adress }}</span>
+                </div>
+                <div class="color-9 distance">{{ pageInfo.now_store.user_distance }}</div>
+            </div>
+            <div class="right flex-shink0">
+                <i class="icon iconfont big" @click="checkMap">&#xe63a;</i>
+                <i class="icon iconfont color-c">&#xe7af;</i>
+                <i class="icon iconfont big" @click="checkPhone">&#xe622;</i>
+            </div>
+        </div>
+        <div class="flex service">
+            <div class="little-btn flex" v-if='pageInfo.btn_arr.length <= 3'>
+                <div class="item flex1 flex flex-y-center flex-x-center check" v-for=' item in pageInfo.btn_arr ' @click='goUrl(item.url)'>
+                    <div class="img-box"><img class="img" :src="item.pic" ></div>
+                    <div>
+                        <div class="name">{{ item.name }}</div>
+                        <div class="color-9 desc">{{ item.desc }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-wrap more-btn" v-else>
+                <div class="item flex1 " v-for=' item in pageInfo.btn_arr ' @click='goUrl(item.url)'>
+                    <div class="img-box"><img class="img" :src="item.pic"></div>
+                    <div class="name">{{ item.name }}</div>
+                    <div class="color-9 desc">{{ item.desc }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div :class=" showTabTitleFixed ? 'tab-title-wrapper' : '' " >
+        <div class="flex flex-x-around flex-y-center bg-f tab-title" ref='tabTitle' :class=" showTabTitleFixed ? 'fixed' : '' ">
+            <div class="flex-grow1 item" :class=" tabAcitiveIndex == index ? 'active' : '' " v-for="(item, index) in tabTitle" @click="pageScrollTo(index)">
+                <span class="rel">{{item}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="coupon-box bg-f mb10 tabItem" v-if="pageInfo.store_group_list.length > 0 || pageInfo.now_store.have_card" ref="tabContent0">
+        <div v-if="pageInfo.store_group_list.length > 0">
+            <div class="type-title" >{{pageInfo.store_group_list_name}}({{pageInfo.store_group_list.length}})</div>
+            <ul class="list border-b">
+                <li class="flex item" v-for="(item, index) in pageInfo.store_group_list" :key="index" @click="goUrl(item.url)">
+                    <div class="flex-shink0 img-box"><img class="img" :src="item.list_pic" alt=""></div>
+                    <div class="flex-grow1 info">
+                        <div class="ellipsis-one title">{{ item.group_name }}</div>
+                        <div class="color-9 ellipsis-one desc">{{ item.intro }}</div>
+                        <div class="discount">
+                            <span v-if=' item.wx_cheap > 0 '>微信下单优惠{{ item.wx_cheap }}元</span>
+                        </div>
+                        <div class="flex flex-x-between price-box">
+                            <div>
+                                <span class="red">¥</span>
+                                <span class="red now">{{ item.price }}</span>
+                                <span class="old" v-if="item.old_price > item.price">¥{{ item.old_price }}</span>
+                            </div>
+                            <div v-if="item.sale_count > 0">已售{{ item.sale_count }}份</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="menber-card" v-if="pageInfo.now_store.have_card">
+            <div class="type-title">会员卡</div>
+            <div class="card" @click="goUrl(pageInfo.now_store.card_url)">
+                <div class="img-box rel">
+                    <img class="img" src="./imgs/menber.png" alt="">
+                    <div class="card-info" v-if=' pageInfo.now_store.card_info.have_card'>
+                        <div class="flex flex-x-between mb10">
+                            <span><i class="icon iconfont">&#xe613;</i>{{ pageInfo.now_store.merchant_name }}会员卡</span>
+                            <span class="num">余额：{{ pageInfo.now_store.card_info.money }}元</span>
+                        </div>
+                        <div class="flex flex-x-between name-box">
+                            <span class="name">{{ pageInfo.now_store.card_info.nickname }}</span>
+                            <span class="num">积分：{{ pageInfo.now_store.card_info.score }}分</span>
+                        </div>
+                    </div>
+                    <div v-else >
+                        <span class="icon-box"><i class="icon iconfont">&#xe613;</i>本店会员</span>
+                        <button class="btn">立即加入</button>
+                    </div>
+                </div>
+                <div class="desc">入会即享{{ pageInfo.now_store.merchant_name }}会员权益</div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-f special-food small tabItem" ref="tabContent1" v-if="pageInfo.store_meal_recommend_list.length > 0">
+        <div class="type-title">招牌菜</div>
+        <!-- Swiper -->
+        <div class="swiper-container small">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(item, index) in pageInfo.store_meal_recommend_list" :key="index" @click="goUrl(pageInfo.store_meal_recommend_url)">
+                    <div class="img-box">
+                        <img class="img" :src="item.image" alt="" >
+                    </div>
+                    <div class="name">{{item.name}}</div>
+                </div>
+            </div>
+            <div class="flex flex-y-center more" :style="food_more_style">
+                <span class="txt" :style="food_more_txt_style">查看更多</span>
+            </div>
+        </div>
+    </div>
+    <div class="bg-f mb10 pd20 reply tabItem" ref="tabContent2" v-if="pageInfo.reply_count > 0">
+        <div class="type-title">评价({{ pageInfo.reply_count }})</div>
+        <ul class="list">
+            <li class="item" v-for="(item, index) in pageInfo.reply_list" :key="index" v-if='item.pigcms_id'>
+                <div class="flex flex-y-center user">
+                    <div class="img-box"><img class="img" :src="item.avatar" alt=""></div>
+                    <div class="desc">
+                        <div class="name">{{ item.nickname }}</div>
+                        <div class="color-9 mt10">{{ item.add_time }}</div>
+                    </div>
+                </div>
+                <div class="flex mt10 star-wrapper">
+                    <span class="color-9">评分：</span>
+                    <div class="star-box" v-if='item.scoreArr'>
+                        <img class="star" src="./imgs/star-full.png" alt="" v-for=" full in item.scoreArr[0] ">
+                        <img class="star" src="./imgs/star-half.png" alt="" v-for=" half in item.scoreArr[1] ">
+                        <img class="star" src="./imgs/star-empty.png" alt="" v-for=" empty in item.scoreArr[2] ">
+                    </div>
+                </div>
+                <div class="mt10 reply-desc">{{ item.comment }}</div>
+                <div class="mt10 color-9" v-if=' item.goods_arr.length > 0 '>
+                    <span>推荐菜：</span>
+                    <span class="goods-item" v-for=" goodsItem in item.goods_arr">{{ goodsItem }}</span>
+                </div>
+                <div class="flex flex-wrap reply-img">
+                    <div class="img-box rel" v-for='imgItem in item.pic'><img class="img" :src="imgItem" alt=""></div>
+                </div>
+            </li>
+        </ul>
+        <div class="more-btn">
+            <span class="btn" @click="goAllReply">查看全部<i class="icon iconfont color-9">&#xe660;</i></span>
+        </div>
+    </div>
+    <div class="bg-f mb10 flex flex-x-between flex-y-center other-store tabItem" ref="tabContent3" v-if=" pageInfo.mer_store_count > 1 " @click="goUrl(pageInfo.store_list_url)">
+        <span>查看其他门店（{{ pageInfo.mer_store_count }}家）</span>
+        <span class="icon iconfont color-9">&#xe660;</span>
+    </div>
+	<div class="bg-f like-box" v-if="pageInfo.guess_list.length > 0">
+        <div class="type-title">猜你喜欢</div>
+        <ul class="list">
+            <li class="shop-item border-b link" v-for=" (item, index) in pageInfo.guess_list " @click="goUrl(item.url, item.re_id)">
+                <div class="shop-img">
+                    <img :src=" item.pic ">
+                    <span class="img-tip" v-if=" item.is_brand == 1 ">品牌甄选</span>
+                </div>
+                <!-- 店铺-->
+                <div class="info-box" v-if=" item.re_type == 'store' ">
+                    <div class="flex flex-y-center flex-x-between name-box">
+                        <span class="name">{{item.store_name}}</span>
+                        <div class="store-tag" v-if='item.business_label_arr'>
+                            <span class="group-tip" v-if=" item.business_label_arr[0] ">团</span>
+                            <span class="food-tip" v-if=" item.business_label_arr[1] ">餐</span>
+                            <span class="appoint-tip" v-if=" item.business_label_arr[2] ">外</span>
+                        </div>
+                    </div>
+                    <div class="small desc">
+                        <span class="icon iconfont icon-star">&#xe70b;</span>
+                        <span class="score">{{ item.star }}</span>
+                    </div>
+                    <div class="small desc orange bottom">{{ item.tip }}</div>
+                </div>
+                <!-- 快店 -->
+                <div class="info-box" v-if=" item.re_type == 'shop' ">
+                    <div class="flex name-box food">
+                        <span class="name">{{item.store_name}}</span>
+                    </div>
+                    <div class="small desc">
+                        <span class="icon iconfont icon-star">&#xe70b;</span>
+                        <span class="score">{{ item.star }}</span>月售{{ item.sale_count }}
+                    </div>
+                    <div class="rel flex flex-center mb5">
+                        <span class="small">起送价¥{{ item.price_1 }}</span>
+                        <span class="icon iconfont icon-line" v-if=" item.is_show_delivery == 1 ">&#xe7af;</span>
+                        <span class="small" v-if=" item.is_show_delivery == 1 ">配送费¥{{ item.price_2 }}</span>
+                    </div>
+                    <div class="flex flex-wrap discount-icon" v-if=" item.info_arr && item.info_arr.length > 0 ">
+                        <span :class="smallitem.type" v-for="(smallitem, index) in item.info_arr">{{ smallitem.text }}</span>
+                    </div>
+                </div>
+                <!-- 餐饮 -->
+                <div class="info-box" v-if=" item.re_type == 'meal' ">
+                    <div class="flex flex-x-between name-box">
+                        <div class="name">{{item.store_name}}</div>
+                        <span class="small">{{ item.range }}</span>
+                    </div>
+                    <div class="small desc">
+                        <span class="icon iconfont icon-star">&#xe70b;</span>
+                        <span class="score">{{ item.star }}</span>
+                    </div>
+                    <div class="rel flex flex-y-center flex-wrap mb5">
+                        <span class="small bg" v-for=" smallitem in item.business_label_arr ">{{ smallitem }}</span>
+                    </div>
+                    <div class="small desc orange">{{ item.tip }}</div>
+                </div>
+                <!-- 酒店 -->
+                <div class="info-box" v-if=" item.re_type == 'hotel' ">
+                    <div class="flex flex-x-between name-box">
+                        <div class="name">{{item.store_name}}</div>
+                        <span class="small">{{ item.range }}</span>
+                    </div>
+                    <div class="rel flex flex-y-center mb5">
+                        <span class="icon iconfont icon-star">&#xe70b;</span>
+                        <span class="score">{{ item.star }}</span>
+                        <span class="small">{{ item.sale_count }}+人消费</span>
+                    </div>
+                    <div class="rel flex flex-y-center mb5">
+                        <span class="small">{{ item.address }}</span>
+                        <div class="small right">
+                            <span class="green" v-for=" smallitem in item.label_arr ">{{smallitem}}</span>
+                        </div>
+                    </div>
+                    <div class="rel flex price-box">
+                        <span class="small red bold">¥</span>
+                        <span class="red now-price">{{ item.price }}</span>
+                        <span class="small" v-if=" item.price_up == 1 ">起</span>
+                        <span class="small right mt5 orange">{{item.tip}}</span>
+                    </div>
+                </div>
+                <!-- 团购 -->
+                <div class="info-box" v-if=" item.re_type == 'group' ">
+                    <div class="flex flex-x-between name-box">
+                            <span class="name">
+                                <span class="mr5">{{item.store_name}}</span>
+                                <span class="food-icon" v-if=" item.isShowDiscount ">超值</span>
+                                </span>
+                        <span class="mall">{{ item.range }}</span>
+                    </div>
+                    <div class="small desc">{{ item.name }}</div>
+                    <div class="rel flex flex-y-center mb5 price-box">
+                        <span class="small red bold">¥</span>
+                        <span class="red now-price">{{ item.price }}</span>
+                        <span class="small gray old-price">门市价:¥{{ item.old_price }}</span>
+                        <span class="small right mt5">月售{{ item.sale_count }}</span>
+                    </div>
+                    <div class="flex flex-wrap discount-icon">
+                        <span class="icon">{{ item.info }}</span>
+                    </div>
+                </div>
+                <!-- 拼团 -->
+                <div class="info-box" v-if=" item.re_type == 'pin_group' ">
+                    <div class="flex flex-x-between name-box">
+                            <span class="name">
+                                <span class="mr5">{{item.store_name}}</span>
+                                <span class="food-icon">拼团</span>
+                            </span>
+                        <span class="small">{{ item.range }}</span>
+                    </div>
+                    <div class="small desc">{{ item.name }}</div>
+                    <div class="rel flex flex-center price-box mb5">
+                        <span class="small red bold">¥</span>
+                        <span class="red now-price">{{ item.price }}</span>
+                        <span class="small gray old-price">门市价:¥{{ item.old_price }}</span>
+                    </div>
+                    <div class="news rel">
+                        <div class="swiper-container slider-goods mt5">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <span class="desc red">已拼{{ item.sale_count }}件</span>
+                                </div><div class="swiper-slide">
+                                <span class="desc red">{{ item.sale_person }}人正在拼团</span>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="news-mask"></div>
+                    </div>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+    <div class="flex flex-x-center flex-y-center bigImgBox" v-if='showBigImgBox' @click="closeBigImg">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(item, index) in pageInfo.now_store.all_pic" :key="index" >
+                    <div class="swiper-zoom-container">
+                        <img class="img" :src="item">
+                    </div>
+                </div>
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination swiper-pagination-white"></div>
+        </div>
+    </div>
+    <div class="time-box" :class="showTimeBox ? 'active' : '' ">
+        <div class="time-mask" @click="closeMask('showTimeBox')"></div>
+        <div class="time-info">
+            <div class="title border-b">
+                <span>商家服务信息</span>
+                <span class="icon" @click="closeMask('showTimeBox')">×</span>
+            </div>
+            <div class="info">
+                <div class="small-title mb10">营业时间</div>
+                <div class="small-content mb10" v-for='item in pageInfo.now_store.time_arr'>{{ item }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="phone-box" :class="showPhoneBox ? 'active' : '' ">
+        <div class="phone-mask" @click="closeMask('showPhoneBox')"></div>
+        <div class="phone-list ">
+            <div class="item" v-for="item in pageInfo.now_store.phone" @click="callPhone(item)">{{item}}</div>
+            <div class="line"></div>
+            <div class="item" @click="closeMask('showPhoneBox')">取消</div>
+        </div>
+    </div>
+</div>
+<script src="../scripts/swiper.min.js"></script>
+<script src="../scripts/vue@2.6.10.min.js"></script>
+<script src="../scripts/weui/weui.min.js"></script>
+<script src="../scripts/jquery-1.8.3.min.js"></script>
+<script src="../scripts/common.js?t=6"></script>
+<script src="./index.js?t=611"></script>
+</body>
+</html>

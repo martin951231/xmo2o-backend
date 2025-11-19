@@ -1,0 +1,519 @@
+html, body, div, p, ul, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, form, input, select, button, textarea, iframe, table, th, td {
+    margin: 0;
+    padding: 0;
+    border-spacing:0px !important;
+    outline:medium;
+    word-break:break-word;
+    border:none;
+    list-style:none;
+}
+
+/*flex*/
+.flex {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content:space-between;
+    align-items: center;
+}
+.flex-v{
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+.flex-1{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+/*A*/
+a{
+    text-decoration:none;
+}
+a:hover{
+    text-decoration:none;
+}
+/*img*/
+img{ border:0 none; max-width: 100% }
+}
+/*li*/
+ul,li{list-style-type:none;}
+/*浮动*/
+.fl{
+    float:left;
+    display:inline;
+}
+.fr{
+    float:right;
+    display:inline;
+}
+.clr:after {
+    visibility: hidden;
+    display: block;
+    content: " ";
+    clear: both;
+    height: 0;
+    line-height: 0;
+}
+.clr {
+    zoom: 1;
+}
+a{ color: #333333; }
+a:focus { -moz-outline-style: none; }
+a:focus { outline: none; }
+:focus{
+outline:0;
+}
+.hide{display:none !important;  }
+.hide2{ display: none; }
+.clear{clear:both;}
+i,em{ font-style: normal;}
+h2{ font-weight: normal; }
+.blue{color:blue}
+input[type=button],input[type=submit],input[type=file],button,input{
+	cursor: pointer;
+	-webkit-appearance:none;
+	outline:none;
+	border:none;
+	background:none;
+	border-radius:0;
+}
+input[type="search"]{-webkit-appearance:none;} 
+input::-webkit-search-cancel-button {display: none;}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{
+    -webkit-appearance: none !important;
+    margin: 0; 
+} 
+.pd15{
+	padding: 0 15px;
+}
+body{
+	padding:0px; margin:0px auto; font-size:14px;position: relative;-webkit-tap-highlight-color: rgba(0,0,0,0);-webkit-user-select: none;overflow-x:hidden;
+}
+select{appearance:none;  -moz-appearance:none;  -webkit-appearance:none; font-size: 12px; line-height: 1.2; }
+ .overp{
+ 	overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block;
+ }
+ .center{text-align: center;}
+@font-face {
+  font-family: 'iconfont';  /* project id 1143755 */
+  src: url('https://at.alicdn.com/t/font_1143755_gne33g45s4i.eot');
+  src: url('https://at.alicdn.com/t/font_1143755_gne33g45s4i.eot?#iefix') format('embedded-opentype'),
+  url('https://at.alicdn.com/t/font_1143755_gne33g45s4i.woff2') format('woff2'),
+  url('https://at.alicdn.com/t/font_1143755_gne33g45s4i.woff') format('woff'),
+  url('https://at.alicdn.com/t/font_1143755_gne33g45s4i.ttf') format('truetype'),
+  url('https://at.alicdn.com/t/font_1143755_gne33g45s4i.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+} 
+ 
+/*我的银行卡*/
+.myBank{
+	background: url(../images/bg01.png) top center no-repeat;
+	background-size: 100% auto;
+	width: 100%;  
+	min-height: 350px;
+	position: relative;
+	padding-top: 10px;
+}
+.ul_bankAddList{
+	margin: 0px 20px; 
+	display:none;
+}
+.ul_bankAddList li{ 
+	background: #fff;
+	border-radius:5px;
+	margin: 10px 0; 
+}
+.ul_bankAddList li .bankAdd{
+	height: 45px;
+	line-height: 45px; 
+	color:#FF1940; 
+	font-weight: bold;
+	padding: 0 20px;
+}
+.ul_bankAddList li .bankAdd span{
+	margin-left: 10px;
+} 
+.ul_bankAddList  li .bankList{ 
+	padding: 5px 10px 5px 5px;
+	color: #000; 
+}
+.ul_bankAddList  li .bankList .bankImg,.ul_bankAddList  li .bankList .bankImg img{
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+}
+.ul_bankAddList  li .bankList .bankInfo{
+	padding-left: 15px;
+}
+.ul_bankAddList  li .bankList .bankInfo .p1{
+	font-size: 17px;
+	color: #000;
+	font-weight:600;
+}
+.ul_bankAddList  li .bankList .bankInfo .p2{
+	color: #666;
+	font-size: 10px;
+}
+.ul_bankAddList  li .bankList .bankInfo .p3 label{
+   margin-right: 10px;
+   display: inline-block;
+   line-height: 24px;
+   height: 24px; 
+}
+
+.bg02{
+	position: fixed;
+	left: -40px;
+	bottom: -66px;
+	width: 200px;
+}
+.bg03{
+	position: fixed;
+	right: -70px;
+	bottom: 40px;
+	width: 180px;
+}
+.weui-popup__modal{
+	background: #fff;
+}
+.ul_setlist li{
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #eee; 
+	color: #333;
+}
+.ul_setlist li:last-child{
+	color: #666;
+	border-bottom: none;
+}
+/* .pwdInput input{
+	width: 38px;
+	height: 48px;
+	padding: 0 2px;
+	margin: 0 5px;
+	background: rgb(240,240,240);
+	text-align: center;
+	font-size: 20px;
+	border:1px solid rgba(112,112,112,1); 
+	border-radius:6px;
+	margin: 0 5px;
+} */
+.pwdTil{ 
+	font-size:17px; 
+	font-weight:300;
+	line-height:38px;
+	color:rgba(0,0,0,1);
+	letter-spacing:1px; 
+	padding: 40px 0;   
+}
+.pwdTil img{
+   margin-left: 10px;
+}
+.bottmButton{   
+	width: 100%; 
+	position: fixed;
+	bottom: 0;
+	left: 0; 
+}
+.bottmButton button{
+	width: 100%;
+}
+.bottmButton a,.bottmButton button{
+	border-radius:0; 
+	display: block;
+	background: rgb(248,248,248);
+	color: rgb(142,142,147);
+	position: relative;
+	border: none; 
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 14px;
+    padding-right: 14px;
+    box-sizing: border-box;
+    font-size: 18px;
+    text-align: center; 
+	line-height: 2.55555556;  
+}
+.bottmButton a i,.bottmButton button i{
+	position: absolute;
+	right: 20px;
+	top:4px;
+	font-size: 16px;
+}
+.bottmButton a .red,.bottmButton button .red{
+	color:#FF1940;
+}
+.weui-dialog__btn,.weui-dialog__btn{
+	color: #FF1940;
+}
+.weui-dialog__btn_gray{
+	color:#353535;
+}
+
+
+.addBankImg,.addBankImg img{
+  width: 65px;
+  height: 65px;
+  border-radius: 100%;	
+}
+.bankDetailsBox{
+	padding: 20px 0;
+}
+.addBankInfo{
+	padding: 0 10px;
+    max-width: 220px;
+}
+.addBankInfo .p1{
+	font-size: 15px;
+	font-weight: bold; 
+}
+.addBankInfo .p2{
+  color: #8E8E93;	
+}
+.warningImg{}
+.warningTxt{
+	color: #999;
+	margin-left: 10px;
+}
+.warningBlock{
+	padding: 10px 15px;
+}
+.weui-agree__checkbox{
+	width: 21px;
+	height: 21px;
+	top:6px
+}
+.weui-agree__text{
+	line-height: 40px;
+	color: #000;
+	margin-left: 10px;
+}
+.weui-agree__checkbox:checked:before{
+	font-size: 20px;
+	color: #FF1940;
+	font-weight: bold;
+}
+.warningTxt{
+	line-height: 24px; 
+}
+.btn_next{
+	background:rgb(112,112,112);
+	font-size: 17px;
+	height: 43px;
+	line-height: 43px;
+	color: #fff;
+	width: 150px;
+	border-radius: 20px;
+	margin: 40px auto;
+	display: block;
+}
+.btn_next.red{
+	background:#FF1940;
+}
+.weui-dialog__bd{
+	text-align: left
+}
+.weui-dialog__bd .p1{
+	padding: 10px 0
+}
+.weui-dialog__bd .amountInfo_p1{
+	font-size: 15px;
+	padding: 15px 0;
+	color:#000;
+	font-weight: bold
+}
+.weui-dialog__bd .amountInfo_p2{
+  line-height: 26px;
+  text-align:left;
+}
+
+.errorBox{
+	padding: 135px 0 0 0
+}
+.errorBox .p1{
+	padding: 10px 0;
+	line-height: 22px;
+}
+.errorBox .p2{ 
+	color: #999
+} 
+
+.weui-picker__action{
+	color: #FF1940
+}
+
+.sucess_notice{ 
+	background-color:rgba(0,0,0,0.6);
+	padding: 10px 15px;
+	color: #fff;
+}
+.sucess_notice .sucess_noticeFr{
+	padding: 0 10px;
+	position: relative;
+}
+.close2{
+   position: absolute;
+   right: -10px;
+   top:0;
+   z-index: 999;
+   width: 20px;
+   height: 20px;
+}
+.weui-dialog__bd:first-child{
+	text-align: center
+}
+.weui-agree,.forgetPwd{
+	display:none;
+} 
+.forgetPwd{
+	padding: 30px 0;
+	color: #FF1940; 
+	width: 150px;
+	margin: 0 auto
+}
+.custom-classname i{
+	display: none;
+} 
+.checked_box{
+	position: relative;
+}
+.textP{
+	text-align: left;
+	text-indent: 2em;
+}
+ 
+.input_box{
+	position: absolute;
+	left: 0;
+	top:0;
+	height: 40px;
+	width: 190px;
+} 
+ 
+
+.input_text{
+	position: relative;
+	height: 30px;
+	width: 205px; 
+	margin: 0 auto; 
+}
+.input_text input{
+	height: 30px;
+	width: 205px;
+	background: transparent;
+	outline: none;
+	color:transparent;
+	text-shadow:0 0 0 #000; 
+	caret-color: transparent;
+	opacity: 0; 
+	text-indent: -999em; 
+    margin-left: -100%;   
+	border:1px solid red;
+}
+.input_index{
+	position: absolute;
+	left: 0; 
+	height: 40px;
+	z-index: -1;
+	width: 205px;
+	left:-10px
+}
+.input_index span,.input_index label{
+	display:block;
+	width: 40px;
+	height: 30px; 
+	float: left;
+	margin: 0 10px;
+	text-align: center;
+	font-size: 16px;
+	
+}
+.input_index  .moren{ 
+	width: 5px;
+	margin-top: 18px;
+    width: 5px;
+    height: 5px;
+    background: #000;
+    border-radius: 100%;
+}
+.input_index span.spanTxt{
+	border-bottom:1px solid #555;
+}
+
+/* 修改密码 */
+.input_pwd span{
+	width: 38px;
+	height: 48px;
+	line-height: 48px;
+    padding: 0 2px; 
+    background: rgb(240,240,240);
+    text-align: center;
+    font-size: 20px;
+    border: 1px solid rgba(112,112,112,1);
+    border-radius: 6px;
+	margin: 0 5px;
+	display: block;
+	float: left;
+	/* -webkit-text-security:disc */
+}
+.input_pwd{
+	width: 216px;
+	height: 50px;
+}
+.pwdInput,.codeInput{
+	position: relative;
+	height: 50px;
+	width: 216px;
+	margin: 0 auto;
+}
+.pwdInput input{
+	position: absolute;
+	left: 22px;
+	top:0; 
+	width: 212px;
+	height: 50px;
+	line-height: 50px;
+	z-index: 1; 
+	/* border: 1px solid red; */
+	background: transparent;
+	outline: none;
+	color:transparent;
+	text-shadow:0 0 0 #000; 
+	caret-color: transparent;
+	opacity: 0; 
+	text-indent: -999em; 
+    margin-left: -100%;   
+}
+
+/* 验证码 */ 
+.codeInput span.code_Txt{ 
+	text-align: center;
+	border-bottom: 1px solid #000;
+	font-size: 17px;
+	display: block;
+	float: left; 
+	width: 38px;
+	height: 48px;
+	line-height: 48px;
+    padding: 0 2px;  
+	margin: 0 5px; 
+}
+
+#setPwd{
+	display:none
+}

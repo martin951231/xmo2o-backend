@@ -1,0 +1,1070 @@
+<html lang="zh-CN"><head>
+		<meta charset="utf-8">
+		<title>购买</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="format-detection" content="address=no">
+		<link href="css/mui.css" rel="stylesheet"/>
+     	<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<link href="css/pigcms.css" rel="stylesheet">
+	<style>
+		.spec_list table td {
+			text-align: center;
+		}
+		.spec_list table th {
+			text-align: center;
+			padding: 1px;
+			font-size: 14px;
+		}
+		.spec_list table tr {
+			border-bottom: #f1f1f1 1px solid;
+		}
+		.spec_list table {
+			margin: 12px 3%;
+		}
+		.plus_class {
+			position: fixed;
+			height: 60px;
+			width: 100%;
+			bottom: 0;
+			line-height: 60px;
+			background: #EFEFF4;
+		}
+		.mg_60 {
+			margin-bottom: 60px;
+		}
+		.plus_class div {
+			margin: 0 5%;
+			width: 90%;
+			padding: 10px 0;
+		}
+		.plus_class a.add_save {
+			background: #ffa200;
+			border-radius: 5px;
+			margin-left: 1%;
+		}
+		.plus_class a {
+			margin-left: 5%;
+			width: 100%;
+			height: 40px;
+			color: #fff;
+			font-size: 16px;
+			line-height: 40px;
+			text-align: center;
+			display: inline-block;
+		}
+
+		.detail_list .msg {
+			padding-left: 15px;
+		}
+		.detail_list .color_red {
+			color: #f23030 !important;
+		}
+
+
+		.detail_list li#li_delivery {
+			background: white;
+		}
+		.detail_list li#li_delivery {
+			padding: 10px 15px 0;
+			border-width: 0 0 1px;
+			line-height: 24px;
+		}
+		.detail_list li a {
+			min-height: 24px;
+		}
+		.detail_list a {
+			color: #323232;
+			outline-style: none;
+			text-decoration: none;
+		}
+		.detail_list #li_delivery a strong {
+			width: 100%;
+		}
+		.detail_list #li_delivery a > * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.showName, .showTel {
+			color: #666;
+		}
+		#li_delivery i {
+			display: inline-block;
+			width: 6px;
+			height: 11px;
+			background: url(images/33-1_03.png) center no-repeat;
+			background-size: contain;
+			margin-right: 10px;
+		}
+		#li_delivery strong, b {
+			font-weight: normal;
+		}
+		.detail_list li#li_pick {
+			background: white;
+		}
+		.detail_list li#li_pick {
+			padding: 10px 15px 0;
+			border-width: 0 0 1px;
+			line-height: 24px;
+		}
+		.detail_list #li_pick a strong {
+			width: 100%;
+		}
+		.detail_list #li_pick a > * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		#li_pick i {
+			display: inline-block;
+			width: 6px;
+			height: 11px;
+			background: url(images/33-1_03.png) center no-repeat;
+			background-size: contain;
+			margin-right: 10px;
+		}
+		#li_pick strong, b {
+			font-weight: normal;
+		}
+		.w100 {
+			width: 100%;
+		}
+
+
+		.spec_info .flex {
+			display: flex !important;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			align-items: center;
+		}
+		.spec_info .flex_grow {
+			flex-grow: 1;
+			text-align: center
+		}
+
+		.spec_info .spec_val_name {
+			padding: 1px 0;
+		}
+		.spec_info .list_spec_name {
+			font-size: 14px;
+			line-height: 22px;
+			border-radius: 5px;
+			padding: 2px 5px;
+			margin-top: 2px;
+			color: #fff;
+			background: #f23030;
+		}
+		.spec_info .spec_val_name div {
+			font-size: 14px;
+			line-height: 22px;
+			color: #fff;
+			background: #f23030;
+		}
+		.spec_info .spec_price {
+			color: #ff4d45;
+			width: 100%;
+		}
+
+		.spec_buy_num .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.spec_buy_num .wrap .plus input {
+			width: 70px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+
+		.normal .wrap .plus a {
+			width: 30px;
+			float: left;
+			height: 28px;
+			border: #e5e5e5 1px solid;
+			text-align: center;
+			color: #333333;
+			line-height: 28px;
+			font-size: 20px;
+			font-family: "Arial";
+		}
+		.normal .wrap .plus input {
+			width: 70px;
+			text-align: center;
+			float: left;
+			border: #e5e5e5 1px solid;
+			border-left: none;
+			border-right: none;
+			height: 28px;
+			font-size: 14px;
+			border-radius: 0px;
+		}
+		.normal .right {
+			float: right;
+		}
+		.detail_list .delivery_type {
+			background: white;
+			padding: 10px 0px 10px 15px;
+			-webkit-border-image: none;
+		}
+		.detail_list .delivery_type .ico {
+			line-height: 30px;
+			font-size: 14px;
+			background: url(images/wxapp_delivery.png) no-repeat;
+			background-size: 21px;
+			padding-left: 27px;
+			background-position: 0;
+		}
+		.btn_express {
+			padding: 3px 5px;
+			border: 1px solid #FF7A3F;
+			border-radius: 2px;
+			margin-right: 5px;
+			font-size: 12px;
+		}
+		.delivery_type .active {
+			background: #FF7A3F;
+			color: white;
+		}
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+		    <h1 class="mui-title"><L_>购买详情</L_></h1>
+		</header>
+		<div class="mui-content">
+			<section class="g_details allHtml ma" style="margin-top: 0;">
+
+			</section>
+		</div>
+		<nav class="plus_class">
+			<div>
+				<a href="javascript:;" class="add_save"><L_>保存</L_></a>
+			</div>
+		</nav>
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.js"></script>
+		<script src="js/mui.dtpicker.js"></script>
+		<script src="js/mui.poppicker.js"></script>
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/fastclick.js"></script>
+		<script src="js/jRoll.js"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js"></script>
+
+
+		<script id="pluscardLists" type="text/html">
+			{{# var data=d; }}
+			{{# console.log('data', data); }}
+			<div class="commod detail_list">
+				<ul>
+				<li class="delivery_type">
+					<a class="ico" href="javascript:void(0)">{{L_('配送方式')}}：</a>
+					{{# if (d.is_pick) {}}
+						<a class="btn_express {{# if (d.has_check=='pick') {}}active{{# } }}" href="javascript:void(0)" id="pick_in_store"  data-is_pick_in_store="0">{{L_('到店自提')}}</a>
+					{{# } }}
+					{{# if (d.is_type==1 || d.is_type==3) {}}
+						<a class="btn_express {{# if (d.has_check=='express') {}}active{{# } }}" href="javascript:void(0)" id="express"  data-is_pick_in_store="1">{{L_('快递配送')}}</a>
+					{{# } }}
+					{{# if (d.is_type==2 || d.is_type==3) {}}
+						<a class="btn_express {{# if (d.has_check=='logistics') {}}active{{# } }}" href="javascript:void(0)" id="logistics"  data-is_pick_in_store="2">{{L_('物流配送')}}</a>
+					{{# } }}
+					{{# if (!d.is_pick && d.is_type!=1 && d.is_type!=2 && d.is_type!=3) {}}
+						<a class="btn_express active" href="javascript:void(0)" id="express"  data-is_pick_in_store="1">{{L_('快递配送')}}</a>
+					{{# } }}
+				</li>
+				<div class="li_line"><img class="w100" style="display: block;" src="./images/wxapp_addaddress.png"></div>
+				<li id="li_pick" {{# if (d.has_check!='pick') {}}style="display: none;"{{# } }}>
+					<a  href="javascript:void(0)" class="link_a" data-url="./pick_address.html?type=market_buy&goods_id={{data.now_order.goods_id}}&pick_id={{data.pick_id}}">
+						{{# if (d.pick_msg) {}}
+							<strong>
+								<span class="pick_showAddres pick_address">{{L_('省市区')}}：{{d.pick_msg['area_info']['province']}} {{d.pick_msg['area_info']['city']}}  {{d.pick_msg['area_info']['area']}}</span><br>
+								<span class="pick_showName pick_username">{{L_('电话')}}：{{d.pick_msg['phone']}} </span><br>
+								<span class="pick_showTel pick_userphone">{{L_('地址')}}：{{d.pick_msg['name']}}</span>
+							</strong>
+							<div><i class="ico_arrow"></i></div>
+							<input type="hidden" id="pick_province" value="{{d.pick_msg['province']}}">
+							<input type="hidden" id="pick_city" value="{{d.pick_msg['city']}}">
+							<input type="hidden" id="pick_area" value="{{d.pick_msg['area']}}">
+						{{# } }}
+					</a>
+				</li>
+				{{# if (d.is_type==1 || d.is_type==2 || d.is_type==3 || (!d.is_pick && d.is_type!=1 && d.is_type!=2 && d.is_type!=3)) {}}
+					<li id="li_delivery">
+						{{# if (data.merchant_address) { }}
+						<a href="javascript:void(0)" class="link_a" data-url="./my_address.html?type=market_buy&goods_id={{data.now_order.goods_id}}&current_id={{data.address_id}}">
+							<strong>
+								<span class="showAddres address">{{data.merchant_address['province_txt']}} {{data.merchant_address['city_txt']}} {{data.merchant_address['area_txt']}} {{data.merchant_address['adress']}} {{data.merchant_address['detail']}}</span><br>
+								<span class="showName username">{{data.merchant_address['name']}} </span>
+								<span class="showTel userphone">{{data.merchant_address['phone']}}</span>
+							</strong>
+							<div><i class="ico_arrow"></i></div>
+							<input type="hidden" id="province" value="{{data.merchant_address['province']}}">
+							<input type="hidden" id="city" value="{{data.merchant_address['city']}}">
+							<input type="hidden" id="area" value="{{data.merchant_address['area']}}">
+						</a>
+						{{# } else { }}
+						<a href="./my_address.html?type=market_cart&current_id=9">
+							<strong>
+								<span class="showAddres"><L_>请点击添加送货地址</L_></span><br>
+								<span class="showName"></span>
+								<span class="showTel"></span>
+							</strong>
+							<div><i class="ico_arrow"></i></div>
+						</a>
+						{{# } }}
+					</li>
+				{{# } }}
+				<div><img class="w100" style="display: block;" src="./images/wxapp_addaddress.png"></div>
+				</ul>
+
+				<div class="top clr" style="margin-top: 10px;">
+					<h2 class="fl">{{L_('商品信息')}}</h2>
+				</div>
+				<div class="commod_list b_g_white" style="border-bottom: none;">
+					<div class="img fl" style="width: 100px;height: 100px;">
+						<img src="{{ data.now_order.pic }}">
+					</div>
+					<div class="content" style="margin-left: 110px;height: 100px;">
+						<h2>
+							{{ data.now_order.name }}
+						</h2>
+						<div class="clr" style="margin-top: 10px;">
+							<div>{{L_('批发价')}}：{{ data.now_order.price }}{{ data.config.Currency_txt }}</div>
+						</div>
+						{{# if (data.now_order.number!='') { }}
+						<div class="clr" style="margin-top: 10px;">
+							<div class="ecc">{{L_('商品条形码')}}：{{data.now_order.number}}</div>
+						</div>
+						{{# } }}
+					</div>
+				</div>
+
+
+				{{# if (data.now_order.discount_info) { }}
+					<div class="demo-block msg">
+						<ul class="ui-list mb_0">
+							{{# for(var j = 0, len = d.now_order.discount_info.length; j < len; j++){ }}
+							<li class="flex discount_info">
+								<div class="flex_one">
+									<p class="">
+											<span class="sever rel  mg_r10 ">
+												<span class="color_7">{{L_('批发满')}}</span>&nbsp;
+												<span class="font_size20 color_red">{{d.now_order.discount_info[j]['num']}}</span>&nbsp;
+												<span class="color_7">{{d.now_order.unit}}，{{L_('享受')}}</span>&nbsp;
+												<span class="font_size20 color_red">{{d.now_order.discount_info[j].discount}}折</span>&nbsp;
+												<span class="color_7">{{L_('下单优惠')}}</span>&nbsp;
+										   </span>
+									</p>
+								</div>
+							</li>
+							{{# } }}
+						</ul>
+					</div>
+				{{# } }}
+
+
+
+
+					{{# if (data.now_order['spec_list']!='') { }}
+						<div class="spec_info detail_list">
+							<div class="top clr">
+								<h2 class="fl">{{L_('规格信息')}}</h2>
+							</div>
+							<div class="user_list spec_list">
+								<div style="width: 100%;margin-bottom:10px;padding: 10px 15px;">
+									{{# for(var j in d.now_order['list']) { }}
+									{{# console.log('j', j);console.log('buy_nums', d['buy_nums']); }}
+									    {{# if ((d['buy_nums'] && d['buy_nums'][j]) || !d['buy_nums']) { }}
+											<div class="flex" >
+												<div class="list_spec_name flex">
+													{{# for(var m in d.now_order['list'][j]['spec']) { }}
+													{{# if (d.now_order['list'][j]['spec'][m]) { }}
+													<div class="spec_val_name">
+														<div>
+															{{# if (m>0) { }}
+															/
+															{{# } }}
+															{{d.now_order['list'][j]['spec'][m]['spec_val_name']}}
+														</div>
+													</div>
+													{{# } }}
+													{{# } }}
+												</div>
+												<div class="flex flex_grow">
+													{{# if (d.is_vip && d.now_order['list'][j]['vip_wholesale_price']>0) { }}
+													<div class="spec_price">{{d.config['Currency_symbol']}}{{d.now_order['list'][j]['vip_wholesale_price']}}</div>
+													{{# } else { }}
+													<div class="spec_price">{{d.config['Currency_symbol']}}{{d.now_order['list'][j]['price']}}</div>
+													{{# } }}
+												</div>
+
+												<div class="flex spec_buy_num">
+													<div class="wrap right">
+														{{# if (d.now_order['list'][j]['stock_num']<d.now_order['list'][j]['buy_num'] && d.now_order['list'][j]['stock_num']!=-1) { }}
+															<div style="width: 122px;text-align: center;color: #999;line-height: 30px;">库存不足</div>
+														{{# } else { }}
+															<div class="plus clr plus_{{d.now_order['list'][j]['index']}}" style="position:relative;">
+																<a href="javascript:void(0)" class="jian" style="color: rgb(191, 191, 191);" data-index="{{d.now_order['list'][j]['index']}}">-</a>
+
+
+																{{# if (data.buy_nums && data.buy_nums[data.now_order['list'][j]['index']] > 0) { }}
+
+																<input class="buy_nums_pay buy_index_{{d.now_order['list'][j]['index']}}" style="margin:0;" type="text"  data-min_unit="{{d.now_order.min_unit}}" data-min_num="{{d.now_order['list'][j]['min_num']}}" value="{{data.buy_nums[data.now_order['list'][j]['index']]}}" name="buy_nums" data-index="{{d.now_order['list'][j]['index']}}" data-stock_num="{{d.now_order['list'][j]['stock_num']}}"/>
+
+																{{# } else { }}
+
+																<input class="buy_nums_pay buy_index_{{d.now_order['list'][j]['index']}}" style="margin:0;" type="text"  data-min_unit="{{d.now_order.min_unit}}" data-min_num="{{d.now_order['list'][j]['min_num']}}" value="{{d['buy_nums'][j]}}" name="buy_nums" data-index="{{d.now_order['list'][j]['index']}}" data-stock_num="{{d.now_order['list'][j]['stock_num']}}"/>
+
+																{{# } }}
+
+																<a href="javascript:void(0)" class="jia" data-index="{{d.now_order['list'][j]['index']}}">+</a>
+															</div>
+														{{# } }}
+													</div>
+												</div>
+											</div>
+										{{# } }}
+									{{# } }}
+								</div>
+							</div>
+						</div>
+					{{# } else { }}
+						<div class="mui-card-content normal" style="padding: 15px 15px 0;">
+							<span class="fl cas_left">{{L_('数量')}}</span>
+							<div class="wrap right" style="padding-right:20px">
+								<div class="plus clr" style="position:relative;">
+									<a data-min_num="{{data.now_order['min_num']}}" href="javascript:void(0)" class="jian" style="color: rgb(191, 191, 191);">-</a>
+									<input class="buy_num" type="text" name="buy_num"  data-min_unit="{{d.now_order.min_unit}}" data-min_num="{{data.now_order['min_num']}}" data-stock_num="{{d.now_order.stock_num}}" value="{{data.now_order['buy_num']}}"/>
+									<a data-min_num="{{data.now_order['min_num']}}" href="javascript:void(0)" class="jia">+</a>
+								</div>
+							</div>
+						</div>
+				    {{# } }}
+
+					<div class="money_detail detail_list" style="clear: both;border-top: #f1f1f1 1px solid;margin-bottom: 60px;">
+
+						<div class="user_list">
+							<ul>
+								<li class="clr">
+									<span class="fl">
+										{{L_('商品总额')}}
+									</span>
+									<span class="fr">
+										{{# if (data.now_order.wholesale_discount>0 && data.now_order.wholesale_discount<10) {}}
+											<div style="background-color: #F7511D;color: white;border-radius: 10px;padding: 1px 15px;float: left;">
+											{{L_('享受')}}<span class="wholesale_discount">{{data.now_order.wholesale_discount}}</span>{{L_('折优惠')}}
+											</div>&nbsp;&nbsp;
+										{{# } }}
+										<span class="totalMoney">{{  data.now_order.totalMoney }}</span> ({{data.config.Currency_txt}})
+									</span>
+								</li>
+								<li class="clr delivery_msg" style="border-bottom:none;">
+									<span class="fl">
+										{{L_('运费总额')}}
+									</span>
+									<span class="fr">
+										<span class="total_express_fee">0</span> ({{data.config.Currency_txt}})
+									</span>
+								</li>
+								<li class="clr delivery_msg" >
+									<span class="fl">
+										<span class="express_msg"></span>
+									</span>
+								</li>
+								<li class="clr">
+									<span class="fl" style="width: 25%;">
+										{{L_('备注说明')}}
+									</span>
+									<span class="fr" style="width: 75%;">
+										<textarea name="desc" class="desc input" rows="3" placeholder="请输入备注说明"></textarea>
+									</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+                </div>
+
+			</div>
+
+		</script>
+		<script>
+            mui.init();
+            var ticket = common.getCache('ticket');
+            var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+            var order_id = urlParam.order_id;
+            var goods_id = urlParam.goods_id;
+            var current_id = urlParam.current_id;
+            var pick_id = urlParam.pick_id;
+            var is_pick = urlParam.is_pick;
+            var shopList = [];
+            var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+            var fareTemplet = []; // 快递配送公司信息
+			var Currency_txt = '元';
+            var is_group = '';
+            var team_id = '';
+            var is_type = '';
+            var h=$(window).height();
+            $('#payPopover .mui-card').css({'height': 0.8*h, 'overflow-y': 'auto'});
+
+            var buy_num = common.getCache('buy_num');
+            var buy_nums = common.getCache('buy_nums');
+            var is_pick_in_store = is_pick;
+            if (!is_pick_in_store) {
+                is_pick_in_store = 0;
+            }
+            console.log('buy_num',buy_num);
+            console.log('buy_nums',buy_nums);
+            console.log('is_pick_in_store',is_pick_in_store);
+
+
+            // 渲染数据
+            common.http('Merchantapp&a=market_buy_detail', {
+                'ticket': ticket,
+                'client': client,
+                'goods_id': goods_id,
+                'address_id': current_id,
+				'pick_id' : pick_id,
+				'is_pick_in_store': is_pick,
+				'buy_num': buy_num,
+				'buy_nums': buy_nums
+            }, function (data) {
+                if (data && data.now_order) {
+                    var status = data.now_order.status;
+                    is_type = data.now_order.is_type;
+                    is_group=data.now_order.is_group;
+                    team_id=data.now_order.team_id;
+
+					if (parseInt(data.now_order.goods_id)>0 && goods_id != parseInt(data.now_order.goods_id)) {
+                        console.log('goods_id1',parseInt(data.now_order.goods_id));
+                        goods_id = parseInt(data.now_order.goods_id);
+                    }
+				}
+				if (!pick_id) {
+                    pick_id = data.pick_id;
+				}
+                Currency_txt = data.config['Currency_txt'];
+				if (buy_nums && buy_nums!=undefined) {
+				    data.buy_nums = buy_nums;
+				}
+
+                laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+                    $('.allHtml').html(html);
+                    setTimeout(function () {
+                        reload_msg();
+
+                        if (is_pick_in_store==0) {
+                            $('#pick_in_store').addClass("active").siblings().removeClass("active");
+                            $('#li_delivery').hide();
+							$('#li_pick').show();
+                            $('.delivery_msg').hide();
+                        } else if(is_pick_in_store==1) {
+                            $('#express').addClass("active").siblings().removeClass("active");
+                            $('#li_delivery').show();
+                            $('#li_pick').hide();
+                            $('.delivery_msg').show();
+                            reload_buy(true);
+                        } else if(is_pick_in_store==2) {
+                            $('#logistics').addClass("active").siblings().removeClass("active");
+                            $('#li_delivery').show();
+                            $('#li_pick').hide();
+                            $('.delivery_msg').show();
+                            reload_buy(true);
+                        }
+                        window.scrollTo(0,0);
+                    },200);
+                });
+            });
+
+            $(document).on("click",'.link_a',function(){
+                var url = $(this).data('url');
+                url +='&is_pick=' + is_pick_in_store;
+                window.location.href = url;
+            });
+
+            function reload_buy(is_first) {
+                if (buy_num>0) {
+                    console.log('reload_buy',1);
+                    buy_num_info(buy_num, is_first);
+                }
+                var b = $.isEmptyObject(buy_nums);
+                if (buy_nums && buy_nums!=undefined && !b) {
+                    console.log('reload_buys',1);
+                    buy_nums_info(buy_nums, is_first);
+                }
+            }
+
+
+            $(document).on("click",'.btn_express',function(){
+                $(this).addClass("active").siblings().removeClass("active");
+                var is_pick_id = $(this).data('is_pick_in_store');
+                is_pick_in_store = is_pick_id;
+                if (is_pick_id==0) {
+                    $('#li_delivery').hide();
+                    $('#li_pick').show();
+                    $('.delivery_msg').hide();
+                    reload_buy(false);
+                } else if(is_pick_id==1) {
+                    $('#li_delivery').show();
+                    $('#li_pick').hide();
+                    $('.delivery_msg').show();
+                    reload_buy(false);
+                } else if(is_pick_id==2) {
+                    $('#li_delivery').show();
+                    $('#li_pick').hide();
+                    $('.delivery_msg').show();
+                    reload_buy(false);
+                }
+            });
+
+            mui('body').on('tap','.plus a',function(e){
+                var index = $(this).data('index');
+                if (index) {
+                    console.log('index',index);
+                    var input_class = '.buy_index_'+index;
+                    var plus_class = '.plus_'+index;
+                    var num = parseInt($(input_class).val());
+                    var min_num=$(input_class).data('min_num');
+                    var stock_num = parseInt($(input_class).data('stock_num'));
+                    var min_unit=$(input_class).data('min_unit');
+                    console.log('min_unit', min_unit);
+                    if ($(this).attr('class') == 'jia') {
+                        var n = Math.ceil(min_num/min_unit);
+                        if (min_num<=0) {
+                            n = 1;
+                        }
+                        if (min_unit == 1) {
+                            num ++;
+                        } else if (parseInt(min_unit) > 0 && parseInt(num) == parseInt(min_num) && (min_unit * n>min_num)) {
+                            num += min_unit * n - min_num;
+                        } else if (min_unit > 0) {
+                            num += min_unit;
+                        } else {
+                            num ++;
+                        }
+                        //限购校验(最多购买数量)
+                        if(typeof stock_num!='undefined' && !isNaN(stock_num) && stock_num>0){
+                            stock_num=parseInt(stock_num);
+                            if(num>stock_num){
+                                mui.toast('最多购买数为'+stock_num);
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (min_unit > 0 && num-min_unit < min_num) {
+                            num = min_num;
+                        } else if (min_unit > 0) {
+                            num -= min_unit;
+                        } else {
+                            num --;
+                        }
+                        //限购校验(最少购买数量)
+                        if(typeof min_num!='undefined' && !isNaN(min_num) && min_num>0){
+                            min_num=parseInt(min_num);
+                            if(num<min_num){
+                                mui.toast('最少购买数为'+min_num);
+                                return false;
+                            }
+                        }
+                    }
+                    if (num < 0) {
+                        num = 0;
+                    }
+                    if (num >min_num) {
+                        $(plus_class+" a.jian").css("color","#333333");
+                    }else if(num==min_num){
+                        $(plus_class+" a.jian").css("color","#bfbfbf");
+                    }else{
+                        $(plus_class+" a.jian").css("color","#bfbfbf");
+                        return false;
+                    }
+                    $(plus_class+' input').val(num);
+                    console.log('num',num);
+                    buy_nums_info();
+                    return;
+                }
+
+
+                var num = parseInt($('.plus input').val());
+                var min_num=$(this).data('min_num');
+                var min_unit = $('.plus input').data('min_unit');
+                var stock_num = $('.plus input').data('stock_num');
+                console.log('min_unit1', min_unit);
+                if ($(this).attr('class') == 'jia') {
+                    var n = Math.ceil(min_num/min_unit);
+                    if (min_unit == 1) {
+                        num ++;
+                    } else if (min_unit > 0 && num == min_num) {
+                        num += min_unit * n - min_num;
+                    } else if (min_unit > 0) {
+                        num += min_unit;
+                    } else {
+                        num ++;
+                    }
+                    //限购校验(最多购买数量)
+                    if(typeof stock_num!='undefined' && !isNaN(stock_num) && stock_num>0){
+                        stock_num=parseInt(stock_num);
+                        if(num>stock_num){
+                            mui.toast('最多购买数为'+stock_num);
+                            return false;
+                        }
+                    }
+                } else {
+                    if (min_unit > 0 && num-min_unit < min_num) {
+                        num = min_num;
+                    } else if (min_unit > 0) {
+                        num -= min_unit;
+                    } else {
+                        num --;
+                    }
+                    //限购校验(最少购买数量)
+                    if(typeof min_num!='undefined' && !isNaN(min_num) && min_num>0){
+                        min_num=parseInt(min_num);
+                        if(num<min_num){
+                            mui.toast('最少购买数为'+min_num);
+                            return false;
+                        }
+                    }
+                }
+                if (num < 1) {
+                    num = 1;
+                }
+                console.log('min_num',min_num);
+                if (num >min_num) {
+                    $(".plus a.jian").css("color","#333333");
+                }else if(num==min_num){
+                    $(".plus a.jian").css("color","#bfbfbf");
+                }else{
+                    $(".plus a.jian").css("color","#bfbfbf");
+                    return false;
+                }
+                $("input[name='buy_num']").val(num);
+                buy_num_info();
+            });
+
+
+            function reload_msg() {
+                $('input[name="buy_nums"]').blur(function(){
+                    var min_num = $.trim($(this).data('min_num'));
+                    var stock_num = $.trim($(this).data('stock_num'));
+                    var val = $.trim($(this).val());
+                    var min_unit = $.trim($(this).data('min_unit'));
+                    if (parseInt(val)%parseInt(min_unit) != 0 && val != min_num) {
+                        var msg = '批量批发请填写' + min_unit + '的整数倍';
+                        mui.toast(msg);
+                        $(this).val(min_num);
+                        return false;
+                    }
+                    if (!val || parseInt(val)<parseInt(min_num)) {
+                        mui.toast('购买份数不能小于'+min_num);
+                        $(this).val(min_num);
+                        return false;
+                    }
+                    if (parseInt(val)>parseInt(stock_num)) {
+                        mui.toast('购买份数不能大于'+stock_num);
+                        $(this).val(stock_num);
+                        return false;
+                    }
+                    buy_nums_info();
+                });
+
+                $('input[name="buy_num"]').blur(function(){
+                    var min_num = $.trim($(this).data('min_num'));
+                    var stock_num = $.trim($(this).data('stock_num'));
+                    var min_unit = $.trim($(this).data('min_unit'));
+                    if (min_num<=0) {
+                        min_num = 1;
+                    }
+                    var val = $.trim($(this).val());
+                    if (parseInt(val)%parseInt(min_unit) != 0 && val != min_num) {
+                        var msg = '批量批发请填写' + min_unit + '的整数倍';
+                        mui.toast(msg);
+                        $(this).val(min_num);
+                        return false;
+                    }
+                    if (!val || parseInt(val)<parseInt(min_num)) {
+                        mui.toast('购买份数不能小于'+min_num);
+                        $(this).val(min_num);
+                        return false;
+                    }
+                    if (parseInt(val)>parseInt(stock_num)) {
+                        mui.toast('购买份数不能大于'+stock_num);
+                        $(this).val(stock_num);
+                        return false;
+                    }
+                    buy_num_info();
+                });
+            }
+
+            function buy_nums_info(buy_nums, is_first) {
+				if (is_first) {
+					if (!buy_nums) {
+						buy_nums = {};
+					}
+					var index = $('.buy_nums_pay').data('index');
+					buy_nums[index] = $('.buy_nums_pay').val();
+				}
+                var username = $('.username').html();
+                var userphone = $('.userphone').html();
+                var address = $('.address').html();
+                var desc = $('.desc').val();
+                var province_id = $('#province').val();
+                if ((is_type==1 || is_type==2 || is_type==3) && (!province_id || province_id <= 0)) {
+                    mui.toast('请先选择地址');
+                    return false;
+				}
+                if (!is_first) {
+                    var len = $('.buy_nums_pay').length;
+                    console.log('len', len);
+                    var buy_nums = {};
+                    var buy_num = 0;
+                    if (len > 0) {
+                        $('.buy_nums_pay').each(function(){
+                            var index = $.trim($(this).data('index'));
+                            var min_num = $.trim($(this).data('min_num'));
+                            var val = $.trim($(this).val());
+                            if (parseInt(val)<parseInt(min_num)) {
+                                mui.toast('购买份数不能小于'+min_num);
+                                $(this).val(min_num);
+                                return false;
+                            }
+                            console.log('index', index);
+                            console.log('min_num', min_num);
+                            console.log('val', val);
+                            buy_nums[index]=val;
+                        });
+                    }
+                }
+                common.http('Merchantapp&a=getTotalPrice', {
+                    'ticket': ticket,
+                    'client': client,
+                    'order_id': order_id,
+                    'goods_id': goods_id,
+                    'buy_num': buy_num,
+                    'buy_nums': buy_nums,
+                    'username': username,
+                    'userphone': userphone,
+                    'address': address,
+                    'desc': desc,
+                    'is_group': is_group,
+                    'province_id': province_id,
+                    'is_pick_in_store': is_pick_in_store
+                }, function (response) {
+                    if (response && response.errorCode && response.errorCode>0) {
+                        mui.toast(response.errorMsg);
+                    } else {
+                        var totalMoney = parseFloat(response.totalMoney);
+                        totalMoney = totalMoney.toFixed(2);
+                        $('.totalMoney').html(totalMoney);
+                        console.log('is_group',is_group);
+                        if (response.wholesale_discount > 0) {
+                            var wholesale_discount = parseFloat(response.wholesale_discount);
+                            wholesale_discount = wholesale_discount.toFixed(2);
+                            $('.wholesale_discount').html(wholesale_discount);
+                        }
+                        if (response.total_express_fee > 0) {
+                            var total_express_fee = parseFloat(response.total_express_fee);
+                            total_express_fee = total_express_fee.toFixed(2);
+                            $('.total_express_fee').html(total_express_fee);
+                        } else {
+                            $('.total_express_fee').html(0);
+                        }
+
+                        if (response.express_txt) {
+                            $('.express_msg').html(response.express_txt);
+                        } else {
+                            $('.express_msg').html('');
+                        }
+
+                    }
+                });
+            }
+
+            function buy_num_info(buy_num, is_first) {
+                if (!is_first) {
+                    buy_num = $('.buy_num').val();
+				}
+                $('.buy_num').val(buy_num);
+				console.log('buy_num',buy_num);
+                var username = $('.username').html();
+                var userphone = $('.userphone').html();
+                var address = $('.address').html();
+                var desc = $('.desc').val();
+                var province_id = $('#province').val();
+                if ((is_type==1 || is_type==2 || is_type==3) && (!province_id || province_id <= 0)) {
+                    mui.toast('请先选择地址');
+                    return false;
+                }
+                common.http('Merchantapp&a=getTotalPrice', {
+                    'ticket': ticket,
+                    'client': client,
+                    'order_id': order_id,
+                    'goods_id': goods_id,
+                    'buy_num': buy_num,
+                    'username': username,
+                    'userphone': userphone,
+                    'address': address,
+                    'desc': desc,
+                    'is_group': is_group,
+                    'province_id': province_id,
+					'is_pick_in_store': is_pick_in_store
+                }, function (response) {
+                    if (response && response.errorCode && response.errorCode>0) {
+                        mui.toast(response.errorMsg);
+                    } else {
+                        var totalMoney = parseFloat(response.totalMoney);
+                        totalMoney = totalMoney.toFixed(2);
+                        $('.totalMoney').html(totalMoney);
+                        console.log('is_group',is_group);
+                        if (response.wholesale_discount > 0) {
+                            var wholesale_discount = parseFloat(response.wholesale_discount);
+                            wholesale_discount = wholesale_discount.toFixed(2);
+                            $('.wholesale_discount').html(wholesale_discount);
+                        }
+                        if (response.total_express_fee > 0) {
+                            var total_express_fee = parseFloat(response.total_express_fee);
+                            total_express_fee = total_express_fee.toFixed(2);
+                            $('.total_express_fee').html(total_express_fee);
+                        } else {
+                            $('.total_express_fee').html(0);
+                        }
+
+                        if (response.express_txt) {
+                            $('.express_msg').html(response.express_txt);
+                        } else {
+                            $('.express_msg').html('');
+                        }
+                    }
+                });
+            }
+
+
+
+            function selectChange(lists) {
+                $.each(lists, function (i, val) {
+                    var goods_id_list = {'value': '', 'text': ''};
+                    goods_id_list.text = val.name;
+                    goods_id_list.value = val.store_id;
+                    shopList.push(goods_id_list);
+                });
+            }
+
+
+            // 确认支付订单
+            mui('.plus_class').on('tap','.add_save',function(){
+                var buy_num = $('.buy_num').val();
+                var username = $('.username').html();
+                var userphone = $('.userphone').html();
+                var address = $('.address').html();
+                var desc = $('.desc').val();
+
+                var buy_nums = {};
+                var len = $('.buy_nums_pay').length;
+                if (len > 0) {
+                    $('.buy_nums_pay').each(function(){
+                        var index = $.trim($(this).data('index'));
+                        var min_num = $.trim($(this).data('min_num'));
+                        var val = $.trim($(this).val());
+                        if (parseInt(val)<parseInt(min_num)) {
+                            mui.toast('购买份数不能小于'+min_num);
+                            $(this).val(min_num);
+                            return false;
+                        }
+                        console.log('index', index);
+                        console.log('min_num', min_num);
+                        console.log('val', val);
+                        buy_nums[index]=val;
+                    });
+                }
+				if (!buy_num && !buy_nums) {
+                    mui.toast('请填写批发数量');
+                    return false;
+				}
+                if ((is_type==1 || is_type==2 || is_type==3) && (!username || ''==username)) {
+                    mui.toast('请点击添加送货地址');
+                    return false;
+                }
+                if ((is_type==1 || is_type==2 || is_type==3) && (!userphone || ''==userphone)) {
+                    mui.toast('请点击添加送货地址');
+                    return false;
+                }
+                if ((is_type==1 || is_type==2 || is_type==3) && (!address || ''==address)) {
+                    mui.toast('请点击添加送货地址');
+                    return false;
+                }
+                var province_id = $('#province').val();
+                var city_id = $('#city').val();
+                var area_id = $('#area').val();
+                if ((is_type==1 || is_type==2 || is_type==3) && (!province_id || province_id <= 0)) {
+                    mui.toast('请先选择地址');
+                    return false;
+                }
+
+
+                common.http('Merchantapp&a=market_buy', {
+                    'ticket': ticket,
+                    'client': client,
+                    'buy_num': buy_num,
+                    'buy_nums': buy_nums,
+                    'username': username,
+                    'userphone': userphone,
+                    'address': address,
+                    'desc': desc,
+                    'goods_id':goods_id,
+                    'team_id': team_id,
+                    'is_group':is_group,
+                    'province_id':province_id,
+                    'city_id':city_id,
+                    'area_id':area_id,
+                    'is_pick_in_store':is_pick_in_store,
+                    'pick_id':pick_id
+                }, function (data) {
+                    console.log('market_buy',data);
+                    if (data && data.errorCode && data.errorCode>0) {
+                        mui.toast(data.errorMsg);
+                    } else {
+                        mui.toast('下单成功');
+                        if (data.order_id) {
+
+                            var order_id=data.order_id;
+                            openWindow({
+                                url:'market_pay.html?order_id='+order_id,
+                                id:'market_pay'
+                            });
+						}
+                    }
+                    // common.removeCache('buy_num');
+                    // common.removeCache('buy_nums');
+                });
+            });
+
+
+            (function ($, doc) {
+                $.init();
+
+            })(mui, document);
+
+		</script>
+
+</body></html>

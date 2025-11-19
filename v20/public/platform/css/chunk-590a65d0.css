@@ -1,0 +1,26 @@
+.storage_battery[data-v-2d1e179e] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.storage_battery .header_search[data-v-2d1e179e] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
+.storage_battery .header_search .search_item[data-v-2d1e179e] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.storage_battery .header_search .operation_btn[data-v-2d1e179e] {
+  margin-left: 20px;
+}
+.storage_battery .table_content[data-v-2d1e179e] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

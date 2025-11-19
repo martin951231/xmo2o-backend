@@ -1,0 +1,45 @@
+.pcButton[data-v-6618ab6c] {
+  color: #1890ff;
+  border: 1px dashed #ccc;
+}
+
+
+section#contentView[data-v-784ecd6c] {
+    background-color: #fff !important;
+}
+#title[data-v-784ecd6c] {
+    font-size: 15px;
+    font-weight: bold;
+}
+iframe[data-v-784ecd6c] {
+    height: 667px;
+    width: 375px;
+}
+button.ant-switch[data-v-784ecd6c] {
+    position: relative;
+    bottom: 0px;
+    right: 0px;
+}
+.color-picker-label[data-v-784ecd6c] {
+    width: 80px;
+    height: 30px;
+    border: 1px solid #666666;
+}
+.color-picker-label input[type='color'][data-v-784ecd6c] {
+    opacity: 0;
+}
+.color-name[data-v-784ecd6c] {
+    height: 30px;
+    line-height: 30px;
+    min-width: 60px;
+    text-align: left;
+    margin-right: 20px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+}
+.upload-bg-image[data-v-784ecd6c] .ant-upload.ant-upload-select-picture-card {
+    width: 104px;
+    height: 104px;
+}
+

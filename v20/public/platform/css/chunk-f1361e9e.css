@@ -1,0 +1,113 @@
+.bg-image-wrap[data-v-78646e3a] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+
+.coupon-wrap[data-v-2c6f54bc] {
+    width: 100%;
+    padding: 6px 0;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.coupon-item[data-v-2c6f54bc] {
+    width: 100%;
+    padding: 6px 12px;
+    box-sizing: border-box;
+}
+.coupon-item-content[data-v-2c6f54bc] {
+    position: relative;
+    width: 100%;
+    height: 90px;
+    -webkit-mask: radial-gradient(circle at 4px, transparent 4px, red 0) -4px / 100% 12px;
+}
+.coupon-item-content-circle[data-v-2c6f54bc] {
+    -webkit-mask: radial-gradient(circle at 4px, red 4px, transparent 0) -4px 50% / 100% 12px,
+        radial-gradient(circle at 8px 8px, transparent 8px, red 0) -16px -8px / 76.5%;
+    -webkit-mask-composite: destination-out;
+}
+.coupon-info-wrap[data-v-2c6f54bc] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 90px);
+    height: 100%;
+    padding: 0 16px 0 12px;
+    box-sizing: border-box;
+}
+.discount-wrap[data-v-2c6f54bc] {
+    font-weight: bold;
+    line-height: 1;
+}
+.discount[data-v-2c6f54bc] {
+    font-size: 22px;
+}
+.unit[data-v-2c6f54bc] {
+    margin-left: 4px;
+    font-size: 14px;
+}
+.ml-14[data-v-2c6f54bc] {
+    margin-left: 14px;
+}
+.discount-info-wrap[data-v-2c6f54bc] {
+    line-height: 16px;
+    -ms-flex-positive: 0;
+        flex-grow: 0;
+    -ms-flex-negative: 1;
+        flex-shrink: 1;
+    -ms-flex-preferred-size: auto;
+        flex-basis: auto;
+}
+.name[data-v-2c6f54bc] {
+    font-size: 14px;
+    font-weight: 500;
+}
+.discount-txt[data-v-2c6f54bc] {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.6;
+}
+.get-coupon[data-v-2c6f54bc] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 90px;
+    height: 90px;
+    border-left: 1px dashed #ffffff;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-weight: 500;
+}
+.box-shadow[data-v-2c6f54bc] {
+    box-shadow: 0px 0px 12px 4px rgba(231, 231, 231, 0.42);
+}
+
+/* 一行两个 */
+.width-50[data-v-2c6f54bc] {
+    padding-left: 6px;
+    padding-right: 6px;
+    width: 50%;
+    box-sizing: border-box;
+}
+.padding-6[data-v-2c6f54bc] {
+    padding: 6px;
+    box-sizing: border-box;
+}
+.height-100[data-v-2c6f54bc] {
+    height: 100%;
+}
+.width-33[data-v-2c6f54bc] {
+    padding-left: 6px;
+    padding-right: 6px;
+    width: 33.33333%;
+    box-sizing: border-box;
+}
+.pl-12[data-v-2c6f54bc] {
+    padding: 0 12px;
+}
+

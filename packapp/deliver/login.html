@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>配送员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+        <link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/deliver.css" rel="stylesheet"/> 
+	</head>
+	<body class="loginBody">
+		<section class="fillBg">
+			<section class="Land">
+				<div class="Land_top">
+					<span class="fillet" style="background:url(logo.png) center no-repeat; background-size: contain;"></span>
+					<h2><L_>配送员中心</L_></h2>
+				</div>
+				<div class="Land_end">
+					<ul>
+						<li class="number">
+							<input type="tel" placeholder="请输入手机号" id="login_phone"/>
+							<a href="javascript:void(0)" tabindex="-1"></a>
+						</li>
+						<li class="Password">
+							<input type="password" placeholder="请输入密码" id="login_pwd"/>
+							<a href="javascript:void(0)" tabindex="-1"></a>
+						</li>
+						<li class="Landd">
+							<button id="login_form" class="submit-btn L_">登录</button>
+						</li>
+					</ul>
+				</div>     
+			</section>  
+        </section>   
+        <div class="regbtn" style="display: none;" id="reg_account"> <a href="/packapp/deliver_web/register.html">立即注册 ></a></div>
+        <div class="fixedAgreement"> <p style="color: #999;"><L_>登录代表你已经同意</L_><span id="goUserAgreement"><L_>用户协议</L_></span>和<span id="goAgreement"><L_>隐私政策</L_></span></p></div>
+        <div class="mark">
+            <div class="noAgree">
+                <img src="images/notice.png" style="width:60px"  />
+                <p class="textP"><L_>若不同意则不能正常使用本软件！</L_></p> 
+                <button class="seen">知道了</button>
+            </div>
+        </div>
+         
+        <style>
+            .fixedAgreement{
+                position: absolute;
+                bottom: 20px;
+                text-align: center;
+                width: 100%;
+                left: 0; 
+                display: none;
+                z-index: 0;
+            }
+            .regbtn{
+                position: absolute;
+                bottom: 250px;
+                text-align: center;
+                width: 100%;
+                left: 0; 
+                z-index: 0;
+            }
+            .regbtn a{
+                color:#1b9dff;
+            }
+            .fixedAgreement #goAgreement, .fixedAgreement #goUserAgreement{
+                color:red;
+                display: inline-block;
+                border:none; 
+                margin: 0;
+                border: none;  
+                border-radius: 0px; 
+                font-size: 14px;
+                width: auto;
+            }
+            .mark{
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                left: 0;
+                top:0;
+                z-index: 999;
+                display: none;
+                background-color: rgba(0,0,0,0.7);
+            }
+            .noAgree{
+                width: 70%;
+                padding: 10px;
+                margin: 60% auto;
+                text-align: center;
+                background: #fff;
+                border-radius: 4px;
+                padding: 20px 0 0 0;
+            }
+            .textP{
+                padding: 10px 0;
+            }
+            .seen{
+                color: #1b9dff;
+                background: #fff;
+                font-size: 16px;
+                padding: 20px 0;
+            }
+        </style>  
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+        <script src="scripts/weui/weui.min.js"></script>
+		<script src="scripts/work/common.js?t=01"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/login.js?t=01"></script>
+		<!-- android=appbackmonitor -->
+	</body>
+</html>

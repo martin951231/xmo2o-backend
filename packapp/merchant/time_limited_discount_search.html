@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>商品搜索</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/search.css"/>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title">
+        <i></i>
+        <input type="search" class="mui-input-clear" id="keywords" placeholder="商品名称"/>
+    </h1>
+</header>
+<div class="mui-content">
+    <!--    list container-->
+    <div class="time_limited_discount_list">
+
+    </div>
+    <!--    load more-->
+    <div class="pullup1" style="display:none;">
+        <L_>上拉加载更多</L_>
+        ...
+    </div>
+    <div class="loading1" style="display:none;"><img src="images/xubox_loading2.gif" alt="">
+        <L_>正在加载</L_>
+    </div>
+</div>
+<!--效果数据弹框-->
+<div id="middlePopover" class="mui-popover">
+    <div class="mui-card">
+        <!--页眉，放置标题-->
+        <div class="mui-card-header">
+            <p class="L_">选择要查看的单个规格效果数据</p> <sub class="mui-pull-right"></sub>
+        </div>
+        <!--内容区-->
+        <div class="mui-card-content">
+            <div class="mui-scroll-wrapper">
+                <div class="mui-scroll">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<!--商品列表-->
+<script id="goodsList" type="text/html">
+{{# for(var i = 0, len = d.length; i < len; i++){ }}
+<div class="mui-card">
+    <div class="card-top">
+        <div class="card-left">
+            <img src="{{d[i].goods_image}}">
+        </div>
+        <div class="card-right">
+            <div class="goods-name">{{d[i].goods_name}}</div>
+            <div class="desc-1">
+                <span class="desc-1-date">{{d[i].start_date}}<span style="margin: 0 5px;"><L_>至</L_></span>{{d[i].end_date}}</span>
+                <span class="desc-1-sales-volume"><L_>今日已售</L_>{{d[i].today_sale}}</span>
+            </div>
+            <div class="desc-2-period ">
+                {{# let week_arr=d[i].week_str.split(',');
+                if(week_arr.length==7){ }}
+                <span>{{ L_('全周') }}</span>
+                {{# }else{ }}
+                <span><L_>每</L_>{{d[i].week_str}}</span>
+                {{# } if(d[i].start_time == "00:00" && d[i].end_time == "23:59"){ }}
+                <span>{{ L_('、全天') }}</span>
+                {{# }else{ }}
+                <span><L_>的</L_>{{d[i].start_time}}<L_>~</L_>{{d[i].end_time}}</span>
+                {{# } }}
+            </div>
+            <div class="desc-3">
+                {{# if(d[i].is_spec == '0'){}}
+                <span class="desc-3-discount">{{(d[i].limit_price/d[i].old_price * 10).toFixed(2)}}<L_>折</L_></span>
+                <span class="desc-3-price"><L_>￥</L_>{{d[i].limit_price}}</span>
+                <span class="desc-3-old-price"><L_>￥</L_>{{d[i].old_price}}</span>
+                {{# }else{ }}
+                <span class="desc-3-is-spec"><L_>多规格</L_></span>
+                {{# } }}
+
+            </div>
+        </div>
+    </div>
+    <div class="card-bottom">
+        <div class="btn-container" data-id="{{ d[i].id }}">
+            {{# if(d[i].btns.lose){}}
+            <button class="revoke-data" type="button"><i></i>{{ L_('撤销') }}</button>
+            {{# }if(d[i].btns.edit){ }}
+            <button class="edit-data" type="button"><i></i>{{ L_('编辑') }} </button>
+            {{# }if(d[i].btns.detail){ }}
+            <button class="effect-data" type="button"><i></i>{{ L_('效果数据') }} </button>
+            {{# } }}
+        </div>
+    </div>
+</div>
+{{# } }}
+</script>
+<!--规格列表-->
+<script id="specList" type="text/html">
+{{# for(var i = 0, len = d.length; i < len; i++){ }}
+<div class="option-row">
+    <div class="spec-name">{{d[i].str}}</div>
+    <div>
+        <button data-id="{{d[i].id}}" style="border:none" class="effect-data" type="button"><i></i>{{ L_('效果数据') }}</button>
+    </div>
+</div>
+{{#}}}
+</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+let mask = mui.createMask();
+let store_id = $.getUrlParam('store_id');
+let page = 1;
+// let status = 2;
+let keyword = ''
+let ticket = common.getCache('ticket', true);
+let deviceId = common.getDeviceId();
+let list = [];
+let specList = [];
+// console.log(111,$('#keywords').val());
+$('#keywords').show().focus();
+// $('#keywords').val('');
+let bind_name = 'input';
+if (navigator.userAgent.indexOf("MSIE") != -1){ bind_name = 'propertychange' }
+$('#keywords').bind(bind_name ,function(){
+  page = 1;
+  let val=$(this).val();
+  keyword = val;
+  if(val!= '') {
+    console.log(page);
+    getGoodsList();
+  }else {
+    laytpl(document.getElementById('goodsList').innerHTML).render([], function (html) {
+      $('.time_limited_discount_list').html('')
+    });
+    $('.loading1').hide();
+    $('.pullup1').hide();
+  }
+})
+$('body').off('click','.mui-input-clear').on('click','.mui-input-clear',function(e){
+  page = 1;
+  e.stopPropagation();
+  let val=$(this).val();
+  keyword = val;
+  if(val!=''){
+    getGoodsList();
+  }
+});
+
+//撤销优惠
+mui('.mui-content').on('tap','.revoke-data',function(e){
+  let id = $(this).parents('.btn-container').attr('data-id');
+  mui.confirm('您确认撤销此商品的优惠活动吗?',function(e) {
+    if (e.index == 1) {
+      common.http('Marketing&a=setLose', {ticket,"Device-Id":deviceId,id}, function (data) {
+        if(data) {
+          mui.toast(L_('撤销成功'))
+          page = 1;
+          getGoodsList();
+        }
+      })
+    }
+  });
+});
+
+//编辑优惠
+mui('.mui-content').on('tap','.edit-data',function(e){
+  let id = $(this).parents('.btn-container').attr('data-id');
+  openWindow({
+    url:'edit_goods_discount.html?store_id='+store_id+'&&limit_id='+id,
+  })
+});
+
+//效果数据
+mui('.mui-content').on('tap','.effect-data',function(e){
+  let id = $(this).parents('.btn-container').attr('data-id');
+  let spec_id = '';
+  list.map(item => {
+    if(item.id == id) {
+      if(item.is_spec == '1') { // 多规格
+        // 弹层显示多个规格
+        specList = item.spec_list;
+        mask.show();
+        mui('#middlePopover').popover('show');
+        $('body').css('overflow-y', 'hidden');
+        laytpl(document.getElementById('specList').innerHTML).render(specList, function (html) {
+          $('.mui-scroll').html(html)
+        });
+        mui('#middlePopover').on('tap','.effect-data',function (e) {
+          spec_id = $(this).data('id');
+          openWindow({
+            url:'effect_data.html?record_id=' + id +'&spec_id=' + spec_id,
+          })
+        })
+      }else {
+        openWindow({
+          url:'effect_data.html?record_id=' + id,
+        })
+      }
+    }
+  })
+});
+
+//获取商品列表
+function getGoodsList (type) {
+  let params = {
+    keyword,
+    store_id,
+    page,
+    ticket,
+    'Device-Id': deviceId
+  }
+  common.http('Marketing&a=getTimeLimitedDiscount', params, function (data) {
+    let l = data.lists.length;
+    if(type == 'more') {
+      list = [...list, ...data.lists];
+    }else {
+      list = data.lists;
+    }
+    if(l<10) {
+      laytpl(document.getElementById('goodsList').innerHTML).render(list, function (html) {
+        $('.time_limited_discount_list').html(html)
+      });
+      $('.loading1').hide();
+      $('.pullup1').html(L_('暂无更多数据'));
+      $('.pullup1').show();
+    }else {
+      $('.pullup1').html(L_('上拉加载更多数据'));
+      laytpl(document.getElementById('goodsList').innerHTML).render(list, function (html) {
+        $('.time_limited_discount_list').html(html)
+      });
+      //加载中禁用上拉
+      let load = false;
+      $(window).scroll(function (e) {
+        e.stopPropagation();
+        if (load) {
+          //数据加载中
+          return false;
+        }
+        if ($(document).scrollTop() <= 0) {
+          return false;
+        }
+        //上拉加载
+        if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+          $('.pullup1').hide();
+          $('.loading1').show();
+          load = true;
+          page++;
+          getGoodsList('more');
+        }
+      });
+    }
+  })
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+.share-div[data-v-bc8f36e8] {
+  padding: 1rem;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: columns;
+      flex-direction: columns;
+  width: 45%;
+  margin-left: 3.3%;
+  background: #F7F7F7;
+}
+.p-title[data-v-bc8f36e8] {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+

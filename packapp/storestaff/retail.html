@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8"/>
+        <title>店员中心</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name='apple-touch-fullscreen' content='yes'/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="format-detection" content="address=no"/>
+        <link href="css/pigcms.css?t=2" rel="stylesheet"/>
+    </head>
+    <body>
+        <section class="public pageSliderHide">
+            <div class="return link-url" data-url-type="openLeftWindow" data-url="back" data-closewebview="true"></div>
+            <div class="content"><L_>线下零售</L_></div>
+        </section>
+        <section class="homepage">
+            <div class="h44"></div>
+            <section class="scanning">
+                <div class="search">
+                    <input type="search" class="scan_input" readonly="readonly" placeholder="条码/商品名称" />
+                    <div class="cancel"></div>
+                </div>
+                <div class="sweep"></div>
+                <div class="estate">
+                    <ul class="clr">
+                        <li class="man"><L_>店员</L_>：<span id="staffinfo-name"></span></li>
+                        <li class="data"><L_>日期</L_>：<span id="staffinfo-nowday"></span></li>
+                        <li class="name"><L_>用户名</L_>：<span id="cartinfo-name"><L_>无</L_></span></li>
+                        <li class="phone"><L_>手机号</L_>：<span id="cartinfo-phone">0</span></li>
+                        <li class="member"><L_>会员号</L_>：<span id="cartinfo-card_id"><L_>无</L_></span></li>
+                        <li class="balance"><L_>余额</L_>：<span><L_>￥</L_><EN_></EN_><span id="cartinfo-card_money">0</span></span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="tit_list">
+                <ul></ul>
+            </section>
+
+            <!-- 会员卡 -->
+            <section class="membership" id="membership">
+                <div class="member_top">
+                    <div class="h2"><L_>用户</L_></div>
+                    <div class="query">
+                        <div class="input">
+                            <input type="tel" class="introduce" placeholder="请输入会员卡/手机号" />
+                            <div class="search"></div>  
+                        </div>
+                        <div class="inquiry"><L_>查询</L_></div>
+                    </div>
+                </div>
+                <div class="member_end">
+                    <div class="mem_top"><span><L_>会员信息</L_></span></div>
+                    <div class="mem_end">
+                        <div class="card_info hide">
+                            <ul class="clr">
+                                <li>
+                                    <h2><L_>会员姓名</L_></h2>
+                                    <p id="user_info-name">&nbsp;</p>
+                                </li>
+                                <li>
+                                    <h2><L_>会员性别</L_></h2>
+                                    <p id="user_info-sex">&nbsp;</p>
+                                </li>
+                                <li>
+                                    <h2><L_>手机号码</L_></h2>
+                                    <p id="user_info-phone">&nbsp;</p>
+                                </li>
+                                <li>
+                                    <h2><L_>会员卡号</L_></h2>
+                                    <p id="card_info-card_id">&nbsp;</p>
+                                </li>
+                                <li>
+                                    <h2><L_>实体卡号</L_></h2>
+                                    <p id="card_info-physical_id">&nbsp;</p>
+                                </li>
+                                <li>
+                                    <h2><L_>会员折扣</L_></h2>
+                                    <p class="c2e" id="discountBox"><span id="card_info-discount">&nbsp;</span><L_>折</L_></p>
+                                </li>
+                                <li>
+                                    <h2><L_>可用积分</L_></h2>
+                                    <p class="cf7" id="card_info-card_score">&nbsp;</p>
+                                </li>
+                                <li>
+                                    <h2><L_>储值余额</L_></h2>
+                                    <p class="ce9"><L_>￥</L_><span id="card_info-card_money">0</span></p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="nocard img-none">
+                            <img src="images/qkt.jpg"> 
+                            <p class="not_input"><L_>未输入会员信息</L_></p>
+                            <p class="not_found"><L_>未查找到会员信息</L_></p> 
+                            <p class="receive"><L_>领取或查找会员卡？</L_></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="del"></div>
+            </section>
+
+            <!-- 一卡通 -->
+            <section class="membership" id="internalCardPopup" style="display: none;">
+                <div class="member_top" style="height: auto;padding-bottom: 10px">
+                    <div class="h2"><L_>一卡通</L_></div>
+                    <div class="query">
+                        <div class="input">
+                            <input type="tel" class="introduce" placeholder="请输入一卡通卡号/手机号" />
+                        </div>
+                        <div class="search-internalCard inquiry"><L_>查询</L_></div>
+                    </div>
+                </div>
+                <div class="member_end" style="overflow-y: scroll;height: calc(100% - 87px);">
+                    <div class="mem_top"><span><L_>一卡通信息</L_></span></div>
+                    <div class="mem_end">
+                        <div class="card_info hide"></div>
+                        <div class="nocard img-none">
+                            <img src="images/qkt.jpg"> 
+                            <p class="tip"><L_>未输入卡号</L_></p> 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="del"></div>
+            </section>
+
+            <!-- 一卡通密码输入框-->
+            <section class="popup" style="display: none;" id="internalCardPassPopup">
+                <div class="h2"><span>一卡通密码</span></div>
+                <div class="bot" style="padding: 20px 10px;">
+                    <div class="sm_input" style="height: auto;">
+                        <div class="input">
+                            <input type="password" id="password" placeholder="请输入密码">
+                        </div>
+                        <div class="qrzf" id="confirmPassword">确定</div>
+                    </div>
+                </div>
+                <div class="del"></div>
+            </section>
+
+            <section class="popup scan_code pop_wx">
+                <div class="h2"><span><L_>用户微信扫码</L_></span></div>
+                <div class="cot">
+                    <img src="" id="scan_code_img"/>
+                    <div class="inb"><L_>领取或者查找自己的会员卡</L_></div>
+                </div>
+                <div class="del"></div>
+            </section>
+    
+            <div class="wx_mask"></div>
+
+            <section class="seek empty">
+                <div class="within">
+                    <h2><L_>清空订单</L_></h2>
+                    <div class="con">
+                        <div class="img">
+                            <img src="images/tct_06.jpg">   
+                        </div>
+                        <div class="tit">
+                            <p class="on"><L_>重要提示</L_></p>
+                            <p class="p"><L_>清空后当前已选择的商品与会员数据将会被删除</L_>，<span class="red"><L_>确定清空吗？</L_></span></p>
+                        </div>
+                        <div class="button">
+                            <div class="clr p20">
+                                <div class="fl close shut"><L_>点错了</L_></div>
+                                <div class="fr ensure shut"><L_>确定清空</L_></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="del shut"></div>
+            </section> 
+
+            <div class="bot_balance clr pageSliderHide">
+                <div class="fl w60 clr">
+                    <div class="fl joint"><L_>共</L_><EN_></EN_><span id="totalNum">0</span><EN_></EN_><L_>件</L_></div>
+                    <div class="fl total"><L_>合计</L_>：<L_>￥</L_><EN_></EN_><span id="totalPrice">0</span></div>
+                </div>
+                <div class="fl w40 jiesuan"><L_>结算</L_></div>
+            </div>
+
+            <div class="jump_list pageSliderHide">
+                <ul class="jump_ul">
+                    <li class="sp">
+                        <a href="commodity.html"><L_>商品</L_></a>
+                    </li>
+                    <li class="hyk">
+                        <a href="javascript:void(0)"><L_>会员卡</L_></a>
+                    </li>
+                    <li class="ykt">
+                        <a href="javascript:void(0)"><L_>一卡通</L_></a>
+                    </li>
+                    <li class="qk">
+                        <a href="javascript:void(0)"><L_>清空</L_></a>
+                    </li>
+                    <li class="gd">
+                        <a href="guadan.html"><L_>挂单</L_></a>
+                        <em>0</em>
+                    </li>
+                    <li class="pt">
+                        <a href="javascript:void(0)"><L_>补打印</L_></a>
+                    </li>
+                    <li class="refresh" style="background: rgba(238,88,89,0.8)">
+                        <a href="javascript:void(0)"><L_>刷新</L_></a>
+                    </li>
+                </ul> 
+                <div class="more on"><span><L_>收起</L_></span></div>
+            </div>
+        </section>
+        
+        <section class="cable_show">
+            <section class="hunt">
+                <div class="hunt_input">
+                    <div class="c_input so">
+                        <input type="search" class="sp_sear">
+                        <div class="clean"><div></div></div>
+                    </div>
+                    <div class="hunt_remove"><L_>取消</L_></div>
+                </div>
+            </section>
+            <section class="sp_foodright foods_list">
+                <dl></dl>
+            </section>
+        </section>
+        <div class="mask"></div>
+		<div class="scan_again"></div>
+		
+        <!-- 一卡通列表 -->
+        <script id="internalCardList" type="text/html">
+			{{# for (var i in d){ }}
+				<dd data-goods_id="{{ d[i].card_id }}">
+					<ul class="clr" style="margin-bottom: 5px">
+                        <li>
+                            <h2><L_>一卡通名称</L_></h2>
+                            <p class="cf7">&nbsp;{{ d[i].card_name }}</p>
+                        </li>
+                        <li>
+                            <h2><L_>手机号</L_></h2>
+                            <p class="cf7">&nbsp;{{ d[i].phone }}</p>
+                        </li>
+                        <li>
+                            <h2><L_>一卡通卡号</L_></h2>
+                            <p class="cf7">&nbsp;{{ d[i].card_id }}</p>
+                        </li>
+                        <li>
+                            <h2><L_>一卡通余额</L_></h2>
+                            <p class="ce9"><L_>￥</L_><span>{{ d[i].balance_money }}</span></p>
+                        </li>
+                    </ul>
+				</dd>
+			{{# } }}
+		</script>
+
+		<script id="listSearchTpl" type="text/html">
+			{{# for (var i in d){ }}
+				<dd data-goods_id="{{ d[i].goods_id }}">
+					<div class="food_right" style="padding:0;">
+						<h2>{{ d[i].name }}</h2>
+						<div class="surplus">{{# if(d[i].stock_num != -1){ }}{{ L_('剩余') }}：{{ d[i].stock_num }}{{# }else{ }}{{ L_('无限') }}{{# } }}</div>
+						<div class="MenuPrice clr">
+							<i class="fl">{{ L_('￥') }}</i>
+							<span class="fl">{{ d[i].price }}<em>/{{ d[i].unit }}</em></span>
+						</div>
+					</div>
+				</dd>
+			{{# } }}
+		</script>
+		<script id="listBuyTpl" type="text/html">
+			{{# for (var i in d){ }}
+				<li data-goods_id="{{ d[i].goods_id }}">
+					<div class="w50">
+						<h2>{{ d[i].name }}</h2>
+						<p>{{ d[i].number }}</p>
+					</div>
+					<div class="w50 clr">
+						<span class="w40">{{ d[i].count }}</span>
+						<span class="w60">{{ L_('￥') }}{{ d[i].count*d[i].price }}</span>
+					</div>
+				</li>
+			{{# } }}
+		</script>
+		<script id="listGoodTpl" type="text/html">
+			<section class="revise">
+				<div class="p30">
+					<div class="rev_top">
+						<div class="p75" style="padding-left:0;">
+							<h2>{{ d.name }}</h2>
+							<p>{{ d.number ? d.number : L_('无条形码') }}</p>
+						</div>
+					</div>
+					<div class="rev_ul">
+						<ul>
+							<li class="clr">
+								<div class="fl">{{ L_('单价') }}：</div>
+								<div class="fr price">{{ L_('￥') }}{{d.price }}/{{ d.unit }}</div> 
+							</li>
+							<li class="clr">
+								<div class="fl">{{ L_('数量') }}：</div>
+								<div class="fr clr">
+									<a href="javascript:void(0)" class="fl jian">-</a>
+									<input class="fl rev_input" type="tel" value="{{ d.count }}" />
+									<a href="javascript:void(0)" class="fl jia">+</a>
+								</div>
+							</li>
+							<li class="clr">
+								<div class="fl">{{ L_('总额') }}：</div>
+								<div class="fr total">{{ L_('￥') }}{{ d.count*d.price }}</div>
+							</li>
+						</ul>
+					</div>
+					<div class="sib clr">
+						<div class="del">{{ L_('删除') }}</div>
+					</div>
+				</div>
+                <div class="dels"></div>
+			</section>
+		</script>
+        <script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js?t=6"></script>
+		<script src="scripts/work/retail.js?t=39"></script>
+    </body>
+</html>

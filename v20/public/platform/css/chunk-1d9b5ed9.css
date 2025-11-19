@@ -1,0 +1,23 @@
+.wrap[data-v-a0959114] {
+  width: 100%;
+  min-height: 100%;
+}
+.wrap .page-title[data-v-a0959114] {
+  padding: 20px 30px;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000000;
+}
+.wrap .content[data-v-a0959114] {
+  margin: 20px 30px;
+}
+.wrap .content .text-wrap[data-v-a0959114] {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.wrap .content .text-nowrap[data-v-a0959114] {
+  white-space: nowrap;
+}
+

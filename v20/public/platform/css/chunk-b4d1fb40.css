@@ -1,0 +1,102 @@
+
+.content[data-v-68ffe234] {
+    padding: 24px;
+    width: 100%;
+}
+.mapSet[data-v-68ffe234] {
+    font-size: 14px;
+    font-weight: 400;
+    color: #323233;
+}
+.addressName[data-v-68ffe234] {
+    color: #155bd4;
+    padding: 0 10px 0 4px;
+}
+.bm-view[data-v-68ffe234] {
+    width: 650px;
+    height: 500px;
+}
+.bm-view[data-v-68ffe234] .searchRes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 120px;
+    width: 260px;
+    margin-left: 24px;
+}
+[data-v-68ffe234] .ant-upload-list-picture-card-container {
+    float: left;
+    width: 104px;
+    height: 104px;
+    margin: 0px 8px 8px 0;
+}
+[data-v-68ffe234] .clearfix {
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    zoom: 1;
+}
+.customFormWrap[data-v-68ffe234] {
+    padding: 20px 20px 0 20px;
+    background: #fafafa;
+    box-sizing: border-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+    border: 1px solid rgb(235, 238, 245);
+}
+.decorate-cube[data-v-68ffe234] {
+    margin-top: 20px;
+}
+.decorate-cube ul[data-v-68ffe234] {
+    margin: 0;
+    padding: 0;
+}
+.decorate-cube ul li[data-v-68ffe234] {
+    list-style: none;
+}
+.decorate-cube .cube-row[data-v-68ffe234] {
+    display: -ms-flexbox;
+    display: flex;
+}
+.decorate-cube .cube-row .cube-item[data-v-68ffe234]:last-child {
+    border-right: 1px solid #e5e5e5;
+}
+.decorate-cube .cube-row:first-child .cube-item[data-v-68ffe234] {
+    border-top: 1px solid #e5e5e5;
+}
+.decorate-cube .cube-item[data-v-68ffe234] {
+    padding: 10px;
+    position: relative;
+    min-width: 80px;
+    min-height: 80px;
+    width: 80px;
+    height: 80px;
+    background: #ffffff;
+    border-left: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center;
+    -ms-flex-pack: center;
+        justify-content: center;
+    -ms-flex-direction: column;
+        flex-direction: column;
+    overflow: hidden;
+}
+.decorate-cube .cube-item[data-v-68ffe234]:hover::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    border: 1px solid #1890ff;
+    z-index: 2;
+    box-sizing: border-box;
+}
+

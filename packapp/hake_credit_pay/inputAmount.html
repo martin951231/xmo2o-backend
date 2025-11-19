@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>添加银行卡</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>  
+		<link href="scripts/weui/weui.min.css" rel="stylesheet"/>
+		<link href="css/pigcms.css" rel="stylesheet"/>  
+		<style>
+		   .weui-dialog__bd:first-child {
+				padding: 15px 20px 1.7em;
+				color: #353535;
+				text-align: center
+			}
+			.weui-dialog__bd{
+				text-align: center
+			} 
+		</style>
+	</head>
+	<body> 
+		 <div class="">
+		 	<p class="pwdTil center"><L_>请输入您的金额信息</L_><img src="images/ccv_help_icon.png" class="amountInfo" style="width:15px;height:15px;"/></p>   
+			 <!-- <div class="regInput center" style="width:190px"> 
+				<input type="number"  name="money" style="width:190px" class="money" placeholder="" maxlength="4" /> 
+			</div>  --> 
+			<div class="input_text">
+				<div class="input_index"> 
+					<span class="spanTxt" id="spanTxt0"></span> 
+					<span class="moren"></span>
+					<span class="spanTxt" id="spanTxt1"></span>
+					<span class="spanTxt" id="spanTxt2"></span> 
+					<div class="clear"></div>
+				</div>
+				<input type="tel"  name="money" id="money" onkeyup="this.value=this.value.replace(/[^\d]/g,'');"  maxlength="3" oninput="if(value.length>3)value=value.slice(0,3)"/>
+			</div>
+
+		 </div> 
+		<div class="bottmButton">
+		 	<button class="next "><label><L_>验证并支付订单</L_></label><i class="iconfont">&#xe600;</i></button>
+		</div>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+	
+		<script src="scripts/common.js?8759"></script>
+		<script src="scripts/weui/weui.min.js?8759"></script> 
+		<script>
+			var page_from = common.getCache('from',true);
+			var pay_pwd = common.getCache('pay_pwd',true);
+			
+			if(urlParam.addCard == 1){
+				common.removeCache('orderid',true);
+			}
+			//来自订单页提示绑卡弹层
+			if(urlParam.redirect_card && urlParam.order_id){
+				//如果没有支付页面，则请求后台强制较验下
+				if(!pay_pwd){
+					common.http('Hake_credit&a=index',{},function(data){
+						pay_pwd = data.pay_pwd;
+						common.setCache('pay_pwd',pay_pwd,true);
+					});
+				}
+				common.setCache('order_id', urlParam.order_id, true);
+			}
+            common.removeCache('addbank_sucess',true);  
+
+			$('input[name="money"]').on('keyup',function(e){  
+				if($('#money').val() == ''){
+					$('.input_pwd .pwd_Txt').css('-webkit-text-security','none');
+				}    
+				var input_array=$(this).val().split(''); 
+				input_array.forEach(function( val, index ) {
+					$('.input_index #spanTxt'+index+'').text(input_array[index]); 
+				})   
+				var _this = $(this);
+				var ev = e; 
+				keyupfun(_this,ev); 
+				if(input_array.length == 3){ 
+					$('.bottmButton label').addClass('red');
+					getMoney();
+				}else{
+					$('.bottmButton label').removeClass('red');
+				}
+				
+			})  
+			function keyupfun(value,e){
+				var k = e.keyCode;
+				var val = e.key;
+				if(k == 8){ //8是backspace的keyCode
+					var input_array=$('#money').val().split('');  
+					var len=input_array.length;
+					$('.input_index .spanTxt').text(''); 
+						input_array.forEach(function( val, index ) { 
+						$('.input_index #spanTxt'+index+'').text(input_array[index]); 
+					})   
+				}else{
+					return false;
+				}
+			}  
+			
+			// 点击调用软键盘
+			$('.input_text').click(function(){
+				$('#money').focus();
+			}) 
+           
+            
+			if(page_from == 'pay'){
+				$('.bottmButton label').html(L_('验证并支付订单')); 
+			}
+            
+            if(page_from == 'pay'){
+                $('.next label').html(L_('验证并支付订单'));
+            }else{
+                $('.next label').html(L_('下一步')); 
+            }
+            
+			common.androidKeybordTop();
+			common.iosKeybordTop('money');  
+
+			$('.amountInfo').click(function(){
+				weui.alert('<div class="center"><img src="images/safe_tip.png" style="width:64px"><p class="amountInfo_p1 "><L_>验证您是否为合法持卡者</L_></p><p class="amountInfo_p2 "> <L_>为开通哈客快捷支付，我们需要验证您是该银行卡的合法持有者，系统已从您的银行卡中扣除小额金额用于验证您的身份，并且金额已自动返还给您（具体到账时间以银行为准。）</L_> <label  style="font-weight:bold"><br><L_>请您查看银行扣款信息，将扣除的金额填写至页面中。</L_></label></p> </div>', {		
+					title: '',
+					buttons: [{
+						label: L_('知道了'),
+						type: 'primary',
+						onClick: function(){ 
+							document.getElementById("money").focus();
+						}
+					}]
+				});
+			});
+			
+			function getMoney(){    
+				var money=$.trim($('#money').val().slice(0,1)+'.'+$('#money').val().slice(1));
+				console.log(money);
+				console.log(money.length)
+				if(money.length == 4){  
+					common.http('Hake_credit&a=verifyCard',{'money':money,'id':urlParam.id},function(data){   
+						if(page_from == 'pay'){
+							setTimeout(function(){ 
+								if(!pay_pwd){
+									common.setCache('show_credit_pwd_tip',1);
+								}else{ 
+                                     common.setCache('bind_hasPwd',1); 
+                                }  
+								var orderid = common.getCache('orderid',true);  
+								common.http('Hake_credit&a=payCard',{'id':urlParam.id,'orderid':orderid},function(data){  
+									common.setCache('id',urlParam.id,true); 
+									redirect_self(data);
+								},function(errData){
+									redirect_self("paymentError.html?errorTip=" + encodeURIComponent(L_('您的银行卡已添加成功，但支付出错了。')) + '&message=' + encodeURIComponent(errData.errorMsg));
+								});
+							},200);
+						}else{ 
+							common.setCache('addbank_sucess','2',true);   
+							if(pay_pwd == true){
+								if(urlParam.redirect_card && urlParam.order_id){
+									common.removeCache('order_id',true);
+									common.setCache('bindSucess',1);  
+									redirect_self("/packapp/my/shop_order.html?order_id=" + urlParam.order_id); 
+								}else{
+									history.go(-2);
+								}
+							}else{ 
+								redirect_self('bankDetails_paySucess.html'); 
+							}
+						} 
+					},function(errData){
+						$('.bottmButton label').removeClass('red');
+						$('#money').val(''); 
+						$('.spanTxt').text('');
+						var msg = errData.errorMsg;
+						if(msg == 'wrongmoney'){ 
+							var tmp_error_tip = weui.confirm((L_('你输入的验证金额有误')), {
+								title:L_('验证失败'),
+								buttons: [{
+									label: L_('取消验证'),
+									type: 'gray',
+									onClick: function(){
+										setTimeout(function(){
+											money_error_tip();
+										},500);
+									}
+								}, {
+									label: L_('重新输入'),
+									type: 'primary',
+									onClick: function(){
+										$('#money').val('').focus();
+										$('.spanTxt').text(''); 
+									}
+								}]
+							}); 
+						}else if(msg =='wrongmany'){  
+							weui.confirm((L_(' 抱歉，您的验证次数已达上限， 您被扣除的金额已原路退款。 您可明天再尝试添加银行卡。')), {
+								title: L_('验证失败！'),
+								buttons: [{
+									label: L_('确定'),
+									type: 'primary',
+									onClick: function(){ 
+										$('#money').val('').focus(); 
+										$('.bottmButton label').removeClass('red');
+										$('.spanTxt').text('');
+										redirect('index.html'); 
+									}
+								}]
+							}); 
+						}
+						
+					})  
+				}  
+			 
+            }  
+// 
+// 			$('.next').click(function(){
+// 				if($('.bottmButton label').hasClass('red')){  
+// 					//getMoney();
+// 				} 
+// 			})   
+			//小额验证 
+			common.http('Hake_credit&a=processCard',{id:urlParam.id},function(data){ 
+				$('.amountInfo').trigger('click'); 
+			},function(errData){
+				weui.confirm(errData.errorMsg, {
+					buttons: [{
+						label: L_('返回'),
+						type: 'gray',
+						onClick: function(){
+							history.go(-1);
+						}
+					}, {
+						label: L_('重试'),
+						type: 'primary',
+						onClick: function(){
+							location.reload();
+						}
+					}]
+				});
+			});
+
+			function money_error_tip(){
+				weui.confirm(L_('若取消验证，您已支付的订单和被扣除的验证金额会自动原路退款。'), {
+					buttons: [{
+						label: L_('确定取消'),
+						type: 'gray',
+						onClick: function(){
+							history.go(-1); 
+						}
+					}, {
+						label: L_('继续验证'),
+						type: 'primary',
+						onClick: function(){
+							$('#money').focus();
+						}
+					}]
+				});
+			}
+			function pageShow(){
+				location.reload();
+			}
+		</script> 
+	</body>
+</html>

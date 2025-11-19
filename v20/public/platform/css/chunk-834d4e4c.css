@@ -1,0 +1,94 @@
+.form_title[data-v-a7f95db4] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-a7f95db4] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-a7f95db4] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-a7f95db4] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+}
+[data-v-a7f95db4] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.form_title[data-v-a686f75a] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-a686f75a] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-a686f75a] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-a686f75a] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+}
+[data-v-a686f75a] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.shop_list[data-v-38927190] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.shop_list .header_search[data-v-38927190] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+  display: -ms-flexbox;
+  display: flex;
+}
+.shop_list .header_search .search_item[data-v-38927190] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.shop_list .header_search .operation_btn[data-v-38927190] {
+  margin-left: 20px;
+}
+.shop_list .table_content[data-v-38927190] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

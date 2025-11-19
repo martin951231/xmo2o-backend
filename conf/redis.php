@@ -1,0 +1,14 @@
+<?php 
+return array (
+  'host' => '',
+  'port' => 6379,
+  'password' => '',
+  'select'     => 0,
+  'timeout'    => 0,
+  'expire'     => 0,
+  'persistent' => false,
+  'prefix'     => '',
+  'tag_prefix' => 'tag:',
+  'serialize'  => [],
+);
+

@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b2aa9"],{"24a2":function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div")},c=[],i={name:"DictList"},s=i,u=t("2877"),r=Object(u["a"])(s,a,c,!1,null,"4ea10b82",null);n["default"]=r.exports}}]);

@@ -1,0 +1,40 @@
+
+.page_top{
+  background-color: #e6f7ff;
+  display: inline-block;
+  width: 100%;
+  padding: 20px 20px;
+  margin-bottom: 20px;
+  color: #666666;
+}
+.notice{
+    color: red;
+}
+
+
+.select_position{
+  width: 150px !important;
+  margin-right: 10px !important;
+}
+
+
+.cloudintercom {
+    background-color: white;
+    padding: 20px 20px;
+}
+.page_top{
+  background-color: #e6f7ff;
+  display: inline-block;
+  width: 100%;
+  padding: 20px 20px;
+  margin-bottom: 20px;
+  color: #666666;
+}
+.select_room{
+  width: 100px !important;
+  margin-right: 10px;
+}
+.notice{
+    color: red;
+}
+

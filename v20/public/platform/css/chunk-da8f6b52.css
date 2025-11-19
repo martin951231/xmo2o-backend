@@ -1,0 +1,72 @@
+
+.font-red[data-v-1518f73e] {
+    color: #ff3d0d;
+}
+.page-bar[data-v-1518f73e] {
+    margin: 40px;
+}
+ul[data-v-1518f73e], li[data-v-1518f73e] {
+    margin: 0px;
+    padding: 0px;
+}
+li[data-v-1518f73e] {
+    list-style: none
+}
+.page-bar li:first-child > a[data-v-1518f73e] {
+    margin-left: 0px
+}
+.page-bar a[data-v-1518f73e] {
+    border: 1px solid #ddd;
+    text-decoration: none;
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    cursor: pointer
+}
+.page-bar a[data-v-1518f73e]:hover {
+    background-color: #eee;
+}
+.page-bar a.banclick[data-v-1518f73e] {
+    cursor: not-allowed;
+}
+.page-bar .active a[data-v-1518f73e] {
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.page-bar i[data-v-1518f73e] {
+    font-style: normal;
+    color: #d44950;
+    margin: 0px 4px;
+    font-size: 12px;
+}
+
+
+.detail-content[data-v-4a079c44] .ant-drawer-body {
+    padding: 0;
+}
+.ant-table td[data-v-4a079c44] {
+    white-space: nowrap;
+}
+.goods-title[data-v-4a079c44] {
+    font-size: 20px;
+    margin-right: 10px;
+}
+.search-content[data-v-4a079c44] {
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+.search-content .right[data-v-4a079c44] {
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+

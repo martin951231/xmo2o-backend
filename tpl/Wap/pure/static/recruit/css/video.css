@@ -1,0 +1,56 @@
+
+    .fl{
+        float:left
+    }
+    .fr{
+        float:right
+    }
+    .clear{
+        clear:both
+    }
+    .weui-cell:before,.weui-cells:before{
+        border-top:none
+    }
+    .weui-cells:after{
+        border-bottom:none
+    }
+    .weui-cell{
+        margin-bottom:10px;
+        background-color:#fff;
+    }
+    .weui-cells{
+        background-color:#eee
+    }
+    
+    .comn-submit { display:inline-block; padding:6px 15px; text-align:center; color:#fff; background-color:#06c1ae; border:0 none; box-shadow:#ddd 0 1px 1px; border-radius:3px;}
+     .fabu_btn { width:60%; border-radius:30px; box-shadow:none; display:block; margin:0 auto; height: 40px;}
+    .fill_content{
+        background: #fff;
+        padding-top: 10px;
+    } 
+    .my_prop_img { margin:15px 0; border:1px solid #ccc; padding:10px 10px 0 0; border-radius:2px; -webkit-box-shadow:1px 1px 2px #DDD inset; -webkit-box-sizing:border-box;  width:100%; color:#888;}
+    .my_prop_img .title { padding-left:15px;}
+    .my_prop_img_inner { padding-left:2px; font-size:12px;}
+    
+    .my_prop_imgitem_node { text-align:center; margin-right:10px;}
+    .my_prop_imgitem,.upimgFileBtnNode{ float:left; position:relative; *zoom:1; z-index:1; width:25%; padding-left:10px; margin-bottom:10px; -webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
+    .my_prop_imgitem .move_prev,.my_prop_imgitem .move_next,.my_prop_imgitem .set_FM { display:block; position:absolute; top:0; left:10px; width:30px; background-color:rgba(0,0,0,.5); line-height:20px;}
+    .my_prop_imgitem .move_prev,.my_prop_imgitem .move_next { background:rgba(0,0,0,.5) url(../images/upimg_pub.png) no-repeat -6px -23px; background-size:23px auto; text-indent:-999em; overflow:hidden;}
+    .my_prop_imgitem .move_next { left:41px; background-position:-5px -43px;}
+    .my_prop_imgitem .set_FM { top:auto; bottom:0; width:auto; padding:0 5px; font-size:12px; color:#fff; text-decoration:none;}
+    .my_prop_imgitem .i_img_alt { display:none;}
+    .my_prop_imgitem input{ border:1px solid #cccccc;}
+    .my_prop_imgitem .del { display:block; position:absolute; top:0; right:0; width:19px; height:19px; background:url(../images/upimg_pub.png) no-repeat -4px 0; background-size:23px auto; text-indent:-999em; overflow:hidden;}
+    .my_prop_imgitem .imgview,.upimgFileBtn { display:block; vertical-align:top; width:100%; height:auto; border:1px dashed #ddd; -webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
+    .upimgFileBtn { cursor:pointer;}
+    .clearfix:after{content:'\20';display:block;height:0;clear:both;}
+    .imgviewNode b {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: url(../images/del-11.png) center no-repeat;
+        background-size: contain;
+        position: absolute;
+        right: -8px;
+        top: -5px;
+    }

@@ -1,0 +1,310 @@
+.container[data-v-159508ca] {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  position: relative;
+}
+.container .left_box[data-v-159508ca] {
+  width: 50%;
+  padding-left: 170px;
+  padding-top: 67px;
+  background-image: url(../img/bg_1.5892cbf2.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.container .left_box .logo[data-v-159508ca] {
+  width: 190px;
+  height: 60px;
+}
+.container .left_box .title[data-v-159508ca] {
+  display: block;
+  margin-top: 113px;
+}
+.container .left_box .text_1[data-v-159508ca] {
+  display: block;
+  margin-top: 45px;
+}
+.container .left_box .flex_box_1[data-v-159508ca] {
+  width: 336px;
+  margin-top: 62px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.container .left_box .flex_box_1 .flex_1[data-v-159508ca] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .left_box .flex_box_1 .flex_1 .text_2[data-v-159508ca] {
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #FFFFFF;
+  line-height: 21px;
+  margin-top: 24px;
+}
+.container .right_box[data-v-159508ca] {
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .right_box .title[data-v-159508ca] {
+  font-size: 24px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #606266;
+  margin-top: 114px;
+}
+.container .right_box .text_1[data-v-159508ca] {
+  font-size: 14px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #606266;
+  margin-top: 25px;
+  margin-bottom: 66px;
+}
+.container .right_box .flex_box_2[data-v-159508ca] {
+  margin-top: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .right_box .flex_box_2 .input_box[data-v-159508ca] {
+  width: 400px;
+  height: 60px;
+  background: #FAFAFC;
+  border: 1px solid #D2D6EA;
+  -webkit-box-shadow: 0px 0px 10px 0px #D2D6EA inset;
+          box-shadow: 0px 0px 10px 0px #D2D6EA inset;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .right_box .flex_box_2 .input_box .icon_1[data-v-159508ca] {
+  margin-left: 19px;
+}
+.container .right_box .flex_box_2 .input_box .text_2[data-v-159508ca] {
+  font-size: 15px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #000000;
+  margin-left: 19px;
+}
+.container .right_box .flex_box_2 .input_box .ipt[data-v-159508ca] {
+  border: none;
+  outline: none;
+  margin-left: 15px;
+  background: none;
+  color: #000000;
+}
+.container .right_box .flex_box_2 .input_box .line[data-v-159508ca] {
+  margin-left: 82px;
+}
+.container .right_box .flex_box_2 .input_box .icon_2[data-v-159508ca] {
+  margin-left: 15px;
+}
+.container .right_box .flex_box_2 .input_box .text_3[data-v-159508ca] {
+  width: 60px;
+  text-align: center;
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #1890FF;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.container .right_box .flex_box_2 .active_box[data-v-159508ca] {
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(24, 144, 255, 0.55) inset;
+          box-shadow: 0px 0px 10px 0px rgba(24, 144, 255, 0.55) inset;
+}
+.container .right_box .flex_box_2 .icon_tip[data-v-159508ca] {
+  margin-left: 15px;
+}
+.container .right_box .text_box[data-v-159508ca] {
+  width: 420px;
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 15px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #333333;
+  line-height: 21px;
+}
+.container .right_box .text_box .text_a[data-v-159508ca] {
+  color: #1890ff;
+  cursor: pointer;
+}
+.container .right_box .btn[data-v-159508ca] {
+  margin-top: 80px;
+  width: 396px;
+  height: 50px;
+  background: #1890FF;
+  border-radius: 2px;
+  text-align: center;
+  font-size: 18px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #FFFFFF;
+  line-height: 50px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+.container .right_box .tip[data-v-159508ca] {
+  margin-top: 104px;
+  font-size: 12px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #7A8BAA;
+  line-height: 21px;
+}
+.container .center_img[data-v-159508ca] {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  /*移动自身的一半*/
+}
+.container .mask_code[data-v-159508ca] {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.3);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .mask_QRcode[data-v-159508ca] {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.3);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.container .mask_QRcode .popup_box[data-v-159508ca] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 405px;
+  height: 427px;
+  background: #FFFFFF;
+  -webkit-box-shadow: 0px 0px 32px 0px rgba(24, 144, 255, 0.13);
+          box-shadow: 0px 0px 32px 0px rgba(24, 144, 255, 0.13);
+  border-radius: 12px;
+  position: relative;
+  background-image: url(../img/pupop_bg.b1603b48.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.container .mask_QRcode .popup_box .text_1[data-v-159508ca] {
+  font-size: 22px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #333333;
+  margin-top: 64px;
+}
+.container .mask_QRcode .popup_box .img_code[data-v-159508ca] {
+  width: 200px;
+  height: 200px;
+  margin-top: 25px;
+}
+.container .mask_QRcode .popup_box .text_2[data-v-159508ca] {
+  font-size: 16px;
+  font-family: Microsoft YaHei;
+  font-weight: 400;
+  color: #999999;
+  margin-top: 8px;
+}
+.container .mask_QRcode .popup_box .close_img[data-v-159508ca] {
+  position: absolute;
+  top: 24px;
+  right: 19px;
+  cursor: pointer;
+}
+

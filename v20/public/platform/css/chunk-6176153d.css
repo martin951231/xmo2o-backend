@@ -1,0 +1,76 @@
+.form_title[data-v-ab422172] {
+  font-size: 14px;
+  font-weight: bold;
+}
+.form_line[data-v-ab422172] {
+  height: 0.5px;
+  width: 100%;
+  background-color: #eeeeee;
+  margin: 10px 0;
+}
+.generation_rules[data-v-ab422172] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+  margin-top: 5px;
+}
+.footer_button[data-v-ab422172] {
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: end;
+      justify-content: flex-end;
+}
+[data-v-ab422172] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+[data-v-ab422172] .text-primary {
+  color: #2681f3 !important;
+}
+
+
+.ant-card-input_park[data-v-0fea8e09] {
+    width: 300px;
+    margin-top: 15px;
+}
+.ant-card-span_park[data-v-0fea8e09] {
+    margin-right: 150px;
+    padding-left: 113px;
+    padding-top: 10px;
+}
+.ant-card-span1_park[data-v-0fea8e09] {
+    margin-right: 10px;
+}
+
+.lane_management[data-v-2eaf42fd] {
+  width: 98%;
+  background-color: #ffffff;
+  margin: 10px;
+}
+.lane_management .header_search[data-v-2eaf42fd] {
+  width: 100%;
+  padding: 20px;
+  background-color: #ffffff;
+}
+.lane_management .header_search .search_item[data-v-2eaf42fd] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: start;
+      justify-content: flex-start;
+}
+.lane_management .header_search .operation_btn[data-v-2eaf42fd] {
+  margin-left: 20px;
+}
+.lane_management .table_content[data-v-2eaf42fd] {
+  padding: 0 20px;
+  margin: 10px 0;
+}
+

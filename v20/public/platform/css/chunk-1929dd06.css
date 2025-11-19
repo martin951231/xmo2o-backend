@@ -1,0 +1,30 @@
+
+.ant-form-item label[data-v-3289f497] {
+  width: 50px;
+}
+.tip-txt[data-v-3289f497] {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip[data-v-3289f497] {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+
+
+.ant-form-item label {
+    width: 50px;
+}
+.ant-card-body {
+    padding: 1px;
+    zoom: 1;
+}
+.txt-green {
+  color: green;
+}
+.txt-red {
+    color: red;
+}
+

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+	<title>分类管理</title>
+	<link href="css/mui.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/market_category_management.css" />
+	<link rel="stylesheet" type="text/css" href="css/market_footer.css" />
+</head>
+
+<body>
+	<!--	<header class="mui-bar mui-bar-nav mui-clearfix">-->
+	<!--	     <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>-->
+	<!--	    <h1 class="mui-title"><L_>分类管理</L_></h1>-->
+	<!--	    -->
+	<!--	    <span class="mui-pull-right hidden" id="cancel"><L_>完成</L_></span>-->
+	<!--	</header>-->
+	<header class="mui-bar mui-bar-nav">
+		<div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back"></div>
+		<h1 class="mui-title">
+			<L_>分类管理</L_>
+		</h1>
+	</header>
+	<div class="mui-content" style="padding-bottom: 60px;background-color: #fff;">
+		<div class="commod">
+			<div class="search">
+				<p><i></i> <span>
+						<L_>商品名称</L_>
+					</span></p>
+			</div>
+		</div>
+
+		<div class="mui-content mui-row">
+			<div class="mui-col-xs-3">
+				<div id="segmentedControls" class="mui-segmented-control-inverted mui-segmented-control-vertical">
+					<dl class="classHtml">
+					</dl>
+				</div>
+			</div>
+			<div id="segmentedControlContents" class="mui-col-xs-9">
+				<div class="all_change_show">
+					<ul class="goods_news">
+
+					</ul>
+				</div>
+
+			</div>
+		</div>
+		<div style="padding-bottom: 44px;"></div>
+	</div>
+	<div id="forward" class="mui-popover mui-popover-action mui-popover-bottom">
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<a href="#" class="enpoty">
+					<L_>估清</L_>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="#" class="fill">
+					<L_>填满</L_>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="#" class="custom">
+					<L_>自定义</L_>
+				</a>
+			</li>
+		</ul>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell">
+				<a href="#forward">
+					<L_>取消</L_>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<!--自定义库存-->
+	<div class="custom_content"></div>
+	<div class="custom_header">
+		<p class="mui-clearfix"><span>
+				<L_>自定义库存</L_>
+			</span><a href="javascript:void(0);" class="mui-pull-right keep_stock">
+				<L_>保存</L_>
+			</a></p>
+		<div class="now_custom rel border-b">
+			<span class="left_style">当前库存:</span>
+			<input type="tel" name="now_custom1" value="" />
+		</div>
+		<div class="now_custom">
+			<span class="left_style">原始库存:</span>
+			<input type="tel" name="now_custom2" value="" />
+		</div>
+	</div>
+	<!--底部栏遮罩层-->
+	<div class="bottom_bg">
+
+	</div>
+
+	<nav class="mui-bar mui-bar-tab">
+		<div class="mui-tab-item market_home">
+			<span class="market-home"></span>
+			<span class="mui-tab-label">
+				<L_>市场首页</L_>
+			</span>
+		</div>
+		<div class="mui-tab-item market_plus  mui-active">
+			<span class="market-plus"></span>
+			<span class="mui-tab-label">
+				<L_>分类</L_>
+			</span>
+		</div>
+		<div class="mui-tab-item market_take">
+			<span class="market-take"></span>
+			<span class="mui-tab-label">
+				<L_>购物车</L_>
+			</span>
+		</div>
+		<div class="mui-tab-item market_my">
+			<span class="market-my"></span>
+			<span class="mui-tab-label">
+				<L_>我的</L_>
+			</span>
+		</div>
+	</nav>
+	<script src="js/fastclick.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/footer.js" type="text/javascript" charset="utf-8"></script>
+	<!-- android=appbackmonitor -->
+	<script id="classLists" type="text/html">
+	{{# for(var i = 0; i < d.category_list.length; i++){ }}
+		<!-- {{# if(i==0){ }} -->
+			<dd  class="first_list" data-id="{{ d.category_list[i].id }}">
+				<i class="one"><b class="mui-pull-left"></b><span class="texts">{{ d.category_list[i].name }}</span></i>
+			</dd>
+		<!-- {{# } else { }} -->
+			<dd  class="first_list" data-id="{{ d.category_list[i].id }}">
+				<i class="one"><b class="mui-pull-left"></b><span class="texts">{{ d.category_list[i].name }}</span></i>
+			</dd>
+		<!-- {{# } }} -->
+	{{# } }}
+</script>
+	<script id="goodsHtml" type="text/html">
+	{{# if(d.first_cat && d.first_cat.id){ }}
+		<div class="commod_list">
+			{{# if(d.first_cat.image_path){ }}
+				<div class="img" style="width: 100%;height: 200px;" data-url="{{ d.first_cat.url }}">
+					<a href="{{ d.first_cat.url }}">
+						<img src="{{ d.first_cat.image_path }}" style="width: 100%;height: 100%;object-fit: cover;">
+					</a>
+				</div>
+			{{# } }}
+			<div class="cat_title">
+				{{ d.first_cat.name }}
+			</div>
+
+			{{# if(d.first_cat.son_list){ }}
+				<div class="demo-block">
+					<div class="ui-grid ui-grid-trisect">
+						<ul class="">
+							{{# for(var j in d.first_cat.son_list ){ }}
+								<li class="mb_10 buy_list" data-cat_fid="{{ d.first_cat.son_list[j].fid }}" data-cat_id={{d.first_cat.son_list[j].id}} >
+									<a href="javascript:void(0);">
+										{{# if(d.first_cat.son_list[j]['icon_path']){ }}
+											<div class="ui-img-vertical" style="text-align: center;">
+												<span style="padding: 0;">
+													<img src="{{ d.first_cat.son_list[j]['icon_path'] }}" title="{{ d.first_cat.son_list[j]['name'] }}" class="sub_cat_logo" style="width: 70px; height: 70px;">
+												</span>
+											</div>
+										{{# } }}
+										<div class="ui-grid-info">
+											<p class=" pd0 align_center"> {{ d.first_cat.son_list[j]['name'] }}</p>
+										</div>
+									</a>
+								</li>
+							{{# } }}
+						</ul>
+					</div>
+				</div>
+
+			{{# } }}
+
+
+		</div>
+	{{# } }}
+</script>
+	<script type="text/javascript" charset="utf-8">
+		mui.init();
+		var ticket = common.getCache('ticket');
+		var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+		var type = 0;//根据用户是否点击批量管理按钮修改样式
+		var fls = 0;
+		var f_class = 0;
+		var mr = true;
+		//初次加载页面渲染三级分类
+		getGoodsList();
+		function getGoodsList() {
+			let categoryId = window.sessionStorage.getItem('segmentedControlsId') || ''
+			common.http('Merchantapp&a=category', { 'ticket': ticket, 'client': client,id: categoryId }, function (data) {
+				if (data.category_list.length == 0) {
+					mui.toast('还没有分类哦,快去添加吧');
+					$('.all_checkbox').hide();
+				} else {
+					f_class = 1;
+				}
+				laytpl(document.getElementById('classLists').innerHTML).render(data, function (html) {
+					$('.classHtml').html(html);
+					$("#segmentedControls dl dd .one").each(function(index,item){
+						let id = $(item).parent().attr("data-id")
+						if(id && categoryId == id){
+							$(item).parent().addClass('active')
+							getGoods(id);
+						}else{
+							$(item).parent().removeClass('active')
+							if(index == 0 && !categoryId){
+								$(item).parent().addClass('active')
+							}
+						}
+					})
+				});
+				laytpl(document.getElementById('goodsHtml').innerHTML).render(data, function (html) {
+					$('.goods_news').html(html);
+				});
+				// if(data.category_list.length>0){
+				// 	$('.all_change_show>p').text(data.category_list[0].name);
+				// }
+			});
+		}
+
+
+		//进入购买详情页面
+		mui('.mui-content').on('tap', '.buy_list', function (e) {
+			e.preventDefault()
+			e.stopPropagation()
+			var cat_fid = $(this).attr('data-cat_fid');
+			var cat_id = $(this).attr('data-cat_id');
+			openWindow({
+				url: 'market_category_list.html?cat_fid=' + cat_fid + '&cat_id=' + cat_id,
+				id: 'market_category_list'
+			});
+		});
+
+
+
+
+		//一级列表点击
+		mui('#segmentedControls').on('tap', 'dl dd .one', function (e) {
+			$(this).parent().addClass('active').siblings('dd').removeClass('active');
+			$(this).parent().find('ul').removeClass('hidden');
+			$(this).parent().siblings('dd').find('ul li').removeClass('active');
+			$(this).parent().siblings('dd').find('ul li div p').removeClass('active');
+			$(this).parent().siblings('dd').find('ul').addClass('hidden');
+			var firstId = $(this).parent().attr('data-id');
+			window.sessionStorage.setItem('segmentedControlsId',firstId)
+			getGoods(firstId);
+		});
+
+		function getGoods(firstId){
+			common.http('Merchantapp&a=two_category', { 'ticket': ticket, 'client': client, 'id': firstId }, function (data) {
+				console.log('data', data);
+				laytpl(document.getElementById('goodsHtml').innerHTML).render(data, function (html) {
+					$('.goods_news').html(html);
+					if (mr) {
+						if ($(".mr38").length > 0) {
+							$(".mr38").css("margin-left", '0px')
+						}
+					} else {
+						if ($(".mr38").length > 0) {
+							$(".mr38").css("margin-left", '38px')
+						}
+					}
+
+				});
+			});
+		}
+		var chuHeight = '';
+		if (common.checkIosApp()) {
+			chuHeight = $(window).height() - 158;
+
+		} else {
+			chuHeight = $(window).height() - 138;
+		}
+
+
+		$('.mui-col-xs-3').css('min-height', chuHeight);
+		$('.mui-col-xs-3 .classHtml').css('height', chuHeight);
+		$('.mui-col-xs-9').css('min-height', chuHeight);
+
+
+
+
+
+
+		//点击搜索框
+		$('.search').on('tap', function (e) {
+			openWindow({
+				url: 'market_search.html',
+				id: 'search'
+			});
+		});
+
+		function pageShowFunc() {
+			location.reload(true);
+		}
+	</script>
+</body>
+
+</html>

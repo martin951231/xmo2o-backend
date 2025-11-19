@@ -1,0 +1,13 @@
+.ant-upload-select-picture-card i[data-v-7de8267d] {
+  font-size: 32px;
+  color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text[data-v-7de8267d] {
+  margin-top: 8px;
+  color: #666;
+}
+[data-v-7de8267d] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+

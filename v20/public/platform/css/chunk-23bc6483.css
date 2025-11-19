@@ -1,0 +1,22 @@
+#charts_container_15[data-v-3c906a1c] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px)/3 - 42px);
+  position: relative;
+}
+#charts_container_15 .videoPlayer[data-v-3c906a1c] {
+  width: 92%;
+  height: 92%;
+  -o-object-fit: fill;
+     object-fit: fill;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+#charts_container_15 .introduce[data-v-3c906a1c] {
+  position: absolute;
+  left: 25px;
+  top: 15px;
+  color: #000000;
+  z-index: 99;
+}
+

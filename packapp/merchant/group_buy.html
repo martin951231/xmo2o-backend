@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>团购管理</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+     <link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<link href="css/mui.picker.min.css?t=2" rel="stylesheet" />
+		<link href="css/pigcms.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/group_buy.css?t=5"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	    <h1 class="mui-title"><span class="ctuan"><L_>团购</L_><span><L_>管理</L_><h1>
+	</header>
+	<div class="mask"></div>
+		<!-- 筛选 -->
+		<div class="write-filter-pop" style="display: none;">
+			<h3 style="font-size: 1.17em;">
+				<L_>筛选</L_>
+			</h3>
+			<div class="write-filter-item">
+				<div class="title"><L_>下单时间</L_></div>
+				<div class="write-filter-pop-btn">
+					<div class="item timefilter start" id="start_add_time">
+						<L_>起始时间</L_>
+					</div>
+					<span style="margin: 0 10px;display: flex;align-items: center;">-</span>
+					<div class="item timefilter end" id="end_add_time">
+						<L_>终止时间</L_>
+					</div>
+				</div>
+			</div>
+			<div class="write-filter-item">
+				<div class="title"><L_>核销时间</L_></div>
+				<div class="write-filter-pop-btn">
+					<div class="item timefilter start" id="start_verify_time">
+						<L_>起始时间</L_>
+					</div>
+					<span style="margin: 0 10px;display: flex;align-items: center;">-</span>
+					<div class="item timefilter end" id="end_verify_time">
+						<L_>终止时间</L_>
+					</div>
+				</div>
+			</div>
+			<div class="footer-btn">
+				<div class="rest"><L_>重置</L_></div>
+				<div class="complete"><L_>完成</L_></div>
+			</div>
+		</div>
+    <div class="section-fixed-top">
+        <div class="nav pageSliderHide">
+            <div class="nav-item nav-item-active" id="order">
+                <L_>订单管理</L_>
+            </div>
+            <div class="nav-item" id="write">
+                <L_>核销记录</L_>
+            </div>
+        </div>
+        <div class="cable pageSliderHide">
+			<div class="cable_n">
+				<form id="searchForm" method="post">
+					<div class="input">
+						<input class="L_P" type="search" id="find_value" placeholder="请输入搜索内容"/>
+					</div>
+					<div class="select 	consumption_password">
+						<span><L_>商品名称</L_><span>
+					</div>
+				</form>
+			</div>
+			<div class="write-filter" style="display: none;">
+				<form id="searchForms" method="post" action="">
+					<div class="inputs">
+						<input type="search" id="find_value" placeholder="请输入核销码或卡券名称或核销人" />
+					</div>
+					<div class="filter"><img src="./images/filter.png" alt=""></div>
+				</form>
+			</div>
+		</div>
+    </div>
+	
+	<div class="mui-content">
+		<div class="allGoods">
+			<div class="alls" id="data">
+				
+			</div>
+			
+			<div class="pullup1" style="display:none;">上拉加载更多...</div>
+			<div class="loading1" style="display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_><div>
+		</div>
+	  	
+	</div>
+	 <!-- 上拉刷新 -->
+	<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.picker.js"></script> 
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="pluscardLists" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<div class="mui-card" data-id="{{ d[i].group_id }}">
+	    	<div class="mui-card-content">
+	    		<a href="javascript:void(0);" class="group_click">
+	    			<img src="{{ d[i].pic }}" class="mui-pull-left"/>
+		    		<ul class="mui-pull-left">
+		    			<li><span>{{ d[i].name }}</span></li>
+		    			<li>{{ L_('价格') }}：{{ L_('￥') }}{{ d[i].price }}<li>
+		    			<li>{{ L_('销量') }}：{{ d[i].sale_count }}</li>
+		    		</ul>
+	    		</a>
+	    		{{# if(d[i].status==0){ }}
+					<a  href="#" class="mui-pull-right cli_status open">{{ L_('开启') }}</a>
+				{{# } else if(d[i].status==1) { }}
+					<a  href="#" class="mui-pull-right cli_status close">{{ L_('关闭') }}</a>
+				{{# } else if(d[i].status==2) { }}
+					<a  href="#" class="mui-pull-right sta">{{ L_('待审核') }}</a>
+				{{# } }}
+	    		
+	    		<a  href="#" class="mui-pull-right sta">{{ d[i].group_status_txt }}</a>
+	    	</div>
+	    </div>
+	{{# } }}
+</script>
+<!-- 核销记录 -->
+	<script id="writeList" type="text/html">
+		{{# for(var i = 0, len = d.length; i < len; i++){ }}
+		<li class="write-item">
+			<div class="header">{{d[i].verify_date +' '+ d[i].verify_week}}</div>
+			<div class="write-content">
+				<div class="title">
+					<span class="title-span">{{d[i].s_name}}</span>
+					<span class="time">{{d[i].verify_time}}</span>
+				</div>
+				<div class="desc">
+					<span class="group_pass">{{L_('序列号')}}：</span>
+					<span>{{d[i].group_pass}}</span>
+				</div>
+				<div class="desc">
+					<span class="staff_name">{{L_('核券人')}}：</span>
+					<span>{{d[i].staff_name}}</span>
+				</div>
+				<div class="desc">
+					<span class="staff_name">{{L_('店铺名称')}}：</span>
+					<span>{{d[i].store_name}}</span>
+				</div>
+			</div>
+		</li>
+		{{# } }}
+	</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var ticket = common.getCache('ticket');
+var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+var ctuan=common.getCache('ctuan');
+$('.ctuan').text(ctuan);
+var pindex=1;
+var searchtype='s_name';
+var seachVal='';
+var navType = '';
+var writeParams = {
+	keywords: "",
+	start_add_time: "",
+	end_add_time: "",
+	end_verify_time: '',
+	start_verify_time: '',
+  };
+var picker_start = '';
+var picker_end = '';
+var d= ''
+var flag = false;
+function addGoods(page,key,type,noScroll){
+	if (navType == "write") {
+	writeParams.keywords = $("#searchForms input").val();
+	writeParams.start_add_time = $("#start_add_time").attr('data-time');
+	writeParams.end_add_time = $("#end_add_time").attr('data-time');
+	writeParams.start_verify_time = $("#start_verify_time").attr('data-time');
+	writeParams.end_verify_time = $("#end_verify_time").attr('data-time');
+	common.httpV20(
+	  "/group/merchant.order/groupCouponList",
+	  {
+		page: page,
+		pageSize: 10,
+		keywords: writeParams.keywords,
+		start_add_time: writeParams.start_add_time,
+		end_add_time: writeParams.end_add_time,
+		start_verify_time: writeParams.start_verify_time,
+		end_verify_time: writeParams.end_verify_time,
+	  },
+	  function (data) {
+		if (data.data.length!=0) {
+			data.data.length<=9&&$('.pullup1').html(L_('没有更多数据啦'));
+			$('.loading1').hide();
+			$('.pullup1').show();
+			laytpl(document.getElementById('writeList').innerHTML).render(data.data, function(html){
+				$('.alls').append(html);
+			});
+			if(data.data.length>9){
+				scrollChange(page,key,type,noScroll);
+			}
+			flag = false;
+		}else{
+			$('.pullup1').html(L_('没有更多数据啦'));
+			$('.loading1').hide();
+			$('.pullup1').show();
+			flag = true;
+		}
+	  }
+	);
+	}else{
+		common.http('Merchantapp&a=group_list',{'ticket':ticket,'client':client,'pindex':page,'keyword':key,'searchtype':type},function(data){
+			console.log(data);
+			if (data.group_list.length!=0) {
+				data.group_list.length<=9&&$('.pullup1').html(L_('没有更多数据啦'));
+				$('.loading1').hide();
+				$('.pullup1').show();
+				laytpl(document.getElementById('pluscardLists').innerHTML).render(data.group_list, function(html){
+					$('.alls').append(html);
+				});
+				if(data.group_list.length>9){
+					scrollChange(page,key,type,noScroll);
+				}
+				//请求结束后有数据置为false 可以触发触底效果
+				flag = false;
+			}else{
+				$('.pullup1').html(L_('没有更多数据啦'));
+				$('.loading1').hide();
+				$('.pullup1').show();
+				//没有数据则触底不执行
+				flag = true;
+			}
+		});
+	}
+}
+
+addGoods(1,'',searchtype);
+
+function scrollChange(page,key,type,noScroll) {
+	if(!noScroll){
+		$(window).scroll(function(e) {
+			e.stopPropagation();
+			if(flag){
+			  //数据加载中
+			  return false;
+			}
+			//上拉加载
+			if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+				$('.pullup1').hide();
+				$('.loading1').show();
+				flag = true;
+				pindex++;
+				addGoods(pindex,seachVal,searchtype);
+			}
+		});
+	}else{
+		if(flag){
+			//数据加载中
+			return false;
+		  }
+		  //上拉加载
+		  if ($(document).scrollTop() == $(document).height() - $(window).height()) {
+			  $('.pullup1').hide();
+			  $('.loading1').show();
+			  flag = true;
+			  pindex++;
+			  addGoods(pindex,seachVal,searchtype);
+		  }
+	}
+}
+
+// 监听input搜索
+$('.cable_n input').keyup(function(e){
+	seachVal=$(this).val();
+	$('.alls').html('');
+	if(seachVal!=''){
+		pindex=1;
+	}
+	addGoods(pindex,seachVal,searchtype);
+});
+
+
+
+mui('.mui-content').on('tap','.cli_status',function(e){
+	var status=0;
+	var me=this;
+	var group_id=$(this).parents('.mui-card').attr('data-id');
+	if($(this).text()=="开启"){
+		status=1;
+	}else{
+		status=0;
+	}
+	common.http('Merchantapp&a=group_status_change',{'ticket':ticket,'client':client,'group_id':group_id,'status':status},function(data){
+		console.log(data);
+		if(data.status==0){
+			$(me).text('开启').removeClass('close').addClass('open');
+		}else if(data.status==2){
+			$(me).removeClass('cli_status');
+			$(me).removeClass('open').addClass('sta').text(L_('待审核'));
+		}else{
+			$(me).text('关闭').removeClass('open').addClass('close');
+		}
+		mui.toast(L_('操作成功'));
+
+		
+	});
+
+});
+
+
+
+
+
+
+mui('.mui-content').on('tap','.group_click',function(e){
+	var group_id=$(this).parents('.mui-card').attr('data-id');
+	openWindow({
+		url:'grouping_buy_lists.html?group_id='+group_id,
+		id:'grouping_buy_lists'
+	});
+});
+
+
+console.log(222);
+(function($, doc) {
+	$.init();
+	mui('.cable_n').on('tap','.consumption_password',function(e) {
+		//消费密码
+		var userPicker = new $.PopPicker();
+		userPicker.setData([
+		 		{
+				value: 's_name',
+				text: '商品名称'
+				},{
+				value: 'group_id',
+				text: '商品编号'
+				}, {
+				value: 'name',
+				text: '商品标题'
+				}]);
+		var that=this;
+		userPicker.show(function(items) {
+			that.children[0].innerHTML = items[0].text;
+			that.children[0].style.color="#333333";
+			searchtype=items[0].value;
+			pindex=1;
+			document.getElementById('data').innerHTML=" ";
+			addGoods(pindex,seachVal,searchtype);
+		}, false);
+		
+	});
+	
+})(mui, document);
+
+//头部导航栏点击事件
+$(document).on("click", ".nav .nav-item", function () {
+	pindex = 1;
+	navType = this.id;
+	$(".alls").empty();
+	if (this.id == "write") {
+	  $(".cable_n").hide();
+	  $(".write-filter").show();
+	  $("#order_list").addClass("order_list_active");
+	} else {
+	  $(".cable_n").show();
+	  $(".write-filter").hide();
+	  $("#order_list").removeClass("order_list_active");
+	}
+	addGoods(pindex,'','',true);
+	$(this).addClass("nav-item-active").siblings().removeClass("nav-item-active");
+  });
+  $("#searchForms").submit(function () {
+	$(".alls").empty();
+    pindex = 1;
+	addGoods(pindex,'','',true);
+    return false;
+});
+$(document).on("click", ".filter", function () {
+	$(".mask").show();
+	$(".write-filter-pop").show();
+	$(".write-filter-pop").css('transform','translateX(0)')
+  });
+  $(document).on("click", ".del, .mask", function () {
+    $(".mask").fadeOut();
+    $(".write-filter-pop").css('transform','translateX(100%)')
+  });
+  //重置
+  $(document).on("click", ".rest", function () {
+	writeParams.start_add_time = '';
+	writeParams.end_add_time = '';
+	writeParams.start_verify_time = '';
+	writeParams.end_verify_time = '';
+	$('.timefilter').attr('data-time','')
+    $('.start').html('起始时间')
+	$('.end').html('终止时间')
+	$('.timefilter').css("color","#808080")
+	picker.setSelectedValue('')
+  });
+  //完成
+  $(document).on("click", ".complete", function () {
+	pindex = 1;
+	flag = false;
+	clearList();
+	$(".mask").fadeOut();
+    $(".write-filter-pop").css('transform','translateX(100%)')
+	addGoods(pindex,'','',true);
+  });
+  	// 时间筛选
+  $('.timefilter').on('click',function(){
+	let _this = this;
+	var timeValue= $(_this).attr('data-time');
+	picker.setSelectedValue(timeValue)
+	picker.show(function(rs) {
+		_this.setAttribute('data-time',rs.value)
+		_this.innerText = rs.text;
+		$(_this).css("color","#333")
+	});
+  })
+  
+  function clearList(){
+	$(".alls").empty();
+  }
+
+  (function($, doc) {
+	d=new Date();
+	var optionsJson = '{"type":"date","beginYear":2014,"endYear":'+d.getFullYear()+'}';
+	var options = JSON.parse(optionsJson);
+	picker = new $.DtPicker(options);
+  })(mui, document);
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+
+.ant-form-item label[data-v-0bb97b3f] {
+  width: 50px;
+}
+.ant-checkbox-group[data-v-0bb97b3f]{
+  width: 700px;
+}
+.ant-checkbox-group label[data-v-0bb97b3f] {
+  width: 103px;
+}
+#radio-labels label[data-v-0bb97b3f]{
+  width: 80px;
+}
+.imgname[data-v-0bb97b3f]{
+  width: 80px;
+}
+.tab-panes[data-v-0bb97b3f]{
+  border: 1px solid #ddd;
+  border-top-style:none;
+}
+.tab-panes[data-v-0bb97b3f]:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 40px;
+  /*bottom: 5px;*/
+  right: 0;
+  height: 20px;
+  width: 1px;
+  background-color: #ddd;
+}
+.tab-panes[data-v-0bb97b3f]:before {
+  content: '';
+  position: absolute;
+  left: auto;
+  top: 40px;
+  right: 0;
+  height: 20px;
+  width: 1px;
+  background-color: #ddd;
+}
+

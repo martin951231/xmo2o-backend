@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Config/index',array('galias'=>'group','header'=>'Group/config'))}" class="on">团购配置</a>	</ul></div>

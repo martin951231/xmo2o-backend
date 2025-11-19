@@ -1,0 +1,54 @@
+
+.wrap[data-v-9947987e] {
+    padding: 0 26px 20px;
+    border-bottom: 1px solid #F2F4F6;
+}
+.title[data-v-9947987e] {
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #323233;
+}
+.desc[data-v-9947987e] {
+    font-size: 14px;
+    font-weight: 400;
+    color: #969799;
+    line-height: 22px;
+}
+.borderNone[data-v-9947987e] {
+    border: none;
+}
+
+
+.listPage[data-v-fcb9b41a] {
+    padding: 12px 16px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
+
+.content[data-v-51a11c33] {
+  padding: 24px;
+  width: 100%;
+}
+.sub-title[data-v-51a11c33] {
+  font-size: 14px;
+  font-weight: 400;
+  color: #323233;
+}
+.select-page[data-v-51a11c33] {
+  margin-top: 20px;
+  padding: 0 14px;
+  height: 36px;
+  background: #edf4ff;
+  border: 1px solid #155bd4;
+  border-radius: 4px;
+  color: #155bd4;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.select-page[data-v-51a11c33] .anticon {
+  padding: 0 10px;
+  font-size: 14px;
+}
+

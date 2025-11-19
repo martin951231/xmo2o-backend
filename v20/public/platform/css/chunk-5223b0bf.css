@@ -1,0 +1,88 @@
+
+#components-form-demo-validate-other .dropbox[data-v-9cda09bc] {
+    height: 180px;
+    line-height: 1.5;
+}
+.ant-form-item[data-v-9cda09bc] {
+    margin-bottom: 5px;
+}
+.delete-pointer[data-v-9cda09bc] {
+    font-size: 13px;
+    color: gray;
+    position: absolute;
+    left: 62px;
+}
+.ant-upload.ant-upload-select-picture-card[data-v-9cda09bc] {
+    width: 75px;
+    height: 75px;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+.specification[data-v-9cda09bc]{
+      font-size: 18px;
+}
+.goods-spec[data-v-9cda09bc] {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between;
+      margin-bottom: 10px;
+}
+.goods-spec .goods-spec-add[data-v-9cda09bc] {
+      margin-right: 15px;
+}
+.goods-container .button-new-tag[data-v-9cda09bc] {
+      height: 32px;
+      line-height: 30px;
+      padding-top: 0;
+      padding-bottom: 0;
+}
+.goods-container .input-new-tag[data-v-9cda09bc] {
+      width: 90px;
+      margin-right: 10px;
+}
+.goods-container .el-tag[data-v-9cda09bc] {
+      margin-right: 10px;
+}
+.goods-container .goods-content[data-v-9cda09bc] {
+      margin-bottom: 10px;
+      padding: 14px;
+      border: 1px solid #ebeef5;
+      border-radius: 4px;
+      background-color: #fcfcfc;
+}
+.goods-content .goods-content-box[data-v-9cda09bc] {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+}
+.goods-content-box .goods-content-left[data-v-9cda09bc] {
+      -webkit-box-flex: 1;
+          -ms-flex: 1;
+              flex: 1;
+}
+.goods-img[data-v-9cda09bc] {
+      width: 80px;
+      height: 80px;
+      margin: 10px;
+      border-radius: 5px;
+      position: relative;
+      display: inline-block;
+      border: 1px solid #d9d9d9;
+}
+.goods-img .delete[data-v-9cda09bc] {
+      position: absolute;
+      right: 0px;
+      top: 0px;
+}
+.goods-img img[data-v-9cda09bc] {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+}
+

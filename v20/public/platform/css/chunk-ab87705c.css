@@ -1,0 +1,68 @@
+
+[data-v-68331b06] .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-68331b06] .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-68331b06] .box_width {
+  display: inline-block;
+  width: 97px !important;
+}
+[data-v-68331b06] .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-68331b06] .ant-input-number {
+  width: 300px !important;
+  display: inline-block;
+}
+
+
+[data-v-51e6cc25] .ant-col-30 textarea {
+  width: 75% !important;
+}
+[data-v-51e6cc25] .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-51e6cc25] .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+}
+[data-v-51e6cc25] .box_width {
+  display: inline-block;
+  width: 140px !important;
+}
+[data-v-51e6cc25] .ant-select {
+  width: 20% !important;
+}
+[data-v-51e6cc25] .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+
+.message-suggestions-list-box[data-v-5ec1b522] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-5ec1b522] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-5ec1b522] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-5ec1b522] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-5ec1b522] {
+  padding: 20px;
+}
+.lbsf[data-v-5ec1b522] {
+  float: right;
+  margin-right: 24px;
+}
+[data-v-5ec1b522] .input1 {
+  width: 60% !important;
+}
+

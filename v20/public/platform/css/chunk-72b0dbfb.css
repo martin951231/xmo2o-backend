@@ -1,0 +1,13 @@
+.information[data-v-bcad7a12] {
+  line-height: 22px;
+}
+.information .ant-row[data-v-bcad7a12]:not(:last-child) {
+  margin-bottom: 24px;
+}
+.money[data-v-bcad7a12] {
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 14px;
+}
+

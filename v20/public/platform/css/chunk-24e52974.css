@@ -1,0 +1,27 @@
+#charts_container_14[data-v-af52e7cc] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px)/3 - 42px);
+  position: relative;
+}
+#charts_container_14 .videoPlayer1[data-v-af52e7cc] {
+  width: 92%;
+  height: 92%;
+  object-fit: fill;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+#charts_container_14 .introduce[data-v-af52e7cc] {
+  position: absolute;
+  left: 25px;
+  top: 15px;
+  color: #ffffff;
+  z-index: 99;
+}
+#myFlvVideo1[data-v-af52e7cc]::-webkit-media-controls-timeline {
+  display: none;
+}
+#myFlvVideo1[data-v-af52e7cc]::-webkit-media-controls-play-button {
+  display: none;
+}
+

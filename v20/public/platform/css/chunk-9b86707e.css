@@ -1,0 +1,15 @@
+
+[data-v-01306dec] .imgname {
+  width: 100px;
+}
+[data-v-01306dec] .img_w {
+  width: 50%;
+  cursor: pointer;
+}
+[data-v-01306dec] .img_d {
+  display: inline-block;
+}
+[data-v-01306dec] .img_n {
+  display: none;
+}
+

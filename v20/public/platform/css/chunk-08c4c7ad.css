@@ -1,0 +1,35 @@
+#population_msg[data-v-23f4ca94] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px) / 3 - 42px);
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+#population_msg .population_item[data-v-23f4ca94] {
+  width: 20%;
+  height: 77%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  background-size: 100% 100%;
+}
+#population_msg .population_item .item_title[data-v-23f4ca94] {
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+#population_msg .population_item .item_value[data-v-23f4ca94] {
+  font-size: 16px;
+  font-family: D;
+  font-weight: bold;
+  color: #EE7413;
+  margin-top: 3px;
+}
+

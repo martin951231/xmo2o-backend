@@ -1,0 +1,52 @@
+
+[data-v-6a7f9699] .ant-radio-group {
+  width: 535px !important;
+}
+[data-v-6a7f9699] .ant-form label {
+  width: 90px;
+}
+.redio_con[data-v-6a7f9699] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.redio_con .radio_item[data-v-6a7f9699] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 21px;
+  cursor: pointer;
+}
+.redio_con .radio_item[data-v-6a7f9699]:nth-child(1) {
+  margin-left: 0px;
+}
+.redio_con .radio_item .item_icon[data-v-6a7f9699] {
+  width: 17px;
+  height: 17px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.redio_con .radio_item .item_icon img[data-v-6a7f9699] {
+  width: 17px;
+  height: 17px;
+}
+.redio_con .radio_item .item_label[data-v-6a7f9699] {
+  margin-left: 5px;
+  color: red;
+}
+
+
+p[data-v-7116d110]{
+  margin-left: 220px;
+}
+

@@ -1,0 +1,49 @@
+
+.list[data-v-78ed6da9] {
+    border: 1px solid #f1f1f1;
+    padding: 0 20px;
+    -webkit-box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+            box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.list[data-v-78ed6da9] .ant-collapse-borderless {
+    background-color: #ffffff;
+}
+.list[data-v-78ed6da9] .ant-collapse-borderless > .ant-collapse-item {
+    border-bottom-color: #f1f1f1;
+}
+.list[data-v-78ed6da9] .ant-collapse-header {
+    font-size: 14px;
+    color: #333333;
+}
+.list[data-v-78ed6da9] .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 20px 30px;
+}
+.list[data-v-78ed6da9] .ant-collapse > .ant-collapse-item.ant-collapse-no-arrow > .ant-collapse-header {
+    padding-left: 30px;
+}
+.list[data-v-78ed6da9] .ant-collapse-header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.msg-content[data-v-78ed6da9] {
+    font-size: 14px;
+    padding-left: 14px;
+}
+.cr-gray[data-v-78ed6da9],
+.is-read[data-v-78ed6da9] .ant-collapse-header,
+.list[data-v-78ed6da9] .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+    color: #ababab;
+}
+.btn-wrap[data-v-78ed6da9],.pagination-wrap[data-v-78ed6da9] {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+}
+

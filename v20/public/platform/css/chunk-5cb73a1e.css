@@ -1,0 +1,44 @@
+.status[data-v-599a1892] {
+  margin-left: 4%;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.status p[data-v-599a1892] {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+.title[data-v-599a1892] {
+  font-size: 20px;
+}
+.info[data-v-599a1892] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 24px;
+}
+.info span[data-v-599a1892]:first-child {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  margin-right: 8px;
+}
+.info .ant-input[data-v-599a1892] {
+  width: 50%;
+}
+.oven[data-v-599a1892] {
+  overflow: hidden;
+  /* 溢出时不显示溢出的内容 */
+  text-overflow: ellipsis;
+  /* 发生溢出时使用省略号代替 */
+  display: -webkit-box;
+  /* chrome浏览器的私有属性。显示为box。 */
+  -webkit-box-orient: vertical;
+  /* 垂直排列元素 */
+  -webkit-line-clamp: 1;
+  /* 显示多少行 */
+}
+

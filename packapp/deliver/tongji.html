@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<title>配送员中心</title>
+		<meta
+			name="viewport"
+			content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover"
+		/>
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-touch-fullscreen" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="format-detection" content="address=no" />
+		<link href="css/deliver.css" rel="stylesheet" />
+	</head>
+	<style>
+		.flex {
+			display: flex;
+			align-items: center;
+			padding: 6px 10px;
+			text-align: center;
+		}
+		.flex div {
+			flex: 1;
+			padding: 5px 0px;
+			background: #fff;
+			border: 1px solid #ddd;
+		}
+		.flexActive {
+			background: #2999f1 !important;
+			color: #fff !important;
+		}
+		.deliverStoreList {
+			height: 35px;
+			margin-bottom: 20px;
+			display: none;
+		}
+		.deliverStoreList label {
+			padding: 15px;
+			width: 28%;
+			line-height: 35px;
+		}
+		.deliverStoreList select {
+			width: 70%;
+			line-height: 35px;
+		}
+	</style>
+	<body>
+		<section id="fixed_top">
+			<section class="public pageSliderHide">
+				<div class="content"><L_>统计</L_></div>
+			</section>
+			<div class="h44"></div>
+		</section>
+		<section class="Statistics fillBg">
+			<div class="flex tabs">
+				<div
+					class="shop flexActive hide"
+					data-order_from="0"
+					id="shop_shop_alias_name"
+				>
+					<L_>快店订单</L_>
+				</div>
+				<div
+					class="service_buy hide"
+					style="border-left: none"
+					data-order_from="4"
+				>
+					<L_>帮我买订单</L_>
+				</div>
+				<div
+					class="service_give hide"
+					style="border-left: none"
+					data-order_from="3"
+				>
+					<L_>帮我送订单</L_>
+				</div>
+			</div>
+
+			<div class="Statistics_top clr deliverStoreList">
+				<label><L_>选择店铺</L_></label>
+				<select name="storeId" id="storeId"></select>
+			</div>
+
+			<div class="Statistics_top clr">
+				<a href="javascript:void(0);" id="begin">
+					<h2>
+						<i><L_>开始时间</L_></i>
+					</h2>
+					<input
+						type="text"
+						class="data"
+						readonly="readonly"
+						placeholder="选择时间"
+						name="appDate"
+						id="appDate"
+						value=""
+					/>
+				</a>
+				<a href="javascript:void(0)" id="end">
+					<h2>
+						<i><L_>结束时间</L_></i>
+					</h2>
+					<input
+						type="text"
+						class="data"
+						readonly="readonly"
+						placeholder="选择时间"
+						name="appDate1"
+						id="appDate1"
+						value=""
+					/>
+				</a>
+			</div>
+
+			<div class="kuai Statistics_end clr text0">
+				<ul>
+					<li class="tjt pay_line">
+						<a href="javascript:void(0);">
+							<div class="cfd">
+								<img
+									src="images/tjt_10.png"
+									width="23"
+									height="20"
+								/>
+								<p>
+									<i><span class="currency_symbol"></span></i
+									><span id="online_money">0</span>
+								</p>
+							</div>
+							<h2><L_>在线支付</L_></h2>
+						</a>
+					</li>
+					<li class="platform_fee">
+						<a href="javascript:void(0);">
+							<div class="c3a">
+								<img
+									src="images/tjt_07.png"
+									width="22"
+									height="20"
+								/>
+								<p>
+									<i><span class="currency_symbol"></span></i
+									><span id="platform_fee">0</span>
+								</p>
+							</div>
+							<h2><L_>平台服务费</L_></h2>
+						</a>
+					</li>
+					<li style="display: none" class="xiaofei">
+						<a href="javascript:void(0);">
+							<div class="cfd">
+								<img
+									src="images/tjt_10.png"
+									width="23"
+									height="20"
+								/>
+								<p>
+									<i><span class="currency_symbol"></span></i
+									><span id="tip_price">0</span>
+								</p>
+							</div>
+							<h2><L_>小费</L_></h2>
+						</a>
+					</li>
+					<li class="change_num">
+						<a href="javascript:void(0);">
+							<div class="c80">
+								<img
+									src="images/tjt_17.png"
+									width="20"
+									height="20"
+								/>
+								<p><i></i><span id="change_count">0</span></p>
+							</div>
+							<h2><L_>系统更换订单数量</L_></h2>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);">
+							<div class="c3a">
+								<img
+									src="images/tjt_07.png"
+									width="22"
+									height="20"
+								/>
+								<p>
+									<i><span class="currency_symbol"></span></i
+									><span id="deliver_user_fee">0</span>
+								</p>
+							</div>
+							<h2><L_>配送费收入</L_></h2>
+						</a>
+					</li>
+					<li class="offline_money tjt">
+						<a href="javascript:void(0);">
+							<div class="cff">
+								<img
+									src="images/tjt_14.png"
+									width="20"
+									height="20"
+								/>
+								<p>
+									<i><span class="currency_symbol"></span></i
+									><span id="offline_money">0</span>
+								</p>
+							</div>
+							<h2><L_>货到付款</L_></h2>
+						</a>
+					</li>
+					<li class="merchant_hide">
+						<a href="javascript:void(0);">
+							<div class="c0a">
+								<img
+									src="images/tjt_25.png"
+									width="19"
+									height="20"
+								/>
+								<p><i></i><span id="system_count">0</span></p>
+							</div>
+							<h2><L_>系统分配数量</L_></h2>
+						</a>
+					</li>
+					<li class="grab_num">
+						<a href="javascript:void(0);">
+							<div class="c07">
+								<img
+									src="images/tjt_22.png"
+									width="15"
+									height="20"
+								/>
+								<p><i></i><span id="self_count">0</span></p>
+							</div>
+							<h2><L_>抢单数量</L_></h2>
+						</a>
+					</li>
+					<li class="pick_num">
+						<a href="javascript:void(0);">
+							<div class="c07">
+								<img
+									src="images/tjt_22.png"
+									width="15"
+									height="20"
+								/>
+								<p><i></i><span id="pick_count">0</span></p>
+							</div>
+							<h2><L_>取货数量</L_></h2>
+						</a>
+					</li>
+					<li class="send_num">
+						<a href="javascript:void(0);">
+							<div class="c07">
+								<img
+									src="images/tjt_22.png"
+									width="15"
+									height="20"
+								/>
+								<p><i></i><span id="send_count">0</span></p>
+							</div>
+							<h2><L_>配送数量</L_></h2>
+						</a>
+					</li>
+					<li class="complete_num">
+						<a href="javascript:void(0);">
+							<div class="c07">
+								<img
+									src="images/tjt_22.png"
+									width="15"
+									height="20"
+								/>
+								<p><i></i><span id="complete_count">0</span></p>
+							</div>
+							<h2><L_>送达数量</L_></h2>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</section>
+		<section class="bottom pageSliderHide">
+			<div class="bottom_n">
+				<ul>
+					<li class="Statistics Statisticson fl">
+						<a href="javascript:void(0);"><L_>统计</L_></a>
+					</li>
+					<li class="home fl">
+						<a href="javascript:redirect_self('index.html');"
+							><i></i><L_>首页</L_></a
+						>
+					</li>
+					<li class="My fl">
+						<a href="javascript:redirect_self('info.html');"
+							><L_>我的</L_></a
+						>
+					</li>
+				</ul>
+			</div>
+		</section>
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/work/common.js"></script>
+		<script src="scripts/common.js?t=3"></script>
+		<link href="css/lCalendar.css" rel="stylesheet" />
+		<script src="scripts/lCalendar.js"></script>
+		<script src="scripts/work/tongji.js?t=02"></script>
+		<!-- android=appbackmonitor -->
+	</body>
+</html>

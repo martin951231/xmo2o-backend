@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>自提地址</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+</head>
+<style>
+	/*头部*/
+	.mui-bar-nav{
+		background: #ffa200;
+	}
+	.mui-bar-nav a,.mui-bar-nav h1{
+		color: #fff;
+	}
+	.all_address dl.list:first-child {
+		margin-top: 10px;
+	}
+	.all_address dl.list:first-child {
+		height: 100%;
+	}
+	.all_address dl.list:first-child {
+		margin: 0;
+		border-top: 0;
+	}
+	dl.list {
+		border: none;
+	}
+	dl.list {
+		border: none;
+	}
+	dl.list {
+		background-color: #fff;
+	}
+	dl.list {
+		 margin-top: 10px;
+		 margin-bottom: 0;
+		 background-color: #fff;
+	 }
+	dl.list dt:last-child, dl.list dd:last-of-type {
+		border-bottom: 0;
+	}
+	dl.list .dd-padding, dl.list dt, dl.list dd>.react {
+		padding: 14px 10px;
+	}
+	dl.list dt, dl.list dd {
+		margin: 0;
+		overflow: hidden;
+		font-size: inherit;
+		font-weight: 400;
+	}
+	.all_address .address-container {
+		font-size: 15px;
+		-webkit-box-flex: 1;
+	}
+	.kv-line {
+		display: -webkit-box;
+		display: -ms-flexbox;
+		margin: 10px 0;
+	}
+	.kv-line>.kv-v, .kv-line>p {
+		display: block;
+		-webkit-box-flex: 1;
+		-moz-box-flex: 1;
+		-ms-flex: 1;
+	}
+	p, h6 {
+		line-height: 1.41;
+		text-align: justify;
+		margin: -2px 0;
+		word-break: break-all;
+	}
+	.all_address .address-wrapper .edit_bg {
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 45px;
+		height: 100%;
+		z-index: 99;
+	}
+	.address-wrapper .edit {
+		background: url(images/icon_address_edit.png) no-repeat center;
+		background-size: 100%;
+		height: 18px;
+		width: 18px;
+		display: inline-block;
+		position: absolute;
+		right: 15px;
+		top: 50%;
+		margin-top: -9px;
+		z-index: 98;
+	}
+	.add_address_info {
+		position: fixed;
+		height: 60px;
+		width: 100%;
+		bottom: 0;
+		line-height: 60px;
+		background: #EFEFF4;
+	}
+	.add_address_info div {
+		width: 100%;
+		padding: 10px 0;
+	}
+	.add_address_info a.add_address {
+		background: #06c1ae;
+		display: inline-block;
+	}
+	.add_address_info a {
+		width: 100%;
+		height: 40px;
+		color: #fff;
+		font-size: 16px;
+		line-height: 40px;
+		text-align: center;
+	}
+
+	.add_edit_address dl.list dd dl {
+		padding-left: 10px;
+		border: 0;
+	}
+	.add_edit_address dl.list dt, dl.list dd {
+		margin: 0;
+		overflow: hidden;
+		font-size: inherit;
+		font-weight: 400;
+	}
+	.add_edit_address  .kv-line h6 {
+		width: 1.1rem;
+	}
+	.add_edit_address .kv-line>h6, .kv-line>.kv-k {
+		display: block;
+		font-size: inherit;
+		font-weight: 400;
+	}
+	.add_edit_address .dl.list-in dd {
+		border-bottom: 1px dashed #e5e5e5;
+	}
+    .address-wrapper a {
+        display: -webkit-box;
+    }
+    .address-select {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flex-box;
+        padding-right: 4px;
+        -webkit-box-align: center;
+        -webkit-box-pack: center;
+        -moz-box-align: center;
+        -moz-box-pack: center;
+        -ms-box-align: center;
+        -ms-flex-pack: justify;
+    }
+    .address-select input.mt[type=radio], input.mt[type=checkbox] {
+         display: none;
+     }
+    .address-select input.mt[type=radio]:checked, input.mt[type=checkbox]:checked {
+        border: 0 !important;
+        color: #fff !important;
+        background: url(images/icon_jiesuan_mark.png) no-repeat center;
+        background-size: 100%;
+        height: 22px;
+        width: 22px;
+        line-height: 22px;
+        position: absolute;
+        top: 0;
+        display: inline-block;
+        left: 0;
+        margin: 0;
+        border-radius: 0;
+    }
+    .address-select input.mt[type=radio]:checked, input.mt[type=checkbox]:checked {
+        /*background-color: #2bb2a3;*/
+        border: 0;
+        color: #fff;
+    }
+    .address-select input.mt[type=radio], input.mt[type=checkbox] {
+        -webkit-appearance: none;
+        width: 22px;
+        height: 22px;
+        margin: -7px 0;
+        border-radius: 50%;
+        border: 1px solid #ddd8ce;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 22px;
+        outline: 0;
+    }
+    .address-select input.mt[type=radio]:checked:after, input.mt[type=checkbox]:checked:after {
+        content: '';
+    }
+    .address-select input.mt[type=radio]:checked:after, input.mt[type=checkbox]:checked:after {
+        /*content: "✓";*/
+        font-size: .4rem;
+        font-family: base_icon;
+    }
+</style>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	     <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	</header>
+	<div class="mui-content" style="padding-bottom: 60px;">
+	    <div class="all_address">
+
+		</div>
+	</div>
+
+
+
+	<!--<nav class="add_address_info">-->
+		<!--<div>-->
+			<!--<a href="javascript:;" class="add_address"><L_>新建收货地址</L_></a>-->
+		<!--</div>-->
+	<!--</nav>-->
+
+	<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+
+<script id="address_msg" type="text/html">
+	{{# for(var i = 0, len = d.length; i < len; i++){ }}
+        <dl class="list">
+            <dd class="address-wrapper dd-padding link_choose" data-pick_addr_id="{{d[i]['pick_addr_id']}}" data-type="{{d[i]['select_url']}}"  style="position:relative;">
+            {{#if (d[i]['select_url']) {}}
+                <a href="javascript:void(0);" class="react "  style="padding:0;">
+                    <div class="address-select">
+                        {{#if (d[i]['pick_addr_id']==d[i]['pick_id']) {}}
+                            <input class="mt" type="radio" name="addr" checked="checked"/>
+                        {{# }else{ }}
+                            <input class="mt" type="radio" name="addr"/>
+                        {{# } }}
+                    </div>
+                </a>
+            {{# } }}
+
+                <div class="address-container" style="padding-right:36px;">
+                    <div class="kv-line">
+                        <p>{{d[i]['name']}}&nbsp;&nbsp;&nbsp;&nbsp;{{d[i]['phone']}}</p>
+                    </div>
+                    <div class="kv-line">
+                        <p>{{d[i]['area_info']['province']}}&nbsp;&nbsp;{{d[i]['area_info']['city']}}&nbsp;&nbsp;{{d[i]['area_info']['area']}}&nbsp;&nbsp;{{d[i]['name']}}</p>
+                    </div>
+                </div>
+            </dd>
+        </dl>
+	{{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+mui.init();
+var ticket = common.getCache('ticket');
+var client = common.checkAndroidApp()  ?  2 : (common.checkIosApp() ? 1 : 0);
+var type = $.getUrlParam('type');
+var type_info = $.getUrlParam('type_info');
+var goods_id = $.getUrlParam('goods_id');
+var order_id = $.getUrlParam('order_id');
+var current_id = $.getUrlParam('current_id');
+var is_pick = $.getUrlParam('is_pick');
+var pick_id = $.getUrlParam('pick_id');
+var cartid = $.getUrlParam('cartid');
+var is_click = true;
+
+function market_index(){
+	common.http('Merchantapp&a=pick_address',{'ticket':ticket,'client':client,'type':type,'goods_id':goods_id,'order_id':order_id,'current_id':current_id,'is_pick':is_pick,'pick_id':pick_id,'cartid':cartid},function(data){
+        console.log('data',data);
+	    if (data && data.pick_list) {
+            laytpl(document.getElementById('address_msg').innerHTML).render(data.pick_list, function(html){
+                $('.all_address').append(html);
+            });
+        }
+	});
+}
+
+market_index();
+mui('body').on('tap','.link_choose',function(e){
+    if (!is_click) {
+        return false;
+    }
+    var type=$(this).data('type');
+    var pick_addr_id=$(this).data('pick_addr_id');
+    var param = '';
+    console.log('type',type);
+    console.log('current_id',current_id);
+    console.log('pick_addr_id',pick_addr_id);
+    if (current_id>0) {
+        param += '&current_id='+current_id;
+    }
+    if (pick_addr_id) {
+        param += '&pick_id='+pick_addr_id;
+    }
+    if (cartid) {
+        param += '&cartid='+cartid;
+    }
+    if (type=='market_cart') {
+        openWindow({
+            url:'market_cart.html?t=1'+param,
+            id:'market_cart'
+        });
+    } else if (type=='market_buy') {
+        if (goods_id>0) {
+            param += '&goods_id='+goods_id;
+        }
+        console.log('param',param);
+        openWindow({
+            url:'market_buy.html?t=1'+param,
+            id:'market_buy'
+        });
+    } else if (type=='market_detail') {
+        if (goods_id>0) {
+            param += '&goods_id='+goods_id;
+        }
+        if (order_id>0) {
+            param += '&order_id='+order_id;
+        }
+        if (type_info) {
+            param += '&type='+type_info;
+        }
+        openWindow({
+            url:'market_detail.html?t=1'+param,
+            id:'market_detail'
+        });
+    }
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>派发优惠券</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+     <link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/app.css" /> 
+    <link rel="stylesheet" type="text/css" href="css/mui.picker.css" /> 
+	<link rel="stylesheet" type="text/css" href="css/distribute_coupons.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	   <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+	    <h1 class="mui-title"><L_>派发优惠券</L_></h1>
+	    <a href="javascript:void(0);" class="mui-pull-right"><i></i> 派发记录</a>
+	</header>
+	<div class="mui-content">
+		<div class="class_list">
+	   		<ul>
+	    		<li class="mui-pull-left class_basic active"><L_>分组派发</L_></li>
+	    		<li class="mui-pull-left class_synchro  porsons"><L_>个人派发</L_></li>
+	    		<li class="mui-pull-left class_synchro allPai"><L_>全部派发</L_></li>
+	    		<li class="mui-pull-left class_synchro weixin_buy"><L_>微信购买派发</L_></li>
+	    	</ul>
+	  </div>
+	   	<div class="show_hide">
+			<!--分组派发-->
+			<div class="packet_distribution">
+				<!--选取分组-->
+			   	<div class="change_grouping"><span><L_>选取分组</L_></span></div>
+			   	<div class="groupings">
+			   		<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<div class="all_plus">
+							
+							  
+							</div>
+						</div>
+					</div>
+			   	</div>
+			   	<!--选取优惠券-->
+			    <div class="change_grouping"><span><L_>选取优惠券</L_></span></div>
+			  	<div class="coupons">
+			  		<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<div class="allCoupons">
+							
+						  	
+							</div>
+						</div>
+					</div>	
+			  		
+			  	</div>
+			</div>
+			<!--个人派发-->
+			<div class="individual_distribution hidden">
+				<ul class="mui-clearfix search_record">
+					<li class="mui-pull-left" id="user_phone"><span><L_>用户名称</L_></span><i class="mui-pull-right"></i></li>
+					<li class="mui-pull-left"><input class="L_P" type="text" name="" id="" value="" placeholder="请输入搜索内容"/></li>
+					<li class="mui-pull-left"><a href="javascript:void(0);" class="search_coupon"><L_>搜索</L_></a></li>
+				</ul>
+				<div class="users">
+					<div class="change_grouping"><span><L_>用户列表</L_></span> </div>
+					<h5  class="searchNull" style="position: absolute;top: 280px;left: 50%;margin-left: -90px;"><L_>请先查找用户后再派发优惠券</L_></h5>
+					<div class="users_lists">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<div class="uesr_plus">
+									
+								</div>
+								
+							</div>
+						</div>	
+					</div>
+				</div>
+				<!--选取优惠券-->
+			    <div class="change_grouping" ><span><L_>选取优惠券</L_></span></div>
+			  	<div class="coupons">
+			  		<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<div class="ponsonCoupons">
+								
+							</div>
+							
+						</div>
+					</div>	
+			  		
+			  	</div>
+			</div>
+			
+			<!--全部派发-->	
+			<div class="all_distribution hidden">
+			   	<!--选取优惠券-->
+			    <div class="change_grouping"><span><L_>选取优惠券</L_></span></div>
+			  	<div class="coupons">
+			  		<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<div class="all_change_coupons">
+								
+							</div>
+						
+						</div>
+					</div>	
+			  		
+			  	</div>
+			</div>
+			<!--微信购买派发-->
+			<div class="weixin_distribution hidden">
+				<div class="change_grouping"><span><L_>设置金额</L_></span></div>
+				<!--微信购买金额设置-->
+				<div class="set_money">
+					<span class="left_style"><L_>微信购买金额设置</L_></span>
+					<ul>
+						<li><input class="L_P" type="number" name="" id="" value="" placeholder="请填写金额" /> <span><L_>元</L_></span></li>
+						<li>* 请填写大于等于0.01的数字)</li>
+					</ul>
+				</div>
+				<!--选取优惠券-->
+			    <div class="change_grouping"><span><L_>优惠券勾选</L_></span></div>
+			  	<div class="coupons">
+			  		<div class="mui-scroll-wrapper">
+						<div class="mui-scroll">
+							<div class="weixin_coupons">
+								
+							</div>
+						</div>
+					</div>	
+			  		
+			  	</div>
+			</div>
+    	</div>
+	  	<div style="padding-bottom: 60px;"></div>
+	</div>
+	<nav class="mui-bar mui-bar-tab distribution_coupons ">
+	    <a href="javascript:void(0);"><L_>派发优惠券</L_></a>
+	</nav>
+	<nav class="mui-bar mui-bar-tab preservation hidden">
+	    <a href="javascript:void(0);"><L_>派发优惠券</L_></a>
+	</nav>
+	<div id="middlePopover" class="mui-popover mui-clearfix">
+		<p class="mui-pull-right"></p>
+		<ul>
+			<li><img src="images/42-3_03.png"/></li>
+			<li class="successText"><L_>添加派送记录成功</L_></li>
+		</ul>
+		<a href="javascript:void(0);"><L_>点击查看派发记录</L_></a>
+	</div>
+	<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/mui.zoom.js"></script>
+ <script src="js/mui.picker.js"></script> 
+ <script type="text/javascript" src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/work/distribute_coupons.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+
+.search[data-v-9860c4ec] .ant-form-item-children {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+.statisticsData[data-v-9860c4ec] {
+    font-size: 30px;
+    color: #000000;
+}
+.order-header[data-v-9860c4ec] {
+    padding: 16px 0;
+    width: 100%;
+    border: 1px solid #e8e8e8;
+    background: #e8e8e8;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: nowrap;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.mb-50[data-v-9860c4ec] {
+    margin-top: 0;
+}
+.mt-50[data-v-9860c4ec] {
+    margin-top: 0;
+}
+.padding-left-24[data-v-9860c4ec] {
+    padding-left: 24px;
+}
+.a-form-item.ant-form-item[data-v-9860c4ec] {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    width: 23%;
+    min-width: 360px;
+}
+.a-form-item[data-v-9860c4ec] .ant-form-item-control-wrapper {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    min-width: 240px;
+}
+.input-class[data-v-9860c4ec] {
+    width: 100%;
+}
+.ant-card-bordered[data-v-9860c4ec] {
+    border: unset;
+}
+.order-body[data-v-9860c4ec] {
+    overflow-y: scroll !important;
+    height: 478px !important;
+}
+.mt-10.ant-table-wrapper[data-v-9860c4ec] {
+    display: none;
+}
+.mt-10.ant-table-wrapper[data-v-9860c4ec] {
+    display: none;
+}
+.spinning[data-v-9860c4ec] {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.tab-item-wrap[data-v-9860c4ec] .ant-badge-count,
+.ant-badge-dot[data-v-9860c4ec],
+.ant-badge .ant-scroll-number-custom-component[data-v-9860c4ec] {
+    -webkit-transform: translate(99%, -50%);
+            transform: translate(99%, -50%);
+}
+.colorBlue[data-v-9860c4ec] {
+    color: blue;
+    width: 40px;
+    text-align: center;
+    font-weight: bold;
+}
+.colorRed[data-v-9860c4ec] {
+    color: red;
+    width: 40px;
+    text-align: center;
+    font-weight: bold;
+}
+

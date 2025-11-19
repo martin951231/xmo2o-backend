@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <title>日结报表</title>
+    <meta name="viewport"
+        content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name='apple-touch-fullscreen' content='yes' />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
+    <link href="css/pigcms.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/vant@2.12.47.css" />
+    <script src="scripts/vue@2.6.14.min.js"></script>
+    <script src="scripts/vant@2.12.14.min.js"></script>
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/layer/layer.m.js"></script>
+</head>
+<style>
+    body {
+        background-color: #f5f4f9;
+    }
+
+    .van-nav-bar {
+        background-color: #2ecc71;
+    }
+
+    .van-nav-bar__title {
+        color: #fff;
+    }
+
+    .van-nav-bar .van-icon {
+        color: #fff;
+    }
+
+    .box-list .item {
+        background-color: #fff;
+        border-radius: 6px;
+        padding: 10px 0;
+        margin: 10px;
+    }
+
+    .box-list .item .add-time {
+        padding: 0 10px;
+        color: #888;
+        font-size: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    .box-list .item .desc span:first-child {
+        min-width: 70px;
+        display: inline-block;
+    }
+
+    .box-list .item .desc {
+        padding: 0 10px;
+        color: #333;
+        font-size: 14px;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .box-list .item .footer {
+        padding: 0 10px;
+        color: #333;
+        font-size: 14px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(0, 0, 0, .1);
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
+<body>
+    <div id="app" style="display: none;">
+        <van-nav-bar z-index="99" @click-left="toBack" :title="L_('日结报表')" fixed :placeholder="true"
+            :safe-area-inset-top="true" left-arrow></van-nav-bar>
+        <van-list v-model="loading" :finished="finished" :finished-text="L_('没有更多了')" @load="onLoad">
+            <van-cell title="日期" :value="params.start_date +'至'+ params.end_date" @click="openSecect" is-link>
+            </van-cell>
+            <div class="box-list">
+                <div class="item" v-for="(item,index) in dataList" :key="item.id">
+                    <div class="add-time">{{L_('日期') +'：'+ item.bill_date}}</div>
+                    <div class="desc">
+                        <span>{{L_('总笔数')}}：</span>
+                        <span>{{item.pay_order_count}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('一卡通实收金额')}}：</span>
+                        <span>{{item.internal_card_pay_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('余额支付金额')}}：</span>
+                        <span>{{item.balance_pay_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('线下支付金额')}}：</span>
+                        <span>{{item.offline_pay_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('支付宝支付金额')}}：</span>
+                        <span>{{item.alipay_pay_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('微信支付金额')}}：</span>
+                        <span>{{item.wechat_pay_money}}</span>
+                    </div>
+                    <div class="desc">
+                        <span>{{L_('退货金额')}}：</span>
+                        <span>{{item.refund_money}}</span>
+                    </div>
+                    <div class="footer">
+                        <span>{{L_('收款总金额')}}：</span>
+                        <span>{{item.pay_money}}</span>
+                    </div>
+                    <div style="padding: 10px 60px 0 60px;">
+                        <van-button type="primary" size="small" round block @click="storeDateBillPrint(item)">{{L_('打印')}}</van-button>
+                    </div>
+                </div>
+            </div>
+        </van-list>
+        <van-calendar v-model="calendarShow" @confirm="onConfirm" type="range" first-day-of-week="0" :min-date="minDate"
+            :default-date="defaultDate" color="#2ecc71"></van-calendar>
+    </div>
+
+    <script src="scripts/common.js?t=1"></script>
+    <script src="scripts/work/daily_report.js?t=1"></script>
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0af2bd"],{"0cd8":function(n,p,d){n.exports=d.p+"img/general_party_branch.80d6d1ad.png"}}]);

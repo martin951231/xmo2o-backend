@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>配送员中心</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<link href="css/deliver.css" rel="stylesheet"/>
+		<style>
+			.fixedAgreement {
+				position: fixed;
+				width: 100%;
+				bottom: 20px;
+				text-align: center;
+				font-size: 14px;
+				color: #289ffd;
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<section id="fixed_top">
+			<section class="public pageSliderHide">
+				<div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+				<div class="content"><L_>设置</L_></div>
+			</section>		
+			<div class="h44"></div>
+        </section>
+		<div class="boat clr language" style="display:none;">
+			<div class="fl"><L_>语言</L_></div>
+			<div class="fr enquire"></div>
+		</div>
+		<div class="boat clr navigation">
+			<div class="fl"><L_>导航/路线选择</L_></div>
+			<div class="fr enquire"></div>
+		</div>
+		<div class="boat clr openid" style="display:none;">
+			<div class="fl"><L_>绑定微信</L_></div>
+			<div class="fr enquire"></div>
+		</div>
+		<div class="boat clr notice">
+			<div class="fl"><L_>上线接单</L_></div>
+			<div class="fr enquire"></div>
+		</div>
+		<div class="boat clr contactPhone">
+			<div class="fl"><L_>联系客服</L_></div>
+			<div class="fr enquire"></div>
+		</div>
+		
+		<div class="button" id="logout"><L_>退出登录</L_></div>
+
+		<!-- 协议和隐私 -->
+	    <div class="fixedAgreement"> 
+			<span id="goUserAgreement"><L_>用户协议</L_></span>
+			<span style="margin: 0 5px;color: #999999">|</span>
+			<span id="goAgreement">隐私政策</span>
+		</div> 
+		<script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/work/common.js?t=02"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/setting.js"></script>
+	</body>
+</html>

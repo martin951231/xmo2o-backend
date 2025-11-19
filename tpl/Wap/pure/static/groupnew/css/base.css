@@ -1,0 +1,251 @@
+@font-face {
+  font-family: 'iconfont';  /* project id 890135 */
+  src: url('//at.alicdn.com/t/font_890135_fffi319nv2h.eot');
+  src: url('//at.alicdn.com/t/font_890135_fffi319nv2h.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_890135_fffi319nv2h.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_890135_fffi319nv2h.woff') format('woff'),
+  url('//at.alicdn.com/t/font_890135_fffi319nv2h.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_890135_fffi319nv2h.svg#iconfont') format('svg');
+}
+.iconfont{
+    font-family:"iconfont" !important;
+    font-size:16px;font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*{
+	margin:0;
+	padding:0;
+}
+body{
+	background:white;
+	font-size:14px;
+	line-height:1.5;
+	-webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+img{
+	width:100%;
+	height:100%;
+}
+.cf:after{
+	content:'';
+	clear:both;
+    display: block;
+}
+scrollView{
+	display:block;
+	-webkit-overflow-scrolling:touch;
+}
+scrollView.y{
+	overflow-y:auto;
+}
+.fl{
+	float:left;
+}
+.fr{
+	float:right;
+}
+
+.gotopBox{
+	z-index: 1001;
+    position: fixed;
+    bottom:80px;
+    background: rgba(0,0,0,0.6);
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    font-size: 12px;
+    border-radius: 100%;
+    text-align: center;
+    color: white;
+}
+.gotopBox p.iconfont{
+	line-height:40px;
+	font-size:28px;
+}
+
+/*超出2行省略*/
+.ellipsis{width: 100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+
+.flex{display:flex !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; display: box;}
+.flex-zCenter {-webkit-box-pack: center;-moz-justify-content: center;-webkit-justify-content: center;justify-content: center;}
+.flex-justify{-webkit-box-pack: justify;-webkit-justify-content: space-between;-ms-flex-pack: justify;justify-content: space-between;box-pack: center;}
+.flex-align{-webkit-box-align: center;-moz-align-items: center;-webkit-align-items: center; align-items: center;box-align: center;}
+.flex-zTopBottom {-webkit-box-direction: normal;-webkit-box-orient: vertical;-moz-flex-direction: column;-webkit-flex-direction: column;flex-direction: column;}
+.flex-shink0{-webkit-box-flex: 0;-moz-flex-shrink: 0;-webkit-flex-shrink: 0;flex-shrink: 0;}
+.flex-grow1{-webkit-box-flex: 1.0;-moz-flex-grow: 1;-webkit-flex-grow: 1;flex-grow: 1;}
+.flex-1{flex: 1;}
+
+.page{
+	position:absolute;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	background:white;
+	z-index:999;
+	-webkit-backface-visibility: hidden;
+	-webkit-transform: translate3d(0,0,0);
+}
+.pageBg{
+	position:fixed;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	background:white;
+	z-index:1;
+}
+
+.goodListBox{
+	margin-top:10px;
+	padding-top:15px;
+	border-top:1px solid #F8F8F8;
+	position:relative;
+}
+.goodListBox.row{
+	margin-right: -15px;
+}
+.ConTitle{
+	font-size:18px;
+	font-weight:500;
+}
+.ConDesc{
+	font-size:12px;
+	margin-top:4px;
+	color:#999;
+}
+.goodList{
+	margin-top:12px;
+    padding-bottom: 5px;
+}
+.goodListBox.row .goodList{
+	width: 100%;
+    overflow-x: scroll;
+    white-space: nowrap;
+    font-size: 0;
+}
+.goodList .goodItem{
+	display:inline-block;
+	margin-right:15px;
+	overflow:hidden;
+    font-size:14px;
+}
+.goodListBox.list .goodItem{
+	margin-bottom:15px;
+	padding-bottom: 15px;
+    border-bottom: 1px solid #F8F8F8;
+}
+.goodListBox.list .goodItem:nth-child(even){
+	margin-right:0px;
+}
+.goodListBox.list .goodItem:nth-last-child(1),.goodListBox.list .goodItem:nth-last-child(2){
+	margin-bottom:0px;
+	padding-bottom:0px;
+	border-bottom:none;
+}
+.goodList .goodItem .goodImage img{
+	width:100%;
+	border-radius:5px;
+}
+.goodList .goodItem .goodName{
+	line-height: 1.3;
+    font-weight: 500;
+    -webkit-box-orient: vertical;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+	-webkit-line-clamp: 2;
+    height:36px;
+}
+.goodList .goodItem .goodPrice{
+	color:#F64031;
+	font-weight:500;
+	margin-top:2px;
+	/*margin-left: -2px;*/
+}
+.goodList .goodItem .goodPrice .unit{
+	font-size:12px;
+	margin-left:2px;
+}
+.goodList .goodItem .goodPrice .oldPrice{
+	font-size:12px;
+	font-weight:normal;
+	color:#999;
+	margin-left:10px;
+	text-decoration:line-through;
+}
+.goodListBox .moreGood{
+    color: #F64031;
+    position: absolute;
+    right: -10px;
+    top: 18px;
+    font-size: 14px;
+    padding: 10px;
+}
+.goodListBox.row .moreGood{
+	right:0px;
+}
+.hide{
+	display:none;
+}
+.show-important{
+	display:block!important;
+}
+
+
+
+/* layui 改造 actionsheet */
+body .layui-m-layer .layui-m-layer-footer {
+    position: fixed!important;
+    width: 100%!important;
+    max-width: 100%!important;
+    margin: 0 auto!important;
+    left: 0!important;
+    right: 0!important;
+    bottom: 0!important;
+    background: white!important;
+    border-radius: unset!important;
+}
+.layui-m-layer-footer .layui-m-layercont {
+    padding: 15px 0px!important;
+    border-radius: 5px 5px 0 0!important;
+    color: #999!important;
+    /* font-size: 12px!important; */
+}
+.layui-m-layer-footer .layui-m-layerbtn{
+	background:#EFEFF4!important;
+}
+.layui-m-layer-footer .layui-m-layerbtn span{
+	border:none!important;
+	border-top:1px solid #F3F3F3!important;
+	background:white!important;
+	border-radius: unset!important;
+/* 	height: 44px!important;
+    line-height: 44px!important; */
+}
+.layui-m-layer-footer .layui-m-layerbtn span.cancel{
+    margin-top:5px!important;
+	border:none!important;
+}
+
+.pr{
+    position: relative;
+}
+
+.pin_style{
+	background-size: 100%;
+	background-image: url(../images/pin.png);
+	width: 36px;
+	height: 36px;
+	position: absolute;
+}

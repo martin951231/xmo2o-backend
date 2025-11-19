@@ -1,0 +1,76 @@
+.community_fire_protection[data-v-2fc26622] {
+  height: calc(17.5vh - 32px);
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding-left: 20px;
+}
+.community_fire_protection .left_view[data-v-2fc26622] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 30%;
+  height: 100%;
+}
+.community_fire_protection .left_view .label_item[data-v-2fc26622] {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin: 2px 0;
+}
+.community_fire_protection .left_view .label_item .left_con[data-v-2fc26622] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.community_fire_protection .left_view .label_item .left_con .icon[data-v-2fc26622] {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background-color: #6E94C5;
+}
+.community_fire_protection .left_view .label_item .left_con .title[data-v-2fc26622] {
+  max-width: 70px;
+  color: #ffffff;
+  margin-left: 10px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.community_fire_protection .left_view .label_item .right_value[data-v-2fc26622] {
+  max-width: 100px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.community_fire_protection .right_chart[data-v-2fc26622] {
+  width: 70%;
+  height: calc(100%);
+}
+

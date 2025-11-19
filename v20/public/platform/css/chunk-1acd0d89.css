@@ -1,0 +1,31 @@
+.content .text-wrap[data-v-ccb6ffbc] {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.content .text-nowrap[data-v-ccb6ffbc] {
+  white-space: nowrap;
+}
+.content .border-all[data-v-ccb6ffbc] {
+  border: 1px solid #f1f1f1;
+}
+.content .title[data-v-ccb6ffbc] {
+  padding: 8px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-bottom: 1px solid #f1f1f1;
+}
+.content .content[data-v-ccb6ffbc] {
+  padding: 10px 30px 20px 30px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.content .mt-10[data-v-ccb6ffbc] {
+  margin-top: 16px;
+}
+.content[data-v-ccb6ffbc] .ant-col {
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+

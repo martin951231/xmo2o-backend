@@ -1,0 +1,227 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+/* 清除浮动 */
+.ks-clear:after, .clear:after {
+    content: '\20';
+    display: block;
+    height: 0;
+    clear: both;
+}
+.ks-clear, .clear {
+    *zoom: 1;
+}
+
+/* 隐藏 */
+.hidden{
+    display: none;
+}
+
+/* flex */
+.flex{display:flex !important;display: -webkit-box; display: -moz-box; display: -ms-flexbox; display: -webkit-flex; align-items: center;  }
+.flex_justify{-webkit-box-pack: justify;-webkit-justify-content: space-between;-ms-flex-pack: justify;justify-content: space-between;}
+
+body{
+    background: #f8f8f8;
+}
+
+.header{
+    background:#04B7A5;
+    text-align: center;
+    padding: 15px 0 80px;
+    color: #fff;
+    font-size: 22px;
+}
+
+.header>p:last-child{
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.header .num{
+    color: #fee878;
+    color: #48ffe9;
+}
+
+.sign-box{
+    margin: -60px 10px 0;
+    padding: 12px 12px 12px 18px;
+    background: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.day-list .item{
+    float: left;
+    background: #f8f8f8;
+    color:#999;
+    font-size: 12px;
+    text-align: center;
+    width: calc( 100% / 7 - 5px);
+    max-width: 45px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 45px;
+}
+
+.day-list .item .icon{
+    font-size: 20px;
+    color: #c9c9c9;
+}
+
+.day-list .item.active{
+    color: #fff;
+    background: #04B7A5;
+}
+
+.day-list .item.active .icon{
+    color: #fff;
+}
+
+.day-list .item.reward{
+    background: #04B7A5;
+    padding-top: 0;
+    padding-bottom: 5px;
+}
+
+.day-list .item.reward .arc{
+    height: 30px;
+    width: 160%;
+    margin-left: -30%;
+    margin-top: -18px;
+    margin-bottom: 3px;
+    border-bottom: 3px solid #fff;
+    -webkit-border-radius: 0 0 50% 50%;
+    -moz-border-radius: 0 0 50% 50%;
+    border-radius: 0 0 50% 50%;
+}
+
+.day-list .item.reward .num{
+    color: #fff;
+    font-size: 9px;
+}
+
+.day-list .item.reward .num span{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-box{
+    padding-top: 10px;
+}
+
+.btn-box p{
+    text-align: center;
+    font-size: 12px;
+    color: #999999;
+    line-height: 2.5;
+}
+
+.btn-box button{
+    border: none;
+    outline: none;
+    background: #04B7A5;
+    color: #ffffff;
+    font-size: 16px;
+    width: 100%;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 24px;
+}
+
+.btn-box.active button{
+    background: #bbb;
+}
+
+.rule-box{
+    margin:15px 10px;
+    padding: 20px;
+    background: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: #999;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.rule-box .title{
+    font-size: 16px;
+    color: #666;
+}
+
+.mask-wrapper{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.mask{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+}
+
+.mask-content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: #333;
+    box-shadow: 0 0 30px #666;
+}
+
+.mask-content .title{
+    padding: 20px 0;
+}
+
+.mask-content .icon{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -60px;
+    color: #fff;
+    font-size: 30px;
+}
+
+.mask-content .score{
+    padding: 20px 0 40px;
+}
+
+.mask-content .score span{
+    color: #04B7A5;
+    font-size: 24px;
+}
+
+.coupon p{font-size: 14px;color: #999;}
+.coupon .item{ margin:10px 15px 20px;background-image: url("images/store_coupon.png");background-size: 100% 100%;position: relative;}
+.coupon .item .left{width: 71.5%;height: 100%;}
+.coupon .item .right{width: 28.5%;height: 100%;}
+.coupon .item .left, .coupon .item .right{position: relative;float: left;}
+.coupon .item .left .content, .coupon .item .right .content{position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);-webkit-transform: translate(-50%, -50%);text-align: center;width: 85%;}
+.coupon .item .left .content .discount{color: #06c1ae;}
+.coupon .item .left .content .discount span{font-size: 22px;font-weight: bold;}
+.coupon .item .left .content .desc-box .text{font-size: 15px;font-weight: bold;color: #333;line-height: 1.8;}
+.coupon .item .left .content .price{text-align: left;color: #999;font-size: 12px;}
+.coupon .item .right .content{width: 80%;padding:5% 0;background:#06c1ae;color: #fff;border-radius: 15px;font-size: 12px;}
+.coupon .item .right .content.disabled{  background: #ccc;  }

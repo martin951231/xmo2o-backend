@@ -1,0 +1,108 @@
+.flex_text_box[data-v-23037ae8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.margin_top_10[data-v-23037ae8] {
+  margin-top: 10px;
+}
+.text_1[data-v-23037ae8] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.flex_row_center[data-v-23037ae8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.flex_row_center_color[data-v-23037ae8] {
+  background-color: #efefef;
+}
+.flex_column[data-v-23037ae8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+}
+.top_title[data-v-23037ae8] {
+  width: 25%;
+  color: #000;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.fix_top_title[data-v-23037ae8] {
+  width: 35%;
+}
+.top_title_color[data-v-23037ae8] {
+  color: #686868;
+}
+.father_box[data-v-23037ae8] {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d9d9d9;
+  background-color: #fafafa;
+}
+.father_box .top_box[data-v-23037ae8] {
+  width: 100%;
+  height: 46px;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  cursor: pointer;
+  position: relative;
+}
+.father_box .top_box .right_icon[data-v-23037ae8] {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 20px;
+}
+.father_box .top_box .title[data-v-23037ae8] {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: bold;
+}
+.father_box .top_box .text_1[data-v-23037ae8] {
+  color: rgba(0, 0, 0, 0.85);
+  margin-right: 20px;
+}
+.father_box .childer_box[data-v-23037ae8] {
+  border: 0px solid #d9d9d9;
+  border-top: 1px solid #d9d9d9;
+  background-color: #FFFFFF;
+}
+.father_box .childer_box .right_icon[data-v-23037ae8] {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 20px;
+  margin-left: 30px;
+}
+.father_box .childer_box .title_1[data-v-23037ae8] {
+  position: absolute;
+  left: 55px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 400;
+}
+.modal_box_1[data-v-23037ae8] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+      flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -ms-flex-align: center;
+      align-items: center;
+}
+.modal_box_1 .flex_text_box[data-v-23037ae8] {
+  width: 50%;
+}
+.margin_top_10[data-v-23037ae8] {
+  margin-top: 10px;
+}
+

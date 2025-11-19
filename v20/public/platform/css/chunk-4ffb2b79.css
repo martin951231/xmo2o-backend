@@ -1,0 +1,28 @@
+.center[data-v-461037a4] {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-bottom: 10px;
+}
+.textarea-wrapper[data-v-461037a4] {
+  position: relative;
+  display: block;
+}
+.textarea-wrapper .m-textarea[data-v-461037a4] {
+  padding: 8px 12px;
+  padding-bottom: 25px;
+  height: 100%;
+}
+.textarea-wrapper .m-count[data-v-461037a4] {
+  color: #808080;
+  position: absolute;
+  font-size: 12px;
+  bottom: 0px;
+  right: 12px;
+}
+.newBox[data-v-461037a4] {
+  height: 70vh;
+  overflow-y: scroll;
+}
+

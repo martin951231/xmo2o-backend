@@ -1,0 +1,35 @@
+
+.agent-box {
+  padding: 10px;
+}
+.agent-box .agent-box-div {
+  padding:24px;
+  border:1px solid #e8e8e8;
+  min-width:222px;
+  margin-bottom: 20px;
+  cursor:pointer;
+}
+.agent-box .agent-box-div:hover{
+  box-shadow: 1px 2px 2px 2px #e8e8e8;
+}
+.agent-box .agent-box-div .img-box {
+    padding: 0px !important;
+}
+.agent-box .agent-box-div .txt-box {
+    padding: 0px !important;
+}
+.agent-box .agent-box-div.active {
+    border: 1px solid #1989fa
+}
+.agent-box .agent-desc {
+  color: rgba(0,0,0,.45);
+}
+.agent-box .agent-title {
+    color: rgba(0,0,0,.85);
+    font-weight: 500;
+    font-size: 16px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+

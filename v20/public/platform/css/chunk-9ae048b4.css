@@ -1,0 +1,22 @@
+
+.wrap[data-v-a8c995f4] {
+    padding: 0 12px;
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+}
+.title[data-v-a8c995f4] {
+    font-size: 10px;
+    font-weight: 500;
+    color: #000000;
+}
+.item[data-v-a8c995f4] {
+    margin-right: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #4a525d;
+    background: #f5f5f5;
+    border-radius: 13px;
+}
+

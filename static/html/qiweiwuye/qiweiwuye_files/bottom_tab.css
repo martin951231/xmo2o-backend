@@ -1,0 +1,211 @@
+.bottom {
+	height: 210px;
+	background: url(../images_1/footpart.png) no-repeat 0 center;
+	background-size: 100% 100%;
+	position: relative;
+	font-family: "微软雅黑";
+}
+
+.bottom-text {
+	width: 100%;
+	text-align: center;
+	font-size: 33px;
+	padding: 40px 0 30px 0;
+	color: #ebf1fe;
+	letter-spacing: 7px;
+	font-weight: 400;
+}
+
+.bottom-btn {
+	padding: 10px 40px;
+	border: 1px solid #fff;
+	color: #ebf1fe;
+	border-radius: 2px;
+	background: none;
+	cursor: pointer;
+	font-size: 20px;
+	letter-spacing: 3px
+}
+
+.bottom-btn:hover {
+	background: #467af8;
+}
+
+/* .popup {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 99999999;
+	display: none;
+}
+
+.popupbox {
+	margin: 0 auto;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 350px;
+	height: 390px;
+	-moz-box-shadow: 0px 0px 5px rgba(238, 241, 245, 0.74);
+	-webkit-box-shadow: 0px 0px 5px rgba(238, 241, 245, 0.74);
+	box-shadow: 0px 0px 5px rgba(238, 241, 245, 0.74);
+}
+
+.popup-img {
+	width: 100%;
+	height: 100%;
+} */
+
+.contact_ul li.icon_contact1 a {
+	background: url(../images_1/icon_contact1.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact2 a {
+	background: url(../images_1/icon_contact2.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact3 a {
+	background: url(../images_1/icon_contact3.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact4 a {
+	background: url(../images_1/icon_contact4.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact4 {
+	display: none;
+	top: 120px;
+}
+
+.contact_ul li.icon_contact5 a {
+	background: url(../images_1/icon_contact5.png) center no-repeat;
+	width: 78px;
+	height: 120px;
+}
+
+.contact_ul li.icon_contact5 {
+	display: block;
+	margin: 10px -18px;
+	width: 0px;
+	height: 0px;
+	border: 0px solid #E7EAF2;
+}
+
+
+.contact_ul li.icon_contact1:hover a {
+	background: url(../images_1/icon_contact1hover.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact2:hover a {
+	background: url(../images_1/icon_contact2hover.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact3:hover a {
+	background: url(../images_1/icon_contact3hover.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact4:hover a {
+	background: url(../images_1/icon_contact4hover.png) center no-repeat;
+}
+
+.contact_ul li.icon_contact5:hover a {
+	background: url(../images_1/icon_contact5.png) center no-repeat;
+}
+
+.tan_wei,
+.tan_wei1 {
+	background: #000;
+	position: absolute;
+	z-index: -9;
+	right: 120px;
+	top: 0px;
+	border-radius: 5px;
+	background: #F6F8FB;
+	border: 1px solid #E6EAF0;
+	padding: 10px;
+	display: none;
+	box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.1);
+}
+
+.tan_wei2 {
+	position: absolute;
+	z-index: -9;
+	right: 75px;
+	top: 168px;
+	display: block;
+}
+
+.right_close {
+	position: absolute;
+	z-index: 18;
+	right: 15px;
+	top: 12px;
+	width: 15px;
+	display: block;
+}
+
+.tan_wei .p_tel {
+	font-size: 16px;
+	color: #9BA8C3;
+	width: 115px;
+	display: block;
+}
+
+.tan_weiFix {
+	display: block;
+	opacity: 1;
+	right: 75px;
+	transition: right 0.2s;
+	top: 415px;
+	position: fixed;
+}
+
+.tan_weiFix2 {
+	display: block;
+	opacity: 1;
+	right: 75px;
+	transition: right 0.2s;
+	top: 362px;
+	position: fixed;
+}
+
+.tan_weiFix5 {
+	position: absolute;
+	z-index: -9;
+	right: 75px;
+	top: 168px;
+	display: block;
+}
+
+.tan_sanjiao {
+	position: absolute;
+	right: -7px;
+	top: 13px;
+	width: 10px;
+	height: 10px;
+	background: #F6F8FB;
+	border-right: 1px solid #E6EAF0;
+	border-top: 1px solid #E6EAF0;
+	transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45 eg);
+	-o-transform: rotate(45deg);
+}
+
+
+.foot_line {
+	margin-top: 40px;
+}
+
+.online-saoma {
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	z-index: 1000;
+	width: 65px;
+	height: 140px;
+	background: url(../images_1/saomazixun.png) no-repeat center;
+}

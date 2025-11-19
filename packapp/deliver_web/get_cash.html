@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>提现</title>
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/vant.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/get_cash.css">
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/vue@2.6.10.min.js"></script>
+    <script src="scripts/vant.min.js"></script>
+    <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <!-- <script>
+        // 初始化
+        var vConsole = new VConsole();
+    </script> -->
+</head>
+
+<body>
+    <div id="app">
+        <!-- <section id="header" class="header"></section> -->
+        <section id="content" class="content">
+            <van-field style="margin-top: 1px;" v-model="name" :label="L_('提现人')" :placeholder="L_('请填写真实姓名')" autofocus
+                label-class="left-label"></van-field>
+            <div class="card">
+                <div class="flex flex-end card-line br-f4 lh-50">
+                    <span class="cr-33 mr-5" style="font-size: 24px;">{{currency}}</span>
+                    <!-- 只能输入两位小数 -->
+                    <input class="cr-33 fw-bold flex-1" style="font-size: 28px;max-width: 70%;" :value="inputMoney"
+                        oninput="value=onInput(value)"  :placeholder="withdrawPlaceholder"/>
+                    <div class="all-cash" @click="allCash">{{L_('全部提现')}}</div>
+                </div>
+                <div class="mt-10 pb-10 cr-66 fs-11 lh-24">
+                    {{L_('当前余额X1X2，可提现：X1X3',{X1:currency,X2:allMoney,X3:cashMoney})}}
+                    <span v-if="rate > 0">，{{L_('提现服务费率X1%',{X1:rate})}}</span>
+                </div>
+            </div>
+            <div class="mt-10">
+                <van-field readonly clickable :label="L_('提现至')" :value="cashTypeTxt" :placeholder="L_('请选择提现方式')"
+                    @click="showPicker = true" right-icon="arrow-down" label-class="left-label"></van-field>
+                <van-popup v-model="showPicker" round position="bottom">
+                    <van-picker show-toolbar :columns="typeList" @cancel="showPicker = false" value-key="name"
+                        @confirm="onConfirm" :confirm-button-text="L_('确认')" :cancel-button-text="L_('取消')"></van-picker>
+                </van-popup>
+            </div>
+            <van-field v-if="cashType == 'alipay' " style="margin-top: 1px;" v-model="account" :label="L_('支付宝账号')"
+                :formatter="formatter" :placeholder="L_('请填写支付宝账号')" label-class="left-label" right-icon="warning-o"
+                @click-right-icon="accountClick">
+            </van-field>
+
+            <!-- 银行卡列表 -->
+            <div style="padding: 10px;" v-if="cashType == 'bank'">
+                <van-empty v-if="bankCardList.length == 0" :description="L_('暂无银行卡数据')"></van-empty>
+                <div v-else>
+                    <van-radio-group class="bank_card_box" v-model="bank_id" direction="horizontal">
+                        <van-radio :name="item.id" v-for="item in bankCardList" :key="item.id">
+                            <div class="item" style="display: flex;width: 100%;align-items: center;">
+                                <span style="flex: 1;margin-right: 5px;">{{item.remark_info}}</span>
+                                <van-icon color="#27A3F7" name="edit" size="20px" style="margin-right: 5px;" @click.stop="editBankCard(item)"></van-icon>
+                                <van-icon color="red" name="delete" size="20px" @click.stop="delBankCard(item)"></van-icon>
+                            </div>
+                        </van-radio>
+                      </van-radio-group>
+                </div>
+                <div style="color: #27A3F7;text-align: center;font-size: 14px;margin-top: 10px;" @click="addBankCard">{{L_('新建银行卡')}}</div>
+            </div>
+
+            <div class="cash-btn" @click="cash">
+                {{L_('提现')}}
+            </div>
+        </section>
+
+        <van-popup v-model="bankCardShow" position="bottom" round="8">
+            <div style="background-color: #f4f4f4;padding: 20px;">
+                <h2 style="text-align: center; margin-bottom: 20px;">{{L_(form.id?'编辑银行卡':'新建银行卡')}}</h2>
+                <van-form @submit="onSubmit">
+                    <div style="overflow: hidden;border-radius: 10px;">
+                        <van-field
+                            v-model="form.account_name"
+                            name="account_name"
+                            :label="L_('持卡人姓名')"
+                            :placeholder="L_('请填写持卡人姓名')"
+                            :rules="[{ required: true, message: L_('请填写持卡人姓名') }]"></van-field>
+                        <van-field
+                            v-model="form.account"
+                            name="account"
+                            :label="L_('银行卡号')"
+                            :placeholder="L_('请填写银行卡号')"
+                            :rules="[{ required: true, message: L_('请填写银行卡号') }]"></van-field>
+                        <van-field
+                            v-model="form.remark"
+                            name="remark"
+                            :label="L_('所属银行')"
+                            :placeholder="L_('请填写所属银行')"
+                            :rules="[{ required: true, message: L_('请填写所属银行') }]"></van-field>
+                        <van-field
+                            readonly
+                            clickable
+                            name="province_name"
+                            v-model="form.province_name"
+                            :label="L_('开户省')"
+                            :placeholder="L_('点击选择开户省')" :rules="[{ required: true, message: L_('点击选择开户省') }]"
+                            @click="openBankCardPicker('province_id')"></van-field>
+                        <van-field
+                            v-if="form.province_id"
+                            readonly
+                            clickable
+                            name="city_name"
+                            v-model="form.city_name"
+                            :label="L_('开户市')"
+                            :placeholder="L_('点击选择开户市')" :rules="[{ required: true, message: L_('点击选择开户市') }]"
+                            @click="openBankCardPicker('city_id')"></van-field>
+                        <van-field
+                            v-model="form.branch"
+                            name="branch"
+                            :label="L_('开户网点')"
+                            :placeholder="L_('请填写开户网点')"
+                            :rules="[{ required: true, message: L_('请填写开户网点') }]"></van-field>
+                        <van-field
+                            name="is_default"
+                            :label="L_('是否默认')">
+                            <template #input>
+                                <van-radio-group v-model="form.is_default" direction="horizontal">
+                                <van-radio :name="1">{{L_('是')}}</van-radio>
+                                <van-radio :name="0">{{L_('否')}}</van-radio>
+                                </van-radio-group>
+                            </template>
+                        </van-field>
+                    </div>
+                    <div style="margin: 16px;">
+                      <van-button round block type="info" native-type="submit">提交</van-button>
+                    </div>
+                </van-form>
+            </div>
+        </van-popup>
+        <van-popup v-model="showBankCardPicker" position="bottom">
+            <van-picker
+              show-toolbar
+              :columns="pickerColumns"
+              @confirm="onPickerConfirm"
+              @cancel="showBankCardPicker = false"
+            />
+        </van-popup>
+    </div>
+
+</body>
+<script src="scripts/common.js?t=41"></script>
+<script src="./scripts/work/get_cash.js?t=1212"></script>
+
+</html>

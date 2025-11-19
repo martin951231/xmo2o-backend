@@ -1,0 +1,144 @@
+
+.move[data-v-31962f8b] {
+    cursor: move;
+}
+.homePage[data-v-31962f8b] .ant-card-head {
+    background: #f4f4f4;
+}
+.headColorItem[data-v-31962f8b] {
+    margin: 0 10px 10px 0;
+    width: 30px;
+    height: 30px;
+    border: 2px solid transparent;
+}
+.headColorItem.active[data-v-31962f8b] {
+    border: 2px solid #64bcfb;
+}
+.desc[data-v-31962f8b] {
+    font-size: 14px;
+    line-height: 22px;
+    color: rgba(150, 151, 153, 1);
+}
+/* 广告位配置 */
+.adverWrap[data-v-31962f8b] {
+    width: 100%;
+    min-height: 100px;
+}
+.emptyAdver[data-v-31962f8b] {
+    width: 360px;
+    height: 105px;
+    border-radius: 10px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    border: 1px dashed #d9d9d9;
+}
+.adverItem[data-v-31962f8b] {
+    position: relative;
+    margin-bottom: 20px;
+    height: 105px;
+    border-radius: 10px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.adverImgWrap[data-v-31962f8b] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.adverImgWrap img[data-v-31962f8b] {
+    width: 100%;
+    height: 100%;
+}
+.adverItem .closeIcon[data-v-31962f8b] {
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-transform: translate(50%, -50%);
+            transform: translate(50%, -50%);
+    color: #cccccc;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 50%;
+}
+.adverItemImgWrap[data-v-31962f8b] {
+    width: 360px;
+    height: 105px;
+    line-height: 105px;
+    text-align: center;
+    border-radius: 10px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    overflow: hidden;
+}
+.adverItemImg[data-v-31962f8b] {
+    width: 100%;
+    height: 100%;
+}
+.iconImgWrap[data-v-31962f8b] {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.iconImgWrap img[data-v-31962f8b] {
+    width: 100%;
+    height: 100%;
+}
+.emptyImg[data-v-31962f8b] {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+}
+textarea[data-v-31962f8b]::-webkit-scrollbar {
+    width: 5px; /*滚动条宽度*/
+    height: 5px; /*滚动条高度*/
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+textarea[data-v-31962f8b]::-webkit-scrollbar-track {
+    border-radius: 10px; /*滚动条的背景区域的圆角*/
+    background-color: transparent; /*滚动条的背景颜色*/
+}
+
+/*定义滑块 内阴影+圆角*/
+textarea[data-v-31962f8b]::-webkit-scrollbar-thumb {
+    border-radius: 10px; /*滚动条的圆角*/
+    background-color: rgba(0, 0, 0, 0.15); /*滚动条的背景颜色*/
+}
+.upload-loading[data-v-31962f8b] .ant-upload-select {
+    position: relative;
+}
+.loading[data-v-31962f8b] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    border-radius: 10px;
+}
+

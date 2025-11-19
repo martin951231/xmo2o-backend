@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Config/index',array('galias'=>'mall','header'=>'Mall/mall_header'))}" class="on">商城配置</a>	</ul></div>

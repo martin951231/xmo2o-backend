@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>充值记录</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/apply_record.css"/>
+<!--    <style type="text/css">-->
+<!--        .notes ul li:nth-child(2) {-->
+<!--            width: 50%;-->
+<!--            border-left: 1px solid #f1f1f1;-->
+<!--            border-right: 1px solid #f1f1f1;-->
+<!--        }-->
+<!--    </style>-->
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title"><L_>充值记录</L_></h1>
+</header>
+
+<div class="mui-content">
+    <div>
+        <nav class="notes" style="top:44px;">
+            <ul style="display: flex; justify-content: space-between;">
+                <li  style="flex: 1; text-align: center; line-height: 40px; vertical-align: middle;">金额(<span id="fh">元</span>)</li>
+                <li  style="flex: 1; text-align: center; line-height: 40px; vertical-align: middle;"><L_>充值时间</L_></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="notes_content">
+
+    </div>
+    <!-- 上拉刷新 -->
+    <div class="pullup" style="display:none;">上拉加载更多...</div>
+    <div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""><L_>正在加载</L_></div>
+</div>
+<script src="js/fastclick.js"></script>
+<script src="js/mui.min.js"></script>
+<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+<script id="cardlist" type="text/html">
+    {{# for(var i = 0, len = d.recharge_list.length; i < len; i++){ }}
+            <ul style="display: flex; justify-content: space-between;margin-top: 10px">
+                <li style="flex: 1; text-align: center; line-height: 40px; vertical-align: middle;">{{d.recharge_list[i].payment_money}}</li>
+                <li style="flex: 1; text-align: center;line-height: 40px; vertical-align: middle;">{{d.recharge_list[i].pay_time}}</li>
+            </ul>
+    {{# } }}
+</script>
+<script type="text/javascript" charset="utf-8">
+    var ticket = common.getCache('ticket');
+    //console.log(ticket);
+    var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+    var page = 1;
+    changeAll();
+
+    function changeAll() {
+        common.http('Merchantapp&a=mer_recharge_record', {
+            'ticket': ticket,
+            'client': client,
+            'page': page
+        }, function (data) {
+            $("#fh").text(data.Currency_txt);
+            if (data.recharge_list.length == 0) {
+                $('.pullup').html(L_('没有更多数据啦'));
+                $('.loading').hide();
+                $('.pullup').show();
+            } else {
+                laytpl(document.getElementById('cardlist').innerHTML).render(data, function (html) {
+                    $('.notes_content').append(html);
+                    $('.loading').hide();
+                    $('.pullup').show();
+                });
+                if(data.withdraw) {
+                    if (data.withdraw.length > 19) {
+                        // 上拉加载和下拉刷新
+                        $(window).scroll(function () {
+                            //上拉加载
+                            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                                page++;
+                                if (page <= data.page_num) {
+                                    $('.pullup').hide();
+                                    $('.loading').show();
+                                    changeAll();
+                                }
+                            }
+                        });
+                    } else {
+                        $('.pullup').html(L_('没有更多数据啦'));
+                    }
+                }else {
+                    $('.pullup').html(L_('没有更多数据啦'));
+                }
+                
+            }
+
+        });
+    }
+
+</script>
+</body>
+</html>

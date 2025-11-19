@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8"/>
+        <title>店员中心</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name='apple-touch-fullscreen' content='yes'/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="format-detection" content="address=no"/>
+        <link href="css/pigcms.css?t=1" rel="stylesheet"/>
+        <link href="css/mobiscroll.2.13.2.css" rel="stylesheet"/>
+    </head>    
+    <body>
+        <section class="public pageSliderHide">
+            <div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+            <div style="text-align: center;font-size: 16px;"><L_>预约订单</L_></div>
+        </section>
+        <div class="h44"></div>
+        <section class="h130">
+            <div class="cable">
+                <form id="searchForm" method="post">
+					<div class="cable_n cable_kd">
+						<div class="input">
+							<input type="search" id="find_value" placeholder="请输入关键词"/>
+						</div>
+                        <div class="select">
+                            <select id="ft" name="ft">
+                                <option value="oid" class="L_">订单ID</option>
+                                <option value="xm" class="L_">活动名称</option>
+                            </select>
+                        </div>
+					</div>
+                </form>
+            </div>
+            <div class="fix">
+                <div class="kd_time clr">
+                    <div class="pos fl">
+                        <input type="text" placeholder="开始时间" readonly="readonly" id="stime" class='datas'/>
+                    </div>
+                    <div class="pos fr">
+                        <input type="text" placeholder="结束时间" readonly="readonly" id="etime" class='datas'/>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="store">
+            <div class="entry kd_entry"><ul></ul></div>
+        </section>
+        <div class="mask"></div>
+        <section class="since"></section>
+        <section class="stock"></section>
+        <div class="flat roof"></div>
+    <script src="scripts/jquery-1.8.3.min.js"></script>
+    <script src="scripts/fastclick.js"></script>
+    <script src="scripts/layer/layer.m.js"></script>
+    <script src="scripts/common.js"></script>
+    <script src="scripts/mobiscroll.2.13.2.js"></script>
+    <script src="scripts/work/appoint_active_list.js?t=2"></script>
+    <script type="text/javascript">
+        console.log(shop_type);
+        shop_type=2;
+    </script>
+      
+    <script id="listTpl" type="text/html">
+    {{# for (var i = 0, len = d.length; i < len; i++){ }}
+    <li class="link-url" data-url="#" data-webview="true" id="order_{{d[i].order_id}}">
+       <div class="top clr">
+           <div class="fl">{{ L_('核销时间') }}：{{d[i].add_time_text}}</div>
+       </div>
+       <div class="con">
+           <div class="con_top">
+               <p>{{ L_('订单号') }}：<span style="color:#e93e14;">{{d[i].appoint_order_id}}</span> <span style="float: right;">{{d[i].status == 1 ? "核销成功" : "核销失败"}}</span></p>
+               
+               <p>{{ L_('活动名称') }}：<span class="red">{{ currency_symbol }}{{d[i].appoint.title}}</span></p>
+
+               <p>{{ L_('报名人') }}：<span class="red">{{ currency_symbol }}{{d[i].order.name}}</span> <span style="float: right;">手机号：{{d[i].order.phone}}</span></p>
+
+               <p>{{ L_('备注') }}：{{d[i].order.remark}}</p>
+                <div style="margin-top: 10px;"></div>
+           </div>
+            
+       </div>
+    </li> 
+    {{# } }}
+    </script>
+    </body>
+</html>

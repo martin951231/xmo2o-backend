@@ -1,0 +1,68 @@
+
+.dynamic-delete-button {
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    font-size: 24px;
+    color: #999;
+    transition: all 0.3s;
+}
+.dynamic-delete-button:hover {
+    color: #777;
+}
+.dynamic-delete-button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+
+.main[data-v-d814e850] {
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 10px;
+}
+.main div[data-v-d814e850]{
+    padding: 2px auto;
+}
+.goods-image[data-v-d814e850] {
+    width: 48px;
+    margin-right: 5px;
+    height: 48px;
+}
+.font_bold[data-v-d814e850]{
+    font-weight: bold;
+}
+.red[data-v-d814e850]{
+    color: red;
+}
+.blue[data-v-d814e850]{
+    color: blue;
+}
+.avatar[data-v-d814e850]{
+    width: 35px;
+    border-radius: 35px
+}
+.div-margin[data-v-d814e850]{
+    margin-bottom: 5px;
+}
+
+
+.detail-content[data-v-e16c5610] .ant-drawer-body {
+    padding: 0;
+}
+.ant-table td[data-v-e16c5610] {
+    white-space: nowrap;
+}
+.goods-title[data-v-e16c5610]{
+    font-size: 20px;
+    margin-right: 10px;
+}
+.search-content[data-v-e16c5610]{
+    -ms-flex-pack:justify;
+        justify-content:space-between;-ms-flex-align: center;align-items: center;
+}
+.search-content .right[data-v-e16c5610] {
+    -ms-flex-align: center;
+        align-items: center;
+}
+

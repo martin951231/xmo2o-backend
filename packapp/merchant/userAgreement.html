@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>用户协议</title>
+		<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+		<meta http-equiv="pragma" content="no-cache"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/> 
+        <link href="css/mui.css" rel="stylesheet"/>
+		<link href="css/agreement.css" rel="stylesheet"/>
+	</head>
+	<style>
+		.prettyprint.lang-html{
+			white-space:inherit;
+		}
+        .agreementBox {
+            white-space: pre-wrap;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+	</style>
+	<body>
+       <header class="mui-bar mui-bar-nav">
+           <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+          <h1 class="mui-title" style="color:#fff"><L_>用户协议</L_><h1>
+       </header>
+		<div style="height: 100px; width: 100px;"></div>
+        <div style="padding:10px " class="agreementBox">   
+		<script src="js/fastclick.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            common.http('Merchantapp&a=get_privacy_policy',{noTip:true}, function(data){  
+                $('.agreementBox').html(data.register_agreement); 
+            })
+        </script> 
+	</body>
+</html>

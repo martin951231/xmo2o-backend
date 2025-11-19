@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+
+@media screen and (max-width: 319px) {
+    .media_l{width:59%}
+    .media_r{width:41%}
+}
+@media screen and (min-width: 320px) and (max-width: 359px) {
+    .media_l{width:59%}
+    .media_r{width:41%}
+}
+@media screen and (min-width: 360px) and (max-width: 374px) {
+    .media_l{width:61%}
+    .media_r{width:39%}
+}
+
+@media screen and (min-width: 375px) and (max-width: 383px) {
+    .media_l{width:65%}
+    .media_r{width:35%}
+}
+
+@media screen and (min-width: 384px) and (max-width: 399px) {
+
+}
+
+@media screen and (min-width: 400px) and (max-width: 413px) {
+
+}
+
+@media screen and (min-width: 414px) {
+
+}

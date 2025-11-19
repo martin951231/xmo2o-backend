@@ -1,0 +1,54 @@
+body {
+    background-color: #F1F1F1;
+}
+
+.logoffCheck-box {
+    background-color: #fff;
+    margin: 10px 0;
+}
+
+.logoffCheck-box .logoffCheck-box-item {
+    padding: 20px 20px 0px 20px;
+}
+.logoffCheck-box .items:last-child{
+    padding-bottom: 10px;
+}
+.logoffCheck-box .logoffCheck-box-item .title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.logoffCheck-box .logoffCheck-box-item .text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    line-height: 34px;
+}
+
+.logoffCheck-box p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #999999;
+    line-height: 23px;
+}
+
+.tost {
+    padding: 20px;
+}
+
+.tost .btn {
+    width: 40%;
+    height: 40px;
+    background: #2D85FF;
+    border-radius: 3px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 500;
+    color: #FEFEFE;
+    margin: 0 auto;
+    margin-top: 20%;
+}

@@ -1,0 +1,130 @@
+<html lang="zh-CN">
+	<head>
+        <meta charset="utf-8">
+        <title>积分商品列表</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+        <meta http-equiv="pragma" content="no-cache">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-touch-fullscreen" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="format-detection" content="address=no">
+        <link rel="stylesheet" href="css/mui.css" />
+        <link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.picker.min.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+        <link href="css/pigcms.css" rel="stylesheet"/>
+    	<link rel="stylesheet" type="text/css" href="css/integral_mall_index.css?t=0001"/>
+	</head>
+    <body>
+        <header class="mui-bar mui-bar-nav">
+           <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+            <h1 class="mui-title"><span><L_>积分商品列表</L_></span></h1>
+        </header>
+        <div class="mui-content">
+            <section class="h130">
+                <div class="cable">
+                    <div class="cable_n cable_kd mui-clearfix">
+                        <div class="input">
+                            <input class="L_P" type="text" id="find_value" name="keyword" placeholder="请输入搜索内容"/>
+                        </div>
+                        <div class="select mui-pull-right" id="selects">
+                            <span id="selectsText"><L_>商品名称</L_></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fix">
+                    <div class="dropdown">
+                        <div class="drop_select" id="status1">
+                            <div class="pos status">
+                                <span id="statusText"><L_>商品状态</L_></span>
+                            </div>
+                        </div>
+                        <div class="drop_select" id="add_goods" style="background-color: #ffa200;color: white;">
+                            <div class="add_goods">
+                                <span id="add_info"><L_>添加商品</L_></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="kd_time clr">-->
+                        <!--<div class="pos fl begin_date">-->
+                            <!--<input type="text" placeholder="开始时间" readonly="" id="stime">-->
+                        <!--</div>-->
+                        <!--<div class="pos fr end_date">-->
+                            <!--<input type="text" placeholder="结束时间" readonly="" id="etime">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </section>
+            <section class="store" style="padding-top: 85px;">
+                <div class="entry kd_entry" >
+                    <ul id="masgs">
+                    </ul>
+                    <!-- 上拉刷新 -->
+                    <div class="pullup" style="display:none;"><L_>上拉加载更多</L_>...</div>
+                    <div class="loading" style="display:none;"><img src="images/xubox_loading2.gif" alt=""/><L_>正在加载</L_></div>
+                </div>
+            </section>
+        </div>
+    <div class="flat roof"></div>
+    <script src="js/fastclick.js"></script>
+    <script src="js/mui.min.js"></script>
+    <script src="js/mui.zoom.js"></script>
+    <script src="js/mui.picker.js"></script> 
+    <script src="js/mui.dtpicker.js"></script>
+    <script src="js/mui.poppicker.js"></script>
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/fastclick.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/work/integral_mall_index.js?t=0005" type="text/javascript" charset="utf-8"></script>
+    
+    <script id="listTpl" type="text/html">
+    {{# for (var i = 0, len = d.length; i < len; i++){ }}
+        <li data-id="{{d[i].goods_id}}" data-goods_source_type="{{d[i]['goods_source_type']}}">
+           <div class="top clr">
+               <div class="fl">{{ L_('最新修改时间') }}：{{d[i].info_time}}</div>
+               <div class="fr cancel">
+                   {{# if(d[i].status == 1 ){ }}
+                   {{ L_('启用') }}
+                   {{# } else if(d[i].status == 3) { }}
+                   {{ L_('商品下架') }}
+                   {{# } else { }}
+                   {{ L_('关闭') }}
+                   {{# } }}
+               </div>
+           </div>
+           <div class="con">
+               <div class="con_top">
+                   <h2>{{ L_('编号') }}：{{d[i].goods_id}}</h2>
+
+                   <p {{# if(d[i].is_new == 1 ){ }}style="color:#06CCAB;"{{# } }}>{{ L_('名称') }}：{{d[i].goods_name}}</p>
+                   <p>{{ L_('分类') }}：{{d[i].cat_name}}</p>
+                   {{# if(d[i].sale_count >0 ){ }}
+                   <p>{{ L_('销售概览') }}：{{L_('售出')}}{{d[i]['sale_count']}}份</p>
+                   {{# } }}
+                   <p>{{ L_('所需积分') }}：{{# if(d[i].exchange_type == 0 ){ }} {{d[i]['payment_pure_integral']}} {{# } else { }} {{d[i]['payment_integral']}} {{# } }}</p>
+
+               </div>
+               <div class="remark">
+                    <div class="source">{{ L_('订单来源') }}：
+                        {{# if(d[i].goods_source_type == 3){ }}
+                            {{ L_('虚拟批发') }}
+                        {{# } else if (d[i].goods_source_type == 2) { }}
+                            {{ L_('批发') }}
+                        {{# } else { }}
+                            {{ L_('自主添加') }}
+                        {{# } }}
+                    </div>
+                   <div class="overtime kd_cons integral_del" data-goods_id="{{d[i]['goods_id']}}" style="right: 3rem;width: 2.5rem;">{{ L_('删除') }}</div>
+                   <div class="overtime kd_order integral_edit" data-goods_id="{{d[i]['goods_id']}}" data-goods_source_type="{{d[i]['goods_source_type']}}" style="width: 2.5rem">{{ L_('编辑') }}</div>
+               </div>
+           </div>
+        </li>
+    {{# } }}
+    </script>
+    
+</body></html>

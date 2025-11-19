@@ -1,0 +1,341 @@
+ 
+ /* 状态栏高度 */
+ .status_bar {
+    height: var(--status-bar-height);
+    width: 100%;
+}
+
+/*  -- flex弹性布局 -- */
+.flex {
+	display: flex;
+}
+.basis-xs {
+	flex-basis: 20%;
+}
+.basis-sm {
+	flex-basis: 40%;
+}
+.basis-df {
+	flex-basis: 50%;
+}
+.basis-lg {
+	flex-basis: 60%;
+}
+.basis-xl {
+	flex-basis: 80%;
+}
+.flex-sub {
+	flex: 1;
+}
+.flex-twice {
+	flex: 2;
+}
+.flex-treble {
+	flex: 3;
+}
+.flex-direction {
+	flex-direction: column;
+}
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.align-start {
+	align-items: flex-start;
+}
+.align-end {
+	align-items: flex-end;
+}
+.align-center {
+	align-items: center;
+}
+.align-stretch {
+	align-items: stretch;
+}
+.self-start {
+	align-self: flex-start;
+}
+.self-center {
+	align-self: flex-center;
+}
+.self-end {
+	align-self: flex-end;
+}
+.self-stretch {
+	align-self: stretch;
+}
+.align-stretch {
+	align-items: stretch;
+}
+.justify-start {
+	justify-content: flex-start;
+}
+.justify-end {
+	justify-content: flex-end;
+}
+.justify-center {
+	justify-content: center;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.justify-around {
+	justify-content: space-around;
+}
+
+/*  -- 背景色 -- */
+.bg-white {
+	background-color: #ffffff;
+}
+.bg-img {
+	background-color: #f7f7f7;
+}
+
+/*  -- 文本 -- */
+.text-bold {
+	font-weight: bold;
+}
+.text-cut {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.text-center {
+	text-align: center;
+}
+.text-left {
+	text-align: left;
+}
+.text-right {
+	text-align: right;
+}
+.text-black {
+	color: #000000;
+}
+.text-white {
+	color: #ffffff;
+}
+/* 强制不换行 */
+.text-nowrap{
+	white-space:nowrap;
+}
+/* 强制换行 */
+.text-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+/* ==================
+         开关
+ ==================== */
+
+switch,
+checkbox,
+radio {
+	position: relative;
+}
+
+switch::after,
+switch::before {
+	font-family: "cuIcon";
+	content: "\e645";
+	position: absolute;
+	color: #ffffff !important;
+	top: 0%;
+	left: 0upx;
+	font-size: 26upx;
+	line-height: 26px;
+	width: 50%;
+	text-align: center;
+	pointer-events: none;
+	transform: scale(0, 0);
+	transition: all 0.3s ease-in-out 0s;
+	z-index: 9;
+	bottom: 0;
+	height: 26px;
+	margin: auto;
+}
+
+switch::before {
+	content: "\e646";
+	right: 0;
+	transform: scale(1, 1);
+	left: auto;
+}
+
+switch[checked]::after,
+switch.checked::after {
+	transform: scale(1, 1);
+}
+
+switch[checked]::before,
+switch.checked::before {
+	transform: scale(0, 0);
+}
+
+/* #ifndef MP-ALIPAY */
+radio::before,
+checkbox::before {
+	font-family: "cuIcon";
+	content: "\e645";
+	position: absolute;
+	color: #ffffff !important;
+	top: 50%;
+	margin-top: -8px;
+	right: 5px;
+	font-size: 32upx;
+	line-height: 16px;
+	pointer-events: none;
+	transform: scale(1, 1);
+	transition: all 0.3s ease-in-out 0s;
+	z-index: 9;
+}
+
+radio .wx-radio-input,
+checkbox .wx-checkbox-input,
+radio .uni-radio-input,
+checkbox .uni-checkbox-input {
+	margin: 0;
+	width: 24px;
+	height: 24px;
+}
+
+checkbox.round .wx-checkbox-input,
+checkbox.round .uni-checkbox-input {
+	border-radius: 100upx;
+}
+
+/* #endif */
+
+switch[checked]::before {
+	transform: scale(0, 0);
+}
+
+switch .wx-switch-input,
+switch .uni-switch-input {
+	border: none;
+	padding: 0 24px;
+	width: 48px;
+	height: 26px;
+	margin: 0;
+	border-radius: 100upx;
+}
+
+switch .wx-switch-input:not([class*="bg-"]),
+switch .uni-switch-input:not([class*="bg-"]) {
+	background: #8799a3 !important;
+}
+
+switch .wx-switch-input::after,
+switch .uni-switch-input::after {
+	margin: auto;
+	width: 26px;
+	height: 26px;
+	border-radius: 100upx;
+	left: 0upx;
+	top: 0upx;
+	bottom: 0upx;
+	position: absolute;
+	transform: scale(0.9, 0.9);
+	transition: all 0.1s ease-in-out 0s;
+}
+
+switch .wx-switch-input.wx-switch-input-checked::after,
+switch .uni-switch-input.uni-switch-input-checked::after {
+	margin: auto;
+	left: 22px;
+	box-shadow: none;
+	transform: scale(0.9, 0.9);
+}
+
+radio-group {
+	display: inline-block;
+}
+
+
+
+switch.radius .wx-switch-input::after,
+switch.radius .wx-switch-input,
+switch.radius .wx-switch-input::before,
+switch.radius .uni-switch-input::after,
+switch.radius .uni-switch-input,
+switch.radius .uni-switch-input::before {
+	border-radius: 10upx;
+}
+
+switch .wx-switch-input::before,
+radio.radio::before,
+checkbox .wx-checkbox-input::before,
+radio .wx-radio-input::before,
+switch .uni-switch-input::before,
+radio.radio::before,
+checkbox .uni-checkbox-input::before,
+radio .uni-radio-input::before {
+	display: none;
+}
+
+radio.radio[checked]::after,
+radio.radio .uni-radio-input-checked::after {
+	content: "";
+	background-color: transparent;
+	display: block;
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	z-index: 999;
+	top: 0upx;
+	left: 0upx;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	border-radius: 200upx;
+	/* #ifndef MP */
+	border: 7px solid #ffffff !important;
+	/* #endif */
+
+	/* #ifdef MP */
+	border: 8px solid #ffffff !important;
+	/* #endif */
+}
+
+switch.green[checked] .wx-switch-input,
+switch[checked] .wx-switch-input,
+checkbox.green[checked] .wx-checkbox-input,
+checkbox[checked] .wx-checkbox-input,
+radio.green[checked] .wx-radio-input,
+radio[checked] .wx-radio-input,
+switch.green.checked .uni-switch-input,
+switch.checked .uni-switch-input,
+checkbox.green.checked .uni-checkbox-input,
+checkbox.checked .uni-checkbox-input,
+radio.green.checked .uni-radio-input,
+radio.checked .uni-radio-input {
+	background-color: #00CCB4 !important;
+	border-color: #00CCB4 !important;
+	color: #ffffff !important;
+	border-color: #EEEEEE !important;
+}
+
+switch.red[checked] .wx-switch-input,
+switch[checked] .wx-switch-input,
+checkbox.red[checked] .wx-checkbox-input,
+checkbox[checked] .wx-checkbox-input,
+radio.red[checked] .wx-radio-input,
+radio[checked] .wx-radio-input,
+switch.red.checked .uni-switch-input,
+switch.checked .uni-switch-input,
+checkbox.red.checked .uni-checkbox-input,
+checkbox.checked .uni-checkbox-input,
+radio.red.checked .uni-radio-input,
+radio.checked .uni-radio-input {
+	background-color: #FF5828 !important;
+	border-color: #FF5828 !important;
+	color: #FF5828 !important;
+	border-color: #EEEEEE !important;
+}
+
+
+uni-radio:not([disabled]) .uni-radio-input:hover,
+uni-checkbox:not([disabled]) .uni-checkbox-input:hover
+{
+	border-color: #d1d1d1;
+}

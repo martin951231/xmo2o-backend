@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <title>商家入驻</title>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.picker.min.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="css/reg.css"/>
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.12/lib/index.css" /> -->
+	<link href="css/vant@2.12.47index.min.css" rel="stylesheet" />
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" style="color:black;"></div>
+	    <h1 class="mui-title"></h1>
+	</header>
+	<div class="mui-content">
+	    <div class="mui-card">
+	    	<div class="mui-card-content">
+				<span class="left_style"><L_>账号</L_></span>
+				<input type="text" id="reg_account" placeholder="长度为6-16位字符" maxlength="16"/>
+			</div>
+			<div class="mui-card-content">
+				<span class="left_style"><L_>密码</L_></span>
+				<input type="password" id="reg_pwd" placeholder="请输入8~16位且包含字母、数字和特殊符号的密码" autocomplete="new-password"/>
+			</div>
+			<div class="mui-card-content">
+				<span class="left_style"><L_>商家名称</L_></span>
+				<input type="text" id="reg_name" placeholder="请填写商家名称" />
+			</div>
+			<div class="mui-card-content" id="company_name_content" style="display: none;">
+				<span class="left_style"><L_>公司名称</L_></span>
+				<input type="text" id="company_name" placeholder="请填写公司名称（营业执照上的名称）" style="width:68%;" />
+			</div>
+
+			<div class="mui-card-content" style="height:90px">
+				<span class="left_style"><L_>营业执照</L_></span>
+                <div class="mui-scroll-wrapper1 left_srcoll">
+					<div class="mui-scroll showImg showImg0" >
+						<div class="mui-pull-left uload">
+							<ul id="up_img">
+								<li class="up_img" >
+									<img src="images/17-8_03.png" alt="" />
+									<input type="file" accept="image/*" data-id="0" class="fileImage" id="fileImage0" name="imgFile"/>
+								</li>
+							</ul>
+						</div>  
+					</div>
+				</div>
+            </div>
+			<div class="mui-card-content" style="height:90px">
+				<span class="left_style"><L_>身份证正面</L_></span>
+                <div class="mui-scroll-wrapper1 left_srcoll">
+					<div class="mui-scroll showImg showImg1">
+						<div class="mui-pull-left uload">
+							<ul id="up_img">
+								<li class="up_img" >
+									<img src="images/17-8_03.png" alt="" />
+									<input type="file" accept="image/*" data-id="1" class="fileImage" id="fileImage1" name="imgFile"/>
+								</li>
+							</ul>
+						</div>  
+					</div>
+				</div>
+            </div>
+			<div class="mui-card-content" style="height:90px">
+				<span class="left_style"><L_>身份证反面</L_></span>
+                <div class="mui-scroll-wrapper1 left_srcoll">
+					<div class="mui-scroll showImg showImg2">
+						<div class="mui-pull-left uload">
+							<ul id="up_img">
+								<li class="up_img" >
+									<img src="images/17-8_03.png" alt="" />
+									<input type="file" accept="image/*" data-id="2" class="fileImage" id="fileImage2" name="imgFile"/>
+								</li>
+							</ul>
+						</div>  
+					</div>
+				</div>
+            </div>
+			
+			<div class="mui-card-content invit_code" style="display:none;">
+				<span class="left_style"><L_>邀请码</L_></span>
+				<input type="text" id="invit_code" placeholder="请填写邀请码" />
+			</div>
+			
+			<div class="mui-card-header area">
+				<p>
+					<span class="left_style"><L_>所在区域</L_></span>
+					<b id="showCityPicker"><span id="adress_text"><L_>请选择所在区域</L_></span><i class="mui-pull-right"></i></b>
+				</p>
+			</div>
+			<div class="mui-card-header area">
+				<p>
+					<span class="left_style"><L_>详细地址</L_></span>
+					<input type="text" id="address_info" placeholder="请填写详细地址" />
+				</p>
+			</div>
+			<div class="mui-card-header area phone_country" style="display:none;">
+				<p>
+					<span class="left_style"><L_>手机区号</L_></span>
+					<b id="phone_country_type"><span id="phone_country_type_click"><L_>请选择国家</L_></span> <i class="mui-pull-right"></i></b>
+				</p>
+			</div>
+
+			<div class="mui-card-content area">	
+				<span class="left_style L_" style="float: left;">手机号</span>
+				<input type="tel" id="reg_phone" placeholder="请填写手机号码" />
+			</div>
+			
+			<div class="mui-card-content area smscode" style="display:none;">
+				<span class="left_style L_">验证码</span>
+				<input type="tel" id="smsCode" maxlength="4" placeholder="请输入短信验证码" style="width:40%"/>
+				<button type="button" class="mui-pull-right sendCode L_" tabindex="-1" style="padding:4px;margin:5px auto;">获取验证码</button>
+			</div>
+			<div class="mui-card-content spread_code_box" style="display:none;">
+				<span class="left_style L_">推广码</span>
+				<input type="text" id="spread_code" placeholder="从推荐人处获取" />
+			</div>
+
+			<!--以下为自定义表单-->
+			<div style="height: 1rem;background: #efeff4"></div>
+
+			<div id="app">
+
+			</div>
+
+			<!--自定义表单结束-->
+	    </div>
+
+		<input type="hidden" id="province_id"/>
+		<input type="hidden" id="city_id"/>
+		<input type="hidden" id="area_id"/>
+		<input type="hidden" id="street_id"/>
+		<ul class="subline register_agreement_box" style="display:none;padding-left:10px;font-size:14px;margin-top:20px;">
+		    <li class="register_agreement"><input type="checkbox" id="register_agreement" ><L_>我已阅读并且同意</L_><font color="#EE3968"><a href="javascript:void(0)" id="register_agreement_btn"><L_>《商家注册协议》</L_></a>
+			<span style="color: #000">和</span>	<a href="agreement.html" class="agreementLink">《隐私政策》</a></font></li>
+		</ul>
+		<div class="register">
+			<van-button block :color="mainColor" native-type="submit"><L_>注册</L_></van-button>
+		</div>
+		<!-- <a href="javascript:;" class="register"><L_>注册</L_></a> -->
+
+		 <p class="beizhu merchant_verify" style="display:none;"><L_>注册成功后需要管理员审核</L_>，<L_>客服电话</L_>：<a id="site_phone"></a></p> 
+	</div>
+	<div id="captchaSendCode"></div>
+	<script id="formTpl" type="text/html">
+		{{# for (var i in d) { }}
+			{{# if(d[i].type == '0'){ }}
+				<!--单行文本-->
+				<div class="van-cell van-field">
+					<div class="van-cell__title van-field__label">
+						<span>{{d[i].name}}</span>
+					</div>
+					<div class="van-cell__value van-field__value">
+						<div class="van-field__body">
+							<input diy_type="{{d[i].type}}" is_require="{{d[i].iswrite}}" type="text" name="{{d[i].name}}" placeholder="请输入{{d[i].name}}" class="van-field__control L_N" />
+						</div>
+					</div>
+				</div>
+			{{# } else if (d[i].type == '1') { }}
+				<!--多行文本-->
+				<div class="van-cell van-field">
+					<div class="van-cell__title van-field__label">
+						<span>{{d[i].name}}</span>
+					</div>
+					<div class="van-cell__value van-field__value">
+						<div class="van-field__body">
+							<textarea diy_type="{{d[i].type}}" is_require="{{d[i].iswrite}}" rows="3" name="{{d[i].name}}" placeholder="请输入{{d[i].name}}" class="van-field__control L_N" style="height: 72px;"></textarea>
+						</div>
+					</div>
+				</div>
+			{{# } else if (d[i].type == '2') { }}
+				<!--上传图片-->
+				<div class="van-cell van-field">
+					<div class="van-cell__title van-field__label">
+						<span>{{d[i].name}}</span>
+					</div>
+					<div class="van-cell__value van-field__value">
+						<div class="van-field__body">
+							<div class="van-field__control van-field__control--custom">
+								<div class="van-uploader">
+									<div class="van-uploader__wrapper">
+
+										<div class="van-uploader__upload">
+											<img src="" style="display: none" class="img{{d[i].id}}"/>
+											<i class="van-icon van-icon-photograph van-uploader__upload-icon icon{{d[i].id}}"></i>
+											<input multiple="multiple" type="file" accept="image/*" class="van-uploader__input fileImage" id="{{d[i].id}}" name="imgFile"/>
+											<input diy_type="{{d[i].type}}" is_require="{{d[i].iswrite}}" type="hidden" name="{{d[i].name}}" placeholder="请上传{{d[i].name}}" class="hidden{{d[i].id}}"/>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{{# } else if (d[i].type == '3') { }}
+			<!--下拉选择框-->
+				<div role="button" tabindex="0" class="van-cell van-cell--clickable  van-field">
+					<div class="van-cell__title van-field__label">
+						<span>{{d[i].name}}</span>
+					</div>
+					<div class="van-cell__value van-field__value">
+						<div class="van-field__body">
+							<input diy_type="{{d[i].type}}" is_require="{{d[i].iswrite}}" data-val='{{d[i].use_field_json}}' type="text" name="{{d[i].name}}" readonly="readonly" placeholder="请选择{{d[i].name}}" class="select_key van-field__control L_N" style="width: 100%"/>
+							<div class="van-field__right-icon">
+								<i class="van-icon van-icon-arrow-down"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			{{# } else if (d[i].type == '4') { }}
+			<!--身份证正反面-->
+				<div class="van-cell van-field">
+					<div class="van-cell__title van-field__label">
+						<span>{{d[i].name}}</span>
+					</div>
+				</div>
+				<div class="ic-img">
+					<div class="van-uploader">
+						<div class="van-uploader__wrapper">
+							<div class="van-uploader__input-wrapper">
+								<div class="upload" style="width: 182px; height: 182px;">
+									<div class="img-con box-corner ">
+										<div class="img-box">
+											<img src="./images/auth_camera_icon.png" class="up-img img{{d[i].id}}_1" />
+										</div>
+									</div>
+									<div class="upload-tip">
+										<span class="color-orange">点击</span>上传身份证
+										<span class="color-orange">正面</span>照片
+									</div>
+								</div>
+								<input type="file" accept="image/*" class="van-uploader__input fileImage" id="{{d[i].id}}_1" name="imgFile"/>
+								<input diy_type="{{d[i].type}}" is_require="{{d[i].iswrite}}" placeholder="请上传身份证正面" type="hidden" name="{{d[i].name}}" class="hidden{{d[i].id}}_1"/>
+							</div>
+						</div>
+					</div>
+					<div class="upload" style="width: 182px; height: 182px;">
+						<div class="img-con">
+							<div class="img-box">
+								<img src="./images/auth_face_icon.png" class="eg-img" />
+							</div>
+						</div>
+						<div class="upload-tip">
+							正确示例：身份证正面
+						</div>
+					</div>
+				</div>
+				<div class="ic-img" style="margin-top: 10px;">
+					<div class="van-uploader">
+						<div class="van-uploader__wrapper">
+							<div class="van-uploader__input-wrapper">
+								<div class="upload" style="width: 182px; height: 182px;">
+									<div class="img-con box-corner ">
+										<div class="img-box">
+											<img src="./images/auth_camera_icon.png" class="up-img img{{d[i].id}}_2" />
+										</div>
+									</div>
+									<div class="upload-tip">
+										<span class="color-orange">点击</span>上传身份证
+										<span class="color-orange">背面</span>照片
+									</div>
+								</div>
+								<input type="file" accept="image/*" class="van-uploader__input fileImage" id="{{d[i].id}}_2" name="imgFile"/>
+								<input diy_type="{{d[i].type}}" is_require="{{d[i].iswrite}}" placeholder="请上传身份证背面" type="hidden" name="{{d[i].name}}" class="hidden{{d[i].id}}_2"/>
+							</div>
+						</div>
+					</div>
+					<div class="upload" style="width: 182px; height: 182px;">
+						<div class="img-con">
+							<div class="img-box">
+								<img src="./images/auth_back_icon.png" class="eg-img" />
+							</div>
+						</div>
+						<div class="upload-tip">
+							正确示例：身份证背面
+						</div>
+					</div>
+				</div>
+			{{# } else if (d[i].type == '5') { }}
+			<!--日期格式-->
+			<div role="button" tabindex="0" class="van-cell van-cell--clickable van-field">
+				<div class="van-cell__title van-field__label">
+					<span>{{d[i].name}}</span>
+				</div>
+				<div class="van-cell__value van-field__value">
+					<div class="van-field__body">
+						<input diy_type="{{d[i].type}}" type="text" is_require="{{d[i].iswrite}}" name="{{d[i].name}}" readonly="readonly" placeholder="请选择{{d[i].name}}" class="date_key van-field__control L_N" style="width: 100%"/>
+						<div class="van-field__right-icon">
+							<i class="van-icon van-icon-arrow-down">
+								<!----></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{# } else if (d[i].type == '6') { }}
+			<!--时间格式-->
+			<div role="button" tabindex="0" class="van-cell van-cell--clickable  van-field">
+				<div class="van-cell__title van-field__label">
+					<span>{{d[i].name}}</span>
+				</div>
+				<div class="van-cell__value van-field__value">
+					<div class="van-field__body">
+						<input diy_type="{{d[i].type}}" type="text" is_require="{{d[i].iswrite}}" name="{{d[i].name}}" readonly="readonly" placeholder="请选择{{d[i].name}}" class="time_key van-field__control L_N" style="width: 100%"/>
+						<div class="van-field__right-icon">
+							<i class="van-icon van-icon-arrow-down">
+								<!----></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{# } else if (d[i].type == '7') { }}
+			<!--日期+时间格式-->
+			<div role="button" tabindex="0" class="van-cell van-cell--clickable  van-field">
+				<div class="van-cell__title van-field__label">
+					<span>{{d[i].name}}</span>
+				</div>
+				<div class="van-cell__value van-field__value">
+					<div class="van-field__body">
+						<input diy_type="{{d[i].type}}" type="text" is_require="{{d[i].iswrite}}" name="{{d[i].name}}" readonly="readonly" placeholder="请选择{{d[i].name}}" class="date_time_key van-field__control L_N" style="width: 100%"/>
+						<div class="van-field__right-icon">
+							<i class="van-icon van-icon-arrow-down">
+								<!----></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{# } else { }}
+			{{# } }}
+		{{# } }}
+	</script>
+
+	<script>
+		var store_id = "{pigcms{$_GET['store_id']}";
+	</script>
+	<script src="https://cdn.dingxiang-inc.com/ctu-group/captcha-ui/index.js"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mui.dtpicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.picker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/common.js?t=1" type="text/javascript" charset="utf-8"></script>
+	<script src="js/work/reg.js?t=12351" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ajaxfileupload.js" type="text/javascript" charset="utf-8"></script>
+
+
+	<style>
+		html,
+		body,
+		#app {
+			width: 100%;
+			height: 100%;
+			background-color: #ffffff;
+		}
+	
+		.tips {
+			padding: 0px 15px;
+			line-height: 40px;
+			vertical-align: middle;
+			font-size: 12px;
+			color: #666666;
+			/* margin-bottom: 10px; */
+		}
+	
+		.ic-img {
+			width: 100%;
+			padding: 0 15px;
+			box-sizing: border-box;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+	
+		.ic-img .upload {
+			padding: 15px 10px;
+			box-sizing: border-box;
+			background-color: #FD874510;
+	
+		}
+	
+		.ic-img .upload .img-con {
+			width: 90%;
+			height: 75%;
+			margin: auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	
+		.box-corner {
+			background: linear-gradient(to left, #FD8745, #FD8745) left top no-repeat,
+				linear-gradient(to bottom, #FD8745, #FD8745) left top no-repeat,
+				linear-gradient(to left, #FD8745, #FD8745) right top no-repeat,
+				linear-gradient(to bottom, #FD8745, #FD8745) right top no-repeat,
+				linear-gradient(to left, #FD8745, #FD8745) left bottom no-repeat,
+				linear-gradient(to bottom, #FD8745, #FD8745) left bottom no-repeat,
+				linear-gradient(to left, #FD8745, #FD8745) right bottom no-repeat,
+				linear-gradient(to left, #FD8745, #FD8745) right bottom no-repeat;
+			background-size: 2px 10px, 10px 2px, 2px 10px, 10px 2px;
+		}
+	
+		.ic-img .upload .img-con .img-box {
+			width: 80%;
+			height: 70%;
+			background-color: #ffffff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	
+		.ic-img .upload .img-con .img-box .up-img {
+			width: 35px;
+			height: 27px;
+		}
+	
+		.ic-img .upload .img-con .img-box .id-img {
+			width: 100%;
+			height: 100%;
+		}
+	
+		.ic-img .upload .img-con .img-box .eg-img {
+			width: 80%;
+			height: 70%;
+		}
+	
+		.upload-tip {
+			font-size: 12px;
+			color: #666666;
+			width: 100%;
+			text-align: center;
+			height: 25%;
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+		}
+	
+		.color-orange {
+			color: #FD8745;
+			font-weight: bold;
+		}
+	
+		.submit {
+			margin: 0 20px;
+			padding: 40px 0;
+		}
+	
+		.line {
+			width: 100%;
+			height: 10px;
+			background-color: #f4f4f4;
+		}
+		#app .van-field__label{
+			padding-top: 10px;
+			margin-right:0px
+		}
+	</style>
+
+	<!--图片滚动-->
+	<script src="js/mui.zoom.js"></script>
+	<script src="js/mui.previewimage.js"></script>
+	<script src="js/mui.picker.js"></script>
+	<script>
+		$(document).ready(function(){
+			var newmarket_code = GetQueryString('code');
+			console.log('aaa',newmarket_code);
+			if (newmarket_code != null) {
+				$("#invit_code").val(newmarket_code);
+			}
+		});
+
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+	</script>
+
+</body>
+</html>

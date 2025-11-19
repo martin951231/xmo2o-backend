@@ -1,0 +1,38 @@
+
+.linkLabel[data-v-362c17e8] {
+    display: inline-block;
+    height: 32px;
+    font-size: 14px;
+    line-height: 32px;
+    text-align: center;
+}
+.linkUrl[data-v-362c17e8] {
+    display: inline-block;
+    width: 100%;
+    min-height: 32px;
+    padding: 4px 11px;
+    color: rgba(0,0,0,.65);
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #f5f5f5;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.codeImg[data-v-362c17e8] {
+    width: 344px;
+    height: 344px;
+}
+
+
+.listPage[data-v-78526c8c] {
+    padding: 12px 16px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.color-gray[data-v-78526c8c] {
+    color: rgba(173, 173, 173, 1);
+}
+

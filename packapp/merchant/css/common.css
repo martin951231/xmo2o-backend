@@ -1,0 +1,47 @@
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+	flex: 1;
+}
+
+.flex-direction {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.align-center {
+	align-items: center;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.justify-between {
+	justify-content: space-between;
+}
+
+.justify-around {
+	justify-content: space-around;
+}
+
+.text-nowrap {
+    white-space: nowrap;
+}
+
+.text-wrap {
+    white-space: pre-wrap;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.text-cut {
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}

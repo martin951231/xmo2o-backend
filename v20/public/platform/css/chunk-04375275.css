@@ -1,0 +1,38 @@
+.input_style_240[data-v-7979f575] {
+  width: 240px;
+}
+
+
+[data-v-3bb659f6] .ant-drawer-body {
+  padding: 0px;
+}
+
+.build_index[data-v-687c1fe0] {
+  background-color: #ffffff;
+  padding: 0 20px;
+}
+.top-box-padding[data-v-687c1fe0] {
+  border-bottom: 1px solid #ebedf0;
+  padding: 20px 0;
+}
+.status-color-ok[data-v-687c1fe0] {
+  color: green;
+}
+.status-color-fail[data-v-687c1fe0] {
+  color: red;
+}
+.total_number[data-v-687c1fe0] {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  height: 50px;
+  padding-right: 20px;
+}
+

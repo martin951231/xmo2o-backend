@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8"/>
+        <title>店员中心</title>
+        <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name='apple-touch-fullscreen' content='yes'/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="format-detection" content="telephone=no"/>
+        <meta name="format-detection" content="address=no"/>
+        <link href="css/pigcms.css?t=2" rel="stylesheet"/>
+        <style type="text/css">
+            .suces_bot div.fl{
+                float: left;
+                margin-right: 6%;
+                margin-bottom: 10px;
+                margin-left: 0;
+                width: 40%;
+            }
+            .suces_bot div.fl:last:child{
+                margin-bottom: 0;
+            }
+        </style>
+    </head>
+    <body style="background: #2ecc71;">
+        <section class="public">
+            <div class="return link-url" data-url-type="openLeftWindow" data-url="back"></div>
+            <div class="content"><L_>创建成功</L_></div>
+        </section>
+        <section class="success">
+            <div class="fillet">
+                <div class="suces_top">
+                    <div class="img">
+                        <img src="images/t_03.jpg" width=80%>
+                    </div>
+                    <h2></h2>
+                    <p><L_>订单总价：</L_><span class="ecc"><span id="Currency_symbol1"><L_>￥</L_></span><span id="total_price"></span></p>
+                    <p id="discount_money_dom"><L_>优惠金额：</L_><span class="f33"><span id="Currency_symbol2"><L_>￥</L_></span><span id="discount_money"></span></span></p>
+                    <p><L_>实付金额：</L_><span class="ecc"><span id="Currency_symbol3"><L_>￥</L_></span><span id="pay_money"></span></span></p>
+                    <p class="c99" id="txt_info_dom"><L_>订单备注：</L_><span id="txt_info"></span></p>
+                    <div class="line"></div>
+                </div>
+                <div class="suces_mid">
+                    <div class="bun" id="printOrder">
+                        <span><L_>打印订单</L_></span>
+                    </div>
+                    <div class="line"></div>
+                </div>
+                <div class="suces_bot clr">
+				<p  class="title_offline"><L_>线上支付：</L_></p>
+                    <div class='clr pay_type' style='margin-left:40px;'>
+                        <div class="fl user_code" id="scanQrcode">
+                            <div class="user">
+                                <img src="images/cjcgt_10.png"/>   
+                                <p><L_>扫用户码</L_></p>
+                            </div>
+                        </div>
+                        <div class="fl scan_code">
+                            <div class="scan">
+                                <img src="images/cjcgt_07.png"/>   
+                                <p><L_>用户扫码</L_></p>
+                            </div>
+                        </div>
+                        
+                        <div class="fl pufa_pos_pay" style="display:none;">
+                            <div class="pufa">
+                                 <img src="images/cjcgt_07.png"/>   
+                                <p><L_>浦发刷卡</L_></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+				<div class="suces_bot clr" id="offlinepay">
+				<p class="title_offline"><L_>线下支付：</L_></p>
+				<button class="bun balance_click" data-id="">
+                    <L_>平台余额支付</L_>
+				</button>
+                <button class="bun balance_click" id="qiye_pay_method" data-id="" data-pay-method="qiye">
+                    <L_>小程序码支付</L_>
+                </button>
+                <button class="bun balance_click" id="internalCard_pay_method" data-id="" data-pay-method="internalCard" style="display: none;">
+                    <L_>一卡通支付</L_>
+                </button>
+				</div>
+            </div>
+            <div class="top1"></div>
+            <div class="top2"></div>
+        </section> 
+		
+        <div class="fix_ewm">
+            <img src="" id="scan_code_img"/>
+            <div class="del"></div>
+        </div>
+		<section class="popup balance" style="display: none;">
+            <div class="h2"><span><L_>平台余额支付</L_></span></div>
+            <div class="bot" style="padding: 69px 10px;">
+				<p id="balance_title" style="margin-top:-50px"><L_>只有在平台账户绑定手机号的用户才能使用平台余额支付</L_></p>
+                <div class="sm_input">
+                    <div class="input" id="balance_input_dom">
+                        <input type="tel" id="balance_phone" placeholder="请输入手机号">
+                        <input type="tel" id="smscode" placeholder="请输入验证码" style="display:none;width:94%">
+                        
+                    </div>
+                    <div class="qrzf" id="verify_phone"><L_>发送验证码</L_></div>
+                    <div class="qrzf" id="balance_smscode" data-second="" style="width:80px;display:none;"><L_>发送验证码</L_></div>
+                </div>
+                    <div class="pay_btn" id="balance_btn"><L_>确认支付</L_></div>
+              
+            </div>
+            <div class="del"></div>
+            <div class="back_check" style="right: 8px;top: 10px;position: absolute;color: #fff;display:none"><L_>上一步</L_></div>
+        </section>
+
+        <!-- 一卡通支付 -->
+        <section class="popup" style="display: none;" id="internalCardPopup">
+            <div class="h2"><span><L_>一卡通支付</L_></span></div>
+            <div class="bot" style="padding: 20px 10px;">
+                <div class="sm_input" style="height: auto;">
+                    <div class="input">
+                        <input type="tel" id="card_no" placeholder="请输入卡号或手机号">
+                    </div>
+                    <div class="qrzf" id="internalCardQuery"><L_>查询</L_></div>
+                </div>
+                <div style="display: none;" id="internalCardPayInfo">
+                    <p id="internalCardTitle">
+                        当前一卡通余额： ￥<span id="ecard_total_money">0</span>
+                        ，待支付 <L_>￥</L_><span class="total_price" style="color: red;"></span>
+                    </p>
+                    <p id="useSystemCoupon" style="background: none;color: #000;margin:1rem auto">
+                    </p>
+                    <div class="pay_btn" id="confirmPayment" style="background-color: #2ecc71;"><L_>确认支付</L_></div>
+                </div>
+            </div>
+            <div class="del"></div>
+        </section>
+
+        <!-- 一卡通密码输入框-->
+        <section class="popup" style="display: none;" id="internalCardPassPopup">
+            <div class="h2"><span>一卡通密码</span></div>
+            <div class="bot" style="padding: 20px 10px;">
+                <div class="sm_input" style="height: auto;">
+                    <div class="input">
+                        <input type="password" id="password" placeholder="请输入密码">
+                    </div>
+                    <div class="qrzf" id="confirmPassword">确定</div>
+                </div>
+            </div>
+            <div class="del"></div>
+        </section>
+
+        <!--企业预存款支付弹窗-->
+        <section class="popup qiye_pay_alert" style="display: none;">
+            <div class="h2"><span style="background:none;padding-left: 0px"><L_>小程序码支付</L_></span></div>
+            <div class="bot" style="padding: 69px 10px;">
+                <p id="balance_title" style="margin-top:-50px"><L_>点击扫码按钮得到值</L_></p>
+                <div class="sm_input">
+                    <div class="input">
+                        <input type="text" id="qiye_pay_code"/>
+                        <div class="qiye_scan"></div>
+                    </div>
+                    <div class="qrzf pay_btn" id="qiye_btn"><L_>确认支付</L_></div>
+                </div>
+
+            </div>
+            <div class="del"></div>
+            <div class="back_check" style="right: 8px;top: 10px;position: absolute;color: #fff;display:none"><L_>上一步</L_></div>
+        </section>
+		<div class="mask"></div>
+		
+		
+		 <script id="payoffline_tpl" type="text/html">
+			
+            {{# for(var i = 0, len = d.length; i < len; i++){ }}
+				
+				 <button class="bun offlinepay_click" data-id="{{ d[i].id }}">
+                        {{ d[i].name }}
+				</button>
+            {{# } }}
+        </script>
+
+        <!-- 平台优惠券选中，目前只有一卡通支付支持选择 -->
+        <script id="systemcoupon_tpl" type="text/html">
+			平台优惠券：
+            <select id="choose_system_coupon">
+                {{# if(d.length == 0){ }}
+                    <option value="0">无可用优惠券</option>
+                {{# }else{ }}
+                    <option value="0">不使用优惠券</option>
+                    {{# for(var i = 0, len = d.length; i < len; i++){ }}
+                        {{# if(i == 0){ }}
+                            <option value="{{ d[i].had_id }}" selected>{{ d[i].show_discount }} * {{ d[i].count }}张</option>
+                        {{# }else{ }}
+                            <option value="{{ d[i].had_id }}">{{ d[i].show_discount }} * {{ d[i].count }}张</option>
+                        {{# } }}
+                    {{# } }}
+                {{# } }}
+            </select>
+        </script>
+        <script src="scripts/jquery-1.8.3.min.js"></script>
+		<script src="scripts/fastclick.js"></script>
+		<script src="scripts/layer/layer.m.js"></script>
+		<script src="scripts/common.js"></script>
+		<script src="scripts/work/cashier_success.js?t=811"></script>
+        <script type='text/javascript'>
+            //修复ios手机当有input输入时，手机下方弹出键盘使页面上移，当输入完成，键盘消失后页面显示回到原位，但实际不能点击
+            $('input').on('blur', function () {
+                setTimeout(function(){
+                    var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop || 0;
+                    window.scrollTo(0, Math.max(scrollHeight - 1, 0));
+                }, 100);
+            });
+        </script>
+    </body>
+
+    <style type="text/css">
+        .qiye_scan{
+            position: absolute;
+            width: 35px;
+            height: 33px;
+            background: url(./images/hykt_03.png) center no-repeat;
+            background-size: 16px 15px;
+            right: 0px;
+            top: 0px;
+        }
+        #choose_system_coupon{
+            width: 55%;
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin-left: 10px;
+        }
+    </style>
+</html>

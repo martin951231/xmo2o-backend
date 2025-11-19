@@ -1,0 +1,20 @@
+
+/deep/ .imgname{
+    width: 100px;
+}
+
+.table-operator[data-v-970a47e8] {
+  margin-bottom: 10px;
+}
+[data-v-970a47e8] .input1 {
+  width: 60% !important;
+}
+[data-v-970a47e8] .span_box {
+  display: inline-block;
+  margin-right: 10px;
+  width: 28%;
+}
+[data-v-970a47e8] .span_box:nth-child(1) {
+  margin-left: 1.45%;
+}
+

@@ -1,0 +1,264 @@
+<html lang="zh-CN"><head>
+    <meta charset="utf-8">
+    <title>入驻缴费</title>
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link href="css/mui.picker.css" rel="stylesheet" />
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link href="css/pigcms.css" rel="stylesheet">
+    <style>
+        .spec_list table td {
+            text-align: center;
+        }
+        .spec_list table th {
+            text-align: center;
+            padding: 1px;
+            font-size: 14px;
+        }
+        .spec_list table tr {
+            border-bottom: #f1f1f1 1px solid;
+        }
+        .spec_list table {
+            margin: 12px 3%;
+        }
+        .plus_class {
+            position: fixed;
+            height: 60px;
+            width: 100%;
+            bottom: 0;
+            line-height: 60px;
+            background: #EFEFF4;
+        }
+        .mg_60 {
+            margin-bottom: 60px;
+        }
+        .plus_class div {
+            margin: 0 5%;
+            width: 90%;
+            padding: 10px 0;
+        }
+        .plus_class a.to_pay {
+            background: #ffa200;
+            border-radius: 5px;
+            margin-left: 1%;
+            display: inline-block;
+        }
+        .plus_class a {
+            margin-left: 5%;
+            width: 100%;
+            height: 40px;
+            color: #fff;
+            font-size: 16px;
+            line-height: 40px;
+            text-align: center;
+        }
+
+
+        .spec_list .flex {
+            display: flex;
+        }
+        .spec_list .flex_grow {
+            flex-grow: 1;
+            text-align: center
+        }
+
+        .spec_list .spec_val_name {
+            padding: 1px 0;
+        }
+        .spec_list .list_spec_name {
+            font-size: 14px;
+            line-height: 22px;
+            border-radius: 5px;
+            padding: 2px 5px;
+            margin-top: 2px;
+            color: #fff;
+            background: #f23030;
+        }
+        .spec_list .spec_val_name div {
+            font-size: 14px;
+            line-height: 22px;
+            color: #fff;
+            background: #f23030;
+        }
+        .spec_list .spec_price {
+            color: #ff4d45;
+            width: 100%;
+        }
+        .right {
+            float: right;
+        }
+        .clr {
+            zoom: 1;
+        }
+
+
+        .spec_buy_num .wrap .plus a {
+            width: 30px;
+            float: left;
+            height: 28px;
+            border: #e5e5e5 1px solid;
+            text-align: center;
+            color: #333333;
+            line-height: 28px;
+            font-size: 20px;
+            font-family: "Arial";
+        }
+        .spec_buy_num .wrap .plus input {
+            width: 70px;
+            text-align: center;
+            float: left;
+            border: #e5e5e5 1px solid;
+            border-left: none;
+            border-right: none;
+            height: 28px;
+            font-size: 14px;
+            border-radius: 0px;
+        }
+
+        .normal .wrap .plus a {
+            width: 30px;
+            float: left;
+            height: 28px;
+            border: #e5e5e5 1px solid;
+            text-align: center;
+            color: #333333;
+            line-height: 28px;
+            font-size: 20px;
+            font-family: "Arial";
+        }
+        .normal .wrap .plus input {
+            width: 70px;
+            text-align: center;
+            float: left;
+            border: #e5e5e5 1px solid;
+            border-left: none;
+            border-right: none;
+            height: 28px;
+            font-size: 14px;
+            border-radius: 0px;
+        }
+        .tab{
+            text-align: center;
+            width: 50%;
+            float: left;
+            padding: 10px 20px;
+            border-bottom: 2px solid #bbbbbb;
+            margin-bottom: 20px; 
+        }
+        .active{
+            color: #ffa200;
+            border-bottom: 2px solid #ffa200;
+        }
+        
+    </style> 
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title"><span class="market"><L_></L_></span><L_>入驻缴费</L_></h1>
+    <div class="mui-icon mui-icon-right-nav mui-pull-right" style="font-size: 14px;line-height: 25px;" onclick="location.href='settle_list.html'">缴费记录</div>
+</header>
+<div class="mui-content" style="padding-bottom: 60px;background-color: #fff;float: left;width: 100%;">
+    
+    <div class="commod detail_list">
+        <input type="hidden" value="{{ data.order_id }}" name="order_id">
+        <div class="buy detail_list">
+             
+            <div>
+                <div class="tab" onclick="location.href='./settle.html'">充值</div>
+                <div class="tab active">退款</div>
+            </div>
+            <div>
+                <span style="padding-left: 10px;">您的金额为：￥<span class="now_money">0</span></span>
+            </div>
+            <div class="user_list" style="padding:0 10px;margin-top: 20px;">
+                <span class="fl" style="display: inline-block; line-height:40px;vertical-align: middle; width: 40%;">退款金额</span>
+                <span class="fr" style="width: 60%;">
+<!--                    <input type="text" class="col-sm-2" name="money" id="money" value="{{ data.moneyShouldPay }}" onkeyup="clearNoNum(this)"/>-->
+                    <input type="text" class="col-sm-2" name="money" id="money" value="" onkeyup="clearNoNum(this)"/>
+                </span>
+            </div>
+
+            <div class="user_list" style="padding:0 10px;margin-top: 20px;">
+                <span class="fl" style="display: inline-block; line-height:40px;vertical-align: middle;width: 40%;">备注</span>
+                <span class="fr" style="width: 60%;">
+<!--                    <input type="text" class="col-sm-2" name="money" id="money" value="{{ data.moneyShouldPay }}" onkeyup="clearNoNum(this)"/>-->
+                    <textarea name="remark" id="remark" cols="30" rows="4" style="border: 1px solid #cccccc;padding-left: 15px;padding-top: 5px;"></textarea>
+                </span>
+            </div>
+            
+           
+ 
+
+
+        </div>
+
+    </div>
+</div>
+<nav class="plus_class">
+    <div>
+        <a href="javascript:;" class="to_pay"><L_>确定提交</L_></a>
+    </div>
+
+</nav>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/fastclick.js"></script>
+<script src="js/jRoll.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js?t=001"></script> 
+    
+
+ 
+
+<script> 
+    mui.init();
+    var ticket = common.getCache('ticket'); 
+    var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+    $(document).ready(function(){
+        // alert(123)
+        $.post('/appapi.php?c=Merchantapp&a=getDataAjax',{
+            'ticket': ticket,
+            'client': client,
+        }, function(res){
+            if(res.errorCode == 0){
+                $('.now_money').text(res.result.settle_in_money);
+            }
+        }, 'json')
+
+        $('.to_pay').click(function(){
+            var money = $.trim($('input[name="money"]').val());
+            var remark = $.trim($('#remark').val());
+            $.post('/appapi.php?c=Merchantapp&a=settleinRefund',{
+                'ticket': ticket,
+                'client': client,
+                'money': money,
+                'remark': remark
+            }, function(res){
+                console.log(res)
+                if(res.errorCode != 0){
+                     alert(res.errorMsg);
+                }else{
+                    alert('提交成功！');
+                    location.href = './settle.html'
+                }
+            }, 'json')
+        })
+       
+    });
+</script>
+
+</body></html>

@@ -1,0 +1,9 @@
+
+.imgname {
+   width: 100px;
+}
+.refund_type_desc table{font-weight: bold;}
+.refund_type_desc  .ant-descriptions-item-colon,.refund_type_desc .ant-descriptions-item-content{padding: 8px 20px;}
+.have_selected { border: 1px solid #eee; border-radius: 5px;padding: 2px 5px;background-color: #f1f1f1;margin-right: 10px;margin-bottom: 10px;
+   display: inline-block;}
+

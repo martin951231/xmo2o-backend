@@ -1,0 +1,111 @@
+
+[data-v-425560b8] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+
+.owner_msg .label_con[data-v-701394f0] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-701394f0]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-701394f0] {
+  font-weight: bold;
+}
+.owner_msg .label_con .choose_con[data-v-701394f0] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.owner_msg .label_con[data-v-69d727fe] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-69d727fe]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-69d727fe] {
+  font-weight: bold;
+}
+.owner_msg .label_con .checkbox_con[data-v-69d727fe] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.user_label .label_con[data-v-dbb68476] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.user_label .label_con[data-v-dbb68476]:nth-child(1) {
+  margin-top: 0;
+}
+.user_label .label_con .title[data-v-dbb68476] {
+  font-weight: bold;
+}
+.user_label .label_con .radio_con[data-v-dbb68476] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+
+.form_con[data-v-96377b4e] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+.form_con .form_item[data-v-96377b4e] {
+  width: 50%;
+}
+
+.family_content[data-v-4947c083] {
+  background-color: #ffffff;
+}
+.family_content .top_con[data-v-4947c083] {
+  margin: 10px 0;
+  padding: 20px 10px;
+}
+.family_content .status-color-ok[data-v-4947c083] {
+  color: green;
+  font-weight: bold;
+}
+.family_content .status-color-fail[data-v-4947c083] {
+  color: red;
+  font-weight: bold;
+}
+

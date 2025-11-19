@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN"> 
+	<head>
+		<meta charset="utf-8" />
+		<title>直播播放</title>
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, width=device-width"/>
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name='apple-touch-fullscreen' content='yes'/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="format-detection" content="address=no"/>
+		<style>
+			article, aside, audio, body, canvas, caption, details, div, p, figure, footer, header, hgroup, html, iframe, img, mark, menu, nav, object, section, span, summary, table, tbody, td, tfoot, thead, tr, video, dl, dd {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			.bg_style {
+				height: 921px;
+				background-color: #000;
+				position: fixed;
+				z-index: 500;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0.3;
+			}
+			.store_live {
+				background: url(/static/images/video_backgroud.png) no-repeat;
+				width: 100%;
+				height: 200px;
+				z-index: 999;
+				margin: 0 auto;
+				top: 34%;
+				-webkit-background-size: cover;
+				-moz-background-size: cover;
+				-o-background-size: cover;
+				background-size: cover;
+				position: fixed;
+				background-size: 100% 100%;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="pwd_bg" class="bg bg_style video" style="height: 921px;"></div>
+		<div id="store_live" class="store_live video">
+			<video controls="true" width="100%" height="100%" webkit-playsinline style="object-fit:fill"  id="video_url"></video>
+		</div>
+		<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/1.9.0/jquery.min.js" charset="utf-8"></script>
+		<script src="https://cdn.jsdelivr.net/hls.js/latest/hls.min.js"></script>
+		<script>
+			function GetRequest(){
+				var url = location.search;
+				var theRequest = {}; 
+				if(url.indexOf("?") != -1){
+					var str = url.substr(1); 
+					strs = str.split("&"); 
+					for(var i = 0; i < strs.length; i ++) { 
+						theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]); 
+					}
+				}
+				return theRequest; 
+			}
+			var urlParam = GetRequest();
+			$(function(){
+				$('#pwd_bg').height($(window).height());
+				$('#store_live').height($(window).width()*3/4).css('top',($(window).height()-$('#video_url').height()) / 2);
+				$('#video_url').attr('src',urlParam.sorce_url).height($(window).width()*3/4).css('top',($(window).height()-$('#video_url').height()) / 2);
+				if(Hls.isSupported()) {
+					var video_show = document.getElementById('video_url');
+					hls = new Hls();
+					 hls.loadSource($(video_show).attr('src'));
+					hls.attachMedia(video_show);
+					hls.on(Hls.Events.MANIFEST_PARSED,function() {
+					  video_show.play();
+				  });
+				}
+			});
+		</script>
+	</body>
+</html>

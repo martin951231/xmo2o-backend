@@ -1,0 +1,302 @@
+<html lang="zh-CN"><head>
+    <meta charset="utf-8">
+    <title>商家充值</title>
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="address=no">
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css" />
+    <link href="css/mui.picker.css" rel="stylesheet" />
+    <link href="css/mui.poppicker.css" rel="stylesheet" />
+    <link href="css/pigcms.css" rel="stylesheet">
+    <style>
+        .plus_class {
+            position: fixed;
+            height: 60px;
+            width: 100%;
+            bottom: 0;
+            line-height: 60px;
+            background: #EFEFF4;
+        }
+        .plus_class div {
+            margin: 0 5%;
+            width: 90%;
+            padding: 10px 0;
+        }
+        .plus_class a.to_pay {
+            background: #ffa200;
+            border-radius: 5px;
+            margin-left: 1%;
+            display: inline-block;
+        }
+        .plus_class a {
+            margin-left: 5%;
+            width: 100%;
+            height: 40px;
+            color: #fff;
+            font-size: 16px;
+            line-height: 40px;
+            text-align: center;
+        }
+        .clr {
+            zoom: 1;
+        }
+    </style>
+<body>
+<header class="mui-bar mui-bar-nav">
+    <div class=" mui-icon mui-icon-left-nav mui-pull-left" data-url="back" ></div>
+    <h1 class="mui-title"><span class="market"><L_></L_></span><L_>商家充值</L_></h1>
+</header>
+<div class="mui-content" style="padding-bottom: 60px;background-color: #fff;">
+    <section class="g_details allHtml">
+
+    </section>
+</div>
+<nav class="plus_class">
+    <div>
+        <a href="javascript:;" class="to_pay"><L_>确定支付</L_></a>
+    </div>
+
+</nav>
+
+
+<script src="js/fastclick.js"></script>
+<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/mui.picker.js"></script>
+<script src="js/mui.dtpicker.js"></script>
+<script src="js/mui.poppicker.js"></script>
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/fastclick.js"></script>
+<script src="js/jRoll.js"></script>
+<script src="js/laytpl.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layer/layer.m.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/common.js?t=001"></script>
+<script id="pluscardLists" type="text/html">
+    {{# var data=d; }}
+    <div class="commod detail_list">
+        <input type="hidden" value="{{ data.order_id }}" name="order_id">
+        <div class="buy detail_list">
+            <div class="top clr">
+                <h2 class="fl">{{L_('商品信息')}}</h2>
+            </div>
+            <div class="user_list" style="padding:0 10px;margin-top: 20px;">
+                <span class="fl" style="display: inline-block; line-height:40px;vertical-align: middle;">{{L_('充值金额')}}({{ data.config.Currency_txt }})</span>
+                <span class="fr">
+<!--                    <input type="text" class="col-sm-2" name="money" id="money" value="{{ data.moneyShouldPay }}" onkeyup="clearNoNum(this)"/>-->
+                    <input type="text" class="col-sm-2" name="money" id="money" value="" onkeyup="clearNoNum(this)"/>
+                </span>
+            </div>
+
+            <div class="pay_detail detail_list" style="clear: both;;margin-bottom: 60px;">
+                <div class="top clr">
+                    <h2 class="fl">{{L_('选择支付方式')}}</h2>
+                </div>
+                <div class="user_list">
+                    <ul>
+                        {{# if (data.pay_method) { }}
+                        {{# for (var i in data.pay_method) { }}
+                        {{# if (data.pay_method[i]) { }}
+                        <li class="clr" style="padding: 0;">
+                            <div class="mui-input-row mui-radio mui-left">
+                                <label style="width:100%;">
+                                    <input name="pay_type" value="{{ i }}" class="pay_type {{ i }}" type="radio" style="top: 12px;" checked="checked">
+                                    <span>
+															<img src="images/pay/weixinh5.gif" width="112" height="32" alt="{{data.pay_method[i]['name']}}" title="{{data.pay_method[i]['name']}}" />
+														</span>
+                                </label>
+                            </div>
+                        </li>
+                        {{# } }}
+                        {{# } }}
+                        {{# } }}
+                    </ul>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</script>
+<script>
+    mui.init();
+    var ticket = common.getCache('ticket');
+    var client = common.checkAndroidApp() ? 2 : (common.checkIosApp() ? 1 : 0);
+    var mask = mui.createMask();//callback为用户点击蒙版时自动执行的回调；
+    var Currency_txt = '元';
+    var openid = urlParam.openid;
+    var moneyShouldPay = $.getUrlParam('money');
+    
+    // 渲染数据
+    common.http('Merchantapp&a=mer_recharge', {
+        'ticket': ticket,
+        'client': client,
+    }, function (data) {
+        Currency_txt = data.config['Currency_txt'];
+        data.moneyShouldPay = parseFloat(moneyShouldPay).toFixed(2)
+        laytpl(document.getElementById('pluscardLists').innerHTML).render(data, function (html) {
+            $('.allHtml').html(html);
+            setTimeout(function () {
+                if (openid) {
+                    $('.weixin').attr('checked', true);
+                }
+            }, 500)
+        });
+    });
+    //            if(!openid && data.config['pay_weixinh5_open'] == '1'){
+    //            	location.href = window.location.protocol + '//' + requestDomain + '/wap.php?c=Packapp&a=bind&is_return=1&referer=' + encodeURI(location.href);
+    //            }
+
+
+    // 确认支付订单
+    mui('.plus_class').on('tap','.to_pay',function(){
+        var pay_type = $('input[name="pay_type"]:checked').val();
+        if (pay_type=='weixin' && !openid) {
+            layer.open({
+                content: L_('微信支付需要先绑定微信？绑定后请重新点击确认支付！')
+                ,btn: [L_('前往'), L_('取消')]
+                ,yes: function(index){
+                    location.href = window.location.protocol + '//' + requestDomain + '/wap.php?c=Packapp&a=bind&is_return=1&referer=' + encodeURI(location.href);
+                    layer.close(index);
+                }
+            });
+        } else {
+            callpay();
+        }
+    });
+
+    //微信弹程支付
+    function callpay(){
+        var pay_type = $('input[name="pay_type"]:checked').val();
+        var money = $.trim($('input[name="money"]').val());
+        common.http('Merchantapp&a=mer_recharge', {
+            'ticket': ticket,
+            'client': client,
+            'pay_type':pay_type,
+            'money' : money,
+            'openid': openid
+        }, function (data) {
+            if(pay_type == 'weixin' && !data.error){
+                layer.closeAll();
+                layer.open({
+                    type:1,
+                    content:'<div onclick="location.reload()" style="width:250px;top:50%;position:fixed;background:white;padding:20px 0;left:50%;margin-left:-125px;text-align:center;border-radius:10px;margin-top:-27px;">正在唤起微信支付，点击刷新</div>',
+                    shadeClose:false,
+                    success:function(){
+
+                    }
+                });
+                param =  data.weixin_param;
+                WeixinJSBridge.invoke("getBrandWCPayRequest",param,function(res){
+                    WeixinJSBridge.log(res.err_msg);
+                    if(res.err_msg=="get_brand_wcpay_request:cancel"){
+                        setTimeout(function(){
+                            window.location.reload();
+                        },200);
+                        layer.open({type:2,content:'刷新页面中',shadeClose:false});
+                    }else if(res.err_msg=="get_brand_wcpay_request:ok"){
+                        setTimeout("window.location.href = '"+data.redirctUrl+"'",200);
+                        layer.open({type:2,content:'跳转加载中',shadeClose:false});
+                    }else{
+                        $("button.mj-submit").removeAttr("disabled");
+                        $("button.mj-submit").html("确认支付");
+                    }
+                    layer.closeAll();
+                });
+            } else if (data && data.error && data.msg) {
+                // mui.toast(data.msg);
+
+                if (data.jump) {
+                    var jump = data.jump;
+                    setTimeout(function () {
+                        if ('buy'==jump){
+                            var order_id=data.order_id;
+                            var goods_id=data.goods_id;
+                            openWindow({
+                                url:'market_detail.html?order_id='+order_id+'&goods_id='+goods_id+'&type=buy',
+                                id:'market_detail'
+                            });
+                        } else if ('market_index'==jump) {
+                            openWindow({
+                                url:'market_index.html',
+                                id:'market_index'
+                            });
+                        } else if ('mweb_url'==jump) {
+                            common.setCache('jump_url', data.url);
+                            common.setCache('total_money', data.total);
+                            common.setCache('h5_name', data.name);
+                            if(common.checkApp()){
+                                var new_mweb_url = (window.location.protocol == 'http:' ? 'http:' : 'https:' ) + '//'+requestDomain+ "/packapp/merchant/market_weixinh5.html?mweb_url=" + encodeURIComponent(data.url) +"&total_money=" + data.total + "&h5_name=" + encodeURIComponent(data.name);
+                                if(common.checkAndroidApp()){
+                                    window.pigcmspackapp.openBrowser(new_mweb_url);
+                                }else{
+                                    var iosHref = window.btoa(new_mweb_url);
+                                    iosHref = iosHref.replace('/','&');
+                                    common.iosFunction('openBrowser/'+iosHref,{ name: 'openBrowser', url: iosHref });
+                                }
+                            } else {
+                                openWindow({
+                                    url:'market_weixinh5.html',
+                                    id:'market_weixinh5'
+                                });
+                            }
+                        }
+                    }, 800);
+                } else {
+                    var btnArray=[L_('否'),L_('是')];
+                    mui.confirm(L_('余额不足，是否前去充值？'), L_('充值提醒'), btnArray, function(e){
+                        if(e.index == 1){
+
+                            openWindow({
+                                url:'mer_recharge.html',
+                                id:'mer_recharge'
+                            });
+                        }
+                    });
+                }
+            } else {
+                mui.toast('支付成功');
+
+                setTimeout(function () {
+                    openWindow({
+                        url:'mer_recharge_record.html',
+                        id:'mer_recharge_record'
+                    });
+                }, 1000);
+            }
+        });
+    }
+
+    //点击蒙版
+    mui('body').on('tap','.mui-backdrop',function(){
+        mui('#middlePopover').popover('hide');
+        mui('#payPopover').popover('hide');
+        mask.close();
+        $('body').css('overflow-y','scroll');
+    });
+
+    (function ($, doc) {
+        $.init();
+
+    })(mui, document);
+
+
+    function clearNoNum(obj){
+        obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符
+        obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数
+        if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+            obj.value= parseFloat(obj.value);
+        }
+    }
+
+</script>
+
+</body></html>

@@ -1,0 +1,26 @@
+.owner_msg .label_con[data-v-0c3bef53] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-0c3bef53]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-0c3bef53] {
+  font-weight: bold;
+}
+.owner_msg .label_con .choose_con[data-v-0c3bef53] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+

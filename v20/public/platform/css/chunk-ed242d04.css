@@ -1,0 +1,109 @@
+
+.selected[data-v-25475a0c] {
+  margin-top: 10px;
+  min-height: 100px;
+  max-height: 280px;
+  overflow-y: scroll;
+  background-color: #f4f4f4;
+}
+.header[data-v-25475a0c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.title[data-v-25475a0c] {
+  font-size: 16px;
+  font-weight: bold;
+}
+.desc[data-v-25475a0c] {
+  color: #888888;
+  font-size: 14px;
+  font-weight: 400;
+}
+.list[data-v-25475a0c] {
+  width: 100%;
+  overflow: hidden;
+}
+.list .item[data-v-25475a0c] {
+  float: left;
+  width: 120px;
+  margin-top: 20px;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  line-height: 30px;
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  position: relative;
+}
+.list .item .icon[data-v-25475a0c] {
+  width: 40px;
+  height: 40px;
+  background-color: #f4f4f4;
+  border-radius: 2px;
+}
+.list .item .icon img[data-v-25475a0c] {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.list .item .delete[data-v-25475a0c],
+.list .item .add[data-v-25475a0c] {
+  position: absolute;
+  right: 14px;
+  top: 0px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.all[data-v-25475a0c] {
+  margin-top: 20px;
+  height: 400px;
+  overflow-y: scroll;
+}
+.color-red[data-v-25475a0c] {
+  color: red;
+}
+.move[data-v-25475a0c] {
+  cursor: move;
+}
+.no-data[data-v-25475a0c] {
+  color: #999999;
+  margin-top: 40px;
+  text-align: center;
+}
+.flip-list-move[data-v-25475a0c] {
+  -webkit-transition: -webkit-transform 0.5s;
+  transition: -webkit-transform 0.5s;
+  transition: transform 0.5s;
+  transition: transform 0.5s, -webkit-transform 0.5s;
+}
+.no-move[data-v-25475a0c] {
+  -webkit-transition: -webkit-transform 0s;
+  transition: -webkit-transform 0s;
+  transition: transform 0s;
+  transition: transform 0s, -webkit-transform 0s;
+}
+.ghost[data-v-25475a0c] {
+  /* opacity: 0.1; */
+  background: #1890ff10;
+}
+
