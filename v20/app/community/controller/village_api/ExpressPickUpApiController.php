@@ -12,6 +12,7 @@ use app\community\model\db\HouseVillage;
 use app\community\model\service\HouseVillageService;
 use app\community\model\service\HouseVillageUserBindService;
 use app\community\model\service\HouseVillageUserVacancyService;
+use app\community\model\db\HouseVillageUserBind;
 
 class ExpressPickUpApiController extends CommunityBaseController
 {
@@ -27,18 +28,21 @@ class ExpressPickUpApiController extends CommunityBaseController
         $service_house_village_user_vacancy = new HouseVillageUserVacancyService();
         $bind_info = $service_house_village_user_bind->getBindInfo(['pigcms_id' => $pigcms_id], 'vacancy_id,village_id,type');
         $vacancy_id = isset($bind_info['vacancy_id']) && intval($bind_info['vacancy_id']) > 0 ? intval($bind_info['vacancy_id']) : -1;
+        $user_info = [];
         if ($vacancy_id > 0) {
-            $user_info = $service_house_village_user_vacancy->getUserVacancyInfo(['pigcms_id' => $vacancy_id], 'usernum,name,phone,single_id,floor_id,layer_id,pigcms_id,village_id');
+            $user_info = $service_house_village_user_vacancy->getUserVacancyInfo(['pigcms_id' => $vacancy_id], 'usernum,name,phone,single_id,floor_id,layer_id,room,pigcms_id,village_id');
         }
         $single_id = $user_info['single_id'];
         $floor_id = $user_info['floor_id'];
         $layer_id = $user_info['layer_id'];
         $room_id = $user_info['pigcms_id'];
+        $room_num = $user_info['room'];
         return [
             'single_id' => $single_id,
             'floor_id' => $floor_id,
             'layer_id' => $layer_id,
             'room_id' => $room_id,
+            'room_num' => $room_num,
             'room_name' => $user_info['usernum'],
         ];
     }
@@ -183,7 +187,7 @@ class ExpressPickUpApiController extends CommunityBaseController
         $service_express_pick_up = new ExpressPickupService();
 
         $where[] = ['p.village_id', '=', $village_id];
-        $where[] = ['p.status', '<>', 99];
+//        $where[] = ['p.status', '<>', 99];
         //        $location_id && $where[] = ['p.location_id', '=', $location_id];
 
         $userInfo['single_id'] && $where[] = ['p.single_id', '=', $userInfo['single_id']];
@@ -214,7 +218,7 @@ class ExpressPickUpApiController extends CommunityBaseController
         if (count($search_list['status'])  > 0 && !in_array('all', $search_list['status'])) {
             $where[] =  ['p.status', 'in', $search_list['status']];
         }
-        $order_where = $search_list['sort'] != '' ? 'p.create_time ' . $search_list['sort']  : 'p.id DESC';
+        $order_where = $search_list['sort'] != '' ? 'p.create_time ' . $search_list['sort'] . ' , p.status DESC '  : 'p.id DESC , p.status DESC ';
         try {
             $data = $service_express_pick_up->getExpressApplicationList($where, $field, $page, $limit, $order_where)->toArray();
 
@@ -244,6 +248,8 @@ class ExpressPickUpApiController extends CommunityBaseController
     public function saveExpressApplication()
     {
         $pigcms_id = $this->request->post('pigcms_id');
+//        $pigcms_id = 7025;
+//        $pigcms_id = 6404;
         if (!$pigcms_id) {
             return api_output_error(1002, '登录信息错误,请重新登录!');
         }
@@ -303,6 +309,10 @@ class ExpressPickUpApiController extends CommunityBaseController
         $data['create_by'] = $userInfo['name'];
         $data['recipient_name'] = $this->request->post()['recipient_name'];
         $data['recipient_phone'] = $this->request->post()['recipient_phone'];
+        //如果没有绑定房间, 则提示他绑定房间
+        if( !$userInfo['room_name'] ){
+            return api_output_error(1001, '当前用户暂未绑定房间,请先绑定房间再尝试提交申请!');
+        }
 
         $service_express_pick_up = new ExpressPickupService();
 
@@ -310,6 +320,29 @@ class ExpressPickUpApiController extends CommunityBaseController
         $service_house_village_info = $service_house_village->getHouseVillageInfo(['village_id' => $village_id], 'express_person_average_entrust,express_project_daily_entrust,express_project_startDate,express_project_endDate');
         $express_person_average_entrust = $service_house_village_info['express_person_average_entrust'];
         $express_project_daily_entrust = $service_house_village_info['express_project_daily_entrust'];
+        //查看是否签署了协议, 如果没有签署, 则不可以提交申请
+        $where_user_bind=[
+            ['village_id','=',$village_id],
+            ['single_id','=',$userInfo['single_id']],
+            ['floor_id','=',$userInfo['floor_id']],
+            ['layer_id','=',$userInfo['layer_id']],
+            ['room_addrss','=',$userInfo['room_num']],
+            ['status','in',[1]],
+        ];
+        $field='pigcms_id,single_id,floor_id,layer_id,room_addrss,uid,type,bind_number,name,phone,vacancy_id,id_card,ic_card,nmv_card,memo,authentication_field';
+        $HouseVillageUserBind = new HouseVillageUserBind();
+        $user_bind_info = $HouseVillageUserBind->getList($where_user_bind,$field)->toArray();
+        $auth_key = 0;
+        //循环列表, 其中有一个签署了协议, 则认定为该户已签署协议
+        foreach ($user_bind_info as $key => $value) {
+            $authentication_field = $value['authentication_field'] ? unserialize( $value['authentication_field'] ) : [];
+            if( $authentication_field && isset($authentication_field['is_sign_agreement']) && $authentication_field['is_sign_agreement']['value'] == '是' ) {
+                $auth_key++;break;
+            }
+        }
+        if( $auth_key <= 0 ){
+            return api_output_error(1001, '请先到物业签署快递代取免责说明，签署后方可提供该服务!');
+        }
         //如果有限制, 则判断当前用户是否超过限制
         if ($express_person_average_entrust > 0 || $express_project_daily_entrust > 0) {
             // $where = [
@@ -334,7 +367,6 @@ class ExpressPickUpApiController extends CommunityBaseController
                 return api_output_error(1001, '每天最多只能申请' . $express_project_daily_entrust . '次!');
             }
         }
-
         //如果设置了限制申请时间, 则判断当前时间是否在限制时间内, 如果在时间范围内则不允许提交申请
         $express_apply_start_time = $service_house_village_info['express_project_startDate'];
         $express_apply_end_time = $service_house_village_info['express_project_endDate'];
@@ -345,13 +377,20 @@ class ExpressPickUpApiController extends CommunityBaseController
             if ($is_includes) {
                 $phase1 = '';
                 $phase2 = '';
-                if( $express_apply_start_time != '00:00' ){
-                    $phase1 = '00:00-'. $express_apply_start_time . '及';
+                if( $express_apply_start_time >= '00:00' && $express_apply_start_time != '' ){
+                    $phase1 = '00:00-'. $express_apply_start_time;
                 }
-                if( $express_apply_end_time < '23:59' ){
+
+                if( $express_apply_end_time < '23:59' && $express_apply_end_time != '' ){
                     $phase2 = $express_apply_end_time . '-23:59';
                 }
-                return api_output_error(1001, '申请时间不在限制时间内,请在' . $phase1 . ' ' . $phase2 . '之内提交申请!');
+                $phase_str = '';
+                if( $phase1 != '' && $phase2 != '' ){
+                    $phase_str = ' 及 ';
+                }
+                $phase_end = $phase1 . $phase_str . $phase2;
+
+                return api_output_error(1001, '申请时间不在限制时间内,请在' . $phase_end. '之内提交申请!');
             }
         }
 
@@ -462,15 +501,28 @@ class ExpressPickUpApiController extends CommunityBaseController
         $currentMinute = (int)date('i', $currentTime);
         $currentTotal = $currentHour * 60 + $currentMinute;
 
-        // 处理开始时间（仅判断是否在开始时间之后）
-        if ($startTime !== null && $endTime === null) {
+        // 处理开始时间（仅判断是否在开始时间之后）,如果有开始时间, 没有结束时间, 则开始时间之后的都可以
+        if ($startTime !== null && ( $endTime === null || $endTime === '') ) {
+            // 验证时间格式有效性
+            if (!preg_match('/^\d{2}:\d{2}$/', $startTime)) {
+                return false; // 时间格式不正确时视为不匹配
+            }
+
             list($startHour, $startMinute) = explode(':', $startTime);
-            $startTotal = (int)$startHour * 60 + (int)$startMinute;
+            // 转换为整数并验证范围
+            $startHour = (int)$startHour;
+            $startMinute = (int)$startMinute;
+
+            if ($startHour < 0 || $startHour > 23 || $startMinute < 0 || $startMinute > 59) {
+                return false; // 小时或分钟超出有效范围
+            }
+
+            $startTotal = $startHour * 60 + $startMinute;
             return $currentTotal >= $startTotal;
         }
 
         // 处理结束时间（仅判断是否在结束时间之前）
-        if ($endTime !== null && $startTime === null) {
+        if ($endTime !== null && ( $startTime === null || $startTime === '')) {
             list($endHour, $endMinute) = explode(':', $endTime);
             $endTotal = (int)$endHour * 60 + (int)$endMinute;
             return $currentTotal <= $endTotal;

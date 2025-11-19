@@ -74,6 +74,8 @@
                                 <span>&nbsp;&nbsp;至&nbsp;&nbsp;</span>
                                 <input type="time" name="express_project_endDate" id="express_project_endDate" value="{pigcms{$village_info.express_project_endDate}" class="date-input" placeholder="结束日期">
                                 <span class="form_tips clear_btn" onclick="document.getElementById('express_project_startDate').value = '';document.getElementById('express_project_endDate').value = ''" >清空</span>
+                                <span class="form_tips" style="line-height: 30px;">结束时间不要早于开始时间, 留空则不限制, 此时间段内将不允许提交申请</span>
+
                             </div>
                             <div class="clearfix form-actions">
                                 <div class="col-md-offset-3 col-md-9">

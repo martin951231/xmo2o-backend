@@ -2579,4 +2579,10 @@
                     return api_output_error(-1, $e->getMessage());
             }
         }
+
+        public function updateLineDate()
+        {
+           $se = new NewBuildingService();
+           $se->updateLineDate();
+        }
     }

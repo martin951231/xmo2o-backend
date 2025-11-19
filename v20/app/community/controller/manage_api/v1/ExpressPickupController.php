@@ -181,7 +181,7 @@ class ExpressPickupController extends BaseController
         $village_id = $this->request->post('village_id');
         $location = $this->request->post('location');
         $page = $this->request->post('page',1);
-        $limit = $this->request->post('limit',10);
+        $limit = $this->request->post('pageSize',10);
         $service_express_pick_up = new ExpressPickupService();
         $chargeType = ['water','electric','gas'];
 //        $jz_wsxdsj_customized_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();

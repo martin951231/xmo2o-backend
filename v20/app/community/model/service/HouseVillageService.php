@@ -545,6 +545,8 @@ class HouseVillageService {
             $arr = array('无','初中及以下','高中或中专','大专','本科','硕士','博士','其他');
         }elseif($key == 'unit_nature'){
             $arr = array('国有企业','民营企业','外商独资','中外合资','港澳台企业','政府机关','事业单位','非营利性组织','自主创业','其他');
+        }elseif($key == 'is_sign_agreement'){
+            $arr = array('是','否');
         }
 
         return $arr;

@@ -1530,6 +1530,46 @@ class NewBuildingService
         return $this->sysSaveHouseVillageUserLabelBind($user_info['pigcms_id'],$param['user_label_groups']);
     }
 
+    public function updateLineDate()
+    {
+        $usernumArr = [
+            '5号楼-2单元-20层-2004',
+        ];
+        $where=[
+            ['village_id','=',3],
+            ['usernum','in',$usernumArr],
+//            ['usernum','in',['13593334442']],
+        ];
+        $field='village_id,usernum,authentication_field';
+        $info = $this->HouseVillageUserBind->getList($where,$field)->toArray();
+//        $filter = array_column($info, 'usernum');
+//        $phoneArr2 = implode( ',', array_diff($usernumArr, $filter));
+
+
+        $authentication_field=[];
+        $keynum = 0;
+        foreach ($info as $k=>$v){
+            $authentication_field_arr = unserialize($v['authentication_field']);
+            if($authentication_field_arr){
+                $arr['is_sign_agreement'] = [
+                    'key' => 'is_sign_agreement',
+                    'is_must' => 0,
+                    'type' => 2,
+                    'title' => '是否签署协议',
+                    'value' => '是',
+                ];
+//                $str = serialize( array_merge( $authentication_field_arr , $arr) );
+//                $result = $this->HouseVillageUserBind->saveOne([
+//                    ['village_id','=',3],
+//                    ['usernum','=',$v['usernum']]
+//                ],['authentication_field'=>$str]);
+            }
+            var_dump($keynum++);
+        }
+        var_dump($info);die;
+
+    }
+
     /**
      * 提交用户数据
      * @author : lkz
@@ -1549,6 +1589,22 @@ class NewBuildingService
         $field='pigcms_id,uid,type,bind_number,name,phone,vacancy_id,id_card,ic_card,nmv_card,memo,authentication_field';
         $user_bind=$this->getHouseVillageUserBindFindMethod($where,$field);
         $authentication_field=[];
+
+        $agreement_info = $this->getValueByKey($param['basic_data'], 'is_sign_agreement');
+        $agreement_info_origin = $this->getValueByKey(unserialize($user_bind['authentication_field']), 'is_sign_agreement');
+
+        if( (!$agreement_info_origin && $agreement_info) || $agreement_info['value'] != $agreement_info_origin['value'] ){
+            $arr['is_sign_agreement'] = [
+                'key' => 'is_sign_agreement',
+                'is_must' => $agreement_info['is_must'],
+                'type' => $agreement_info['type'],
+                'title' => $agreement_info['title'],
+                'value' => $agreement_info_origin['value'],
+            ];
+            $authentication_field_arr = unserialize($user_bind['authentication_field']);
+            $user_bind['authentication_field'] = serialize( array_merge( $authentication_field_arr , $arr) );
+        }
+
         if($user_bind['authentication_field'] && @unserialize($user_bind['authentication_field'])){
             $authentication_field=unserialize($user_bind['authentication_field']);
         }
@@ -1648,6 +1704,23 @@ class NewBuildingService
             }
         }
         return true;
+    }
+
+    /**
+     * 根据指定key获取对应value
+     * @param array $data 数据源数组
+     * @param string $targetKey 要查找的key
+     * @return mixed 找到的value，未找到返回null
+     */
+    function getValueByKey($data, $targetKey) {
+        foreach ($data as $item) {
+            // 检查当前项是否包含key，且与目标key匹配
+            if (isset($item['key']) && $item['key'] === $targetKey) {
+                return $item;
+            }
+        }
+        // 未找到对应key时返回null
+        return null;
     }
 
     /**

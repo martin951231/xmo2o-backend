@@ -61,15 +61,15 @@ class HouseMyAction  extends BaseAction{
                 $bind_user_info = $this->get_user_village_info($pigcms_id, $village_id, $this->_uid, true);
                 if($now_village['set_id_code'] == 1){
                     if(empty($bind_user_info['id_card'])){
-                        $param = [
-                            'pageName' => 'myinfo',
-                            'isAll' => true,
-                            'urlParam' => "village_id={$village_id}&pigcms_id={$pigcms_id}",
-                        ];
-                        $myinfoUrl = $db_house_village->villagePagePath($app_version,$deviceId,$param);
-                        $arr['set_id_code'] = true;
-                        $arr['set_id_code_info'] = '您的身份证信息未完善，请前去完善';
-                        $arr['set_id_code_url'] = $myinfoUrl;
+//                        $param = [
+//                            'pageName' => 'myinfo',
+//                            'isAll' => true,
+//                            'urlParam' => "village_id={$village_id}&pigcms_id={$pigcms_id}",
+//                        ];
+//                        $myinfoUrl = $db_house_village->villagePagePath($app_version,$deviceId,$param);
+//                        $arr['set_id_code'] = true;
+//                        $arr['set_id_code_info'] = '您的身份证信息未完善，请前去完善';
+//                        $arr['set_id_code_url'] = $myinfoUrl;
                     }else{
                         $arr['set_id_code'] = false;
                         $arr['set_id_code_info'] = '';
@@ -105,15 +105,15 @@ class HouseMyAction  extends BaseAction{
                         $bind_user_info = reset($bind_village_list);
                         if($now_village['set_id_code'] == 1){
                             if(empty($bind_user_info['id_card'])){
-                                $param = [
-                                    'pageName' => 'myinfo',
-                                    'isAll' => true,
-                                    'urlParam' => "village_id={$village_id}&pigcms_id={$pigcms_id}",
-                                ];
-                                $myinfoUrl = $db_house_village->villagePagePath($app_version,$deviceId,$param);
-                                $arr['set_id_code'] = true;
-                                $arr['set_id_code_info'] = '您的身份证信息未完善，请前去完善';
-                                $arr['set_id_code_url'] = $myinfoUrl;
+//                                $param = [
+//                                    'pageName' => 'myinfo',
+//                                    'isAll' => true,
+//                                    'urlParam' => "village_id={$village_id}&pigcms_id={$pigcms_id}",
+//                                ];
+//                                $myinfoUrl = $db_house_village->villagePagePath($app_version,$deviceId,$param);
+//                                $arr['set_id_code'] = true;
+//                                $arr['set_id_code_info'] = '您的身份证信息未完善，请前去完善';
+//                                $arr['set_id_code_url'] = $myinfoUrl;
                             }else{
                                 $arr['set_id_code'] = false;
                                 $arr['set_id_code_info'] = '';
