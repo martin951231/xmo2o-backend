@@ -779,7 +779,8 @@ class ImportExcelService
                 // 3. 校验表头匹配性
                 $unmatchedHeaders = [];
                 foreach ($excelHeaders as $header) {
-                    if (!isset($headerToField[$header])) {
+//                    if (!isset($headerToField[$header])) {
+                    if (!$this->inputContainsArrayKey($header,$headerToField)) {
                         $unmatchedHeaders[] = $header;
                     }
                 }
@@ -840,6 +841,16 @@ class ImportExcelService
             'replaceFieldSelect' => $replaceField,
             'type' => $type
         ];
+    }
+
+    public function inputContainsArrayKey($inputStr, $arr) {
+        foreach (array_keys($arr) as $key) {
+            // 检查传入字符串是否包含当前键名（区分大小写，中文无影响）
+            if (strpos($inputStr, $key) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
