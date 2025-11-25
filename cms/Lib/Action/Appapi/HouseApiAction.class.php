@@ -1019,7 +1019,6 @@ class HouseApiAction  extends BaseAction
         if ($this->_uid && I('page') < 2 && empty(I('keyword'))) {
             $database_house_village_user_bind = D('House_village_user_bind');
             $where['uid'] = $this->_uid;
-            $where['village_id'] = 3;
             $where['status'] = ['not in', [3,4]];
             $parent_id_arr = $database_house_village_user_bind->where($where)->getField('pigcms_id');
             if ($this->config['is_demo_domain'] && empty($parent_id_arr)) {
@@ -1064,13 +1063,11 @@ class HouseApiAction  extends BaseAction
             $where['phone'] = $now_user['phone'];
             $where['parent_id'] = array('neq', 0);
             $where['status'] = array('eq', 1);
-            $where['village_id'] = 3;
             $parent_id_arr = $database_house_village_user_bind->where($where)->getField('pigcms_id,parent_id');
 
             if (!empty($parent_id_arr)) {
                 $Map['pigcms_id'] = array('in', $parent_id_arr);
                 $Map['hv.status'] = 1;
-                $Map['hv.village_id'] = 3;
                 $bind_family_list = $database_house_village->get_bind_family_list($Map, $long_lat, $property_id);
 
                 foreach ($bind_family_list as $v) {
