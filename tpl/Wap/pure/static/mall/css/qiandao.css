@@ -1,0 +1,287 @@
+/*提示框动画*/
+.yui-auth-form.auth-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count:infinite;
+    animation-iteration-count:infinite;
+    -webkit-animation-name:slideInDown;
+    animation-name:slideInDown;
+}
+@-webkit-keyframes slideInDown {
+    0% {
+        opacity: 0.1;
+        top: -100%;}
+    80%{
+        top: 25%;
+    }
+    100% {
+        top: 20%;}
+}
+@keyframes slideInDown {
+    0% {
+        opacity: 0.1;
+        top: -100%;}
+    80%{
+        top: 25%;
+    }
+    100% {
+        top: 20%;}
+}
+.yui-auth-form.close-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count:infinite;
+    animation-iteration-count:infinite;
+    -webkit-animation-name: slideInUp;
+    animation-name: slideInUp;
+}
+@-webkit-keyframes slideInUp {
+    0% {}
+    30%{
+        top: 10%;
+    }
+    100% {
+        opacity: 0.2;
+        top: 100%;}
+}
+@keyframes slideInUp {
+    0% {}
+    30%{
+        top: 10%;
+    }
+    100% {
+        opacity: 0.2;
+        top: 100%;}
+}
+.tjt_weui_mask{
+    z-index: 100;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition-duration: .3s;
+    background: rgba(0,0,0,.6);
+}
+.tjt_weui_mask_visible{
+    opacity: 1;
+    visibility: visible;
+}
+.tjt_weui_dialog{
+    -webkit-transition-duration: .2s;
+    transition-duration: .2s;
+    margin: 0;
+    left: 7.5%;
+    top: 30%;
+    z-index: 100;
+    position: fixed;
+    width: 85%;
+    background-color: #fafafc;
+    text-align: center;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.tjt_weui_dialog.tjt_weui_dialog_visible {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.bg-success {
+    background-color: #4cd964;
+}
+.weui-toptips {
+    z-index: 100;
+    opacity: 0;
+    -webkit-transition: opacity .3s;
+    transition: opacity .3s;
+}
+.weui-toptips.weui-toptips_visible {
+    opacity: 1;
+}
+.weui-icon_toast {
+    font-size: 55px;
+    color: white;
+    margin-bottom: 6px;
+}
+.weui-toast--forbidden .weui-icon_toast {
+    color: #f6383a;
+}
+.weui-toast--text {
+    min-height: initial;
+    font-size: 18px;
+    padding: 8px 16px;
+    width: auto;
+    top: 40%;
+}
+.weui-toast--text .weui-icon_toast {
+    display: none;
+}
+.weui-mask, .weui-mask_transparent {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+.weui-mask {
+    background: rgba(0,0,0,.6);
+}
+.weui-dialog {
+    position: fixed;
+    z-index: 5000;
+    width: 80%;
+    max-width: 300px;
+    top: 35%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    background-color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.weui-dialog__hd {
+    padding: 1.3em 1.6em .5em;
+}
+.weui-dialog__bd {
+    padding: 0 1.6em .8em;
+    min-height: 40px;
+    font-size: 15px;
+    line-height: 1.3;
+    word-wrap: break-word;
+    word-break: break-all;
+    color: #999;
+}
+.weui-dialog__ft {
+    position: relative;
+    line-height: 48px;
+    font-size: 18px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+}
+.weui-dialog__btn {
+    display: block;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    color: #3cc51f;
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    position: relative;
+}
+.weui-dialog__btn {
+    display: block;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    color: #3cc51f;
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    position: relative;
+}
+a {
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.textareas{height:85px}
+.area{display:block;float:left;padding-left: 4px;padding-right:11px;
+    text-align: center;
+    margin-top: 10px;}
+#stras .demo{text-align:left}
+#default-demo{padding-top:11px}
+#default-demo{width:100% !important;}
+
+/*动画*/
+.yui-auth-form.auth-animated,.yui-auth-layer.auth-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count:infinite;
+    animation-iteration-count:infinite;
+    -webkit-animation-name:slideInDown;
+    animation-name:slideInDown;
+}
+@-webkit-keyframes slideInDown {
+    0% {
+        opacity: 0.1;
+        top: -100%;}
+    80%{
+        top: 25%;
+    }
+    100% {
+        top: 20%;}
+}
+@keyframes slideInDown {
+    0% {
+        opacity: 0.1;
+        top: -100%;}
+    80%{
+        top: 25%;
+    }
+    100% {
+        top: 20%;}
+}
+.yui-auth-form.close-animated,.yui-auth-layer.close-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count:infinite;
+    animation-iteration-count:infinite;
+    -webkit-animation-name: slideInUp;
+    animation-name: slideInUp;
+}
+@-webkit-keyframes slideInUp {
+    0% {}
+    30%{
+        top: 10%;
+    }
+    100% {
+        opacity: 0.2;
+        top: 100%;}
+}
+@keyframes slideInUp {
+    0% {}
+    30%{
+        top: 10%;
+    }
+    100% {
+        opacity: 0.2;
+        top: 100%;}
+}
+.change-animated{
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: slideTurn;
+    animation-name: slideTurn;
+}
+
+@-webkit-keyframes slideTurn {
+    0% {
+        transform: rotateY(0);
+    }
+    50%{
+        transform: rotateY(90deg);
+    }
+    100% {
+        transform: rotateY(0);
+        top: 20%;}
+}

@@ -1,0 +1,129 @@
+#count_down  .time{
+    line-height: 18px;
+    background: #fa8332;
+    text-align: center;
+    height: 18px;
+    width: 18px;
+    display: inline-block;
+    padding: 2px;
+    border-radius: 2px;
+}
+#count_down  .dian{
+    color: #ad1e00;
+    padding: 0px 2px 0px 6px;
+}
+.demo-block06 .demo-desc {
+    padding: 2px 10px;
+    font-size: 16px;
+    color: #000;
+    background:#FBF0FD
+}
+.footerMenu ul {
+    color:#fff;
+    display: block;
+
+}
+.footerMenu ul li a {
+    color: #fff;
+
+}
+.footerMenu ul li a span {
+    margin: 0 auto;
+    display: block;
+    height: 20px;
+    width: 22px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+}
+.ping_game p{
+
+    font-size: 13px;
+
+}
+.ping_game .one{
+    line-height: 16px;
+    font-size: 12px;
+    color: #fff;
+    display: inline-block;
+    background: #000;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    text-align: center;
+    margin:0 3px 3px 0;
+    vertical-align: middle;
+}
+
+.goods_detail{
+    background: #fff;
+    position: relative;
+}
+
+.goods_detail img{
+    width: 100%;
+    display: block;
+}
+
+/* 评论 */
+.comment_item.ui-border-b:before{
+    /* left:10px; */
+}
+
+
+
+/* 评论详情页的header */
+.comment_header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    box-sizing: border-box;
+    background: #fff;
+    z-index: 999;
+    font-size: 14px;
+    padding: 10px 0 0;
+}
+
+.comment_header>div{
+    width: 25%;
+    text-align: center;
+    position: relative;;
+}
+
+.comment_header .num{
+    color: #999;
+}
+
+.comment_header .color_red .num{
+    color: red;
+}
+
+.comment_header .color_red:after{
+    content: '';
+    width: 100%;
+    height: 3px;
+    background: red;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+}
+
+.commentDetail .star {
+    background: url(../images/tt_10.png);
+    width: 80px;
+    height: 14px;
+    overflow: hidden;
+    position: relative;
+    background-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.commentDetail .star p{
+    background: url(../images/tt_06.png);
+    left: 0;
+    position: absolute;
+    height: 14px;
+    background-size: 16px;
+}

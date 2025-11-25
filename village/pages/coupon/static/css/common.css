@@ -1,0 +1,448 @@
+/* ====================
+	flex
+ ======================*/
+.flex {
+	display: flex;
+}
+
+.flex-center {
+	align-items: center;
+}
+
+.flex-start {
+	align-items: flex-start;
+}
+
+.flex-end {
+	align-items: flex-end;
+}
+
+.flex-column {
+	flex-direction: column;
+}
+
+.space-between {
+	justify-content: space-between;
+}
+
+.space-around {
+	justify-content: space-around;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.flex-1 {
+	flex: 1;
+}
+
+/* ====================
+	text-align
+ ======================*/
+.text-center {
+	text-align: center;
+}
+
+/* ====================
+	width
+ ======================*/
+.w-full {
+	width: 100%;
+}
+
+/* ====================
+	float
+ ======================*/
+.float-left {
+	float: left;
+}
+
+.float-right {
+	float: right;
+}
+
+/* ====================
+	margin
+ ======================*/
+.mt-5 {
+	margin-top: 5px;
+}
+
+.ml-5 {
+	margin-left: 5px;
+}
+
+.mr-5 {
+	margin-right: 5px;
+}
+
+.mt-10 {
+	margin-top: 10px;
+}
+
+.ml-10 {
+	margin-left: 10px;
+}
+
+.mr-10 {
+	margin-right: 10px;
+}
+
+.ml-20 {
+	margin-left: 20px;
+}
+
+.mr-20 {
+	margin-right: 20px;
+}
+
+.mb-80 {
+	margin-bottom: 80px;
+}
+
+.mt-100 {
+	margin-top: 100px;
+}
+
+
+/* ====================
+	padding
+ ======================*/
+.pb-10 {
+	padding-bottom: 10px;
+}
+
+.pb-80 {
+	padding-bottom: 80px;
+}
+
+/* ====================
+	color
+ ======================*/
+.cr-white {
+	color: #FFFFFF
+}
+
+.cr-33 {
+	color: #333333;
+}
+
+.cr-66 {
+	color: #666666;
+}
+
+/* ====================
+	height
+ ======================*/
+.h-30 {
+	height: 30px;
+}
+
+.h-40 {
+	height: 40px;
+}
+
+.h-50 {
+	height: 50px;
+}
+
+/* ====================
+ 	line-height
+  ======================*/
+.lh-30 {
+	line-height: 30px;
+}
+
+.lh-40 {
+	line-height: 40px;
+}
+
+.lh-50 {
+	line-height: 50px;
+}
+
+/* ====================
+ 	border
+  ======================*/
+.br-f1 {
+	border-right: 1rpx solid #F1F1F1;
+}
+
+.bb-f1-dashed {
+	border-bottom: 1rpx dashed #F1F1F1;
+}
+
+/* ====================
+   	font-size
+  ======================*/
+.fs-10 {
+	font-size: 10px;
+}
+
+.fs-12 {
+	font-size: 12px;
+}
+
+.fs-14 {
+	font-size: 14px;
+}
+
+.fs-15 {
+	font-size: 15px;
+}
+
+.fs-16 {
+	font-size: 16px;
+}
+
+/* ====================
+   	font-weight
+  ======================*/
+.fw-bold {
+	font-weight: bold;
+}
+
+/* ====================
+ 	自定义样式
+  ======================*/
+/* 文字折行 */
+.text-wrap {
+	overflow: hidden;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.text-right {
+	text-align: right;
+}
+
+/* 文字不折行 */
+.text-nowrap {
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+
+/* 优惠券 */
+.coupon-card-container {
+	margin: 10px;
+	border-radius: 6px;
+	box-shadow: 0px 2px 16px 0px rgba(227, 227, 227, 0.24);
+	overflow: hidden;
+}
+
+.coupon-card {
+	padding: 10px 20px;
+	background-color: #FFFFFF;
+	position: relative;
+}
+
+.coupon-card::before {
+	content: "";
+	position: absolute;
+	left: -6px;
+	top: 50%;
+	transform: translateY(-6px);
+	background-color: #F4F4F4;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+
+.coupon-card::after {
+	content: "";
+	position: absolute;
+	right: -6px;
+	top: 50%;
+	transform: translateY(-6px);
+	background-color: #F4F4F4;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+}
+
+.coupon-card .header {
+	border-bottom: 1rpx solid #F1F1F1;
+	display: flex;
+	align-items: center;
+	padding-bottom: 10px;
+}
+
+.coupon-card .header .store_logo {
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	margin-right: 4px;
+}
+
+.coupon-card .header .store_name {
+	font-size: 12px;
+	color: #666666;
+	flex: 1;
+	overflow: hidden;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+.coupon-card .content {
+	margin-top: 10px;
+	display: flex;
+	align-items: flex-start;
+}
+
+.coupon-card .content .left {
+	margin-right: 10px;
+	position: relative;
+	overflow: hidden;
+}
+
+/* .coupon-card .content .left */
+.get-num {
+	position: absolute;
+	left: -20px;
+	top: 6px;
+	background-color: #FED33B;
+	color: #F5462D;
+	width: 70px;
+	font-size: 11px;
+	transform: rotate(320deg);
+	text-align: center;
+}
+
+.coupon-card .content .left image {
+	width: 70px;
+	height: 70px;
+	border-radius: 4px;
+}
+
+.coupon-card .content .right {
+	flex: 1;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.coupon-card .content .right .right-left {
+	flex: 1;
+}
+
+.coupon-card .content .right .right-right {
+	width: 60px;
+}
+
+.coupon-card .content .right .right-right .progress {
+	width: 100%;
+	background-color: #EBEBEB;
+	height: 4px;
+	border-radius: 2px;
+	position: relative;
+	overflow: hidden;
+}
+
+.coupon-card .content .right .right-right .progress .progress-done {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+}
+
+.coupon-card .content .btn {
+	width: 60px;
+	border-radius: 4px;
+	height: 25px;
+	line-height: 25px;
+	font-size: 12px;
+	text-align: center;
+}
+
+.coupon-card .content .btn-1 {
+	background-color: #EDEDED;
+	color: #F5462D;
+}
+
+.coupon-card .content .btn-2 {
+	background-color: #F5462D;
+	color: #FFFFFF;
+}
+
+.coupon-card .content .btn-3 {
+	background-color: #EDEDED;
+	color: #999999;
+}
+
+.coupon-card-container .footer,
+.store-coupon-card .footer {
+	background-color: #fbfbfb;
+	font-size: 11px;
+	color: #9CA3B0;
+	padding: 10px 20px;
+	line-height: 20px;
+	position: relative;
+}
+
+.coupon-card-container .footer .fold,
+.store-coupon-card .footer .fold {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	line-height: 20px;
+	vertical-align: middle;
+}
+
+.coupon-card .coupon-status,
+.store-coupon-card .coupon-status {
+	position: absolute;
+	right: 0px;
+	top: -10px;
+	width: 50px;
+	height: 50px;
+}
+
+.coupon-card .coupon-status image,
+.store-coupon-card .coupon-status image {
+	width: 100%;
+	height: 100%;
+}
+
+/* 暂无优惠券 */
+.no-coupon {
+	text-align: center;
+	color: #999999;
+	font-size: 13px;
+	padding-top: 40px;
+}
+
+.no-coupon image {
+	width: 200px;
+	height: 140px;
+	margin: 10px auto;
+	display: block;
+}
+
+.no-data {
+	text-align: center;
+	color: #999999;
+	font-size: 13px;
+	margin-top: 100px;
+}
+
+/* tag */
+.red-tag {
+	border: 1px solid #FFC7C7;
+	color: #FF5556;
+	padding: 2px 4px;
+	font-size: 12px;
+}
+
+.modal {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, .3);
+	z-index: 9999;
+}

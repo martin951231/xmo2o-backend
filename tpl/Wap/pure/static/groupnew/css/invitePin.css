@@ -1,0 +1,258 @@
+
+.page{
+	background: #f8f8f8;
+	height: 100%;
+}
+
+/*.adverBox{
+	background-size:100%;
+	padding-top:calc(100% * 500 / 900);
+}
+
+.categoryBox{
+	width:100%;
+	overflow-x:scroll;
+	white-space:nowrap;
+}
+.categoryBox .item{
+	display:inline-block;
+	color:#999;
+	padding:16px 12px;
+}
+.categoryBox .item.active{
+	color:black;
+	font-weight:bold;
+}
+.categoryBox .item:first-child{
+	padding-left:24px;
+}
+.categoryBox .item:last-child{
+	padding-right:24px;
+}
+.goodListBox{
+	margin:0 15px 15px;
+}
+
+.goodListBox.list .goodItem{
+    width: calc((100% - 15px) / 2);
+}
+
+
+
+.two_category .goodList{
+	margin-top:10px;
+}
+.two_category .goodItem .goodImage{
+	padding-top: calc(100% * 500 / 900);
+	background-size:100%;
+	margin-bottom:4px;
+}
+.two_category .goodListBox{
+	border-top:none;
+}*/
+
+.pinDetailBox{
+	margin: 0 10px 10px;
+	background: #fff;
+	padding: 15px;
+}
+
+.pinDetail .goods-img{
+	width: 105px;
+	height: 105px;
+	border-radius: 5px;
+	overflow: hidden;
+	margin-right: 15px;
+}
+
+.pinDetail .goods-desc{
+	width: calc(100% - 120px);
+	width: -webkit-calc(100% - 120px);
+	height: 105px;
+}
+
+.pinDetail .title{
+	width: calc(100% - 56px);
+}
+
+.pinDetail .detail-tag{
+	color:#ec4952;
+	border: 1px solid #ec4952;
+	padding: 0 5px;
+	border-radius: 2px;
+	font-size: 11px;
+	margin-left: 20px;
+}
+
+.pinDetail .detail-desc{
+	font-size: 11px;
+	color: #999;
+
+}
+
+.pinDetail .now-price{
+	color: #f04431;
+	font-size: 20px;
+	font-weight: 500;
+	margin-right: 5px;
+}
+
+.pinDetail .old-price{
+	color: #999;
+	font-size: 11px;
+	text-decoration: line-through;
+}
+
+.pinDetail .avatar-img{
+	width: 50px;
+	height: 50px;
+	border: 1px solid #ffdd00;
+	margin: 20px 4px 15px;
+	border-radius: 50%;
+	position: relative;
+}
+
+.pinDetail .avatar-img.empty{
+	border-style: dashed;
+	text-align: center;
+	line-height: 50px;
+	font-size: 18px;
+	color: #ffdd00;
+}
+
+.pinDetail .avatar-img img{
+	border-radius: 50%;
+}
+
+.pinDetail .avatar-img .user-tag{
+	background: #ffdd00;
+	font-size: 10px;
+	padding: 0 5px 1px;
+	border-radius: 10px;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+.pinDetail .time-box{
+	text-align: center;
+	font-size: 12px;
+	margin-bottom: 20px;
+}
+
+.pinDetail i{
+	font-style: normal;
+}
+
+.pinDetail .time-box .person-num {
+	color: #ffdd00;
+	margin: 0 5px;
+}
+
+
+.pinDetail .share-btn button{
+	width: 100%;
+	border-radius: 4px;
+	outline: none;
+	border: none;
+	background: #ffdd00;
+	height: 40px;
+	line-height: 40px;
+	margin-bottom: 15px;
+}
+
+.pinDetail .text-desc{
+	color: #999;
+	text-align: center;
+	font-size: 10px;
+}
+
+.mask{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, .6);
+}
+
+.mask-content{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+}
+
+.mask-content .pinDetail{
+	background: #f8f8f8;
+}
+
+.mask-content .product{
+	background: #fff;
+	padding: 15px;
+	margin-bottom: 10px;
+}
+
+.mask-content .pinDetail .product .goods-img{
+	width: 150px;
+	height: 150px;
+}
+
+.mask-content .pinDetail .product .goods-desc{
+	width: calc(100% - 165px);
+	width: -webkit-calc(100% - 165px);
+}
+
+
+.mask-content .other-box{
+	background: #fff;
+	padding:0 15px 15px;
+}
+
+.mask-content .time-box2{
+	background: #e6e6e6;
+	display: inline-block;
+	padding: 2px 15px;
+	border-radius: 2px;
+	font-size: 12px;
+	margin-bottom: 15px;
+}
+
+.mask-content .rest-box{
+	font-size: 16px;
+	font-weight: 500;
+	margin-bottom: 2px;
+}
+
+.mask-content .rest-num{
+	color: #f9372a;
+}
+
+.mask-content .limited-tag{
+	display: inline-block;
+	color: #f9372a;
+	border: 1px solid #f54044;
+	border-radius: 3px;
+	padding: 2px 8px;
+	margin-top: 5px;
+}
+
+#otherGroupBox{
+	background: #fff;
+	margin: 0;
+	padding: 15px 15px 0;
+}
+.centerTitle {
+    font-size: 24px;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+.centerDesc {
+    text-align: center;
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}

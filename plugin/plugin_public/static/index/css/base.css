@@ -1,0 +1,109 @@
+html,body{
+	background:white;
+}
+.layui-main {
+    margin: 20px;
+	line-height: 22px;
+	width: auto;
+}
+
+
+/* 首页 */
+.application-list {
+    margin-bottom: 24px;
+    -webkit-animation: enterIn .2s ease-out;
+    animation: enterIn .2s ease-out;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+.application-title {
+    margin-bottom: 16px;
+    color: #323233;
+}
+.application-title .title-main {
+    font-size: 14px;
+    font-weight: 700;
+}
+.application-title .title-desc {
+    color: #999;
+    margin-left: 10px;
+	font-size:12px;
+}
+
+.application-list .application-list-content {
+    margin-left: -16px;
+}
+.application-item {
+    background: #f8f8f8;
+    margin-left: 16px;
+    margin-bottom: 16px;
+    min-width: 245px;
+    float: left;
+    border-radius: 2px;
+	cursor: pointer;
+}
+.application-item .application-entry {
+    width: 100%;
+    box-sizing: border-box;
+    zoom: 1;
+    display: block;
+    padding: 16px;
+}
+.application-item .application-entry .application-logo {
+    float: left;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+}
+.application-item .application-entry .application-logo>img {
+    width: 40px;
+    height: 40px;
+    vertical-align: bottom;
+}
+.application-item .application-entry .application-name {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: bottom;
+    color: #323233;
+    font-weight: 700;
+    margin-left: 50px;
+}
+.application-item .application-entry .application-desc {
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px;
+    vertical-align: top;
+    color: #969799;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 50px;
+    margin-top: 2px;
+}
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+
+
+.support-wxapp {
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: 12px;
+    background-position: 10px 3px;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-left: -6px;
+    background-image: url(../images/wxapp.png);
+}
+

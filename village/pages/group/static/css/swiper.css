@@ -1,0 +1,38 @@
+	.swiper-dot >>> .uni-swiper-dots-horizontal {
+		bottom: 20upx;
+	}
+	.swiper-dot >>> .uni-swiper-dots.uni-swiper-dots-horizontal,
+	.swiper-dot >>> .wx-swiper-dots.wx-swiper-dots-horizontal {
+		margin-bottom: 0;
+	}
+
+	.swiper-dot >>> .uni-swiper-dot,
+	.swiper-dot >>> .wx-swiper-dot,
+	.swiper-dot >>> .a-swiper-dot {
+		width: 4px;
+		height: 3px;
+		border-radius: 0;
+		background: #ECE9EA;
+	}
+	
+	.swiper-dot >>> .uni-swiper-dot-active,
+	.swiper-dot >>> .wx-swiper-dot-active,
+	.swiper-dot >>> .a-swiper-dot-active {
+		width: 18px;
+	}
+	
+	.banner-swiper >>> .uni-swiper-dot,
+	.banner-swiper >>> .wx-swiper-dot,
+	.banner-swiper >>> .a-swiper-dot {
+		height: 4px;
+		border-radius: 50%;
+		background: rgba(255,255,255,0.47);
+	}
+	
+	.banner-swiper >>> .uni-swiper-dot-active,
+	.banner-swiper >>> .wx-swiper-dot-active,
+	.banner-swiper >>> .a-swiper-dot-active {
+		border-radius: 4px;
+		background: rgba(255,255,255,0.8);
+	}
+	

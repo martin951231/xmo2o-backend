@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Ride/config')}" class="on">顺风车配置</a>	</ul></div>

@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Crowdsourcing/config')}" class="on">众包配置</a>	</ul></div>

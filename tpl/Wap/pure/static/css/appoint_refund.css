@@ -1,0 +1,156 @@
+.foods {
+    width: 100%;
+    padding: 20px 14px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffffff;
+}
+.foods .goods-img {
+    margin-right: 10px;
+    width: 115px;
+    height: 115px;
+}
+.foods .goods-img img {
+    width: 100%;
+    height: 100%;
+}
+.foods .item-right {
+    flex: 1;
+    min-height: 115px;
+}
+.foods .item-right .text {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333333;
+}
+.foods .item-right .rev_ul {
+    margin-top: 30px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #FF5A00;
+    display: flex;
+    justify-content: space-between;
+}
+.foods .item-right .rev_ul .num {
+    font-size: 13px;
+    font-weight: 500;
+    color: #999999;
+}
+.tui-money-wrap {
+    margin: 10px 0;
+}
+.tui-money-wrap .tui-money {
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    background: #FFFFFF;
+    width: 100%;
+    box-sizing: border-box;
+}
+.border-bottom {
+    border-bottom: 1px solid #f4f4f4;
+}
+.cr-06C1AE {
+    color: #06C1AE;
+}
+.explain,.upload {
+    padding: 10px 22px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.explain {
+    margin: 10px 0;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.explain .title,.upload .title {
+    padding: 14px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+}
+.explain .text-area {
+    position: relative;
+    margin-bottom: 10px;
+    width: 100%;
+    height: 130px;
+    background: #F3F3F5;
+    border-radius: 5px;
+}
+.explain .text-area .reason-num {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    font-size: 13px;
+    font-weight: 400;
+    color: #C0C0C0;
+}
+.explain .text-area textarea {
+    border: none;
+    width: 100%;
+    margin-left: 0;
+    padding: 10px;
+    font-size: 13px;
+    box-sizing: border-box;
+    background-color: transparent;
+    outline: none
+}
+.upload {
+    padding-bottom: 40px;
+}
+.upload .imgsUp {
+    margin-top: 10px;
+}
+.upload .imgsUp .up_img {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    line-height: 50px;
+    font-size: 14px;
+}
+.payment-money {
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #999999;
+}
+.cr-F7AD1F {
+    color: #F7AD1F;
+}
+.imgsUp li.a1 {
+    top: 0;
+}
+.a1 .del {
+    border: none;
+    right: -5px;
+}
+.imgsUp {
+    display: flex;
+}
+.imgsUp li.a1 {
+    margin-right: 17px;
+    width: 52px;
+    height: 52px;
+}
+.imgsUp li img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+.bottom {
+    margin: 73px 24px;
+    position: unset;
+    width: unset;
+    height: 44px;
+    background: #20C9B5;
+    border-radius: 10px;
+    line-height: 44px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: normal;
+    color: #FFFFFF;
+}

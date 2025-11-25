@@ -1,0 +1,70 @@
+
+.keyword[data-v-7ff057f7] {
+    width: 300px;
+}
+.link-btn.ant-btn[data-v-7ff057f7] {
+    padding: 0 4px;
+}
+.flex-direction[data-v-7ff057f7] {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+}
+.switch-btn.ant-switch[data-v-7ff057f7] {
+    min-width: 56px;
+}
+.sort-input[data-v-7ff057f7] {
+    max-width: 70px;
+}
+.commission-input[data-v-7ff057f7] {
+    width: 320px;
+}
+.percentage_style[data-v-7ff057f7]{
+}
+.percentage_style_title[data-v-7ff057f7]{
+    color: rgb(192, 191, 191);
+}
+.percentage_style_content[data-v-7ff057f7]{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align:center;
+        -ms-flex-align:center;
+            align-items:center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+}
+.percentage_style_num[data-v-7ff057f7]{
+    font-weight: 700;
+    font-size: 20px;
+}
+.percentage_style_rate[data-v-7ff057f7]{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align:center;
+        -ms-flex-align:center;
+            align-items:center;
+}
+.rate_title[data-v-7ff057f7]{
+    font-size: 14px;
+    color: rgb(164, 162, 162);
+}
+.rate_icon[data-v-7ff057f7]{
+    margin:0 6px 12px 50px;
+}
+.rate_num[data-v-7ff057f7]{
+    font-size: 14px;
+}
+.not_choice[data-v-7ff057f7]{
+    text-align: center;
+    border-radius: 3px;
+    padding: 4px 0;
+}
+.in_choice[data-v-7ff057f7]{
+    background-color:#40a9ff;
+    color: #ffffff;
+}
+

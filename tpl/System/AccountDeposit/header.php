@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>			<a href="{pigcms{:U('Config/index',array('galias'=>'AccountDeposit','header'=>'AccountDeposit/header'))}" class="on">云商通</a>	</ul></div>

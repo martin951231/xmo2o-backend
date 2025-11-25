@@ -1,0 +1,54 @@
+
+.right-10 {
+  text-align: right;
+  padding-right: 10px;
+}
+.left-10 {
+  text-align: left;
+  padding-left: 10px;
+}
+.key_hide {
+  display: none;
+}
+.content-p {
+  border: 1px solid rgb(235, 237, 240);
+  background-color: #ffffff;
+  width: 110%;
+  margin-left: -10px;
+}
+.content-f {
+  margin-top: 20px;
+  background-color: #ffffff;
+  padding-bottom: 5px;
+}
+.content-msg {
+  margin: 20px;
+  height: 250px;
+  border: 1px solid #ccc;
+  background-color: #eee
+}
+.content-t{
+  margin-left: 300px;
+  width:200px;
+  float: left;
+  /*border: 1px solid #ccc;*/
+  text-align: right;
+}
+.content-titles{
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.content-titles .focusTip {
+  color: rgb(24, 144, 255);
+}
+.ant-tooltip-inner {
+  width: 566px !important;
+}
+.content-ip{
+  padding-top: 15px;
+  float: left;
+  /*border: 1px solid red;*/
+  width: 100%
+}
+
+

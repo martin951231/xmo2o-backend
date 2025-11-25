@@ -1,0 +1,41 @@
+#population_msg[data-v-5d69a298] {
+  width: calc(100vw/4 - 10px);
+  height: calc((100vh - 90px - 6px) / 3 - 42px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+#population_msg .population_item[data-v-5d69a298] {
+  width: 20%;
+  height: 77%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-size: 100% 100%;
+}
+#population_msg .population_item .item_title[data-v-5d69a298] {
+  font-size: 14px;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+#population_msg .population_item .item_value[data-v-5d69a298] {
+  font-size: 16px;
+  font-family: D;
+  font-weight: bold;
+  color: #EE7413;
+  margin-top: 3px;
+}
+

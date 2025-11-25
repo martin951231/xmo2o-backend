@@ -1,0 +1,135 @@
+.message-suggestions-box-1[data-v-4538178a] {
+  background-color: white;
+  margin-top: 15px;
+}
+.message-suggestions-box-1 .search-box[data-v-4538178a] {
+  padding: 0px 20px;
+  border: 1px solid #e4dfdf;
+  padding-bottom: 15px;
+}
+.message-suggestions-box-1 .add-box[data-v-4538178a] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-box-1 .message_box[data-v-4538178a] {
+  padding: 20px;
+}
+.lbsf[data-v-4538178a] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-4538178a] {
+  padding-top: 15px;
+}
+.mg5_box[data-v-4538178a] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0.5%;
+}
+.top_box[data-v-4538178a] {
+  width: 100%;
+  border: 1px solid #F1F1F1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 10px;
+}
+.top_box .flex_text_box[data-v-4538178a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.top_box .flex_text_box .text_1[data-v-4538178a] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+
+.cout-fee-list-box[data-v-959e257e] {
+  margin: 10px 20px 10px 20px;
+  background-color: white;
+}
+.cout-fee-list-box .search-box[data-v-959e257e] {
+  padding: 0px 10px 10px 10px;
+  border: 1px solid #e4dfdf;
+  border-top: none;
+}
+.txt-green[data-v-959e257e] {
+  color: #0fb70f;
+}
+.txt-red[data-v-959e257e] {
+  color: red;
+}
+.table-operator[data-v-959e257e]{
+  margin-bottom: 10px;
+}
+.count-fee-list-tip-box[data-v-959e257e] {
+  padding:0px 4px;
+}
+
+
+.cout-fee-list-box[data-v-74b9bcc4] {
+  margin: 10px 20px 10px 20px;
+  background-color: white;
+}
+.cout-fee-list-box .search-box[data-v-74b9bcc4] {
+  padding: 0px 10px 10px 10px;
+  border: 1px solid #e4dfdf;
+  border-top: none;
+}
+.txt-green[data-v-74b9bcc4] {
+  color: #0fb70f;
+}
+.txt-red[data-v-74b9bcc4] {
+  color: red;
+}
+.table-operator[data-v-74b9bcc4]{
+  margin-bottom: 10px;
+}
+.count-fee-list-tip-box[data-v-74b9bcc4] {
+  padding:0px 4px;
+}
+
+
+.cout-fee-list-box[data-v-38e85ce8] {
+  margin: 10px 20px 10px 20px;
+  background-color: white;
+}
+.cout-fee-list-box .search-box[data-v-38e85ce8] {
+  padding: 0px 10px 10px 10px;
+  border: 1px solid #e4dfdf;
+  border-top: none;
+}
+.txt-green[data-v-38e85ce8] {
+  color: #0fb70f;
+}
+.txt-red[data-v-38e85ce8] {
+  color: red;
+}
+.table-operator[data-v-38e85ce8]{
+  margin-bottom: 10px;
+}
+.count-fee-list-tip-box[data-v-38e85ce8] {
+  padding:0px 4px;
+}
+
+.villagePropertyRoomFeeRate[data-v-6b4f8fb2] {
+  background: #ffffff;
+}
+

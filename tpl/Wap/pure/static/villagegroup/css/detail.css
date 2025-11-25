@@ -1,0 +1,651 @@
+body{
+	color:#333;
+}
+.pageBg div{
+	height:calc(100% / 2);
+}
+.pageBg div.bottom{
+	background:#F8F8F8;
+}
+.page{
+	height: calc(100% - 54px);
+    color: #333;
+}
+.container{
+	background:#F8F8F8;
+}
+.topFixed{
+	z-index:1000;
+	position:fixed;
+	top:0;
+	background:#333333;
+	left:0;
+	width:100%;
+	height:40px;
+	font-size:12px;
+}
+.topFixed .item{
+	float:left;
+	width:20%;
+	line-height:40px;
+	text-align:center;
+	color: #999;
+}
+.topFixed .item.active{
+	color:#F64031;
+}
+.buyHistoryBox{
+	position: fixed;
+    z-index: 1001;
+    border-radius: 20px;
+    top: 15px;
+    left: 15px;
+    height: 30px;
+    background: rgba(0,0,0,0.3);
+    line-height: 30px;
+    padding-right: 10px;
+    color: #f8f8f8;
+    font-size: 12px;
+}
+.buyHistoryBox .img{
+	width:26px;
+	overflow:hidden;
+	margin:2px 4px 2px 2px;
+}
+.buyHistoryBox .img img{
+	width:100%;
+	height:100%;
+	border-radius:100%;
+}
+
+
+
+.groupImgBox{
+	position:relative;
+}
+.sliderImg{
+	width:100%;
+	padding-top:calc(100% * 500 / 900);
+    background-size: 100%;
+}
+.swiper-pagination-bullet{
+	width: 17px;
+    height: 3px;
+    display: inline-block;
+    border-radius: 2px;
+    background: #000;
+    opacity: .3;
+    margin: 0 2px!important;
+}
+.swiper-pagination-bullet-active{
+	background:#F64031;
+	opacity:1;
+}
+
+.visitNum{
+	position: absolute;
+    right: 0;
+    bottom: 10px;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    color: #eee;
+    font-size: 12px;
+    padding: 6px 6px 6px 10px;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    letter-spacing: 1px;
+}
+
+.groupNameBox{
+	padding:15px;
+	background:white;
+	margin-bottom:10px;
+}
+.groupName{
+	font-size:16px;
+	font-weight:600;
+	letter-spacing:1px;
+}
+.groupDesc{
+	font-size:12px;
+	color:#999;
+}
+.groupPrice{
+	margin-top:10px;
+	font-size:18px;
+	font-weight:600;
+	color:#F64031;
+	position:relative;
+}
+.groupPrice.pin{
+	padding-top:12px;
+}
+.groupPrice.pin .tip{
+	font-weight:normal;
+	font-size:10px;
+	background:#F64031;
+	color:white;
+	position:absolute;
+	top:-6px;
+	left:0px;
+	padding:0 6px;
+}
+.groupPrice.pin .tip:after{
+	content: " ";
+    display: inline-block;
+    height:0px;
+    width:0px;
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+	border-top: 4px solid #F64031;
+    border-right: 4px solid transparent;
+}
+.groupPrice .price{
+    margin-left: -4px;
+}
+.groupPrice .old{
+	font-size:12px;
+	text-decoration:line-through;
+	color:#999;
+	margin-left:6px;	
+	font-weight:500;
+}
+
+
+.buyListBox{
+	margin-top:10px;
+	padding-top:10px;
+	border-top:1px solid #F8F8F8;
+}
+.buyListBox .buyNum{
+	font-weight:500;
+    margin-bottom: 4px;
+	font-size: 12px;
+	letter-spacing:1px;
+}
+.buyListBox .avatarList .item{
+	width:36px;
+	height:36px;
+	background-size:100%;
+	float:right;
+	border-radius:100%;
+	margin-right: -10px;
+}
+.buyListBox .avatarList .item.more{
+	background: #f1f1f1;
+	text-align:center;
+	color:#999;
+	line-height: 30px;
+}
+.buyListBox .invite{
+	height:36px;
+	line-height:36px;
+	background:#F64031;
+	font-size:12px;
+	padding:0 14px;
+	color:white;
+	border-radius:15px;
+    margin-top: -5px;
+}
+
+.pinInfoBox{
+	margin-bottom:10px;
+	background: white;
+}
+.pinInfoBox .title{
+	padding-left:15px;
+	height:50px;
+	line-height:50px;
+	border-bottom:1px solid #F8F8F8;
+}
+
+.merInfoBox{
+	margin-bottom:10px;
+	background: white;
+}
+.merInfo{
+	padding:15px;
+	border-bottom:1px solid #F8F8F8;
+}
+.merInfo .merLogo{
+	width:40px;
+	height:40px;
+}
+.merInfo .merLogo img{
+	width:100%;
+	height:100%;
+	border-radius:100%;
+}
+.merName{
+	margin-left:10px;
+}
+.merName .name{
+	font-weight:500;
+}
+.merName .desc{
+	font-size:12px;
+	color:#999;
+}
+.merLink{
+	position:relative;
+	line-height:40px;
+	font-size:12px;
+	color:#999;
+	padding:0 10px;
+}
+.merLink:after{
+	content: " ";
+    display: inline-block;
+    height: 6px;
+    width: 6px;
+    border-width: 1px 1px 0 0;
+    border-color: #999;
+    border-style: solid;
+    -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    position: relative;
+    top: -2px;
+    position: absolute;
+    top: 50%;
+    margin-top: -3px;
+    right: 2px;
+}
+
+.storeList .item{
+	padding:15px 100px 0px 15px;
+	position: relative;
+}
+.storeList .item .storeName{
+	line-height:1;
+	margin-bottom:2px;
+	-webkit-box-orient:vertical;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+}
+.storeList .item .storeName .name{
+	font-weight:400;
+}
+.storeList .item .storeName .clock{
+	margin-left:6px;
+	padding-left:6px;
+	border-left:1px solid #EEE;
+	font-size:12px;
+	color:#999;
+}
+.storeList .item .storeAddress{
+	color:#999;
+	font-size:12px;
+	-webkit-box-orient: vertical;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+}
+.storeList .item .phoneNavi{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    line-height: 43px;
+}
+.storeList .item .phoneNavi .iconfont{
+	text-align:center;
+	width:40px;
+	font-size: 18px;
+	color: #666;
+}
+.storeList .more{
+    text-align: center;
+    padding: 15px 0;
+    font-size: 14px;
+}
+
+.boxBlock{
+	padding:15px;
+	margin-bottom:10px;
+	background: white;
+}
+.centerTitle{
+	font-size:24px;
+	text-align:center;
+	font-weight:500;
+	letter-spacing: 1px;
+}
+.centerDesc{
+	text-align:center;
+	font-weight:500;
+	font-size:16px;
+	margin-bottom:15px;
+	letter-spacing: 1px;
+}
+.introListBox li{
+	list-style:none;
+	margin: 8px 0;
+    color: #666;
+	letter-spacing: 0.5px;
+}
+.introListBox li b {
+    font-weight: normal;
+    color: #ff9c00;
+    display: block;
+}
+
+
+/* 商品详情 */
+.groupDetailBox .contentBox{line-height:1.6em;}
+.groupDetailBox .contentBox table { width:100%!important; margin-top:0px; border:none; font-size:14px; color:#222; border: 1px solid #E8E8E8; }
+.groupDetailBox .contentBox table .name { width:auto; text-align:left; border-left:none; }
+.groupDetailBox .contentBox table .price { width:20%; text-align:center; }
+.groupDetailBox .contentBox table .amount { width:20%; text-align:center; }
+.groupDetailBox .contentBox table .subtotal { width:20%; text-align:right; border-right:none; font-family: arial, sans-serif; }
+.groupDetailBox .contentBox table caption, .groupDetailBox .contentBox table th, .groupDetailBox .contentBox table td { padding:8px 10px; background:#FFF; border:1px dotted #E8E8E8; border-top:none; word-break:break-all; word-wrap:break-word; }
+.groupDetailBox .contentBox table caption { background:#F0F0F0; }
+.groupDetailBox .contentBox table caption .title, .groupDetailBox .contentBox table .subline .title { font-weight:500; }
+.groupDetailBox .contentBox table th { color:#333; background:#F0F0F0; font-weight:500; border-left-style:none; border-right-style:none;}
+.groupDetailBox .contentBox table td { color:#a1a1a1; border-bottom-style:dotted; }
+.groupDetailBox .contentBox table .subline { background:#fff; text-align:center; border-left:none; border-right:none; }
+.groupDetailBox .contentBox table .subline-left { width:22%; text-align:left;border-right: 1px #e8e8e8 dotted; }
+.groupDetailBox .contentBox img{max-width:100%;_width:100%;/* margin:10px 0; */    display:inline-block;vertical-align:middle}
+.groupDetailBox .contentBox ul{list-style-type: initial;padding-left:16px;font-size:14px!important;margin-left:5px;}
+.groupDetailBox .contentBox ul li {font-size:14px!important;margin:4px 0;line-height: 1.5;color:#a1a1a1!important;}
+.deal-menu-summary {
+    padding: 10px;
+    text-align: right;
+    border-bottom: 1px #e8e8e8 solid;
+    border-left: 1px #e8e8e8 solid;
+    border-right: 1px #e8e8e8 solid;
+    margin-top: 0!important;
+}
+.groupDetailBox .contentBox p {
+margin: 10px 0;
+color: #a1a1a1;
+}
+.deal-menu-summary .worth {
+display: inline-block;
+min-width: 10px;
+_width: 10px;
+padding-right: 20px;
+text-align: left;
+word-break: normal;
+word-wrap: normal;
+font-weight: bold;
+}
+.deal-menu-summary .price {
+color: #ea4f01;
+padding-right: 0;
+}
+
+
+.otherGroupBox{
+	margin-top:0px;
+	border-top:none;
+}
+.goodList{
+    padding-bottom: 0px;
+}
+
+/* 底部导航 */
+.footerMenu{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index:999;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    height: 54px;
+    width: 100%;
+	background:white;
+}
+.footerMenu ul {
+    margin: auto;
+    display: block;
+    width: 100%;
+    height: 53px;
+    display: -webkit-box;
+    display: box;
+    -webkit-box-orient: horizontal;
+    border-top: 1px solid #F8F8F8;
+}
+.footerMenu ul li {
+    float: left;
+    width: 33.33%;
+    list-style: none;
+    color: #777;
+    line-height: 20px;
+    text-align: center;
+    text-decoration: none;
+    padding-top: 11px;
+    font-size: 12px;
+    position: relative;
+}
+.footerMenu ul li.home,.footerMenu ul li.kefu{
+	width:18%;
+}
+.footerMenu ul li.home:after,.footerMenu ul li.kefu:after{
+	position:absolute;
+	content: " ";
+    display: inline-block;
+	width:1px;
+	background:#F8F8F8;
+	height:100%;
+	right:0;
+	top:0;
+}
+.footerMenu ul li .icon{
+	font-size:32px;
+}
+.footerMenu ul li .icon.find{
+	font-size:24px;
+}
+.footerMenu ul li.directBuy,.footerMenu ul li.pinBuy{
+	color:#333;
+	width:32%;
+}
+.footerMenu ul li.directBuy .icon,.footerMenu ul li.pinBuy .icon{
+	font-size:14px;
+	font-weight:600;
+	line-height: 16px;
+    letter-spacing: 0.5px;
+}
+.footerMenu ul li.pinBuy{
+	background:#F64031;
+	color:white;
+}
+
+.footerMenu ul li.buy,.footerMenu ul li.myPin{
+	color:#333;
+	width:64%;
+	background:#F64031;
+	color:white;
+	padding-top:0;
+}
+.footerMenu ul li.buy p,.footerMenu ul li.myPin p{
+	line-height:52px;
+	font-size:16px;
+	font-weight:500;
+}
+
+.shareBox{
+	z-index: 1001;
+    position: fixed;
+    top: 30%;
+    background: rgba(0,0,0,0.6);
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    font-size: 12px;
+    border-radius: 100%;
+    text-align: center;
+    color: white;
+}
+.shareBox p{
+	line-height:1;
+}
+.shareBox p.iconfont{
+	margin:8px 0 5px;
+}
+.gotopBox{
+	z-index: 1001;
+    position: fixed;
+    bottom:80px;
+    background: rgba(0,0,0,0.6);
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    font-size: 12px;
+    border-radius: 100%;
+    text-align: center;
+    color: white;
+}
+.gotopBox p.iconfont{
+	line-height:40px;
+	font-size:28px;
+}
+
+
+.pinList{
+	padding:0 15px;
+}
+.pinList .item{
+	padding:15px 0;
+	border-bottom:1px solid #f8f8f8;
+}
+
+.pinList .avatar{
+	width:42px;
+	height:42px;
+	border-radius:100%;
+	overflow:hidden;
+}
+.pinList .nickTime{
+	margin-left:10px;
+}
+.pinList .nickRow{
+	margin-top: 2px;
+    line-height: 22px;
+}
+.pinList .nickRow .nick{
+	font-weight:500;
+}
+.pinList .nickRow .num{
+	color:#999;
+	margin-left:5px;
+	font-size:12px;
+}
+.pinList .nickRow .num span{
+	color:#F64031;
+    margin: 0 2px;
+}
+.pinList .timeRow{
+	color:#999;
+	font-size:12px;
+}
+.pinList .buy{
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 0px 10px;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 6px;
+    border-radius: 5px;
+}
+
+
+.pinTip{
+	height:40px;
+	line-height:40px;
+	color:#999;
+	font-size:12px;
+	padding: 0 15px;
+}
+.pinTip .fl span{
+	width:12px;
+	display:inline-block;
+	position:relative;
+}
+.pinTip .fl span:after{
+	content: " ";
+    display: inline-block;
+    height: 4px;
+    width: 4px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: #888;
+    border-radius: 100%;
+	margin-top:-6px;
+	margin-left:-2px;
+}
+.pinTip .fr{
+	position:relative;
+    padding:0 10px;
+}
+.pinTip .fr:after {
+    content: " ";
+    display: inline-block;
+    height: 6px;
+    width: 6px;
+    border-width: 1px 1px 0 0;
+    border-color: #999;
+    border-style: solid;
+    -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    position: relative;
+    top: -2px;
+    position: absolute;
+    top: 50%;
+    margin-top: -3px;
+    right: 2px;
+}
+
+.pinRuleBg{
+	position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+}
+.pinRuleCon{
+    background: white;
+    position: fixed;
+    z-index: 9999;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+.pinRuleCon .title{
+    height: 50px;
+    line-height: 50px;
+    margin: 0 10px;
+    text-align: center;
+    border-bottom: 1px solid #f8f8f8;
+	font-weight:500;
+	font-size:16px;
+}
+.pinRuleCon .title .close{
+	position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 50px;
+    padding-right: 10px;
+    width: 50px;
+    font-size: 20px;
+}
+.pinRuleCon .content{
+	max-height: 40%;
+	padding:10px 20px;
+}
+.pinRuleCon .content .c{
+	margin-bottom:10px;
+	color:#999;
+	font-size:12px;
+}

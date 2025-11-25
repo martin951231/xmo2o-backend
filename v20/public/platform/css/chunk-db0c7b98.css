@@ -1,0 +1,51 @@
+
+.title[data-v-6c8584ce] {
+    padding: 12px 10px;
+    background-color: #f8f8f8;
+    font-weight: bold;
+    text-align: left;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    color: #000000;
+    font-size: 16px;
+}
+.font-14[data-v-6c8584ce] {
+    font-size: 14px;
+}
+.item-2[data-v-6c8584ce] {
+    padding: 12px 20px;
+}
+.item-3[data-v-6c8584ce] {
+    padding: 12px 40px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    font-size: 12px;
+}
+.border-bottom[data-v-6c8584ce] {
+    border-bottom: 1px solid #ffffff;
+}
+.item-3[data-v-6c8584ce] .ant-checkbox-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.item-3[data-v-6c8584ce] .ant-checkbox-wrapper .ant-checkbox + span {
+    line-height: 16px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 12px;
+}
+.item-3[data-v-6c8584ce] .ant-checkbox-wrapper .ant-checkbox {
+    top: 0;
+}
+.font-blue[data-v-6c8584ce]{
+    color: #1890FF;
+}
+.font-red[data-v-6c8584ce]{
+    color: red;
+}
+.font-gray[data-v-6c8584ce]{
+    color: gray;
+}
+

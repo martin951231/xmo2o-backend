@@ -1,0 +1,367 @@
+<include file="Public:header"/>
+<div id="frame_map_tips" style="margin:0;height:auto;font-size:12px;line-height:20px;">(用鼠标滚轮可以缩放地图)&nbsp;&nbsp;&nbsp;&nbsp;拖动红色图标即可选取经纬度。<br/>若有多个搜索结果，只会展示第一条，请手动通过拖动图标进行校准。</div>
+<div class="modal-body no-padding" style="width:100%;">
+    <form id="map-search" style="margin:10px;">
+        <input id="map-keyword" type="textbox" style="width:300px;height:26px;padding-left:6px;" placeholder="尽量填写城市、区域、街道名" value=""/>
+        <input type="submit" value="搜索" style="height:30px;padding:0 10px;"/>
+    </form>
+    <div id="cmmap" style="height:478px;"></div>
+</div>
+<if condition="$config['map_config'] eq 'google' AND $config['google_map_ak']">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key={pigcms{$config.google_map_ak}&region=au"></script>
+    <script>
+		if(is_v20()) {
+			var store_add_frame = window.o2oTop.frames('Openstore_add').document;
+		}else {
+			var store_add_frame = window.o2oTop.frames['Openstore_add'].document;
+		}
+        var markers_circle = [];
+        var long_lat = '{pigcms{$long_lat}';
+        $('#frame_map_tips').text('先找到所在的城市然后搜索位置，点击红色标注图标即可自动填充位置和坐标。');
+        var map;
+        var long_lat = long_lat.split(',');
+        if (long_lat && long_lat != '') {
+            var latlng = {lng: parseFloat(long_lat[0]), lat: parseFloat(long_lat[1])};
+        } else {
+            var latlng = {lng: 117.2285309, lat: 31.8291397};
+        }
+
+        initMap();
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('cmmap'), {
+                zoom: 14,
+                center: latlng
+            });
+            var infoWindow = new google.maps.InfoWindow({map: map});
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                draggable: true
+            });
+            markers_circle.push(marker);
+
+
+            //结束拖动
+            google.maps.event.addListener(marker, 'dragend', function (MouseEvent) {
+				var latlng = MouseEvent.latLng;
+                $('#long_lat',store_add_frame).val(latlng.lng() + ',' + latlng.lat());
+            });
+
+            //搜索
+            var service = new google.maps.places.PlacesService(map);
+
+            $('#map-search').submit(function (e) {
+                e.preventDefault();
+                $('#map-keyword').val($.trim($('#map-keyword').val()));
+                if ($('#map-keyword').val().length > 0) {
+                    performSearch($('#map-keyword').val());
+                }
+                return false;
+            });
+
+
+            function performSearch(keyword) {
+                var request = {
+                    bounds: map.getBounds(),
+                    query: keyword
+                };
+                service.textSearch(request, callback);
+            }
+
+            function callback(results, status) {
+                if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                    console.error(status);
+                    return;
+                }
+				if(results.length > 0){
+					for (var i = 0; i < markers_circle.length; i++) {
+						markers_circle[i].setMap(null);
+					}
+					if(results.length == 1){
+						$('#long_lat',store_add_frame).val(results[0].geometry.location.lng() + ',' + results[0].geometry.location.lat());
+					}
+
+					for (var i = 0, result; result = results[i]; i++) {
+						if(i == 0){
+							map.setCenter(result.geometry.location);
+						}
+						addMarker(result);
+					}
+                }
+            }
+
+            function addMarker(place) {
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: place.geometry.location,
+                });
+                markers_circle.push(marker);
+                google.maps.event.addListener(marker, 'click', function () {
+					var latlng = marker.position;
+					$('#long_lat',store_add_frame).val(latlng.lng() + ',' + latlng.lat());
+					
+                    service.getDetails(place, function (result, status) {
+                        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                            console.error(status);
+                            return;
+                        }
+                        infoWindow.setContent(result.name);
+                        infoWindow.open(map, marker);
+                    });
+                });
+            }
+        }
+	</script>
+	<elseif condition="$config['tianditu_web_key']" />
+	<script src="https://api.tianditu.gov.cn/api?v=4.0&tk={pigcms{$config.tianditu_web_key}" type="text/javascript"></script>
+	<script src="/tpl/Static/js/coordinate.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var local = null
+			if(is_v20()) {
+				var store_add_dom = window.o2oTop.frames('Openstore_add');
+				var store_add_frame = store_add_dom.document;
+			} else {
+				var store_add_dom = window.o2oTop.frames['Openstore_add'];
+				var store_add_frame = window.o2oTop.frames['Openstore_add'].document;
+			}
+			var map = null;
+			const lnglat = "{pigcms{$long_lat}".toString();
+			const [lng, lat] = Coordinate.bd09ToWgs84(lnglat.split(',')[0], lnglat.split(',')[1])//转天地图wgs84坐标系
+			var oPoint = new T.LngLat(lng,lat);
+			
+			var marker = new T.Marker(oPoint);
+			var setPoint = function(mk,b){
+				var pt = mk.getLngLat();
+				const [lng, lat] = Coordinate.wgs84ToBd09(pt.lng, pt.lat)//转百度坐标系
+				$('#long_lat',store_add_frame).val(lng + ',' + lat);
+				// 天地图的逆地理编码
+				var geocoder = new T.Geocoder();
+				geocoder.getLocation(pt, function(result){
+					var addComp = result.addressComponent;
+					if (b === true){
+						if(addComp.province && typeof($('#choose_province',store_add_frame)) != 'undefined'){
+							$.each($('#choose_province option',store_add_frame), function(i, item){
+								var text = $(item).html();
+								if(text && addComp.province.indexOf(text) != -1){
+									var choose_province = $('#choose_province', store_add_frame);
+									choose_province.find('option').eq(i).prop('selected', true);
+									store_add_dom.show_city(choose_province.find('option:selected').attr('value'), choose_province.find('option:selected').html(), 1);
+									return false;
+								}
+							});
+						}
+						setTimeout(function(){
+							if(addComp.city && typeof($('#choose_city',store_add_frame)) != 'undefined'){
+								$.each($('#choose_city option',store_add_frame), function(i, item){
+									var text = $(item).html();
+									if(text && addComp.city.indexOf(text) != -1){
+										var choose_city = $('#choose_city',store_add_frame);
+										choose_city.find('option').eq(i).prop('selected', true);
+										if($('#choose_cityarea', store_add_frame).attr('circle') != '-1'){
+											store_add_dom.show_area(choose_city.find('option:selected').attr('value'), choose_city.find('option:selected').html(), 1);
+											return false;
+										}
+									}
+								});
+							}
+						}, 200)
+
+						setTimeout(function(){
+							if(addComp.county && typeof($('#choose_area', store_add_frame)) != 'undefined'){
+								$.each($('#choose_area option', store_add_frame), function(i, item){
+									var text = $(item).html();
+									if(text && addComp.county.indexOf(text) != -1){
+										var choose_area = $('#choose_area', store_add_frame);
+										choose_area.find('option').eq(i).prop('selected', true);
+										if($('#choose_cityarea', store_add_frame).attr('circle') != '-1'){
+											store_add_dom.show_circle(choose_area.find('option:selected').attr('value'), choose_area.find('option:selected').html(), 1);
+											return false;
+										}
+									}
+								});
+							}
+						}, 500)
+						$('#adress', store_add_frame).val(addComp.town + addComp.town_code);
+
+						layer.msg('设置成功', {
+							offset: '20px',
+							anim: 6
+						});
+					}
+				});
+			};
+
+			map = new T.Map("cmmap");
+			map.centerAndZoom(oPoint, 14);
+			map.enableScrollWheelZoom();
+
+			// 设置标记
+			map.addOverLay(marker);
+			marker.enableDragging();
+
+			// 拖拽标记事件
+			marker.addEventListener("dragend", function(){
+				setPoint(marker, true);
+			});
+
+			marker.addEventListener("click", function(e){    
+				setPoint(marker, true);
+			});
+
+			// 初始化天地图本地搜索
+			local = new T.LocalSearch(map, {
+				pageCapacity: 1,
+				onSearchComplete: function(results){
+					if(results.getSuggests()){
+						const [lng,lat] = results.getSuggests()[0].lonlat.split(',')
+						let point = new T.LngLat(lng,lat);
+						map.centerAndZoom(point, 17);
+						marker.setPosition(point);
+					}else{
+						layer.msg('暂无相关数据', {
+							offset: '20px',
+							anim: 6
+						});
+					}
+				}
+			});
+
+			$('#map-search').submit(function(){
+				$('#map-keyword').val($.trim($('#map-keyword').val()));
+				if($('#map-keyword').val().length > 0){
+					local.search($('#map-keyword').val());
+				}
+				return false;
+			});
+		});
+	</script>
+	<else />
+	<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			var local = null
+			if(is_v20()) {
+				var store_add_dom = window.o2oTop.frames('Openstore_add');
+				var store_add_frame = store_add_dom.document;
+			}else {
+				var store_add_dom = window.o2oTop.frames['Openstore_add'];
+				var store_add_frame = window.o2oTop.frames['Openstore_add'].document;
+			}
+			var map = null;
+			var oPoint = new BMap.Point({pigcms{$long_lat});
+			var marker = new BMap.Marker(oPoint);
+			var setPoint = function(mk,b){
+				var pt = mk.getPosition();
+				$('#long_lat',store_add_frame).val(pt.lng+','+pt.lat);
+				(new BMap.Geocoder()).getLocation(pt,function(rs){
+					addComp = rs.addressComponents;
+					if (b===true){
+						if(addComp.province && typeof($('#choose_province',store_add_frame)) != 'undefined'){
+							$.each($('#choose_province option',store_add_frame),function(i,item){
+								var text = $(item).html();
+								if(text && addComp.province.indexOf(text)!=-1){
+									var choose_province = $('#choose_province',store_add_frame);
+									choose_province.find('option').eq(i).prop('selected',true);
+									store_add_dom.show_city(choose_province.find('option:selected').attr('value'),choose_province.find('option:selected').html(),1);
+									return false;
+								}
+							});
+						}
+						setTimeout(function(){
+							if(addComp.city && typeof($('#choose_city',store_add_frame)) != 'undefined'){
+								$.each($('#choose_city option',store_add_frame),function(i,item){
+									var text = $(item).html();
+									console.log(text)
+									if(text && addComp.city.indexOf(text)!=-1){
+										var choose_city = $('#choose_city',store_add_frame);
+										choose_city.find('option').eq(i).prop('selected',true);
+
+										if($('#choose_cityarea',store_add_frame).attr('circle') != '-1'){
+											store_add_dom.show_area(choose_city.find('option:selected').attr('value'),choose_city.find('option:selected').html(),1);
+											return false;
+										}
+									}
+								});
+							}
+						},200)
+						
+						setTimeout(function(){
+						if(addComp.district && typeof($('#choose_area',store_add_frame)) != 'undefined'){
+							$.each($('#choose_area option',store_add_frame),function(i,item){
+								var text = $(item).html();
+									console.log(text)
+								if(text && addComp.district.indexOf(text)!=-1){
+									var choose_area = $('#choose_area',store_add_frame);
+									choose_area.find('option').eq(i).prop('selected',true);
+									if($('#choose_cityarea',store_add_frame).attr('circle') != '-1'){
+										store_add_dom.show_circle(choose_area.find('option:selected').attr('value'),choose_area.find('option:selected').html(),1);
+										return false;
+									}
+								}
+							});
+						}
+						},500)
+						$('#adress',store_add_frame).val(addComp.street + addComp.streetNumber);
+						
+						layer.msg('设置成功', {
+							offset: '20px',
+							anim: 6
+						});
+					}
+				});
+			};
+			
+			map = new BMap.Map("cmmap",{"enableMapClick":false});
+			map.enableScrollWheelZoom();
+			marker.enableDragging();
+			
+			<if condition="empty($_GET['long_lat'])">
+				map.centerAndZoom(oPoint, 14);
+				function myFun(result){
+					oPoint = new BMap.Point(result.center['lng'],result.center['lat']);
+					map.centerAndZoom(oPoint,14);
+					marker.setPosition(oPoint);
+				}
+				var myCity = new BMap.LocalCity();
+				myCity.get(myFun);
+			<else/>
+				map.centerAndZoom(oPoint,18);
+			</if>
+		
+
+			map.addControl(new BMap.NavigationControl());
+			map.enableScrollWheelZoom();
+
+			map.addOverlay(marker);
+			
+			marker.addEventListener("dragend", function(){
+				setPoint(marker,true);
+			});
+			marker.addEventListener("click", function(e){	
+				setPoint(marker,true);
+			});	
+			/*map.addEventListener("click",function(e){
+				alert(e.point.lng + "," + e.point.lat);
+			});*/
+			local = new BMap.LocalSearch(map,{
+				pageCapacity:1,
+				onSearchComplete:function(results){
+					map.centerAndZoom(results.getPoi(0).point, 17);
+					marker.setPosition(results.getPoi(0).point);
+				}
+			});
+				
+			$('#map-search').submit(function(){
+				$('#map-keyword').val($.trim($('#map-keyword').val()));
+				if($('#map-keyword').val().length >0){
+					local.search($('#map-keyword').val());
+				}
+				return false;
+			});
+		});
+	</script>
+	<style>.BMap_cpyCtrl{display:none;}</style>
+</if>
+<include file="Public:footer"/>

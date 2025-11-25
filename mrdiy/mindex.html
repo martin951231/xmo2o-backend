@@ -1,0 +1,299 @@
+﻿
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>铭家服务 - 免费企业服务管家</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-gray-800">铭家服务</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-600 hover:text-blue-600 font-medium">功能特色</a>
+                    <a href="#advantages" class="text-gray-600 hover:text-blue-600 font-medium">核心优势</a>
+                    <a href="#pricing" class="text-gray-600 hover:text-blue-600 font-medium">定价</a>
+                    <a href="#contact" class="text-gray-600 hover:text-blue-600 font-medium">联系我们</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-medium">
+                        立即使用
+                    </button>
+                    <button class="md:hidden text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="gradient-bg text-white">
+        <div class="max-w-7xl mx-auto px-4 py-20">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 fade-in">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6 inline-block">
+                        <span class="text-sm font-semibold">永久免费 · 无任何隐藏费用</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                        智能物业管家
+                        <br>
+                        <span class="text-blue-200">完全免费使用</span>
+                    </h1>
+                    <p class="text-xl mb-8 text-blue-100 leading-relaxed">
+                        铭家服务为所有企业提供全方位的智能化管理解决方案，从物业管理到具体流程，一切尽在掌握。<strong class="text-white">我们郑重承诺：永久免费，绝不收取任何费用。</strong>
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition duration-300 hover-lift">
+                            <i class="fas fa-play-circle mr-2"></i>立即开始使用
+                        </button>
+                        <button class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/10 transition duration-300">
+                            <i class="fas fa-video mr-2"></i>观看演示
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center fade-in">
+                    <div class="relative">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 w-80 h-96 transform rotate-3"></div>
+                        <div class="absolute top-0 left-0 bg-white rounded-2xl shadow-2xl w-80 h-96 transform -rotate-3 flex items-center justify-center">
+                            <div class="text-center p-6">
+                                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-check text-green-600 text-3xl"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800 mb-2">免费使用确认</h3>
+                                <p class="text-gray-600 mb-4">铭家服务对企业用户完全免费，无任何功能限制</p>
+                                <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                    <p class="text-green-800 font-semibold">无订阅费用</p>
+                                    <p class="text-green-800 font-semibold">无隐藏收费</p>
+                                    <p class="text-green-800 font-semibold">永久免费</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 免费承诺区域 -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">我们的免费承诺</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">铭家服务致力于为企业提供最优质的服务，同时保持完全免费的使用模式</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-blue-50 rounded-2xl p-8 hover-lift">
+                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-dollar-sign text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">零成本使用</h3>
+                    <p class="text-gray-600 mb-4">从注册到使用，铭家服务不收取任何费用，让企业以最低成本享受智能化管理</p>
+                </div>
+                
+                <div class="bg-green-50 rounded-2xl p-8 hover-lift">
+                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-infinity text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">永久免费</h3>
+                    <p class="text-gray-600 mb-4">我们承诺铭家服务将永远保持免费，不会在未来增加任何收费计划</p>
+                </div>
+                
+                <div class="bg-purple-50 rounded-2xl p-8 hover-lift">
+                    <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">功能完整</h3>
+                    <p class="text-gray-600 mb-4">免费版本包含所有核心功能，无任何功能限制或使用门槛</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能特色 -->
+    <section id="features" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">强大功能特色</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">铭家服务提供全面的企业智能化管理解决方案</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover-lift">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">客户关系管理</h3>
+                    <p class="text-gray-600">智能化客户信息管理，跟进记录，商机追踪</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover-lift">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-tasks text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">业务流程管理</h3>
+                    <p class="text-gray-600">自定义工作流程，任务分配，进度跟踪</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover-lift">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-bar text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">数据分析报表</h3>
+                    <p class="text-gray-600">多维度数据分析，可视化报表，智能洞察</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 定价区域 - 强调免费 -->
+    <section id="pricing" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">简单透明的定价</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">只有一个选择：完全免费</p>
+            </div>
+            
+            <div class="max-w-md mx-auto">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl p-8 text-white text-center relative overflow-hidden hover-lift">
+                    <div class="absolute top-4 right-4 bg-yellow-500 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold">
+                        推荐
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">免费版</h3>
+                    <div class="text-4xl font-bold mb-6">￥0<span class="text-xl font-normal">/永久</span></div>
+                    
+                    <ul class="space-y-3 mb-8 text-left">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-300 mr-3"></i>
+                            <span>完整功能使用权</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-300 mr-3"></i>
+                            <span>无限制用户数量</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-300 mr-3"></i>
+                            <span>专业技术支持</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-green-300 mr-3"></i>
+                            <span>定期功能更新</span>
+                        </li>
+                    </ul>
+                    
+                    <button class="w-full bg-white text-blue-600 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition duration-300">
+                        立即免费使用
+                    </button>
+                    
+                    <div class="mt-4 text-blue-200">
+                        <p>无任何隐藏费用 · 永久免费保障</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-robot text-white text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold">铭家服务</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">为企业提供智能化管理解决方案的免费服务平台</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-blue-600 transition duration-300">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-blue-500 transition duration-300">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition duration-300">首页</a></li>
+                        <li><a href="#features" class="text-gray-300 hover:text-white transition duration-300">功能特色</a></li>
+                        <li><a href="#advantages" class="text-gray-300 hover:text-white transition duration-300">核心优势</a></li>
+                        <li><a href="#pricing" class="text-gray-300 hover:text-white transition duration-300">定价</a></li>
+                    </ul>
+                </div>
+                
+                <div id="contact">
+                    <h4 class="font-bold text-lg mb-4">联系我们</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            0356-3666600
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>2025 铭家服务. 保留所有权利. 郑重承诺：永久免费使用，绝不收取任何费用</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的滚动动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            // 观察所有需要动画的元素
+            document.querySelectorAll('.hover-lift').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

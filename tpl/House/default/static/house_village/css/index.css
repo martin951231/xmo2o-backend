@@ -1,0 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-attachment: fixed;
+    background-image: url('../images/login.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.bg-img {
+    width: 1000px;
+    height: 100%;
+}
+.login-icon {
+    display: inline-block;
+}
+.top-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+.btn {
+    background: #2681f3;
+    color: #ffffff;
+    padding: 0 20px;
+    border: 0px;
+    border-radius: 25px;
+    line-height: 30px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.center-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 250px;
+}
+.title {
+    font-size: 60px;
+    color: #ffffff;
+    letter-spacing: 14px;
+    font-family: "Microsoft YaHei";
+}
+.text{
+	font-family: PingFang-SC-Regular;
+	font-size: 16px;
+	font-weight: normal;
+	font-stretch: normal;
+	line-height: 80px;
+	letter-spacing: 6px;
+	color: #c1c1c1;
+}
+.app-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    margin-top: 15px;
+}
+.box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 150px;
+	height: 40px;
+	background-color: #3d7cef;
+    border-radius: 5px;
+    padding: 0px 15px;
+    margin: 0px 15px;
+    cursor: pointer;
+}
+.box1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 150px;
+    height: 40px;
+    background-color: #3d7cef;
+    border-radius: 5px;
+    padding: 0px 15px;
+    margin: 0px 15px;
+    cursor: pointer;
+}
+.box2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 150px;
+    height: 40px;
+    background-color: #3d7cef;
+    border-radius: 5px;
+    padding: 0px 15px;
+    margin: 0px 15px;
+    cursor: pointer;
+}
+.left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.app-img {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+}
+.QRcode-img {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+.text1 {
+    font-size: 14px;
+    margin-left: 10px;
+    color: #ffffff;
+}
+.popup {
+    position: fixed;
+    display: none;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(33, 34, 38, 0);
+    z-index: 999;
+}
+.popup1 {
+    position: fixed;
+    display: none;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(33, 34, 38, 0);
+    z-index: 999;
+}
+.popup2 {
+    position: fixed;
+    display: none;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(33, 34, 38, 0);
+    z-index: 999;
+}
+.popup-box {
+    background: #ffffff;
+    border-radius: 10px;
+    margin: 0 40%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    top:50%;
+    transform: translateY(-50%);
+}
+.popup-img {
+    border-radius: 10px;
+}

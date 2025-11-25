@@ -1,0 +1,51 @@
+.message-suggestions-list-box[data-v-4b45a894] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-4b45a894] {
+  padding: 20px 20px 0;
+  border: 1px solid #e4dfdf;
+}
+.message-suggestions-list-box .add-box[data-v-4b45a894] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-4b45a894] {
+  padding: 20px;
+}
+.message-suggestions-list-box .message_box[data-v-4b45a894] {
+  padding: 20px;
+}
+.lbsf[data-v-4b45a894] {
+  float: right;
+  margin-right: 24px;
+}
+.padding-tp10[data-v-4b45a894] {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.margin_top_10[data-v-4b45a894] {
+  margin-top: 10px;
+}
+.flex_text_box[data-v-4b45a894] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flex_text_box .text_1[data-v-4b45a894] {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+.form_item[data-v-4b45a894] {
+  width: 50%;
+}
+[data-v-4b45a894] .ant-form-extra {
+  margin-left: 30px;
+}
+

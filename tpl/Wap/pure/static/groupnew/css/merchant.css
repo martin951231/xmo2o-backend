@@ -1,0 +1,161 @@
+.container{
+	background:#F8F8F8;
+}
+.sliderBox{
+	position:relative;
+	background:white;
+}
+.sliderImg{
+	width:100%;
+	padding-top:calc(100% * 500 / 900);
+    background-size: 100%;
+}
+.rightPosition{
+	position:absolute;
+	right:6px;
+	bottom:3px;
+    z-index: 2;
+	color:white;
+	text-shadow: 1px 1px 1px #333;
+}
+.rightPosition .now{
+	font-size:18px;
+	margin-right:1px;
+}
+.rightPosition .all{
+	font-size:14px;
+	/* color:#999; */
+}
+.merInfo{
+	background:white;
+	position:relative;
+	padding-top: 60px;
+}
+.merLogo{
+	padding:2px;
+	width: 60px;
+    height: 60px;
+    position: absolute;
+    left: calc(100% / 2 - 30px);
+    top: -30px;
+    z-index: 3;
+    background: white;
+	border:1px solid #F8F8F8;
+}
+.merDesc{
+	text-align:center;
+	letter-spacing:1px;
+	font-size:16px;
+}
+.merLookNum{
+	text-align:center;
+	color:#999;
+	margin-top:15px;
+}
+.avatarList{
+	margin-top:6px;
+	text-align:center;
+	padding-bottom:12px;	
+}
+.avatarList .item {
+    width: 32px;
+    height: 32px;
+    background-size: 100%;
+	display:inline-block;
+    border-radius: 100%;
+    margin-right: 2px;
+}
+
+.storeList{
+	background:white;
+}
+.storeList .item{
+	padding:15px 100px 15px 15px;
+	position: relative;
+	border-top:1px solid #F8F8F8;
+}
+.storeList .item .storeName{
+	line-height:1;
+	margin-bottom:2px;
+	-webkit-box-orient:vertical;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+}
+.storeList .item .storeName .name{
+	font-weight:400;
+}
+.storeList .item .storeName .clock{
+	margin-left:6px;
+	padding-left:6px;
+	border-left:1px solid #EEE;
+	font-size:12px;
+	color:#999;
+}
+.storeList .item .storeAddress{
+	color:#999;
+	font-size:12px;
+	-webkit-box-orient: vertical;
+    word-break: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+}
+.storeList .item .phoneNavi{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    line-height: 43px;
+}
+.storeList .item .phoneNavi .iconfont{
+	text-align:center;
+	width:40px;
+	font-size: 18px;
+	color: #666;
+}
+
+.goodListBox{
+	background:white;
+	padding:15px;
+}
+.goodList{
+	margin-top:15px;
+}
+.goodListBox.list .goodItem{
+    display: block;
+	margin-right:0px;
+}
+.goodListBox.list .goodItem .goodImage{
+    width: 100%;
+    background-size: 100%;
+    padding-top: calc(100% * 500 / 900);
+}
+.goodList .goodItem .goodName{
+    margin-top: 8px;
+}
+.goodList .goodItem .goodDesc{
+    color: #999;
+	font-size:12px;
+	margin-top: 4px;
+}
+.goodList .goodItem .goodPrice{
+	margin-top:10px;
+}
+.goodList .goodItem .goodPrice .buy{
+    background-color: #f64031;
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 5px;
+    margin-top: -10px;
+}
+.goodListBox.list .goodItem:nth-last-child(2){
+	margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #F8F8F8;
+}

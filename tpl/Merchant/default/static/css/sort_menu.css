@@ -1,0 +1,166 @@
+html body {
+  font-size: 16px;
+  font-family: "微软雅黑";
+  color: #5E5E5E;
+}
+.s-side i {
+  /*color: #5E5E5E;*/
+  /*font-size: 12px;*/
+  /*margin-left: 10px;*/
+}
+.s-side a {
+  text-decoration: none;
+  color: #5E5E5E;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+.s-side ul {
+  list-style: none;
+}
+.fl {
+  float: left;
+}
+/*清除浮动*/
+.clearfix:before,
+.clearfix:after {
+  content: " ";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
+  /*IE/7/6*/
+}
+/*定位居中*/
+.middle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.s-side {
+  /*min-width: 200px;*/
+  width: 160px;
+  /*width: 15%;*/
+  bottom: 0;
+  background-color: #F7F8FA;
+  color: #5E5E5E;
+}
+.s-side .s-firstItem i {
+  font-size: 20px;
+}
+.s-side .s-firstItem span {
+  display: inline-block;
+  padding: 10px 0 10px 0;
+}
+.first {
+  text-align: center;
+  cursor: pointer;
+}
+.s-firstItem{
+  padding: 0 10px;
+}
+
+.s-side .d-firstNav span {
+  display: inline-block;
+  padding: 10px 0 10px 0;
+}
+.s-side .d-firstNav i.fr {
+  font-size: 20px;
+}
+.s-side .s-secondNav,
+.s-side .s-secondItem {    
+  padding: 10px 10px;
+}
+.first span:hover{
+  /*font-weight: bolder;*/
+  color: #1686ef;
+}
+.s-thirdItem a:hover{
+  /*font-weight: bolder;*/
+  color: #1686ef;
+}
+.s-side .d-secondDrop {
+  margin-top: 0px;
+}
+li>ol, li>ul{
+  margin-left:0px !important;
+}
+ ul {
+    margin: 0 ;
+    padding: 0;
+}
+.d-firstDrop{
+  background-color: #EFEFEF;
+}
+.d-secondDrop{
+  background-color: white;
+}
+.iconRotate {
+  transform: rotate(90deg);
+  transition: transform 0.5s;
+}
+.s-thirdItem{
+    padding: 10px 6px;
+}
+.s-firstDrop,
+.s-secondDrop {
+  display: none;
+}
+.d-firstDrop {
+  margin-left: 0px;
+}
+.s-thirdItem.on a,.s-secondItem.on span{
+  color: #fff;
+}
+.s-thirdItem.on,.s-secondItem.on {
+    background: #E6F7FF;
+  border-right: 2px solid #1686ef;
+}
+.first.on{
+  /*background-color: #EFEFEF !important;*/
+}
+.s-firstItem.on span{
+  /*font-weight: bolder;*/
+}
+.d-firstNav.on span{
+  /*font-weight: bolder;*/
+}
+.d-firstDrop.on{
+  overflow: hidden; 
+  display: block;
+}
+.d-secondDrop.on{
+  overflow: hidden; 
+  display: block;
+}
+
+.first.self-on{
+  background-color: #E6F7FF !important;
+  border-right: 2px solid #1686ef;
+}
+.s-firstItem.self-on span{
+  color: #1686ef;
+}
+.s-thirdItem i{
+  color: #1686EF;
+}
+.s-secondItem.self-on{
+  background-color: #E6F7FF !important;
+  border-right: 2px solid #1686ef;
+}
+.s-secondItem.self-on span{
+  color: #1686ef;
+}
+
+.s-thirdItem.on a{
+  color: #1686ef;
+}

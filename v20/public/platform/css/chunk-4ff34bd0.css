@@ -1,0 +1,39 @@
+.text-wrap[data-v-6a27854a] {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.text-nowrap[data-v-6a27854a] {
+  white-space: nowrap;
+}
+.pl-24[data-v-6a27854a] {
+  padding: 24px;
+}
+.wrap[data-v-6a27854a] {
+  padding: 20px 0;
+  width: 100%;
+  min-height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.wrap .plr-20[data-v-6a27854a] {
+  padding-left: 20px;
+  padding-right: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.wrap .bread-crumb[data-v-6a27854a] {
+  padding: 20px 30px;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.wrap .store[data-v-6a27854a] {
+  margin-bottom: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+.wrap .store[data-v-6a27854a]:last-child {
+  border-bottom: none;
+}
+

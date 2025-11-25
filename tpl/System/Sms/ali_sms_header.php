@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">	<ul>		<a href="{pigcms{:U('Sms/ali_sms')}" >模板列表</a>		<a href="{pigcms{:U('Sms/ali_sms_header')}" class="on">短信参数配置</a>	</ul></div>

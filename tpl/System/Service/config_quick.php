@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">        <a href="{pigcms{:U('Config/index',array('galias'=>'service_quick','header'=>'Service/config_quick'))}" class="on">服务快派配置</a>	</ul></div>

@@ -1,0 +1,159 @@
+.page{
+
+}
+.searchBox{
+	background: #fff;
+	padding: 15px;
+	border-bottom: 1px solid #f4f4f4;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.searchBox .search-input{
+	background: #f4f4f4;
+	padding:5px 10px;
+	border-radius: 20px;
+	color: #333;
+}
+
+.searchBox .search-input .icon-search{
+	color: #999;
+}
+
+.searchBox .search-input input{
+	margin: 0 5px;
+	outline: none;
+	border: none;
+	background: #f4f4f4;
+}
+
+.searchBox .search-input .icon-cancel{
+	color: #888;
+}
+
+.searchBox .search-btn{
+	padding: 5px 12px;
+	margin-left: 10px;
+	color:#333;
+	border-radius: 20px;
+	color: #fff;
+}
+
+.list-wrapper{
+	padding-top: 65px;
+	color: #333;
+	height: 602px;
+	overflow: hidden;
+}
+
+.list-wrapper .list-box{
+	height: 100%;
+	overflow: auto;
+}
+
+.list-wrapper .bottom-tip{
+	color: #999;
+	padding: 15px;
+	text-align: center;
+}
+
+.searchGoodBox .search-title{
+	padding: 15px 15px 0;
+}
+
+.searchGoodBox .goods-detail .goods-img-box{
+    width: 100px;
+    margin: 15px;
+    overflow: hidden;
+}	
+.searchGoodBox .goods-detail .goods-img{
+    width: auto;
+    height: 100px;
+    border-radius: 5px;
+}	
+
+.searchGoodBox .goods-detail .info-box{
+	border-bottom: 1px solid #f4f4f4;
+	padding: 15px 15px 15px 0;
+	box-sizing: border-box;
+}
+
+.searchGoodBox .goods-detail:last-child .info-box{
+	border-bottom: none;
+}
+
+.searchGoodBox .goods-detail .info-box .name{
+	font-weight: 600;
+}
+
+.searchGoodBox .goods-detail .info-box .name em{
+    font-style: normal;
+    color: red;
+}
+
+.list-wrapper .gray{
+	color: #999;
+	font-size: 12px;
+}
+
+.searchGoodBox .goods-detail .info-box .red{
+	color: #ff0000;
+}
+
+.searchGoodBox .goods-detail .info-box .old{
+	text-decoration: line-through;
+	margin-left: 5px;
+}
+
+.searchGoodBox .goods-detail .info-box .now{
+	font-size: 18px;
+}
+
+.list-wrapper .click-btn{
+	padding: 5px 10px;
+	border-radius: 3px;
+	font-size: 12px;
+	color: #fff;
+}
+
+.searchStoreBox{
+	border-top: 1px solid #f4f4f4;
+	margin:0 15px;
+}
+
+.searchStoreBox .search-title{
+	padding-top: 15px;
+}
+
+.searchStoreBox .store-detail{
+	padding: 15px 0;
+	border-bottom: 1px solid #f4f4f4;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.searchStoreBox .store-detail .store-img{
+	width: 40px;
+	height: 40px;
+	border-radius: 4px;
+	margin-right: 15px;
+}
+
+.searchStoreBox .store-detail .info-box{
+	padding-right: 15px;
+	width: calc(100% - 123px);
+	box-sizing: border-box;
+	line-height: 1.8;
+}
+
+.searchStoreBox .store-detail .info-box .desc{
+	max-width: 100%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+
+}

@@ -1,0 +1,163 @@
+.renewal-detail[data-v-078f1f83] {
+  margin: 20px 10px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0px 0px 4px 4px #f1f1f1;
+          box-shadow: 0px 0px 4px 4px #f1f1f1;
+  overflow: hidden;
+}
+.renewal-detail .header-title[data-v-078f1f83] {
+  width: 100%;
+  background: #ffffff;
+  color: #333333;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 60px;
+  padding: 10px 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.renewal-detail .content[data-v-078f1f83] {
+  width: 100%;
+  background: #fafafa;
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.renewal-detail .content .col[data-v-078f1f83] {
+  background: #ffffff;
+  margin: 0 5px;
+  width: calc(100%- 10px);
+  padding: 20px;
+}
+.renewal-detail .content .content-title[data-v-078f1f83] {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+}
+.renewal-detail .content .left[data-v-078f1f83] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.renewal-detail .content .left .left-image[data-v-078f1f83] {
+  min-width: 200px;
+  max-width: 200px;
+  height: 200px;
+  border-radius: 4px;
+}
+.renewal-detail .content .left .right-content[data-v-078f1f83] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  margin-left: 10px;
+}
+.renewal-detail .content .left .right-content .row[data-v-078f1f83] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 20px 0;
+  line-height: 30px;
+  vertical-align: middle;
+}
+.renewal-detail .content .left .right-content .row .title[data-v-078f1f83] {
+  margin-right: 10px;
+  min-width: 80px;
+  max-width: 80px;
+}
+.renewal-detail .content .left .right-content .price[data-v-078f1f83] {
+  color: #1890ff;
+  font-size: 22px;
+}
+.renewal-detail .content .left .right-content .service .service-item[data-v-078f1f83] {
+  float: left;
+  margin-right: 30px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 0 10px;
+  min-width: 80px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #666;
+  position: relative;
+  cursor: pointer;
+}
+.renewal-detail .content .left .right-content .service .service-item .discount[data-v-078f1f83] {
+  position: absolute;
+  color: #ffffff;
+  font-size: 12px;
+  background: #1890ff;
+  border-radius: 10px;
+  padding: 0 4px;
+  min-width: 40px;
+  top: -10px;
+  right: -24px;
+  line-height: 20px;
+  text-align: center;
+}
+.renewal-detail .content .left .right-content .service .active[data-v-078f1f83] {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+.renewal-detail .content .right .right-cont[data-v-078f1f83] {
+  min-height: 500px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-top: 20px;
+}
+.renewal-detail .content .right .right-cont .top[data-v-078f1f83] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+.renewal-detail .content .right .right-cont .bottom[data-v-078f1f83] {
+  text-align: right;
+}
+.renewal-detail .content .right .right-cont .bottom .discount[data-v-078f1f83] {
+  color: #1890ff;
+  font-size: 20px;
+}
+.renewal-detail .content .right .right-cont .bottom .pay-money[data-v-078f1f83] {
+  color: #333333;
+  font-weight: bold;
+  font-size: 28px;
+}
+.renewal-detail .content .right .right-cont .bottom .pay-btn[data-v-078f1f83] {
+  width: 100%;
+  margin: 10px 0;
+  height: 50px;
+  line-height: 50px;
+  vertical-align: middle;
+  text-align: center;
+  color: #ffffff;
+  font-size: 24px;
+  background: #1890ff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.modal .tips[data-v-078f1f83] {
+  line-height: 40px;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 18px;
+  color: #333333;
+  font-weight: bold;
+}
+.modal .qrcode[data-v-078f1f83] {
+  width: 400px;
+  height: 400px;
+  margin: auto;
+}
+.modal .qrcode img[data-v-078f1f83] {
+  width: 100%;
+  height: 100%;
+}
+

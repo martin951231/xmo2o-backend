@@ -1,0 +1,1 @@
+<div id="nav" class="mainnav_title">    <ul>        <a href="{pigcms{:U('Deliver/area')}">配送区域管理</a>        <a href="{pigcms{:U('Config/index',array('galias'=>'adverForNotOpenArea','header'=>'Deliver/area_header'))}" class="on">未开通区域提示广告</a>    </ul></div>

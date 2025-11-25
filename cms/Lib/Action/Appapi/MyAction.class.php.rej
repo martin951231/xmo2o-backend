@@ -1,0 +1,10 @@
+diff a/cms/Lib/Action/Appapi/MyAction.class.php b/cms/Lib/Action/Appapi/MyAction.class.php	(rejected hunks)
+@@ -250,8 +250,6 @@
+         $_GET['card_id'] = I('card_id');
+         $temp_order_id = I('temp_order_id', 0);
+ 
+-        $isOpenMembershipCard = isset($_POST['open_membership_card']) ? intval($_POST['open_membership_card']) : 0;
+-
+         if (empty($_GET['order_id']) && empty($temp_order_id)) {
+             $this->returnCodeOk(array());
+         }
