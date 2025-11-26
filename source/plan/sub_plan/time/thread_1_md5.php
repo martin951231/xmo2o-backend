@@ -1,1 +1,0 @@
-<?php return '106ea23bea8585fb79abc34bfd1939e3'; ?>
