@@ -22,6 +22,15 @@
         <span><button class="btn btn-success" type="button" onclick="location.href='{pigcms{:U('door_add',array('device_type'=>$device_type))}'" <if condition="!in_array(497,$house_session['menus'])">disabled="disabled"</if>>添加人脸识别门禁</button></span>
         <span><button class="btn btn-success getDoorSearch" type="button" <if condition="!$config['hik_info_vision_i_community_app_key']">style="display:none;"</if>>获取门禁信息</button></span>
 
+        <if condition="$have_lilin_third_dev eq 1">
+            <span><button class="btn btn-success" type="button" style="margin-left: 20px;" onclick="lilinPfOnlyUserSyc()">同步人员信息到立林门禁平台</button></span>
+
+        </if>
+
+        <if condition="$lilin_third_dev_api2 eq 1">
+            <span><button class="btn btn-success" type="button" style="margin-left: 20px;" onclick="getLilinPfDevData()">拉取更新立林门禁设备</button></span>
+        </if>
+
         <span>
             <if condition="$deviceVisitorAuth && $deviceVisitorAuth['title']">
                 <button class="btn btn-success"  type="button" title="{pigcms{$deviceVisitorAuth['title']}" onclick="window.top.artiframe('{pigcms{$deviceVisitorAuth.toPage}','{pigcms{$deviceVisitorAuth.title}   ',1010,595,true,false,false,false,'set',false);">
@@ -159,7 +168,22 @@
                                             </td>
 
                                             <td class="button-column">
-                                                <php> if($vo['thirdProtocol'] == 15){</php>
+                                               <php> if($vo['third_dev_source'] == 'lilin_pf'){</php>
+                                                     <if condition="in_array(498,$house_session['menus'])">
+                                                        <a style="width:6rem;height:26px;line-height:20px;" class="label label-sm label-info" title="修改设备" href="{pigcms{:U('door_edit',array('device_id'=>$vo['device_id']))}">修改设备</a>&nbsp;
+                                                    </if>
+                                                    <if condition="in_array(499,$house_session['menus'])">
+                                                        <a style="width:8rem;height:26px;line-height:20px;margin: 5px;" class="label label-sm label-info" title="查看开门记录" href="{pigcms{:U('door_open_list',array('device_id'=>$vo['device_id']))}">查看开门记录</a>&nbsp;
+                                                    </if>
+                                               
+                                                     <if condition="$vo['device_no'] AND $lilin_third_dev_api2 lt 1 AND in_array(501,$house_session['menus'])">
+                                                         <a style="width:6rem;height:26px;line-height:20px;margin: 5px;" class="label label-sm label-info" onclick="lilinPfUserSyc('{pigcms{$vo[\'device_id\']}','{pigcms{$vo[\'device_no']}')">一键同步</a>&nbsp;
+                                                     </if>
+                                                        <if condition="$lilin_third_dev_api2 lt 1">
+                                                            <a style="width:6rem;height:26px;line-height:20px;margin: 5px;background-color: red !important;" class="label label-sm label-info del_device" title="删除设备" data-device_source="lilin_pf" data-device_id="{pigcms{$vo['device_id']}">删除设备</a>
+                                                        </if>
+                                                  <php> }else if($vo['thirdProtocol'] == 15){</php>
+
                                                     <if condition="in_array(499,$house_session['menus'])">
                                                         <a style="width:8rem;height:26px;line-height:20px;margin: 5px;" class="label label-sm label-info" title="查看开门记录" href="{pigcms{:U('door_open_list',array('device_id'=>$vo['device_id']))}">查看开门记录</a>&nbsp;
                                                     </if>
@@ -171,7 +195,7 @@
                                                      </if>
                                                 <php>}else{</php>
                                                     <if condition="in_array(498,$house_session['menus']) && $vo['thirdProtocol'] != 15">
-                                                        <a style="width:6rem;height:26px;line-height:20px;" class="label label-sm label-info" title="修改设备" href="{pigcms{:U('door_edit',array('device_id'=>$vo['device_id'],'device_type'=>$device_type))}">修改设备</a>&nbsp;
+                                                        <a style="width:6rem;height:26px;line-height:20px;" class="label label-sm label-info" title="修改设备" href="{pigcms{:U('door_edit',array('device_id'=>$vo['device_id']))}">修改设备</a>&nbsp;
                                                     </if>
                                                 
                                                     <if condition="in_array(499,$house_session['menus'])">
@@ -206,7 +230,7 @@
                                                                 <a style="width:6rem;height:26px;line-height:20px;margin: 5px;" class="label label-sm label-info" title="同步A5/A6人脸" onclick="keySyn('{pigcms{$vo[\'device_id\']}','{pigcms{$vo[\'device_sn\']}','{pigcms{$vo[\'device_type\']}')">一键同步</a>&nbsp;
                                                             </if>
                                                         <php>}</php>
-<!--                                                    <a style="width:8rem;height:26px;line-height:20px;" class="label label-sm label-info" title="删除设备" href="javascript:;" onclick="delDevice('{pigcms{$vo[\'device_id\']}','{pigcms{$vo[\'device_sn\']}','{pigcms{$vo[\'device_type\']}')">删除</a>&nbsp;-->
+
                                                     <php>} else if (31==$vo['device_type']) {</php>
                                                         <if condition="in_array(502,$house_session['menus'])">
                                                             <a style="width:6rem;height:26px;line-height:20px;margin: 5px;" class="label label-sm label-info" onclick="xiHanUserSyc('{pigcms{$vo[\'device_id\']}','{pigcms{$vo[\'device_sn\']}')" title="同步设备人脸数据" data-device_id="{pigcms{$vo['device_id']}">同步设备</a>&nbsp;
@@ -270,7 +294,7 @@
                                                     </if>
 
                                                     <if condition="in_array(503,$house_session['menus']) && $vo['device_type']!=26 && $vo['thirdProtocol'] != 15">
-                                                        <a style="width:6rem;height:26px;line-height:20px;margin: 5px;background-color: red !important;" class="label label-sm label-info del_device" title="删除设备" data-device_id="{pigcms{$vo['device_id']}">删除设备</a>
+                                                        <a style="width:6rem;height:26px;line-height:20px;margin: 5px;background-color: red !important;" class="label label-sm label-info del_device" title="删除设备" data-device_id="{pigcms{$vo['device_id']}" data-device_source="" >删除设备</a>
                                                     </if>
                                                 <php>}</php>
                                             </td>
@@ -436,7 +460,8 @@
     // 删除设备
     var del_device = false;
     $('.del_device').click(function () {
-        if (del_device) {
+        var device_source= $(this).data('device_source');
+        if (del_device && device_source!='lilin_pf') {
             layer.open({
                 content: '删除命令已经下发，请稍后!',
                 offset: {'top': '80px'},
@@ -448,8 +473,12 @@
         }
         del_device = true;
         var  device_id = $(this).data('device_id');
+        var del_msg='是否确定删除，删除数据后无法恢复！';
+        if(device_source=='lilin_pf'){
+            del_msg='是否确定删除？只能删除本系统的数据，删除后如果在立林那边操作这台设备的编辑还会推送数据过来的，建议从立林那边删除。';
+        }
         layer.open({
-            content: '是否确定删除，删除数据后无法恢复！',
+            content: del_msg,
             offset: {'top': '80px'},
             shadeClose: false,
             closeBtn: 1
@@ -791,6 +820,62 @@
                     alert(d.errorMsg);
                 } else {
                     alert('同步命令已发送至设备，等待设备执行。执行成功后，页面中的最新同步时间将会变更');
+                    // window.location.reload();
+                }
+                device_restart = false;
+            }
+        });
+    }
+
+     function lilinPfUserSyc(device_id,device_no) {
+        $.ajax({
+            url:"{pigcms{:U('lilinPfUserSyc')}",
+            type:"post",
+            data:{"device_id":device_id,"device_no":device_no},
+            dataType: "Json",
+            success:function(d){
+                console.log(d);
+                if (d.errorCode>0) {
+                    alert(d.errorMsg);
+                } else {
+                    layer.alert('同步命令已发送至设备，等待设备执行。执行成功后，页面中的最新同步时间将会变更', {icon: 1,time: 20000});
+                    // window.location.reload();
+                }
+                device_restart = false;
+            }
+        });
+    }
+
+    function lilinPfOnlyUserSyc(){
+            $.ajax({
+            url:"{pigcms{:U('lilinPfOnlyUserSyc')}",
+            type:"post",
+            data:{},
+            dataType: "Json",
+            success:function(d){
+                console.log(d);
+                if (d.errorCode>0) {
+                    alert(d.errorMsg);
+                } else {
+                    
+                    layer.alert('同步人员信息到立林门禁平台命令已经压入队列执行，请不要在短时间内重复操作！', {icon: 1,time: 20000});
+                    // window.location.reload();
+                }
+                device_restart = false;
+            }
+        });
+    }
+    function getLilinPfDevData(){
+            $.ajax({
+            url:"{pigcms{:U('getLilinPfDevData')}",
+            type:"post",
+            data:{},
+            dataType: "Json",
+            success:function(d){
+                if (d.errorCode>0) {
+                    alert(d.errorMsg);
+                } else {
+                    layer.alert('拉取更新立林门禁设备命令已经压入队列执行，请不要在短时间内重复操作！', {icon: 1,time: 20000});
                     // window.location.reload();
                 }
                 device_restart = false;

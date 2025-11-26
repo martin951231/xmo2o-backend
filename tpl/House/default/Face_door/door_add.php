@@ -439,6 +439,7 @@
 		</div>
 	</div>
 </div>
+<!--
 <input type="hidden" id="villageLocation" value="{pigcms{$house_session.long},{pigcms{$house_session.lat}"/>
 <div id="modal-table" class="modal fade" tabindex="-1">
 	<div class="modal-dialog" style="width:80%;">
@@ -467,9 +468,11 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
-<script type="text/javascript" src="{pigcms{$static_path}js/area.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
+
 <script type="text/javascript" src="{pigcms{$static_path}js/service_map.js"></script>
+--->
+<script type="text/javascript" src="{pigcms{$static_path}js/area.js"></script>
 <style>
 .form-group>label{font-size:12px;line-height:24px;}
 </style>

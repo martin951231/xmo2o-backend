@@ -1713,7 +1713,7 @@
 		</div>
 	</div>
 </div>
-<div id="modal-table" class="modal fade map-modal" tabindex="-1" style="display:block;">
+<div id="modal-table" class="modal fade map-modal" tabindex="-1" style="display:none;">
 	<div class="modal-dialog" style="width:80%;">
 		<div class="modal-content" style="width:100%;">
 			<div class="modal-header no-padding" style="width:100%;">

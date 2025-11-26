@@ -3051,10 +3051,7 @@ class NewBuildingService
         ];
         $app_key = cfg('hik_info_vision_i_community_app_key');
         $app_secret = cfg('hik_info_vision_i_community_app_secret');
-        $fieldStr='pigcms_id,usernum,room,single_id,floor_id,layer_id';
-        if($app_key && $app_secret){
-            $fieldStr ='pigcms_id,usernum,room,single_id,floor_id,layer_id,third_room_id';
-        }
+        $fieldStr='*';
         $vacancy_list=$this->getHouseVillageUserVacancySelectMethod($where,$fieldStr);
         if(!$vacancy_list){
             throw new \think\Exception("该房间不存在");
@@ -3075,6 +3072,11 @@ class NewBuildingService
             throw new \think\Exception('该物业编号:['.$flag['usernum'].']，房间号:['.$flag['room'].']房间有绑定住户，无法删除');
         }
         $hikInfoVisionICommunityService = new HikInfoVisionICommunityService();
+        $isCloudmrsqfwSpecial = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
+        $liLinDevAccessApiService='';
+        if($isCloudmrsqfwSpecial){
+            $liLinDevAccessApiService= new \app\community\model\service\Device\LiLinDevAccessApiService();
+        }
         $nowtime=time();
         foreach ($vacancy_list as $v){
             $set_data = [
@@ -3113,6 +3115,9 @@ class NewBuildingService
             $whereArr[]=array('is_paid','=',2);
             $whereArr[]=array('is_discard','=',1);
             $this->HouseNewPayOrder->saveOne($whereArr,['is_discard' => 2, 'discard_reason' => '房间被删除了', 'update_time' =>$nowtime]);
+            if($isCloudmrsqfwSpecial && $liLinDevAccessApiService && $v['third_room_source']=='lilin_pf' &&  $v['third_room_id']){
+                $liLinDevAccessApiService->deleteBuilding(array('structId'=>$v['third_room_id']*1,'type'=>6),$village_id);
+            }
         }
         return true;
     }

@@ -856,6 +856,7 @@ class HouseAction extends BaseAction
         } else {
             $can_recharge = 1;
         }
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
         $this->assign('can_recharge', $can_recharge);
         $database_house_village = D('House_village');
         $database_house_village_config = D('House_village_config');
@@ -1238,7 +1239,9 @@ class HouseAction extends BaseAction
                 $hikCommunity = M('Hik_info_vision_community_regions')->where($where)->field('id, index_code, name, village_id')->order('sort desc')->select();
                 $this->assign('hikCommunity', $hikCommunity);
             }
+            $this->assign('lilin_pf_door', $is_func_cloudmrsqfw_special);
         }
+
         $this->display();
     }
 

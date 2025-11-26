@@ -709,9 +709,12 @@ class House_village_user_bindModel extends Model
     }
 
     /*得到单个业主信息*/
-    public function get_one_by_bindId($pigcms_id)
+    public function get_one_by_bindId($pigcms_id=0,$village_id=0)
     {
-        $condition_user['pigcms_id'] = $pigcms_id;
+        $condition_user=array('pigcms_id' => $pigcms_id);
+        if($village_id>0){
+            $condition_user['village_id']=$village_id;
+        }
         $now_user = $this->field(true)->where($condition_user)->find();
         $old_address  = $now_user['address'];
         if (!empty($now_user)) {
@@ -2721,6 +2724,41 @@ class House_village_user_bindModel extends Model
         }
         return true;
     }
+
+    public function delLiLinPfHousehold($pigcms_id = 0, $vacancy_id = 0, $village_id = 0)
+    {
+        $is_func_cloudmrsqfw_special = D('Config_customization')->getFuncCloudmrsqfwSpecial();
+        if ($is_func_cloudmrsqfw_special && $pigcms_id > 0) {
+
+            $whereArr = array('pigcms_id' => $pigcms_id);
+            if ($vacancy_id > 0) {
+                $whereArr['vacancy_id'] = $vacancy_id;
+            }
+            if ($village_id > 0) {
+                $whereArr['village_id'] = $village_id;
+            }
+            $user_bind = $this->where($whereArr)->field('*')->find();
+            if (empty($user_bind) || $user_bind['vacancy_id'] < 1) {
+                return true;
+            }
+            $village_id = $user_bind['village_id'];
+            $whereArr = array('village_id' => $village_id);
+            $village_data = M('House_village')->where($whereArr)->find();
+            if ($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no']) && $user_bind['third_type'] == 'lilin_pf' && $user_bind['uid_third_id']) {
+                $models = '\app\community\model\service\Device\LiLinDevAccessApiService/delLiLinPfHousehold';
+                $param = [
+                    'village_id' => $village_id,
+                    'pigcms_id' => $pigcms_id,
+                    'room_id' => $vacancy_id,
+                ];
+                $visitorLiLin = invoke_v20_service($models, $param);
+                fdump_api(['param' => $param, 'visitorLiLin' => $visitorLiLin], 'LiLinDevAccess/delLiLinPfHousehold', 1);
+
+            }
+        }
+        return true;
+    }
+    
     //删除业主方法 迁移 从控制器到model
     public function user_bind_del($pigcms_id){
         $database_house_village_user_bind = D('House_village_user_bind');
@@ -2735,6 +2773,7 @@ class House_village_user_bindModel extends Model
          * todo 软删除 修改类型 usernum拼上时间戳
          */
         $insert_id = $database_house_village_user_bind->where($bind_condition)->data(['usernum'=>$now_bind_info['usernum'].'-'.createRandomStr(11,true),'status'=>4])->save();
+        $this->delLiLinPfHousehold($pigcms_id,$now_bind_info['vacancy_id'],$now_bind_info['village_id']);
         $m_house_face_device = M('House_face_device');
         $condition_face_device['village_id'] = $now_bind_info['village_id'];
         $condition_face_device['is_del'] = 0;
@@ -2758,6 +2797,7 @@ class House_village_user_bindModel extends Model
                      * todo 软删除 修改类型 usernum拼上时间戳
                      */
                     $database_house_village_user_bind->where(array('pigcms_id' => $val['pigcms_id']))->data(['usernum'=>$val['usernum'].'-'.createRandomStr(11,true),'status'=>4])->save();
+                    $this->delLiLinPfHousehold($val['pigcms_id'],$now_bind_info['vacancy_id'],$now_bind_info['village_id']);
                     fdump_api(['查询一下是否存在其他状态的业主信息，全部删除=='.__LINE__,$val,$database_house_village_user_bind->_sql(),$database_house_village_user_bind->getDbError()],'house_user_bind/user_bind_delete_log',1);
                     try {
                         D('House_village_face_door')->del_a3_user_bind($val['pigcms_id'], $val['village_id'], $val);

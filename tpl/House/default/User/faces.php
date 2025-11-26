@@ -45,11 +45,14 @@
 		</div>
 		
         <div class="fonts" style="">
-            <if condition="$dataImg[0] neq ''">
-                <if condition="$info['face_img_status'] eq 0">正在同步
+            <if condition="$dataImg[0] neq '' OR $info['face_img_status'] gt 0">
+                <if condition="in_array($info['face_img_status'],array(0,5,6,7))">正在同步
                     <elseif condition="$info['face_img_status'] eq 1" />同步成功
                     <elseif condition="$info['face_img_status'] eq 2"/><span style="color: red">同步失败!
                     <if condition="$info['face_img_reason'] neq '' ">失败原因：{pigcms{$info['face_img_reason']}</if> </span>
+                </if>
+                <if condition="$info && $info['add_face_time'] gt 100">
+                    <p style="margin-top: 10px;">最近同步时间：<php>echo date('Y-m-d H:i:s',$info['add_face_time']);</php></p>
                 </if>
             </if>
             <br/><br/>

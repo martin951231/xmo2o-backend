@@ -1,0 +1,33 @@
+AddType text/cache-manifest .manifest
+
+<IfModule mod_headers.c>
+   Header add Access-Control-Allow-Origin: *
+   Header add Access-Control-Allow-Headers: *
+   Header add Access-Control-Allow-Methods: *
+</IfModule>
+
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !^.*(\.css|\.js|\.gif|\.png|\.jpg|\.jpeg)$
+
+RewriteRule ^cms/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^conf/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^core/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^static/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^tpl/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^upload/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^Cashier/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^download/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^appdown/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^app_down/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^packapp/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^source/plan/(.*)\.(php|phtml) 每 [NC,F]
+RewriteRule ^house_down/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^wx-app/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^runtime/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^api/log/(.*)\.(php|phtm) 每 [NC,F]
+RewriteRule ^\.well-known/(.*)\.(php|phtm) 每 [NC,F]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^(.*)$ index.php?/$1 [QSA,L]

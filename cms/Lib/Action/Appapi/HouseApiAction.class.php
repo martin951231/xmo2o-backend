@@ -8849,6 +8849,7 @@ class HouseApiAction  extends BaseAction
                 //需要调用人脸同步
                 $location = ['floor_'.$data['floor_id']];
                 $face_device = D('House_face_img')->face_user_to_device($user_bind['bind_id'], $village_id, $location);
+                /*
                 if ($face_device) {
                     $wheres['pigcms_id'] = $pigcms_id;
                     $data_bind = [
@@ -8857,6 +8858,7 @@ class HouseApiAction  extends BaseAction
                     ];
                     D('House_village_user_bind')->where($wheres)->data($data_bind)->save();
                 }
+                */
             }
             $db_house_face_device = M('House_face_device');
             $hik_info_vision_i_community_app_key = C('config.hik_info_vision_i_community_app_key');
@@ -8996,6 +8998,26 @@ class HouseApiAction  extends BaseAction
                     invoke_v20_service('\app\community\model\service\Device\XiHanEventService/getUserOpenCode', ['params' => $xiHanParams]);
                 }
             }
+
+            $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+            if($is_func_cloudmrsqfw_special && $user_bind && $visitor_id>0){
+                $whereArr=array('village_id'=>$village_id);
+                $village_data = M('House_village')->where($whereArr)->find();
+                if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+                    $whereArr=array('village_id'=>$village_id,'third_dev_source'=>'lilin_pf','third_dev_id'=>array('neq',''),'is_del'=>array('lt',4));
+                    $lilin_third_dev= D('House_face_device')->where($whereArr)->find();
+                    if($lilin_third_dev){
+                        $models = '\app\community\model\service\Device\LiLinDevAccessApiService/visitorAddEditToLiLin';
+                        $param = [
+                            'village_id'=>$village_id,
+                            'visitor_id' => $visitor_id,
+                        ];
+                        $visitorLiLin = invoke_v20_service($models,$param);
+                        fdump_api(['param' =>$param, 'visitorLiLin' => $visitorLiLin], 'LiLinDevAccess/visitorAddEditToLiLin',1);
+                    }
+                }
+            }
+
             invoke_v20_service('\app\community\model\service\Device\HouseDeviceQrcodeService/addDeviceQrCode', ['pigcms_id' => $user_bind['bind_id']]);
             $this->returnCode(0, $arr);
         }else{
@@ -9245,10 +9267,36 @@ class HouseApiAction  extends BaseAction
             }
         }
 
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+        if($is_func_cloudmrsqfw_special && $res['visitor_bind_id']>0){
+            $visitor_bind=$House_village_user_bindModel->where(array('village_id'=>$res['village_id'],'pigcms_id'=>$res['visitor_bind_id']))->find();
+            $whereArr=array('village_id'=>$res['village_id']);
+            $village_data = M('House_village')->where($whereArr)->find();
+            if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no']) && $visitor_bind['third_type']=='lilin_pf' && $visitor_bind['uid_third_id']){
+                $whereArr=array('village_id'=>$res['village_id'],'third_dev_source'=>'lilin_pf','third_dev_id'=>array('neq',''),'is_del'=>array('lt',4));
+                $lilin_third_dev= D('House_face_device')->where($whereArr)->find();
+                if($lilin_third_dev){
+                    $models = '\app\community\model\service\Device\LiLinDevAccessApiService/getUserOpenCode';
+                    $param = [
+                        'pigcms_id' => $res['visitor_bind_id'],
+                        'village_id'=>$res['village_id'],
+                        'is_visitor'=>1,
+                    ];
+                    $resultLiLin = invoke_v20_service($models,$param);
+                    $retvalOpt = $resultLiLin['data']['retval'];
+                    fdump_api(['param' =>$param, 'resultLiLin' => $resultLiLin], 'LiLinDevAccess/getUserOpenCode',1);
+                    if (isset($retvalOpt['codeUrl']) && $retvalOpt['codeUrl']) {
+                        $arr['visitorQRCode']=true;
+                        $arr['visitorQRCodeUrl']= $retvalOpt['codeUrl'];
+                    }
+                }
+            }
+        }
+
         $hasXiHan = 0;
         $db_house_face_device = M('House_face_device');
         $getXiHanJudge = D('Config_customization')->getFaceXiHanDoorSwitch();
-        fdump_api(['$getXiHanJudge' => $getXiHanJudge], '$xiHanQrCodeResult');
+        fdump_api(['getXiHanJudge' => $getXiHanJudge], 'xiHanQrCodeResult');
         $xiHanResult = [];
         $xiHanQrCodeResult = [];
         $village_id = isset($res['village_id']) && $res['village_id'] ? $res['village_id'] : 0;
@@ -9257,27 +9305,27 @@ class HouseApiAction  extends BaseAction
                 'village_id' => $village_id, 'device_type' => 31, 'is_del' => 0,
             ];
             $deviceInfo = $db_house_face_device->where($whereFace)->find();
-            fdump_api(['$whereFace' => $whereFace, '$deviceInfo' => $deviceInfo], '$xiHanQrCodeResult', 1);
+            fdump_api(['whereFace' => $whereFace, 'deviceInfo' => $deviceInfo], 'xiHanQrCodeResult', 1);
             if (isset($deviceInfo['device_id']) && $deviceInfo['device_id']) {
                 $hasXiHan = 1;
             }
-            fdump_api(['$hasXiHan' => $hasXiHan], '$xiHanQrCodeResult', 1);
+            fdump_api(['hasXiHan' => $hasXiHan], 'xiHanQrCodeResult', 1);
             if ($hasXiHan == 1 && isset($res['visitor_bind_id']) && $res['visitor_bind_id']) {
                 $xiHanParams = [
                     'village_id' => $village_id, 'pigcms_id' => $res['visitor_bind_id']
                 ];
                 $xiHanParams['hasXiHan'] = $hasXiHan;
-                fdump_api(['$xiHanParams' => $xiHanParams], '$xiHanQrCodeResult', 1);
+                fdump_api(['xiHanParams' => $xiHanParams], 'xiHanQrCodeResult', 1);
                 $xiHanResult = invoke_v20_service('\app\community\model\service\Device\XiHanEventService/getUserOpenCode', ['params' => $xiHanParams]);
-                fdump_api(['$xiHanResult' => $xiHanResult], '$xiHanQrCodeResult', 1);
+                fdump_api(['xiHanResult' => $xiHanResult], 'xiHanQrCodeResult', 1);
                 $xiHanResult = isset($xiHanResult['data']['retval']) ? $xiHanResult['data']['retval'] : [];
                 $xiHanQrCodeResult = isset($xiHanResult['qrCodeInfos']) ? $xiHanResult['qrCodeInfos'] : [];
             }
         }
-        fdump_api(['$xiHanQrCodeResult' => $xiHanQrCodeResult], '$xiHanQrCodeResult', 1);
+        fdump_api(['xiHanQrCodeResult' => $xiHanQrCodeResult], 'xiHanQrCodeResult', 1);
         $qrCodeResult = invoke_v20_service('\app\community\model\service\Device\HouseDeviceQrcodeService/addDeviceQrCode', ['pigcms_id' => $res['visitor_bind_id']]);
         $qrCodeResult = isset($qrCodeResult['data']['retval']) ? $qrCodeResult['data']['retval'] : [];
-        fdump_api(['$qrCodeResult' => $qrCodeResult], '$xiHanQrCodeResult', 1);
+        fdump_api(['qrCodeResult' => $qrCodeResult], 'xiHanQrCodeResult', 1);
         if (! isset($qrCodeResult['qrCodeInfos'])) {
             $qrCodeResult = $xiHanResult;
             $qrCodeInfos = isset($qrCodeResult['qrCodeInfos']) ? $qrCodeResult['qrCodeInfos'] : [];
@@ -9289,7 +9337,7 @@ class HouseApiAction  extends BaseAction
                 $qrCodeInfos = array_merge($qrCodeInfos, $xiHanQrCodeResult);
             }
         }
-        fdump_api(['$qrCodeInfos' => $qrCodeInfos], '$xiHanQrCodeResult', 1);
+        fdump_api(['qrCodeInfos' => $qrCodeInfos], 'xiHanQrCodeResult', 1);
         $qrCodeResult['qrCodeInfos'] = $qrCodeInfos;
         $arr['qrCodeResult'] = $qrCodeResult;
         $qrCount = count($qrCodeInfos) + 1;
@@ -9297,7 +9345,7 @@ class HouseApiAction  extends BaseAction
             $qrCount += 1;
         }
         $arr['qrCount'] = $qrCount;
-        fdump_api(['$arr' => $arr], '$xiHanQrCodeResult', 1);
+
         $this->returnCode(0, $arr);
     }
     
@@ -10754,6 +10802,7 @@ class HouseApiAction  extends BaseAction
                 fdump($now_user,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
                 // 删除申请记录
                 $database_house_village_user_bind->where(array('pigcms_id'=>$pigcms_id))->delete();
+                $database_house_village_user_bind->delLiLinPfHousehold($pigcms_id);
                 fdump('line--'.__LINE__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
                 fdump($database_house_village_user_bind->_sql(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
                 fdump($vacancy_data,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
@@ -10865,17 +10914,12 @@ class HouseApiAction  extends BaseAction
             }
         }
 
-        fdump('>>>>>>'.__LINE__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($bind_info,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($database_house_village_user_bind->_sql(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($_SERVER,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump('houseapi--'.__FUNCTION__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
+
         $where = array();
         $where['pigcms_id'] = $pigcms_id;
-        $result = $database_house_village_user_bind->data($where)->delete();
-        fdump('line--'.__LINE__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($database_house_village_user_bind->_sql(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($database_house_village_user_bind->getDbError(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
+       // $result = $database_house_village_user_bind->data($where)->delete();
+        $database_house_village_user_bind->user_bind_del($pigcms_id);
+
 
         if ($bind_info['type'] == 0) { // 业主 更新房屋信息
             $where = array();
@@ -10923,7 +10967,7 @@ class HouseApiAction  extends BaseAction
         fdump_api([$user_bind, $_POST],'house_user_bind/user_bind_delete_log',1);
         $nowTime = time();
         $insert_id = $database_house_village_user_bind->where($where)->data(['usernum'=>$user_bind['usernum'].'_'.$data_pigcms_id.'del'.$nowTime,'status'=>4])->save();
-
+        $database_house_village_user_bind->delLiLinPfHousehold($data_pigcms_id,0,$data_village_id);
         // 删除  同步进行删除
         try {
             D('House_village_face_door')->del_a3_user_bind($data_pigcms_id, $user_bind['village_id'],$user_bind);
@@ -17787,6 +17831,29 @@ class HouseApiAction  extends BaseAction
                 if ($device_face_info['device_status']!=1) {
                     $this->returnCodeError('当前设备异常，请联系物业检查网络');
                 }
+            }
+
+            $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+            if($is_func_cloudmrsqfw_special && $device_face_info['third_dev_source']=='lilin_pf' && !empty($device_face_info['third_dev_id'])){
+                $models = '\app\community\model\service\Device\LiLinDevAccessApiService/remoteOpenOpt';
+                $param = [
+                    'deviceId' => $device_face_info['third_dev_id'],
+                    'village_id'=>$device_face_info['village_id'],
+                    'direction' => 1,
+                    'openType' => 1,
+                ];
+                $remoteOpenRet = invoke_v20_service($models,$param);
+                $retvalOpt = $remoteOpenRet['data']['retval'];
+                if ($retvalOpt && isset($retvalOpt['err_code']) && $retvalOpt['err_code'] == 0) {
+                    $this->returnCodeError('开门成功');
+                } else {
+                    $err_msg='开门失败';
+                    if($retvalOpt && $retvalOpt['err_msg'] && $retvalOpt['err_msg']){
+                        $err_msg=$retvalOpt['err_msg'];
+                    }
+                    $this->returnCodeError($err_msg);
+                }
+                $this->returnCodeError('开门失败！');
             }
             if (31 === intval($device_face_info['device_type'])) {
                 $notify_time = isset($device_face_info['login_time']) && $device_face_info['login_time'] ? intval($device_face_info['login_time']) : 0;

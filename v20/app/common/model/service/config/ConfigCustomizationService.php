@@ -531,4 +531,13 @@ class ConfigCustomizationService {
         $standard_bind_import_btn = isset($config['standard_bind_import_btn']) && $config['standard_bind_import_btn'] == 1 ? 1 : 0;
         return $standard_bind_import_btn;
     }
+
+    public function getFuncCloudmrsqfwSpecial()
+    {
+        /** cloud.mrsqfw.com 定制 */
+        $config = $this->getConfigData();
+        $is_func_cloudmrsqfw_special = isset($config['func_cloudmrsqfw_special']) && $config['func_cloudmrsqfw_special'] == 1 ? 1 : 0;
+        return $is_func_cloudmrsqfw_special;
+    }
+    
 }
