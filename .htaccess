@@ -1,33 +1,6 @@
-AddType text/cache-manifest .manifest
 
-<IfModule mod_headers.c>
-   Header add Access-Control-Allow-Origin: *
-   Header add Access-Control-Allow-Headers: *
-   Header add Access-Control-Allow-Methods: *
-</IfModule>
+RewriteEngine On
 
-RewriteEngine on
-RewriteCond %{REQUEST_URI} !^.*(\.css|\.js|\.gif|\.png|\.jpg|\.jpeg)$
-
-RewriteRule ^cms/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^conf/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^core/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^static/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^tpl/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^upload/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^Cashier/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^download/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^appdown/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^app_down/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^packapp/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^source/plan/(.*)\.(php|phtml) ®C [NC,F]
-RewriteRule ^house_down/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^wx-app/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^runtime/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^api/log/(.*)\.(php|phtm) ®C [NC,F]
-RewriteRule ^\.well-known/(.*)\.(php|phtm) ®C [NC,F]
-
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-
-RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+# ÂåπÈÖç8086Á´ØÂè£ÁöÑËØ∑Ê±ÇÔºåË∑≥ËΩ¨Âà∞80Á´ØÂè£
+RewriteCond %{SERVER_PORT} ^8086$
+RewriteRule ^(.*)$ http://dev.mrsqfw.com/$1 [R=301,L]

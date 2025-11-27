@@ -243,6 +243,8 @@ class LinkAction extends BaseAction{
         }else{
             $modules_merchant = [];
         }
+//        echo "<pre>";
+//        var_dump($modules);die;
 
         $this->assign('modules_merchant', $modules_merchant);
 
@@ -266,6 +268,8 @@ class LinkAction extends BaseAction{
             //正在开发中
             $list[] = array('module' => 'on_deving', 'linkcode' => 'on_deving','name'=>'功能开发中','sub'=>0,'canselected'=>1,'linkurl'=>'','keyword'=>'','askeyword'=>1);
         }
+        $list[] = array('module' => 'to_yunmou', 'linkcode' => 'to_yunmou','name'=>'云眸小程序','sub'=>0,'canselected'=>1,'linkurl'=>'','keyword'=>'','askeyword'=>1);
+
         $unitRentalArr=array('id'=>'112041','module'=>'UnitRental','status'=>1,'show'=>1);
         $unitRental=M('House_menu_new')->where($unitRentalArr)->find();
         $res['have_unit_rental']=0;

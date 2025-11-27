@@ -29,7 +29,7 @@
 									<font color="red">&nbsp;&nbsp;*必填</font>
 								</div>
 							</div>
-							<div id="basicinfo" class="tab-pane active">
+							<!-- <div id="basicinfo" class="tab-pane active">
 								<div class="form-group">
 									<tr>
 										<label class="col-sm-1"><label for="name">唯一标识：</label></label>
@@ -37,7 +37,7 @@
 
 									</tr>
 								</div>
-							</div>
+							</div> -->
 
 							<div id="basicinfo" class="tab-pane active">
 								<div class="form-group">

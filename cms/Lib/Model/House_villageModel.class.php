@@ -564,7 +564,6 @@ class House_villageModel extends Model{
 	public function wap_get_list_new($long_lat='',$keyword= '',$account = '',$page = 1,$property_id=0){
 		$condition_village = array(
 			'a.status'=>'1',
-            'a.village_id' => 3,
 		);
 		if ($long_lat['lat']&&$long_lat['long']) {
 			$order = "ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN(({$long_lat['lat']} * PI() / 180- `lat` * PI()/180)/2),2)+COS({$long_lat['lat']} *PI()/180)*COS(`lat`*PI()/180)*POW(SIN(({$long_lat['long']} *PI()/180- `long`*PI()/180)/2),2)))*1000) ASC,b.village_sort DESC";

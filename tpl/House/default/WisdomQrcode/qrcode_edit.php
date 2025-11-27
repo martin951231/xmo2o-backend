@@ -34,7 +34,7 @@
 							<div id="basicinfo" class="tab-pane active">
 								<div class="form-group">
 									<label class="col-sm-1"><label for="long_lat">位置:</label></label>
-									<input class="col-sm-2" size="10" name="long_lat" id="long_lat" type="text" readonly value="<if condition="$cate['long']">{pigcms{$cate.long},{pigcms{$cate.lat}</if>"/>
+									<input class="col-sm-2" size="10" name="long_lat" id="long_lat" type="text" value="<if condition="$cate['long']">{pigcms{$cate.long},{pigcms{$cate.lat}</if>"/>
 									&nbsp;&nbsp;&nbsp;&nbsp;<a href="#modal-table" class="btn btn-sm btn-success" id="show_map_frame" data-toggle="modal">点击选取经纬度</a>
 								</div>
 							</div>
