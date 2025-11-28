@@ -73,6 +73,7 @@
 			$info = $houseVillageSignService->getList($where,$field,$oderby);
 			$buiding = [];
             $jz_wsxdsj_net_customized_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
+            $is_func_cloudmrsqfw_special = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
             if ($jz_wsxdsj_net_customized_open) {
                 $communityQuality = true;
             } else {
@@ -107,6 +108,12 @@
                     $data['hik_info_vision_i_community']=1;
                 }
                 $houseVillageService=new HouseVillageService();
+                $houseVillageObj=$houseVillageService->getHouseVillageInfo(array('village_id' => $village_id),'*');
+                $data['lilin_pf_village_room']=0;
+                if($is_func_cloudmrsqfw_special && isset($houseVillageObj['lilin_pf_client_id']) && $houseVillageObj['lilin_pf_client_id'] && $houseVillageObj['lilin_pf_client_secret'] && $houseVillageObj['lilin_village_no']){
+                    $data['lilin_pf_village_room']=1;
+                }
+
                 $data['role_housekeep']=$houseVillageService->checkPermissionMenu(112172,$this->adminUser,$this->login_role,$this->dismissPermissionRole);
                 $data['role_edit']=$houseVillageService->checkPermissionMenu(112173,$this->adminUser,$this->login_role,$this->dismissPermissionRole);
                 $data['role_del']=$houseVillageService->checkPermissionMenu(112174,$this->adminUser,$this->login_role,$this->dismissPermissionRole);
@@ -139,7 +146,7 @@
 				'village_id' => $village_id,
 				'id'         => $single_id
 			];
-
+            $is_func_cloudmrsqfw_special = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
 			$info = $houseVillageSignService->getSingleInfo($where);
 			$buiding = [];
 			if ($info){
@@ -148,6 +155,7 @@
 				$buiding['contract_time_start'] = ($buiding['contract_time_start'] > 1)  ? date('Y-m-d',$buiding['contract_time_start']) : '';
 				$buiding['contract_time_end']   = ($buiding['contract_time_end'] > 1)    ? date('Y-m-d',$buiding['contract_time_end'])   : '';
 
+                $houseVillageObj=$houseVillageInfoService->getHouseVillageInfo(array('village_id' => $village_id),'*');
 
 				//合同时间，是楼栋的合同时间必须在小区设置的合同时间范围内
 				if (!empty($villageInfo)){
@@ -168,6 +176,10 @@
                     } catch (\Exception $e) {
                         $buiding['hik_info_community_single']=array();
                     }
+                }
+                $buiding['single_number_disabled']=false;
+                if($is_func_cloudmrsqfw_special && isset($houseVillageObj['lilin_pf_client_id']) && $houseVillageObj['lilin_pf_client_id'] && $houseVillageObj['lilin_pf_client_secret'] && $houseVillageObj['lilin_village_no']){
+                    $buiding['single_number_disabled']=true;
                 }
 				return api_output(0,$buiding);
 			}
@@ -500,12 +512,26 @@
 
 			$single_id = $this->request->post('single_id',0);
 			$is_all = $this->request->post('is_all',0);//是否一键删除
-
-			$houseVillageSignService = new HouseVillageSingleService();
+            $where = [
+                'village_id'    => $village_id,
+                'id'     => $single_id,
+            ];
+            $houseVillageSignService = new HouseVillageSingleService();
+            $singleInfo=$houseVillageSignService->getSingleInfo($where,'*');
+            if($singleInfo && !$singleInfo->isEmpty()){
+                $singleInfo=$singleInfo->toArray();
+            }else{
+                $singleInfo=array();
+            }
             if($is_all == 1){//一键删除指定楼栋下所有单元、楼层、房间数据以及用户 未支付订单作废
                 $del = $houseVillageSignService->deleteSingleAllInfo($village_id,$single_id);
                 if($del['error']){
                     return api_output(1003, [], $del['msg']);
+                }
+                $isCloudmrsqfwSpecial = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
+                if($isCloudmrsqfwSpecial  && $singleInfo['third_single_source']=='lilin_pf' &&  $singleInfo['third_single_index_id']){
+                    $liLinDevAccessApiService= new \app\community\model\service\Device\LiLinDevAccessApiService();
+                    $liLinDevAccessApiService->deleteBuilding(array('structId'=>$singleInfo['third_floor_index_id']*1,'type'=>3),$village_id);
                 }
                 $parseInfo = $this->traitPaseTokenRequestWhoim(request()->log_uid,request()->log_extends);
                 $queuData = [
@@ -525,6 +551,7 @@
                     'oldData' => ['single_id'=>$single_id],
                 ];
                 $this->laterLogInQueue($queuData);
+
                 return api_output(0, [], '删除楼栋成功！');
             }
             
@@ -537,16 +564,6 @@
 				return api_output(1003, [], '该楼栋下存在单元不可删除，请先删除单元！');
 			}
 
-			$where = [
-				'village_id'    => $village_id,
-				'id'     => $single_id,
-			];
-            $singleInfo=$houseVillageSignService->getSingleInfo($where);
-            if($singleInfo && !$singleInfo->isEmpty()){
-                $singleInfo=$singleInfo->toArray();
-            }else{
-                $singleInfo=array();
-            }
 			$data = ['status' => 4];
             $app_key = cfg('hik_info_vision_i_community_app_key');
             $app_secret = cfg('hik_info_vision_i_community_app_secret');
@@ -554,6 +571,12 @@
                 $data['third_single_index_id']='';
             }
 			$houseVillageSignService->softDeleteBuilding($where,$data);
+
+            $isCloudmrsqfwSpecial = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
+            if($isCloudmrsqfwSpecial  && $singleInfo['third_single_source']=='lilin_pf' &&  $singleInfo['third_single_index_id']){
+                $liLinDevAccessApiService= new \app\community\model\service\Device\LiLinDevAccessApiService();
+                $liLinDevAccessApiService->deleteBuilding(array('structId'=>$singleInfo['third_floor_index_id']*1,'type'=>3),$village_id);
+            }
 
             $this->cacheTagKey = 'village:cache:'.$village_id;
             Cache::tag($this->cacheTagKey)->clear();
@@ -710,12 +733,12 @@
                 'village_id' => $village_id,
                 'floor_id'   => $floor_id
             ];
-
+            $is_func_cloudmrsqfw_special = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
             $info = $houseVillageSignService->getFloorInfo($whereFloor);
             $floor = [];
             if ($info && !$info->isEmpty()){
                 $floor = $info->toArray();
-                $houseVillageObj=$houseVillageService->getHouseVillageInfo(array('village_id' => $village_id),'write_iccard');
+                $houseVillageObj=$houseVillageService->getHouseVillageInfo(array('village_id' => $village_id),'*');
                 $floor['write_iccard']=0;
                 if($houseVillageObj && !$houseVillageObj->isEmpty()){
                     $floor['write_iccard']=$houseVillageObj['write_iccard'];
@@ -734,6 +757,11 @@
                         $floor['hik_info_community_floor']=array();
                     }
                 }
+                $floor['floor_number_disabled']=false;
+                if($is_func_cloudmrsqfw_special && isset($houseVillageObj['lilin_pf_client_id']) && $houseVillageObj['lilin_pf_client_id'] && $houseVillageObj['lilin_pf_client_secret'] && $houseVillageObj['lilin_village_no']){
+                    $floor['floor_number_disabled']=true;
+                }
+
                 return api_output(0,$floor);
             }
             return api_output(1001, [], '异常访问！');
@@ -935,7 +963,11 @@
                 $data['third_floor_index_id']='';
             }
             $houseVillageSignService->softDeleteFloor($where,$data);
-
+            $isCloudmrsqfwSpecial = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
+            if($isCloudmrsqfwSpecial  && $floorInfo['third_floor_source']=='lilin_pf' &&  $floorInfo['third_floor_index_id']){
+                $liLinDevAccessApiService= new \app\community\model\service\Device\LiLinDevAccessApiService();
+                $liLinDevAccessApiService->deleteBuilding(array('structId'=>$floorInfo['third_floor_index_id']*1,'type'=>4),$village_id);
+            }
             $this->cacheTagKey = 'village:cache:'.$village_id;
             Cache::tag($this->cacheTagKey)->clear();
             if ($app_key && $app_secret) {
@@ -2334,6 +2366,22 @@
             return api_output(1001,[],'您还没配置好新海康智慧社区管理平台对接配置');
         }
 
+        public function getLiLinPfVillageRoomHouses(){
+            set_time_limit(0);
+            $village_id = $this->adminUser['village_id'];
+            $is_func_cloudmrsqfw_special = (new ConfigCustomizationService())->getFuncCloudmrsqfwSpecial();
+            $houseVillageInfoService = new HouseVillageService();
+            if ($is_func_cloudmrsqfw_special && $village_id) {
+                $houseVillageObj=$houseVillageInfoService->getHouseVillageInfo(array('village_id' => $village_id),'*');
+                if($houseVillageObj && isset($houseVillageObj['lilin_pf_client_id']) && $houseVillageObj['lilin_pf_client_id'] && $houseVillageObj['lilin_pf_client_secret'] && $houseVillageObj['lilin_village_no']){
+                    $liLinDevAccessApiService= new \app\community\model\service\Device\LiLinDevAccessApiService();
+                    $retInfo=$liLinDevAccessApiService->laterQueueGetLiLinPfVillageRoomHouses($village_id);
+                    return api_output(0,$retInfo);
+                }
+
+            }
+            return api_output(1001,[],'您还没配置好立林社区管理平台对接配置');
+        }
 
         public function getRoomOrderServiceTimeInfo(){
             $village_id = $this->adminUser['village_id'];
@@ -2578,11 +2626,5 @@
             }catch (\Exception $e){
                     return api_output_error(-1, $e->getMessage());
             }
-        }
-
-        public function updateLineDate()
-        {
-           $se = new NewBuildingService();
-           $se->updateLineDate();
         }
     }

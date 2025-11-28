@@ -158,7 +158,9 @@
             <if condition="isset($hik_info_vision_i_community) AND $hik_info_vision_i_community eq 1">
                 <button class="btn btn-success" style="margin-left: 7px" onclick="sycBindUserToHikCommunity()">将人员数据同步到海康智慧社区管理平台</button>
             </if>
-            
+           <if condition="$lilin_third_dev_api2 eq 1">
+                <span><button class="btn btn-success" type="button" style="margin-left: 20px;" onclick="getLilinPfUserData(1)">拉取立林平台业主信息</button></span>
+            </if>
 			<style type="text/css">
 				.ace-file-input a {display:none;}
 				.div-intro{ float:right; margin-top:20px}
@@ -1212,7 +1214,23 @@ function update_service_time(pigcms_id=0)
         maxmin: false
     });
 }
-
+    function getLilinPfUserData(ptype){
+            $.ajax({
+            url:"{pigcms{:U('getLilinPfUserData',array('ptype'=>1))}",
+            type:"post",
+            data:{},
+            dataType: "Json",
+            success:function(d){
+                if (d.errorCode>0) {
+                    alert(d.errorMsg);
+                } else {
+                     layer.alert('拉取更新立林平台业主信息命令已经压入队列执行，请不要在短时间内重复操作！', {icon: 1,time: 20000});
+                    // window.location.reload();
+                }
+                device_restart = false;
+            }
+        });
+    }
 
 $('.bind_info').click(function(){
 	window.art.dialog.open($(this).attr('href'),{

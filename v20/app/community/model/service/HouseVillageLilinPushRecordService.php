@@ -1263,7 +1263,7 @@ class HouseVillageLilinPushRecordService
             }
         }
         /**1住户卡2物业卡3巡更卡4访客卡5管理卡10失效卡（己注册，但被注销或过期）11非法卡（该卡号不存在，就是陌生人）12异常卡（有开启防复制情况下，但不满足加密要求，就是复制卡开门) 13正常卡****/
-        $saveArr['card_number_type'] = isset($pdata['card_number_type']) && $pdata['card_number_type'] ? $pdata['card_number_type'] : 1;
+        $saveArr['card_number_type'] = isset($pdata['useType']) && $pdata['useType'] ? $pdata['useType'] : 1;
         $device_id = 0;
         $houseFaceDevice = new HouseFaceDevice();
         $whereArr = array(['village_id','=',$rVillage['village_id']]);
@@ -1283,6 +1283,7 @@ class HouseVillageLilinPushRecordService
             fdump_api(['pdata' => $pdata, 'whereArr' => $whereArr], 'liLinAccess/pushAccessEvent', true);
             return $returnArr;
         }
+        $saveArr['device_id'] = $device_id;
         $saveArr['device_sn'] = $pdata['did'];
         $nowtime = time();
         $saveArr['log_time'] = isset($pdata['eventTime']) && $pdata['eventTime'] ? ($pdata['eventTime'] / 1000) : $nowtime;
@@ -1319,6 +1320,7 @@ class HouseVillageLilinPushRecordService
         $saveArr['log_detail'] = json_encode($pdata, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $saveArr['record_log'] = json_encode($pdata, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $saveArr['add_time'] = $nowtime;
+        $saveArr['third_log_id']=$third_log_id;
         $whereArr = array('village_id' => $rVillage['village_id'], 'device_id' => $device_id, 'third_log_id' => $third_log_id);
         $userLogObj = $houseUserLog->getFind($whereArr, '*');
         if ($userLogObj && !$userLogObj->isEmpty()) {
@@ -1633,11 +1635,6 @@ class HouseVillageLilinPushRecordService
         if($this->baseApi && strpos($this->baseApi,'http')===false){
             $this->baseApi='https://'.$this->baseApi;
         }
-		$this->clientId='6260cb21-6403-4928-bec9-fc36910e5dba';
-        $this->clientSecret='65c60449-5fe0-4cb8-9fac-b6805190aab1';
-		//$this->baseApi="http://192.168.0.200:9999/Esafe-server-Web/rest/third/common";
-		$this->baseApi="http://74ca62da.r16.cpolar.top/Esafe-Server-Web/rest/third/common";
-        $paramsCommon = array();
         $paramsCommon = array();
         $paramsCommon['version'] = $version;
         $paramsCommon['clientId'] = $this->clientId;
@@ -1673,7 +1670,7 @@ class HouseVillageLilinPushRecordService
     {
         $params = $this->getIncludeSignData($data, $methodName, $version);
         $postparams = json_encode($params, JSON_UNESCAPED_UNICODE);
-		print_r($postparams);
+
         $requestUrl = $this->baseApi . $url;  //正式环境
         $ch = curl_init();
         $headers[] = "Accept-Charset: utf-8";
@@ -1699,28 +1696,7 @@ class HouseVillageLilinPushRecordService
         }
         return $return;
     }
-	 public function imgFileDownload($datas = array()){
-		$uri = '/fileDownload';
-		$resultinfo = $this->httpCurlPost($uri, $datas, 'getMonitorParams');
-        $returnArr = array('err_code' => 0, 'err_msg' => '', 'data' => '');
-        if (!empty($resultinfo) && isset($resultinfo['result']) && $resultinfo['result'] == 1) {
-            if (!empty($resultinfo) && isset($resultinfo['data']) && !empty($resultinfo['data'])) {
-                //请求是成功的
-                $returnArr['data'] = $resultinfo['data'];
-            }
-            $returnArr['err_msg'] = '请求成功！';
-        } else {
-            $returnArr['data'] = '';
-            $returnArr['err_code'] = 1;
-            $err_msg = '请求失败了！';
-            if (!empty($resultinfo) && isset($resultinfo['message']) && $resultinfo['message']) {
-                $err_msg = $resultinfo['message'];
-            }
-            $returnArr['err_msg'] = $err_msg;
-        }
-		print_r($returnArr);
-        return $returnArr;
-	 }
+
     /***
      **第三方获取SDK设备监视参数
      **/

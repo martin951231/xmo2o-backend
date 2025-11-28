@@ -26,6 +26,32 @@
          * @param int $time 延迟时间 单位秒
          * @return mixed
          */
+        public function traitLilinPfCommunityUserInfo($queueData, $time = 0, $redisExpire = 120) {
+            $cacheTag  = 'LilinPfCommunityUserInfoTag';
+            $queueDataJson=json_encode($queueData,JSON_UNESCAPED_UNICODE);
+            $cacheKey  ='LilinPfCommunityUserInfoTag:traits:'. md5($queueDataJson);
+            $jobRedis  = Cache::store('redis')->get($cacheKey);
+            if ($jobRedis) {
+                // todo 调用地方通过判断 -1 得知相同的队列正在等候执行
+                return -1;
+            }
+            if ($time > 0) {
+                $job_id    = $this->lilinPfCommunityDeviceLaterToJob($queueData, $time);
+            } else {
+                $job_id    = $this->lilinPfCommunityDevicePushToJob($queueData);
+            }
+            if ($job_id) {
+                Cache::store('redis')->tag($cacheTag)->set($cacheKey,$job_id, $redisExpire);
+            }
+            return $job_id;
+        }
+        
+        /**
+         * 下发队列
+         * @param $queueData
+         * @param int $time 延迟时间 单位秒
+         * @return mixed
+         */
         public function traitLilinPfCommunityDevice($queueData, $time = 0, $redisExpire = 120) {
             $cacheTag  = 'LilinPfCommunityDeviceTag';
             $queueDataJson=json_encode($queueData,JSON_UNESCAPED_UNICODE);

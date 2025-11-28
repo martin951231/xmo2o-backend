@@ -363,7 +363,18 @@ class HouseVillageUserBind extends Model{
         }
         return $data;
     }
-
+    public function getAllBindUserList($where, $field = '*',$group='',$order = '')
+    {
+        $sqlH = $this->where($where)->field($field);
+        if ($group) {
+            $sqlH=$sqlH->group($group);
+        }
+        if ($order) {
+            $sqlH = $sqlH->order($order);
+        }
+        $data = $sqlH->select();
+        return $data;
+    }
     public function getFind($where,$field,$order='id desc')
     {
         $data = $this->alias('b')

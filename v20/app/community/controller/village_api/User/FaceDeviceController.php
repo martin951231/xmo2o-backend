@@ -124,7 +124,9 @@ class FaceDeviceController extends UserBaseController
         $app_secret = cfg('hik_info_vision_i_community_app_secret');
         try {
             // todo 获取设备二维码 注意有测试条件需要删除
-            $getFaceCloud260Judge = (new ConfigCustomizationService())->getFaceCloud260Judge();
+            $configCustomizationService =  new ConfigCustomizationService();
+                
+            $getFaceCloud260Judge = $configCustomizationService->getFaceCloud260Judge();
             $sHouseFaceDeviceService = new HouseFaceDeviceService();
             $hasHikInfoVisionICommunity = 0;
             if (!empty($app_key) && !empty($app_secret)) {
@@ -163,7 +165,7 @@ class FaceDeviceController extends UserBaseController
                 return api_output(0, $result);
             }
             $hasXiHan = 0;
-            $getXiHanJudge = (new ConfigCustomizationService())->getFaceXiHanDoorSwitch();
+            $getXiHanJudge = $configCustomizationService->getFaceXiHanDoorSwitch();
             if ($getXiHanJudge) {
                 $whereFace = [];
                 $whereFace[] = ['village_id', '=', $village_id];
@@ -178,6 +180,24 @@ class FaceDeviceController extends UserBaseController
                 $params['hasXiHan'] = $hasXiHan;
                 $result = (new XiHanEventService())->getUserOpenCode($params);
                 return api_output(0, $result);
+            }
+            
+            $is_func_cloudmrsqfw_special = $configCustomizationService->getFuncCloudmrsqfwSpecial();
+            if($is_func_cloudmrsqfw_special){
+                $whereFace = [];
+                $whereFace[] = ['village_id', '=', $village_id];
+                $whereFace[] = ['third_dev_source', '=', 'lilin_pf'];
+                $whereFace[] = ['third_dev_id', '<>', ''];
+                $whereFace[] = ['is_del', '<', 4];
+                $deviceInfo = $sHouseFaceDeviceService->getHouseFaceDeviceInfo($whereFace);
+                if (isset($deviceInfo['device_id']) && $deviceInfo['device_id']) {
+                    $liLinDevAccessApiService= new \app\community\model\service\Device\LiLinDevAccessApiService();
+                    $result=$liLinDevAccessApiService->getUserOpenCode($pigcms_id,$village_id);
+                    if ($result['err_code'] == 1) {
+                        return api_output_error(1001, $result['err_msg']);
+                    }
+                    return api_output(0, $result);
+                }
             }
             
             fdump_api(['hasXiHan' => $hasXiHan, 'hasHikInfoVisionICommunity' => $hasHikInfoVisionICommunity, 'hasFaceCloud260' => $hasFaceCloud260], 'addDeviceQrCode');

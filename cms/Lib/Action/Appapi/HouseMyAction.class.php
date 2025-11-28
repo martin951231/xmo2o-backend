@@ -668,6 +668,24 @@ class HouseMyAction  extends BaseAction{
             }
         }
         
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+        if($is_func_cloudmrsqfw_special && $this->_uid && $bind_user_info){
+            $whereArr=array('village_id'=>$village_id);
+            $village_data = M('House_village')->where($whereArr)->find();
+            if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+                $whereArr=array('village_id'=>$village_id,'third_dev_source'=>'lilin_pf','third_dev_id'=>array('neq',''),'is_del'=>array('lt',4));
+                $lilin_third_dev= D('House_face_device')->where($whereArr)->find();
+                if($lilin_third_dev){
+                    $device_block[] = array(
+                        'is_house' => 1,
+                        'title' => L_('开门二维码'),
+                        'url' => $this->_uid && $pigcms_id ? $base_url . 'pages/village/visitorPass/openCode?village_id=' . $village_id . '&pigcms_id=' . $pigcms_id : '',
+                        'icon' => $site_url . '/static/images/house/erweima.png?t=03',
+                    );
+                }
+            }
+        }
+
         if (!empty($device_block)) {
             $arr['block'][] = [
                 'title' => '硬件服务',

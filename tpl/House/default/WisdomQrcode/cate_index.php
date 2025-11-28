@@ -100,6 +100,9 @@
                                 </td> -->
                                             <td class="button-column">
                                              <if condition="!isset($vo['from_type']) OR $vo['from_type'] neq 1">
+
+                                             <a style="width: 100px;" class="label label-sm label-info" title="同步记录内容" href="{pigcms{:U('qrcode_synchronize_recorded',array('id'=>$vo['id']))}">同步记录内容</a>&nbsp;
+                                             
 												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('cate_edit',array('id'=>$vo['id']))}">修改</a>&nbsp;
 
                                                 <a style="width: 60px;" class="label label-sm label-info" title="删除" href="javascript:void(0)" onClick="if(confirm('确认删除该内容？')){location.href='{pigcms{:U('cate_del',array('id'=>$vo['id']))}'}">删除</a>

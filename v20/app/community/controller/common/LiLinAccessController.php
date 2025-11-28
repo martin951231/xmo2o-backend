@@ -38,17 +38,7 @@ class LiLinAccessController extends BaseController
             '4015' => '动态密码已存在',
         );
     }
-	public function imgFileDownload(){
-	    try {
-            $houseVillageLilinPushRecordService = new HouseVillageLilinPushRecordService();
-			$pdata=array('filePath'=>'/file/record/access/2025-09-13/000110011cb8ba1a34ec_1757730401239.jpg','type'=>1,'fileName'=>'000110011cb8ba1a34ec_1757730401239.jpg');
-            $ret = $houseVillageLilinPushRecordService->imgFileDownload($pdata);
-        } catch (\Exception $e) {
-       
-           echo $e->getMessage();
-         
-        }
-	}
+
     /**
      * 新增楼栋
      **/

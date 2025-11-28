@@ -102,7 +102,23 @@ class Face_doorAction extends BaseAction{
             ];
             $this->assign('deviceVisitorAuth', $deviceVisitorAuth);
         }
-
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+        $lilin_third_dev_api2=0;
+        $have_lilin_third_dev=0;
+        if($is_func_cloudmrsqfw_special){
+            $whereArr=array('village_id'=>$village_id);
+            $village_data = M('House_village')->where($whereArr)->find();
+            if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+                $lilin_third_dev_api2=1;
+                $whereArr=array('village_id'=>$village_id,'third_dev_source'=>'lilin_pf','third_dev_id'=>array('neq',''),'is_del'=>array('lt',4));
+                $lilin_third_dev=$hfd->where($whereArr)->find();
+                if($lilin_third_dev){
+                    $have_lilin_third_dev=1;
+                }
+            }
+        }
+        $this->assign('lilin_third_dev_api2',$lilin_third_dev_api2);
+        $this->assign('have_lilin_third_dev',$have_lilin_third_dev);
 		$this->display();
 	}
 
@@ -696,6 +712,7 @@ class Face_doorAction extends BaseAction{
         if (!in_array(498, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');exit;
         }
+        $where=array('village_id'=>$this->house_session['village_id']);
         $where['device_id'] = I('device_id');
         if(empty($where['device_id'])){
             $where['device_id']	= $_GET['device_id'];
@@ -705,8 +722,37 @@ class Face_doorAction extends BaseAction{
         }
         $hfd = D('House_face_device');
         if($_POST){
+            $device_info = $hfd->where($where)->field('*')->find();
             $data = array();
-            if(empty(trim($_POST['device_type']))) {
+            if(isset($device_info['third_dev_source']) && $device_info['third_dev_source']=='lilin_pf'){
+
+                if ($_POST['floor_id']) {
+                    if ($_POST['floor_arr'] && is_array($_POST['floor_arr'])) {
+                        $floor_id = implode(",",$_POST['floor_arr']);
+                        $data['floor_id'] = $floor_id;
+                    } else {
+                        $data['floor_id'] = $_POST['floor_id'];
+                    }
+                }
+                
+                if($_POST['single_id']){
+                    $data['single_id'] = $_POST['single_id'];
+                    $single_id = $_POST['single_id'];
+                    $single_id_arr = explode("_", $single_id);
+                    if ($single_id_arr[0]=='door') {
+                        $data['floor_id'] = -1;
+                        $data['public_area_id'] = $single_id_arr[1];
+                        $data['single_id'] = 0;
+                    } elseif($data['floor_id']>0) {
+                        $data['public_area_id'] = 0;
+                    }
+                }
+                $data['device_direction']=$_POST['device_direction'];
+                $data['remark'] = $_POST['remark'];
+                $aSave = $hfd->save_door($where, $data);
+                $this->success('修改设备成功！',U('door_list',array('device_type' => $_GET['deviceType'])));exit;
+            }
+            if((!isset($device_info['third_dev_source']) || $device_info['third_dev_source']!='lilin_pf') && empty(trim($_POST['device_type']))) {
                 $this->error('请选择设备类型');exit;
             }
             if ($_POST['floor_id']) {
@@ -834,16 +880,12 @@ class Face_doorAction extends BaseAction{
                 $this->error('设备名称，最多只能包含32个字符（1个汉字3个字符）');exit;
             }
             if (in_array($thirdProtocol, [$hikGateKey, $hikGateKeyVillage])) {
-                $deviceField = "device_id, device_type, thirdProtocol, cloud_device_id";
-                $device_info = $hfd->where(array('device_id'=>$where['device_id']))->field($deviceField)->find();
                 $device_thirdProtocol = isset($device_info['thirdProtocol']) ? intval($device_info['thirdProtocol']) : 0;
                 $device_cloud_device_id = isset($device_info['cloud_device_id']) ? trim($device_info['cloud_device_id']) : '';
                 if ($device_cloud_device_id && $device_thirdProtocol != $thirdProtocol) {
                     $data['cloud_device_id'] = '';
                 }
             } else {
-                $deviceField = "device_id, device_type, thirdProtocol, cloud_device_id";
-                $device_info = $hfd->where(array('device_id'=>$where['device_id']))->field($deviceField)->find();
                 $device_thirdProtocol = isset($device_info['thirdProtocol']) ? intval($device_info['thirdProtocol']) : 0;
                 $device_cloud_device_id = isset($device_info['cloud_device_id']) ? trim($device_info['cloud_device_id']) : '';
                 if ($device_cloud_device_id && $device_thirdProtocol && $thirdProtocol && $device_thirdProtocol != $thirdProtocol) {
@@ -1027,11 +1069,7 @@ class Face_doorAction extends BaseAction{
                     }
                 }
                 //更新配置接口
-                $where_device = [
-                    'device_id' => $where['device_id'],
-                    'is_del'=>0
-                ];
-                $device_info = $hfd->where($where_device)->find();
+
                 // 记录日志
                 $orderGroupId = md5(uniqid().$_SERVER['REQUEST_TIME']);
                 $param = [
@@ -1249,6 +1287,9 @@ class Face_doorAction extends BaseAction{
                 $aDoor['a185_super_password']=$aDoor['a185_super_password'] ? '******' : '';
                 $aDoor['a185_admin_password']=$aDoor['a185_admin_password'] ? '******' : '';
             }
+            if(isset($aDoor['extra_data']) && $aDoor['extra_data']){
+                $aDoor['extra_data']=json_decode($aDoor['extra_data'],true);
+            }
             $this->assign('aDoor',$aDoor);
             //	获取小区的楼层列表
             $arr['village_id'] = $this->house_session['village_id'];
@@ -1268,7 +1309,7 @@ class Face_doorAction extends BaseAction{
             $brand_list=D('HardwareBrand')->getBrand(1);
             $this->assign('device_brand',$brand_list);
 
-            $this->assign('device_type',$_GET['device_type']);
+            $this->assign('device_type',$aDoor['device_type']);
             $brandHaikangCodeTip = $hfd->brandHaikangCodeTip;
             $this->assign('brandHaikangCodeTip',$brandHaikangCodeTip);
             $thirdProtocol = $hfd->thirdProtocol;
@@ -1359,7 +1400,13 @@ class Face_doorAction extends BaseAction{
                 ];
                 $this->assign('settingExplain', $settingExplain);
             }
-            $this->display();
+            if(isset($aDoor['third_dev_source']) && $aDoor['third_dev_source']=='lilin_pf'){
+                
+                $this->display('lilin_pf_door_edit');
+            }else{
+                $this->display();
+            }
+            
         }
     }
     //a5一键同步
@@ -3040,7 +3087,7 @@ class Face_doorAction extends BaseAction{
             fdump_api(['日志记录[删除设备]出错'.__LINE__.'方法'.__FUNCTION__,$param,$e->getMessage()],'faceDeviceLog/errDeviceLog',1);
         }
         // 删除同步处理
-
+        $info=array('error'=>0);
         $hfd = D('House_face_device');
         $thirdProtocol = isset($house_face_device_info['thirdProtocol']) && $house_face_device_info['thirdProtocol'] ? intval($house_face_device_info['thirdProtocol']) : 0;
         $hikGateKeyVillage = $hfd::HIK_DEVICE_GATEWAY_CUSTOM;
@@ -3858,9 +3905,10 @@ class Face_doorAction extends BaseAction{
         $device_id =$_POST['device_id'] ? intval($_POST['device_id']):0;
         $device_sn = trim($_POST['device_sn']);//设备编号
         $device_type = trim($_POST['device_type']);
-        $whereArr=array('device_id' => $device_id,'thirdProtocol'=>15);
-        $face_device_data = M('House_face_device')->where($whereArr)->find();
         $village_id=$this->house_session['village_id'];
+        $whereArr=array('device_id' => $device_id,'village_id'=>$village_id,'thirdProtocol'=>15);
+        $face_device_data = M('House_face_device')->where($whereArr)->find();
+        
         if($face_device_data && !empty($face_device_data) && $village_id>0){
             $models = '\app\community\model\service\Device\HikInfoVisionICommunityService/sycBindUserToHikCommunity';
             $param=['village_id'=>$village_id,'bind_pigcms_id'=>0,'floor_id'=>$face_device_data['floor_id'],'device_id'=>$device_id];
@@ -3870,6 +3918,53 @@ class Face_doorAction extends BaseAction{
                 'errorCode' => 0,
                 'result' => $result
             );
+            exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！','result'=>$result)));
+        }
+        exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！')));
+    }
+    public function lilinPfUserSyc(){
+        $device_id =$_POST['device_id'] ? intval($_POST['device_id']):0;
+        $device_no = trim($_POST['device_no']);//设备号码
+        $village_id=$this->house_session['village_id'];
+        $whereArr=array('device_id' => $device_id,'village_id'=>$village_id,'device_no'=>$device_no);
+        $face_device_data = M('House_face_device')->where($whereArr)->find();
+        if($face_device_data && !empty($face_device_data) && $village_id>0){
+            $models = '\app\community\model\service\HouseVillageLilinPushRecordService/lilinPfDeviceUserSyc';
+            $param=['village_id'=>$village_id,'device_id'=>$device_id,'device_no'=>$face_device_data['device_no']];
+            $result = invoke_v20_service($models, $param);
+            $result = $result['data']['retval'];
+            $array = array(
+                'errorCode' => 0,
+                'result' => $result
+            );
+            exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！','result'=>$result)));
+        }
+        exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！')));
+    }
+
+    public function lilinPfOnlyUserSyc(){
+        $device_id =$_POST['device_id'] ? intval($_POST['device_id']):0;
+        $device_no = trim($_POST['device_no']);//设备号码
+        $village_id=$this->house_session['village_id'];
+        $whereArr=array('village_id'=>$village_id);
+        $village_data = M('House_village')->where($whereArr)->find();
+        if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+            $models = '\app\community\model\service\Device\LiLinDevAccessApiService/massVillageUserSycToLilinPf';
+            $param=['village_id'=>$village_id];
+            $result = invoke_v20_service($models, $param);
+            exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！','result'=>$result)));
+        }
+        exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！')));
+    }
+
+    public function getLilinPfDevData(){
+        $village_id=$this->house_session['village_id'];
+        $whereArr=array('village_id'=>$village_id);
+        $village_data = M('House_village')->where($whereArr)->find();
+        if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+            $models = '\app\community\model\service\Device\LiLinDevAccessApiService/getLilinPfDevices';
+            $param=['village_id'=>$village_id];
+            $result = invoke_v20_service($models, $param);
             exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！','result'=>$result)));
         }
         exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！')));

@@ -36,7 +36,7 @@
 							<div id="basicinfo" class="tab-pane active">
 								<div class="form-group">
 									<label class="col-sm-1"><label for="long_lat">位置:</label></label>
-									<input class="col-sm-2" size="10" name="long_lat" id="long_lat" type="text" readonly value="<if condition="$village_info['long']">{pigcms{$village_info.long},{pigcms{$village_info.lat}</if>"/>
+									<input class="col-sm-2" size="10" name="long_lat" id="long_lat" type="text" value="<if condition="$village_info['long']">{pigcms{$village_info.long},{pigcms{$village_info.lat}</if>"/>
 									&nbsp;&nbsp;&nbsp;&nbsp;<a href="#modal-table" class="btn btn-sm btn-success" id="show_map_frame" data-toggle="modal">点击选取经纬度</a>
 								</div>
 							</div>
@@ -116,7 +116,8 @@
 			</div>
 		</div>
 	</div>
-	<div id="modal-table" class="modal fade" tabindex="-1" style="display:block;">
+
+	<div id="modal-table" class="modal fade map-modal" tabindex="-1" style="display:block;">
 		<div class="modal-dialog" style="width:80%;">
 			<div class="modal-content" style="width:100%;">
 				<div class="modal-header no-padding" style="width:100%;">
@@ -149,7 +150,7 @@
     <script src="/tpl/Static/js/coordinate.js"></script>
 	<script type="text/javascript" src="{pigcms{$static_path}js/tianditu_map.js"></script>
 <else />
-	<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+	<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
 	<script type="text/javascript" src="{pigcms{$static_path}js/map.js?t=01"></script>
 </if>
 	<style>

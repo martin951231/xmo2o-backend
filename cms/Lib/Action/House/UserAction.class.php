@@ -1119,7 +1119,18 @@ class UserAction extends BaseAction
 	    $this->assign('village_id',$village_id);
 		//是否展示数据来源
 	    $this->assign('chinapopinOpen',$chinapopinOpen);
-        
+
+        $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+        $lilin_third_dev_api2=0;
+        if($is_func_cloudmrsqfw_special){
+            $whereArr=array('village_id'=>$village_id);
+            $village_data = M('House_village')->where($whereArr)->find();
+            if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+                $lilin_third_dev_api2=1;
+            }
+        }
+        $this->assign('lilin_third_dev_api2',$lilin_third_dev_api2);
+
         $this->display();
     }
     public function hikCommunityUserSyc(){
@@ -2058,7 +2069,7 @@ class UserAction extends BaseAction
             $this->error('对不起，您没有权限执行此操作');
         }
         $pigcms_id=intval($_GET['pigcms_id']);
-        $bind_info = D('House_village_user_bind')->get_one_by_bindId($pigcms_id);
+        $bind_info = D('House_village_user_bind')->get_one_by_bindId($pigcms_id,$this->village_id);
         $data['village_id'] = $bind_info['village_id'];
         $data['vacancy_id'] = $bind_info['vacancy_id'];
         $data['floor_id'] = $bind_info['floor_id'];
@@ -2079,6 +2090,7 @@ class UserAction extends BaseAction
          * todo 软删除 修改类型 usernum拼上时间戳
          */
         $delRet=D('House_village_user_bind')->where(array('pigcms_id'=>$pigcms_id))->data(['usernum'=>$bind_info['usernum'].'-'.createRandomStr(11,true),'status'=>4])->save();
+        D('House_village_user_bind')->delLiLinPfHousehold($pigcms_id,$bind_info['vacancy_id'],$this->village_id);
         if($delRet){
             $hik_info_vision_i_community_app_key=C('config.hik_info_vision_i_community_app_key');
             $hik_info_vision_i_community_app_secret=C('config.hik_info_vision_i_community_app_secret');
@@ -2102,9 +2114,6 @@ class UserAction extends BaseAction
                      */
                     M('House_village_user_bind')->where(array('pigcms_id'=>$bind_info['parent_id']))->data(['usernum'=>time().'-'.createRandomStr(11,true),'status'=>4])->save();
 
-
-                    fdump(D('House_village_user_bind')->_sql(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-                    fdump(D('House_village_user_bind')->getDbError(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
                 }
             }
 
@@ -2137,33 +2146,20 @@ class UserAction extends BaseAction
         $where['type'] = array('in',array(1,2));
         $where['village_id'] = $this->village_id;
         $delete_list = D('House_village_user_bind')->where($where)->select();
-        fdump('>>>>>>'.__LINE__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($_SERVER,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump('houseapi--'.__FUNCTION__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump($delete_list,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
+        fdump_api(['arr_pigcms_id'=>$arr_pigcms_id,'village_id'=>$this->village_id,'delete_list'=>$delete_list],'house_user_bind/user_bind_delete_log',true);
 
-//        $res = D('House_village_user_bind')->where($where)->delete();
         $res = D('House_village_user_bind')->where($where)->data(['status'=>4])->save();
 
-        $res=true;
-
-        fdump(D('House_village_user_bind')->_sql(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-        fdump(D('House_village_user_bind')->getDbError(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-
-        if ($res) {
+        if ($delete_list) {
             foreach ($delete_list as $key => $bind_info) {
+                D('House_village_face_door')->delLiLinPfHousehold($bind_info['pigcms_id'],$bind_info['vacancy_id'],$bind_info['village_id']);
+
                 D('House_village_face_door')->del_a3_user_bind($bind_info['pigcms_id'], $bind_info['village_id'], $bind_info);
                 if (M('House_village_user_bind')->where(array('parent_id'=>$bind_info['parent_id'],'type'=>array('in','1,2,3')))->count()==0) {
                     // 删除家属，查询是否还存在家属，如果没有，则删除虚拟业主
                     $parent_info = M('House_village_user_bind')->where(array('pigcms_id'=>$bind_info['parent_id']))->find();
                     if (!$parent_info['phone']&&!$parent_info['name']&&!$parent_info['uid']) {
-                        fdump('>>>>>>'.__LINE__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-                        fdump($_SERVER,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-                        fdump('houseapi--'.__FUNCTION__,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-                        $del_info = M('House_village_user_bind')->where(array('pigcms_id'=>$bind_info['parent_id']))->select();
-                        fdump($del_info,'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-//                        M('House_village_user_bind')->where(array('pigcms_id'=>$bind_info['parent_id']))->delete();
-
+                       // $del_info = M('House_village_user_bind')->where(array('pigcms_id'=>$bind_info['parent_id']))->select();
                         /**
                          * todo 软删除 修改类型 usernum拼上时间戳
                          */
@@ -2175,12 +2171,9 @@ class UserAction extends BaseAction
                         if($agent){
                             M('House_village_user_bind')->where(array('pigcms_id'=>$agent['pigcms_id']))->data(['usernum'=>$agent['usernum'].'-'.createRandomStr(11,true),'status'=>4])->save();
                         }
-
-
-                        fdump(D('House_village_user_bind')->_sql(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
-                        fdump(D('House_village_user_bind')->getDbError(),'api/log/'.date('Ymd').'/house_user_bind/user_bind_delete_log',true);
                     }
                 }
+                usleep (200000);
             }
             exit(json_encode(array('status'=>1,'msg'=>'删除成功')));
         }else{
@@ -9887,11 +9880,12 @@ class UserAction extends BaseAction
                      * todo 软删除 修改类型 usernum拼上时间戳
                      */
                     $database_house_village_user_bind->where($where)->data(['usernum'=>$bind_info['usernum'].'-'.createRandomStr(11,true),'status'=>4])->save();
-
+                    $database_house_village_user_bind->delLiLinPfHousehold($bind_info['pigcms_id'],$bind_info['vacancy_id'],$this->village_id);
                     fdump_api(['单个对象下属'.__LINE__,$database_house_village_user_bind->_sql(),$database_house_village_user_bind->getDbError()],'house_user_bind/user_bind_delete_log',1);
                     if ($msg) {
                         foreach ($msg as $v1) {
                             D('House_village_face_door')->del_a3_user_bind($v1['pigcms_id'], $v1['village_id'], $v1);
+                            $database_house_village_user_bind->delLiLinPfHousehold($v1['pigcms_id'],$v1['vacancy_id'],$this->village_id);
                         }
                     }
 
@@ -10182,6 +10176,7 @@ class UserAction extends BaseAction
         $d_house_village_user_bind = M('House_village_user_bind');
         $where = array(
             'pigcms_id' => $pigcms_id,
+            'village_id'=>$this->village_id
         );
         $village_info = $d_house_village_user_bind->where($where)->find();
         if (empty($village_info['uid'])) {
@@ -10508,7 +10503,7 @@ class UserAction extends BaseAction
         $pigcmsId = I('id','', 'intval');
         if ($pigcmsId) {
             $msg = D('Face_door_service')->get_bind_user_device_img($pigcmsId);
-            $info = D('House_village_user_bind')->where(['pigcms_id'=>$pigcmsId])->field('face_img_status,face_img_reason')->find();
+            $info = D('House_village_user_bind')->where(['pigcms_id'=>$pigcmsId])->field('*')->find();
         } else {
             $msg = [];
             $info = [];
@@ -10945,5 +10940,18 @@ class UserAction extends BaseAction
             $this->syn_device_img($idd);
             usleep(200000);  //0.2秒
         }
+    }
+
+    public function getLilinPfUserData(){
+        $ptype=$_GET['ptype'] ? intval($_GET['ptype']):1;  //1业主 2租客
+        $whereArr=array('village_id'=>$this->village_id);
+        $village_data = M('House_village')->where($whereArr)->find();
+        if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+            $models = '\app\community\model\service\Device\LiLinDevAccessApiService/getLilinPfUserDatas';
+            $param=['village_id'=>$this->village_id,'ptype'=>$ptype];
+            $result = invoke_v20_service($models, $param);
+            exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！','result'=>$result)));
+        }
+        exit(json_encode(array('errorCode'=>0,'errorMsg'=>'操作成功！')));
     }
 }

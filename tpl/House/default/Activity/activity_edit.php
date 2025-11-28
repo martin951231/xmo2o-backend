@@ -166,7 +166,7 @@ zoom: 1;
 #upload_pic_box .upload_pic_li{width:130px;float:left;list-style:none;}
 #upload_pic_box img{width:100px;height:70px;border:1px solid #ccc;}
 </style>
-<script type="text/javascript" src="https://api.map.baidu.com/api?ak=4c1bb2055e24296bbaef36574877b4e2&v=2.0&s=1" charset="utf-8"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?ak={pigcms{$config.baidu_map_ak_web}&v=2.0&s=1" charset="utf-8"></script>
 <script type="text/javascript" src="{pigcms{$static_path}js/area.js"></script>
 <script type="text/javascript" src="{pigcms{$static_path}js/service_map.js"></script>
 <script src="{pigcms{$static_public}kindeditor/kindeditor.js"></script>

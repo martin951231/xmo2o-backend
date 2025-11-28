@@ -1,0 +1,6 @@
+
+RewriteEngine On
+
+# 匹配8086端口的请求，跳转到80端口
+RewriteCond %{SERVER_PORT} ^8086$
+RewriteRule ^(.*)$ http://dev.mrsqfw.com/$1 [R=301,L]

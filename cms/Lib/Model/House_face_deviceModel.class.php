@@ -407,6 +407,12 @@ class House_face_deviceModel extends Model{
             case 21:
                 $logFromTxt = '蓝牙开门';
                 break;
+            case 22:
+                $logFromTxt = 'CPU卡';
+                break;
+            case 23:
+                $logFromTxt = '开门按钮';
+                break;
             case 31:
                 if (strpos($card_number, 'owner') !== false) {
                     $logFromTxt = '二维码开门(业主)';
@@ -435,6 +441,9 @@ class House_face_deviceModel extends Model{
                 break;
             case 51:
                 $logFromTxt = '高空抛物';
+                break;
+            case 52:
+                $logFromTxt = '终端监视开门';
                 break;
             case 61:
             case 62:

@@ -40,6 +40,16 @@ class House_face_imgModel extends Model{
         if (!$uid && !$pigcms_id) {
             return true;
         }
+        $user_bind='';
+         $village_id=isset($otherParam['village_id']) ? $otherParam['village_id']:0;
+        if($pigcms_id>0){
+            $where = array(
+                'pigcms_id' => $pigcms_id
+            );
+            $user_bind = M('House_village_user_bind')->where($where)->find();
+            $village_id=$user_bind ? $user_bind['village_id']:0;
+        }
+
         // 如果不是返回直接走计划任务
         if ($is_plan && !$is_return) {
             $planParam = [
@@ -85,13 +95,14 @@ class House_face_imgModel extends Model{
                 $models = '\app\community\model\service\FaceDeviceService/userSynDevice';
                 $param = [
                     'pigcms_id'     => $pigcms_id,
-                    'village_id'    => 0,
+                    'village_id'    => $village_id,
                 ];
                 $a = invoke_v20_service($models,$param);
             }
             $whereFaceDevice = [
                 'device_type' => 30,
                 'is_del' => 0,
+                'village_id'=>$village_id,
             ];
             $d_house_face_device = M('House_face_device');
             $count = $d_house_face_device->where($whereFaceDevice)->count();
@@ -116,7 +127,19 @@ class House_face_imgModel extends Model{
                 ];
                 invoke_v20_service($models,$param);
             }
-            
+
+            $is_func_cloudmrsqfw_special=D('Config_customization')->getFuncCloudmrsqfwSpecial();
+            if($is_func_cloudmrsqfw_special){
+                $whereArr=array('village_id'=>$village_id);
+                $village_data = M('House_village')->where($whereArr)->find();
+                if($village_data && !empty($village_data['lilin_pf_client_id']) && !empty($village_data['lilin_pf_client_secret']) && !empty($village_data['lilin_village_no'])){
+                    $models = '\app\community\model\service\Device\LiLinDevAccessApiService/massVillageUserSycToLilinPf';
+                    $param=['village_id'=>$village_id,'pigcms_id'=> $pigcms_id];
+                    $result = invoke_v20_service($models, $param);
+                    fdump_api([__LINE__, 'param' => $param, 'result' => $result], 'LiLinDevAccess/sycUserInfoToLiLin', 1);
+                }
+            }
+
             if (isset($otherParam['log_name'])&&$otherParam['log_name']) {
                 $log_name = $otherParam['log_name'];
             } else {
@@ -171,6 +194,7 @@ class House_face_imgModel extends Model{
         $m_house_village_user_bind = M('House_village_user_bind');
         $conditioFaveDevice = [];
         $conditioFaveDevice['is_del'] = 0;
+        $conditioFaveDevice['village_id']=$village_id;
         $faceDeviceCount = $m_house_face_device->field(true)->where($conditioFaveDevice)->count();
         if (!$faceDeviceCount) {
             // 如果没有人脸设备不进行同步
@@ -187,6 +211,7 @@ class House_face_imgModel extends Model{
             $where['a.pigcms_id'] = $pigcms_id;
         }
         $where['a.status'] = 1;
+        $where['a.village_id'] = $village_id;
         $where['b.status'] = 1;
         $aUserSelect = $m_house_village_user_bind->alias('a')
             ->join('LEFT JOIN pigcms_house_village as b on b.village_id=a.village_id')
