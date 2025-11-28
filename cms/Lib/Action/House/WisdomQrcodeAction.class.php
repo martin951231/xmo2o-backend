@@ -587,7 +587,7 @@ class WisdomQrcodeAction extends BaseAction
             // if (empty($_POST['key'])) {
             //     $this->error('唯一标识不能为空!');
             // }
-            
+
             $uni_key = $this->getPinyinInitials($this->village['village_name'], true) . '_' . $this->getPinyinInitials($_POST['title'], true);
             if ($this->isOnlyUnderscore($uni_key)) {
                 $this->error('唯一标识不能为空!');
@@ -2333,5 +2333,107 @@ class WisdomQrcodeAction extends BaseAction
         $list = D('Wisdom_qrcode_cate')->get_position_record($this->village_id, $cate_id, $index_id);
         $this->assign('res', $list);
         $this->display();
+    }
+
+    //同步记录内容
+    public function qrcode_synchronize_recorded()
+    {
+        if (!in_array(546, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作!');
+        }
+
+        echo "<pre>";
+        $id = $_GET['id'];
+        $cate_id = $_POST['cate_id'];
+        $cate_name = $_POST['cate_name'];
+        if (IS_POST) {
+            if( !isset($_POST['cate_id']) || !isset($_POST['cate_name']) || !isset($_POST['village_id'])){
+                $this->error('缺少参数, 请重试!');
+            }
+            $origin_cate_info = D('Wisdom_qrcode_cate')->where(array('cate_name' => $cate_name, 'village_id' => $_POST['village_id']))->find();
+            if( !isset($origin_cate_info['id']) ){
+                $this->error('该分类不存在, 请重试!');
+            }
+            $cate_list = D('Wisdom_qrcode_record_cate')->where(array('cate_id' => $origin_cate_info['id']))->select();
+            $cate_record_ids = implode( ',' ,array_column($cate_list, 'id') );
+            foreach ($cate_list as &$list) {
+                unset($list['id']);
+                unset($list['add_time']);
+                $list['cate_id'] = $cate_id;
+                $list['add_time'] = time();
+            }
+            unset($list);
+            $res_key2 = 0;
+            foreach($cate_list as $k => $v){
+                $res = D('Wisdom_qrcode_record_cate')->where(['cate_id'=>$v['cate_id'],'record_name'=>$v['record_name']])->find();
+                if( count( $res ) <= 0 ){
+                    $result = D('Wisdom_qrcode_record_cate')->data($v)->add();
+                    $res_key2++;
+                }
+            }
+
+            $record_list = D('Wisdom_qrcode_record_cate_field_config')
+            ->where('record_cate_id in ('. $cate_record_ids. ')')
+            ->select();
+
+            $res_key = 0;
+            foreach ($record_list as &$list2) {
+                unset($list2['acid']);
+                unset($list2['add_time']);
+                unset($list2['key']);
+                $list2['add_time'] = time();
+                $list2['key'] =  $this->getPinyinInitials($this->village['village_name'], true) . '_' . $this->getPinyinInitials($list2['title'], true);
+                $record_cate_name = D('Wisdom_qrcode_record_cate')
+                ->where(['id'=>$list2['record_cate_id']])
+                ->find();
+                $record_cate_id = D('Wisdom_qrcode_record_cate')
+                ->where(['record_name'=>$record_cate_name['record_name'],'cate_id' => $cate_id ])
+                ->find();
+                unset($list2['record_cate_id']);
+                if( isset($record_cate_id['id']) ){
+                    $list2['record_cate_id'] = $record_cate_id['id'];
+                }
+
+                $res = D('Wisdom_qrcode_record_cate_field_config')->where(['key'=>$list2['key']])->find();
+                if( count( $res ) <= 0 ){
+                    $result = D('Wisdom_qrcode_record_cate_field_config')->data($list2)->add();
+                    if( $result ){
+                        $res_key++;
+                    }
+                }
+            }
+            if( $res_key > 0 || $res_key2 > 0 ){
+                $this->success('同步成功！', U('cate_index'));
+            }else{
+                $this->error('同步失败！请重试。');
+            }
+        } else {
+            $cate_info = D('Wisdom_qrcode_cate')->where(array('id' => $id))->find();
+            if (!$cate_info) {
+                $this->error('参数错误');
+            }
+
+            $village_list = D('house_village')
+                ->where(['status' => 1])
+                ->field('village_id,village_name')
+                ->select();
+            $mapped_list = array_filter(array_map(function ($item) use ($cate_info) {
+                $is_contain = D('Wisdom_qrcode_cate')
+                    ->where([
+                        'village_id' => $item['village_id'],
+                        'cate_name' => $cate_info['cate_name']
+                    ])
+                    ->select();
+                if ($item['village_id'] != $this->village_id && count($is_contain) > 0) {
+                    return $item;
+                } else {
+                    return null;
+                }
+            }, $village_list));
+            sort($mapped_list);
+            $this->assign('cate_info', $cate_info);
+            $this->assign('village_list', $mapped_list);
+            $this->display();
+        }
     }
 }
