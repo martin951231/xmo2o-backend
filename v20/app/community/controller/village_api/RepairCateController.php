@@ -1544,7 +1544,7 @@ class RepairCateController extends CommunityBaseController
             $houseVillageService = new HouseVillageService();
             $whereArr = array();
             $whereArr[] = array('village_id', '=', $village_id);
-            $fieldStr = 'village_id,property_id,is_timely,works_order_switch,grab_order_time,is_grab_order,work_order_extra';
+            $fieldStr = 'village_id,property_id,is_timely,works_order_switch,close_order_time,grab_order_time,is_grab_order,work_order_extra';
             $villageInfoExtend = $houseVillageService->getHouseVillageInfoExtend($whereArr, $fieldStr);
             $bindWorkerUrl = cfg('site_url') . '/shequ.php?g=House&c=Index&a=new_repair_bind_worker&cfromfun=v20';
             $bindWorkerUrl = str_replace('//shequ.php', '/shequ.php', $bindWorkerUrl);
@@ -1778,6 +1778,7 @@ class RepairCateController extends CommunityBaseController
         $xtype=$this->request->post('xtype','','trim');
         $is_timely=$this->request->post('is_timely',0,'intval');
         $grab_order_time=$this->request->post('grab_order_time',0,'intval');
+        $close_order_time=$this->request->post('close_order_time',0,'intval');
         $is_grab_order=$this->request->post('is_grab_order',0,'intval');
         $day_works_order_integral=$this->request->post('day_works_order_integral',0,'intval');
         $per_works_order_integral=$this->request->post('per_works_order_integral',0,'intval');
@@ -1785,6 +1786,7 @@ class RepairCateController extends CommunityBaseController
         $saveArr=array('is_timely'=>$is_timely,'grab_order_time'=>$grab_order_time);
         $saveArr['is_grab_order']=$is_grab_order;
         $saveArr['works_order_switch']=$works_order_switch;
+        $saveArr['close_order_time']=$close_order_time;
         $auto_evaluate=$this->request->post('auto_evaluate');
         $work_order_extra=array();
         if($xtype=='other_set'){
