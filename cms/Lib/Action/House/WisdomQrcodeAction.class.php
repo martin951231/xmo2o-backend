@@ -1848,19 +1848,22 @@ class WisdomQrcodeAction extends BaseAction
             $this->error('对不起，您没有权限执行此操作');
         }
         $where = array();
-        if ($_GET['find_type'] != 2) {
-            $this->error('请选择二维码类别进行导出条件！');
-        }
+
+//        if ($_GET['find_type'] != 2) {
+//            $this->error('请选择二维码类别进行导出条件！');
+//        }
 
         //        if(empty($_GET['begin_time']) || empty($_GET['end_time'])){
         //            $this->error('请选择请选择开始时间和结束时间！');
         //        }
-        $find_value = $_GET['find_value'] ? trim($_GET['find_value']) : '';
-        $qrcode_cate = M('Wisdom_qrcode_cate')->where(array('cate_name' => $find_value, 'village_id' => $this->village_id))->find();
-        if (!$qrcode_cate['id']) {
-            if (empty($qrcode_cate)) {
-                $this->error('无数据导出！');
-            }
+        $where['village_id'] = $this->village_id;
+        if( !empty($_GET['find_value']) ){
+            $where['cate_name'] = trim( $_GET['find_value'] );
+        }
+        $qrcode_cate = M('Wisdom_qrcode_cate')->where( $where )->select();
+
+        if (empty($qrcode_cate)) {
+            $this->error('无数据导出！');
         }
         $view_type = isset($_GET['view_type']) ? intval($_GET['view_type']) : 0;
         $patrol_type = isset($_GET['patrol_type']) ? intval($_GET['patrol_type']) : 0; //1 系统巡检 2智能巡检  3AI识别巡检 
@@ -1896,7 +1899,8 @@ class WisdomQrcodeAction extends BaseAction
         if (!empty($recognition_type)) {
             $where['robot_recognition_type'] = $recognition_type;
         }
-        $where['cate_id'] = $qrcode_cate['id'];
+        $qrcode_cate_list = array_column($qrcode_cate, 'id');
+        $where['cate_id'] = ['in', $qrcode_cate_list];
         $where['village_id'] = $this->village_id;
         $add_time_start = $_GET['begin_time'];
         $add_time_end = $_GET['end_time'];
