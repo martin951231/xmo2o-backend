@@ -1590,6 +1590,7 @@ class NewBuildingService
         $user_bind=$this->getHouseVillageUserBindFindMethod($where,$field);
         $authentication_field=[];
 
+
         $agreement_info = $this->getValueByKey($param['basic_data'], 'is_sign_agreement');
         $agreement_info_origin = $this->getValueByKey(unserialize($user_bind['authentication_field']), 'is_sign_agreement');
 
@@ -1601,7 +1602,8 @@ class NewBuildingService
                 'title' => $agreement_info['title'],
                 'value' => $agreement_info_origin['value'],
             ];
-            $authentication_field_arr = unserialize($user_bind['authentication_field']);
+
+            $authentication_field_arr = is_array( unserialize($user_bind['authentication_field']) )? unserialize($user_bind['authentication_field']) : [];
             $user_bind['authentication_field'] = serialize( array_merge( $authentication_field_arr , $arr) );
         }
 
@@ -1713,6 +1715,9 @@ class NewBuildingService
      * @return mixed 找到的value，未找到返回null
      */
     function getValueByKey($data, $targetKey) {
+        if( $data == null || empty($data) || !is_array($data) ){
+            return null;
+        }
         foreach ($data as $item) {
             // 检查当前项是否包含key，且与目标key匹配
             if (isset($item['key']) && $item['key'] === $targetKey) {
