@@ -482,12 +482,12 @@ class ExpressPickUpApiController extends CommunityBaseController
             return api_output_error(1001, '请选择要删除的快递!');
         }
         try {
-            $res = $service_express_pick_up->savePickupApplication(['id' => $pickup_app_id], ['status' => 99]);
+            $res = $service_express_pick_up->savePickupApplication(['id' => $pickup_app_id], ['status' => 99,'del_time' => date('Y-m-d H:i:s')]);
         } catch (\Exception $e) {
             return api_output_error(-1, $e->getMessage());
         }
         if ($res)
-            return api_output(0, [], '作废成功');
+            return api_output(0, [], '删除成功');
         return api_output_error(1001, '服务异常');
     }
 
