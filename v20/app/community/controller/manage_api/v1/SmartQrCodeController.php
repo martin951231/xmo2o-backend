@@ -195,9 +195,10 @@ class SmartQrCodeController extends BaseController
         }
         $wid = $this->_uid;
         $village_id = $this->request->param('village_id',0,'intval');
+        $category_id = $this->request->param('category_id',0,'intval');
         $serviceSmartQrCode = new SmartQrCodeService();
         try{
-            $data =  $serviceSmartQrCode->addRecord($qrcode_id,$village_id,$wid);
+            $data =  $serviceSmartQrCode->addRecord($qrcode_id,$village_id,$wid,'',$category_id);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }

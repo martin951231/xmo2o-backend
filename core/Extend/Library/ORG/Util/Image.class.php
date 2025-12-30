@@ -434,7 +434,7 @@ class Image {
     }
 
     // 中文验证码
-    static function GBVerify($length=4, $type='png', $width=180, $height=50, $fontface='simhei.ttf', $verifyName='verify') {
+    static function GBVerify($length=4, $type='png', $width=180, $height=50, $fontface='Simhei.ttf', $verifyName='verify') {
         import('ORG.Util.Stringnew');
         $code = Stringnew::randString($length, 4);
         $width = ($length * 45) > $width ? $length * 45 : $width;

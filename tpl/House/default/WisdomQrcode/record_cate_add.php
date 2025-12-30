@@ -1,9 +1,13 @@
 <include file="Public:header"/>
 <div class="main-content">
 	<!-- 内容头部 -->
-	<div class="breadcrumbs" id="breadcrumbs">
+	<div class="breadcrumbs">
 		<ul class="breadcrumb">
-
+            <li>
+                <i class="ace-icon fa fa-tasks"></i>
+                <a href="{pigcms{:U('WisdomQrcode/record_cate_index',array('category_id'=>$_GET['category_id']))}">记录字段管理</a>
+            </li>
+            <li class="active">编辑</li>
 		</ul>
 	</div>
 	<!-- 内容头部 -->
@@ -13,7 +17,7 @@
 				<div class="col-xs-12">
 					<form class="form-horizontal" method="post" onSubmit="return check_submit();" action="__SELF__">
 						<div class="tab-content">
-							<input type="hidden" value="{pigcms{$_GET['cate_id']}" name="cate_id">
+							<input type="hidden" value="{pigcms{$_GET['category_id']}" name="category_id">
 							<div id="basicinfo" class="tab-pane active">
 								<div class="form-group">
 									<label class="col-sm-1"><label for="name">类别名称：</label></label>

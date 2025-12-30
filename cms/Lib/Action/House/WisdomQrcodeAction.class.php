@@ -22,6 +22,1101 @@ class WisdomQrcodeAction extends BaseAction
         }
     }
 
+    public function qrcode_download()
+    {
+        $name = $_GET['import_name'];
+        require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel.php';
+//        $xtitle = '导入巡检分类模板';
+        $xtitle = $name;
+
+        $objExcel = new PHPExcel();
+        $objProps = $objExcel->getProperties();
+        // 设置文档基本属性
+        $objProps->setCreator($xtitle);
+        $objProps->setTitle($xtitle);
+        $objProps->setSubject($xtitle);
+        $objProps->setDescription($xtitle);
+
+        $length = 1;
+
+        $objExcel->createSheet();
+        $objExcel->setActiveSheetIndex($length);
+
+        $objExcel->getActiveSheet()->setTitle($name);
+        $objActSheet = $objExcel->getActiveSheet();
+        if( $name == '导入巡检分类模板' ){
+            $cell_list = range('A', 'F');
+            foreach ($cell_list as $cell) {
+                $objActSheet->getColumnDimension($cell)->setWidth(30);
+            }
+            $objActSheet->setCellValue('A1', '分类名(必填)');
+            $objActSheet->setCellValue('B1', '记录字段名(必填)');
+            $objActSheet->setCellValue('C1', '记录字段内容名称(必填)');
+            $objActSheet->setCellValue('D1', '记录字段内容类型(文本或者单选)(必填)');
+            $objActSheet->setCellValue('E1', '记录字段内容(如果内容类型为单选则必须填写该字段,多个条件用逗号分隔)');
+            $objActSheet->setCellValue('F1', '记录字段内容是否必填(填是或者否)');
+        }elseif( $name == '导入二维码模板') {
+            $cell_list = range('A', 'D');
+            foreach ($cell_list as $cell) {
+                $objActSheet->getColumnDimension($cell)->setWidth(30);
+            }
+            $objActSheet->setCellValue('A1', '二维码名称(必填)');
+            $objActSheet->setCellValue('B1', '位置(经度)(必填)');
+            $objActSheet->setCellValue('C1', '位置(纬度)(必填)');
+            $objActSheet->setCellValue('D1', '所属分类名(必填)');
+        }
+
+        //输出
+        $objWriter = new PHPExcel_Writer_Excel5($objExcel);
+        ob_end_clean();
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="' . $xtitle . '_' . date("Y-m-d h:i:sa", time()) . '.xls"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+        exit();
+
+    }
+
+    /*
+     * 导出分类
+     * */
+    public function export_qrcode_category()
+    {
+        $final_list = [];
+        $category_where = [
+            'village_id' => $this->village_id,
+            'status' => 1
+        ];
+        $category_list = M('wisdom_qrcode_category')->where($category_where)->select();
+        if( empty( $category_list ) ){
+            $this->error('没有可导出的分类！');
+        }
+        foreach( $category_list as $category ){
+            $field_where = [
+                'category_id' => $category['id'],
+            ];
+            $field_list = M('wisdom_qrcode_record_cate')->where($field_where)->select();
+            if( empty( $field_list ) ){
+                $final_list[] = [
+                    'category_name' => $category['name'],
+                    'category_addtime' => $category['addtime'],
+                    'record_name' => '',
+                    'record_add_time' => '',
+                    'field_config_name' => '',
+                    'field_config_type' => '',
+                    'field_config_add_time' => '',
+                    'field_config_use_field' => '',
+                    'field_config_use_is_must' => '',
+                ];
+                continue;
+            }
+            foreach( $field_list as $field ){
+                $field_config_where = [
+                    'record_cate_id' => $field['id'],
+                ];
+                $field_config_list = M('wisdom_qrcode_record_cate_field_config')->where($field_config_where)->select();
+                if( empty( $field_config_list ) ){
+                    $final_list[] = [
+                        'category_name' => $category['name'],
+                        'category_addtime' => $category['addtime'],
+                        'record_name' => $field['record_name'],
+                        'record_add_time' => $field['add_time'],
+                        'field_config_name' => '',
+                        'field_config_type' => '',
+                        'field_config_add_time' => '',
+                        'field_config_use_field' => '',
+                        'field_config_use_is_must' => '',
+                    ];
+                    continue;
+                }
+                foreach( $field_config_list as $field_config ){
+                    $type = '';
+                    switch( $field_config['type'] ){
+                        case 1:$type = '文本';break;
+                        case 2:$type = '图片';break;
+                        case 3:$type = '单选';break;
+                        default :$type = '文本';break;
+                    }
+                    $final_list[] = [
+                        'category_name' => $category['name'],
+                        'category_addtime' => $category['addtime'],
+                        'record_name' => $field['record_name'],
+                        'record_add_time' => $field['add_time'],
+                        'field_config_name' => $field_config['title'],
+                        'field_config_type' => $type,
+                        'field_config_add_time' => $field_config['add_time'],
+                        'field_config_use_field' => $field_config['use_field'],
+                        'field_config_use_is_must' => $field_config['is_must'] == 1?'是':'否',
+                    ];
+                }
+            }
+        }
+        if( empty( $final_list ) ){
+            $this->error('没有可导出的分类！');
+        }
+        require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel.php';
+        error_reporting(E_ALL);
+        date_default_timezone_set('Europe/London');
+        $objExcel = new PHPExcel();
+
+        $title = '分类列表';
+        // $title = $this->village['village_name'] . '社区-导入失败列表';
+        /*以下是一些设置 ，什么作者  标题之类的*/
+        $objExcel->getProperties()->setCreator($title)
+            ->setLastModifiedBy($title)
+            ->setTitle($title)
+            ->setSubject("分类导出")
+            ->setDescription("备份数据")
+            ->setKeywords("excel")
+            ->setCategory("result file");
+
+        $i = 0;
+        $objExcel->createSheet();
+        $objExcel->setActiveSheetIndex($i);
+        $objExcel->getActiveSheet()->setTitle($title);
+        $objActSheet = $objExcel->getActiveSheet();
+        $objActSheet->setCellValue('A1', '分类名');
+        $objActSheet->setCellValue('B1', '分类添加时间');
+        $objActSheet->setCellValue('C1', '记录字段名');
+        $objActSheet->setCellValue('D1', '记录添加时间');
+        $objActSheet->setCellValue('E1', '记录字段内容名称');
+        $objActSheet->setCellValue('F1', '记录字段内容添加时间');
+        $objActSheet->setCellValue('G1', '记录字段内容类型');
+        $objActSheet->setCellValue('H1', '记录字段内容');
+        $objActSheet->setCellValue('I1', '记录字段内容是否必填');
+
+        $columns = range('A', 'I'); // 生成A到F的列标数组，如需更多列可改为'G'、'H'等
+        foreach ($columns as $col) {
+            $objActSheet->getColumnDimension($col)->setWidth(30);
+        }
+
+        $index = 2;
+        foreach ($final_list as $value) {
+            $objActSheet->setCellValueExplicit('A' . $index, $value['category_name']);
+            $objActSheet->setCellValueExplicit('B' . $index, $value['category_addtime']);
+            $objActSheet->setCellValueExplicit('C' . $index, $value['record_name']);
+            $objActSheet->setCellValueExplicit('D' . $index, date( 'Y-m-d H:i:s', $value['record_add_time']));
+            $objActSheet->setCellValueExplicit('E' . $index, $value['field_config_name']);
+            $objActSheet->setCellValueExplicit('F' . $index, date( 'Y-m-d H:i:s', $value['field_config_add_time']));
+            $objActSheet->setCellValueExplicit('G' . $index, $value['field_config_type']);
+            $objActSheet->setCellValueExplicit('H' . $index, $value['field_config_use_field']);
+            $objActSheet->setCellValueExplicit('I' . $index, $value['field_config_use_is_must']);
+            $index++;
+        }
+
+        //输出
+        $objWriter = new PHPExcel_Writer_Excel5($objExcel);
+        ob_end_clean();
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="' . $title . '_' . date("Y-m-d h:i:s", time()) . '.xls"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+        exit();
+    }
+
+    /*
+     * 导出二维码
+     * */
+    /**
+     * 生成多个带底部名称的二维码，按一页6张排版嵌入Word并自动下载
+     * 依赖：PHP GD库（需开启，默认PHP环境已开启）
+     * @param array $qrConList 二维码内容数组（每个元素是二维码跳转地址）
+     * @param string $wordName 导出Word文件名（无需.doc后缀）
+     * @param int $perPageCount 每页显示二维码数量（默认6张）
+     * @return void
+     */
+    function generateMultiQrCodeToWord($qrConList,$wordName = "批量二维码导出文档",$perPageCount = 6) {
+        // ================= 基础配置 =================
+        $qrModuleSize = 6;
+        $qrPureSize   = 200;
+        $categoryFontSize = 16;   // ⬅ 分类名称字体大小
+        $nameFontSize = 10;        // ⬅ 下方名称字体大小
+
+
+        $fontPath     = APP_PATH . 'Lib/ORG/fonts/Simhei.ttf';
+        $qrWordWidthMm = 90;
+
+        // 根据字体大小动态算区域高度（防裁剪）
+        $categoryHeight = $categoryFontSize + 12;
+        $nameHeight     = $nameFontSize + 10;
+
+        require_once APP_PATH . 'Lib/ORG/phpqrcode/phpqrcode.php';
+
+        if (!file_exists($fontPath)) {
+            die("错误：字体文件不存在");
+        }
+
+        // ================= 生成二维码图片 =================
+        $qrImageBase64List = [];
+
+        foreach ($qrConList as $i => $qrCon) {
+
+            parse_str(parse_url($qrCon, PHP_URL_QUERY), $params);
+
+            $qrName = mb_substr($params['name'] ?? ('二维码-' . ($i + 1)), 0, 10, 'UTF-8');
+            $categoryName = mb_substr($params['category_name'] ?? '', 0, 16, 'UTF-8');
+
+            // === 原始二维码 ===
+            ob_start();
+            QRcode::png($qrCon, false, QR_ECLEVEL_M, $qrModuleSize, 1);
+            $qrPngData = ob_get_clean();
+
+            $qrRawImg = imagecreatefromstring($qrPngData);
+            if (!$qrRawImg) continue;
+
+            // === 等比缩放 ===
+            $qrScaled = imagecreatetruecolor($qrPureSize, $qrPureSize);
+            $white = imagecolorallocate($qrScaled, 255, 255, 255);
+            imagefill($qrScaled, 0, 0, $white);
+
+            imagecopyresampled(
+                $qrScaled,
+                $qrRawImg,
+                0, 0, 0, 0,
+                $qrPureSize, $qrPureSize,
+                imagesx($qrRawImg),
+                imagesy($qrRawImg)
+            );
+            imagedestroy($qrRawImg);
+
+            // === 画布（分类名 + 二维码 + 底部名称）===
+            $canvasHeight = $categoryHeight + $qrPureSize + $nameHeight;
+            $canvas = imagecreatetruecolor($qrPureSize, $canvasHeight);
+            imagefill($canvas, 0, 0, $white);
+
+            $black = imagecolorallocate($canvas, 0, 0, 0);
+
+            // ===== 分类名称（上）=====
+            if ($categoryName !== '') {
+                $bbox = imagettfbbox($categoryFontSize, 0, $fontPath, $categoryName);
+                $textWidth = $bbox[2] - $bbox[0];
+                $textX = ($qrPureSize - $textWidth) / 2;
+                $textY = ($categoryHeight + $categoryFontSize) / 2;
+
+                imagettftext(
+                    $canvas,
+                    $categoryFontSize,
+                    0,
+                    (int)$textX,
+                    (int)$textY,
+                    $black,
+                    $fontPath,
+                    $categoryName
+                );
+            }
+
+            // ===== 二维码 =====
+            imagecopy(
+                $canvas,
+                $qrScaled,
+                0,
+                $categoryHeight,
+                0,
+                0,
+                $qrPureSize,
+                $qrPureSize
+            );
+            imagedestroy($qrScaled);
+
+            // ===== 底部名称 =====
+            $bbox = imagettfbbox($nameFontSize, 0, $fontPath, $qrName);
+            $textWidth = $bbox[2] - $bbox[0];
+            $textHeight = $bbox[1] - $bbox[7];
+
+            $textX = ($qrPureSize - $textWidth) / 2;
+            $textY = $categoryHeight + $qrPureSize + ($nameHeight + $textHeight) / 2;
+
+            imagettftext(
+                $canvas,
+                $nameFontSize,
+                0,
+                (int)$textX,
+                (int)$textY,
+                $black,
+                $fontPath,
+                $qrName
+            );
+
+            // === 转 base64 ===
+            ob_start();
+            imagepng($canvas, null, 9);
+            $imgData = ob_get_clean();
+            imagedestroy($canvas);
+
+            $qrImageBase64List[] = [
+                'base64' => 'data:image/png;base64,' . base64_encode($imgData)
+            ];
+        }
+
+        // ================= Word HTML =================
+        $totalPages = ceil(count($qrImageBase64List) / $perPageCount);
+
+        $html = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { width:210mm; font-family:SimSun; }
+table { width:100%; border-collapse:collapse; }
+td { width:50%; text-align:center; padding:6mm 0; }
+img { width:{$qrWordWidthMm}mm; }
+.page-break { page-break-after:always; }
+</style>
+</head>
+<body>
+HTML;
+
+        $idx = 0;
+
+        for ($p = 1; $p <= $totalPages; $p++) {
+
+            $html .= "<table>";
+
+            for ($r = 0; $r < 3; $r++) {
+                $html .= "<tr>";
+                for ($c = 0; $c < 2; $c++) {
+                    if (isset($qrImageBase64List[$idx])) {
+                        $img = $qrImageBase64List[$idx]['base64'];
+                        $html .= "<td><img src='{$img}'></td>";
+                    } else {
+                        $html .= "<td></td>";
+                    }
+                    $idx++;
+                }
+                $html .= "</tr>";
+            }
+
+            $html .= "</table>";
+
+            if ($p < $totalPages) {
+                $html .= "<div class='page-break'></div>";
+            }
+        }
+
+        $html .= "</body></html>";
+
+        // ================= 输出 Word =================
+        header("Content-Type: application/msword; charset=utf-8");
+        header(
+            "Content-Disposition: attachment; filename=\"" .
+            iconv('UTF-8', 'GB2312//IGNORE', $wordName) . ".doc\""
+        );
+        echo $html;
+        exit;
+    }
+
+
+    public function export_qrcode_detail()
+    {
+        $qrcode_where = [
+            'q.village_id' => $this->village_id
+        ];
+
+        if( isset($_GET['categoryId']) && !empty($_GET['categoryId']) && $_GET['categoryId'] != 0 ){
+            $qrcode_where['q.category_id'] = $_GET['categoryId'];
+        }
+
+        $data_list =  M('wisdom_qrcode as q')
+            ->join('pigcms_wisdom_qrcode_category qc on q.category_id = qc.id')
+            ->field('q.id,q.name,qc.name as category_name')
+            ->where($qrcode_where)
+            ->select();
+
+        if( empty($data_list) ){
+            $this->error('暂无二维码可导出!');
+        }
+        $qrConList = [];
+        $base_url = $this->config['site_url'] . '/packapp/village/pages/village/smartQRcode/elevatorManagement?';
+        foreach( $data_list as $key => $value ){
+            $str = $base_url.'qrcode_id='.$value['id'].'&spread=1&village_id='.$this->village_id.'&name='.$value['name'].'&wis_code=1&map_type=0&category_name='.$value['category_name'];
+            $qrConList[] = $str;
+        }
+
+        // 2. 调用方法，批量生成并下载Word（一页6张）
+        $this->generateMultiQrCodeToWord($qrConList, "批量导出二维码", 6);
+    }
+    /**
+     * 解析 URL 中的查询参数
+     * @param string $url 完整的 URL 地址
+     * @return array 解析后的参数关联数组（自动处理中文解码）
+     */
+    public function parseUrlParams($url) {
+        // 1. 分离 URL 中的查询字符串部分（? 后面的内容）
+        $queryString = parse_url($url, PHP_URL_QUERY);
+
+        if (empty($queryString)) {
+            return []; // 无查询参数时返回空数组
+        }
+
+        // 2. 解析查询字符串为数组（自动处理 & 分隔）
+        parse_str($queryString, $params);
+
+        // 3. 对参数值进行 URL 解码（处理中文或特殊字符）
+        foreach ($params as $key => $value) {
+            $params[$key] = urldecode($value);
+        }
+
+        return $params;
+    }
+    public function export_qrcode_detail2()
+    {
+        $final_list = [];
+        $qrcode_detail_where = [
+            'village_id' => $this->village_id
+        ];
+        $qrcode_detail_list = M('wisdom_qrcode')->where($qrcode_detail_where)->select();
+        if( empty( $qrcode_detail_list ) ){
+            $this->error('没有可导出的二维码！');
+        }
+        foreach( $qrcode_detail_list as $qrcode_detail ){
+            $category_where = [
+                'id' => $qrcode_detail['category_id']
+            ];
+            $category_info = M('wisdom_qrcode_category')->where($category_where)->find();
+            $final_list[] = [
+                'num_id' => $qrcode_detail['num_id'],
+                'name' => $qrcode_detail['name'],
+                'category_name' => $category_info['name'],
+                'image_path' => $qrcode_detail['image_path'] != ''? $this->config['site_url'].$qrcode_detail['image_path']:'',
+                'add_time' => date( 'Y-m-d H:i:s', $qrcode_detail['add_time'] ),
+                'long' => $qrcode_detail['long'],
+                'lat' => $qrcode_detail['lat'],
+            ];
+        }
+        require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel.php';
+        error_reporting(E_ALL);
+        date_default_timezone_set('Europe/London');
+        $objExcel = new PHPExcel();
+
+        $title = '分类列表';
+        // $title = $this->village['village_name'] . '社区-导入失败列表';
+        /*以下是一些设置 ，什么作者  标题之类的*/
+        $objExcel->getProperties()->setCreator($title)
+            ->setLastModifiedBy($title)
+            ->setTitle($title)
+            ->setSubject("分类导出")
+            ->setDescription("备份数据")
+            ->setKeywords("excel")
+            ->setCategory("result file");
+
+        $i = 0;
+        $objExcel->createSheet();
+        $objExcel->setActiveSheetIndex($i);
+        $objExcel->getActiveSheet()->setTitle($title);
+        $objActSheet = $objExcel->getActiveSheet();
+        $objActSheet->setCellValue('A1', '序号');
+        $objActSheet->setCellValue('B1', '二维码名称');
+        $objActSheet->setCellValue('C1', '分类名称');
+        $objActSheet->setCellValue('D1', '标题图');
+        $objActSheet->setCellValue('E1', '二维码添加时间');
+        $objActSheet->setCellValue('F1', '经度');
+        $objActSheet->setCellValue('G1', '纬度');
+
+        $columns = range('A', 'I'); // 生成A到F的列标数组，如需更多列可改为'G'、'H'等
+        foreach ($columns as $col) {
+            $objActSheet->getColumnDimension($col)->setWidth(30);
+        }
+
+        $index = 2;
+        foreach ($final_list as $value) {
+            $objActSheet->setCellValueExplicit('A' . $index, $value['num_id']);
+            $objActSheet->setCellValueExplicit('B' . $index, $value['name']);
+            $objActSheet->setCellValueExplicit('C' . $index, $value['category_name']);
+            $objActSheet->setCellValueExplicit('D' . $index, $value['image_path']);
+            $objActSheet->setCellValueExplicit('E' . $index, $value['add_time']);
+            $objActSheet->setCellValueExplicit('F' . $index, $value['long']);
+            $objActSheet->setCellValueExplicit('G' . $index, $value['lat']);
+            $index++;
+        }
+
+        //输出
+        $objWriter = new PHPExcel_Writer_Excel5($objExcel);
+        ob_end_clean();
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");
+        header('Content-Disposition:attachment;filename="' . $title . '_' . date("Y-m-d h:i:s", time()) . '.xls"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
+        exit();
+    }
+
+    public function qrcode_import()
+    {
+        $import_name = $_GET['import_name'];
+        if (IS_POST) {
+            if ($_FILES['file']['error'] != 4) {
+                set_time_limit(0);
+                ini_set('memory_limit', '2048M');
+
+                import('ORG.Util.Dir');
+                Dir::delDirnotself('./upload/excel/inspection');
+
+                $upload_dir = './upload/excel/inspection/' . date('Ymd') . '/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                import('ORG.Net.UploadFile');
+                $upload = new UploadFile();
+                $upload->maxSize = 10 * 1024 * 1024;
+                $upload->allowExts = array('xls', 'xlsx');
+                $upload->allowTypes = array(); // 允许上传的文件类型 留空不做检查
+                $upload->savePath = $upload_dir;
+                $upload->thumb = false;
+                $upload->thumbType = 0;
+                $upload->imageClassPath = '';
+                $upload->thumbPrefix = '';
+                $upload->saveRule = 'uniqid';
+
+                if ($upload->upload()) {
+                    $uploadList = $upload->getUploadFileInfo();
+                    require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel/IOFactory.php';
+                    $path = $uploadList['0']['savepath'] . $uploadList['0']['savename'];
+                    $fileType = PHPExcel_IOFactory::identify($path); //文件名自动判断文件类型
+                    $objReader = PHPExcel_IOFactory::createReader($fileType);
+                    $excelObj = $objReader->load($path);
+                    $result = $excelObj->getActiveSheet()->toArray(null, true, true, true);
+                    unlink($path);
+                    //验证是否为空数据
+                    if( $this->isOnlyTitle($result, 1) ){
+                        $this->error('导入数据为空,请重新上传文件！');
+                    }
+                    if( $import_name == 'import_category' ){//导入分类
+                        $this->import_category($result);
+                    }elseif( $import_name == 'import_qrcode_detail' ){//导入二维码
+                        $this->import_qrcode_detail($result);
+                    }else{
+
+                    }
+                } else {
+                    $this->error($upload->getErrorMsg());
+                    exit;
+                }
+            }else{
+                $this->error('文件上传失败');
+                exit;
+            }
+        } else {
+            if( $import_name == 'import_category' ){
+                $this->display('qrcode_category_import');
+            }elseif( $import_name == 'import_qrcode_detail' ){
+                $this->display('qrcode_detail_import');
+            }else{
+                $this->display('qrcode_index');
+            }
+        }
+    }
+
+    /**
+     * 判断Excel数据是否只有标题（无有效数据）
+     * 适配：行号为键、列名[A-F]为子键的关联数组格式
+     * @param array $excelArray Excel读取后的二维关联数组
+     * @param int $titleRowNum 标题行号（默认第1行）
+     * @return bool true=只有标题，false=存在有效数据
+     */
+    function isOnlyTitle($excelArray, $titleRowNum = 1) {
+        // 1. 安全判断：数组为空或无标题行，直接判定为无有效数据
+        if (!is_array($excelArray) || empty($excelArray)) {
+            return true;
+        }
+
+        // 2. 分离标题行和数据行
+        $dataRows = [];
+        foreach ($excelArray as $rowNum => $row) {
+            // 行号大于标题行号的，视为数据行
+            if ($rowNum > $titleRowNum) {
+                $dataRows[] = $row;
+            }
+        }
+
+        // 3. 数据行为空，判定为只有标题
+        if (empty($dataRows)) {
+            return true;
+        }
+
+        // 4. 遍历数据行，判断是否存在有效内容
+        foreach ($dataRows as $row) {
+            // 安全判断：当前行不是数组，跳过
+            if (!is_array($row)) {
+                continue;
+            }
+
+            $hasValidData = false;
+            // 遍历当前行的每个单元格（A-F列）
+            foreach ($row as $cellValue) {
+                // 处理单元格内容：去除空白字符，兼容NULL/数字/字符串
+                $trimmedValue = is_scalar($cellValue) ? trim((string)$cellValue) : '';
+                // 有效数据判定：非空字符串、非0数字（避免数字0被误判为空）
+                if (($trimmedValue !== '' && $trimmedValue !== null) || (is_numeric($cellValue) && $cellValue == 0)) {
+                    $hasValidData = true;
+                    break; // 找到有效数据，跳出单元格循环
+                }
+            }
+
+            // 存在有效数据行，直接返回false
+            if ($hasValidData) {
+                return false;
+            }
+        }
+
+        // 5. 所有数据行均无有效数据，返回true
+        return true;
+    }
+
+    //导入分类
+    public function import_category($result)
+    {
+        if (!empty($result) && is_array($result)) {
+            unset($result[1]);
+            $last_category_id = 0;
+            $err_msg = '';
+            $error_arr = [];
+            $tmpdata = [];
+            foreach ($result as $kk => $vv) {
+
+                if (empty($vv['A'])) {
+                    $vv['G'] = '请填写分类名！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+                if (empty($vv['B'])) {
+                    $vv['G'] = '请填写记录字段名！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                if (empty($vv['C'])) {
+                    $vv['G'] = '请填写记录字段内容名称！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                if (empty($vv['D'])) {
+                    $vv['G'] = '记录字段内容类型！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                if ($vv['D'] == '单选' && empty($vv['E'])) {
+                    $vv['G'] = '请填写记录字段内容！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                $tmpdata[] = [
+                    'village_id' => $this->village_id,
+                    'category_name' => htmlspecialchars(trim($vv['A']), ENT_QUOTES),//分类名
+                    'record_name' => htmlspecialchars(trim($vv['B']), ENT_QUOTES),//记录字段名
+                    'record_field_name' => htmlspecialchars(trim($vv['C']), ENT_QUOTES),//记录内容名
+                    'record_field_type' => htmlspecialchars(trim($vv['D']), ENT_QUOTES),//记录内容类型
+                    'record_field_content' => htmlspecialchars(trim($vv['E']), ENT_QUOTES),//记录内容内容
+                    'is_must' => htmlspecialchars(trim($vv['F']), ENT_QUOTES),//记录内容是否必填
+                ];
+            }
+            $data = $this->formatArrayByDoubleGroupForCategory($tmpdata);
+            foreach ($data as $key => $value) {
+                $insert_category_data = [
+                    'village_id' => $this->village_id,
+                    'name' => $value['category_name'],
+                    'addtime' => date('Y-m-d H:i:s', time()),
+                    'status' => 1
+                ];
+
+                $category_where = [
+                    'village_id' => $this->village_id,
+                    'name' => $value['category_name'],
+                    'status' => 1
+                ];
+                $category_exists = M('wisdom_qrcode_category')->where($category_where)->find();
+
+                if( !empty( $category_exists ) ){// 修改
+                    $last_category_info = M('wisdom_qrcode_category')->where(['id'=>$category_exists['id']])->data($insert_category_data)->save();
+                    $last_category_id = $category_exists['id'];
+                }else{// 保存
+                    $last_category_id = M('wisdom_qrcode_category')->data($insert_category_data)->add();
+                }
+                if ($last_category_id) {
+                    foreach ($value['data'] as $key_field => $val_field) {
+                        if (empty($val_field)) {
+                            continue;
+                        }
+                        $insert_field_data = [
+                            'record_name' => $val_field['record_name'],
+                            'add_time' => time(),
+                            'status' => 1,
+                            'category_id' => $last_category_id
+                        ];
+
+                        $category_field_where = [
+                            'record_name' => $val_field['record_name'],
+                            'category_id' => $last_category_id,
+                            'status' => 1
+                        ];
+                        $category_field_exists = M('wisdom_qrcode_record_cate')->where($category_field_where)->find();
+
+                        if( !empty( $category_field_exists ) ){// 修改
+                            $last_category_field_info = M('wisdom_qrcode_record_cate')->where(['id'=>$category_field_exists['id']])->data($insert_field_data)->save();
+                            $last_field_id = $category_field_exists['id'];
+                        }else{// 保存
+                            $last_field_id = M('wisdom_qrcode_record_cate')->data($insert_field_data)->add();
+                        }
+
+                        if ($last_field_id) {
+                            $insert_content_data_list = [];
+                            foreach ($val_field['data'] as $key_content => $val_content) {
+                                if (empty($val_content)) {
+                                    continue;
+                                }
+                                $type = 0;
+                                switch ($val_content['record_field_type']) {
+                                    case '文本':
+                                        $type = 1;
+                                        break;
+                                    case '单选':
+                                        $type = 3;
+                                        break;
+                                    default:
+                                        $type = 0;
+                                        break;
+                                }
+                                $uni_key = $this->getPinyinInitials($this->village['village_name'], true) . '_' . $this->getPinyinInitials($val_content['record_field_name'], true);
+                                $insert_content_data = [
+                                    'title' => $val_content['record_field_name'],
+                                    'key' => $uni_key,
+                                    'type' => $type,
+                                    'add_time' => time(),
+                                    'record_cate_id' => $last_field_id,
+                                    'use_field' => $val_content['record_field_content'],
+                                    'is_must' => $val_content['is_must'] == '是' ? 1: 0
+                                ];
+
+                                $category_content_where = [
+                                    'title' => $val_content['record_field_name'],
+                                    'key' => $uni_key,
+                                ];
+                                $category_content_exists = M('wisdom_qrcode_record_cate_field_config')->where($category_content_where)->find();
+
+                                if( !empty( $category_content_exists ) ){// 修改
+                                    $last_category_content_info = M('wisdom_qrcode_record_cate_field_config')->where(['acid'=>$category_content_exists['acid']])->data($insert_content_data)->save();
+                                    $last_content_id = $category_content_exists['acid'];
+                                }else{// 保存
+                                    $last_content_id = M('wisdom_qrcode_record_cate_field_config')->data($insert_content_data)->add();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (empty($error_arr)) {
+                $this->success('导入成功');
+                exit;
+            }else {
+                $num = count($error_arr);
+                // echo "<script language='JavaScript' type='text/javascript'>alert('失败{$num}条，点击下载！')</script>";
+                //导出失败信息
+                require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel.php';
+                error_reporting(E_ALL);
+                date_default_timezone_set('Europe/London');
+                $objExcel = new PHPExcel();
+
+                $title = '导入失败列表';
+                // $title = $this->village['village_name'] . '社区-导入失败列表';
+                /*以下是一些设置 ，什么作者  标题之类的*/
+                $objExcel->getProperties()->setCreator($title)
+                    ->setLastModifiedBy($title)
+                    ->setTitle($title)
+                    ->setSubject("失败信息导出")
+                    ->setDescription("备份数据")
+                    ->setKeywords("excel")
+                    ->setCategory("result file");
+
+                $i = 0;
+                $objExcel->createSheet();
+                $objExcel->setActiveSheetIndex($i);
+                $objExcel->getActiveSheet()->setTitle($title);
+                $objActSheet = $objExcel->getActiveSheet();
+                $objActSheet->setCellValue('A1', '分类名');
+                $objActSheet->setCellValue('B1', '记录字段名');
+                $objActSheet->setCellValue('C1', '记录字段内容名称');
+                $objActSheet->setCellValue('D1', '记录字段内容类型(文本或者单选)');
+                $objActSheet->setCellValue('E1', '记录字段内容(如果内容类型为单选则填写该字段,多个条件用逗号分隔)');
+                $objActSheet->setCellValue('F1', '记录字段内容是否必填(填是或者否)');
+                $objActSheet->setCellValue('G1', '导入失败原因');
+                $index = 2;
+                foreach ($error_arr as $value) {
+                    $objActSheet->setCellValueExplicit('A' . $index, $value['A']);
+                    $objActSheet->setCellValueExplicit('B' . $index, $value['B']);
+                    $objActSheet->setCellValueExplicit('C' . $index, $value['C']);
+                    $objActSheet->setCellValueExplicit('D' . $index, $value['D']);
+                    $objActSheet->setCellValueExplicit('E' . $index, $value['E']);
+                    $objActSheet->setCellValueExplicit('F' . $index, $value['F']);
+                    $objActSheet->setCellValueExplicit('G' . $index, $value['G']);
+                    $index++;
+                }
+
+                //输出
+                $objWriter = new PHPExcel_Writer_Excel5($objExcel);
+                ob_end_clean();
+                header("Pragma: public");
+                header("Expires: 0");
+                header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+                header("Content-Type:application/force-download");
+                header("Content-Type:application/vnd.ms-execl");
+                header("Content-Type:application/octet-stream");
+                header("Content-Type:application/download");
+                header('Content-Disposition:attachment;filename="' . $title . '_' . date("Y-m-d h:i:s", time()) . '.xls"');
+                header("Content-Transfer-Encoding:binary");
+                $objWriter->save('php://output');
+                exit();
+            }
+        }
+    }
+
+    //导入分类
+    public function import_qrcode_detail($result)
+    {
+        if (!empty($result) && is_array($result)) {
+            unset($result[1]);
+            $last_category_id = 0;
+            $err_msg = '';
+            $error_arr = [];
+            $tmpdata = [];
+            foreach ($result as $kk => $vv) {
+
+                if (empty($vv['A'])) {
+                    $vv['E'] = '请填写二维码名称！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+                if (empty($vv['B'])) {
+                    $vv['E'] = '请填写经度！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+                if (empty($vv['C'])) {
+                    $vv['E'] = '请填写纬度！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                if (empty($vv['D'])) {
+                    $vv['E'] = '请填写所属分类！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                $category_info = M('wisdom_qrcode_category')->where(['name'=>$vv['D'],'village_id'=>$this->village_id])->find();
+                if( empty( $category_info ) ){
+                    $vv['E'] = '该分类不存在！';
+                    $error_arr[] = $vv;
+                    continue;
+                }
+
+                $tmpdata[] = [
+                    'village_id' => $this->village_id,
+                    'category_id' => $category_info['id'],
+                    'name' => htmlspecialchars(trim($vv['A']), ENT_QUOTES),
+                    'long' => htmlspecialchars(trim($vv['B']), ENT_QUOTES),
+                    'lat' => htmlspecialchars(trim($vv['C']), ENT_QUOTES),
+                ];
+            }
+
+            foreach ($tmpdata as $key => $value) {
+                $insert_qrcode_data = [
+                    'village_id' => $this->village_id,
+                    'category_id' => $value['category_id'],
+                    'name' => $value['name'],
+                    'add_time' => time(),
+                    'long' => $value['long'],
+                    'lat' => $value['lat']
+                ];
+
+                $qrcode_where = [
+                    'village_id' => $this->village_id,
+                    'name' => $value['qrcode_name'],
+                ];
+
+                $qrcode_exists = M('wisdom_qrcode')->where($qrcode_where)->find();
+
+                if( !empty( $qrcode_exists ) ){// 修改
+                    $last_qrcode_info = M('wisdom_qrcode')->where(['id'=>$qrcode_exists['id']])->data($insert_qrcode_data)->save();
+                    $last_qrcode_id = $qrcode_exists['id'];
+                }else{// 保存
+                    $last_qrcode_id = M('wisdom_qrcode')->data($insert_qrcode_data)->add();
+                    M('wisdom_qrcode')->where(['id'=>$last_qrcode_id])->data(['num_id'=>$last_qrcode_id])->save();
+                }
+            }
+            if (empty($error_arr)) {
+                $this->success('导入成功');
+                exit;
+            }else {
+                $num = count($error_arr);
+                // echo "<script language='JavaScript' type='text/javascript'>alert('失败{$num}条，点击下载！')</script>";
+                //导出失败信息
+                require_once APP_PATH . 'Lib/ORG/phpexcel/PHPExcel.php';
+                error_reporting(E_ALL);
+                date_default_timezone_set('Europe/London');
+                $objExcel = new PHPExcel();
+
+                $title = '导入失败列表';
+                // $title = $this->village['village_name'] . '社区-导入失败列表';
+                /*以下是一些设置 ，什么作者  标题之类的*/
+                $objExcel->getProperties()->setCreator($title)
+                    ->setLastModifiedBy($title)
+                    ->setTitle($title)
+                    ->setSubject("失败信息导出")
+                    ->setDescription("备份数据")
+                    ->setKeywords("excel")
+                    ->setCategory("result file");
+
+                $i = 0;
+                $objExcel->createSheet();
+                $objExcel->setActiveSheetIndex($i);
+                $objExcel->getActiveSheet()->setTitle($title);
+                $objActSheet = $objExcel->getActiveSheet();
+                $objActSheet->setCellValue('A1', '二维码名称(必填)');
+                $objActSheet->setCellValue('B1', '位置(经度)(必填)');
+                $objActSheet->setCellValue('C1', '位置(纬度)(必填)');
+                $objActSheet->setCellValue('D1', '所属分类(必填)');
+                $objActSheet->setCellValue('E1', '导入失败原因');
+                $index = 2;
+                foreach ($error_arr as $value) {
+                    $objActSheet->setCellValueExplicit('A' . $index, $value['A']);
+                    $objActSheet->setCellValueExplicit('B' . $index, $value['B']);
+                    $objActSheet->setCellValueExplicit('C' . $index, $value['C']);
+                    $objActSheet->setCellValueExplicit('D' . $index, $value['D']);
+                    $objActSheet->setCellValueExplicit('E' . $index, $value['E']);
+                    $index++;
+                }
+
+                //输出
+                $objWriter = new PHPExcel_Writer_Excel5($objExcel);
+                ob_end_clean();
+                header("Pragma: public");
+                header("Expires: 0");
+                header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+                header("Content-Type:application/force-download");
+                header("Content-Type:application/vnd.ms-execl");
+                header("Content-Type:application/octet-stream");
+                header("Content-Type:application/download");
+                header('Content-Disposition:attachment;filename="' . $title . '_' . date("Y-m-d h:i:s", time()) . '.xls"');
+                header("Content-Transfer-Encoding:binary");
+                $objWriter->save('php://output');
+                exit();
+            }
+        }
+    }
+
+    /**
+     * 对数组进行双层分组格式化
+     * 第一层：按 category_name 分组
+     * 第二层：在 category_name 组内，按 record_name 分组
+     * @param array $sourceArray 原始待格式化数组
+     * @return array 格式化后的双层分组数组
+     */
+    public function formatArrayByDoubleGroupForCategory($sourceArray) {
+        // 最终格式化结果
+        $finalResult = [];
+
+        // 安全判断：原始数组非数组或为空，直接返回空数组
+        if (!is_array($sourceArray) || empty($sourceArray)) {
+            return $finalResult;
+        }
+
+        // 第一层分组：按 category_name 分组
+        foreach ($sourceArray as $item) {
+            // 安全判断：当前元素非数组，跳过
+            if (!is_array($item)) {
+                continue;
+            }
+            // 获取 category_name（作为第一层分组键），默认空字符串避免报错
+            $categoryName = $item['category_name'] ?? '';
+            if ($categoryName === '') {
+                continue;
+            }
+
+            // 提取第一层公共字段（village_id、category_name）
+            $categoryPublicData = [
+                'village_id' => $item['village_id'] ?? '',
+                'category_name' => $categoryName
+            ];
+
+            // 提取第一层需要放入 data 的字段（排除 village_id、category_name）
+            $categoryItemData = [];
+            foreach ($item as $key => $value) {
+                if (!in_array($key, ['village_id', 'category_name'])) {
+                    $categoryItemData[$key] = $value;
+                }
+            }
+
+            // 初始化：若该 category_name 分组不存在，先创建结构
+            if (!isset($finalResult[$categoryName])) {
+                $finalResult[$categoryName] = array_merge(
+                    $categoryPublicData,
+                    ['data' => []] // data 字段存储第二层分组数据
+                );
+            }
+
+            // 第二层分组：在 category_name 组内，按 record_name 分组
+            $recordName = $categoryItemData['record_name'] ?? '';
+            if ($recordName === '') {
+                // 无 record_name，直接放入 data（可选：也可跳过）
+                $finalResult[$categoryName]['data'][] = ['data' => $categoryItemData];
+                continue;
+            }
+
+            // 提取第二层公共字段（仅 record_name）
+            $recordPublicData = ['record_name' => $recordName];
+            // 提取第二层需要放入 data 的字段（排除 record_name）
+            $recordItemData = [];
+            foreach ($categoryItemData as $key => $value) {
+                if ($key !== 'record_name') {
+                    $recordItemData[$key] = $value;
+                }
+            }
+
+            // 初始化：若该 record_name 分组不存在，先创建结构
+            if (!isset($finalResult[$categoryName]['data'][$recordName])) {
+                $finalResult[$categoryName]['data'][$recordName] = array_merge(
+                    $recordPublicData,
+                    ['data' => []] // 内层 data 存储最终业务数据
+                );
+            }
+
+            // 将第二层 item 数据放入对应 record_name 组的 data 中
+            $finalResult[$categoryName]['data'][$recordName]['data'][] = $recordItemData;
+        }
+
+        // 可选：将关联数组转为索引数组（更符合常规返回格式，如需保留键名可删除此步骤）
+        $finalResult = array_values($finalResult);
+        foreach ($finalResult as &$categoryItem) {
+            if (isset($categoryItem['data']) && is_array($categoryItem['data'])) {
+                $categoryItem['data'] = array_values($categoryItem['data']);
+            }
+        }
+        unset($categoryItem); // 释放引用
+
+        return $finalResult;
+    }
+
+
     public function cate_index()
     {
         if (!in_array(426, $this->house_session['menus'])) {
@@ -65,6 +1160,42 @@ class WisdomQrcodeAction extends BaseAction
             $data['add_time'] = time();
             $data['village_id'] = $this->village_id;
             $data['type'] = $_POST['type'] ?: 1;
+            $data['record_type'] = $_POST['record_type'];
+            // 初始化结果数组
+            $day_times = [];
+
+            // 获取开始时间和结束时间的数组
+            $startTimes = $_POST['day_start_time'] ?? [];
+            $endTimes = $_POST['day_end_time'] ?? [];
+
+            // 遍历数组（按索引对应拼接）
+            $maxIndex = max(count($startTimes), count($endTimes));
+            for ($i = 0; $i < $maxIndex; $i++) {
+                // 处理索引不存在的情况（避免报错）
+                $start = isset($startTimes[$i]) ? $startTimes[$i] : '';
+                $end = isset($endTimes[$i]) ? $endTimes[$i] : '';
+                // 拼接格式：start-end（仅当两个值都存在时拼接，否则为空）
+                $day_times[] = $start && $end ? "{$start}-{$end}" : '';
+            }
+            if ($_POST['record_type'] == 1) { //每日
+//                $data['record_time'] = '';
+                $data['record_time'] = implode(',', $day_times);
+            } elseif ($_POST['record_type'] == 2) { //每周
+//                $datas['record_time'] = '';
+//                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
+                $data['record_time'] = implode(',', $_POST['record_time']);
+            } elseif ($_POST['record_type'] == 3) { //每月
+//                $datas['record_time'] = '';
+//                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
+                $data['record_time'] = implode(',', $_POST['record_time']);
+            }
+            if ($_POST['record_type'] != 1) {
+                $data['start_time'] = $_POST['start_time'];
+                $data['end_time'] = $_POST['end_time'];
+                $data['remind_time'] = $_POST['remind_time'];
+            }
+            $data['bind_qrcode'] = $_POST['qrcodeCheckList'];
+
             $inset_id = D('Wisdom_qrcode_cate')->data($data)->add();
             if ($inset_id) {
                 $this->success('添加成功！', U('cate_index'));
@@ -72,9 +1203,31 @@ class WisdomQrcodeAction extends BaseAction
                 $this->error('添加失败');
             }
         } else {
+            //二维码列表
+            $qrcodeList = M('Wisdom_qrcode as wq')
+                ->join('pigcms_wisdom_qrcode_category as wqc ON wq.category_id = wqc.id')
+                ->field('wq.*,wqc.name as category_name')
+                ->where(array('wq.village_id' => $this->village_id))
+                ->select();
+
+            $checkboxList = [];
+            if (!empty($qrcodeList)) {
+                foreach ($qrcodeList as $k => $v) {
+                    $checkboxList[$v['category_id']]['category_id'] = $v['category_id'];
+                    $checkboxList[$v['category_id']]['category_name'] = $v['category_name'];
+                    $checkboxList[$v['category_id']]['data'][] = [
+                        'id' => $v['id'],
+                        'label' => $v['name'],
+                    ];
+                }
+            }
+            sort($checkboxList);
+
+            $this->assign('qrcodeList', json_encode($checkboxList, true));
             $this->display();
         }
     }
+
     public function cate_edit()
     {
         if (!in_array(542, $this->house_session['menus'])) {
@@ -84,7 +1237,47 @@ class WisdomQrcodeAction extends BaseAction
             $id = $_POST['id'];
             $data['distance'] = $_POST['distance'] ? $_POST['distance'] : 0;
             $data['cate_name'] = $_POST['cate_name'];
+            $data['record_type'] = $_POST['record_type'];
+
+            // 初始化结果数组
+            $day_times = [];
+
+            // 获取开始时间和结束时间的数组
+            $startTimes = $_POST['day_start_time'] ?? [];
+            $endTimes = $_POST['day_end_time'] ?? [];
+
+            // 遍历数组（按索引对应拼接）
+            $maxIndex = max(count($startTimes), count($endTimes));
+            for ($i = 0; $i < $maxIndex; $i++) {
+                // 处理索引不存在的情况（避免报错）
+                $start = isset($startTimes[$i]) ? $startTimes[$i] : '';
+                $end = isset($endTimes[$i]) ? $endTimes[$i] : '';
+                // 拼接格式：start-end（仅当两个值都存在时拼接，否则为空）
+                $day_times[] = $start && $end ? "{$start}-{$end}" : '';
+            }
+
+            if ($_POST['record_type'] == 1) { //每日
+//                $data['record_time'] = '';
+                $data['record_time'] = implode(',', $day_times);
+            } elseif ($_POST['record_type'] == 2) { //每周
+//                $datas['record_time'] = '';
+//                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
+                $data['record_time'] = implode(',', $_POST['record_time2']);
+            } elseif ($_POST['record_type'] == 3) { //每月
+//                $datas['record_time'] = '';
+//                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
+                $data['record_time'] = implode(',', $_POST['record_time3']);
+            }
+
+            $data['start_time'] = $_POST['start_time'];
+            $data['end_time'] = $_POST['end_time'];
+            $data['remind_time'] = $_POST['remind_time'];
             $data['type'] = $_POST['type'];
+            $data['robot_code'] = '1';
+            $data['task_instance_id'] = '1';
+            $data['task_type'] = '1';
+            $data['bind_qrcode'] = $_POST['qrcodeCheckList'];
+
             $result = D('Wisdom_qrcode_cate')->where(array('id' => $id))->data($data)->save();
             if ($result !== false) {
                 $this->success('修改成功！', U('cate_index'));
@@ -94,6 +1287,38 @@ class WisdomQrcodeAction extends BaseAction
         } else {
             $id = $_GET['id'];
             $cate = D('Wisdom_qrcode_cate')->where(array('id' => $id))->find();
+            $cate['record_time'] = explode(',', $cate['record_time']);
+//            if( $cate['record_type'] == 1 && !empty($cate['record_time']) ){
+//                $result = ['day_start_time' => [], 'day_end_time' => []];
+//                foreach ($cate['record_time'] as $timeStr) {
+//                    [$start, $end] = explode('-', $timeStr);
+//                    $result['day_start_time'][] = $start;
+//                    $result['day_end_time'][] = $end;
+//                }
+//                $cate['record_time'] = $result;
+//            }
+            //二维码列表
+            $qrcodeList = M('Wisdom_qrcode as wq')
+                ->join('pigcms_wisdom_qrcode_category as wqc ON wq.category_id = wqc.id')
+                ->field('wq.*,wqc.name as category_name')
+                ->where(array('wq.village_id' => $this->village_id))
+                ->select();
+
+            $checkboxList = [];
+            if (!empty($qrcodeList)) {
+                foreach ($qrcodeList as $k => $v) {
+                    $checkboxList[$v['category_id']]['category_id'] = $v['category_id'];
+                    $checkboxList[$v['category_id']]['category_name'] = $v['category_name'];
+                    $checkboxList[$v['category_id']]['data'][] = [
+                        'id' => $v['id'],
+                        'label' => $v['name'],
+                    ];
+                }
+            }
+//            echo "<pre>";
+            sort($checkboxList);
+//            var_dump($checkboxList);die;
+            $this->assign('qrcodeList', json_encode($checkboxList, true));
             $this->assign('cate', $cate);
             $this->display();
         }
@@ -141,7 +1366,7 @@ class WisdomQrcodeAction extends BaseAction
             $this->error('删除当前类别下的所有的负责人!');
         }
 
-        $id =  D('Wisdom_qrcode_cate')->where(array('id' => $_GET['id']))->delete();
+        $id = D('Wisdom_qrcode_cate')->where(array('id' => $_GET['id']))->delete();
 
         if ($id) {
 
@@ -224,7 +1449,7 @@ class WisdomQrcodeAction extends BaseAction
         if ($qrcode_cate_field_cate_config) {
             $this->error('请先删除当前设备介绍字段管理下面的配置项列表');
         }
-        $id =  M('Wisdom_qrcode_field_cate')->where(array('id' => $_GET['id']))->delete();
+        $id = M('Wisdom_qrcode_field_cate')->where(array('id' => $_GET['id']))->delete();
         if ($id) {
 
             $this->success('删除成功！');
@@ -320,7 +1545,7 @@ class WisdomQrcodeAction extends BaseAction
         if (!in_array(544, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $id =  M('Wisdom_qrcode_cate_field_cate_config')->where(array('acid' => $_GET['id']))->delete();
+        $id = M('Wisdom_qrcode_cate_field_cate_config')->where(array('acid' => $_GET['id']))->delete();
         if ($id) {
 
             $this->success('删除成功！');
@@ -336,15 +1561,36 @@ class WisdomQrcodeAction extends BaseAction
             $this->error('对不起，您没有权限执行此操作');
         }
 
-        $where['cate_id'] = $_GET['cate_id'];
-        $count_user = M('Wisdom_qrcode')->where($where)->count();
+//        $where['cate_id'] = $_GET['cate_id'];
+        $where['wq.village_id'] = $this->village_id;
+
+        if( isset($_GET['categoryId']) && !empty($_GET['categoryId']) && $_GET['categoryId'] != 0 ){
+            $where['wq.category_id'] = $_GET['categoryId'];
+            $this->assign('searchCategoryId', $_GET['categoryId']);
+        }else{
+            $this->assign('searchCategoryId', 0);
+        }
+
+        $count_user = M('Wisdom_qrcode as wq')
+            ->join('pigcms_wisdom_qrcode_category as wqc ON wq.category_id = wqc.id')
+            ->where($where)
+            ->count();
         import('@.ORG.merchant_page');
         $p = new Page($count_user, 20, 'page');
-        $dataList = M('Wisdom_qrcode')->where($where)->limit($p->firstRow . ',' . $p->listRows)->select();
+        $dataList = M('Wisdom_qrcode as wq')
+            ->join('pigcms_wisdom_qrcode_category as wqc ON wq.category_id = wqc.id')
+            ->field('wq.*,wqc.name as category_name')
+            ->where($where)
+            ->limit($p->firstRow . ',' . $p->listRows)
+            ->select();
         $this->assign('dataList', $dataList);
         $this->assign('pagebar', $p->show());
 
         $base_url = D('House_village')->base_url;
+
+        //分类
+        $category_list = M('wisdom_qrcode_category')->where(array('village_id' => $this->village_id))->select();
+        $this->assign('categoryList', $category_list);
 
         //二维码
         $qrcode_url = $this->config['site_url'] . $base_url . 'pages/village/smartQRcode/elevatorManagement';
@@ -353,55 +1599,132 @@ class WisdomQrcodeAction extends BaseAction
         $this->display();
     }
 
+    //分类管理
+    public function category_index()
+    {
+        if (!in_array(545, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        $where['village_id'] = $this->village_id;
+        $count_user = M('wisdom_qrcode_category')->where($where)->count();
+        import('@.ORG.merchant_page');
+        $p = new Page($count_user, 20, 'page');
+        $dataList = M('wisdom_qrcode_category')->where($where)->limit($p->firstRow . ',' . $p->listRows)->select();
+        $this->assign('dataList', $dataList);
+        $this->assign('pagebar', $p->show());
+        $this->assign('village_id', $this->village_id);
+        $this->display();
+    }
+
+    public function category_add()
+    {
+        if (!in_array(545, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        if (IS_POST) {
+            if (empty($_POST['name'])) {
+                $this->error('分类名称必须填!');
+            }
+            $data['name'] = $_POST['name'];
+            $data['village_id'] = $this->village_id;
+            $data['addtime'] = date('Y-m-d H:i:s', time());
+            $data['status'] = 1;
+            $insert_id = M('wisdom_qrcode_category')->data($data)->add();
+            if ($insert_id) {
+                $this->success('添加成功！', U('category_index'));
+            } else {
+                $this->error('添加失败');
+            }
+        } else {
+            $this->display();
+        }
+    }
+
+    public function category_edit()
+    {
+        if (!in_array(545, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        if (IS_POST) {
+            $id = $_POST['id'];
+            if (empty($_POST['name'])) {
+                $this->error('分类名称必须填!');
+            }
+
+            $data['name'] = $_POST['name'];
+            $data['status'] = $_POST['status'];
+
+            $insert_id = M('wisdom_qrcode_category')->where(array('id' => $id))->data($data)->save();
+            if ($insert_id) {
+                $this->success('修改成功！', U('category_index'));
+            } else {
+                $this->error('修改失败');
+            }
+        } else {
+            $id = $_GET['id'];
+            $category = D('wisdom_qrcode_category')->where(array('id' => $id))->find();
+            $this->assign('category', $category);
+            $this->display();
+        }
+    }
+
+    public function category_del()
+    {
+        if (!in_array(545, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        $id = M('wisdom_qrcode_category')->where(array('id' => $_GET['id']))->delete();
+        if ($id) {
+
+            $this->success('删除成功！');
+        } else {
+            $this->error('删除失败！');
+        }
+    }
+
     public function qrcode_add()
     {
         if (!in_array(545, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
         if (IS_POST) {
-            $cate_id = $_POST['cate_id'];
+//            $cate_id = $_POST['cate_id'];
             if (empty($_POST['name'])) {
                 $this->error('二维码名称必须填!');
             }
-            if (empty($_POST['image_path'])) {
-                $this->error('设备logo必须填!');
-            }
+//            if (empty($_POST['image_path'])) {
+//                $this->error('设备logo必须填!');
+//            }
             if (empty($_POST['long_lat'])) {
                 $this->error('经纬度必须填!');
             }
             $data['name'] = $_POST['name'];
+            $data['village_id'] = $this->village_id;
             $long_lat = explode(',', $_POST['long_lat']);
             $data['long'] = $long_lat[0];
             $data['lat'] = $long_lat[1];
             $data['image_path'] = $_POST['image_path'];
             $data['add_time'] = time();
             $data['cate_id'] = $_POST['cate_id'];
-            $data['num_id'] = $_POST['num_id'];
+//            $data['num_id'] = $_POST['num_id'];
+            $data['category_id'] = $_POST['categoryId'];
             unset($_POST['name']);
             unset($_POST['image_path']);
             unset($_POST['long_lat']);
             unset($_POST['cate_id']);
-            unset($_POST['num_id']);
             //            var_dump(json_encode($_POST));die;
             $data['entication_field'] = serialize($_POST);
             //var_dump($data);die;
             $insert_id = M('Wisdom_qrcode')->data($data)->add();
             if ($insert_id) {
-                $this->success('添加成功！', U('qrcode_index', array('cate_id' => $cate_id)));
+                M('Wisdom_qrcode')->where(array('id' => $insert_id))->data(['num_id' => $insert_id])->save();
+                $this->success('添加成功！', U('qrcode_index'));
             } else {
                 $this->error('添加失败');
             }
         } else {
-            $cate_id = $_GET['cate_id'];
-            $dataList = M('Wisdom_qrcode_field_cate')->where(array('cate_id' => $cate_id))->select();
-            if ($dataList) {
-                foreach ($dataList as $k => &$v) {
-                    $v['field_cate_test'] = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id' => $v['id']))->select();
-                }
-            }
-            //            echo '<pre>';
-            //            var_dump($dataList);die;
-            $this->assign('dataList', $dataList);
+            $category_list = M('wisdom_qrcode_category')->where(array('village_id' => $this->village_id))->select();
+            $this->assign('categoryList', $category_list);
             $this->display();
         }
     }
@@ -412,14 +1735,14 @@ class WisdomQrcodeAction extends BaseAction
             $this->error('对不起，您没有权限执行此操作');
         }
         if (IS_POST) {
-            $cate_id = $_POST['cate_id'];
+//            $cate_id = $_POST['cate_id'];
             $id = $_POST['id'];
             if (empty($_POST['name'])) {
                 $this->error('二维码名称必须填!');
             }
-            if (empty($_POST['image_path'])) {
-                $this->error('设备logo必须填!');
-            }
+//            if (empty($_POST['image_path'])) {
+//                $this->error('设备logo必须填!');
+//            }
             if (empty($_POST['long_lat'])) {
                 $this->error('经纬度必须填!');
             }
@@ -431,19 +1754,20 @@ class WisdomQrcodeAction extends BaseAction
             $data['image_path'] = $_POST['image_path'];
             $data['add_time'] = time();
             $data['cate_id'] = $_POST['cate_id'];
-            $data['num_id'] = $_POST['num_id'];
+//            $data['num_id'] = $_POST['num_id'];
+            $data['category_id'] = $_POST['categoryId'];
             unset($_POST['name']);
             unset($_POST['image_path']);
             unset($_POST['long_lat']);
 
             unset($_POST['cate_id']);
             unset($_POST['id']);
-            unset($_POST['num_id']);
+//            unset($_POST['num_id']);
             $data['entication_field'] = serialize($_POST);
 
             $insert_id = M('Wisdom_qrcode')->where(array('id' => $id))->data($data)->save();
             if ($insert_id) {
-                $this->success('修改成功！', U('qrcode_index', array('cate_id' => $cate_id)));
+                $this->success('修改成功！', U('qrcode_index'));
             } else {
                 $this->error('修改失败');
             }
@@ -452,16 +1776,9 @@ class WisdomQrcodeAction extends BaseAction
             $cate = D('Wisdom_qrcode')->where(array('id' => $id))->find();
 
             $cate['entication_field'] = unserialize($cate['entication_field']);
-            //            echo '<pre>';
-            //            var_dump($cate['entication_field']);die;
-            $cate_id = $_GET['cate_id'];
-            $dataList = M('Wisdom_qrcode_field_cate')->where(array('cate_id' => $cate_id))->select();
-            if ($dataList) {
-                foreach ($dataList as $k => &$v) {
-                    $v['field_cate_test'] = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id' => $v['id']))->select();
-                }
-            }
-            $this->assign('dataList', $dataList);
+            //分类列表
+            $category_list = M('wisdom_qrcode_category')->where(array('village_id' => $this->village_id))->select();
+            $this->assign('categoryList', $category_list);
             $this->assign('cate', $cate);
             $this->display();
         }
@@ -472,7 +1789,7 @@ class WisdomQrcodeAction extends BaseAction
         if (!in_array(545, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $id =  M('Wisdom_qrcode')->where(array('id' => $_GET['id']))->delete();
+        $id = M('Wisdom_qrcode')->where(array('id' => $_GET['id']))->delete();
         if ($id) {
 
             $this->success('删除成功！');
@@ -486,7 +1803,7 @@ class WisdomQrcodeAction extends BaseAction
         if (!in_array(546, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $where['cate_id'] = $_GET['cate_id'];
+        $where['category_id'] = intval($_GET['category_id']);
         $count_user = D('Wisdom_qrcode_record_cate')->where($where)->count();
         import('@.ORG.merchant_page');
         $p = new Page($count_user, 20, 'page');
@@ -502,15 +1819,14 @@ class WisdomQrcodeAction extends BaseAction
             $this->error('对不起，您没有权限执行此操作');
         }
         if (IS_POST) {
-            $cate_id = $_POST['cate_id'];
             $data['record_name'] = $_POST['record_name'];
             $data['sort'] = $_POST['sort'];
             $data['add_time'] = time();
             $data['status'] = $_POST['status'];
-            $data['cate_id'] = $_POST['cate_id'];
+            $data['category_id'] = $_POST['category_id'];
             $insert_id = M('Wisdom_qrcode_record_cate')->data($data)->add();
             if ($insert_id) {
-                $this->success('添加成功！', U('record_cate_index', array('cate_id' => $cate_id)));
+                $this->success('添加成功！', U('record_cate_index', array('category_id' => $_POST['category_id'])));
             } else {
                 $this->error('添加失败');
             }
@@ -526,14 +1842,14 @@ class WisdomQrcodeAction extends BaseAction
         }
         if (IS_POST) {
             $id = $_POST['id'];
-
             $data['record_name'] = $_POST['record_name'];
             $data['sort'] = $_POST['sort'];
             $data['status'] = $_POST['status'];
             //            var_dump($data);die;
             $result = M('Wisdom_qrcode_record_cate')->where(array('id' => $id))->data($data)->save();
+            $category = D('Wisdom_qrcode_record_cate')->where(array('id' => $id))->find();
             if ($result !== false) {
-                $this->success('修改成功！', U('record_cate_index', array('cate_id' => $_GET['cate_id'])));
+                $this->success('修改成功！', U('record_cate_index', array('category_id' => $category['category_id'])));
             } else {
                 $this->error('修改失败！请重试。');
             }
@@ -554,7 +1870,7 @@ class WisdomQrcodeAction extends BaseAction
         if ($qrcode_record_cate_field_config) {
             $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
         }
-        $id =  M('Wisdom_qrcode_record_cate')->where(array('id' => $_GET['id']))->delete();
+        $id = M('Wisdom_qrcode_record_cate')->where(array('id' => $_GET['id']))->delete();
         if ($id) {
 
             $this->success('删除成功！');
@@ -756,7 +2072,7 @@ class WisdomQrcodeAction extends BaseAction
         if (!in_array(546, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $id =  M('Wisdom_qrcode_record_cate_field_config')->where(array('acid' => $_GET['id']))->delete();
+        $id = M('Wisdom_qrcode_record_cate_field_config')->where(array('acid' => $_GET['id']))->delete();
         if ($id) {
 
             $this->success('删除成功！');
@@ -778,7 +2094,7 @@ class WisdomQrcodeAction extends BaseAction
         $p = new Page($count_user, 20, 'page');
         $dataList = M('Wisdom_qrcode_person')->where($where)->order('id desc')->limit($p->firstRow . ',' . $p->listRows)->select();
         foreach ($dataList as $k => &$v) {
-            $house_worker =  D('House_worker')->where(array('wid' => $v['uid'], 'village_id' => $this->village_id, 'del' => 0))->find();
+            $house_worker = D('House_worker')->where(array('wid' => $v['uid'], 'village_id' => $this->village_id, 'del' => 0))->find();
             if ($house_worker) {
                 $v['name'] = $house_worker['name'];
             }
@@ -797,20 +2113,20 @@ class WisdomQrcodeAction extends BaseAction
         if (IS_POST) {
             $data['uid'] = $_POST['uid'];
             $data['user_phone'] = $_POST['user_phone'];
-            $data['record_type'] = $_POST['record_type'];
-            if ($_POST['record_type'] == 1) { //每日
-                $data['record_time'] = '';
-            } elseif ($_POST['record_type'] == 2) { //每周
+//            $data['record_type'] = $_POST['record_type'];
+//            if ($_POST['record_type'] == 1) { //每日
+//                $data['record_time'] = '';
+//            } elseif ($_POST['record_type'] == 2) { //每周
+//
+//                $data['record_time'] = implode(',', $_POST['record_time']);
+//            } elseif ($_POST['record_type'] == 3) { //每月
+//
+//                $data['record_time'] = implode(',', $_POST['record_time']);
+//            }
 
-                $data['record_time'] = implode(',', $_POST['record_time']);
-            } elseif ($_POST['record_type'] == 3) { //每月
-
-                $data['record_time'] = implode(',', $_POST['record_time']);
-            }
-
-            $data['start_time'] = $_POST['start_time'];
-            $data['end_time'] = $_POST['end_time'];
-            $data['remind_time'] = $_POST['remind_time'];
+//            $data['start_time'] = $_POST['start_time'];
+//            $data['end_time'] = $_POST['end_time'];
+//            $data['remind_time'] = $_POST['remind_time'];
             $data['status'] = $_POST['status'];
             $data['cate_id'] = $_POST['cate_id'];
             $data['add_time'] = time();
@@ -848,22 +2164,22 @@ class WisdomQrcodeAction extends BaseAction
             }
             $data['uid'] = $_POST['uid'];
             $data['user_phone'] = $_POST['user_phone'];
-            $data['record_type'] = $_POST['record_type'];
-            if ($_POST['record_type'] == 1) { //每日
-                $data['record_time'] = '';
-            } elseif ($_POST['record_type'] == 2) { //每周
-                $datas['record_time'] = '';
-                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
-                $data['record_time'] = implode(',', $_POST['record_time2']);
-            } elseif ($_POST['record_type'] == 3) { //每月
-                $datas['record_time'] = '';
-                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
-                $data['record_time'] = implode(',', $_POST['record_time3']);
-            }
+//            $data['record_type'] = $_POST['record_type'];
+//            if ($_POST['record_type'] == 1) { //每日
+//                $data['record_time'] = '';
+//            } elseif ($_POST['record_type'] == 2) { //每周
+//                $datas['record_time'] = '';
+//                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
+//                $data['record_time'] = implode(',', $_POST['record_time2']);
+//            } elseif ($_POST['record_type'] == 3) { //每月
+//                $datas['record_time'] = '';
+//                M('Wisdom_qrcode_person')->where(array('id' => $_POST['id']))->data($datas)->save();
+//                $data['record_time'] = implode(',', $_POST['record_time3']);
+//            }
 
-            $data['start_time'] = $_POST['start_time'];
-            $data['end_time'] = $_POST['end_time'];
-            $data['remind_time'] = $_POST['remind_time'];
+//            $data['start_time'] = $_POST['start_time'];
+//            $data['end_time'] = $_POST['end_time'];
+//            $data['remind_time'] = $_POST['remind_time'];
             $data['status'] = $_POST['status'];
             $data['cate_id'] = $_POST['cate_id'];
 
@@ -894,7 +2210,7 @@ class WisdomQrcodeAction extends BaseAction
         if (!in_array(547, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $id =  M('Wisdom_qrcode_person')->where(array('id' => $_GET['id']))->delete();
+        $id = M('Wisdom_qrcode_person')->where(array('id' => $_GET['id']))->delete();
         if ($id) {
 
             $this->success('删除成功！');
@@ -1064,6 +2380,7 @@ class WisdomQrcodeAction extends BaseAction
         $this->assign('pagebar', $p->show());
         $this->display();
     }
+
     public function qrcode_record_index()
     {
         if (!in_array(548, $this->house_session['menus'])) {
@@ -1433,6 +2750,7 @@ class WisdomQrcodeAction extends BaseAction
         }
         return false;
     }
+
     public function ajax_add_record_pic()
     {
         $record_log_id = $_POST['record_log_id'];
@@ -1444,11 +2762,12 @@ class WisdomQrcodeAction extends BaseAction
         $img_key = $img_key ? trim($img_key) : '';
         $ret = $this->handle_record_log_pic($record_log_id, $surl, $img_key, 'add');
         if ($ret && !empty($surl)) {
-            echo  json_encode(array('err_code' => 0, 'msg' => '图片添加成功！'), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array('err_code' => 0, 'msg' => '图片添加成功！'), JSON_UNESCAPED_UNICODE);
         } else {
-            echo  json_encode(array('err_code' => 1, 'msg' => '图片添加失败了！'), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array('err_code' => 1, 'msg' => '图片添加失败了！'), JSON_UNESCAPED_UNICODE);
         }
     }
+
     public function ajax_del_record_pic()
     {
         $record_log_id = $_POST['record_log_id'];
@@ -1460,9 +2779,9 @@ class WisdomQrcodeAction extends BaseAction
         $img_key = $img_key ? trim($img_key) : '';
         $ret = $this->handle_record_log_pic($record_log_id, $surl, $img_key, 'del');
         if ($ret && !empty($surl)) {
-            echo  json_encode(array('err_code' => 0, 'msg' => '图片删除成功！'), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array('err_code' => 0, 'msg' => '图片删除成功！'), JSON_UNESCAPED_UNICODE);
         } else {
-            echo  json_encode(array('err_code' => 1, 'msg' => '图片删除失败了！'), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array('err_code' => 1, 'msg' => '图片删除失败了！'), JSON_UNESCAPED_UNICODE);
         }
     }
 
@@ -1493,6 +2812,7 @@ class WisdomQrcodeAction extends BaseAction
         $this->assign('record_log', $record_log);
         $this->display();
     }
+
     public function send_ai_message_set()
     {
         $where = array('village_id' => $this->village_id, 'status' => 1, 'is_del' => 0);
@@ -1500,6 +2820,7 @@ class WisdomQrcodeAction extends BaseAction
         $this->assign('house_worker', $house_worker);
         $this->display();
     }
+
     public function get_work_order_cate()
     {
         $f_cate_id = $_GET['f_cate_id'];
@@ -1513,6 +2834,7 @@ class WisdomQrcodeAction extends BaseAction
         echo json_encode(array('workcates' => $workcates), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit();
     }
+
     public function add_work_order()
     {
         $f_cate_id = $_POST['f_cate_id'];
@@ -1562,6 +2884,7 @@ class WisdomQrcodeAction extends BaseAction
             exit();
         }
     }
+
     public function ajax_user_info()
     {
         $uid = $_POST['uid'];
@@ -1609,7 +2932,7 @@ class WisdomQrcodeAction extends BaseAction
             $add_time_end = strtotime($add_time_end . '23:59:59');
             $where['add_time'] = array('lt', $add_time_end);
         }
-        $find_type = isset($_GET['find_type']) &&  $_GET['find_type'] > 0 ? $_GET['find_type'] : 0;
+        $find_type = isset($_GET['find_type']) && $_GET['find_type'] > 0 ? $_GET['find_type'] : 0;
         $find_value = isset($_GET['find_value']) && $_GET['find_value'] ? trim($_GET['find_value']) : '';
         if ($find_type > 0 && !empty($find_value)) {
             switch ($find_type) {
@@ -1787,7 +3110,7 @@ class WisdomQrcodeAction extends BaseAction
                                         $msg_test = '';
                                         $msg_test = $v4['record_name'] . "：\n";
                                         $mc = $k5 + 1;
-                                        $msg_test .=  $v5['title'] . '：';
+                                        $msg_test .= $v5['title'] . '：';
                                         if ($v5['type'] == 2 && is_array($v5['value'])) {
                                             $msg_test .= "\n";
                                             foreach ($v5['value'] as $img) {
@@ -1835,12 +3158,13 @@ class WisdomQrcodeAction extends BaseAction
         header("Content-Type:application/vnd.ms-execl");
         header("Content-Type:application/octet-stream");
         header("Content-Type:application/download");
-        header('Content-Disposition:attachment;filename=' . urlencode($title) .  '_' . date("Y-m-d h:i:sa", time()) . '.xls');
+        header('Content-Disposition:attachment;filename=' . urlencode($title) . '_' . date("Y-m-d h:i:sa", time()) . '.xls');
         header("Content-Transfer-Encoding:binary");
         $objWriter->save('php://output');
         exit();
     }
-    public function  download_record_list()
+
+    public function download_record_list()
     {
         set_time_limit(0);
         ini_set('memory_limit', '1024M');
@@ -1857,10 +3181,10 @@ class WisdomQrcodeAction extends BaseAction
         //            $this->error('请选择请选择开始时间和结束时间！');
         //        }
         $where['village_id'] = $this->village_id;
-        if( !empty($_GET['find_value']) ){
-            $where['cate_name'] = trim( $_GET['find_value'] );
+        if (!empty($_GET['find_value'])) {
+            $where['cate_name'] = trim($_GET['find_value']);
         }
-        $qrcode_cate = M('Wisdom_qrcode_cate')->where( $where )->select();
+        $qrcode_cate = M('Wisdom_qrcode_cate')->where($where)->select();
 
         if (empty($qrcode_cate)) {
             $this->error('无数据导出！');
@@ -2128,6 +3452,29 @@ class WisdomQrcodeAction extends BaseAction
         }
     }
 
+    //查看巡检记录
+    public function record_list_detail()
+    {
+        $cate_id = intval($_GET['cate_id']);
+        $name = trim($_GET['name']);
+        $begin_time = trim($_GET['begin_time']);
+        $end_time = trim($_GET['end_time']);
+        $where = [
+            'a.village_id' => $this->village_id,
+            'a.cate_id' => $cate_id,
+            'a.del_time' => 0
+        ];
+        if ($begin_time && $end_time) {
+            $start_time = strtotime($begin_time . ' 00:00:00');
+            $end_time = strtotime($end_time . ' 23:59:59');
+            if ($start_time > $end_time) {
+                $this->error('请重新选择，【开始时间不可大于结束时间】');
+            }
+            $where['a.add_time'] = array('between', array($start_time, $end_time));
+
+        }
+    }
+
     //巡检定位记录
     public function position_record_list()
     {
@@ -2351,15 +3698,15 @@ class WisdomQrcodeAction extends BaseAction
         $cate_id = $_POST['cate_id'];
         $cate_name = $_POST['cate_name'];
         if (IS_POST) {
-            if( !isset($_POST['cate_id']) || !isset($_POST['cate_name']) || !isset($_POST['village_id'])){
+            if (!isset($_POST['cate_id']) || !isset($_POST['cate_name']) || !isset($_POST['village_id'])) {
                 $this->error('缺少参数, 请重试!');
             }
             $origin_cate_info = D('Wisdom_qrcode_cate')->where(array('cate_name' => $cate_name, 'village_id' => $_POST['village_id']))->find();
-            if( !isset($origin_cate_info['id']) ){
+            if (!isset($origin_cate_info['id'])) {
                 $this->error('该分类不存在, 请重试!');
             }
             $cate_list = D('Wisdom_qrcode_record_cate')->where(array('cate_id' => $origin_cate_info['id']))->select();
-            $cate_record_ids = implode( ',' ,array_column($cate_list, 'id') );
+            $cate_record_ids = implode(',', array_column($cate_list, 'id'));
             foreach ($cate_list as &$list) {
                 unset($list['id']);
                 unset($list['add_time']);
@@ -2368,17 +3715,17 @@ class WisdomQrcodeAction extends BaseAction
             }
             unset($list);
             $res_key2 = 0;
-            foreach($cate_list as $k => $v){
-                $res = D('Wisdom_qrcode_record_cate')->where(['cate_id'=>$v['cate_id'],'record_name'=>$v['record_name']])->find();
-                if( count( $res ) <= 0 ){
+            foreach ($cate_list as $k => $v) {
+                $res = D('Wisdom_qrcode_record_cate')->where(['cate_id' => $v['cate_id'], 'record_name' => $v['record_name']])->find();
+                if (count($res) <= 0) {
                     $result = D('Wisdom_qrcode_record_cate')->data($v)->add();
                     $res_key2++;
                 }
             }
 
             $record_list = D('Wisdom_qrcode_record_cate_field_config')
-            ->where('record_cate_id in ('. $cate_record_ids. ')')
-            ->select();
+                ->where('record_cate_id in (' . $cate_record_ids . ')')
+                ->select();
 
             $res_key = 0;
             foreach ($record_list as &$list2) {
@@ -2386,29 +3733,29 @@ class WisdomQrcodeAction extends BaseAction
                 unset($list2['add_time']);
                 unset($list2['key']);
                 $list2['add_time'] = time();
-                $list2['key'] =  $this->getPinyinInitials($this->village['village_name'], true) . '_' . $this->getPinyinInitials($list2['title'], true);
+                $list2['key'] = $this->getPinyinInitials($this->village['village_name'], true) . '_' . $this->getPinyinInitials($list2['title'], true);
                 $record_cate_name = D('Wisdom_qrcode_record_cate')
-                ->where(['id'=>$list2['record_cate_id']])
-                ->find();
+                    ->where(['id' => $list2['record_cate_id']])
+                    ->find();
                 $record_cate_id = D('Wisdom_qrcode_record_cate')
-                ->where(['record_name'=>$record_cate_name['record_name'],'cate_id' => $cate_id ])
-                ->find();
+                    ->where(['record_name' => $record_cate_name['record_name'], 'cate_id' => $cate_id])
+                    ->find();
                 unset($list2['record_cate_id']);
-                if( isset($record_cate_id['id']) ){
+                if (isset($record_cate_id['id'])) {
                     $list2['record_cate_id'] = $record_cate_id['id'];
                 }
 
-                $res = D('Wisdom_qrcode_record_cate_field_config')->where(['key'=>$list2['key']])->find();
-                if( count( $res ) <= 0 ){
+                $res = D('Wisdom_qrcode_record_cate_field_config')->where(['key' => $list2['key']])->find();
+                if (count($res) <= 0) {
                     $result = D('Wisdom_qrcode_record_cate_field_config')->data($list2)->add();
-                    if( $result ){
+                    if ($result) {
                         $res_key++;
                     }
                 }
             }
-            if( $res_key > 0 || $res_key2 > 0 ){
+            if ($res_key > 0 || $res_key2 > 0) {
                 $this->success('同步成功！', U('cate_index'));
-            }else{
+            } else {
                 $this->error('同步失败！请重试。');
             }
         } else {

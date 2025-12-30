@@ -138,24 +138,32 @@ class plan_house_notice extends plan_base{
                 $this->keepThread();
                 if($v2['record_type'] == 1){//每天
                     $now_time = date('Y-m-d',time());
-                    if(time() == strtotime(date('Y-m-d',time()).' '.$v2['remind_time'])){
-                        $href = C('config.site_url').'/wap.php';//智慧二维码未填完//后期补充
 
-                        $data = array(
-                            'tempKey' => 'OPENTM405462911',
-                            'dataArr' => array(
-                                'href' => $href,
-                                'wecha_id' => $v2['openid'],
-                                'first' => '您有一项工作需处理',
-                                'keyword1' => '工作',
-                                'keyword2' =>'已发送',
-                                'keyword3' => date('H时i分',$_SERVER['REQUEST_TIME']),
-                                'keyword4' => '',
-                                'remark' => '\n请点击查看详细信息！'
-                            )
-                        );
-                        $this->keepThread();
-                        D('Property_group')->send_msg('work', $v2['wid'], $data, $token_info);
+                    $remind_time_list = explode(',', $v2['record_time']);
+                    if( !empty( $remind_time_list ) ){
+                        $startTimeArr = array_map(function($time) {
+                            return strtotime(date('Y-m-d',time()).' '.explode('-', $time)[0]);
+                        }, $remind_time_list);
+                        $isExists = array_search(time(), $startTimeArr);
+                        if($isExists !== false){
+                            $href = C('config.site_url').'/wap.php';//智慧二维码未填完//后期补充
+
+                            $data = array(
+                                'tempKey' => 'OPENTM405462911',
+                                'dataArr' => array(
+                                    'href' => $href,
+                                    'wecha_id' => $v2['openid'],
+                                    'first' => '您有一项工作需处理',
+                                    'keyword1' => '工作',
+                                    'keyword2' =>'已发送',
+                                    'keyword3' => date('H时i分',$_SERVER['REQUEST_TIME']),
+                                    'keyword4' => '',
+                                    'remark' => '\n请点击查看详细信息！'
+                                )
+                            );
+                            $this->keepThread();
+                            D('Property_group')->send_msg('work', $v2['wid'], $data, $token_info);
+                        }
                     }
                 }elseif($v2['record_type'] == 2){//每周
                     if($v2['record_time']){
