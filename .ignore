@@ -1,0 +1,33 @@
+# 目录（末尾/表示忽略整个目录，多级目录确保匹配）
+api/
+app_down/
+community/
+demo/
+file/
+plugin/
+runtime/
+uploads/
+vendor/
+v20/runtime/
+v20/vendor/
+packapp/
+
+# 全局文件匹配（**/ 表示所有目录下的对应文件）
+**/*.js
+**/*.zip
+**/*.rar
+**/*.7z
+**/*.bak
+**/*.tmp
+**/*.swp
+**/*.mp4
+**/*.mp3
+**/*.jpg
+**/*.png
+
+# 可选：补充常见忽略项（根据你的项目需要）
+.idea/
+.env
+.env.local
+*.log
+*.sql

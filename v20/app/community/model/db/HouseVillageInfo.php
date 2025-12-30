@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 小区相关信息
  * @author weili
@@ -8,6 +9,7 @@
 namespace app\community\model\db;
 
 use think\Model;
+
 class HouseVillageInfo extends Model
 {
     /**
@@ -18,7 +20,7 @@ class HouseVillageInfo extends Model
      * @author: weili
      * @datetime: 2020/10/13 18:32
      */
-    public function getColumn($where,$column=true)
+    public function getColumn($where, $column = true)
     {
         $column = $this->where($where)->column($column);
         return $column;
@@ -32,17 +34,18 @@ class HouseVillageInfo extends Model
      * @author: weili
      * @datetime: 2020/10/13 18:33
      */
-    public function getNum($where,$field)
+    public function getNum($where, $field)
     {
         $num = $this->where($where)->sum($field);
         return $num;
     }
-    
-    public function addOne($datas) {
-        if(empty($datas)){
+
+    public function addOne($datas)
+    {
+        if (empty($datas)) {
             return false;
         }
-        $idd=$this->insertGetId($datas);
+        $idd = $this->insertGetId($datas);
         return $idd;
     }
 
@@ -54,7 +57,8 @@ class HouseVillageInfo extends Model
      * @param array $save 修改内容
      * @return bool
      */
-    public function saveOne($where, $save) {
+    public function saveOne($where, $save)
+    {
         $set_info = $this->where($where)->save($save);
         return $set_info;
     }
@@ -69,19 +73,38 @@ class HouseVillageInfo extends Model
      * @param bool $field 需要查询的字段 默认查询所有
      * @return array|null|Model
      */
-    public function getOne($where,$field =true){
+    public function getOne($where, $field = true)
+    {
         $info = $this->field($field)->where($where)->find();
         return $info;
     }
 
-    public function getVillageInfoList($whereArr,$field="*",$order='hvi.village_id desc',$page=0,$limit=20)
+    public function getVillageListAndWorkOrder($whereArr, $field = "*")
+    {
+        $sql = $this->alias('hv')
+            ->rightJoin('house_new_repair_works_order ho', 'ho.village_id = hv.village_id')
+            ->field($field)
+            ->where($whereArr)
+            ->group('ho.order_id');
+
+        $res = $sql->select();
+        fdump_api(['sql' => $sql->buildSql()], '00worksOrderAutoClose', 1);
+      
+        if ($res) {
+            return $res->toArray();
+        } else {
+            return [];
+        }
+    }
+
+    public function getVillageInfoList($whereArr, $field = "*", $order = 'hvi.village_id desc', $page = 0, $limit = 20)
     {
         $sql = $this->alias('hvi')
             ->leftJoin('house_village hv', 'hvi.village_id = hv.village_id')
             ->field($field)->where($whereArr)->order($order);
-        if($page>0) {
+        if ($page > 0) {
             $result = $sql->page($page, $limit)->select();
-        }else {
+        } else {
             $result = $sql->select();
         }
         return $result;

@@ -18,9 +18,9 @@
 <!--                <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('index')}'" <if condition="!in_array(199,$house_session['menus'])">disabled="disabled"</if>>分类管理</button> &nbsp;&nbsp;-->
 
             <if condition="in_array(541,$house_session['menus'])">
-                <button class="btn btn-success" style="margin-bottom: 10px" onclick="cate_add()">添加类别</button>
+                <button class="btn btn-success" style="margin-bottom: 10px" onclick="cate_add()">添加计划</button>
                 <else/>
-                <button class="btn btn-success" style="margin-bottom: 10px"  disabled>添加类别</button>
+                <button class="btn btn-success" style="margin-bottom: 10px"  disabled>添加计划</button>
             </if>&nbsp;&nbsp;
             <if condition="in_array(548,$house_session['menus'])">
                 <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('qrcode_record_index')}'" >二维码记录</button>
@@ -39,12 +39,12 @@
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th width="15%">类别名称</th>
-                                    <th width="10%">设备介绍字段管理</th>
-                                    <th width="10%">二维码管理</th>
-                                    <th width="10%">记录内容管理</th>
+                                    <th width="15%">计划名称</th>
+<!--                                    <th width="15%">设备介绍字段管理</th>-->
+<!--                                    <th width="10%">二维码管理</th>-->
+<!--                                    <th width="10%">记录内容管理</th>-->
                                     <th width="10%">负责人管理</th>
-                                    <th width="10%">巡检定位记录</th>
+                                    <th width="15%">巡检定位记录</th>
 <!--                                    <th width="15%">添加时间</th>-->
                                     <!-- <th width="15%">巡检统计</th> -->
                                     <th class="button-column" width="15%">操作</th>
@@ -55,31 +55,31 @@
                                     <volist name="dataList" id="vo">
                                         <tr class="<if condition="$i%2 eq 0">odd<else/>even</if>">
                                             <td><div class="tagDiv">{pigcms{$vo.cate_name}</div></td>
-                                            <td>
-                                                <if condition="isset($vo['from_type']) AND $vo['from_type'] eq 1">
-
-                                                <elseif condition="in_array(544,$house_session['menus'])" />
-                                                    <div class="tagDiv"><a style="color:lightseagreen;" href="{pigcms{:U('WisdomQrcode/cate_field_index',array('cate_id'=>$vo['id']))}">管理</a></div>
-                                                    <else />
-                                                    暂无此权限
-                                                </if>
-                                            </td>
-                                            <td>
-                                                <if condition="in_array(545,$house_session['menus'])">
-                                                    <div class="tagDiv"><a style="color:lightseagreen;" href="{pigcms{:U('WisdomQrcode/qrcode_index',array('cate_id'=>$vo['id']))}">管理</a></div>
-                                                    <else/>
-                                                    暂无此权限
-                                                </if>
-                                            </td>
-                                           	<td>
-                                                <if condition="isset($vo['from_type']) AND $vo['from_type'] eq 1">
-
-                                                <elseif condition="in_array(546,$house_session['menus'])" />
-                                                    <div class="tagDiv"><a style="color:lightseagreen;" href="{pigcms{:U('WisdomQrcode/record_cate_index',array('cate_id'=>$vo['id']))}">管理</a></div>
-                                                    <else />
-                                                    暂无此权限
-                                                </if>
-                                            </td>
+<!--                                            <td>-->
+<!--                                                <if condition="isset($vo['from_type']) AND $vo['from_type'] eq 1">-->
+<!---->
+<!--                                                <elseif condition="in_array(544,$house_session['menus'])" />-->
+<!--                                                    <div class="tagDiv"><a style="color:lightseagreen;" href="{pigcms{:U('WisdomQrcode/cate_field_index',array('cate_id'=>$vo['id']))}">管理</a></div>-->
+<!--                                                    <else />-->
+<!--                                                    暂无此权限-->
+<!--                                                </if>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <if condition="in_array(545,$house_session['menus'])">-->
+<!--                                                    <div class="tagDiv"><a style="color:lightseagreen;" href="{pigcms{:U('WisdomQrcode/qrcode_index',array('cate_id'=>$vo['id']))}">管理</a></div>-->
+<!--                                                    <else/>-->
+<!--                                                    暂无此权限-->
+<!--                                                </if>-->
+<!--                                            </td>-->
+<!--                                           	<td>-->
+<!--                                                <if condition="isset($vo['from_type']) AND $vo['from_type'] eq 1">-->
+<!---->
+<!--                                                <elseif condition="in_array(546,$house_session['menus'])" />-->
+<!--                                                    <div class="tagDiv"><a style="color:lightseagreen;" href="{pigcms{:U('WisdomQrcode/record_cate_index',array('cate_id'=>$vo['id']))}">管理</a></div>-->
+<!--                                                    <else />-->
+<!--                                                    暂无此权限-->
+<!--                                                </if>-->
+<!--                                            </td>-->
                                             <td>
                                                 <if condition="isset($vo['from_type']) AND $vo['from_type'] eq 1">
                                                 机器人：{pigcms{$vo.robot_name}<br/>
@@ -101,7 +101,7 @@
                                             <td class="button-column">
                                              <if condition="!isset($vo['from_type']) OR $vo['from_type'] neq 1">
 
-                                             <a style="width: 100px;" class="label label-sm label-info" title="同步记录内容" href="{pigcms{:U('qrcode_synchronize_recorded',array('id'=>$vo['id']))}">同步记录内容</a>&nbsp;
+<!--                                             <a style="width: 100px;" class="label label-sm label-info" title="同步记录内容" href="{pigcms{:U('qrcode_synchronize_recorded',array('id'=>$vo['id']))}">同步记录内容</a>&nbsp;-->
                                              
 												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('cate_edit',array('id'=>$vo['id']))}">修改</a>&nbsp;
 

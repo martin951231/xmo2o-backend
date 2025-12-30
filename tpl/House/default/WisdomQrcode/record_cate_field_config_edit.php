@@ -3,10 +3,10 @@
 	<!-- 内容头部 -->
 	<div class="breadcrumbs" >
 		<ul class="breadcrumb">
-			<li>
-				<i class="ace-icon fa fa-gear gear-icon"></i>
-				<a href="{pigcms{:U('WisdomQrcode/cate_index')}">智慧巡检码</a>
-			</li>
+            <li>
+                <i class="ace-icon fa fa-gear gear-icon"></i>
+                <a href="{pigcms{:U('record_cate_index',array('category_id'=>$_GET['category_id']))}">记录内容字段管理</a>
+            </li>
 
 			<li class="active">编辑</li>
 	 

@@ -25,6 +25,7 @@
     use app\task\EveryMinuteO2OTask;
     use app\task\WechatMiniLiveSyncO2OTask;
     use app\task\NoticeSendTask;
+    use app\task\WorksOrderAutoCloseTask;
 
 	return [
 	    'tasks' => [
@@ -56,5 +57,6 @@
             //WechatMiniLiveSyncO2OTask::class,
             NoticeSendTask::class,
             EveryMinuteO2OTask::class,
+            WorksOrderAutoCloseTask::class,
 	    ]
 ];

@@ -14,11 +14,9 @@
 	<!-- 内容头部 -->
 	<div class="page-content">
         <div class="page-content-area">
-        	
-
-                <button class="btn btn-success" style="margin-bottom: 10px" onclick="record_cate_add()">添加字段类别</button>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('cate_index')}'" >二维码类别管理列表</button> &nbsp;&nbsp;
+            <button class="btn btn-success" style="margin-bottom: 10px" onclick="record_cate_add()">添加字段类别</button>
+            &nbsp;&nbsp;
+            <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('category_index')}'" >分类管理列表</button> &nbsp;&nbsp;
             <div class="row">
 
                 <div class="col-xs-12">
@@ -38,11 +36,11 @@
                                     <volist name="dataList" id="vo">
                                         <tr class="<if condition="$i%2 eq 0">odd<else/>even</if>">
                                             <td><div class="tagDiv">{pigcms{$vo.record_name}</div></td>
-                                            <td><div class="tagDiv"><a class="bind_info green" href="{pigcms{:U('record_cate_field_config_index',array('record_cate_id'=>$vo['id'],'cate_id'=>$_GET['cate_id']))}">管理</a></div></td>
+                                            <td><div class="tagDiv"><a class="bind_info green" href="{pigcms{:U('record_cate_field_config_index',array('record_cate_id'=>$vo['id'],'category_id'=>$_GET['category_id']))}">管理</a></div></td>
                                            	<td><div class="tagDiv">{pigcms{$vo.add_time|date="Y-m-d H:i:s",###}</div></td>
                                 <td><div class="tagDiv"><if condition="$vo.status eq '1' ">正常<else />关闭</if></div></td>
                                             <td class="button-column">
-												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('record_cate_edit',array('id'=>$vo['id'],'cate_id'=>$_GET['cate_id']))}">修改</a>&nbsp;
+												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('record_cate_edit',array('id'=>$vo['id'],'category_id'=>$_GET['category_id']))}">修改</a>&nbsp;
                                                 <if condition="in_array(206,$house_session['menus'])">
                                                 <a style="width: 60px;" class="label label-sm label-info" title="删除" href="javascript:void(0)" onClick="if(confirm('确认删除该内容？')){location.href='{pigcms{:U('record_cate_del',array('id'=>$vo['id']))}'}">删除</a>
                                                 </if>
@@ -65,7 +63,7 @@
 <script type="text/javascript" src="{pigcms{$static_public}js/artdialog/iframeTools.js"></script>
 <script type="text/javascript">
 function record_cate_add(){
-	var url = "{pigcms{:U('record_cate_add',array('cate_id'=>$_GET['cate_id']))}";
+	var url = "{pigcms{:U('record_cate_add',array('category_id'=>$_GET['category_id']))}";
 	window.location.href = url;
 }
 

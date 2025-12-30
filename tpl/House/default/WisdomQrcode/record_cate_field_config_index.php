@@ -14,11 +14,9 @@
 	<!-- 内容头部 -->
 	<div class="page-content">
         <div class="page-content-area">
-        	
-
                 <button class="btn btn-success" style="margin-bottom: 10px" onclick="record_cate_field_config_add()">添加内容</button>
             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('record_cate_index',array('cate_id'=>$_GET['cate_id']))}'" >记录内容管理列表</button> &nbsp;&nbsp;
+                            <button class="btn btn-success" style="margin-bottom: 10px" onclick="location.href='{pigcms{:U('record_cate_index',array('category_id'=>$_GET['category_id']))}'" >记录内容管理列表</button> &nbsp;&nbsp;
             <div class="row">
 
                 <div class="col-xs-12">
@@ -51,7 +49,7 @@
                                            	<td><div class="tagDiv">{pigcms{$vo.add_time|date="Y-m-d H:i:s",###}</div></td>
 
                                             <td class="button-column">
-												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('record_cate_field_config_edit',array('id'=>$vo['acid'],'cate_id'=>$_GET['cate_id'],'record_cate_id'=>$_GET['record_cate_id']))}">修改</a>&nbsp;
+												<a style="width: 60px;" class="label label-sm label-info" title="修改" href="{pigcms{:U('record_cate_field_config_edit',array('id'=>$vo['acid'],'category_id'=>$_GET['category_id'],'record_cate_id'=>$_GET['record_cate_id']))}">修改</a>&nbsp;
                                                 <if condition="in_array(206,$house_session['menus'])">
                                                 <a style="width: 60px;" class="label label-sm label-info" title="删除" href="javascript:void(0)" onClick="if(confirm('确认删除该内容？')){location.href='{pigcms{:U('record_cate_field_config_del',array('id'=>$vo['acid']))}'}">删除</a>
                                                 </if>
@@ -74,7 +72,7 @@
 <script type="text/javascript" src="{pigcms{$static_public}js/artdialog/iframeTools.js"></script>
 <script type="text/javascript">
 function record_cate_field_config_add(){
-	var url = "{pigcms{:U('record_cate_field_config_add',array('record_cate_id'=>$_GET['record_cate_id'],'cate_id'=>$_GET['cate_id']))}";
+	var url = "{pigcms{:U('record_cate_field_config_add',array('record_cate_id'=>$_GET['record_cate_id'],'category_id'=>$_GET['category_id']))}";
 	window.location.href = url;
 }
 

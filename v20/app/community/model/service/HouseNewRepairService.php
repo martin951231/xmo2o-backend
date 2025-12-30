@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 物业工单
  * Created by PhpStorm.
@@ -59,37 +60,38 @@ use token\Token;
 class HouseNewRepairService
 {
     use WorksOrderAutoEvaluateTraits;
+
     //工单状态值对应中文
     public $order_status_txt = [
-        '10'=> '待处理',
-        '11'=> '待指派',// 工作人员 驳回给处理中心
-        '14'=> '待指派',// 工作人员 拒绝
-        '15'=> '待指派',// 工作人员 抢单中
-        '16'=> '转供暖站',// 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
-        '17'=> '转开发商',// 工作人员转单指派给了开发商 开发商工作人员 抢单中
+        '10' => '待处理',
+        '11' => '待指派', // 工作人员 驳回给处理中心
+        '14' => '待指派', // 工作人员 拒绝
+        '15' => '待指派', // 工作人员 抢单中
+        '16' => '转供暖站', // 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
+        '17' => '转开发商', // 工作人员转单指派给了开发商 开发商工作人员 抢单中
 
         '20' => '已指派',
-        '21' => '已指派',// 物业管理员指派
-        '22' => '已指派',// 物业工作人员指派
-        '23' => '已指派',// 小区管理员指派
-        '24' => '已指派',// 工作人员转单指派
-        '25' => '已指派',// 工作人员拒绝转单指派
-        '26' => '转供暖站',// 工作人员转单指派给了供暖站
-        '27' => '转开发商',// 工作人员转单指派给了开发商
-        '28' => '待审核',// 工作人员转单指派给了其他工作人员
-        '29' => '待审核',// 工作人员转单指派给了其他工作人员（开发商）
+        '21' => '已指派', // 物业管理员指派
+        '22' => '已指派', // 物业工作人员指派
+        '23' => '已指派', // 小区管理员指派
+        '24' => '已指派', // 工作人员转单指派
+        '25' => '已指派', // 工作人员拒绝转单指派
+        '26' => '转供暖站', // 工作人员转单指派给了供暖站
+        '27' => '转开发商', // 工作人员转单指派给了开发商
+        '28' => '待审核', // 工作人员转单指派给了其他工作人员
+        '29' => '待审核', // 工作人员转单指派给了其他工作人员（开发商）
         '30' => '处理中',
         '34' => '处理中', // 工作人员拒绝
         '35' => '处理中', // 工作人员添加收费项
         '36' => '处理中', // 用户同意收取工单费用
         '37' => '用户拒绝', // 用户拒绝 重新提供方案
 
-        '40' => '已办结',// 工作人员办结
-        '41' => '已办结',// 物业管理员回复 办结
-        '42' => '已办结',// 物业工作人员回复 办结
-        '43' => '已办结',// 小区管理员回复 办结
-        '44' => '已办结',// 线上支付 办结
-        '45' => '已办结',// 线下已支付 办结
+        '40' => '已办结', // 工作人员办结
+        '41' => '已办结', // 物业管理员回复 办结
+        '42' => '已办结', // 物业工作人员回复 办结
+        '43' => '已办结', // 小区管理员回复 办结
+        '44' => '已办结', // 线上支付 办结
+        '45' => '已办结', // 线下已支付 办结
 
         '50' => '已撤回',
         '60' => '已关闭',
@@ -98,34 +100,34 @@ class HouseNewRepairService
     // 工作人员工单状态对应中文
     public $order_work_status_txt = [
         '10' => '待指派',
-        '11' => '待指派(驳回)',// 工作人员 驳回给处理中心
-        '14' => '待指派(拒绝)',// 工作人员 拒绝
-        '15'=> '抢单中',// 工作人员 抢单中
-        '16'=> '转供暖站',// 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
-        '17'=> '转开发商',// 工作人员转单指派给了开发商 开发商工作人员 抢单中
+        '11' => '待指派(驳回)', // 工作人员 驳回给处理中心
+        '14' => '待指派(拒绝)', // 工作人员 拒绝
+        '15' => '抢单中', // 工作人员 抢单中
+        '16' => '转供暖站', // 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
+        '17' => '转开发商', // 工作人员转单指派给了开发商 开发商工作人员 抢单中
 
         '20' => '已指派',
-        '21' => '已指派',// 物业管理员指派
-        '22' => '已指派',// 物业工作人员指派
-        '23' => '已指派',// 小区管理员指派
-        '24' => '转单',// 工作人员转单指派
-        '25' => '已指派',// 工作人员拒绝转单指派
-        '26' => '转供暖站',// 工作人员转单指派给了供暖站
-        '27' => '转开发商',// 工作人员转单指派给了开发商
-        '28' => '转单待审核',// 工作人员转单指派给了其他工作人员
-        '29' => '转单待审核',// 工作人员转单指派给了其他工作人员（开发商）
+        '21' => '已指派', // 物业管理员指派
+        '22' => '已指派', // 物业工作人员指派
+        '23' => '已指派', // 小区管理员指派
+        '24' => '转单', // 工作人员转单指派
+        '25' => '已指派', // 工作人员拒绝转单指派
+        '26' => '转供暖站', // 工作人员转单指派给了供暖站
+        '27' => '转开发商', // 工作人员转单指派给了开发商
+        '28' => '转单待审核', // 工作人员转单指派给了其他工作人员
+        '29' => '转单待审核', // 工作人员转单指派给了其他工作人员（开发商）
         '30' => '处理中',
         '34' => '处理中', // 工作人员拒绝
         '35' => '处理中', // 工作人员添加收费项
         '36' => '处理中', // 用户同意收取工单费用
         '37' => '用户拒绝', // 用户拒绝 重新提供方案
 
-        '40' => '已办结',// 工作人员办结
-        '41' => '已办结',// 物业管理员回复 办结
-        '42' => '已办结',// 物业工作人员回复 办结
-        '43' => '已办结',// 小区管理员回复 办结
-        '44' => '已办结',// 线上支付 办结
-        '45' => '已办结',// 线下已支付 办结
+        '40' => '已办结', // 工作人员办结
+        '41' => '已办结', // 物业管理员回复 办结
+        '42' => '已办结', // 物业工作人员回复 办结
+        '43' => '已办结', // 小区管理员回复 办结
+        '44' => '已办结', // 线上支付 办结
+        '45' => '已办结', // 线下已支付 办结
 
         '50' => '已撤回',
         '60' => '已关闭',
@@ -134,35 +136,35 @@ class HouseNewRepairService
 
     // 用户端工单状态值对应中文
     public $order_user_status_txt = [
-        '10'=> '处理中',
-        '11'=> '处理中',// 工作人员 驳回给处理中心
-        '14'=> '处理中',// 工作人员 拒绝
-        '15'=> '处理中',// 工作人员 抢单中
-        '16'=> '处理中',// 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
-        '17'=> '处理中',// 工作人员转单指派给了开发商 开发商工作人员 抢单中
+        '10' => '处理中',
+        '11' => '处理中', // 工作人员 驳回给处理中心
+        '14' => '处理中', // 工作人员 拒绝
+        '15' => '处理中', // 工作人员 抢单中
+        '16' => '处理中', // 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
+        '17' => '处理中', // 工作人员转单指派给了开发商 开发商工作人员 抢单中
 
         '20' => '处理中',
-        '21' => '处理中',// 物业管理员指派
-        '22' => '处理中',// 物业工作人员指派
-        '23' => '处理中',// 小区管理员指派
-        '24' => '处理中',// 工作人员转单指派
-        '25' => '处理中',// 工作人员拒绝转单指派
-        '26' => '处理中',// 工作人员转单指派给了供暖站
-        '27' => '处理中',// 工作人员转单指派给了开发商
-        '28' => '处理中',// 工作人员转单指派给了其他工作人员
-        '29' => '处理中',// 工作人员转单指派给了其他工作人员
+        '21' => '处理中', // 物业管理员指派
+        '22' => '处理中', // 物业工作人员指派
+        '23' => '处理中', // 小区管理员指派
+        '24' => '处理中', // 工作人员转单指派
+        '25' => '处理中', // 工作人员拒绝转单指派
+        '26' => '处理中', // 工作人员转单指派给了供暖站
+        '27' => '处理中', // 工作人员转单指派给了开发商
+        '28' => '处理中', // 工作人员转单指派给了其他工作人员
+        '29' => '处理中', // 工作人员转单指派给了其他工作人员
         '30' => '处理中',
         '34' => '处理中', // 工作人员拒绝
         '35' => '处理中', // 工作人员添加收费项
         '36' => '处理中', // 用户同意收取工单费用
         '37' => '待重新提供方案', // 用户拒绝 重新提供方案
 
-        '40' => '已办结',// 工作人员办结
-        '41' => '已办结',// 物业管理员回复 办结
-        '42' => '已办结',// 物业工作人员回复 办结
-        '43' => '已办结',// 小区管理员回复 办结
-        '44' => '已办结',// 线上支付 办结
-        '45' => '已办结',// 线下已支付 办结
+        '40' => '已办结', // 工作人员办结
+        '41' => '已办结', // 物业管理员回复 办结
+        '42' => '已办结', // 物业工作人员回复 办结
+        '43' => '已办结', // 小区管理员回复 办结
+        '44' => '已办结', // 线上支付 办结
+        '45' => '已办结', // 线下已支付 办结
 
         '50' => '已撤回',
         '60' => '已关闭',
@@ -171,12 +173,12 @@ class HouseNewRepairService
 
     // 工单状态对应颜色
     public $order_status_color = [
-        '10'=>'#FE3950',
-        '11'=>'#FE3950',
-        '14'=>'#FE3950',
-        '15'=> '#26A6FF',
-        '16'=> '#26A6FF',// 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
-        '17'=> '#26A6FF',// 工作人员转单指派给了开发商 开发商工作人员 抢单中
+        '10' => '#FE3950',
+        '11' => '#FE3950',
+        '14' => '#FE3950',
+        '15' => '#26A6FF',
+        '16' => '#26A6FF', // 工作人员转单指派给了供暖站 供暖站工作人员 抢单中
+        '17' => '#26A6FF', // 工作人员转单指派给了开发商 开发商工作人员 抢单中
 
         '20' => '#00CC00',
         '21' => '#00CC00',
@@ -184,10 +186,10 @@ class HouseNewRepairService
         '23' => '#00CC00',
         '24' => '#00CC00',
         '25' => '#00CC00',
-        '26' => '#00CC00',// 工作人员转单指派给了供暖站
-        '27' => '#00CC00',// 工作人员转单指派给了开发商
-        '28' => '#00CC00',// 工作人员转单指派给了其他工作人员
-        '29' => '#00CC00',// 工作人员转单指派给了其他工作人员（开发商）
+        '26' => '#00CC00', // 工作人员转单指派给了供暖站
+        '27' => '#00CC00', // 工作人员转单指派给了开发商
+        '28' => '#00CC00', // 工作人员转单指派给了其他工作人员
+        '29' => '#00CC00', // 工作人员转单指派给了其他工作人员（开发商）
         '30' => '#26A6FF',
         '34' => '#26A6FF',
         '35' => '#26A6FF',
@@ -207,61 +209,144 @@ class HouseNewRepairService
     ];
     // 对应操作动作
     public $log_name = [
-        'user_submit' => '用户提交成功', 'property_admin_submit' => '物业管理员提交成功',// 物业管理员提交成功
-        'property_work_submit' => '物业工作人员提交成功',// 物业工作人员提交成功
-        'house_admin_submit' => '小区管理员提交成功',// 小区管理员提交成功
-        'house_work_submit' => '小区工作人员提交成功',// 小区工作人员提交成功
-        'property_admin_assign' => '物业管理员指派',// 物业管理员指派
-        'property_work_assign' => '物业工作人员指派',// 物业工作人员指派
-        'house_admin_assign' => '小区管理员指派',// 小区管理员指派
-        'house_auto_assign' => '自动指派',// 自动指派
-        'property_admin_reply' => '物业管理员回复',// 物业管理员回复
-        'property_work_reply' => '物业工作人员回复',// 物业工作人员回复
-        'house_admin_reply' => '小区管理员回复',// 小区管理员回复
-        'reopen' => '重新打开','agree' => '同意','reject' => '重新提供方案', 'recall' => '撤回', 'closed' => '关闭', 'evaluate' => '业主已评价',
-        'work_reject_center' => '驳回给处理中心', 'constructor_reject_center' => '提供施工方案给处理中心',
-        'work_follow_up' => '处理人员跟进', 'work_completed' => '处理人员结单', 'work_change' => '处理人员转单', 
-        'work_reject_change' => '被转单人员拒绝', 'work_change_constructor' => '转单施工方', 'constructor_reject_change' => '提供施工方案',
-        'center_assign_work' => '处理中心指派', 'center_reply_submit' => '处理中心回复', 'work_reject' => '拒绝', 'work_assign' => '指派工作人员',
-        'work_grab' => '工作人员抢单', 'backstage_work_submit' => '处理中心添加工单', 'center_work_completed' => '处理中心结单', 'center_work_closed' => '处理中心关闭', 'to_supply_station' => '转供暖站', 'to_developer' => '转单开发商',
-        'refuse_order_nums_report' => '拒绝工单上报督查室', 'not_over_stars_report' => '评分过低上报督查室', 'over_timely_report' => '超时未接单上报督查室',
-        'over_not_processed_report_time' => '超时未处理设置上报督查室', 'public_report' => '公共区域工单上报督查室',
-        'to_supply_station_check' => '转单供暖站待审核', 'to_developer_check' => '转单开发商待审核',
-        'refuse_to_supply_station' => '审核拒绝转单供暖站', 'refuse_to_developer' => '审核拒绝转单开发商',
-        'to_supply_station_check_pass' => '转单供暖站审核通过', 'to_developer_check_pass' => '转单开发商审核通过',
-        'work_change_check' => '处理人员转单待审核', 'refuse_work_change_check' => '审核拒绝处理人员转单', 'pass_work_change_check' => '审核通过处理人员转单',
-        'reject_constructor_project' => '拒绝施工方案', 'agree_constructor_project' => '同意施工方案',
-        'work_change_cate' => '更改分类', 'has_contact_supply_station' => '获取联系（供暖站）', 'has_contact_developer' => '获取联系（开发商）',
-        'reject_to_developer' => '退回（楼栋管家）', 'reject_change_constructor' => '退回开发商',
-        'reopen_by_money' => '物业维修（付费）', 'work_push_scheme' => '推送方案', 'refuse_project_nums_report' => '拒绝工单次数过多上报督查室',
+        'user_submit' => '用户提交成功',
+        'property_admin_submit' => '物业管理员提交成功', // 物业管理员提交成功
+        'property_work_submit' => '物业工作人员提交成功', // 物业工作人员提交成功
+        'house_admin_submit' => '小区管理员提交成功', // 小区管理员提交成功
+        'house_work_submit' => '小区工作人员提交成功', // 小区工作人员提交成功
+        'property_admin_assign' => '物业管理员指派', // 物业管理员指派
+        'property_work_assign' => '物业工作人员指派', // 物业工作人员指派
+        'house_admin_assign' => '小区管理员指派', // 小区管理员指派
+        'house_auto_assign' => '自动指派', // 自动指派
+        'property_admin_reply' => '物业管理员回复', // 物业管理员回复
+        'property_work_reply' => '物业工作人员回复', // 物业工作人员回复
+        'house_admin_reply' => '小区管理员回复', // 小区管理员回复
+        'reopen' => '重新打开',
+        'agree' => '同意',
+        'reject' => '重新提供方案',
+        'recall' => '撤回',
+        'closed' => '关闭',
+        'evaluate' => '业主已评价',
+        'work_reject_center' => '驳回给处理中心',
+        'constructor_reject_center' => '提供施工方案给处理中心',
+        'work_follow_up' => '处理人员跟进',
+        'work_completed' => '处理人员结单',
+        'work_change' => '处理人员转单',
+        'work_reject_change' => '被转单人员拒绝',
+        'work_change_constructor' => '转单施工方',
+        'constructor_reject_change' => '提供施工方案',
+        'center_assign_work' => '处理中心指派',
+        'center_reply_submit' => '处理中心回复',
+        'work_reject' => '拒绝',
+        'work_assign' => '指派工作人员',
+        'work_grab' => '工作人员抢单',
+        'backstage_work_submit' => '处理中心添加工单',
+        'center_work_completed' => '处理中心结单',
+        'center_work_closed' => '处理中心关闭',
+        'to_supply_station' => '转供暖站',
+        'to_developer' => '转单开发商',
+        'refuse_order_nums_report' => '拒绝工单上报督查室',
+        'not_over_stars_report' => '评分过低上报督查室',
+        'over_timely_report' => '超时未接单上报督查室',
+        'over_not_processed_report_time' => '超时未处理设置上报督查室',
+        'public_report' => '公共区域工单上报督查室',
+        'to_supply_station_check' => '转单供暖站待审核',
+        'to_developer_check' => '转单开发商待审核',
+        'refuse_to_supply_station' => '审核拒绝转单供暖站',
+        'refuse_to_developer' => '审核拒绝转单开发商',
+        'to_supply_station_check_pass' => '转单供暖站审核通过',
+        'to_developer_check_pass' => '转单开发商审核通过',
+        'work_change_check' => '处理人员转单待审核',
+        'refuse_work_change_check' => '审核拒绝处理人员转单',
+        'pass_work_change_check' => '审核通过处理人员转单',
+        'reject_constructor_project' => '拒绝施工方案',
+        'agree_constructor_project' => '同意施工方案',
+        'work_change_cate' => '更改分类',
+        'has_contact_supply_station' => '获取联系（供暖站）',
+        'has_contact_developer' => '获取联系（开发商）',
+        'reject_to_developer' => '退回（楼栋管家）',
+        'reject_change_constructor' => '退回开发商',
+        'reopen_by_money' => '物业维修（付费）',
+        'work_push_scheme' => '推送方案',
+        'refuse_project_nums_report' => '拒绝工单次数过多上报督查室',
     ];
     // 单独针对工作人员操作
     public $work_log = [
-        'house_work_submit', 'work_reject_center', 'constructor_reject_center', 'work_follow_up', 'work_completed', 'work_change', 
-        'work_reject_change', 'work_change_constructor', 'constructor_reject_change', 'work_reject', 'backstage_work_submit',
-        'reject_constructor_project', 'agree_constructor_project', 
-        'work_change_cate', 'has_contact_supply_station', 'has_contact_developer', 'reject_to_developer', 'reject_change_constructor'
+        'house_work_submit',
+        'work_reject_center',
+        'constructor_reject_center',
+        'work_follow_up',
+        'work_completed',
+        'work_change',
+        'work_reject_change',
+        'work_change_constructor',
+        'constructor_reject_change',
+        'work_reject',
+        'backstage_work_submit',
+        'reject_constructor_project',
+        'agree_constructor_project',
+        'work_change_cate',
+        'has_contact_supply_station',
+        'has_contact_developer',
+        'reject_to_developer',
+        'reject_change_constructor'
     ];
-    
+
     // 用户端不可见的操作记录
-    public function getUserNotLookLog() {
+    public function getUserNotLookLog()
+    {
         $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
-        if (! $jz_open) {
+        if (!$jz_open) {
             return [
-                'refuse_order_nums_report', 'not_over_stars_report', 'over_timely_report', 'public_report', 'over_not_processed_report_time',
-                'refuse_to_supply_station', 'refuse_to_developer', 'to_supply_station_check', 'to_developer_check', 'to_developer_check_pass',
-                'to_supply_station_check_pass', 'work_change_check', 'refuse_work_change_check', 'pass_work_change_check',
-                'has_contact_supply_station', 'has_contact_developer',
+                'refuse_order_nums_report',
+                'not_over_stars_report',
+                'over_timely_report',
+                'public_report',
+                'over_not_processed_report_time',
+                'refuse_to_supply_station',
+                'refuse_to_developer',
+                'to_supply_station_check',
+                'to_developer_check',
+                'to_developer_check_pass',
+                'to_supply_station_check_pass',
+                'work_change_check',
+                'refuse_work_change_check',
+                'pass_work_change_check',
+                'has_contact_supply_station',
+                'has_contact_developer',
             ];
         }
         return [
-            'refuse_order_nums_report', 'not_over_stars_report', 'over_timely_report', 'public_report', 'over_not_processed_report_time',
-            'refuse_to_supply_station', 'refuse_to_developer', 'to_supply_station_check', 'to_developer_check', 'to_developer_check_pass',
-            'to_supply_station_check_pass', 'work_change_check', 'refuse_work_change_check', 'pass_work_change_check',
-            'has_contact_supply_station',  'has_contact_developer',
-            'to_supply_station', 'to_developer', 'work_change', 'work_reject_change', 'work_change_constructor', 
-            'work_reject', 'work_grab', 'reject_constructor_project', 'agree_constructor_project',
-            'constructor_reject_center', 'work_reject_center', 'work_change_cate', 'reject_to_developer', 'reject_change_constructor',
+            'refuse_order_nums_report',
+            'not_over_stars_report',
+            'over_timely_report',
+            'public_report',
+            'over_not_processed_report_time',
+            'refuse_to_supply_station',
+            'refuse_to_developer',
+            'to_supply_station_check',
+            'to_developer_check',
+            'to_developer_check_pass',
+            'to_supply_station_check_pass',
+            'work_change_check',
+            'refuse_work_change_check',
+            'pass_work_change_check',
+            'has_contact_supply_station',
+            'has_contact_developer',
+            'to_supply_station',
+            'to_developer',
+            'work_change',
+            'work_reject_change',
+            'work_change_constructor',
+            'work_reject',
+            'work_grab',
+            'reject_constructor_project',
+            'agree_constructor_project',
+            'constructor_reject_center',
+            'work_reject_center',
+            'work_change_cate',
+            'reject_to_developer',
+            'reject_change_constructor',
         ];
     }
 
@@ -279,10 +364,10 @@ class HouseNewRepairService
     public function getRepairSubject($where = [], $field = true, $page = 1, $limit = 10, $order = 'id DESC')
     {
         $db_house_new_repair_subject = new HouseNewRepairSubject();
-        $data = $db_house_new_repair_subject->getList($where,$field,$page,$limit,$order);
-        if($data){
-            foreach ($data as $k=>$v){
-                if($v['subject_name'] == '在线报修'){
+        $data = $db_house_new_repair_subject->getList($where, $field, $page, $limit, $order);
+        if ($data) {
+            foreach ($data as $k => $v) {
+                if ($v['subject_name'] == '在线报修') {
                     $data[$k]['type'] = 'online_repair';
                 } else {
                     $data[$k]['type'] = '';
@@ -305,9 +390,9 @@ class HouseNewRepairService
      */
     public function orderTongji($where = [], $field = true, $page = 1, $limit = 10, $order = 'id DESC', $params = [])
     {
-//        $db_house_new_repair_subject = new HouseNewRepairSubject();
-//        $cat_list = $db_house_new_repair_subject->getList($where,$field,$page,$limit,$order)->toArray();
-        $cat_list = (new HouseNewRepairCate())->getList($where,$field,$page,$limit,$order)->toArray();
+        //        $db_house_new_repair_subject = new HouseNewRepairSubject();
+        //        $cat_list = $db_house_new_repair_subject->getList($where,$field,$page,$limit,$order)->toArray();
+        $cat_list = (new HouseNewRepairCate())->getList($where, $field, $page, $limit, $order)->toArray();
         $todo_arr = [];
         $processing_arr = [];
         $processed_arr = [];
@@ -319,7 +404,7 @@ class HouseNewRepairService
                 //$cat_list = array_slice($cat_list, 0, 5);
             }
             $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-            foreach ($cat_list as $k=>$v){
+            foreach ($cat_list as $k => $v) {
                 $whereTodo = [['o.village_id', '=', $v['village_id']], ['o.cat_fid', '=', $v['category_id']], ['o.event_status', 'between', [10, 19]]];
                 if ($mark_report) {
                     $whereTodo[] = ['o.mark_report', '=', 1];
@@ -376,14 +461,14 @@ class HouseNewRepairService
             $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
         }
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-        $houseNewRepairWorksOrderLog= new HouseNewRepairWorksOrderLog();
+        $houseNewRepairWorksOrderLog = new HouseNewRepairWorksOrderLog();
         $db_house_new_repair_cate = new HouseNewRepairCate();
         $db_house_new_repair_subject = new HouseNewRepairSubject();
         $db_repair_cate = new RepairCateService();
-        $data = $db_house_new_repair_works_order->getList($where,$field,$page,$limit,$order,$pigcms_id,$roomIds);
-        if($data && !$data->isEmpty()){
-            $data=$data->toArray();
-            $houseVillageDb=new HouseVillage();
+        $data = $db_house_new_repair_works_order->getList($where, $field, $page, $limit, $order, $pigcms_id, $roomIds);
+        if ($data && !$data->isEmpty()) {
+            $data = $data->toArray();
+            $houseVillageDb = new HouseVillage();
             $village_info = array();
             if ($village_id > 0) {
                 $village_info = $houseVillageDb->getInfo(array('village_id' => $village_id), '*');
@@ -394,24 +479,24 @@ class HouseNewRepairService
             $whereVillage = [];
             $whereVillage[] = ['village_id', 'in', $villageIds];
             $villageArr = $dbHouseVillage->getColumn($whereVillage, 'village_name', 'village_id');
-            
+
             $sHouseCommunityHandleNoticeService = new HouseCommunityHandleNoticeService();
-            foreach ($data as $k=>$v){
-                $data[$k]['add_time_txt'] = date('Y-m-d',$v['add_time']);
-                $data[$k]['reopened_txt']='没有';  //有没有重新打开过
-                $worksOrderLog=$houseNewRepairWorksOrderLog->getOne(array('order_id'=>$v['order_id'],'log_name'=>'reopen'),'*');
-                if($worksOrderLog && !$worksOrderLog->isEmpty()){
-                    $data[$k]['reopened_txt']='有';
+            foreach ($data as $k => $v) {
+                $data[$k]['add_time_txt'] = date('Y-m-d', $v['add_time']);
+                $data[$k]['reopened_txt'] = '没有';  //有没有重新打开过
+                $worksOrderLog = $houseNewRepairWorksOrderLog->getOne(array('order_id' => $v['order_id'], 'log_name' => 'reopen'), '*');
+                if ($worksOrderLog && !$worksOrderLog->isEmpty()) {
+                    $data[$k]['reopened_txt'] = '有';
                 }
-                if($source_type == 'village' || $source_type == 'platform'){
+                if ($source_type == 'village' || $source_type == 'platform') {
                     $data[$k]['status_txt'] = $this->order_status_txt[$v['event_status']];
-                }else{
+                } else {
                     $data[$k]['status_txt'] = $this->order_user_status_txt[$v['event_status']];
                 }
                 $now_handle_village_id = isset($v['now_handle_village_id']) ? intval($v['now_handle_village_id']) : 0;
                 $data_village_id = isset($v['village_id']) ? intval($v['village_id']) : 0;
                 $plugAddress = '';
-                
+
                 if ($jz_open) {
                     $mark_type = isset($v['mark_type']) && $v['mark_type'] ? trim($v['mark_type']) : '';
                     if ($mark_type) {
@@ -428,11 +513,11 @@ class HouseNewRepairService
                         $plugAddress = trim($villageArr[$data_village_id]) . ' ';
                     }
                 }
-                if ($otherVillage && in_array($v['event_status'], [16,17,26,27])) {
+                if ($otherVillage && in_array($v['event_status'], [16, 17, 26, 27])) {
                     // 工单是其他小区转单过来的
                     $data[$k]['status_txt'] = '被转单';
                 } elseif ($otherVillage) {
-//                    $data[$k]['status_txt'] .= '(转单)';
+                    //                    $data[$k]['status_txt'] .= '(转单)';
                 }
                 $data[$k]['color'] = $this->order_status_color[$v['event_status']];
                 if (isset($v['address_type']) && $v['address_type'] == 'room') {
@@ -472,17 +557,17 @@ class HouseNewRepairService
                 if ($cate_name) {
                     $data[$k]['cate_name'] = $cate_name;
                 }*/
-                if(isset($v['cat_id'])){
-                    $subject_info=$db_house_new_repair_cate->getOne(['id'=>$v['cat_id']],'cate_name');
-                    $cate_name=isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
+                if (isset($v['cat_id'])) {
+                    $subject_info = $db_house_new_repair_cate->getOne(['id' => $v['cat_id']], 'cate_name');
+                    $cate_name = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
                 }
                 $data[$k]['cate_name'] = $cate_name;
-                if(isset($v['cat_fid'])){
-                    $subject_info=$db_house_new_repair_cate->getOne(['id'=>$v['cat_fid']],'cate_name');
-//                    $subject_info = $db_house_new_repair_subject->getOne(['id'=>$v['category_id'],'status'=>1],'subject_name');
+                if (isset($v['cat_fid'])) {
+                    $subject_info = $db_house_new_repair_cate->getOne(['id' => $v['cat_fid']], 'cate_name');
+                    //                    $subject_info = $db_house_new_repair_subject->getOne(['id'=>$v['category_id'],'status'=>1],'subject_name');
                     $data[$k]['subject_name'] = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
                 }
-                if($v['label_txt']){
+                if ($v['label_txt']) {
                     $data[$k]['order_content'] = '';
                     $label_txt_arr = explode(',', $v['label_txt']);
                     foreach ($label_txt_arr as $v1) {
@@ -495,32 +580,33 @@ class HouseNewRepairService
                     $data[$k]['order_content'] = '无';
                 }
                 if ($page > 0 && isset($v['phone']) && !empty($v['phone'])) {
-                    $data[$k]['phone']=$houseVillageDb->phone_desensitization_v($data[$k]['phone'],$v['village_id'],$village_info);
+                    $data[$k]['phone'] = $houseVillageDb->phone_desensitization_v($data[$k]['phone'], $v['village_id'], $village_info);
                 }
             }
         }
         return $data;
     }
-    
+
     //导出处理
-    public function getExportOrderList($where=[],$field=true,$order='order_id DESC',$source_type=''){
+    public function getExportOrderList($where = [], $field = true, $order = 'order_id DESC', $source_type = '')
+    {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
         $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
         $db_house_new_repair_cate = new HouseNewRepairCate();
         $db_repair_cate = new RepairCateService();
-        $dataObj = $db_house_new_repair_works_order->getAllList($where,$field,$order);
-       
-        $data=array();
-        if($dataObj && !$dataObj->isEmpty()){
-            $data=$dataObj->toArray();
+        $dataObj = $db_house_new_repair_works_order->getAllList($where, $field, $order);
+
+        $data = array();
+        if ($dataObj && !$dataObj->isEmpty()) {
+            $data = $dataObj->toArray();
         }
- 
-        if($data){
+
+        if ($data) {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
             $sheet->getDefaultColumnDimension()->setWidth(24);
-            $sheet->getDefaultRowDimension()->setRowHeight(24);//设置行高
-            $sheet->getRowDimension('1')->setRowHeight(26);//设置行高
+            $sheet->getDefaultRowDimension()->setRowHeight(24); //设置行高
+            $sheet->getRowDimension('1')->setRowHeight(26); //设置行高
             $sheet->getRowDimension('2')->setRowHeight(25);
             $sheet->getStyle('A1:Q1')->getFont()->setBold(true)->setSize(15);
             $sheet->mergeCells('A1:Q1'); //合并单元格
@@ -528,7 +614,7 @@ class HouseNewRepairService
             $sheet->getColumnDimension('M')->setWidth(160);
             $sheet->setCellValue('A1', '工单列表数据');
             //设置单元格内容
-            $titleArr=array('序号','上报人员','手机号码','上报时间','上报位置','工单类目','上报分类','上门时间','工单详情','工单状态','处理人员','处理人员手机号码','跟进内容','回复内容','回复时间','评论内容','评论时间');
+            $titleArr = array('序号', '上报人员', '手机号码', '上报时间', '上报位置', '工单类目', '上报分类', '上门时间', '工单详情', '工单状态', '处理人员', '处理人员手机号码', '跟进内容', '回复内容', '回复时间', '评论内容', '评论时间');
             $titCol = 'A';
             foreach ($titleArr as $key => $value) {
                 //单元格内容写入
@@ -538,16 +624,16 @@ class HouseNewRepairService
             $sheet->getStyle('A2:Q2')->getFont()->setBold(true);
             //设置单元格内容
             $row = 3;
-            foreach ($data as $k=>$v){
+            foreach ($data as $k => $v) {
                 $dataCol = 'A';
-                $itemD=array('order_id'=>$v['order_id'],'name'=>$v['name'],'phone'=>$v['phone']);
-                $v['add_time_txt'] = date('Y-m-d H:i',$v['add_time']);
-                if($source_type == 'village'){
+                $itemD = array('order_id' => $v['order_id'], 'name' => $v['name'], 'phone' => $v['phone']);
+                $v['add_time_txt'] = date('Y-m-d H:i', $v['add_time']);
+                if ($source_type == 'village') {
                     $v['status_txt'] = $this->order_status_txt[$v['event_status']];
-                }else{
+                } else {
                     $v['status_txt'] = $this->order_user_status_txt[$v['event_status']];
                 }
-                $itemD['add_time_txt']=$v['add_time_txt'];
+                $itemD['add_time_txt'] = $v['add_time_txt'];
                 $v['color'] = $this->order_status_color[$v['event_status']];
                 if (isset($v['address_type']) && $v['address_type'] == 'room') {
                     $service_house_village_user_vacancy = new HouseVillageUserVacancyService();
@@ -562,113 +648,111 @@ class HouseNewRepairService
                     $address = $public_info['public_area_name'];
                     $v['address_txt'] = $address;
                 }
-                $itemD['address_txt']=$v['address_txt'];
+                $itemD['address_txt'] = $v['address_txt'];
                 $cate_name = '';
-                if(isset($v['cat_id'])){
-                    $subject_info=$db_house_new_repair_cate->getOne(['id'=>$v['cat_id']],'cate_name');
-                    $cate_name=isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
+                if (isset($v['cat_id'])) {
+                    $subject_info = $db_house_new_repair_cate->getOne(['id' => $v['cat_id']], 'cate_name');
+                    $cate_name = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
                 }
                 $v['cate_name'] = $cate_name;
-                $v['subject_name']='';
-                if(isset($v['cat_fid'])){
-                    $subject_info=$db_house_new_repair_cate->getOne(['id'=>$v['cat_fid']],'cate_name');
+                $v['subject_name'] = '';
+                if (isset($v['cat_fid'])) {
+                    $subject_info = $db_house_new_repair_cate->getOne(['id' => $v['cat_fid']], 'cate_name');
                     $v['subject_name'] = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
                 }
-                $itemD['subject_name']=$v['subject_name'];
-                $itemD['cate_name']=$v['cate_name'];
-                $itemD['go_time_txt']='';
-                if($v['go_time']>10000){
-                    $itemD['go_time_txt']=date('Y-m-d H:i',$v['go_time']);
+                $itemD['subject_name'] = $v['subject_name'];
+                $itemD['cate_name'] = $v['cate_name'];
+                $itemD['go_time_txt'] = '';
+                if ($v['go_time'] > 10000) {
+                    $itemD['go_time_txt'] = date('Y-m-d H:i', $v['go_time']);
                 }
-                $itemD['order_content']=$v['order_content'];
-                $itemD['status_txt']=$v['status_txt'];
-                $itemD['handle_name']='';
-                $itemD['handle_phone']='';
+                $itemD['order_content'] = $v['order_content'];
+                $itemD['status_txt'] = $v['status_txt'];
+                $itemD['handle_name'] = '';
+                $itemD['handle_phone'] = '';
                 $recordObj = $db_house_new_repair_works_order_log->getOne(['order_id' => $v['order_id']], 'log_id,log_operator,log_phone,log_name,add_time,log_imgs,log_content');
                 if ($recordObj && !$recordObj->isEmpty()) {
-                    $handle_name=$recordObj['log_operator'];
-                    if($v['order_type'] == 5 && empty($recordObj['log_operator'])){
-                        $handle_name='处理中心管理员';
+                    $handle_name = $recordObj['log_operator'];
+                    if ($v['order_type'] == 5 && empty($recordObj['log_operator'])) {
+                        $handle_name = '处理中心管理员';
                     }
-                    $itemD['handle_name']=$handle_name;
-                    $itemD['handle_phone']=$recordObj['log_phone'];;
+                    $itemD['handle_name'] = $handle_name;
+                    $itemD['handle_phone'] = $recordObj['log_phone'];;
                 }
-                $itemD['log_content']='';
-                $itemD['reply_content']='';
-                $itemD['reply_time']='';
-                $itemD['evaluate_content']='';
-                $itemD['evaluate_time']='';
+                $itemD['log_content'] = '';
+                $itemD['reply_content'] = '';
+                $itemD['reply_time'] = '';
+                $itemD['evaluate_content'] = '';
+                $itemD['evaluate_time'] = '';
                 $where_log = [];
-                $where_log[] = ['order_id','=',$v['order_id']];
-                $log_list_obj = $db_house_new_repair_works_order_log->getList($where_log,true,0,0,'log_id ASC');
-                if($log_list_obj && !$log_list_obj->isEmpty()){
-                    $log_list=$log_list_obj->toArray();
-                    if($log_list){
+                $where_log[] = ['order_id', '=', $v['order_id']];
+                $log_list_obj = $db_house_new_repair_works_order_log->getList($where_log, true, 0, 0, 'log_id ASC');
+                if ($log_list_obj && !$log_list_obj->isEmpty()) {
+                    $log_list = $log_list_obj->toArray();
+                    if ($log_list) {
                         $log_arr = $this->log_name;
-                        $logContent='';
-                        foreach ($log_list as $val){
+                        $logContent = '';
+                        foreach ($log_list as $val) {
                             if (isset($val['log_name']) && $val['log_name']) {
                                 if (isset($val['log_num']) && $val['log_num'] > 1) {
                                     $title = "第{$val['log_num']}次" . $log_arr[$val['log_name']];
                                 } else {
-                                    $title = isset($log_arr[$val['log_name']]) ? $log_arr[$val['log_name']]:'';
+                                    $title = isset($log_arr[$val['log_name']]) ? $log_arr[$val['log_name']] : '';
                                 }
-                                if(isset($val['wisdomqrcode_id']) && $val['wisdomqrcode_id']>0 && strpos($val['log_name'],'_submit')){
+                                if (isset($val['wisdomqrcode_id']) && $val['wisdomqrcode_id'] > 0 && strpos($val['log_name'], '_submit')) {
                                     $title = '巡检转工单';
                                 }
-                                $add_time_txt='';
+                                $add_time_txt = '';
                                 if (isset($val['add_time']) && $val['add_time']) {
                                     $add_time_txt = date('Y-m-d H:i', $val['add_time']);
-                                    $logContent .='  时间【'.$add_time_txt.'】';
-                                }else{
-                                    $logContent .='  ';
+                                    $logContent .= '  时间【' . $add_time_txt . '】';
+                                } else {
+                                    $logContent .= '  ';
                                 }
-                                $logContent .='类型【'.$title.'】';
-                                if($val['log_name'] == 'evaluate'){
-                                    $logContent .='评分【'.$val['evaluate'].'】分';
-                                    $itemD['evaluate_content']=$val['log_content'].' 评分：'.$val['evaluate'].'分';
-                                    $itemD['evaluate_time']=$add_time_txt;
+                                $logContent .= '类型【' . $title . '】';
+                                if ($val['log_name'] == 'evaluate') {
+                                    $logContent .= '评分【' . $val['evaluate'] . '】分';
+                                    $itemD['evaluate_content'] = $val['log_content'] . ' 评分：' . $val['evaluate'] . '分';
+                                    $itemD['evaluate_time'] = $add_time_txt;
                                 }
                                 if (isset($val['log_content']) && $val['log_content'] && $val['log_name'] == 'evaluate') {
-                                    $logContent .='评论详情【'.$val['log_content'].'】';
+                                    $logContent .= '评论详情【' . $val['log_content'] . '】';
                                 }
                                 if (isset($val['log_operator']) && $val['log_operator']) {
-                                    $logContent .='操作人员【'.$val['log_operator'].'】';
+                                    $logContent .= '操作人员【' . $val['log_operator'] . '】';
                                 }
-                                if(in_array($val['log_name'],array('property_admin_reply','property_work_reply','house_admin_reply','center_reply_submit'))){
-                                    $itemD['reply_content']=$val['log_content'];
-                                    $itemD['reply_time']=$add_time_txt;
+                                if (in_array($val['log_name'], array('property_admin_reply', 'property_work_reply', 'house_admin_reply', 'center_reply_submit'))) {
+                                    $itemD['reply_content'] = $val['log_content'];
+                                    $itemD['reply_time'] = $add_time_txt;
                                 }
                                 if (isset($val['log_phone']) && $val['log_phone']) {
-                                    $logContent .='手机号码【'.$val['log_phone'].'】';
+                                    $logContent .= '手机号码【' . $val['log_phone'] . '】';
                                 }
                                 if (isset($val['log_content']) && $val['log_content'] && $val['log_name'] != 'evaluate') {
-                                    $logContent .='内容【'.$val['log_content'].'】';
+                                    $logContent .= '内容【' . $val['log_content'] . '】';
                                 }
                                 if (isset($val['log_info']) && $val['log_info'] && @unserialize($val['log_info'])) {
                                     $log_info = unserialize($val['log_info']);
-                                    if($log_info && isset($log_info['name']) && $log_info['name']){
-                                        $logContent .='处理人员【'.$log_info['name'].'-'.$log_info['phone'].'】';
+                                    if ($log_info && isset($log_info['name']) && $log_info['name']) {
+                                        $logContent .= '处理人员【' . $log_info['name'] . '-' . $log_info['phone'] . '】';
                                     }
-                                    
                                 }
                                 $logContent .= "\r\n";
                             }
                         }
-                        $itemD['log_content']=$logContent;
+                        $itemD['log_content'] = $logContent;
                     }
-                 
                 }
-                foreach ($itemD as $kk=>$cvalue) {
+                foreach ($itemD as $kk => $cvalue) {
                     //单元格内容写入
                     //$sheet->setCellValue($dataCol . $row, $cvalue);
-                    $sheet->getStyle('M'.$row)->getAlignment()->setWrapText(true);
-                    $sheet->setCellValueExplicit($dataCol . $row, $cvalue,\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
+                    $sheet->getStyle('M' . $row)->getAlignment()->setWrapText(true);
+                    $sheet->setCellValueExplicit($dataCol . $row, $cvalue, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2);
                     $dataCol++;
                 }
                 $row++;
             }
-          
+
             //保存
             $styleArrayBody = [
                 'alignment' => [
@@ -679,24 +763,25 @@ class HouseNewRepairService
             $total_rows = $row + 1;
             //添加所有边框/居中
             $sheet->getStyle('A1:L' . $total_rows)->applyFromArray($styleArrayBody);
-            
+
             $styleMArrayBody = [
                 'alignment' => [
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP
                 ],
             ];
-            
+
             $sheet->getStyle('M1:M' . $total_rows)->applyFromArray($styleMArrayBody);
 
             $sheet->getStyle('N1:Q' . $total_rows)->applyFromArray($styleArrayBody);
             //下载
-            $filename = '工单数据明细'.date('YmdHis') . '.xlsx';
+            $filename = '工单数据明细' . date('YmdHis') . '.xlsx';
             (new BaseExportService())->phpSpreadsheet($filename, $spreadsheet);
             return $this->downloadExportFile($filename);
         }
         throw new \think\Exception("没有数据可以导出！");
     }
+
     /**
      * 下载表格
      */
@@ -721,30 +806,30 @@ class HouseNewRepairService
 
         return $returnArr;
     }
-    
-    public function getOrderEvaluateList($where=[],$field=true,$page=1,$limit=10,$order='o.order_id DESC',$evaluate_star=1)
+
+    public function getOrderEvaluateList($where = [], $field = true, $page = 1, $limit = 10, $order = 'o.order_id DESC', $evaluate_star = 1)
     {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
         $db_house_new_repair_cate = new HouseNewRepairCate();
         $db_repair_cate = new RepairCateService();
-        $dataObj = $db_house_new_repair_works_order->getListByEvaluate($where,$field,$page,$limit,$order);
-        if($dataObj && !$dataObj->isEmpty()){
-            $houseNewRepairWorksOrderLog= new HouseNewRepairWorksOrderLog();
-            $data=$dataObj->toArray();
-            $houseVillageDb=new HouseVillage();
-            $village_info=$houseVillageDb->getInfo(array('village_id'=>$data['0']['village_id']),'*');
-            foreach ($data as $k=>$v){
-                $data[$k]['add_time_txt'] = date('Y-m-d',$v['add_time']);
+        $dataObj = $db_house_new_repair_works_order->getListByEvaluate($where, $field, $page, $limit, $order);
+        if ($dataObj && !$dataObj->isEmpty()) {
+            $houseNewRepairWorksOrderLog = new HouseNewRepairWorksOrderLog();
+            $data = $dataObj->toArray();
+            $houseVillageDb = new HouseVillage();
+            $village_info = $houseVillageDb->getInfo(array('village_id' => $data['0']['village_id']), '*');
+            foreach ($data as $k => $v) {
+                $data[$k]['add_time_txt'] = date('Y-m-d', $v['add_time']);
                 $data[$k]['status_txt'] = $this->order_status_txt[$v['event_status']];
                 $data[$k]['color'] = $this->order_status_color[$v['event_status']];
-                
-                $evaluateWhere=array();
-                $evaluateWhere[]=array('village_id','=',$v['village_id']);
-                $evaluateWhere[]=array('log_name','=','evaluate');
-                $evaluateWhere[]=array('order_id','=',$v['order_id']);
-                $evaluateWhere[]=array('evaluate	 ','=',$evaluate_star);
-                $data[$k]['evaluate_star']=$houseNewRepairWorksOrderLog->getCount($evaluateWhere);
-                
+
+                $evaluateWhere = array();
+                $evaluateWhere[] = array('village_id', '=', $v['village_id']);
+                $evaluateWhere[] = array('log_name', '=', 'evaluate');
+                $evaluateWhere[] = array('order_id', '=', $v['order_id']);
+                $evaluateWhere[] = array('evaluate	 ', '=', $evaluate_star);
+                $data[$k]['evaluate_star'] = $houseNewRepairWorksOrderLog->getCount($evaluateWhere);
+
                 if (isset($v['address_type']) && $v['address_type'] == 'room') {
                     $service_house_village_user_vacancy = new HouseVillageUserVacancyService();
                     $service_house_village = new HouseVillageService();
@@ -759,16 +844,16 @@ class HouseNewRepairService
                     $data[$k]['address_txt'] = $address;
                 }
                 $cate_name = '';
-                if(isset($v['cat_id'])){
-                    $subject_info=$db_house_new_repair_cate->getOne(['id'=>$v['cat_id']],'cate_name');
-                    $cate_name=isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
+                if (isset($v['cat_id'])) {
+                    $subject_info = $db_house_new_repair_cate->getOne(['id' => $v['cat_id']], 'cate_name');
+                    $cate_name = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
                 }
                 $data[$k]['cate_name'] = $cate_name;
-                if(isset($v['cat_fid'])){
-                    $subject_info=$db_house_new_repair_cate->getOne(['id'=>$v['cat_fid']],'cate_name');
+                if (isset($v['cat_fid'])) {
+                    $subject_info = $db_house_new_repair_cate->getOne(['id' => $v['cat_fid']], 'cate_name');
                     $data[$k]['subject_name'] = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
                 }
-                if($v['label_txt']){
+                if ($v['label_txt']) {
                     $data[$k]['order_content'] = '';
                     $label_txt_arr = explode(',', $v['label_txt']);
                     foreach ($label_txt_arr as $v) {
@@ -781,7 +866,7 @@ class HouseNewRepairService
                     $data[$k]['order_content'] = '无';
                 }
                 if (isset($v['phone']) && !empty($v['phone'])) {
-                    $data[$k]['phone'] = $houseVillageDb->phone_desensitization_v($v['phone'],$v['village_id'],$village_info);
+                    $data[$k]['phone'] = $houseVillageDb->phone_desensitization_v($v['phone'], $v['village_id'], $village_info);
                 }
             }
             return $data;
@@ -822,17 +907,17 @@ class HouseNewRepairService
     {
         $db_house_new_repair_subject = new HouseNewRepairSubject();
         $db_house_new_repair_cate = new HouseNewRepairCate();
-        $data = $db_house_new_repair_subject->getList($where,$field,0,0,'id DESC');
-        if($data){
-            foreach ($data as $k=>$v){
-                if($v['subject_name'] == '个人报修'){
+        $data = $db_house_new_repair_subject->getList($where, $field, 0, 0, 'id DESC');
+        if ($data) {
+            foreach ($data as $k => $v) {
+                if ($v['subject_name'] == '个人报修') {
                     $data[$k]['type'] = 'personal_repair';
                 } elseif ($v['subject_name'] == '公共报修') {
                     $data[$k]['type'] = 'public_repair';
                 } else {
                     $data[$k]['type'] = '';
                 }
-                $list = $db_house_new_repair_cate->getList(['subject_id'=>$v['type_id'],'status'=>1,'parent_id'=>0],'id as cat_fid,cate_name',0,0,'cat_fid DESC');
+                $list = $db_house_new_repair_cate->getList(['subject_id' => $v['type_id'], 'status' => 1, 'parent_id' => 0], 'id as cat_fid,cate_name', 0, 0, 'cat_fid DESC');
 
                 $data[$k]['list'] = $list;
             }
@@ -851,11 +936,11 @@ class HouseNewRepairService
     public function getFidCateList($where = [], $field = true, $order = 'sort DESC,id desc', $appType = '')
     {
         $where_parent = $where;
-        if($appType == 'packapp'){
-            $field='id as value,cate_name as label';
+        if ($appType == 'packapp') {
+            $field = 'id as value,cate_name as label';
         }
         $db_house_new_repair_cate = new HouseNewRepairCate();
-        $data = $db_house_new_repair_cate->getList($where_parent,$field,0,0,$order)->toArray();
+        $data = $db_house_new_repair_cate->getList($where_parent, $field, 0, 0, $order)->toArray();
         return $data;
     }
 
@@ -892,7 +977,7 @@ class HouseNewRepairService
      * @author: wanzy
      * @date_time: 2021/8/16 14:52
      */
-    public function workGetWorksOrderLists($worker_id, $login_role, $status = 'todo', $search = '', $page = 1, $page_size = 10, $is_count = false,$village_id=0)
+    public function workGetWorksOrderLists($worker_id, $login_role, $status = 'todo', $search = '', $page = 1, $page_size = 10, $is_count = false, $village_id = 0)
     {
         if ($search) {
             $search = str_replace("'", "\'", $search);
@@ -905,12 +990,12 @@ class HouseNewRepairService
         $where_house_admin = '';
         $where_property_admin = '';
         $whereRaw = '';
-        $property_id=0;
+        $property_id = 0;
         $work_info = [];
         $house_admin_info = [];
-        $is_status = (new HouseVillageService())->checkVillageField($village_id,'is_grab_order');
+        $is_status = (new HouseVillageService())->checkVillageField($village_id, 'is_grab_order');
         // 工单类型 0 业主上报工单 1 物业总管理员 2 物业普通管理员  3 小区物业管理员 4小区物业工作人员
-        $wid=0;
+        $wid = 0;
         if (HouseWorkConst::MANAGE_APP_VILLAGE_WORK == $login_role) {
             // 小区物业工作人员
             $where_work = [];
@@ -952,11 +1037,11 @@ class HouseNewRepairService
         } else {
             throw new \think\Exception("当前身份无权限");
         }
-        $property_id=$property_id>0 ? $property_id:0;
+        $property_id = $property_id > 0 ? $property_id : 0;
         if (!empty($work_info)) {
             $where_work_str = !empty($order_ids) ? "((a.order_id in (" . implode(',', $order_ids) . ")  OR a.worker_id={$worker_id})" : "(a.worker_id={$worker_id}";
         }
-        if ('todo'==$status) {
+        if ('todo' == $status) {
             // 待处理
             if ($search) {
                 $search_str = "(a.name LIKE '%{$search}%' OR a.phone LIKE '%{$search}%')";
@@ -968,20 +1053,16 @@ class HouseNewRepairService
                 // 处理人员 已指派和处理中和被转单
                 // 待处理的不包含 经过的 只能是当前工作人员处理的需要处于待指派
                 $where_work_str = "(a.worker_id={$worker_id} AND a.worker_type=0 AND a.event_status>=20 AND a.event_status<40 AND a.event_status not in (28,29))";
-
-            }
-            elseif ($house_admin_info) {
+            } elseif ($house_admin_info) {
                 // 处理待指派工单
                 $where_house_admin = '(a.event_status>=10 AND a.event_status<20)';
-            }
-            elseif ($property_admin_info) {
+            } elseif ($property_admin_info) {
                 // 处理待指派工单
                 $where_property_admin = '(a.event_status>=10 AND a.event_status<20)';
             }
             // 提交人员 已办结和已评价
             $where_submit_str = "(a.uid={$worker_id} AND a.order_type={$order_type} AND ((a.event_status>=40 AND a.event_status<50) OR (a.event_status>=70 AND a.event_status<80)))";
-        }
-        elseif ('processing'==$status) {
+        } elseif ('processing' == $status) {
 
             // 处理中
             if ($search) {
@@ -1002,8 +1083,7 @@ class HouseNewRepairService
             }
             // 提交人员 待指派 已指派 处理中
             $where_submit_str = "(a.uid={$worker_id} AND a.order_type={$order_type} AND ((a.event_status<40)))";
-        }
-        elseif ('processed'==$status) {
+        } elseif ('processed' == $status) {
             // 已处理
             if ($search) {
                 $search_str = "(a.name LIKE '%{$search}%' OR a.phone LIKE '%{$search}%')";
@@ -1014,7 +1094,7 @@ class HouseNewRepairService
                 // 处理人员 已转单已评价已撤回已关闭【被转单  放在待处理中】
                 $where_work_str .= " AND a.worker_type=0 AND ((a.event_status>=50 AND a.event_status<80) OR (a.worker_id<>{$worker_id} AND a.event_status in (24,16,17,26,27))))";
                 // 处理过的非提交处理过人员
-//                $where_submit_change = "(b.operator_id={$worker_id} AND b.operator_type=30 AND b.log_name='work_change')";
+                //                $where_submit_change = "(b.operator_id={$worker_id} AND b.operator_type=30 AND b.log_name='work_change')";
             } elseif ($house_admin_info) {
                 // 已处理
                 $where_house_admin = '(a.event_status>=50 AND a.event_status<70)';
@@ -1024,9 +1104,7 @@ class HouseNewRepairService
             }
             // 提交人员 已撤回 已关闭
             $where_submit_str = "(a.uid={$worker_id} AND a.order_type={$order_type} AND ((a.event_status>=50 AND a.event_status<70)))";
-
-        }
-        elseif ('all' == $status) {
+        } elseif ('all' == $status) {
             // 已处理
             if ($search) {
                 $search_str = "(a.name LIKE '%{$search}%' OR a.phone LIKE '%{$search}%')";
@@ -1039,7 +1117,7 @@ class HouseNewRepairService
                 // 提交人员 已办结和已评价
                 $where_submit_str = "(a.uid={$worker_id} AND a.order_type=4)";
                 // 处理过的非提交处理过人员
-//                $where_submit_change = "(b.operator_id={$worker_id} AND b.operator_type=30)";
+                //                $where_submit_change = "(b.operator_id={$worker_id} AND b.operator_type=30)";
             } elseif ($house_admin_info) {
                 // 全部
                 $where_house_admin = '(a.event_status>=10)';
@@ -1052,15 +1130,13 @@ class HouseNewRepairService
             // 小区物业管理人员
             if ($where_submit_str) {
                 $whereRaw = "({$where_house_admin} OR {$where_submit_str})";
-            }
-            else {
+            } else {
                 $whereRaw = $where_house_admin;
             }
             if (isset($house_admin_info['village_id']) && $house_admin_info['village_id']) {
                 $whereRaw .= " AND a.village_id={$house_admin_info['village_id']}";
             }
-        }
-        elseif ($where_property_admin) {
+        } elseif ($where_property_admin) {
             // 物业普通管理员
             if ($where_submit_str) {
                 $whereRaw = "({$where_property_admin} OR {$where_submit_str})";
@@ -1069,28 +1145,26 @@ class HouseNewRepairService
             }
             if (isset($property_admin_info['menus']) && $property_admin_info['menus']) {
                 $whereRaw .= " AND a.village_id in ({$property_admin_info['menus']})";
-            } elseif($order_type!=1) {
+            } elseif ($order_type != 1) {
                 $whereRaw .= " AND a.village_id=0";
             }
-            if($order_type==1 || $order_type==2) {
-                $whereRaw .=" AND a.property_id=".$property_id;
+            if ($order_type == 1 || $order_type == 2) {
+                $whereRaw .= " AND a.property_id=" . $property_id;
             }
-        }
-        elseif ($where_work_str && $where_submit_str) {
+        } elseif ($where_work_str && $where_submit_str) {
             // 小区物业工作人员 提交和处理者
             $whereRaw = "({$where_work_str} OR {$where_submit_str})";
-        }
-        elseif ($where_work_str && $where_submit_str && $where_submit_change) {
+        } elseif ($where_work_str && $where_submit_str && $where_submit_change) {
             // 小区物业工作人员 提交和处理者和转单
             $whereRaw = "({$where_work_str} OR {$where_submit_str} OR {$where_submit_change})";
         }
-        if(in_array($status,['todo','all']) && $is_status){
+        if (in_array($status, ['todo', 'all']) && $is_status) {
             //todo 获取当前账号所在的部门关联工单分类
-            $cate_id = $this->getRepairCateId($village_id,$wid);
-            if(!empty($cate_id) && $whereRaw){
-                $whereRaw = '('.$whereRaw.' OR (a.village_id ='.$village_id.' AND a.event_status = 15 AND a.cat_fid in ('.(implode(',',$cate_id)).')))';
-            }else if(!empty($cate_id) && !$whereRaw){
-                $whereRaw = '(a.village_id ='.$village_id.' AND a.event_status = 15 AND a.cat_fid in ('.(implode(',',$cate_id)).'))';
+            $cate_id = $this->getRepairCateId($village_id, $wid);
+            if (!empty($cate_id) && $whereRaw) {
+                $whereRaw = '(' . $whereRaw . ' OR (a.village_id =' . $village_id . ' AND a.event_status = 15 AND a.cat_fid in (' . (implode(',', $cate_id)) . ')))';
+            } else if (!empty($cate_id) && !$whereRaw) {
+                $whereRaw = '(a.village_id =' . $village_id . ' AND a.event_status = 15 AND a.cat_fid in (' . (implode(',', $cate_id)) . '))';
             }
         }
         if ($search_str) {
@@ -1105,14 +1179,14 @@ class HouseNewRepairService
         } else {
             $field = 'a.*';
             $order = 'a.add_time DESC';
-            $work_list = $db_house_new_repair_works_order->getWorkHandleList([],$whereRaw,$field,$page,$page_size,$order);
-            fdump_api(['line:'.__LINE__,'sql' => $db_house_new_repair_works_order->getLastSql()],'$sql');
+            $work_list = $db_house_new_repair_works_order->getWorkHandleList([], $whereRaw, $field, $page, $page_size, $order);
+            fdump_api(['line:' . __LINE__, 'sql' => $db_house_new_repair_works_order->getLastSql()], '$sql');
         }
         if (!empty($work_list)) {
             $work_list = $work_list->toArray();
             if ($work_list) {
-                $catIdArr = array_unique(array_column($work_list,'cat_id'));
-                $catFidArr = array_unique(array_column($work_list,'cat_fid'));
+                $catIdArr = array_unique(array_column($work_list, 'cat_id'));
+                $catFidArr = array_unique(array_column($work_list, 'cat_fid'));
                 $catIds = array_merge($catIdArr, $catFidArr);
                 $db_house_new_repair_cate = new HouseNewRepairCate();
                 $whereCate = [];
@@ -1121,8 +1195,8 @@ class HouseNewRepairService
                 fdump_api($catArr, '$catArr');
                 foreach ($work_list as &$val) {
                     // 兼容非工作人员不可抢单 只可指派
-                    if($login_role != HouseWorkConst::MANAGE_APP_VILLAGE_WORK && $val['event_status'] == 15){
-                        $val['event_status']=10;
+                    if ($login_role != HouseWorkConst::MANAGE_APP_VILLAGE_WORK && $val['event_status'] == 15) {
+                        $val['event_status'] = 10;
                     }
                     $cat_id = isset($val['cat_id']) ? intval($val['cat_id']) : 0;
                     $cat_fid = isset($val['cat_fid']) ? intval($val['cat_fid']) : 0;
@@ -1131,11 +1205,11 @@ class HouseNewRepairService
                         $cat = trim($catArr[$cat_fid]);
                     }
                     if (isset($catArr[$cat_id])) {
-                        $cat && $cat .= '/'. trim($catArr[$cat_id]);
+                        $cat && $cat .= '/' . trim($catArr[$cat_id]);
                         !$cat && $cat = trim($catArr[$cat_id]);
                     }
                     $val['catText'] = $cat;
-                    
+
                     if (isset($val['add_time']) && $val['add_time']) {
                         $val['add_time_txt'] = date('Y-m-d H:i:s', $val['add_time']);
                     }
@@ -1143,7 +1217,7 @@ class HouseNewRepairService
                         $val['last_time_txt'] = date('Y-m-d H:i:s', $val['last_time']);
                     }
                     if (isset($val['event_status']) && $val['event_status']) {
-                        if (24==$val['event_status'] && $val['worker_type']==0 && $val['worker_id']==$worker_id) {
+                        if (24 == $val['event_status'] && $val['worker_type'] == 0 && $val['worker_id'] == $worker_id) {
                             // 当前人员处于被转单
                             $val['order_status_txt'] = '被转单';
                         } elseif (24 == $val['event_status']) {
@@ -1157,7 +1231,7 @@ class HouseNewRepairService
                         $val['order_status_txt'] = '已转单';
                         $val['order_status_color'] = '#336600';
                     }
-                    if (isset($val['label_txt']) && trim($val['label_txt'],',')) {
+                    if (isset($val['label_txt']) && trim($val['label_txt'], ',')) {
 
                         $db_house_new_repair_cate_custom = new HouseNewRepairCateCustom();
                         $label_txt = trim($val['label_txt'], ',');
@@ -1208,31 +1282,30 @@ class HouseNewRepairService
             throw new \think\Exception('对应小区不存在');
         }
         $db_house_village_info = new HouseVillageInfo();
-        $village_info_data = $db_house_village_info->getOne(['village_id'=>$village_id], 'village_id,is_timely');
+        $village_info_data = $db_house_village_info->getOne(['village_id' => $village_id], 'village_id,is_timely');
         if (empty($village_info_data)) {
             throw new \think\Exception('对应小区不存在');
         }
-        if ($village_info_data['is_timely']==1){
-            if (empty($data['go_time'])){
+        if ($village_info_data['is_timely'] == 1) {
+            if (empty($data['go_time'])) {
                 throw new \think\Exception('上门时间不能为空');
             }
-            $data['go_time']=strtotime($data['go_time']);
-            if (empty($data['go_time'])){
+            $data['go_time'] = strtotime($data['go_time']);
+            if (empty($data['go_time'])) {
                 throw new \think\Exception('上门时间不能为空');
             }
-            if ($data['go_time']<time()){
+            if ($data['go_time'] < time()) {
                 throw new \think\Exception('上门时间不能小于当前时间');
             }
-        }else{
-            if (!empty($data['go_time'])){
-                $data['go_time']=strtotime($data['go_time']);
-                if (!empty($data['go_time'])&&$data['go_time']<time()){
+        } else {
+            if (!empty($data['go_time'])) {
+                $data['go_time'] = strtotime($data['go_time']);
+                if (!empty($data['go_time']) && $data['go_time'] < time()) {
                     throw new \think\Exception('上门时间不能小于当前时间');
-                } elseif(empty($data['go_time'])){
-                    $data['go_time']=0;
+                } elseif (empty($data['go_time'])) {
+                    $data['go_time'] = 0;
                 }
             }
-
         }
         $property_id = isset($village_info['property_id']) ? intval($village_info['property_id']) : 0;
         if (!isset($data['cat_id']) || !$data['cat_id']) {
@@ -1240,20 +1313,20 @@ class HouseNewRepairService
         }
         $db_house_new_repair_cate = new HouseNewRepairCate();
         $cat_id = $data['cat_id'];
-        $cate_info = $db_house_new_repair_cate->getOne(['id' => $cat_id,'village_id'=>$village_id], 'id,subject_id,cate_name,parent_id,type,uid');
+        $cate_info = $db_house_new_repair_cate->getOne(['id' => $cat_id, 'village_id' => $village_id], 'id,subject_id,cate_name,parent_id,type,uid');
         if (empty($cate_info) || $cate_info->isEmpty()) {
             throw new \think\Exception('对应分类信息不存在');
         }
         if (isset($cate_info['parent_id']) && $cate_info['parent_id']) {
             $cat_fid = intval($cate_info['parent_id']);
-        }else if (isset($data['cat_fid']) && $data['cat_fid']) {
+        } else if (isset($data['cat_fid']) && $data['cat_fid']) {
             $cat_fid = intval($data['cat_fid']);
-        }  else {
+        } else {
             throw new \think\Exception('缺少主分类');
         }
-        $address_type = isset($data['address_type'])?trim($data['address_type']):'';
-        if($address_type){
-            if (!in_array($address_type,['public', 'room'])) {
+        $address_type = isset($data['address_type']) ? trim($data['address_type']) : '';
+        if ($address_type) {
+            if (!in_array($address_type, ['public', 'room'])) {
                 throw new \think\Exception('缺少必传参数');
             }
             if (!isset($data['address_id']) || !$data['address_id']) {
@@ -1268,7 +1341,7 @@ class HouseNewRepairService
         $layer_id = 0;
         $address_txt = '';
         $toSingleId = 0;
-        if ('public'==$address_type) {
+        if ('public' == $address_type) {
             $public_id = intval($data['address_id']);
             // 获取下公共区域
             $db_house_village_public_area = new HouseVillagePublicArea();
@@ -1279,7 +1352,7 @@ class HouseNewRepairService
                 throw new \think\Exception('所选公共区域不存在');
             }
             $address_txt = $publicAreaInfo['public_area_name'];
-        } elseif ('room'==$address_type) {
+        } elseif ('room' == $address_type) {
 
             $room_id = intval($data['address_id']);
             $db_house_village_user_vacancy = new HouseVillageUserVacancy();
@@ -1358,8 +1431,8 @@ class HouseNewRepairService
             $repairCateConfig = isset($assignRecord['repairCateConfig']) ? $assignRecord['repairCateConfig'] : [];
             $communityAutoToWork && $assign_record['communityAutoToWork'] = $communityAutoToWork;
             $workOrderConfig['village_id'] = $village_id;
-            $communityConfig && $workOrderConfig['community_config'] = json_encode($communityConfig,JSON_UNESCAPED_UNICODE);
-            $repairCateConfig && $workOrderConfig['repair_cate_config'] = json_encode($repairCateConfig,JSON_UNESCAPED_UNICODE);
+            $communityConfig && $workOrderConfig['community_config'] = json_encode($communityConfig, JSON_UNESCAPED_UNICODE);
+            $repairCateConfig && $workOrderConfig['repair_cate_config'] = json_encode($repairCateConfig, JSON_UNESCAPED_UNICODE);
             isset($assignRecord['not_report_switch']) && $workOrderConfig['not_report_switch'] = intval($assignRecord['not_report_switch']);
             $workOrderConfig['quality_start_time'] = isset($repairCateConfig['quality_start_time']) ? intval($repairCateConfig['quality_start_time']) : 0;
             $workOrderConfig['quality_end_time'] = isset($repairCateConfig['quality_end_time']) ? intval($repairCateConfig['quality_end_time']) : 0;
@@ -1377,7 +1450,7 @@ class HouseNewRepairService
             }
         }
         $repairCateScheduling && $assign_record['repairCateScheduling'] = $repairCateScheduling;
-        
+
         if ($worker_id) {
             // 如果存在接手工作人员
             $event_status = 20;
@@ -1385,8 +1458,8 @@ class HouseNewRepairService
         } else {
             $now_role = 2;
             $event_status = 10;
-            $is_grab_order = (new HouseVillageService())->checkVillageField($village_id,'is_grab_order');
-            if($is_grab_order>0){
+            $is_grab_order = (new HouseVillageService())->checkVillageField($village_id, 'is_grab_order');
+            if ($is_grab_order > 0) {
                 $event_status = 15;  //抢单
             }
             /*
@@ -1454,7 +1527,7 @@ class HouseNewRepairService
             $uploadVideoMax = WorkOrderConst::WORK_ORDER_UPLOAD_VIDEO_MAX;
             $is_pic_video = isset($configInfo['is_pic_video']) ? intval($configInfo['is_pic_video']) : 0;
             if (is_array($videos) && count($videos) > $uploadVideoMax) {
-                throw new \think\Exception('上传视频数量不能超过'.$uploadVideoMax.'个');
+                throw new \think\Exception('上传视频数量不能超过' . $uploadVideoMax . '个');
             }
             if ($is_pic_video == 1 && empty($videos) && empty($order_imgs)) {
                 throw new \think\Exception('图片或者视频必须上传最少1个');
@@ -1490,13 +1563,13 @@ class HouseNewRepairService
             'add_time' => $now_time,
         ];
         $videos && $order['videos'] = $videos;
-        $configCustomizationService=new ConfigCustomizationService();
-        $sqAeondeLightJiangsuCustomized_judge=$configCustomizationService->getSqAeondeLightJiangsuCustomized();
-        if($sqAeondeLightJiangsuCustomized_judge && isset($data['wisdomqrcode_id']) && $data['wisdomqrcode_id']>0){
-            $order['qrcode_record_id']=$data['qrcode_record_id'];
-            $order['wisdomqrcode_id']=$data['wisdomqrcode_id'];
+        $configCustomizationService = new ConfigCustomizationService();
+        $sqAeondeLightJiangsuCustomized_judge = $configCustomizationService->getSqAeondeLightJiangsuCustomized();
+        if ($sqAeondeLightJiangsuCustomized_judge && isset($data['wisdomqrcode_id']) && $data['wisdomqrcode_id'] > 0) {
+            $order['qrcode_record_id'] = $data['qrcode_record_id'];
+            $order['wisdomqrcode_id'] = $data['wisdomqrcode_id'];
         }
-        $order['group_id']=$this->getGroupId($worker_id);
+        $order['group_id'] = $this->getGroupId($worker_id);
         try {
             $order_id = $this->addRepairOrder($order);
             if ($order_id) {
@@ -1527,11 +1600,11 @@ class HouseNewRepairService
                 if ($sqAeondeLightJiangsuCustomized_judge && isset($data['wisdomqrcode_id']) && $data['wisdomqrcode_id'] > 0) {
                     $logData['wisdomqrcode_id'] = $data['wisdomqrcode_id'];
                 }
-                $otherData='';
-                if($worker_id<1){
-                    $otherData=array('opt_type'=>'order_worker_submit','wid'=>0,'village_id'=>$village_id);
+                $otherData = '';
+                if ($worker_id < 1) {
+                    $otherData = array('opt_type' => 'order_worker_submit', 'wid' => 0, 'village_id' => $village_id);
                 }
-                $this->addRepairLog($logData,$otherData);
+                $this->addRepairLog($logData, $otherData);
                 if ($worker_id) {
                     // 查询处理人信息
                     $db_house_worker = new HouseWorker();
@@ -1551,8 +1624,8 @@ class HouseNewRepairService
                     $logData['add_time'] = $now_time;
                     $logData['village_id'] = $village_id;
                     $logData['property_id'] = $property_id;
-                    $otherData=array('opt_type'=>'assign_to_house_worker','wid'=>$worker_id,'village_id'=>$village_id);
-                    $this->addRepairLog($logData,$otherData);
+                    $otherData = array('opt_type' => 'assign_to_house_worker', 'wid' => $worker_id, 'village_id' => $village_id);
+                    $this->addRepairLog($logData, $otherData);
                     if ($jz_open) {
                         if (isset($communityConfig['not_timely_report_switch'])) {
                             $not_timely_report_switch = intval($communityConfig['not_timely_report_switch']);
@@ -1564,7 +1637,8 @@ class HouseNewRepairService
                             }
                             if ($not_timely_report_switch == 0 && $isPublic) {
                                 $noticeArr = [
-                                    'village_id' => $village_id, 'works_order_id' => $order_id,
+                                    'village_id' => $village_id,
+                                    'works_order_id' => $order_id,
                                 ];
                                 (new HouseCommunityHandleNoticeService())->tryHandlePublicToReportBox($noticeArr);
                             }
@@ -1576,8 +1650,11 @@ class HouseNewRepairService
                         $configId = $serviceHouseCommunityWorkOrder->addHouseCommunityWorkOrderConfig($workOrderConfig);
                         if ($worker_id) {
                             $workRecord = [
-                                'worker_id' => $worker_id, 'village_id' => $village_id, 'property_id' => $property_id,
-                                'works_order_id' => $order_id, 'latest_receive_time' => $now_time
+                                'worker_id' => $worker_id,
+                                'village_id' => $village_id,
+                                'property_id' => $property_id,
+                                'works_order_id' => $order_id,
+                                'latest_receive_time' => $now_time
                             ];
                             $serviceHouseCommunityWorkOrder->handleWorkOrderWorkRecord($workRecord);
                         }
@@ -1585,8 +1662,13 @@ class HouseNewRepairService
                             $workName = isset($house_work['name']) && $house_work['name'] ? trim($house_work['name']) : '';
                             $workPhone = isset($house_work['phone']) && $house_work['phone'] ? trim($house_work['phone']) : '';
                             $handleParams = [
-                                'configId' => $configId, 'village_id' => $village_id, 'communityConfig' => $communityConfig,
-                                'nowTime' => $now_time, 'worker_id' => $worker_id, 'workName' => $workName, 'workPhone' => $workPhone,
+                                'configId' => $configId,
+                                'village_id' => $village_id,
+                                'communityConfig' => $communityConfig,
+                                'nowTime' => $now_time,
+                                'worker_id' => $worker_id,
+                                'workName' => $workName,
+                                'workPhone' => $workPhone,
                                 'works_order_id' => $order_id,
                             ];
                             $serviceHouseCommunityWorkOrder->handleIncreaseWorkOrderConfig($handleParams);
@@ -1606,7 +1688,7 @@ class HouseNewRepairService
                     }
                 }
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             fdump_api(['file' => $e->getFile(), 'code' => $e->getCode(), 'mes' => $e->getMessage(), 'line' => $e->getLine()], '$1tryCatchErrLog', 1);
             throw new \think\Exception($e->getMessage());
         }
@@ -1630,7 +1712,7 @@ class HouseNewRepairService
      * @author: wanzy
      * @date_time: 2021/8/18 11:57
      */
-    public function workGetOrder($order_id, $worker_id, $login_role, $is_arr = false, $is_word = false, $params =[])
+    public function workGetOrder($order_id, $worker_id, $login_role, $is_arr = false, $is_word = false, $params = [])
     {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
         $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
@@ -1640,12 +1722,12 @@ class HouseNewRepairService
         $order_detail = $db_house_new_repair_works_order->getOne($where_order);
         if (empty($order_detail)) {
             throw new \think\Exception('对应工单不存在');
-        }else{
+        } else {
             $order_detail = $order_detail->toArray();
         }
         !$nowVillageId && $nowVillageId = isset($order_detail['now_handle_village_id']) ? intval($order_detail['now_handle_village_id']) : 0;
         !$nowVillageId && $nowVillageId = isset($order_detail['village_id']) ? intval($order_detail['village_id']) : 0;
-        if($login_role != HouseWorkConst::MANAGE_APP_VILLAGE_WORK && $order_detail['event_status'] == 15){
+        if ($login_role != HouseWorkConst::MANAGE_APP_VILLAGE_WORK && $order_detail['event_status'] == 15) {
             $order_detail['event_status'] = 10;
         }
         $db_house_new_repair_subject = new HouseNewRepairSubject();
@@ -1696,9 +1778,9 @@ class HouseNewRepairService
                     $order_detail['other_cate_fid_txt'] = $other_cat_parent_info['cate_name'];
                 }
             }
-            
+
             // 工单类别
-            $type_info=[];
+            $type_info = [];
             if (isset($order_detail['type_id']) && $order_detail['type_id']) {
                 $whereType = [];
                 $whereType[] = ['id', '=', $order_detail['type_id']];
@@ -1712,7 +1794,7 @@ class HouseNewRepairService
                 $order_detail['type_id_txt'] = $type_info['subject_name'];
             }
             // 工单类目
-            $category_info=[];
+            $category_info = [];
             if (isset($order_detail['category_id']) && $order_detail['category_id']) {
                 $whereCategory = [];
                 $whereCategory[] = ['id', '=', $order_detail['category_id']];
@@ -1727,7 +1809,7 @@ class HouseNewRepairService
             }
         }
         $dbHouseWorker = new HouseWorker();
-        $is_post = false;// 是否是提交工单人员
+        $is_post = false; // 是否是提交工单人员
         $is_worker = false; // 是否是工单当前处理人员
         $is_through = false; //是否经过
         $is_admin = false; //管理身份
@@ -1742,9 +1824,9 @@ class HouseNewRepairService
             case HouseWorkConst::MANAGE_APP_VILLAGE_WORK:
                 $order_type = 4;
                 // 小区物业工作人员
-                $where_log_through[] = ['operator_type','>=',30];
-                $where_log_through[] = ['operator_id','=',$worker_id];
-                if (isset($order_detail['order_type']) && $order_detail['order_type']==$order_type && isset($order_detail['uid']) && $worker_id==$order_detail['uid'] && $order_detail['event_status']!=15) {
+                $where_log_through[] = ['operator_type', '>=', 30];
+                $where_log_through[] = ['operator_id', '=', $worker_id];
+                if (isset($order_detail['order_type']) && $order_detail['order_type'] == $order_type && isset($order_detail['uid']) && $worker_id == $order_detail['uid'] && $order_detail['event_status'] != 15) {
                     $is_post = true;
                     $is_through = true;
                 }
@@ -1755,11 +1837,11 @@ class HouseNewRepairService
                     // 如果是工作人员 查询下 上次操作记录
                     // 查询下 最后一次非本人操作
                     $where_log_last = [];
-                    $where_log_last[] = ['order_id','=',$order_id];
-                    $where_log_last[] = ['operator_id','<>',$worker_id];
-                    $where_log_last[] = ['operator_type','>=',30];
-                    $where_log_last[] = ['operator_type','<',40];
-                    $where_log_last[] = ['log_name','not in', ['refuse_project_nums_report', 'refuse_order_nums_report', 'not_over_stars_report', 'over_timely_report', 'over_not_processed_report_time', 'public_report']];
+                    $where_log_last[] = ['order_id', '=', $order_id];
+                    $where_log_last[] = ['operator_id', '<>', $worker_id];
+                    $where_log_last[] = ['operator_type', '>=', 30];
+                    $where_log_last[] = ['operator_type', '<', 40];
+                    $where_log_last[] = ['log_name', 'not in', ['refuse_project_nums_report', 'refuse_order_nums_report', 'not_over_stars_report', 'over_timely_report', 'over_not_processed_report_time', 'public_report']];
                     $log_last = $db_house_new_repair_works_order_log->getOne($where_log_last, true);
                     if (empty($log_last)) {
                         $log_last = [];
@@ -1776,9 +1858,9 @@ class HouseNewRepairService
                     $is_post = true;
                     $is_through = true;
                 }
-                $where_log_through[] = ['operator_type','>=',20];
-                $where_log_through[] = ['operator_type','<',30];
-                $where_log_through[] = ['operator_id','=',$worker_id];
+                $where_log_through[] = ['operator_type', '>=', 20];
+                $where_log_through[] = ['operator_type', '<', 30];
+                $where_log_through[] = ['operator_id', '=', $worker_id];
 
                 $is_admin = true; //管理身份
                 $is_house_admin = true; //小区物业管理人员身份
@@ -1793,9 +1875,9 @@ class HouseNewRepairService
                     $is_post = true;
                     $is_through = true;
                 }
-                $where_log_through[] = ['operator_type','>=',20];
-                $where_log_through[] = ['operator_type','<',30];
-                $where_log_through[] = ['operator_id','=',$worker_id];
+                $where_log_through[] = ['operator_type', '>=', 20];
+                $where_log_through[] = ['operator_type', '<', 30];
+                $where_log_through[] = ['operator_id', '=', $worker_id];
                 $is_admin = true; //管理身份
                 $assign_type = 'property_work_assign'; //指派类型
                 $reply_type = 'property_work_reply'; //回复类型
@@ -1808,9 +1890,9 @@ class HouseNewRepairService
                     $is_post = true;
                     $is_through = true;
                 }
-                $where_log_through[] = ['operator_type','>=',20];
-                $where_log_through[] = ['operator_type','<',30];
-                $where_log_through[] = ['operator_id','=',$worker_id];
+                $where_log_through[] = ['operator_type', '>=', 20];
+                $where_log_through[] = ['operator_type', '<', 30];
+                $where_log_through[] = ['operator_id', '=', $worker_id];
                 $is_admin = true; //管理身份
                 $assign_type = 'property_admin_assign'; //指派类型
                 $reply_type = 'property_admin_reply'; //回复类型
@@ -1829,8 +1911,8 @@ class HouseNewRepairService
             throw new \think\Exception('您当前账号不能查看该工单信息');
         }
 
-        if($order_detail['event_status'] == 15){
-            $this->checkGrabOrder(1,$order_detail['village_id'],$worker_id,$order_detail);
+        if ($order_detail['event_status'] == 15) {
+            $this->checkGrabOrder(1, $order_detail['village_id'], $worker_id, $order_detail);
         }
 
         if (isset($order_detail['event_status']) && isset($this->order_work_status_txt[$order_detail['event_status']])) {
@@ -1852,7 +1934,7 @@ class HouseNewRepairService
         $log = [];
         $order_log = 'add_time DESC';
         $where_log = [];
-        $where_log[] = ['order_id','=',$order_id];
+        $where_log[] = ['order_id', '=', $order_id];
         $log_new = $db_house_new_repair_works_order_log->getOne($where_log, true);
         if (!empty($log_new)) {
             $children = [];
@@ -1890,7 +1972,7 @@ class HouseNewRepairService
         }
         $order_detail['jz_open'] = $jz_open ? 1 : 0;
         $order_detail['auth_edit_cate'] = $auth_edit_cate;
-        
+
         $title_status = '工单状态';
         if (isset($order_detail['event_status']) && $order_detail['event_status']) {
             // 10 未指派 20 已指派 30 处理中 40已办结 50 已撤回 60已关闭 70已评价
@@ -1912,8 +1994,8 @@ class HouseNewRepairService
                 } elseif ($is_admin && !$is_house_admin) {
                     //  物业总管理人员及物业普通管理员
                     $order_detail['change_status'] = [
-                        ['log' => $assign_type,'type'=>'choose_work', 'name' => '指派'],
-                        ['log' => $reply_type,'type'=>'', 'name' => '回复'],
+                        ['log' => $assign_type, 'type' => 'choose_work', 'name' => '指派'],
+                        ['log' => $reply_type, 'type' => '', 'name' => '回复'],
                     ];
                     if ($is_word) {
                         $order_detail['change_status_word'] = [$assign_type, $reply_type];
@@ -1934,7 +2016,7 @@ class HouseNewRepairService
                 if ($is_word) {
                     $change_status_word = [];
                 }
-                if  ($is_worker) {
+                if ($is_worker) {
                     $is_developer = 0;
                     $is_constructor = 0;
                     $change_status = [];
@@ -1964,7 +2046,7 @@ class HouseNewRepairService
                     $hasWorkPushScheme = 0;
                     if (!$jz_open) {
                         $work_follow_up_text = '跟进';
-                        $change_status[] = ['log' => 'work_follow_up','type'=>'', 'name' => $work_follow_up_text];
+                        $change_status[] = ['log' => 'work_follow_up', 'type' => '', 'name' => $work_follow_up_text];
                         if ($is_word) {
                             $change_status_word[] = 'work_follow_up';
                         }
@@ -1975,8 +2057,11 @@ class HouseNewRepairService
                             $single_id = isset($order_detail['single_id']) && intval($order_detail['single_id']) > 0 ? intval($order_detail['single_id']) : 0;
                             $room_id = isset($order_detail['room_id']) && intval($order_detail['room_id']) > 0 ? intval($order_detail['room_id']) : 0;
                             $judgeParams = [
-                                'village_id' => $order_detail['village_id'], 'repair_cate_id' => $order_detail['cat_id'],
-                                'jz_open' => $jz_open, 'single_id' => $single_id, 'room_id' => $room_id,
+                                'village_id' => $order_detail['village_id'],
+                                'repair_cate_id' => $order_detail['cat_id'],
+                                'jz_open' => $jz_open,
+                                'single_id' => $single_id,
+                                'room_id' => $room_id,
                             ];
                             $hasFee = (new HouseCommunityQualityService())->judgeRepairCateQualityFee($judgeParams);
                         } else {
@@ -1986,7 +2071,7 @@ class HouseNewRepairService
                         if ($subject_info['charge_type'] == 1 && !$hasFee) {
                             $hasWorkPushScheme = 1;
                             $work_follow_up_text = '推送方案';
-                            $change_status[] = ['log' => 'work_push_scheme','type'=>'', 'name' => $work_follow_up_text];
+                            $change_status[] = ['log' => 'work_push_scheme', 'type' => '', 'name' => $work_follow_up_text];
                             if ($is_word) {
                                 $change_status_word[] = 'work_push_scheme';
                             }
@@ -1994,8 +2079,8 @@ class HouseNewRepairService
                     }
                     if ($order_detail['event_status'] != 37 && !$noHasLogName) {
                         // 用户拒绝工单不允许结单和拒绝
-                        if (! $hasWorkPushScheme) {
-                            $change_status[] = ['log' => 'work_completed','type'=>'', 'name' => $work_completed_text];
+                        if (!$hasWorkPushScheme) {
+                            $change_status[] = ['log' => 'work_completed', 'type' => '', 'name' => $work_completed_text];
                             if ($is_word) {
                                 // 用户拒绝工单不允许结单和拒绝
                                 $change_status_word[] = 'work_completed';
@@ -2004,29 +2089,29 @@ class HouseNewRepairService
                         if (isset($log_new['operator_id']) && $log_new['operator_id']) {
                             $lastWorkInfo = (new HouseWorker())->getOne(['wid' => $log_new['operator_id']], 'wid, village_id');
                             if (isset($lastWorkInfo['village_id']) && $nowVillageId && $lastWorkInfo['village_id'] == $nowVillageId) {
-                                $change_status[] = ['log' => 'work_reject','type'=>'', 'name' => $work_reject_text];
+                                $change_status[] = ['log' => 'work_reject', 'type' => '', 'name' => $work_reject_text];
                                 if ($is_word) {
                                     $change_status_word[] = 'work_reject';
                                 }
                             }
                         }
                     }
-                    
+
                     if ($is_developer == 1 && $is_constructor != 1) {
-                        array_unshift($change_status, ['log' => 'work_change_constructor','type'=>'choose_work', 'name' => '转单施工方']);
+                        array_unshift($change_status, ['log' => 'work_change_constructor', 'type' => 'choose_work', 'name' => '转单施工方']);
                         $change_status = array_values($change_status);
                         if ($is_word) {
                             $change_status_word[] = 'work_change_constructor';
                         }
                     }
                     if ($is_constructor != 1 && (!$jz_open || !$noHasLogName)) {
-                        $change_status[] = ['log' => 'work_change','type'=>'choose_work', 'name' => '转单'];
+                        $change_status[] = ['log' => 'work_change', 'type' => 'choose_work', 'name' => '转单'];
                         if ($is_word) {
                             $change_status_word[] = 'work_change';
                         }
                     }
                     if ($is_developer == 1 && $is_constructor != 1) {
-                        $change_status[] = ['log' => 'reject_to_developer','type'=>'', 'name' => '退回（楼栋管家）'];
+                        $change_status[] = ['log' => 'reject_to_developer', 'type' => '', 'name' => '退回（楼栋管家）'];
                         if ($is_word) {
                             $change_status_word[] = 'reject_to_developer';
                         }
@@ -2093,7 +2178,7 @@ class HouseNewRepairService
                             }
                         }
                         // 判断下 是否可以获取对应联系方式
-                        if (! empty($logJzArr)) {
+                        if (!empty($logJzArr)) {
                             foreach ($logJzArr as $itemJz) {
                                 $change_status[] = ['log' => $itemJz['log'], 'type' => $itemJz['type'], 'name' => $itemJz['name'], 'fill_content' => $itemJz['fill_content']];
                                 if ($is_word) {
@@ -2104,21 +2189,21 @@ class HouseNewRepairService
                     }
                     $log_last_name = isset($log_last['log_name']) && trim($log_last['log_name']) ? trim($log_last['log_name']) : '';
                     if ($log_last_name == 'agree_constructor_project' && $is_developer == 1 && $is_constructor == 1) {
-//                        $work_follow_up_text = "施工方跟进";
+                        //                        $work_follow_up_text = "施工方跟进";
                         $work_completed_text = "施工方结单";
                         $work_reject_text = "施工方拒绝";
                         $change_status = [];
                         if ($is_word) {
                             $change_status_word = [];
                         }
-//                        $change_status[] = ['log' => 'work_follow_up','type'=>'', 'name' => $work_follow_up_text];
-//                        if ($is_word) {
-//                            $change_status_word[] = 'work_follow_up';
-//                        }
+                        //                        $change_status[] = ['log' => 'work_follow_up','type'=>'', 'name' => $work_follow_up_text];
+                        //                        if ($is_word) {
+                        //                            $change_status_word[] = 'work_follow_up';
+                        //                        }
                         if ($order_detail['event_status'] != 37) {
                             // 用户拒绝工单不允许结单和拒绝
-                            $change_status[] = ['log' => 'work_completed','type'=>'', 'name' => $work_completed_text];
-                            $change_status[] = ['log' => 'work_reject','type'=>'', 'name' => $work_reject_text];
+                            $change_status[] = ['log' => 'work_completed', 'type' => '', 'name' => $work_completed_text];
+                            $change_status[] = ['log' => 'work_reject', 'type' => '', 'name' => $work_reject_text];
                             if ($is_word) {
                                 // 用户拒绝工单不允许结单和拒绝
                                 $change_status_word[] = 'work_completed';
@@ -2129,7 +2214,7 @@ class HouseNewRepairService
                         $change_status = [];
                         $change_status[] = ['log' => 'agree_constructor_project', 'type' => '', 'name' => '同意施工方案'];
                         $change_status[] = ['log' => 'reject_constructor_project', 'type' => '', 'name' => '拒绝施工方案'];
-                        $change_status[] = ['log' => 'reject_to_developer','type'=>'', 'name' => '退回（楼栋管家）'];
+                        $change_status[] = ['log' => 'reject_to_developer', 'type' => '', 'name' => '退回（楼栋管家）'];
                         if ($is_word) {
                             $change_status_word = [];
                             $change_status_word[] = 'agree_constructor_project';
@@ -2139,8 +2224,8 @@ class HouseNewRepairService
                     } elseif (in_array($log_last_name, ['work_change', 'work_change_constructor', 'reject_constructor_project'])) {
                         // 被人转单可以拒绝回转单人员
                         if ($is_developer == 1 && $is_constructor == 1) {
-//                            array_unshift($change_status, ['log' => 'constructor_reject_change', 'type' => '', 'name' => '提供施工方案']);
-//                            $change_status = array_values($change_status);
+                            //                            array_unshift($change_status, ['log' => 'constructor_reject_change', 'type' => '', 'name' => '提供施工方案']);
+                            //                            $change_status = array_values($change_status);
                             $change_status = [];
                             $change_status[] = ['log' => 'constructor_reject_change', 'type' => '', 'name' => '提供施工方案'];
                             if ($is_word) {
@@ -2159,17 +2244,17 @@ class HouseNewRepairService
                         }
                     } elseif ($log_last_name == 'center_assign_work') {
                         // 被人转单可以拒绝回转单人员
-//                        if ($is_developer == 1 && $is_constructor == 1) {
-//                            $change_status[] = ['log' => 'constructor_reject_center', 'name' => '提供施工方案给处理中心', 'type' => ''];
-//                            if ($is_word) {
-//                                $change_status_word[] = 'constructor_reject_center';
-//                            }
-//                        } else {
-//                            $change_status[] = ['log' => 'work_reject_center', 'name' => '驳回给处理中心', 'type' => ''];
-//                            if ($is_word) {
-//                                $change_status_word[] = 'work_reject_center';
-//                            }
-//                        }
+                        //                        if ($is_developer == 1 && $is_constructor == 1) {
+                        //                            $change_status[] = ['log' => 'constructor_reject_center', 'name' => '提供施工方案给处理中心', 'type' => ''];
+                        //                            if ($is_word) {
+                        //                                $change_status_word[] = 'constructor_reject_center';
+                        //                            }
+                        //                        } else {
+                        //                            $change_status[] = ['log' => 'work_reject_center', 'name' => '驳回给处理中心', 'type' => ''];
+                        //                            if ($is_word) {
+                        //                                $change_status_word[] = 'work_reject_center';
+                        //                            }
+                        //                        }
                         $change_status[] = ['log' => 'work_reject_center', 'name' => '驳回给处理中心', 'type' => ''];
                         if ($is_word) {
                             $change_status_word[] = 'work_reject_center';
@@ -2195,15 +2280,15 @@ class HouseNewRepairService
                         $order_detail['change_status_word'][] = 'closed';
                     }
                 }
-                if (!empty($order_detail['rule_id'])){
-                    $db_house_new_charge_rule=new HouseNewChargeRule();
-                    $field='r.charge_name,p.name';
-                    $rule_info=$db_house_new_charge_rule->getFind(['r.id'=>$order_detail['rule_id']],$field);
-                    $rule_info['pay_type']=  $order_detail['pay_type'];
-                    if ($order_detail['pay_type']==2){
-                        $rule_info['offline_pay_type']=  $order_detail['offline_pay_type'];
-                    }else{
-                        $rule_info['offline_pay_type']=0;
+                if (!empty($order_detail['rule_id'])) {
+                    $db_house_new_charge_rule = new HouseNewChargeRule();
+                    $field = 'r.charge_name,p.name';
+                    $rule_info = $db_house_new_charge_rule->getFind(['r.id' => $order_detail['rule_id']], $field);
+                    $rule_info['pay_type'] = $order_detail['pay_type'];
+                    if ($order_detail['pay_type'] == 2) {
+                        $rule_info['offline_pay_type'] = $order_detail['offline_pay_type'];
+                    } else {
+                        $rule_info['offline_pay_type'] = 0;
                     }
                     $order_detail['rule_info'] = $rule_info;
                 }
@@ -2223,7 +2308,7 @@ class HouseNewRepairService
                 }
                 if ($is_post) {
                     // 也是上报人员
-                   //$order_detail['change_status'][] = ['log' => 'evaluate','type'=>'evaluate', 'name' => '评价'];
+                    //$order_detail['change_status'][] = ['log' => 'evaluate','type'=>'evaluate', 'name' => '评价'];
                     if (!$jz_open) {
                         $order_detail['change_status'][] = ['log' => 'reopen', 'type' => '', 'name' => '重新打开'];
                         $order_detail['change_status'][] = ['log' => 'recall', 'type' => '', 'name' => '撤回'];
@@ -2237,13 +2322,13 @@ class HouseNewRepairService
                         $order_detail['change_status_word'][] = 'recall';
                         $order_detail['change_status_word'][] = 'closed';
                     }
-                }else if($is_worker && $order_detail['order_type']==5){
+                } else if ($is_worker && $order_detail['order_type'] == 5) {
                     $order_detail['change_status'][] = ['log' => 'closed', 'type' => '', 'name' => '关闭'];
                     $order_detail['change_status_word'][] = 'closed';
                 }
             } elseif ($order_detail['event_status'] >= 50 && $order_detail['event_status'] < 70) {
                 // 已撤回 已关闭
-                if($is_post && !$jz_open){
+                if ($is_post && !$jz_open) {
                     // 也是上报人员
                     $order_detail['change_status'][] = ['log' => 'reopen', 'type' => '', 'name' => '重新打开'];
                     if ($is_word) {
@@ -2295,13 +2380,13 @@ class HouseNewRepairService
         }
         $now_handle_village_id = isset($order_detail['now_handle_village_id']) ? intval($order_detail['now_handle_village_id']) : 0;
         $order_village_id = isset($order_detail['village_id']) ? intval($order_detail['village_id']) : 0;
-//        if ($jz_open && $now_handle_village_id && $order_village_id && $order_village_id != $now_handle_village_id) {
-//            $order_detail['pay_type']=[['key'=>'2','type'=>'线下缴费']];
-//        }
-        if ($order_detail['bind_id']==0){
-            $order_detail['pay_type']=[['key'=>'2','type'=>'线下缴费']];
-        }else{
-            $order_detail['pay_type']=[['key'=>'1','type'=>'线上缴费'],['key'=>'2','type'=>'线下缴费']];
+        //        if ($jz_open && $now_handle_village_id && $order_village_id && $order_village_id != $now_handle_village_id) {
+        //            $order_detail['pay_type']=[['key'=>'2','type'=>'线下缴费']];
+        //        }
+        if ($order_detail['bind_id'] == 0) {
+            $order_detail['pay_type'] = [['key' => '2', 'type' => '线下缴费']];
+        } else {
+            $order_detail['pay_type'] = [['key' => '1', 'type' => '线上缴费'], ['key' => '2', 'type' => '线下缴费']];
         }
         if ($is_arr && $order_detail) {
             $order_arr = [];
@@ -2344,7 +2429,7 @@ class HouseNewRepairService
                 $room_id = intval($order_detail['room_id']);
                 $db_house_village_user_vacancy = new HouseVillageUserVacancy();
                 $where_room = [];
-                $where_room[] = ['pigcms_id','=', $room_id];
+                $where_room[] = ['pigcms_id', '=', $room_id];
                 $field_room = 'pigcms_id, room, village_id, single_id, floor_id, layer_id';
                 $room_info = $db_house_village_user_vacancy->getOne($where_room, $field_room);
                 if (isset($order_detail['single_id']) && $order_detail['single_id']) {
@@ -2462,17 +2547,27 @@ class HouseNewRepairService
             ];
             if (isset($order_detail['other_cate_id_txt']) && $order_detail['other_cate_id_txt']) {
                 $order_arr[] = [
-                    'title' => '供暖站工单类目', 'type' => 1, 'content' => $order_detail['other_cate_id_txt'],
-                    'content_color' => '', 'children' => [], 'imgs' => [], 'videos' => [],
+                    'title' => '供暖站工单类目',
+                    'type' => 1,
+                    'content' => $order_detail['other_cate_id_txt'],
+                    'content_color' => '',
+                    'children' => [],
+                    'imgs' => [],
+                    'videos' => [],
                 ];
             }
             if (isset($order_detail['other_cate_fid_txt']) && $order_detail['other_cate_fid_txt']) {
                 $order_arr[] = [
-                    'title' => '供暖站工单分类', 'type' => 1, 'content' => $order_detail['other_cate_fid_txt'],
-                    'content_color' => '', 'children' => [], 'imgs' => [], 'videos' => [],
+                    'title' => '供暖站工单分类',
+                    'type' => 1,
+                    'content' => $order_detail['other_cate_fid_txt'],
+                    'content_color' => '',
+                    'children' => [],
+                    'imgs' => [],
+                    'videos' => [],
                 ];
             }
-            
+
             $label_txt = '无';
             if (isset($order_detail['label_txt']) && trim($order_detail['label_txt'], ',')) {
                 $db_house_new_repair_cate_custom = new HouseNewRepairCateCustom();
@@ -2510,10 +2605,10 @@ class HouseNewRepairService
             ];
             if (isset($order_detail['order_imgs']) && $order_detail['order_imgs']) {
                 $order_imgs = $order_detail['order_imgs'];
-                if (strpos($order_imgs,';') !== false) {
-                    $order_imgs = explode(';',$order_imgs);
-                } elseif($order_imgs) {
-                    $order_imgs = explode(',',$order_imgs);
+                if (strpos($order_imgs, ';') !== false) {
+                    $order_imgs = explode(';', $order_imgs);
+                } elseif ($order_imgs) {
+                    $order_imgs = explode(',', $order_imgs);
                 }
                 if ($order_imgs) {
                     $order_imgs_arr = [];
@@ -2540,10 +2635,10 @@ class HouseNewRepairService
             $order_arr[] = $order_image;
             if (isset($order_detail['videos']) && $order_detail['videos']) {
                 $order_videos = $order_detail['videos'];
-                if (strpos($order_videos,';') !== false) {
-                    $order_videos = explode(';',$order_videos);
-                } elseif($order_videos) {
-                    $order_videos = explode(',',$order_videos);
+                if (strpos($order_videos, ';') !== false) {
+                    $order_videos = explode(';', $order_videos);
+                } elseif ($order_videos) {
+                    $order_videos = explode(',', $order_videos);
                 }
                 if ($order_videos) {
                     $order_videos_arr = [];
@@ -2572,10 +2667,10 @@ class HouseNewRepairService
                 $order_video['content'] = '';
                 $order_video['videos'] = $order_detail['order_videos_arr'];
                 $order_arr[] = $order_video;
-            } elseif($jz_open) {
+            } elseif ($jz_open) {
                 $order_arr[] = $order_video;
             }
-            
+
             if (isset($order_detail['event_status_txt']) && $order_detail['event_status_txt']) {
                 if (intval($order_detail['event_status']) == 35) {
                     $order_detail['event_status_txt'] .= "（待用户同意）";
@@ -2642,7 +2737,7 @@ class HouseNewRepairService
 
             $order_detail['order_arr'] = $order_arr;
         }
-//        $order_detail['event_status'] = floor($order_detail['event_status']/10)*10;
+        //        $order_detail['event_status'] = floor($order_detail['event_status']/10)*10;
         if ($order_detail['event_status'] < 20 && $order_detail['event_status'] != 15) {
             $order_detail['event_status'] = 10;
         } elseif ($order_detail['event_status'] >= 20 && $order_detail['event_status'] < 40) {
@@ -2650,7 +2745,7 @@ class HouseNewRepairService
         } elseif ($order_detail['event_status'] >= 40 && $order_detail['event_status'] < 49) {
             $order_detail['event_status'] = 40;
         }
-        $order_detail['is_grab_order']=($order_detail['event_status'] == 15) ? true: false;
+        $order_detail['is_grab_order'] = ($order_detail['event_status'] == 15) ? true : false;
         return $order_detail;
     }
 
@@ -2674,7 +2769,7 @@ class HouseNewRepairService
         $site_url = cfg('site_url');
         $static_resources = static_resources(true);
         $log = isset($params['log']) && trim($params['log']) ? trim($params['log']) : '';
-        
+
         $dbHouseWorker = new HouseWorker();
         $db_property_group = new PropertyGroup();
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
@@ -2697,7 +2792,7 @@ class HouseNewRepairService
             if (!empty($common_wids)) {
                 $where_enterprise_works[] = ['wid', 'not in', $common_wids];
             }
-            if($village_id){
+            if ($village_id) {
                 $where_enterprise_works[] = ['village_id', '=', $village_id];
             }
             if ('work_change_constructor' == $log) {
@@ -2713,7 +2808,10 @@ class HouseNewRepairService
                     $name = $item1['name'];
                     $is_constructor == 1 && $name = $name . "（施工方）";
                     $enterprise_works_arr[] = [
-                        'work_id' => $item1['wid'], 'name' => $name, 'avatar' => $item1['avatar'], 'type' => 'work'
+                        'work_id' => $item1['wid'],
+                        'name' => $name,
+                        'avatar' => $item1['avatar'],
+                        'type' => 'work'
                     ];
                 }
             }
@@ -2723,7 +2821,7 @@ class HouseNewRepairService
             $where_enterprise_group[] = ['property_id', '=', $property_id];
             $where_enterprise_group[] = ['status', '=', 1];
             $where_enterprise_group[] = ['is_del', '=', 0];
-            if($village_id){
+            if ($village_id) {
                 $where_enterprise_group[] = ['village_id', '=', $village_id];
             }
             $property_group_info = $db_property_group->getList($where_enterprise_group, 'id,name,sort', 0, 0, 'sort DESC,id ASC');
@@ -2732,7 +2830,10 @@ class HouseNewRepairService
                     $item2['avatar'] = $site_url . $static_resources . 'images/Structural.png';
                     $name = $item2['name'];
                     $enterprise_works_arr[] = [
-                        'group_id' => $item2['id'], 'name' => $name, 'avatar' => $item2['avatar'], 'type' => 'group'
+                        'group_id' => $item2['id'],
+                        'name' => $name,
+                        'avatar' => $item2['avatar'],
+                        'type' => 'group'
                     ];
                 }
             }
@@ -2743,8 +2844,7 @@ class HouseNewRepairService
                 ];
                 $work_arr[] = $block;
             }
-        } 
-        elseif (!$group_id) {
+        } elseif (!$group_id) {
             $assign = 1;
             if ($order_detail['event_status'] < 20 && $order_detail['event_status'] >= 10 && $type_name == 'choose_work') {
                 $assign = 0;
@@ -2759,13 +2859,13 @@ class HouseNewRepairService
             }
             // 查询下同部门的
             if (HouseWorkConst::MANAGE_APP_VILLAGE_WORK == $login_role && $assign) {
-                $where[] = ['wid','=',$worker_id];
-                $work_info = $dbHouseWorker->getOne($where,'wid, village_id, property_id, name, department_id, status');
+                $where[] = ['wid', '=', $worker_id];
+                $work_info = $dbHouseWorker->getOne($where, 'wid, village_id, property_id, name, department_id, status');
                 if (!$property_id && $work_info && isset($work_info['property_id'])) {
                     $property_id = $work_info['property_id'];
                 }
-                if($order_village_id>0 && $order_village_id!=$work_info['village_id']){
-                    $work_info=array();
+                if ($order_village_id > 0 && $order_village_id != $work_info['village_id']) {
+                    $work_info = array();
                 }
                 if ($work_info && isset($work_info['department_id'])) {
                     $department_id = intval($work_info['department_id']);
@@ -2774,7 +2874,7 @@ class HouseNewRepairService
                     $where_common_group[] = ['property_id', '=', $property_id];
                     $where_common_group[] = ['status', '=', 1];
                     $where_common_group[] = ['is_del', '=', 0];
-                    if($village_id){
+                    if ($village_id) {
                         $where_common_group[] = ['village_id', '=', $village_id];
                     }
                     if (!empty($common_wids)) {
@@ -2793,7 +2893,10 @@ class HouseNewRepairService
                             $name = $item['name'];
                             $is_constructor && $name = $name . "（施工方）";
                             $common_works[] = [
-                                'work_id' => $item['wid'], 'name' => $name, 'avatar' => $item['avatar'], 'type' => 'work'
+                                'work_id' => $item['wid'],
+                                'name' => $name,
+                                'avatar' => $item['avatar'],
+                                'type' => 'work'
                             ];
                             $common_wids[] = $item['wid'];
                         }
@@ -2812,10 +2915,10 @@ class HouseNewRepairService
             $where_paren_group[] = ['property_id', '=', $property_id];
             $where_paren_group[] = ['status', '=', 1];
             $where_paren_group[] = ['is_del', '=', 0];
-            if($village_id){
+            if ($village_id) {
                 $where_paren_group[] = ['type', '=', 0];
                 $where_paren_group[] = ['village_id', '=', $village_id];
-            }else{
+            } else {
                 $where_paren_group[] = ['fid', '=', 0];
                 $where_paren_group[] = ['type', '=', 99];
             }
@@ -2832,7 +2935,7 @@ class HouseNewRepairService
                 if (!empty($common_wids)) {
                     $where_enterprise_works[] = ['wid', 'not in', $common_wids];
                 }
-                if($village_id){
+                if ($village_id) {
                     $where_enterprise_works[] = ['village_id', '=', $village_id];
                 }
                 if ('work_change_constructor' == $log) {
@@ -2848,7 +2951,10 @@ class HouseNewRepairService
                         $name = $item1['name'];
                         $is_constructor && $name = $name . "（施工方）";
                         $enterprise_works_arr[] = [
-                            'work_id' => $item1['wid'], 'name' => $name, 'avatar' => $item1['avatar'], 'type' => 'work'
+                            'work_id' => $item1['wid'],
+                            'name' => $name,
+                            'avatar' => $item1['avatar'],
+                            'type' => 'work'
                         ];
                     }
                 }
@@ -2858,7 +2964,7 @@ class HouseNewRepairService
                 $where_enterprise_group[] = ['property_id', '=', $property_id];
                 $where_enterprise_group[] = ['status', '=', 1];
                 $where_enterprise_group[] = ['is_del', '=', 0];
-                if($village_id){
+                if ($village_id) {
                     $where_enterprise_group[] = ['village_id', '=', $village_id];
                 }
                 $property_group_info = $db_property_group->getList($where_enterprise_group, 'id,name,sort', 0, 0, 'sort DESC,id ASC');
@@ -2867,7 +2973,10 @@ class HouseNewRepairService
                         $item2['avatar'] = $site_url . $static_resources . 'images/Structural.png';
                         $name = $item2['name'];
                         $enterprise_works_arr[] = [
-                            'group_id' => $item2['id'], 'name' => $name, 'avatar' => $item2['avatar'], 'type' => 'group'
+                            'group_id' => $item2['id'],
+                            'name' => $name,
+                            'avatar' => $item2['avatar'],
+                            'type' => 'group'
                         ];
                     }
                 }
@@ -2879,8 +2988,7 @@ class HouseNewRepairService
                     $work_arr[] = $block;
                 }
             }
-        }
-        else {
+        } else {
             // 查询对应企业通讯录 对应工作人员
             $where_enterprise_works = [];
             $where_enterprise_works[] = ['department_id', '=', $group_id];
@@ -2893,7 +3001,7 @@ class HouseNewRepairService
             if (!empty($common_wids)) {
                 $where_enterprise_works[] = ['wid', 'not in', $common_wids];
             }
-            if($village_id){
+            if ($village_id) {
                 $where_enterprise_works[] = ['village_id', '=', $village_id];
             }
             if (!empty($common_wids)) {
@@ -2912,7 +3020,10 @@ class HouseNewRepairService
                     $name = $item1['name'];
                     $is_constructor && $name = $name . "（施工方）";
                     $enterprise_works_arr[] = [
-                        'work_id' => $item1['wid'], 'name' => $name, 'avatar' => $item1['avatar'], 'type' => 'work'
+                        'work_id' => $item1['wid'],
+                        'name' => $name,
+                        'avatar' => $item1['avatar'],
+                        'type' => 'work'
                     ];
                 }
             }
@@ -2922,7 +3033,7 @@ class HouseNewRepairService
             $where_enterprise_group[] = ['property_id', '=', $property_id];
             $where_enterprise_group[] = ['status', '=', 1];
             $where_enterprise_group[] = ['is_del', '=', 0];
-            if($village_id){
+            if ($village_id) {
                 $where_enterprise_group[] = ['village_id', '=', $village_id];
             }
             $property_group_info = $db_property_group->getList($where_enterprise_group, 'id,name,sort,village_id ', 0, 0, 'sort DESC,id ASC');
@@ -2931,8 +3042,11 @@ class HouseNewRepairService
                     $item2['avatar'] = $site_url . $static_resources . 'images/Structural.png';
                     $name = $item2['name'];
                     $enterprise_works_arr[] = [
-                        'group_id' => $item2['id'], 'village_id'=> $item2['village_id'], 'name' => $name,
-                        'avatar' => $item2['avatar'], 'type' => 'group'
+                        'group_id' => $item2['id'],
+                        'village_id' => $item2['village_id'],
+                        'name' => $name,
+                        'avatar' => $item2['avatar'],
+                        'type' => 'group'
                     ];
                 }
             }
@@ -2975,10 +3089,10 @@ class HouseNewRepairService
         if (empty($order_detail_info)) {
             throw new \think\Exception('对应工单不存在');
         }
-        $property_id=$order_detail_info['property_id'];
+        $property_id = $order_detail_info['property_id'];
         $db_house_new_repair_subject = new HouseNewRepairCate();
-        $subject_info=$db_house_new_repair_subject->getOne(['id'=>$order_detail_info['cat_id']]);
-        if (empty($subject_info)){
+        $subject_info = $db_house_new_repair_subject->getOne(['id' => $order_detail_info['cat_id']]);
+        if (empty($subject_info)) {
             throw new \think\Exception('工单分类不存在');
         }
         $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
@@ -2986,68 +3100,70 @@ class HouseNewRepairService
             $single_id = isset($order_detail_info['single_id']) && intval($order_detail_info['single_id']) > 0 ? intval($order_detail_info['single_id']) : 0;
             $room_id = isset($order_detail_info['room_id']) && intval($order_detail_info['room_id']) > 0 ? intval($order_detail_info['room_id']) : 0;
             $judgeParams = [
-                'village_id' => $order_detail_info['village_id'], 'repair_cate_id' => $order_detail_info['cat_id'],
-                'jz_open' => $jz_open, 'single_id' => $single_id, 'room_id' => $room_id,
+                'village_id' => $order_detail_info['village_id'],
+                'repair_cate_id' => $order_detail_info['cat_id'],
+                'jz_open' => $jz_open,
+                'single_id' => $single_id,
+                'room_id' => $room_id,
             ];
             $hasFee = (new HouseCommunityQualityService())->judgeRepairCateQualityFee($judgeParams);
         } else {
             $hasFee = false;
         }
         $scheme_charge_type = isset($data['scheme_charge_type']) && $data['scheme_charge_type'] ? intval($data['scheme_charge_type']) : 0;
-        if ($subject_info['charge_type']==1 && !$hasFee && in_array($scheme_charge_type, [0, 2])){
+        if ($subject_info['charge_type'] == 1 && !$hasFee && in_array($scheme_charge_type, [0, 2])) {
             $event_status = isset($order_detail_info['event_status']) ? intval($order_detail_info['event_status']) : 0;
             $data_project_id = isset($data['project_id']) ? intval($data['project_id']) : 0;
             $data_rule_id = isset($data['rule_id']) ? intval($data['rule_id']) : 0;
-            if ($event_status > 0 && $event_status <= 37 && $event_status!=36 && $data_project_id > 0) {
+            if ($event_status > 0 && $event_status <= 37 && $event_status != 36 && $data_project_id > 0) {
                 $data['project_id'] = $data_project_id;
-            } elseif (!empty($order_detail_info['project_id'])){
-                $data['project_id']=$order_detail_info['project_id'];
+            } elseif (!empty($order_detail_info['project_id'])) {
+                $data['project_id'] = $order_detail_info['project_id'];
             }
-            if ($event_status > 0 && $event_status <= 37 && $event_status!=36 && $data_rule_id > 0) {
+            if ($event_status > 0 && $event_status <= 37 && $event_status != 36 && $data_rule_id > 0) {
                 $data['rule_id'] = $data_rule_id;
-            } elseif (!empty($order_detail_info['rule_id'])){
-                $data['rule_id']=$order_detail_info['rule_id'];
+            } elseif (!empty($order_detail_info['rule_id'])) {
+                $data['rule_id'] = $order_detail_info['rule_id'];
             }
 
-            if ($order_detail_info['event_status']<30&&'work_follow_up' == $log_name){
-                if (empty($data['project_id'])){
+            if ($order_detail_info['event_status'] < 30 && 'work_follow_up' == $log_name) {
+                if (empty($data['project_id'])) {
                     throw new \think\Exception('请先选择工单收费项目');
                 }
-                if (empty($data['rule_id'])){
+                if (empty($data['rule_id'])) {
                     throw new \think\Exception('请先选择工单收费标准');
                 }
                 $db_house_new_charge_rule = new HouseNewChargeRule();
                 $db_house_new_charge_project = new HouseNewChargeProject();
-                $project_info=$db_house_new_charge_project->getOne(['id'=>$data['project_id']]);
-                if (empty($project_info)){
+                $project_info = $db_house_new_charge_project->getOne(['id' => $data['project_id']]);
+                if (empty($project_info)) {
                     throw new \think\Exception('工单收费项目不存在');
                 }
-                $rule_info=$db_house_new_charge_rule->getOne(['id'=>$data['rule_id']]);
-                if (empty($rule_info)){
+                $rule_info = $db_house_new_charge_rule->getOne(['id' => $data['rule_id']]);
+                if (empty($rule_info)) {
                     throw new \think\Exception('工单收费标准不存在');
                 }
             }
             if ($jz_open && $order_detail_info['event_status'] < 30 && 'work_completed' == $log_name) {
-                if (empty($data['rule_id'])){
+                if (empty($data['rule_id'])) {
                     throw new \think\Exception('请先选择【推送方案】操作');
                 }
             }
-            if (!$jz_open && $order_detail_info['event_status']<30&&'work_completed' == $log_name){
-                if (empty($data['rule_id'])){
+            if (!$jz_open && $order_detail_info['event_status'] < 30 && 'work_completed' == $log_name) {
+                if (empty($data['rule_id'])) {
                     throw new \think\Exception('请先选择【跟进】操作');
                 }
             }
-
         }
         $worker_id = $data['worker_id'];
         $nowVillageId = isset($data['village_id']) ? intval($data['village_id']) : 0;
         $params = [
             'village_id' => $nowVillageId
         ];
-        try{
+        try {
             $order_detail = $this->workGetOrder($order_id, $worker_id, $login_role, false, true, $params);
-        }catch (\Exception $e){
-            fdump_api(['执行错误'=>$e->getMessage(), 'line' => $e->getLine(), 'file' => $e->getFile(), 'code' => $e->getCode(), 'data' => $data],'$repairOrderChange',true);
+        } catch (\Exception $e) {
+            fdump_api(['执行错误' => $e->getMessage(), 'line' => $e->getLine(), 'file' => $e->getFile(), 'code' => $e->getCode(), 'data' => $data], '$repairOrderChange', true);
             throw new \think\Exception($e->getMessage());
         }
         $change_status_word = isset($order_detail['change_status_word']) ? $order_detail['change_status_word'] : [];
@@ -3057,8 +3173,8 @@ class HouseNewRepairService
         if (!in_array($log_name, $change_status_word)) {
             throw new \think\Exception('请上报正确处理类型');
         }
-        if($property_id<=0 && $order_detail && $order_detail['property_id']>0){
-            $property_id=$order_detail['property_id'];
+        if ($property_id <= 0 && $order_detail && $order_detail['property_id'] > 0) {
+            $property_id = $order_detail['property_id'];
         }
         $order_imgs = $data['order_imgs'];
         if (is_array($order_imgs)) {
@@ -3078,7 +3194,7 @@ class HouseNewRepairService
         $log_phone = $order_detail['phone'] ? $order_detail['phone'] : '';
         $operator_id = $worker_id;
         $evaluate = isset($order_detail['evaluate']) ? intval($order_detail['evaluate']) : 0;
-        $assign_worker_id=0;
+        $assign_worker_id = 0;
         $orderParam = [];
         // 添加记录前先行修改订单状态
         if ('property_admin_assign' == $log_name) {
@@ -3095,9 +3211,8 @@ class HouseNewRepairService
             ];
             $status = 'processing'; // 处理中
             $operator_type = 41;
-            $assign_worker_id=$choose_worker_id;
-        }
-        elseif ('property_work_assign' == $log_name) {
+            $assign_worker_id = $choose_worker_id;
+        } elseif ('property_work_assign' == $log_name) {
             // 物业工作人员指派
             if (!isset($data['choose_worker_id']) || !$data['choose_worker_id']) {
                 throw new \think\Exception('缺少必传参数');
@@ -3111,9 +3226,8 @@ class HouseNewRepairService
             ];
             $status = 'processing'; // 处理中
             $operator_type = 42;
-            $assign_worker_id=$choose_worker_id;
-        }
-        elseif ('house_admin_assign' == $log_name) {
+            $assign_worker_id = $choose_worker_id;
+        } elseif ('house_admin_assign' == $log_name) {
             // 小区管理员指派
             if (!isset($data['choose_worker_id']) || !$data['choose_worker_id']) {
                 throw new \think\Exception('缺少必传参数');
@@ -3127,9 +3241,8 @@ class HouseNewRepairService
             ];
             $status = 'processing'; // 处理中
             $operator_type = 43;
-            $assign_worker_id=$choose_worker_id;
-        }
-        elseif ('property_admin_reply' == $log_name) {
+            $assign_worker_id = $choose_worker_id;
+        } elseif ('property_admin_reply' == $log_name) {
             // 物业管理员回复
             $order_set = [
                 'now_role' => 1,
@@ -3139,8 +3252,7 @@ class HouseNewRepairService
             $operator_type = 41;
             $jz_open_title = '物业管理员回复了工单';
             $jz_open_content = '物业管理员回复了工单，去除自动结单时间';
-        }
-        elseif ('property_work_reply' == $log_name) {
+        } elseif ('property_work_reply' == $log_name) {
             // 物业工作人员回复
             $order_set = [
                 'now_role' => 1,
@@ -3150,8 +3262,7 @@ class HouseNewRepairService
             $operator_type = 42;
             $jz_open_title = '物业工作人员回复了工单';
             $jz_open_content = '物业工作人员回复了工单，去除自动结单时间';
-        }
-        elseif ('house_admin_reply' == $log_name) {
+        } elseif ('house_admin_reply' == $log_name) {
             // 小区管理员回复
             $order_set = [
                 'now_role' => 1,
@@ -3161,8 +3272,7 @@ class HouseNewRepairService
             $operator_type = 43;
             $jz_open_title = '小区管理员回复了工单';
             $jz_open_content = '小区管理员回复了工单，去除自动结单时间';
-        }
-        elseif ('reopen' == $log_name) {
+        } elseif ('reopen' == $log_name) {
             //重新打开
             if (isset($order_detail['worker_id']) && $order_detail['worker_id']) {
                 // 已经有工作人员了  应该是 已指派 且下个操作人员类型是工作人员
@@ -3179,8 +3289,7 @@ class HouseNewRepairService
             ];
             $status = 'processing'; // 处理中
             $operator_type = 10;
-        }
-        elseif ('recall' == $log_name || 'closed' == $log_name) {
+        } elseif ('recall' == $log_name || 'closed' == $log_name) {
             //撤回
             $txtKey = '';
             if ('recall' == $log_name) {
@@ -3197,12 +3306,11 @@ class HouseNewRepairService
             $status = 'processed'; // 已处理
             $operator_type = 10;
             if (isset($order_detail['worker_type']) && $order_detail['worker_type'] == 0 && isset($order_detail['worker_id']) && $worker_id == $order_detail['worker_id']) {
-                $operator_type=30;
+                $operator_type = 30;
             }
-            $jz_open_title = $txtKey.'了工单';
-            $jz_open_content = $txtKey.'了工单，去除自动结单时间';
-        }
-        elseif ('evaluate' == $log_name) {
+            $jz_open_title = $txtKey . '了工单';
+            $jz_open_content = $txtKey . '了工单，去除自动结单时间';
+        } elseif ('evaluate' == $log_name) {
             //评分
             if (!isset($order_detail['evaluate'])) {
                 throw new \think\Exception('缺少评分');
@@ -3217,8 +3325,7 @@ class HouseNewRepairService
             ];
             $status = 'processed'; // 已处理
             $operator_type = 10;
-        }
-        elseif ('work_reject_center' == $log_name || 'constructor_reject_center' == $log_name) {
+        } elseif ('work_reject_center' == $log_name || 'constructor_reject_center' == $log_name) {
             //驳回给处理中心
             $order_set = [
                 'now_role' => 2,
@@ -3227,27 +3334,26 @@ class HouseNewRepairService
             ];
             $status = 'processing'; // 处理中
             $operator_type = 30;
-        }
-        elseif ($jz_open && 'work_push_scheme' == $log_name) {
+        } elseif ($jz_open && 'work_push_scheme' == $log_name) {
             if (isset($order_detail_info['pay_order_id']) && $order_detail_info['pay_order_id']) {
                 throw new \think\Exception('工单已经生成了订单，请刷新后查看~');
             }
             // 收费  推送文案
-            if ($subject_info['charge_type']==1 && !$hasFee && in_array($scheme_charge_type, [0, 2])){
-                if (empty($data['project_id'])){
+            if ($subject_info['charge_type'] == 1 && !$hasFee && in_array($scheme_charge_type, [0, 2])) {
+                if (empty($data['project_id'])) {
                     throw new \think\Exception('请先选择工单收费项目');
                 }
-                if (empty($data['rule_id'])){
+                if (empty($data['rule_id'])) {
                     throw new \think\Exception('请先选择工单收费标准');
                 }
                 $db_house_new_charge_rule = new HouseNewChargeRule();
                 $db_house_new_charge_project = new HouseNewChargeProject();
-                $project_info=$db_house_new_charge_project->getOne(['id'=>$data['project_id']]);
-                if (empty($project_info)){
+                $project_info = $db_house_new_charge_project->getOne(['id' => $data['project_id']]);
+                if (empty($project_info)) {
                     throw new \think\Exception('工单收费项目不存在');
                 }
-                $rule_info=$db_house_new_charge_rule->getOne(['id'=>$data['rule_id']]);
-                if (empty($rule_info)){
+                $rule_info = $db_house_new_charge_rule->getOne(['id' => $data['rule_id']]);
+                if (empty($rule_info)) {
                     throw new \think\Exception('工单收费标准不存在');
                 }
                 //处理人员跟进 必须提交工单方 确认是线上支付（直接拉取付款）还是线下支付
@@ -3265,9 +3371,9 @@ class HouseNewRepairService
                     'charge_price' => $rule_info['charge_price'],
                     'property_id' => $property_id,
                     'village_id' => $nowVillageId,
-                    'hasBills' => 0, 
+                    'hasBills' => 0,
                 ];
-            } elseif ($subject_info['charge_type']==1 && !$hasFee && $scheme_charge_type == 1) {
+            } elseif ($subject_info['charge_type'] == 1 && !$hasFee && $scheme_charge_type == 1) {
                 //处理人员跟进 必须提交工单方 确认是线上支付（直接拉取付款）还是线下支付
                 $order_set = [
                     'now_role' => 1,
@@ -3290,67 +3396,65 @@ class HouseNewRepairService
             }
             $operator_type = 30;
             $status = 'todo'; // 待处理
-        }
-        elseif ('work_follow_up' == $log_name) {
-            if (!$jz_open && $subject_info['charge_type']==1 && !$hasFee){
-                if (empty($data['project_id'])){
+        } elseif ('work_follow_up' == $log_name) {
+            if (!$jz_open && $subject_info['charge_type'] == 1 && !$hasFee) {
+                if (empty($data['project_id'])) {
                     throw new \think\Exception('请先选择工单收费项目');
                 }
-                if (empty($data['rule_id'])){
+                if (empty($data['rule_id'])) {
                     throw new \think\Exception('请先选择工单收费标准');
                 }
                 $db_house_new_charge_rule = new HouseNewChargeRule();
                 $db_house_new_charge_project = new HouseNewChargeProject();
                 $db_house_new_offline_pay = new HouseNewOfflinePay();
-                $project_info=$db_house_new_charge_project->getOne(['id'=>$data['project_id']]);
-                if (empty($project_info)){
+                $project_info = $db_house_new_charge_project->getOne(['id' => $data['project_id']]);
+                if (empty($project_info)) {
                     throw new \think\Exception('工单收费项目不存在');
                 }
-                $rule_info=$db_house_new_charge_rule->getOne(['id'=>$data['rule_id']]);
-                if (empty($rule_info)){
+                $rule_info = $db_house_new_charge_rule->getOne(['id' => $data['rule_id']]);
+                if (empty($rule_info)) {
                     throw new \think\Exception('工单收费标准不存在');
                 }
                 $data['charge_price'] = $rule_info['charge_price'];
-                if ($order_detail_info['bind_id']==0){
-                    $offline_pay=$db_house_new_offline_pay->get_one(['property_id'=>$order_detail_info['property_id'],'status'=>1]);
-                   if (!empty($offline_pay)){
-                       $offline_pay_id=$offline_pay['id'];
-                   }else{
-                       $offline_pay_id=0;
-                   }
+                if ($order_detail_info['bind_id'] == 0) {
+                    $offline_pay = $db_house_new_offline_pay->get_one(['property_id' => $order_detail_info['property_id'], 'status' => 1]);
+                    if (!empty($offline_pay)) {
+                        $offline_pay_id = $offline_pay['id'];
+                    } else {
+                        $offline_pay_id = 0;
+                    }
                     //处理人员跟进
                     $order_set = [
                         'now_role' => 1,
                         'event_status' => 36,
-                        'rule_id' =>$data['rule_id'],
-                        'project_id' =>$data['project_id'],
-                        'charge_price' =>$rule_info['charge_price'],
-                        'pay_type' =>2,
-                        'offline_pay_type' =>$offline_pay_id,
+                        'rule_id' => $data['rule_id'],
+                        'project_id' => $data['project_id'],
+                        'charge_price' => $rule_info['charge_price'],
+                        'pay_type' => 2,
+                        'offline_pay_type' => $offline_pay_id,
                     ];
-                }else{
-                    if ($order_detail_info['event_status']==36){
+                } else {
+                    if ($order_detail_info['event_status'] == 36) {
                         //处理人员跟进
                         $order_set = [
                             'now_role' => 1,
                             'event_status' => 36,
-                            'rule_id' =>$data['rule_id'],
-                            'project_id' =>$data['project_id'],
-                            'charge_price' =>$rule_info['charge_price'],
+                            'rule_id' => $data['rule_id'],
+                            'project_id' => $data['project_id'],
+                            'charge_price' => $rule_info['charge_price'],
                         ];
-                    }else{
+                    } else {
                         //处理人员跟进
                         $order_set = [
                             'now_role' => 1,
                             'event_status' => 35,
-                            'rule_id' =>$data['rule_id'],
-                            'project_id' =>$data['project_id'],
-                            'charge_price' =>$rule_info['charge_price'],
+                            'rule_id' => $data['rule_id'],
+                            'project_id' => $data['project_id'],
+                            'charge_price' => $rule_info['charge_price'],
                         ];
                     }
                 }
-
-            }else{
+            } else {
                 //处理人员跟进
                 $order_set = [
                     'now_role' => 3,
@@ -3360,35 +3464,34 @@ class HouseNewRepairService
 
             $status = 'todo'; // 待处理
             $operator_type = 30;
-        }
-        elseif ('work_completed' == $log_name) {
-            if ($subject_info['charge_type']==1 && !$hasFee){
-                if (empty($data['charge_price'])){
-                    $data['charge_price']= $order_detail_info['charge_price'];
+        } elseif ('work_completed' == $log_name) {
+            if ($subject_info['charge_type'] == 1 && !$hasFee) {
+                if (empty($data['charge_price'])) {
+                    $data['charge_price'] = $order_detail_info['charge_price'];
                 }
-                if (empty($data['pay_type'])){
-                    $data['pay_type']= $order_detail_info['pay_type'];
-                    if (empty($data['pay_type'])){
+                if (empty($data['pay_type'])) {
+                    $data['pay_type'] = $order_detail_info['pay_type'];
+                    if (empty($data['pay_type'])) {
                         throw new \think\Exception('请先选择工单缴费方式');
                     }
                 }
-                if ($data['pay_type']==1){
-                   $event_status=44;
-                }elseif ($data['pay_type']==2){
-                    $event_status=45;
-                }else{
-                    $event_status=40;
+                if ($data['pay_type'] == 1) {
+                    $event_status = 44;
+                } elseif ($data['pay_type'] == 2) {
+                    $event_status = 45;
+                } else {
+                    $event_status = 40;
                 }
                 //处理人员跟进
                 $order_set = [
                     'now_role' => 1,
                     'event_status' => $event_status,
-                    'charge_price' =>$data['charge_price'],
-                    'pay_type' =>$data['pay_type'],
-                    'offline_pay_type' =>$data['offline_pay_type'],
-                    'change_reason' =>$data['change_reason'],
+                    'charge_price' => $data['charge_price'],
+                    'pay_type' => $data['pay_type'],
+                    'offline_pay_type' => $data['offline_pay_type'],
+                    'change_reason' => $data['change_reason'],
                 ];
-            }else{
+            } else {
                 //处理人员结单
                 $order_set = [
                     'now_role' => 1,
@@ -3397,14 +3500,13 @@ class HouseNewRepairService
             }
             $status = 'processing'; // 处理中（可再次结单）
             $operator_type = 30;
-            $rr=$this->getTimelyStatus($order_detail);
-            if($rr['error']){
-                $order_set=array_merge($order_set,$rr['data']);
+            $rr = $this->getTimelyStatus($order_detail);
+            if ($rr['error']) {
+                $order_set = array_merge($order_set, $rr['data']);
             }
             $jz_open_title = '处理人员结单';
             $jz_open_content = '处理人员结单，去除自动结单时间';
-        } 
-        elseif (in_array($log_name, ['has_contact_supply_station', 'has_contact_developer'])) {
+        } elseif (in_array($log_name, ['has_contact_supply_station', 'has_contact_developer'])) {
             // 获取联系（供暖站）+ 获取联系（开发商）
             // 处理人员提供联系方式
             $order_set = [
@@ -3415,8 +3517,7 @@ class HouseNewRepairService
             $operator_type = 42;
             $jz_open_title = '处理人员提供联系方式';
             $jz_open_content = '处理人员提供联系方式，去除自动结单时间';
-        }
-        elseif ('work_change' == $log_name || 'work_change_constructor' == $log_name) {
+        } elseif ('work_change' == $log_name || 'work_change_constructor' == $log_name) {
             //处理人员转单
             if (!isset($data['choose_worker_id']) || !$data['choose_worker_id']) {
                 throw new \think\Exception('缺少必传参数');
@@ -3426,8 +3527,12 @@ class HouseNewRepairService
                 $to_village_id = isset($order_detail_info['now_handle_village_id']) && intval($order_detail_info['now_handle_village_id']) > 0 ? intval($order_detail_info['now_handle_village_id']) : 0;
                 !$to_village_id && $to_village_id = $order_detail_info['village_id'];
                 $jzParams = [
-                    'operator_id' => $operator_id, 'order_id' => $order_id, 'village_id' => $to_village_id,
-                    'order_info' => $order_detail_info,'log_name' => $log_name, 'to_work_id' => $choose_worker_id,
+                    'operator_id' => $operator_id,
+                    'order_id' => $order_id,
+                    'village_id' => $to_village_id,
+                    'order_info' => $order_detail_info,
+                    'log_name' => $log_name,
+                    'to_work_id' => $choose_worker_id,
                 ];
                 isset($data['login_role']) && $jzParams['login_role'] = $data['login_role'];
                 isset($data['phone']) && $jzParams['phone'] = $data['phone'];
@@ -3455,8 +3560,7 @@ class HouseNewRepairService
                 $status = 'processed'; // 已处理
                 $operator_type = 30;
             }
-        }
-        elseif (in_array($log_name, ['work_reject_change', 'constructor_reject_change', 'agree_constructor_project', 'reject_constructor_project'])) {
+        } elseif (in_array($log_name, ['work_reject_change', 'constructor_reject_change', 'agree_constructor_project', 'reject_constructor_project'])) {
             // 被转单人员拒绝
             // 查询下 最后一次非本人操作
             $where_log_last = [];
@@ -3485,8 +3589,7 @@ class HouseNewRepairService
             $order_set = ['now_role' => 3, 'event_status' => $event_status, 'worker_type' => 0, 'worker_id' => $choose_worker_id];
             $operator_type = 30;
             $status = 'processed'; // 已处理
-        }
-        elseif ('reject_change_constructor' == $log_name) {
+        } elseif ('reject_change_constructor' == $log_name) {
             // 退回开发商
             // 查询下 最后一次非本人操作
             $where_log_last = [];
@@ -3519,8 +3622,7 @@ class HouseNewRepairService
             $order_set = ['now_role' => 3, 'event_status' => $event_status, 'worker_type' => 0, 'worker_id' => $choose_worker_id];
             $status = 'processing'; // 处理中
             $operator_type = 30;
-        }
-        elseif ('work_reject' == $log_name){
+        } elseif ('work_reject' == $log_name) {
             //处理人员拒绝
             $order_set = [
                 'now_role' => 2,
@@ -3529,12 +3631,15 @@ class HouseNewRepairService
             ];
             $status = 'todo'; // 待处理
             $operator_type = 30;
-        } 
-        elseif ('to_supply_station' == $log_name && $jz_open) {
+        } elseif ('to_supply_station' == $log_name && $jz_open) {
             // todo 转单到对应供暖站
             $jzParams = [
-                'bind_facilities_type' => 'supply_station', 'operator_id' => $operator_id, 'order_id' => $order_id,
-                'village_id' => $order_detail_info['village_id'], 'order_info' => $order_detail_info,'log_name' => $log_name,
+                'bind_facilities_type' => 'supply_station',
+                'operator_id' => $operator_id,
+                'order_id' => $order_id,
+                'village_id' => $order_detail_info['village_id'],
+                'order_info' => $order_detail_info,
+                'log_name' => $log_name,
             ];
             isset($data['login_role']) && $jzParams['login_role'] = $data['login_role'];
             isset($data['phone']) && $jzParams['phone'] = $data['phone'];
@@ -3551,12 +3656,15 @@ class HouseNewRepairService
             if (isset($jzResult['log_name']) && $jzResult['log_name']) {
                 $log_name = $jzResult['log_name'];
             }
-        } 
-        elseif ('to_developer' == $log_name && $jz_open) {
+        } elseif ('to_developer' == $log_name && $jz_open) {
             // todo 转单到对应开发商
             $jzParams = [
-                'bind_facilities_type' => 'developer', 'operator_id' => $operator_id, 'order_id' => $order_id,
-                'village_id' => $order_detail_info['village_id'], 'order_info' => $order_detail_info,'log_name' => $log_name,
+                'bind_facilities_type' => 'developer',
+                'operator_id' => $operator_id,
+                'order_id' => $order_id,
+                'village_id' => $order_detail_info['village_id'],
+                'order_info' => $order_detail_info,
+                'log_name' => $log_name,
             ];
             isset($data['login_role']) && $jzParams['login_role'] = $data['login_role'];
             isset($data['phone']) && $jzParams['phone'] = $data['phone'];
@@ -3573,12 +3681,15 @@ class HouseNewRepairService
             if (isset($jzResult['log_name']) && $jzResult['log_name']) {
                 $log_name = $jzResult['log_name'];
             }
-        }
-        elseif ('reject_to_developer' == $log_name && $jz_open) {
+        } elseif ('reject_to_developer' == $log_name && $jz_open) {
             // 退回楼栋管家（就是 拒绝转单到开发商 退回原小区原工作人员）
             $jzParams = [
-                'operator_facilities_type' => 'developer', 'operator_id' => $operator_id, 'order_id' => $order_id,
-                'village_id' => $order_detail_info['village_id'], 'order_info' => $order_detail_info,'log_name' => $log_name,
+                'operator_facilities_type' => 'developer',
+                'operator_id' => $operator_id,
+                'order_id' => $order_id,
+                'village_id' => $order_detail_info['village_id'],
+                'order_info' => $order_detail_info,
+                'log_name' => $log_name,
             ];
             $jzResult = (new HouseCommunityTransferOrderService())->transferOrderToOriginVillage($jzParams);
             $order_set = isset($jzResult['order_set']) ? $jzResult['order_set'] : [];
@@ -3590,8 +3701,7 @@ class HouseNewRepairService
             if (isset($jzResult['log_name']) && $jzResult['log_name']) {
                 $log_name = $jzResult['log_name'];
             }
-        }
-        elseif ('work_change_cate' == $log_name && $jz_open) {
+        } elseif ('work_change_cate' == $log_name && $jz_open) {
             $changeCateFid = isset($data['changeCateFid']) ? intval($data['changeCateFid']) : 0;
             $changeCateId = isset($data['changeCateId']) ? intval($data['changeCateId']) : 0;
             if (!$changeCateFid || !$changeCateId) {
@@ -3608,7 +3718,7 @@ class HouseNewRepairService
             }
             $other_village_cate_id = isset($changeCateInfo['other_village_cate_id']) ? intval($changeCateInfo['other_village_cate_id']) : 0;
             $other_village_cate_fid = isset($changeCateInfo['other_village_cate_fid']) ? intval($changeCateInfo['other_village_cate_fid']) : 0;
-            
+
             $order_cat_fid = isset($order_detail_info['cat_fid']) ? intval($order_detail_info['cat_fid']) : 0;
             $order_cat_id = isset($order_detail_info['cat_id']) ? intval($order_detail_info['cat_id']) : 0;
             $order_other_cate_fid = isset($order_detail_info['other_cate_fid']) ? intval($order_detail_info['other_cate_fid']) : 0;
@@ -3619,25 +3729,29 @@ class HouseNewRepairService
             $change_other_cate_fid = $other_village_cate_fid;
             $change_other_cate_id = $other_village_cate_id;
             $log_info = [
-                'order_cat_fid' => $order_cat_fid, 'order_cat_id' => $order_cat_id, 'order_other_cate_fid' => $order_other_cate_fid,
-                'order_other_cate_id' => $order_other_cate_id, 'change_cat_fid' => $change_cat_fid, 'change_cat_id' => $change_cat_id,
-                'change_other_cate_fid' => $change_other_cate_fid, 'change_other_cate_id' => $change_other_cate_id,
+                'order_cat_fid' => $order_cat_fid,
+                'order_cat_id' => $order_cat_id,
+                'order_other_cate_fid' => $order_other_cate_fid,
+                'order_other_cate_id' => $order_other_cate_id,
+                'change_cat_fid' => $change_cat_fid,
+                'change_cat_id' => $change_cat_id,
+                'change_other_cate_fid' => $change_other_cate_fid,
+                'change_other_cate_id' => $change_other_cate_id,
             ];
             $event_status = isset($order_detail_info['event_status']) ? intval($order_detail_info['event_status']) : 20;
             $order_set = ['now_role' => 3, 'modify_cate_num' => 1, 'event_status' => $event_status, 'cat_fid' => $change_cat_fid, 'cat_id' => $change_cat_id, 'other_cate_fid' => $change_other_cate_fid, 'other_cate_id' => $change_other_cate_id];
-        }
-        else {
+        } else {
             throw new \think\Exception('请上报正确处理类型');
         }
         $order_set['update_time'] = time();
         $where_update = [];
         $where_update[] = ['order_id', '=', $order_id];
-        if(isset($order_set['worker_id']) && !empty($order_set['worker_id'])){
-            $order_set['group_id']=$this->getGroupId($order_set['worker_id']);
+        if (isset($order_set['worker_id']) && !empty($order_set['worker_id'])) {
+            $order_set['group_id'] = $this->getGroupId($order_set['worker_id']);
         }
 
         $order_update = $db_house_new_repair_works_order->saveOne($where_update, $order_set);
-        fdump_api([$order_update,$where_update,$order_set],'addPayOrder_0414',1);
+        fdump_api([$order_update, $where_update, $order_set], 'addPayOrder_0414', 1);
         if ($order_update) {
             if ($jz_open && 'evaluate' == $log_name) {
                 // 评分进行处理
@@ -3670,7 +3784,7 @@ class HouseNewRepairService
                 'add_time' => time(),
             ];
             if (isset($log_info) && !empty($log_info)) {
-                $log_data['log_info'] = json_encode($log_info,JSON_UNESCAPED_UNICODE);
+                $log_data['log_info'] = json_encode($log_info, JSON_UNESCAPED_UNICODE);
             }
             if (isset($order_set['to_station_village_id']) && $order_set['to_station_village_id']) {
                 $log_data['to_station_village_id'] = intval($order_set['to_station_village_id']);
@@ -3689,7 +3803,7 @@ class HouseNewRepairService
                 $log_num = intval($log_num) + 1;
             }
             //收费工单生成缴费账单
-            fdump_api([$log_name,$subject_info['charge_type'],$order_set['event_status']],'addPayOrder_0414',1);
+            fdump_api([$log_name, $subject_info['charge_type'], $order_set['event_status']], 'addPayOrder_0414', 1);
             if (!$jz_open && 'work_completed' == $log_name && $subject_info['charge_type'] == 1 && !$hasFee && in_array($order_set['event_status'], [44, 45]) && $log_num == 1) {
                 $this->addPayOrder($order_id);
             }
@@ -3702,93 +3816,81 @@ class HouseNewRepairService
             $log_data['charge_price'] = $data['charge_price'];
             $log_data['pay_type'] = $data['pay_type'];
             $log_data['change_reason'] = $data['change_reason'];
-            fdump_api(['line' => __LINE__, 'log_data' => $log_data],'addPayOrder_0414',1);
-            $otherData=array();
-            if($assign_worker_id>0){
-                $tmp_village_id=$log_data['village_id'];
-                $otherData=array('opt_type'=>'assign_to_house_worker','wid'=>$assign_worker_id,'village_id'=>$tmp_village_id);
+            fdump_api(['line' => __LINE__, 'log_data' => $log_data], 'addPayOrder_0414', 1);
+            $otherData = array();
+            if ($assign_worker_id > 0) {
+                $tmp_village_id = $log_data['village_id'];
+                $otherData = array('opt_type' => 'assign_to_house_worker', 'wid' => $assign_worker_id, 'village_id' => $tmp_village_id);
             }
-            $log_id = $this->addRepairLog($log_data,$otherData);
-            fdump_api(['line' => __LINE__, 'log_id' => $log_id],'addPayOrder_0414',1);
+            $log_id = $this->addRepairLog($log_data, $otherData);
+            fdump_api(['line' => __LINE__, 'log_id' => $log_id], 'addPayOrder_0414', 1);
             $log_arr['log_id'] = $log_id;
             $log_arr['status'] = $status;
-            $charge_type=$this->getCateInfo(['id'=>$order_detail_info['cat_id']],'charge_type');
-            if($log_name == 'work_follow_up' && ($charge_type && intval($charge_type['charge_type']) == 1) && !$hasFee && $order_detail_info['event_status'] < 30 ){
-                if($order_detail_info['order_type'] == 5){
+            $charge_type = $this->getCateInfo(['id' => $order_detail_info['cat_id']], 'charge_type');
+            if ($log_name == 'work_follow_up' && ($charge_type && intval($charge_type['charge_type']) == 1) && !$hasFee && $order_detail_info['event_status'] < 30) {
+                if ($order_detail_info['order_type'] == 5) {
                     //todo 后台创建的工单给工作人员发送已确认工单
-                    $this->newRepairSendMsg(51,$order_id,0,$property_id);
-                }else{
+                    $this->newRepairSendMsg(51, $order_id, 0, $property_id);
+                } else {
                     //todo 工作人员跟进
-                    $this->newRepairSendMsg(50,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(50, $order_id, 0, $property_id);
                 }
-                fdump_api(['line' => __LINE__, 'charge_type' => $charge_type, 'hasFee' => $hasFee, 'log_name' => $log_name],'addPayOrder_0414',1);
-            }
-            elseif ($log_name == 'work_completed'){
+                fdump_api(['line' => __LINE__, 'charge_type' => $charge_type, 'hasFee' => $hasFee, 'log_name' => $log_name], 'addPayOrder_0414', 1);
+            } elseif ($log_name == 'work_completed') {
                 //todo 工作人员结单
-                if($order_detail_info['order_type'] == 0){
+                if ($order_detail_info['order_type'] == 0) {
                     //todo 用户提交的工单
-                    if($order_detail_info['event_status'] >= 40){
-                        $this->newRepairSendMsg(32,$order_id,0,$property_id);
-                    }else{
-                        $this->newRepairSendMsg(30,$order_id,0,$property_id);
+                    if ($order_detail_info['event_status'] >= 40) {
+                        $this->newRepairSendMsg(32, $order_id, 0, $property_id);
+                    } else {
+                        $this->newRepairSendMsg(30, $order_id, 0, $property_id);
                     }
-                }elseif ($order_detail_info['order_type'] == 4){
+                } elseif ($order_detail_info['order_type'] == 4) {
                     //todo 工作人员提交的工单
-                    if($order_detail_info['event_status'] >= 40){
-                        $this->newRepairSendMsg(33,$order_id,$order_detail_info['uid'],$property_id);
-                    }else{
-                        $this->newRepairSendMsg(31,$order_id,$order_detail_info['uid'],$property_id);
+                    if ($order_detail_info['event_status'] >= 40) {
+                        $this->newRepairSendMsg(33, $order_id, $order_detail_info['uid'], $property_id);
+                    } else {
+                        $this->newRepairSendMsg(31, $order_id, $order_detail_info['uid'], $property_id);
                     }
                 }
-            }
-            elseif ($log_name == 'reopen'){
+            } elseif ($log_name == 'reopen') {
                 //todo 工作人员重新打开
-                $this->newRepairSendMsg(10,$order_id,0,$property_id);
-            }
-            elseif ($log_name == 'work_reject'){
-                if($order_detail_info['order_type'] == 0){
+                $this->newRepairSendMsg(10, $order_id, 0, $property_id);
+            } elseif ($log_name == 'work_reject') {
+                if ($order_detail_info['order_type'] == 0) {
                     //todo 工作人员拒绝用户工单
-                    $this->newRepairSendMsg(40,$order_id,0,$property_id);
-                }elseif ($order_detail_info['order_type'] == 4){
+                    $this->newRepairSendMsg(40, $order_id, 0, $property_id);
+                } elseif ($order_detail_info['order_type'] == 4) {
                     //todo 工作人员拒绝工作人员工单
-                    $this->newRepairSendMsg(42,$order_id,$order_detail_info['uid'],$property_id);
+                    $this->newRepairSendMsg(42, $order_id, $order_detail_info['uid'], $property_id);
                 }
-            }
-            elseif ($log_name == 'closed'){
+            } elseif ($log_name == 'closed') {
                 //todo 工作人员关闭工单
-                $this->newRepairSendMsg(13,$order_id,0,$property_id);
-            }
-            elseif ($log_name == 'recall'){
+                $this->newRepairSendMsg(13, $order_id, 0, $property_id);
+            } elseif ($log_name == 'recall') {
                 //todo 工作人员撤回工单
-                $this->newRepairSendMsg(14,$order_id,0,$property_id);
-            }
-            elseif ($log_name == 'work_change' || $log_name == 'work_change_constructor'){
+                $this->newRepairSendMsg(14, $order_id, 0, $property_id);
+            } elseif ($log_name == 'work_change' || $log_name == 'work_change_constructor') {
                 //todo 工作人员转单
-                $this->newRepairSendMsg(12,$order_id,0,$property_id);
+                $this->newRepairSendMsg(12, $order_id, 0, $property_id);
                 //todo 转单记录当前转单人信息
-                $this->workOrderLogSave($log_id,$order_set['worker_id']);
-            }
-            elseif ($log_name == 'work_reject_change' || $log_name == 'reject_to_developer'){
+                $this->workOrderLogSave($log_id, $order_set['worker_id']);
+            } elseif ($log_name == 'work_reject_change' || $log_name == 'reject_to_developer') {
                 //todo 工作人员拒绝被转单 驳回给转单人
-                $this->newRepairSendMsg(41,$order_id,$order_set['worker_id'],$property_id);
-            }
-            elseif ($log_name == 'constructor_reject_change') {
+                $this->newRepairSendMsg(41, $order_id, $order_set['worker_id'], $property_id);
+            } elseif ($log_name == 'constructor_reject_change') {
                 //todo 提供施工方案
-                $this->newRepairSendMsg(82,$order_id,$order_set['worker_id'],$property_id);
-            }
-            elseif ($log_name == 'agree_constructor_project') {
+                $this->newRepairSendMsg(82, $order_id, $order_set['worker_id'], $property_id);
+            } elseif ($log_name == 'agree_constructor_project') {
                 //todo 同意施工方案
-                $this->newRepairSendMsg(83,$order_id,$order_set['worker_id'],$property_id);
-            }
-            elseif ($log_name == 'reject_constructor_project') {
+                $this->newRepairSendMsg(83, $order_id, $order_set['worker_id'], $property_id);
+            } elseif ($log_name == 'reject_constructor_project') {
                 //todo 拒绝施工方案
-                $this->newRepairSendMsg(84,$order_id,$order_set['worker_id'],$property_id);
-            }
-            elseif (in_array($log_name,['property_admin_assign','property_work_assign','house_admin_assign'])){
+                $this->newRepairSendMsg(84, $order_id, $order_set['worker_id'], $property_id);
+            } elseif (in_array($log_name, ['property_admin_assign', 'property_work_assign', 'house_admin_assign'])) {
                 //todo 物业管理员指派、物业工作人员指派、小区管理员指派
-                $this->newRepairSendMsg(15,$order_id,0,$property_id);
-            }
-            elseif ('to_supply_station' == $log_name && $jz_open) {
+                $this->newRepairSendMsg(15, $order_id, 0, $property_id);
+            } elseif ('to_supply_station' == $log_name && $jz_open) {
                 //todo 工作人员转单到供暖站小区
                 $params = [];
                 $params['isToOtherVillage'] = 1;
@@ -3806,9 +3908,8 @@ class HouseNewRepairService
                 if (isset($facilitiesInfo['to_village_name']) && $facilitiesInfo['to_village_name']) {
                     $log_info['to_village_name'] = isset($worker['to_village_name']) ? trim($worker['to_village_name']) : '';
                 }
-                (new HouseNewRepairWorksOrderLog())->saveOne($where,['log_info'=>serialize($log_info)]);
-            }
-            elseif ('to_developer' == $log_name && $jz_open) {
+                (new HouseNewRepairWorksOrderLog())->saveOne($where, ['log_info' => serialize($log_info)]);
+            } elseif ('to_developer' == $log_name && $jz_open) {
                 //todo 工作人员转单到开发商小区
                 $params = [];
                 $params['isToOtherVillage'] = 1;
@@ -3826,21 +3927,21 @@ class HouseNewRepairService
                 if (isset($facilitiesInfo['to_village_name']) && $facilitiesInfo['to_village_name']) {
                     $log_info['to_village_name'] = isset($worker['to_village_name']) ? trim($worker['to_village_name']) : '';
                 }
-                (new HouseNewRepairWorksOrderLog())->saveOne($where,['log_info'=>serialize($log_info)]);
+                (new HouseNewRepairWorksOrderLog())->saveOne($where, ['log_info' => serialize($log_info)]);
             }
-            fdump_api(['line' => __LINE__, 'assign_worker_id' => $assign_worker_id],'addPayOrder_0414',1);
-            if($assign_worker_id){
+            fdump_api(['line' => __LINE__, 'assign_worker_id' => $assign_worker_id], 'addPayOrder_0414', 1);
+            if ($assign_worker_id) {
                 //todo 转单记录当前转单人信息
-                $this->workOrderLogSave($log_id,$assign_worker_id);
-                fdump_api(['line' => __LINE__, 'log_id' => $log_id, 'assign_worker_id' => $assign_worker_id],'addPayOrder_0414',1);
+                $this->workOrderLogSave($log_id, $assign_worker_id);
+                fdump_api(['line' => __LINE__, 'log_id' => $log_id, 'assign_worker_id' => $assign_worker_id], 'addPayOrder_0414', 1);
             }
-            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name],'addPayOrder_0414',1);
-            if ($jz_open && $log_name == 'reject_constructor_project'){
+            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name], 'addPayOrder_0414', 1);
+            if ($jz_open && $log_name == 'reject_constructor_project') {
                 // todo 用户拒绝了 走下推送配置
                 $toParams = ['village_id' => $order_detail_info['village_id'], 'works_order_id' => $order_id,];
                 (new HouseCommunityHandleNoticeService())->tryHandleRejectProjectOverToReportBox($toParams);
             }
-            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name],'addPayOrder_0414',1);
+            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name], 'addPayOrder_0414', 1);
             if ($jz_open && isset($jz_open_title) && isset($jz_open_content)) {
                 $stepArr = [
                     'title' => $jz_open_title,
@@ -3850,27 +3951,29 @@ class HouseNewRepairService
                     'work_id' => $data['worker_id']
                 ];
                 (new HouseCommunityWorkOrderService())->clearAutoEndTime($order_id, $stepArr);
-                fdump_api(['line' => __LINE__, 'order_id' => $order_id, 'stepArr' => $stepArr],'addPayOrder_0414',1);
+                fdump_api(['line' => __LINE__, 'order_id' => $order_id, 'stepArr' => $stepArr], 'addPayOrder_0414', 1);
             }
-            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name],'addPayOrder_0414',1);
+            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name], 'addPayOrder_0414', 1);
             if ($jz_open && isset($order_set['now_handle_village_id']) && $order_set['now_handle_village_id']) {
                 $params = [
-                    'village_id' => isset($order_detail['village_id']) ? intval($order_detail['village_id']) : 0, 'works_order_id' => $order_id,
-                    'now_handle_village_id' => $order_set['now_handle_village_id'], 'to_work_id' => isset($order_set['worker_id']) ? intval($order_set['worker_id']) : 0
+                    'village_id' => isset($order_detail['village_id']) ? intval($order_detail['village_id']) : 0,
+                    'works_order_id' => $order_id,
+                    'now_handle_village_id' => $order_set['now_handle_village_id'],
+                    'to_work_id' => isset($order_set['worker_id']) ? intval($order_set['worker_id']) : 0
                 ];
                 (new HouseCommunityWorkOrderService())->toOtherVillage($params);
-                fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'params' => $params],'addPayOrder_0414',1);
+                fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'params' => $params], 'addPayOrder_0414', 1);
             }
-            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name],'addPayOrder_0414',1);
+            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name], 'addPayOrder_0414', 1);
             if ($jz_open && isset($order_set['event_status'])) {
                 $event_status = intval($order_set['event_status']);
                 $to_work_id = isset($order_set['worker_id']) ? intval($order_set['worker_id']) : 0;
                 $village_id = isset($order_detail['village_id']) ? intval($order_detail['village_id']) : '';
                 $params = ['village_id' => $village_id, 'order_id' => $order_id, 'worker_id' => $to_work_id, 'event_status' => $event_status];
                 (new HouseCommunityWorkOrderService())->overNotProcessedReport($params);
-                fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'params' => $params],'addPayOrder_0414',1);
+                fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'params' => $params], 'addPayOrder_0414', 1);
             }
-            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name],'addPayOrder_0414',1);
+            fdump_api(['line' => __LINE__, 'jz_open' => $jz_open, 'log_name' => $log_name], 'addPayOrder_0414', 1);
         } else {
             throw new \think\Exception('处理失败');
         }
@@ -3895,8 +3998,8 @@ class HouseNewRepairService
         $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
 
         $where_log = [];
-        $where_log[] = ['order_id','=',$order_id];
-        $log_list = $db_house_new_repair_works_order_log->getList($where_log,true,0,0);
+        $where_log[] = ['order_id', '=', $order_id];
+        $log_list = $db_house_new_repair_works_order_log->getList($where_log, true, 0, 0);
         $log = [];
         if ($log_list) {
             $log_list = $log_list->toArray();
@@ -3905,13 +4008,13 @@ class HouseNewRepairService
             $dbHouseNewRepairCate = new HouseNewRepairCate();
             foreach ($log_list as $val) {
                 if (isset($val['log_name']) && $val['log_name']) {
-                    
+
                     if (isset($val['log_num']) && $val['log_num'] > 1) {
                         $title = "第{$val['log_num']}次" . $log_arr[$val['log_name']];
                     } else {
                         $title = $log_arr[$val['log_name']];
                     }
-                    if(isset($val['wisdomqrcode_id']) && $val['wisdomqrcode_id']>0 && strpos($val['log_name'],'_submit')){
+                    if (isset($val['wisdomqrcode_id']) && $val['wisdomqrcode_id'] > 0 && strpos($val['log_name'], '_submit')) {
                         $title = '巡检转工单';
                     }
                     if (isset($val['add_time']) && $val['add_time']) {
@@ -3953,7 +4056,7 @@ class HouseNewRepairService
                         if (isset($log_info['name']) || isset($log_info['phone'])) {
                             $tip[] = [
                                 'title' => '处理人员',
-                                'content' => $log_info['name'].'-'.$log_info['phone'],
+                                'content' => $log_info['name'] . '-' . $log_info['phone'],
                                 'content_color' => '',
                                 'type' => 1,
                                 'imgs' => [],
@@ -4004,7 +4107,7 @@ class HouseNewRepairService
                         $change_cat_id = isset($log_info['change_cat_id']) ? intval($log_info['change_cat_id']) : 0;
                         $change_other_cate_fid = isset($log_info['change_other_cate_fid']) ? intval($log_info['change_other_cate_fid']) : 0;
                         $change_other_cate_id = isset($log_info['change_other_cate_id']) ? intval($log_info['change_other_cate_id']) : 0;
-                        
+
                         $cateIds = [];
                         $order_cat_fid > 0 && $cateIds[] = $order_cat_fid;
                         $order_cat_id > 0 && $cateIds[] = $order_cat_id;
@@ -4014,11 +4117,11 @@ class HouseNewRepairService
                         $change_cat_id > 0 && $cateIds[] = $change_cat_id;
                         $change_other_cate_fid > 0 && $cateIds[] = $change_other_cate_fid;
                         $change_other_cate_id > 0 && $cateIds[] = $change_other_cate_id;
-                        
+
                         $whereQuery = [];
                         $whereQuery[] = ['id', 'in', $cateIds];
                         $cateInfoArr = $dbHouseNewRepairCate->getColumn($whereQuery, 'id, cate_name, charge_type', 'id');
-                        
+
                         if ($order_cat_fid && $order_cat_id) {
                             $catFidName = isset($cateInfoArr[$order_cat_fid]['cate_name']) ? trim($cateInfoArr[$order_cat_fid]['cate_name']) : '';
                             $catIdName = isset($cateInfoArr[$order_cat_id]['cate_name']) ? trim($cateInfoArr[$order_cat_id]['cate_name']) : '';
@@ -4129,13 +4232,13 @@ class HouseNewRepairService
     public function getRepairLog($order_id = 0, $params = [])
     {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-        $order_detail = $db_house_new_repair_works_order->getOne(['order_id' => $order_id],'*');
+        $order_detail = $db_house_new_repair_works_order->getOne(['order_id' => $order_id], '*');
         if (!$order_detail) {
             throw new \think\Exception('对应工单不存在');
         }
-        $village_id=$order_detail['village_id'];
-        $houseVillageDb=new HouseVillage();
-        $village_info=$houseVillageDb->getInfo(array('village_id'=>$village_id),'*');
+        $village_id = $order_detail['village_id'];
+        $houseVillageDb = new HouseVillage();
+        $village_info = $houseVillageDb->getInfo(array('village_id' => $village_id), '*');
         $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
         $system_type = isset($params['system_type']) ? trim($params['system_type']) : '';
         $where_log = [];
@@ -4144,21 +4247,21 @@ class HouseNewRepairService
         if (!$system_type) {
             $show_constructor_reject_change = false;
             $userNot = $this->getUserNotLookLog();
-            !empty($userNot) && $where_log[] = ['log_name','not in',$userNot];
+            !empty($userNot) && $where_log[] = ['log_name', 'not in', $userNot];
             $whereHasAgree = [];
-            $whereHasAgree[] = ['order_id','=',$order_id];
+            $whereHasAgree[] = ['order_id', '=', $order_id];
             $whereHasAgree[] = ['log_name', '=', 'agree_constructor_project'];
             $hasAgree = $db_house_new_repair_works_order_log->getOne($whereHasAgree, 'log_id');
             if (isset($hasAgree['log_id']) && $hasAgree['log_id']) {
                 $whereLastLog = [];
-                $whereLastLog[] = ['order_id','=',$order_id];
+                $whereLastLog[] = ['order_id', '=', $order_id];
                 $whereLastLog[] = ['log_name', '=', 'constructor_reject_change'];
                 $constructorRejectChange = $db_house_new_repair_works_order_log->getOne($whereLastLog, 'log_id');
                 $constructorRejectChangeLogId = isset($constructorRejectChange['log_id']) && $constructorRejectChange['log_id'] ? $constructorRejectChange['log_id'] : 0;
             }
         }
-        $where_log[] = ['order_id','=',$order_id];
-        $log_list = $db_house_new_repair_works_order_log->getList($where_log,true,0,0,'log_id DESC');
+        $where_log[] = ['order_id', '=', $order_id];
+        $log_list = $db_house_new_repair_works_order_log->getList($where_log, true, 0, 0, 'log_id DESC');
         $log = [];
         if ($log_list && !$log_list->isEmpty()) {
             $log_list = $log_list->toArray();
@@ -4180,14 +4283,14 @@ class HouseNewRepairService
                     } else {
                         $title = $log_name_text;
                     }
-                    if(isset($val['wisdomqrcode_id']) && $val['wisdomqrcode_id']>0 && strpos($val['log_name'],'_submit')){
+                    if (isset($val['wisdomqrcode_id']) && $val['wisdomqrcode_id'] > 0 && strpos($val['log_name'], '_submit')) {
                         $title = '巡检转工单';
                     }
                     if (isset($val['add_time']) && $val['add_time']) {
                         $val['add_time_txt'] = date('Y-m-d H:i:s', $val['add_time']);
                     }
                     $tip = [];
-                    if($log_name == 'evaluate'){
+                    if ($log_name == 'evaluate') {
                         $tip[] = [
                             'title' => '评分',
                             'content' => $val['evaluate'],
@@ -4197,7 +4300,7 @@ class HouseNewRepairService
                             'videos' => [],
                         ];
                     }
-                    if($log_name == 'work_follow_up' && isset($val['charge_price']) && floatval($val['charge_price']) > 0){
+                    if ($log_name == 'work_follow_up' && isset($val['charge_price']) && floatval($val['charge_price']) > 0) {
                         $tip[] = [
                             'title' => '待确认收费金额',
                             'content' => $val['charge_price'],
@@ -4207,7 +4310,7 @@ class HouseNewRepairService
                             'videos' => [],
                         ];
                     }
-                    if($log_name == 'work_completed' && floatval($val['charge_price']) > 0){
+                    if ($log_name == 'work_completed' && floatval($val['charge_price']) > 0) {
                         $tip[] = [
                             'title' => '收费金额',
                             'content' => $val['charge_price'],
@@ -4217,7 +4320,7 @@ class HouseNewRepairService
                             'videos' => [],
                         ];
                     }
-                    if($log_name == 'not_over_stars_report'){
+                    if ($log_name == 'not_over_stars_report') {
                         $tip[] = [
                             'title' => '评分',
                             'content' => $val['evaluate'],
@@ -4248,7 +4351,7 @@ class HouseNewRepairService
                         ];
                     }
                     if (isset($val['log_phone']) && $val['log_phone']) {
-                        $log_phone=$houseVillageDb->phone_desensitization_v($val['log_phone'],$village_id,$village_info);
+                        $log_phone = $houseVillageDb->phone_desensitization_v($val['log_phone'], $village_id, $village_info);
                         $tip[] = [
                             'title' => '手机号码',
                             'content' => $log_phone,
@@ -4273,7 +4376,7 @@ class HouseNewRepairService
                         if (isset($log_info['name']) || isset($log_info['phone'])) {
                             $tip[] = [
                                 'title' => '处理人员',
-                                'content' => $log_info['name'].'-'.$log_info['phone'],
+                                'content' => $log_info['name'] . '-' . $log_info['phone'],
                                 'content_color' => '',
                                 'type' => 1,
                                 'imgs' => [],
@@ -4335,24 +4438,24 @@ class HouseNewRepairService
      * @author lijie
      * @date_time 2021/08/13
      */
-    public function addRepairLog($data = [],$otherData=array())
+    public function addRepairLog($data = [], $otherData = array())
     {
         if (empty($data)) {
             return false;
         }
         $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
         $id = $db_house_new_repair_works_order_log->addOne($data);
-        $community_jpush_appkey=cfg('community_jpush_appkey');
-        $community_jpush_secret=cfg('community_jpush_secret');
-        if($otherData && !empty($community_jpush_appkey) && !empty($community_jpush_secret)){
-            if( isset($otherData['opt_type']) && $otherData['opt_type']=='assign_to_house_worker' && isset($otherData['wid']) && $otherData['wid']>0){
+        $community_jpush_appkey = cfg('community_jpush_appkey');
+        $community_jpush_secret = cfg('community_jpush_secret');
+        if ($otherData && !empty($community_jpush_appkey) && !empty($community_jpush_secret)) {
+            if (isset($otherData['opt_type']) && $otherData['opt_type'] == 'assign_to_house_worker' && isset($otherData['wid']) && $otherData['wid'] > 0) {
                 //工单指派时 极光推送
-                $houseAppJpushInfoService =  new HouseAppJpushInfoService();
-                $houseAppJpushInfoService->handleJpushInfoSend($otherData,'repair_works_order');
-            }else if(isset($otherData['opt_type']) && $otherData['opt_type']=='order_worker_submit' ){
+                $houseAppJpushInfoService = new HouseAppJpushInfoService();
+                $houseAppJpushInfoService->handleJpushInfoSend($otherData, 'repair_works_order');
+            } else if (isset($otherData['opt_type']) && $otherData['opt_type'] == 'order_worker_submit') {
                 //工单提交时 极光推送
-                $houseAppJpushInfoService =  new HouseAppJpushInfoService();
-                $houseAppJpushInfoService->handleJpushInfoSend($otherData,'order_worker_submit');
+                $houseAppJpushInfoService = new HouseAppJpushInfoService();
+                $houseAppJpushInfoService->handleJpushInfoSend($otherData, 'order_worker_submit');
             }
         }
         return $id;
@@ -4376,22 +4479,26 @@ class HouseNewRepairService
         $cate_info = $db_house_new_repair_cate->getOne(['id' => $cate_id], true);
         if (empty($cate_info)) {
             $repairCateScheduling = [
-                'title' => '工单分类-信息不存在', 'msg' => '获取工单信息失败',
-                'cate_id' => $cate_id, 'time' => $nowTime
+                'title' => '工单分类-信息不存在',
+                'msg' => '获取工单信息失败',
+                'cate_id' => $cate_id,
+                'time' => $nowTime
             ];
             return $worker_ids;
         }
-        if($cate_info['type'] == 1){
+        if ($cate_info['type'] == 1) {
             $worker_ids[] = $cate_info['uid'];
             $repairCateScheduling = [
-                'title' => '工单分类[负责人设置]单人', 'msg' => '工单分类负责人设置了单人负责',
-                'work_id' => $cate_info['uid'], 'time' => $nowTime
+                'title' => '工单分类[负责人设置]单人',
+                'msg' => '工单分类负责人设置了单人负责',
+                'work_id' => $cate_info['uid'],
+                'time' => $nowTime
             ];
             return $worker_ids;
         }
         $w = date("w");
         $h = date("H");
-        $where=array();
+        $where = array();
         $where[] = ['cate_id', '=', $cate_id];
         $where[] = ['date_type', '=', $w];
         $where[] = ['start_time', '<=', $h];
@@ -4399,37 +4506,39 @@ class HouseNewRepairService
         $db_house_new_repair_director_scheduling = new HouseNewRepairDirectorScheduling();
         $data = $db_house_new_repair_director_scheduling->getList($where, '*', 0, 0, 'id DESC');
         if (empty($data) && $cate_info['parent_id']) {
-            $where=array();
+            $where = array();
             $where[] = ['cate_id', '=', $cate_info['parent_id']];
             $where[] = ['date_type', '=', $w];
             $where[] = ['start_time', '<=', $h];
             $where[] = ['end_time', '>', $h];
             $data = $db_house_new_repair_director_scheduling->getList($where, '*', 0, 0, 'id DESC');
         }
-        $worker24uid=array();
+        $worker24uid = array();
         if ($data) {
             foreach ($data as $v) {
                 $director_uid = $v['director_uid'];
-                if($director_uid){
-                    $director_uid = array_filter(explode(',',$director_uid));
-                    if($v['start_time']==0 && ($v['end_time']==0 && $v['end_time']==24)){
+                if ($director_uid) {
+                    $director_uid = array_filter(explode(',', $director_uid));
+                    if ($v['start_time'] == 0 && ($v['end_time'] == 0 && $v['end_time'] == 24)) {
                         //0到24小时的
-                        $worker24uid= array_merge($worker24uid,$director_uid);
-                    }else{
-                        $worker_ids = array_merge($worker_ids,$director_uid);
+                        $worker24uid = array_merge($worker24uid, $director_uid);
+                    } else {
+                        $worker_ids = array_merge($worker_ids, $director_uid);
                     }
                 }
             }
         }
-        if(empty($worker_ids) && !empty($worker24uid)){
-            $worker_ids= $worker24uid;
+        if (empty($worker_ids) && !empty($worker24uid)) {
+            $worker_ids = $worker24uid;
         }
-        if($worker_ids){
-            $worker_ids=array_unique($worker_ids);
+        if ($worker_ids) {
+            $worker_ids = array_unique($worker_ids);
         }
         $repairCateScheduling = [
-            'title' => '工单分类[负责人设置]多人', 'msg' => '工单分类负责人设置了多人负责',
-            'work_id' => $cate_info['uid'], 'time' => $nowTime
+            'title' => '工单分类[负责人设置]多人',
+            'msg' => '工单分类负责人设置了多人负责',
+            'work_id' => $cate_info['uid'],
+            'time' => $nowTime
         ];
         return $worker_ids;
     }
@@ -4457,7 +4566,7 @@ class HouseNewRepairService
      * @author lijie
      * @date_time 2021/08/17
      */
-    public function getWorkOrderDetail($where = [], $field = '*',$source_type='',$cfrom='', $params = [])
+    public function getWorkOrderDetail($where = [], $field = '*', $source_type = '', $cfrom = '', $params = [])
     {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
         $db_house_new_repair_cate = new HouseNewRepairCate();
@@ -4476,16 +4585,16 @@ class HouseNewRepairService
             $showTab = 1;
             $now_handle_village_id = isset($orderInfo['now_handle_village_id']) ? intval($orderInfo['now_handle_village_id']) : 0;
             $order_village_id = isset($orderInfo['village_id']) ? intval($orderInfo['village_id']) : 0;
-            
+
             if ($jz_open && $now_handle_village_id && $now_handle_village_id != $order_village_id) {
                 // 禁止工单中心操作
                 $showTab = 4;
             }
-            
-            $houseVillageDb=new HouseVillage();
-            $village_info=$houseVillageDb->getInfo(array('village_id'=>$order_village_id),'*');
-            if(isset($orderInfo['phone']) && !empty($orderInfo['phone'])){
-                $orderInfo['phone']=$houseVillageDb->phone_desensitization_v($orderInfo['phone'],$order_village_id,$village_info);
+
+            $houseVillageDb = new HouseVillage();
+            $village_info = $houseVillageDb->getInfo(array('village_id' => $order_village_id), '*');
+            if (isset($orderInfo['phone']) && !empty($orderInfo['phone'])) {
+                $orderInfo['phone'] = $houseVillageDb->phone_desensitization_v($orderInfo['phone'], $order_village_id, $village_info);
             }
             if ($jz_open && $now_handle_village_id && $nowHandleVillageId && $now_handle_village_id == $nowHandleVillageId) {
                 // 如果当前操作对象是被转单小区支持操作
@@ -4498,24 +4607,24 @@ class HouseNewRepairService
             $orderInfo['showTab'] = $showTab;
             $orderInfo['add_time_txt'] = date('Y-m-d H:i:s', $orderInfo['add_time']);
             $order_imgs = '';
-            if ($orderInfo['order_imgs'] && strpos($orderInfo['order_imgs'],';') !== false) {
-                $order_imgs = explode(';',$orderInfo['order_imgs']);
-            } elseif($orderInfo['order_imgs']) {
-                $order_imgs = explode(',',$orderInfo['order_imgs']);
+            if ($orderInfo['order_imgs'] && strpos($orderInfo['order_imgs'], ';') !== false) {
+                $order_imgs = explode(';', $orderInfo['order_imgs']);
+            } elseif ($orderInfo['order_imgs']) {
+                $order_imgs = explode(',', $orderInfo['order_imgs']);
             }
-            if($order_imgs){
+            if ($order_imgs) {
                 $order_imgs_arr = [];
                 foreach ($order_imgs as $v) {
                     $order_imgs_arr[] = replace_file_domain($v);
                 }
             }
             $order_videos = '';
-            if ($orderInfo['videos'] && strpos($orderInfo['videos'],';') !== false) {
-                $order_videos = explode(';',$orderInfo['videos']);
-            } elseif($orderInfo['videos']) {
-                $order_videos = explode(',',$orderInfo['videos']);
+            if ($orderInfo['videos'] && strpos($orderInfo['videos'], ';') !== false) {
+                $order_videos = explode(';', $orderInfo['videos']);
+            } elseif ($orderInfo['videos']) {
+                $order_videos = explode(',', $orderInfo['videos']);
             }
-            if($order_videos){
+            if ($order_videos) {
                 $videos_arr = [];
                 foreach ($order_videos as $v1) {
                     $video = replace_file_domain($v1);
@@ -4540,13 +4649,13 @@ class HouseNewRepairService
                 foreach ($tag_list as $value) {
                     $tags .= $value['name'] . ';';
                 }
-                $tags = rtrim($tags,';');
+                $tags = rtrim($tags, ';');
             }
-            $orderInfo['pigcms_id']=$orderInfo['bind_id'];
+            $orderInfo['pigcms_id'] = $orderInfo['bind_id'];
             $orderInfo['tags'] = $tags;
             // 补充地址
             $plugAddress = '';
-            if($source_type == 'village' || $source_type == 'platform'){
+            if ($source_type == 'village' || $source_type == 'platform') {
                 $orderInfo['event_status_txt'] = $orderInfo['event_status'] ? $this->order_status_txt[$orderInfo['event_status']] : '';
                 $otherVillage = false;
                 if ($jz_open && $now_handle_village_id && $nowHandleVillageId && $now_handle_village_id != $order_village_id && $now_handle_village_id == $nowHandleVillageId) {
@@ -4555,7 +4664,7 @@ class HouseNewRepairService
                     $villageInfo = (new HouseVillage())->getOne($orderInfo['village_id'], 'village_id, village_name');
                     $plugAddress = isset($villageInfo['village_name']) ? trim($villageInfo['village_name']) . ' ' : '';
                 }
-                if ($otherVillage && in_array($orderInfo['event_status'], [16,17,26,27])) {
+                if ($otherVillage && in_array($orderInfo['event_status'], [16, 17, 26, 27])) {
                     // 其他小区转单非本小区工单
                     $orderInfo['event_status_txt'] = '被转单';
                 } elseif ($otherVillage && $plugAddress) {
@@ -4566,7 +4675,7 @@ class HouseNewRepairService
                     $villageAddress = isset($villageInfo['village_name']) ? trim($villageInfo['village_name']) . ' ' : '';
                     $orderInfo['event_status_txt'] .= "(转单至{$villageAddress})";
                 }
-            }else{
+            } else {
                 $orderInfo['event_status_txt'] = $orderInfo['event_status'] ? $this->order_user_status_txt[$orderInfo['event_status']] : '';
             }
 
@@ -4576,19 +4685,19 @@ class HouseNewRepairService
             if ($record) {
                 $record = $record->toArray();
                 if ($record['log_imgs']) {
-                    if(strpos($record['log_imgs'],';')>0){
+                    if (strpos($record['log_imgs'], ';') > 0) {
                         $record['log_imgs'] = explode(';', $record['log_imgs']);
-                    }else{
+                    } else {
                         $record['log_imgs'] = explode(',', $record['log_imgs']);
                     }
                     foreach ($record['log_imgs'] as $k => $v) {
                         $record['log_imgs'][$k] = dispose_url($v);
                     }
                 }
-                $record['log_phone']=$houseVillageDb->phone_desensitization_v($record['log_phone'],$order_village_id,$village_info);
-                $content0628=$record['log_operator'] . ',' . $record['log_phone'];
-                if(intval($orderInfo['order_type']) == 5 && empty($record['log_operator'])){
-                    $content0628='处理中心管理员';
+                $record['log_phone'] = $houseVillageDb->phone_desensitization_v($record['log_phone'], $order_village_id, $village_info);
+                $content0628 = $record['log_operator'] . ',' . $record['log_phone'];
+                if (intval($orderInfo['order_type']) == 5 && empty($record['log_operator'])) {
+                    $content0628 = '处理中心管理员';
                 }
                 $orderInfo['log_info'] = [
                     "title" => "处理记录",
@@ -4618,12 +4727,12 @@ class HouseNewRepairService
                         ],
                     ],
                     "imgs" => $record['log_imgs'],
-                    "videos"=> []
+                    "videos" => []
                 ];
             } else {
                 $orderInfo['log_info'] = [];
             }
-           
+
             $orderInfo['log'] = [
                 "title" => "处理记录",
                 "type" => 2,
@@ -4642,15 +4751,15 @@ class HouseNewRepairService
                     ]
                 ],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
-            if($cfrom=='user'){
-                $whereArr=array(['order_id' ,'=', $orderInfo['order_id']]);
-                $user_log_name=array('user_submit','reopen,recall','closed','evaluate','agree');
-                $whereArr[]=array('log_name' ,'not in', $user_log_name);
+            if ($cfrom == 'user') {
+                $whereArr = array(['order_id', '=', $orderInfo['order_id']]);
+                $user_log_name = array('user_submit', 'reopen,recall', 'closed', 'evaluate', 'agree');
+                $whereArr[] = array('log_name', 'not in', $user_log_name);
                 $user_record_obj = $db_house_new_repair_works_order_log->getOne($whereArr, 'log_id,log_operator,log_phone,log_name,add_time,log_imgs,log_content');
-                if($user_record_obj && !$user_record_obj->isEmpty()){
-                    $user_record_obj['log_phone']=$houseVillageDb->phone_desensitization_v($user_record_obj['log_phone'],$order_village_id,$village_info);
+                if ($user_record_obj && !$user_record_obj->isEmpty()) {
+                    $user_record_obj['log_phone'] = $houseVillageDb->phone_desensitization_v($user_record_obj['log_phone'], $order_village_id, $village_info);
                     $orderInfo['log'] = [
                         "title" => "处理记录",
                         "type" => 2,
@@ -4670,7 +4779,7 @@ class HouseNewRepairService
                         ],
                         "imgs" => []
                     ];
-                }else{
+                } else {
                     $orderInfo['log'] = [
                         "title" => "处理记录",
                         "type" => 2,
@@ -4697,20 +4806,20 @@ class HouseNewRepairService
                 $orderInfo['address_txt'] = $plugAddress . $address;
             }
             $subject_name = '';
-          /*  if(isset($orderInfo['category_id'])){
+            /*  if(isset($orderInfo['category_id'])){
                 $subject_info = $db_house_new_repair_subject->getOne(['id'=>$orderInfo['category_id']],'subject_name');
                 if($subject_info){
                     $subject_name = $subject_info['subject_name'];
                 }
             }*/
 
-            if($orderInfo['cat_fid']){
-                $subject_info=$db_house_new_repair_cate->getOne(['id'=>$orderInfo['cat_fid']],'cate_name');
-                $subject_name=isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
+            if ($orderInfo['cat_fid']) {
+                $subject_info = $db_house_new_repair_cate->getOne(['id' => $orderInfo['cat_fid']], 'cate_name');
+                $subject_name = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
             }
 
             $cate_name = '';
-         /*   if($orderInfo['cat_fid']){
+            /*   if($orderInfo['cat_fid']){
                 $cate_info = $db_house_new_repair_cate->getOne(['id'=>$orderInfo['cat_fid'],'status'=>1],'cate_name');
                 $cate_name = $cate_info['cate_name'];
             }
@@ -4723,12 +4832,12 @@ class HouseNewRepairService
                 }
             }*/
 
-            if($orderInfo['cat_id']){
-                $subject_info=$db_house_new_repair_cate->getOne(['id'=>$orderInfo['cat_id']],'cate_name');
-                $cate_name=isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
+            if ($orderInfo['cat_id']) {
+                $subject_info = $db_house_new_repair_cate->getOne(['id' => $orderInfo['cat_id']], 'cate_name');
+                $cate_name = isset($subject_info['cate_name']) ? $subject_info['cate_name'] : '';
             }
             $orderInfo['cate_name'] = $cate_name;
-            if($orderInfo['event_status'] >=40 && $orderInfo['event_status'] < 50){
+            if ($orderInfo['event_status'] >= 40 && $orderInfo['event_status'] < 50) {
                 $cate_not_timely_report_switch = 0;
                 $event_status_type = [];
                 if ($is_word) {
@@ -4760,7 +4869,7 @@ class HouseNewRepairService
                         $is_constructor = isset($worker['is_constructor']) && $worker['is_constructor'] ? intval($worker['is_constructor']) : 0;
                         $completeWordVillageId = isset($worker['village_id']) && $worker['village_id'] ? intval($worker['village_id']) : 0;
                         if ($is_constructor == 1) {
-                            $event_status_type[] = ['name'=>'物业维修（付费）','type'=>'reopen_by_money'];
+                            $event_status_type[] = ['name' => '物业维修（付费）', 'type' => 'reopen_by_money'];
                             if ($is_word) {
                                 $change_status_word[] = 'reopen_by_money';
                             }
@@ -4768,7 +4877,7 @@ class HouseNewRepairService
                             $sHouseCommunityAboutService = new HouseCommunityAboutService();
                             $developerConfig = $sHouseCommunityAboutService->getVillageFacilitiesInfo($completeWordVillageId, 'developer');
                             if (isset($developerConfig['is_virtual']) && intval($developerConfig['is_virtual']) == 1) {
-                                $event_status_type[] = ['name'=>'物业维修（付费）','type'=>'reopen_by_money'];
+                                $event_status_type[] = ['name' => '物业维修（付费）', 'type' => 'reopen_by_money'];
                                 if ($is_word) {
                                     $change_status_word[] = 'reopen_by_money';
                                 }
@@ -4776,39 +4885,39 @@ class HouseNewRepairService
                         }
                     }
                 } else {
-                    $event_status_type[] = ['name'=>'重新打开','type'=>'reopen'];
+                    $event_status_type[] = ['name' => '重新打开', 'type' => 'reopen'];
                     if ($is_word) {
                         $change_status_word[] = 'reopen';
                     }
                 }
                 if (!$jz_open) {
-                    $event_status_type[] = ['name'=>'撤回','type'=>'recall'];
+                    $event_status_type[] = ['name' => '撤回', 'type' => 'recall'];
                     if ($is_word) {
                         $change_status_word[] = 'recall';
                     }
-                    $event_status_type[] = ['name'=>'关闭','type'=>'closed'];
+                    $event_status_type[] = ['name' => '关闭', 'type' => 'closed'];
                     if ($is_word) {
                         $change_status_word[] = 'closed';
                     }
                 }
                 if ($cate_not_timely_report_switch != 1) {
-                    $event_status_type[] = ['name'=>'评价','type'=>'evaluate'];
+                    $event_status_type[] = ['name' => '评价', 'type' => 'evaluate'];
                     if ($is_word) {
                         $change_status_word[] = 'evaluate';
                     }
                 }
                 $orderInfo['event_status_type'] = $event_status_type;
             }
-            if($orderInfo['event_status']>9 && $orderInfo['event_status']<40){
+            if ($orderInfo['event_status'] > 9 && $orderInfo['event_status'] < 40) {
                 $event_status_type = [];
                 if ($is_word) {
                     $change_status_word = [];
                 }
-                $event_status_type[] = ['name'=>'撤回','type'=>'recall'];
+                $event_status_type[] = ['name' => '撤回', 'type' => 'recall'];
                 if ($is_word) {
                     $change_status_word[] = 'recall';
                 }
-                $event_status_type[] = ['name'=>'关闭','type'=>'closed'];
+                $event_status_type[] = ['name' => '关闭', 'type' => 'closed'];
                 if ($is_word) {
                     $change_status_word[] = 'closed';
                 }
@@ -4828,7 +4937,7 @@ class HouseNewRepairService
                     if ($is_word) {
                         $change_status_word[] = 'recall';
                     }
-                    $event_status_type[] = ['name'=>'关闭','type'=>'closed'];
+                    $event_status_type[] = ['name' => '关闭', 'type' => 'closed'];
                     if ($is_word) {
                         $change_status_word[] = 'closed';
                     }
@@ -4842,22 +4951,22 @@ class HouseNewRepairService
                     $change_status_word[] = 'reopen';
                 }
             }
-            if ($orderInfo['event_status'] == 35){
+            if ($orderInfo['event_status'] == 35) {
                 $typeArr = [];
                 if ($is_word) {
                     $change_status_word = [];
                 }
-                $typeArr[] = ['name'=>'同意','type'=>'agree'];
+                $typeArr[] = ['name' => '同意', 'type' => 'agree'];
                 if ($is_word) {
                     $change_status_word[] = 'agree';
                 }
                 if ($jz_open) {
-                    $typeArr[] = ['name'=>'重新提供方案','type'=>'reject'];
+                    $typeArr[] = ['name' => '重新提供方案', 'type' => 'reject'];
                     if ($is_word) {
                         $change_status_word[] = 'reject';
                     }
                 }
-                $typeArr[] = ['name'=>'关闭','type'=>'closed'];
+                $typeArr[] = ['name' => '关闭', 'type' => 'closed'];
                 if ($is_word) {
                     $change_status_word[] = 'closed';
                 }
@@ -4867,13 +4976,13 @@ class HouseNewRepairService
                 return $change_status_word;
             }
             $order_arr[] = [
-                "title"=>"上报位置",
-                "type"=>1,
-                "content"=> $plugAddress . $address,
-                "content_color"=> "",
-                "children"=> [],
-                "imgs"=> [],
-                "videos"=> []
+                "title" => "上报位置",
+                "type" => 1,
+                "content" => $plugAddress . $address,
+                "content_color" => "",
+                "children" => [],
+                "imgs" => [],
+                "videos" => []
             ];
             $order_arr[] = [
                 "title" => "上报时间",
@@ -4882,7 +4991,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_arr[] = [
                 "title" => "工单分类",
@@ -4891,7 +5000,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_arr[] = [
                 "title" => "上门时间",
@@ -4900,7 +5009,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_arr[] = [
                 "title" => "自定义字段",
@@ -4909,9 +5018,9 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
-            if(empty($orderInfo['order_content'])){
+            if (empty($orderInfo['order_content'])) {
                 $orderInfo['order_content'] = '无';
             }
             $order_arr[] = [
@@ -4921,19 +5030,19 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
-            if(!empty($orderInfo['order_imgs'])){
+            if (!empty($orderInfo['order_imgs'])) {
                 $order_arr[] = [
-                    "title"=>"上报图例",
-                    "type"=>3,
-                    "content"=> "",
-                    "content_color"=> "",
-                    "children"=> [],
-                    "imgs"=> $orderInfo['order_imgs'],
-                    "videos"=> []
+                    "title" => "上报图例",
+                    "type" => 3,
+                    "content" => "",
+                    "content_color" => "",
+                    "children" => [],
+                    "imgs" => $orderInfo['order_imgs'],
+                    "videos" => []
                 ];
-            }else{
+            } else {
                 $order_arr[] = [
                     "title" => "上报图例",
                     "type" => 1,
@@ -4941,19 +5050,19 @@ class HouseNewRepairService
                     "content_color" => "",
                     "children" => [],
                     "imgs" => [],
-                    "videos"=> []
+                    "videos" => []
                 ];
             }
-            if(!empty($orderInfo['order_videos'])){
+            if (!empty($orderInfo['order_videos'])) {
                 $order_arr[] = [
-                    "title"=>"上报视频",
-                    "type"=>4,
-                    "content"=> "",
-                    "content_color"=> "",
-                    "children"=> [],
-                    "videos"=> $orderInfo['order_videos']
+                    "title" => "上报视频",
+                    "type" => 4,
+                    "content" => "",
+                    "content_color" => "",
+                    "children" => [],
+                    "videos" => $orderInfo['order_videos']
                 ];
-            }elseif($jz_open){
+            } elseif ($jz_open) {
                 $order_arr[] = [
                     "title" => "上报视频",
                     "type" => 1,
@@ -4961,7 +5070,7 @@ class HouseNewRepairService
                     "content_color" => "",
                     "children" => [],
                     "imgs" => [],
-                    "videos"=> []
+                    "videos" => []
                 ];
             }
             $order_arr[] = [
@@ -4971,7 +5080,7 @@ class HouseNewRepairService
                 "content_color" => $orderInfo['event_status_color'],
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $orderInfo['charge_type'] = false;
             if ($orderInfo['event_status'] == 35) {
@@ -4983,7 +5092,7 @@ class HouseNewRepairService
                     "content_color" => "",
                     "children" => [],
                     "imgs" => [],
-                    "videos"=> []
+                    "videos" => []
                 ];
                 $orderInfo['pay_type'] = [['key' => '1', 'type' => '线上缴费'], ['key' => '2', 'type' => '线下缴费']];
             }
@@ -4995,7 +5104,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "手机号码",
@@ -5004,7 +5113,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "上报时间",
@@ -5013,7 +5122,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "上门时间",
@@ -5022,7 +5131,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "上报位置",
@@ -5031,7 +5140,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "工单类目",
@@ -5040,7 +5149,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "上报分类",
@@ -5049,7 +5158,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "自定义字段",
@@ -5058,7 +5167,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             $order_detail_arr[] = [
                 "title" => "补充内容",
@@ -5067,7 +5176,7 @@ class HouseNewRepairService
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],
-                "videos"=> []
+                "videos" => []
             ];
             if ($jz_open) {
                 $now_handle_village_id = isset($orderInfo['now_handle_village_id']) ? intval($orderInfo['now_handle_village_id']) : 0;
@@ -5076,7 +5185,7 @@ class HouseNewRepairService
                 $house_community_work_order_config = new HouseCommunityWorkOrderConfig();
                 $whereOrderConfig = ['works_order_id' => $orderInfo['order_id']];
                 $workOrderConfig = $house_community_work_order_config->getOne($whereOrderConfig, 'works_order_id, look_contact, contact_content');
-                
+
                 $house_community_config = new HouseCommunityConfig();
                 $whereConfig = [];
                 $whereConfig[] = ['village_id', '=', $now_handle_village_id];
@@ -5094,18 +5203,18 @@ class HouseNewRepairService
                 if ($is_contact_available == 0 && !empty($aboutInfo) && $facilities_type == 'supply_station') {
                     $auto_contact_available = 1;
                 }
-                
-                fdump_api(['$orderCommunityConfig' => $orderCommunityConfig, 'now_handle_village_id' => $now_handle_village_id,  'auto_contact_available' => $auto_contact_available, '$look_contact' => $look_contact, '$contact_content' => $contact_content], '$contact_content');
+
+                fdump_api(['$orderCommunityConfig' => $orderCommunityConfig, 'now_handle_village_id' => $now_handle_village_id, 'auto_contact_available' => $auto_contact_available, '$look_contact' => $look_contact, '$contact_content' => $contact_content], '$contact_content');
                 if (!$contact_content && $is_contact_available == 0 && $auto_contact_available == 1) {
                     $db_house_village = new HouseVillage();
                     $villageInfo = $db_house_village->getOne($now_handle_village_id, '*');
                     $village_name = isset($villageInfo['village_name']) ? trim($villageInfo['village_name']) : '';
                     $property_phone = isset($villageInfo['property_phone']) && $villageInfo['property_phone'] ? str_replace(' ', '；', $villageInfo['property_phone']) : '';
-                    $property_phone=$houseVillageDb->phone_desensitization_v($property_phone,$now_handle_village_id,$villageInfo);
+                    $property_phone = $houseVillageDb->phone_desensitization_v($property_phone, $now_handle_village_id, $villageInfo);
                     $property_address = isset($villageInfo['property_address']) ? trim($villageInfo['property_address']) : '';
                     $contact_content = "请联系{$village_name}，联系方式：{$property_phone}";
                     $property_address && $contact_content .= "\n地址：{$property_address}";
-                } elseif (isset($record['log_name']) && in_array($record['log_name'], ['has_contact_supply_station',  'has_contact_developer'])) {
+                } elseif (isset($record['log_name']) && in_array($record['log_name'], ['has_contact_supply_station', 'has_contact_developer'])) {
                     // 上一次操作是 获取联系
                     $contact_content = $record['log_content'];
                 }
@@ -5119,7 +5228,7 @@ class HouseNewRepairService
                     "content_color" => "",
                     "children" => [],
                     "imgs" => [],
-                    "videos"=> []
+                    "videos" => []
                 ];
                 if ($contact_content) {
                     $look_contact++;
@@ -5150,7 +5259,7 @@ class HouseNewRepairService
      * @author lijie
      * @date_time 2021/08/17
      */
-    public function updateWorkOrder($order_id = 0, $event_status_type = '', $log_content = '', $log_imgs = [], $evaluate = 0, $bind_info = [],$pay_type=0,$offline_pay_type=0, $params = [])
+    public function updateWorkOrder($order_id = 0, $event_status_type = '', $log_content = '', $log_imgs = [], $evaluate = 0, $bind_info = [], $pay_type = 0, $offline_pay_type = 0, $params = [])
     {
         if (!$order_id || empty($event_status_type)) {
             throw new \think\Exception('请上报处理类型');
@@ -5186,23 +5295,26 @@ class HouseNewRepairService
             $single_id = isset($orderInfo['single_id']) && intval($orderInfo['single_id']) > 0 ? intval($orderInfo['single_id']) : 0;
             $room_id = isset($orderInfo['room_id']) && intval($orderInfo['room_id']) > 0 ? intval($orderInfo['room_id']) : 0;
             $judgeParams = [
-                'village_id' => $orderInfo['village_id'], 'repair_cate_id' => $orderInfo['cat_id'],
-                'jz_open' => $jz_open, 'single_id' => $single_id, 'room_id' => $room_id,
+                'village_id' => $orderInfo['village_id'],
+                'repair_cate_id' => $orderInfo['cat_id'],
+                'jz_open' => $jz_open,
+                'single_id' => $single_id,
+                'room_id' => $room_id,
             ];
             $hasFee = (new HouseCommunityQualityService())->judgeRepairCateQualityFee($judgeParams);
         } else {
             $hasFee = false;
         }
-        $property_id=$orderInfo['property_id'];
-        $rule_id=0;
-        $project_id=0;
-        $charge_price=0;
-        $where_log=array('order_id'=>$order_id,'operator_type'=>10,'log_name'=>'work_follow_up');
-        $work_follow_up_info=$db_house_new_repair_works_order_log->getOne($where_log);
-        if (!empty($work_follow_up_info)){
-            $rule_id=$work_follow_up_info['rule_id'];
-            $project_id=$work_follow_up_info['project_id'];
-            $charge_price=$work_follow_up_info['charge_price'];
+        $property_id = $orderInfo['property_id'];
+        $rule_id = 0;
+        $project_id = 0;
+        $charge_price = 0;
+        $where_log = array('order_id' => $order_id, 'operator_type' => 10, 'log_name' => 'work_follow_up');
+        $work_follow_up_info = $db_house_new_repair_works_order_log->getOne($where_log);
+        if (!empty($work_follow_up_info)) {
+            $rule_id = $work_follow_up_info['rule_id'];
+            $project_id = $work_follow_up_info['project_id'];
+            $charge_price = $work_follow_up_info['charge_price'];
         }
         $integral = 0; //获得的积分
         if ($event_status_type == 'evaluate') {
@@ -5239,16 +5351,16 @@ class HouseNewRepairService
                                 $integral = $work_order_extra['per_works_order_integral'];
                                 $commonUserService = new commonUserService();
                                 //加积分
-                                $scoreParam=array('order_type'=>'repair_works_order_evaluate','score_type'=>20,'order_id'=>$order_id,'house_type'=>1,'village_id'=>$orderInfo['village_id']);
-                                $ret = $commonUserService->addScore($bind_info['uid'], $integral, '社区工单评价加积分',0,$scoreParam);
+                                $scoreParam = array('order_type' => 'repair_works_order_evaluate', 'score_type' => 20, 'order_id' => $order_id, 'house_type' => 1, 'village_id' => $orderInfo['village_id']);
+                                $ret = $commonUserService->addScore($bind_info['uid'], $integral, '社区工单评价加积分', 0, $scoreParam);
                                 fdump_api(['uid' => $bind_info['uid'], 'integral' => $integral, 'ret' => $ret], '00updateWorkOrderAddintegral', 1);
                             }
                         }
-                  }
+                    }
                 }
             }
         }
-        $addRepairLogArr=[
+        $addRepairLogArr = [
             'order_id' => $order_id,
             'log_name' => $event_status_type,
             'operator_type' => 10,
@@ -5268,13 +5380,13 @@ class HouseNewRepairService
             'village_id' => $orderInfo['village_id'],
             'property_id' => $orderInfo['property_id'],
         ];
-        if($integral>0){
-            $addRepairLogArr['get_integral']=$integral;
+        if ($integral > 0) {
+            $addRepairLogArr['get_integral'] = $integral;
         }
         $id = $this->addRepairLog($addRepairLogArr);
 
 
-        $is_auto_assign=false;
+        $is_auto_assign = false;
         /*
          * 
         $whereArr=array('order_id'=>$order_id,'operator_type'=>10,'log_name'=>'house_auto_assign');
@@ -5287,16 +5399,16 @@ class HouseNewRepairService
             $is_auto_assign=true;
         }
         */
-        if($event_status_type=='reopen' && $orderInfo['worker_id']>0 ){
-            $is_auto_assign=true;
+        if ($event_status_type == 'reopen' && $orderInfo['worker_id'] > 0) {
+            $is_auto_assign = true;
         }
         $resultLogArr = [];
         if ($id) {
             switch ($event_status_type) {
                 case 'reopen':
-                    if($is_auto_assign){
+                    if ($is_auto_assign) {
                         $event_status = 20;
-                    }else{
+                    } else {
                         $event_status = 10;
                     }
                     $type = 'processing';
@@ -5349,7 +5461,8 @@ class HouseNewRepairService
                 $toSingleId = isset($orderInfo['single_id']) ? intval($orderInfo['single_id']) : 0;
                 $bind_id = isset($orderInfo['bind_id']) ? intval($orderInfo['bind_id']) : 0;
                 $params = [
-                    'village_id' => $village_id, 'works_order_id' => $order_id
+                    'village_id' => $village_id,
+                    'works_order_id' => $order_id
                 ];
                 $serviceHouseCommunityWorkOrderConfig = new HouseCommunityWorkOrderService();
                 $lastConfigInfo = $serviceHouseCommunityWorkOrderConfig->getHouseCommunityWorkOrderConfig($params, 'id, works_order_id, village_id, assign_record');
@@ -5366,20 +5479,24 @@ class HouseNewRepairService
                     $configInfo = (new HouseCommunityAboutService())->getHouseCommunityConfig($village_id);
                     // 按照配置获取下分配人员
                     $workOrderParam = [
-                        'village_id' => $village_id, 'is_supply_station' => $is_supply_station, 'configInfo' => $configInfo,
-                        'cat_id' => $cat_id, 'toSingleId' => $toSingleId, 'bind_id' => $bind_id,
+                        'village_id' => $village_id,
+                        'is_supply_station' => $is_supply_station,
+                        'configInfo' => $configInfo,
+                        'cat_id' => $cat_id,
+                        'toSingleId' => $toSingleId,
+                        'bind_id' => $bind_id,
                     ];
                     $assignRecord = (new HouseCommunityWorkOrderService())->getWorkOrderToWorker($workOrderParam);
                     fdump_api(['$workOrderParam' => $workOrderParam, '$assignRecord' => $assignRecord, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
-                    
+
                     $toWorkId = isset($assignRecord['toWorkId']) ? intval($assignRecord['toWorkId']) : 0;
                     $communityAutoToWork = isset($assignRecord['communityAutoToWork']) ? $assignRecord['communityAutoToWork'] : [];
                     $communityConfig = isset($assignRecord['communityConfig']) ? $assignRecord['communityConfig'] : [];
                     $repairCateConfig = isset($assignRecord['repairCateConfig']) ? $assignRecord['repairCateConfig'] : [];
                     $communityAutoToWork && $assign_record['communityAutoToWork'] = $communityAutoToWork;
                     $workOrderConfig['village_id'] = $village_id;
-                    $communityConfig && $workOrderConfig['community_config'] = json_encode($communityConfig,JSON_UNESCAPED_UNICODE);
-                    $repairCateConfig && $workOrderConfig['repair_cate_config'] = json_encode($repairCateConfig,JSON_UNESCAPED_UNICODE);
+                    $communityConfig && $workOrderConfig['community_config'] = json_encode($communityConfig, JSON_UNESCAPED_UNICODE);
+                    $repairCateConfig && $workOrderConfig['repair_cate_config'] = json_encode($repairCateConfig, JSON_UNESCAPED_UNICODE);
                     isset($assignRecord['not_report_switch']) && $workOrderConfig['not_report_switch'] = intval($assignRecord['not_report_switch']);
                     $workOrderConfig['quality_start_time'] = isset($repairCateConfig['quality_start_time']) ? intval($repairCateConfig['quality_start_time']) : 0;
                     $workOrderConfig['quality_end_time'] = isset($repairCateConfig['quality_end_time']) ? intval($repairCateConfig['quality_end_time']) : 0;
@@ -5396,10 +5513,10 @@ class HouseNewRepairService
                     } else {
                         $worker_ids = $this->getWorkerByTime($cat_id, $repairCateScheduling);
                     }
-                    if(!empty($worker_ids)){
+                    if (!empty($worker_ids)) {
                         $index = array_rand($worker_ids);
                         $worker_id = $worker_ids[$index];
-                    }else{
+                    } else {
                         $worker_id = 0;
                     }
                 }
@@ -5416,7 +5533,7 @@ class HouseNewRepairService
             }
             fdump_api(['$order_id' => $order_id, '$updateArr' => $updateArr, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
             $res = $db_house_new_repair_works_order->saveOne(['order_id' => $order_id], $updateArr);
-            if ($res){
+            if ($res) {
                 $resultLogArr['type'] = $type;
                 $nowTime = time();
                 if ($jz_open && $event_status_type == 'agree') {
@@ -5446,9 +5563,9 @@ class HouseNewRepairService
                     $toParams = ['village_id' => isset($order_detail['village_id']) ? intval($order_detail['village_id']) : 0, 'works_order_id' => $order_id];
                     (new HouseCommunityHandleNoticeService())->tryHandleEvaluateLowToReportBox($toParams);
                 }
-                if ($event_status_type == 'recall'){
+                if ($event_status_type == 'recall') {
                     //todo 用户撤回 发送模板消息
-                    $this->newRepairSendMsg(22,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(22, $order_id, 0, $property_id);
                     if ($jz_open) {
                         $stepArr = [
                             'title' => '用户撤回了工单',
@@ -5458,15 +5575,14 @@ class HouseNewRepairService
                         ];
                         (new HouseCommunityWorkOrderService())->setAutoEndTime($order_id, $stepArr);
                     }
-                }
-                elseif ($event_status_type == 'closed'){
-                    $charge_type=$this->getCateInfo(['id'=>$orderInfo['cat_id']],'charge_type');
-                    if($charge_type && ($charge_type && intval($charge_type['charge_type']) == 1) && !$hasFee && $orderInfo['event_status'] > 30){
+                } elseif ($event_status_type == 'closed') {
+                    $charge_type = $this->getCateInfo(['id' => $orderInfo['cat_id']], 'charge_type');
+                    if ($charge_type && ($charge_type && intval($charge_type['charge_type']) == 1) && !$hasFee && $orderInfo['event_status'] > 30) {
                         //todo 用户关闭 不同意此收费金额，发送模板消息
-                        $this->newRepairSendMsg(52,$order_id,0,$property_id);
-                    }else{
+                        $this->newRepairSendMsg(52, $order_id, 0, $property_id);
+                    } else {
                         //todo 用户关闭 发送模板消息
-                        $this->newRepairSendMsg(21,$order_id,0,$property_id);
+                        $this->newRepairSendMsg(21, $order_id, 0, $property_id);
                     }
                     // todo 重开将自动结单时间置空
                     if ($jz_open) {
@@ -5478,17 +5594,15 @@ class HouseNewRepairService
                         ];
                         (new HouseCommunityWorkOrderService())->setAutoEndTime($order_id, $stepArr);
                     }
-                }
-                elseif ($event_status_type == 'reject'){
+                } elseif ($event_status_type == 'reject') {
                     //todo 用户拒绝了此收费方案，发送模板消息
-                    $this->newRepairSendMsg(53,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(53, $order_id, 0, $property_id);
                     // todo 用户拒绝了 走下推送配置
                     $toParams = ['village_id' => $orderInfo['village_id'], 'works_order_id' => $order_id,];
                     (new HouseCommunityHandleNoticeService())->tryHandleRejectOverToReportBox($toParams);
-                }
-                elseif ($event_status_type == 'reopen'){
+                } elseif ($event_status_type == 'reopen') {
                     //todo 用户重新打开 发送模板消息
-                    $this->newRepairSendMsg(10,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(10, $order_id, 0, $property_id);
                     // todo 重开将自动结单时间置空
                     if ($jz_open) {
                         $stepArr = [
@@ -5499,10 +5613,9 @@ class HouseNewRepairService
                         ];
                         (new HouseCommunityWorkOrderService())->setAutoEndTime($order_id, $stepArr);
                     }
-                }
-                elseif ($event_status_type == 'agree'){
+                } elseif ($event_status_type == 'agree') {
                     //todo 用户同意缴费
-                    $this->newRepairSendMsg(51,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(51, $order_id, 0, $property_id);
                     // todo 处理工单自动结束时间记录
                     if ($jz_open) {
                         $stepArr = [
@@ -5513,10 +5626,9 @@ class HouseNewRepairService
                         ];
                         (new HouseCommunityWorkOrderService())->setAutoEndTime($order_id, $stepArr);
                     }
-                }
-                elseif ($event_status_type == 'evaluate'){
+                } elseif ($event_status_type == 'evaluate') {
                     //todo 用户评价
-                    $this->newRepairSendMsg(20,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(20, $order_id, 0, $property_id);
                 }
 
                 if ($event_status_type == 'reopen_by_money') {
@@ -5542,8 +5654,8 @@ class HouseNewRepairService
                         $logData['village_id'] = $village_id;
                         $logData['property_id'] = $village_info['property_id'];
                         fdump_api(['$logData' => $logData, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
-                        $otherData=array('opt_type'=>'assign_to_house_worker','wid'=>$worker_id,'village_id'=>$village_id);
-                        $this->addRepairLog($logData,$otherData);
+                        $otherData = array('opt_type' => 'assign_to_house_worker', 'wid' => $worker_id, 'village_id' => $village_id);
+                        $this->addRepairLog($logData, $otherData);
                     }
                     if ($jz_open) {
                         if (isset($communityConfig) && isset($communityConfig['not_timely_report_switch'])) {
@@ -5557,7 +5669,8 @@ class HouseNewRepairService
                             fdump_api(['$not_timely_report_switch' => $not_timely_report_switch, '$isPublic' => $isPublic, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
                             if ($not_timely_report_switch == 0 && $isPublic) {
                                 $noticeArr = [
-                                    'village_id' => $village_id, 'works_order_id' => $order_id,
+                                    'village_id' => $village_id,
+                                    'works_order_id' => $order_id,
                                 ];
                                 (new HouseCommunityHandleNoticeService())->tryHandlePublicToReportBox($noticeArr);
                             }
@@ -5571,33 +5684,41 @@ class HouseNewRepairService
                             $workOrderConfig['add_time'] = $nowTime;
                             $configId = $serviceHouseCommunityWorkOrder->addHouseCommunityWorkOrderConfig($workOrderConfig);
                             fdump_api(['$configId' => $configId, '$workOrderConfig' => $workOrderConfig, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
-                        } elseif (! empty($assign_record)) {
+                        } elseif (!empty($assign_record)) {
                             $updateConfigParams = ['works_order_id' => $order_id, 'village_id' => $village_id];
                             $fillData = [];
-                            $fillData['assign_record'] = json_encode($assign_record,JSON_UNESCAPED_UNICODE);
+                            $fillData['assign_record'] = json_encode($assign_record, JSON_UNESCAPED_UNICODE);
                             $fillData['update_time'] = time();
                             $fillData['look_contact'] = 0;
                             $fillData['contact_content'] = '';
                             $serviceHouseCommunityWorkOrderConfig->updateHouseCommunityWorkOrderConfig($updateConfigParams, $fillData);
-                            fdump_api(['$configId' => $configId,'$updateConfigParams' => $updateConfigParams, '$fillData' => $fillData, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
+                            fdump_api(['$configId' => $configId, '$updateConfigParams' => $updateConfigParams, '$fillData' => $fillData, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
                         }
                         if ($worker_id) {
                             $workRecord = [
-                                'worker_id' => $worker_id, 'village_id' => $village_id, 'property_id' => $village_info['property_id'],
-                                'works_order_id' => $order_id, 'latest_receive_time' => $nowTime
+                                'worker_id' => $worker_id,
+                                'village_id' => $village_id,
+                                'property_id' => $village_info['property_id'],
+                                'works_order_id' => $order_id,
+                                'latest_receive_time' => $nowTime
                             ];
                             $serviceHouseCommunityWorkOrder->handleWorkOrderWorkRecord($workRecord);
-                            fdump_api(['$worker_id' => $worker_id,'$workRecord' => $workRecord, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
+                            fdump_api(['$worker_id' => $worker_id, '$workRecord' => $workRecord, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
                         }
                         if ($configId && !empty($communityConfig)) {
                             $workName = isset($house_work['name']) && $house_work['name'] ? trim($house_work['name']) : '';
                             $workPhone = isset($house_work['phone']) && $house_work['phone'] ? trim($house_work['phone']) : '';
                             $handleParams = [
-                                'configId' => $configId, 'village_id' => $village_id, 'communityConfig' => $communityConfig,
-                                'nowTime' => $nowTime, 'worker_id' => $worker_id, 'workName' => $workName, 'workPhone' => $workPhone,
+                                'configId' => $configId,
+                                'village_id' => $village_id,
+                                'communityConfig' => $communityConfig,
+                                'nowTime' => $nowTime,
+                                'worker_id' => $worker_id,
+                                'workName' => $workName,
+                                'workPhone' => $workPhone,
                                 'works_order_id' => $order_id,
                             ];
-                            fdump_api(['$configId' => $configId,'$handleParams' => $handleParams, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
+                            fdump_api(['$configId' => $configId, '$handleParams' => $handleParams, 'line' => __LINE__], 'userWorkOrder/1reopen_by_money_log', 1);
                             $serviceHouseCommunityWorkOrder->handleIncreaseWorkOrderConfig($handleParams);
                         }
                     }
@@ -5662,37 +5783,37 @@ class HouseNewRepairService
             'village_id' => $village_id,
             'property_id' => $property_id
         ];
-        $otherData=array();
-        if($worker_id>0 && strpos($event_status_type,'assign')!==false){
-            $otherData=array('opt_type'=>'assign_to_house_worker','wid'=>$worker_id,'village_id'=>$village_id);
+        $otherData = array();
+        if ($worker_id > 0 && strpos($event_status_type, 'assign') !== false) {
+            $otherData = array('opt_type' => 'assign_to_house_worker', 'wid' => $worker_id, 'village_id' => $village_id);
         }
-        $id = $this->addRepairLog($log_data,$otherData);
+        $id = $this->addRepairLog($log_data, $otherData);
         if ($id) {
             if ($worker_id) {
                 $data['update_time'] = time();
                 $data['event_status'] = 20;
                 $data['worker_id'] = $worker_id;
-                $data['group_id']=$this->getGroupId($worker_id);
+                $data['group_id'] = $this->getGroupId($worker_id);
                 //todo 转单记录当前转单人信息
-                $this->workOrderLogSave($id,$worker_id);
+                $this->workOrderLogSave($id, $worker_id);
             } else {
                 $data['update_time'] = time();
                 $data['event_status'] = 40;
             }
             $res = $db_house_new_repair_works_order->saveOne(['order_id' => $order_id], $data);
-            if ($res){
-                if($worker_id){
+            if ($res) {
+                if ($worker_id) {
                     //针对工作人员提交的工单有指派时 给提交人发送通知
-                    if($orderInfo['order_type'] == 4){
-                        $this->newRepairSendMsg(11,$order_id,$orderInfo['uid'],$property_id);
+                    if ($orderInfo['order_type'] == 4) {
+                        $this->newRepairSendMsg(11, $order_id, $orderInfo['uid'], $property_id);
                         //给工作人员发送通知
-                        $this->newRepairSendMsg(12,$order_id,0,$property_id);
-                    }else{
-                        $this->newRepairSendMsg(10,$order_id,0,$property_id);
+                        $this->newRepairSendMsg(12, $order_id, 0, $property_id);
+                    } else {
+                        $this->newRepairSendMsg(10, $order_id, 0, $property_id);
                     }
-                }else{
+                } else {
                     //已办结
-                    $this->newRepairSendMsg(70,$order_id,0,$property_id);
+                    $this->newRepairSendMsg(70, $order_id, 0, $property_id);
                 }
                 $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
                 if ($jz_open && isset($data['event_status'])) {
@@ -5746,21 +5867,21 @@ class HouseNewRepairService
         $count = $db_house_new_repair_work_order_log->getCount($where);
         return $count;
     }
-    
+
     public function getLogCountByOrderId($where = [])
     {
         $db_house_new_repair_work_order_log = new HouseNewRepairWorksOrderLog();
-        $count = $db_house_new_repair_work_order_log->getCountGroupBy($where,'order_id');
+        $count = $db_house_new_repair_work_order_log->getCountGroupBy($where, 'order_id');
         return $count;
     }
-    
-    public function getColumn($where,$field, $key = '')
+
+    public function getColumn($where, $field, $key = '')
     {
         $db_house_new_repair_work_order_log = new HouseNewRepairWorksOrderLog();
-        $count = $db_house_new_repair_work_order_log->getColumn($where,$field, $key);
+        $count = $db_house_new_repair_work_order_log->getColumn($where, $field, $key);
         return $count;
     }
-    
+
     /**
      * 计算平均分
      * @param array $where
@@ -5869,12 +5990,11 @@ class HouseNewRepairService
                     $count_list[$k]['subject_name'] = $value['cate_name'];
                     $count_list[$k]['count_total'] = $count_total;
                     $count_list[$k]['count_finsh'] = $count_finsh;
-                    if (empty($count_total)||empty($count_finsh)) {
+                    if (empty($count_total) || empty($count_finsh)) {
                         $count_list[$k]['rate'] = 0;
                     } else {
                         $count_list[$k]['rate'] = round_number($count_finsh / $count_total, 2);
                     }
-
                 }
             }
         }
@@ -5882,114 +6002,113 @@ class HouseNewRepairService
     }
 
     //获取工作人员对应的部门id
-    public function getGroupId($worker_id){
-        $group_id=0;
-        $worker=(new HouseWorker())->getOne(['wid'=>intval($worker_id)],'department_id');
-        if($worker && !$worker->isEmpty()){
-            $group_id=$worker['department_id'];
+    public function getGroupId($worker_id)
+    {
+        $group_id = 0;
+        $worker = (new HouseWorker())->getOne(['wid' => intval($worker_id)], 'department_id');
+        if ($worker && !$worker->isEmpty()) {
+            $group_id = $worker['department_id'];
         }
         return $group_id;
     }
 
 
-
     /**
      * 校验白晚班是否可提交工单
-     * @author: liukezhu
-     * @date : 2022/3/31
      * @param $village_id
      * @return array
+     * @author: liukezhu
+     * @date : 2022/3/31
      */
-    public function checkWorkOrder($village_id){
-        $village_info=(new HouseVillageInfo())->getOne(['village_id'=>$village_id],'help_info,is_timely');
-        $time=time();
-        $day_start='08:00:00'; //白班开始时间
-        $day_end='18:00:00';  //白班结束时间
-        $night_start='18:00:01';//晚班开始时间
-        $night_end='07:59:59'; //晚班结束时间
-        $phone='';
-        $is_close_help_info=0;
-        $is_go_time=0;
-        if($village_info && !$village_info->isEmpty()){
-            $info=unserialize($village_info['help_info']);
-            if($info){
-                if(isset($info['is_close'])){
-                    $is_close_help_info=intval($info['is_close']);
+    public function checkWorkOrder($village_id)
+    {
+        $village_info = (new HouseVillageInfo())->getOne(['village_id' => $village_id], 'help_info,is_timely');
+        $time = time();
+        $day_start = '08:00:00'; //白班开始时间
+        $day_end = '18:00:00';  //白班结束时间
+        $night_start = '18:00:01'; //晚班开始时间
+        $night_end = '07:59:59'; //晚班结束时间
+        $phone = '';
+        $is_close_help_info = 0;
+        $is_go_time = 0;
+        if ($village_info && !$village_info->isEmpty()) {
+            $info = unserialize($village_info['help_info']);
+            if ($info) {
+                if (isset($info['is_close'])) {
+                    $is_close_help_info = intval($info['is_close']);
                 }
-                if(isset($info['start'][0]) && isset($info['end'][0])){
-                    $day_start=$info['start'][0].':00';
-                    $day_end=$info['end'][0].':00';
+                if (isset($info['start'][0]) && isset($info['end'][0])) {
+                    $day_start = $info['start'][0] . ':00';
+                    $day_end = $info['end'][0] . ':00';
                 }
-                if(isset($info['start'][1]) && isset($info['end'][1])){
-                    $night_start=$info['start'][1].':00';
-                    $night_end=$info['end'][1].':00';
+                if (isset($info['start'][1]) && isset($info['end'][1])) {
+                    $night_start = $info['start'][1] . ':00';
+                    $night_end = $info['end'][1] . ':00';
                 }
-                if(isset($info['phone'][1]) && !empty($info['phone'][1])){
-                    $phone=$info['phone'][1];
+                if (isset($info['phone'][1]) && !empty($info['phone'][1])) {
+                    $phone = $info['phone'][1];
                 }
             }
-            if(!empty($village_info['is_timely'])){
-                $is_go_time=$village_info['is_timely'];
+            if (!empty($village_info['is_timely'])) {
+                $is_go_time = $village_info['is_timely'];
             }
         }
-        $day_start_replace=(int)str_replace(":","",$day_start);
-        $day_end_replace=(int)str_replace(":","",$day_end);
-        $night_start_replace=(int)str_replace(":","",$night_start);
-        $night_end_replace=(int)str_replace(":","",$night_end);
+        $day_start_replace = (int)str_replace(":", "", $day_start);
+        $day_end_replace = (int)str_replace(":", "", $day_end);
+        $night_start_replace = (int)str_replace(":", "", $night_start);
+        $night_end_replace = (int)str_replace(":", "", $night_end);
 
         //白班开始时间
-        $day_start_time=strtotime(date('Y-m-d '.$day_start,$time));
+        $day_start_time = strtotime(date('Y-m-d ' . $day_start, $time));
         //晚班开始时间
-        $night_start_time=strtotime(date('Y-m-d '.$night_start,$time));
+        $night_start_time = strtotime(date('Y-m-d ' . $night_start, $time));
 
         //获取白班结束时间
-        if($day_start_replace >= $day_end_replace){
-            $day_end_time=strtotime(date("Y-m-d ".$day_end,strtotime("+1 day")));
-        }else{
-            $day_end_time=strtotime(date('Y-m-d '.$day_end,$time));
+        if ($day_start_replace >= $day_end_replace) {
+            $day_end_time = strtotime(date("Y-m-d " . $day_end, strtotime("+1 day")));
+        } else {
+            $day_end_time = strtotime(date('Y-m-d ' . $day_end, $time));
         }
         //获取晚班结束时间
-        if($night_start_replace >= $night_end_replace){
-            $night_end_time=strtotime(date("Y-m-d ".$night_end,strtotime("+1 day")));
-        }else{
-            $night_end_time=strtotime(date('Y-m-d '.$night_end,$time));
+        if ($night_start_replace >= $night_end_replace) {
+            $night_end_time = strtotime(date("Y-m-d " . $night_end, strtotime("+1 day")));
+        } else {
+            $night_end_time = strtotime(date('Y-m-d ' . $night_end, $time));
         }
         //当前时间是否在白班范围内
-        if($time >= $day_start_time && $time <= $day_end_time){
-            return ['code'=>1,'msg'=>'ok','is_night'=>0,'data'=>['is_go_time'=>$is_go_time]];
-        }
-        else{
-            if($is_close_help_info<1 && ($time >= $night_start_time && $time <= $night_end_time)){ //当前时间在晚班范围内
-                if(empty($phone)){
-                    return ['code'=>-1,'is_night'=>1,'msg'=>'该晚班电话暂未配置，请联系工作人员','data'=>['is_go_time'=>$is_go_time]];
-                }else{
-                    return ['code'=>0,'is_night'=>1,'msg'=>'请用该电话联系','data'=>['phone'=>$phone,'is_go_time'=>$is_go_time]];
+        if ($time >= $day_start_time && $time <= $day_end_time) {
+            return ['code' => 1, 'msg' => 'ok', 'is_night' => 0, 'data' => ['is_go_time' => $is_go_time]];
+        } else {
+            if ($is_close_help_info < 1 && ($time >= $night_start_time && $time <= $night_end_time)) { //当前时间在晚班范围内
+                if (empty($phone)) {
+                    return ['code' => -1, 'is_night' => 1, 'msg' => '该晚班电话暂未配置，请联系工作人员', 'data' => ['is_go_time' => $is_go_time]];
+                } else {
+                    return ['code' => 0, 'is_night' => 1, 'msg' => '请用该电话联系', 'data' => ['phone' => $phone, 'is_go_time' => $is_go_time]];
                 }
-            }
-            else{
-                return ['code'=>1,'is_night'=>0,'msg'=>'ok','data'=>['is_go_time'=>$is_go_time]];
+            } else {
+                return ['code' => 1, 'is_night' => 0, 'msg' => 'ok', 'data' => ['is_go_time' => $is_go_time]];
             }
         }
-
     }
 
-    public function getChargeSetOrder($data){
+    public function getChargeSetOrder($data)
+    {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
         $db_house_new_repair_subject = new HouseNewRepairCate();
         $db_house_new_charge_rule = new HouseNewChargeRule();
-        $work_info=$db_house_new_repair_works_order->getOne(['order_id'=>$data['order_id']]);
-        if (!empty($work_info)){
-            $work_info=$work_info->toArray();
+        $work_info = $db_house_new_repair_works_order->getOne(['order_id' => $data['order_id']]);
+        if (!empty($work_info)) {
+            $work_info = $work_info->toArray();
         }
-        if (empty($work_info)){
+        if (empty($work_info)) {
             throw new \think\Exception('当前工单信息不存在');
         }
 
-        $charge_set=$db_house_new_repair_subject->getOne(['id'=>$work_info['cat_id']]);
-        if (!empty($charge_set)){
-            $charge_set=$charge_set->toArray();
+        $charge_set = $db_house_new_repair_subject->getOne(['id' => $work_info['cat_id']]);
+        if (!empty($charge_set)) {
+            $charge_set = $charge_set->toArray();
         }
-        if (empty($charge_set)){
+        if (empty($charge_set)) {
             throw new \think\Exception('当前工单的分类信息不存在');
         }
         $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
@@ -6001,43 +6120,45 @@ class HouseNewRepairService
             !$village_id && $village_id = isset($charge_set['village_id']) && intval($charge_set['village_id']) > 0 ? intval($charge_set['village_id']) : 0;
             !$repair_cate_id && $repair_cate_id = isset($charge_set['id']) && intval($charge_set['id']) > 0 ? intval($charge_set['id']) : 0;
             $judgeParams = [
-                'village_id' => $village_id, 'repair_cate_id' => $repair_cate_id,
-                'jz_open' => $jz_open, 'single_id' => $single_id, 'room_id' => $room_id,
+                'village_id' => $village_id,
+                'repair_cate_id' => $repair_cate_id,
+                'jz_open' => $jz_open,
+                'single_id' => $single_id,
+                'room_id' => $room_id,
             ];
             $hasFee = (new HouseCommunityQualityService())->judgeRepairCateQualityFee($judgeParams);
         } else {
             $hasFee = false;
         }
-        $charge_data=[];
-        if (in_array($work_info['event_status'],[35,36])&&$data['change_status']['log']=='work_follow_up'){
-            $work_type=1;
-            $charge_type=false;
-        }elseif (in_array($work_info['event_status'],[44,45])&&$data['change_status']['log']=='work_completed'){
-            $work_type=2;
-            $charge_type=false;
-        }elseif ($work_info['event_status']==35&&$data['change_status']['log']=='work_completed'){
+        $charge_data = [];
+        if (in_array($work_info['event_status'], [35, 36]) && $data['change_status']['log'] == 'work_follow_up') {
+            $work_type = 1;
+            $charge_type = false;
+        } elseif (in_array($work_info['event_status'], [44, 45]) && $data['change_status']['log'] == 'work_completed') {
+            $work_type = 2;
+            $charge_type = false;
+        } elseif ($work_info['event_status'] == 35 && $data['change_status']['log'] == 'work_completed') {
             throw new \think\Exception('用户没有对工单处理操作');
-        }
-        else{
-            if ($charge_set['charge_type']==1&&$data['change_status']['log']=='work_follow_up'){
-                $work_type=1;
-                $charge_type=true;
-            }elseif($charge_set['charge_type']!=1&&$data['change_status']['log']=='work_follow_up'){
-                $work_type=1;
-                $charge_type=false;
-            }elseif($charge_set['charge_type']==1&&$data['change_status']['log']=='work_completed'){
-                $work_type=2;
-                $charge_type=true;
-                $charge_data['charge_price']=$work_info['charge_price'];
-                $charge_data['pay_type']=$work_info['pay_type'];
-                $rule_info=$db_house_new_charge_rule->getFind(['r.id'=>$work_info['rule_id']],'r.charge_name,p.name');
-                if (!empty($rule_info)){
-                    $charge_data['rule_name']=$rule_info['charge_name'];
-                    $charge_data['project_name']=$rule_info['name'];
+        } else {
+            if ($charge_set['charge_type'] == 1 && $data['change_status']['log'] == 'work_follow_up') {
+                $work_type = 1;
+                $charge_type = true;
+            } elseif ($charge_set['charge_type'] != 1 && $data['change_status']['log'] == 'work_follow_up') {
+                $work_type = 1;
+                $charge_type = false;
+            } elseif ($charge_set['charge_type'] == 1 && $data['change_status']['log'] == 'work_completed') {
+                $work_type = 2;
+                $charge_type = true;
+                $charge_data['charge_price'] = $work_info['charge_price'];
+                $charge_data['pay_type'] = $work_info['pay_type'];
+                $rule_info = $db_house_new_charge_rule->getFind(['r.id' => $work_info['rule_id']], 'r.charge_name,p.name');
+                if (!empty($rule_info)) {
+                    $charge_data['rule_name'] = $rule_info['charge_name'];
+                    $charge_data['project_name'] = $rule_info['name'];
                 }
-            } else{
-                $work_type=2;
-                $charge_type=false;
+            } else {
+                $work_type = 2;
+                $charge_type = false;
             }
         }
         if ($hasFee && $charge_type) {
@@ -6045,13 +6166,13 @@ class HouseNewRepairService
             $charge_data = [];
         }
 
-        if (empty($charge_data)){
-            $charge_data=null;
+        if (empty($charge_data)) {
+            $charge_data = null;
         }
-        $list=[];
-        $list['type']=$work_type;
-        $list['res']=$charge_type;
-        $list['data']=$charge_data;
+        $list = [];
+        $list['type'] = $work_type;
+        $list['res'] = $charge_type;
+        $list['data'] = $charge_data;
         return $list;
     }
 
@@ -6066,50 +6187,52 @@ class HouseNewRepairService
         return $worksOrderInfo;
     }
 
-    public function getWorkChargeProject($data){
-        $db_house_new_charge_project=new HouseNewChargeProject();
-        $where=[
-            'village_id'=>$data['village_id'],
-            'type'=>1,
-            'status'=>1,
+    public function getWorkChargeProject($data)
+    {
+        $db_house_new_charge_project = new HouseNewChargeProject();
+        $where = [
+            'village_id' => $data['village_id'],
+            'type' => 1,
+            'status' => 1,
         ];
-        $project_list=$db_house_new_charge_project->getLists($where,'id,name');
-        if (!empty($project_list)){
-            $project_list=$project_list->toArray();
+        $project_list = $db_house_new_charge_project->getLists($where, 'id,name');
+        if (!empty($project_list)) {
+            $project_list = $project_list->toArray();
         }
 
         return $project_list;
     }
 
     //结单完成
-    public function getTimelyStatus($order){
-        $param=[
-            'order_id'=>$order['order_id'],//订单id
-            'village_id'=>$order['village_id'],//小区id
-            'go_time'=>$order['go_time'], //上门时间
-            'cat_fid'=>$order['cat_fid'],//一级分类id
-            'cat_id'=>$order['cat_id'], //二级分类id
-            'timely_time'=>$order['timely_time'],//结单时间
-            'group_id'=>$this->getGroupId($order['worker_id']),//部门id
-            'worker_id'=>$order['worker_id'],//工作人员id
+    public function getTimelyStatus($order)
+    {
+        $param = [
+            'order_id' => $order['order_id'], //订单id
+            'village_id' => $order['village_id'], //小区id
+            'go_time' => $order['go_time'], //上门时间
+            'cat_fid' => $order['cat_fid'], //一级分类id
+            'cat_id' => $order['cat_id'], //二级分类id
+            'timely_time' => $order['timely_time'], //结单时间
+            'group_id' => $this->getGroupId($order['worker_id']), //部门id
+            'worker_id' => $order['worker_id'], //工作人员id
         ];
-        if(!empty($param['timely_time'])){
-            return ['error'=>false,'data'=>'已完成结单，无须操作'];
+        if (!empty($param['timely_time'])) {
+            return ['error' => false, 'data' => '已完成结单，无须操作'];
         }
-        $time=time();
-        $is_timely=(new HouseVillageService())->checkVillageField($param['village_id'],'is_timely');
-        $cate=(new HouseNewRepairCate())->getOne(['id'=>$param['cat_id']],'timely_time');
-        $data=[
-            'timely_time'=>$time
+        $time = time();
+        $is_timely = (new HouseVillageService())->checkVillageField($param['village_id'], 'is_timely');
+        $cate = (new HouseNewRepairCate())->getOne(['id' => $param['cat_id']], 'timely_time');
+        $data = [
+            'timely_time' => $time
         ];
-        if (!$cate || $cate->isEmpty()){
-            return ['error'=>false,'data'=>'该分类不存在'];
+        if (!$cate || $cate->isEmpty()) {
+            return ['error' => false, 'data' => '该分类不存在'];
         }
-        if(empty($is_timely)){ //未开启新版工单及时率
-            $data['is_status']=0;
-        }else{
-            $timely_time=intval($cate['timely_time']) * 60;
-            $data['cate_timely_time']=$cate['timely_time'];
+        if (empty($is_timely)) { //未开启新版工单及时率
+            $data['is_status'] = 0;
+        } else {
+            $timely_time = intval($cate['timely_time']) * 60;
+            $data['cate_timely_time'] = $cate['timely_time'];
             $diff_time = $time - $order['go_time'];
             if ($timely_time <= 0) {
                 $data['is_status'] = 0;
@@ -6118,66 +6241,69 @@ class HouseNewRepairService
                 $data['is_status'] = 2;
             }
             //实际用了50s  配置项60s
-            if($diff_time <= $timely_time){
-                $data['is_status']=2;
-            }else{
-                $data['is_status']=1;
+            if ($diff_time <= $timely_time) {
+                $data['is_status'] = 2;
+            } else {
+                $data['is_status'] = 1;
             }
         }
-       
+
         $this->addOrderTimely([
-            'village_id'=>$param['village_id'],
-            'type'=>1,
-            'order_id'=>$param['order_id'],
-            'cat_fid'=>$param['cat_fid'],
-            'cat_id'=>$param['cat_id'],
-            'group_id'=>$param['group_id'],
-            'worker_id'=>$param['worker_id'],
-            'is_status'=>$data['is_status'],
-            'add_time'=>$time
+            'village_id' => $param['village_id'],
+            'type' => 1,
+            'order_id' => $param['order_id'],
+            'cat_fid' => $param['cat_fid'],
+            'cat_id' => $param['cat_id'],
+            'group_id' => $param['group_id'],
+            'worker_id' => $param['worker_id'],
+            'is_status' => $data['is_status'],
+            'add_time' => $time
         ]);
-        return ['error'=>true,'data'=>$data];
+        return ['error' => true, 'data' => $data];
     }
 
     //todo 同步写入工单及时率
-    public function addOrderTimely($data){
+    public function addOrderTimely($data)
+    {
         return (new HouseNewRepairWorksOrderTimely())->addOne($data);
     }
 
-    public function getOrderTimelyOne($where,$field=true){
-        return (new HouseNewRepairWorksOrderTimely())->get_one($where,$field);
+    public function getOrderTimelyOne($where, $field = true)
+    {
+        return (new HouseNewRepairWorksOrderTimely())->get_one($where, $field);
     }
 
 
-    public function getWorkChargeRule($data){
-        $db_house_new_charge_project=new HouseNewChargeProject();
-        $db_house_new_charge_rule=new HouseNewChargeRule();
-        $where=[
-            'village_id'=>$data['village_id'],
-            'id'=>$data['project_id'],
-            'status'=>1,
+    public function getWorkChargeRule($data)
+    {
+        $db_house_new_charge_project = new HouseNewChargeProject();
+        $db_house_new_charge_rule = new HouseNewChargeRule();
+        $where = [
+            'village_id' => $data['village_id'],
+            'id' => $data['project_id'],
+            'status' => 1,
         ];
-        $project_info=$db_house_new_charge_project->getOne($where);
-        if (empty($project_info)){
+        $project_info = $db_house_new_charge_project->getOne($where);
+        if (empty($project_info)) {
             throw new \think\Exception('当前收费项目信息不存在');
         }
-        $where_rule=[
-            'village_id'=>$data['village_id'],
-            'charge_project_id'=>$data['project_id'],
-            'status'=>1,
+        $where_rule = [
+            'village_id' => $data['village_id'],
+            'charge_project_id' => $data['project_id'],
+            'status' => 1,
         ];
-        $rule_list=$db_house_new_charge_rule->getList($where_rule,'id,charge_name,charge_project_id,charge_price');
-        if (!empty($rule_list) && !$rule_list->isEmpty()){
-            $rule_list=$rule_list->toArray();
-            foreach ($rule_list as $kk=>$vv){
-                $rule_list[$kk]['charge_price']=$vv['charge_price']+0;
+        $rule_list = $db_house_new_charge_rule->getList($where_rule, 'id,charge_name,charge_project_id,charge_price');
+        if (!empty($rule_list) && !$rule_list->isEmpty()) {
+            $rule_list = $rule_list->toArray();
+            foreach ($rule_list as $kk => $vv) {
+                $rule_list[$kk]['charge_price'] = $vv['charge_price'] + 0;
             }
         }
-        if (empty($rule_list)){
+        if (empty($rule_list)) {
             throw new \think\Exception('当前收费项目没有对应的收费标准');
         }
 
-        return ['list'=>$rule_list];
+        return ['list' => $rule_list];
     }
 
 
@@ -6186,7 +6312,8 @@ class HouseNewRepairService
      * @author:zhubaodi
      * @date_time: 2022/3/29 18:19
      */
-    public function addPayOrder($order_id, $orderParam = []){
+    public function addPayOrder($order_id, $orderParam = [])
+    {
         $scheme_charge_type = isset($orderParam['scheme_charge_type']) && $orderParam['scheme_charge_type'] ? intval($orderParam['scheme_charge_type']) : 0;
         $charge_price = isset($orderParam['charge_price']) && floatval($orderParam['charge_price']) > 0 ? $orderParam['charge_price'] : 0;
         // $hasBills 是否生成账单
@@ -6195,11 +6322,11 @@ class HouseNewRepairService
             return [];
         }
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-        $db_house_new_charge_rule=new HouseNewChargeRule();
+        $db_house_new_charge_rule = new HouseNewChargeRule();
         $service_house_new_charge = new HouseNewChargeService();
-        $db_house_admin=new HouseAdmin();
+        $db_house_admin = new HouseAdmin();
         $work_order_info = $db_house_new_repair_works_order->getOne(['order_id' => $order_id]);
-        fdump_api([$work_order_info,$order_id],'addPayOrder_0414',1);
+        fdump_api([$work_order_info, $order_id], 'addPayOrder_0414', 1);
         $pay_order_id = 0;
         fdump_api(['order_id' => $order_id, 'orderParam' => $orderParam, 'line' => __LINE__], 'worksOrder/addPayOrderLog');
         $result = [];
@@ -6212,26 +6339,26 @@ class HouseNewRepairService
             !$charge_price && $charge_price = isset($work_order_info['charge_price']) && floatval($work_order_info['charge_price']) > 0 ? $work_order_info['charge_price'] : 0;
             $nowTime = time();
             // 计费模式 1:固定费用 2：单价计量单位 3 临时车  4 月租车  5 车位数量
-            $fees_type           = 1;
+            $fees_type = 1;
             // 计量单位
-            $unit_gage           = '';
+            $unit_gage = '';
             // 周期性设置 周期数 0:不限周期
-            $cyclicity_set       = 0;
+            $cyclicity_set = 0;
             // 账单生成周期设置 1：按日生成2：按月生成3：按年生成
-            $bill_create_set     = 0;
+            $bill_create_set = 0;
             // 账单欠费模式  1:预生成  2：后生成
-            $bill_arrears_set    = 0;
+            $bill_arrears_set = 0;
             // 生成账单模式 1:手动生成 2：自动生成
-            $bill_type           = 1;
+            $bill_type = 1;
             // 是否支持预缴 1:支持 2：不支持
-            $is_prepaid          = 2;
+            $is_prepaid = 2;
             // 1:年月日 2：年月 3：年
-            $charge_valid_type   = 2;
+            $charge_valid_type = 2;
             // 收费标准生效时间
             $charge_valid_time = $nowTime;
             // 收费标准来源 工单
             $from_type = 'works_order';
-            $status = 1;//状态 1:开启 2：关闭 4：删除
+            $status = 1; //状态 1:开启 2：关闭 4：删除
             $projectId = 0;
             $ruleId = 0;
             // 注意 【建行收款账号】 需要单独在物业 收费科目中 单独手动配置下 才能支持该支付
@@ -6249,7 +6376,7 @@ class HouseNewRepairService
             $db_house_new_pay_order = new HouseNewPayOrder();
             $village_id = isset($orderParam['village_id']) ? intval($orderParam['village_id']) : 0;
             !$village_id && $village_id = isset($work_order_info['village_id']) ? intval($work_order_info['village_id']) : 0;
-            
+
             if (!$projectId || !$ruleId) {
                 $whereChargeNumber = [];
                 $whereChargeNumber[] = ['property_id', '=', $property_id];
@@ -6260,13 +6387,16 @@ class HouseNewRepairService
                 $charge_type = isset($chargeNumberInfo['charge_type']) && $chargeNumberInfo['charge_type'] ? $chargeNumberInfo['charge_type'] : '';
                 $subjectId = isset($chargeNumberInfo['id']) && $chargeNumberInfo['id'] ? $chargeNumberInfo['id'] : '';
                 fdump_api(['charge_type' => $charge_type, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
-                if  (!$subjectId) {
+                if (!$subjectId) {
                     $chargeNumberData = [
-                        'property_id' => $property_id, 'charge_type' => 'other', 'status' => 1,
-                        'charge_number_name' => $charge_number_name, 'add_time' => $nowTime,
+                        'property_id' => $property_id,
+                        'charge_type' => 'other',
+                        'status' => 1,
+                        'charge_number_name' => $charge_number_name,
+                        'add_time' => $nowTime,
                     ];
                     $subjectId = $dbHouseNewChargeNumber->addOne($chargeNumberData);
-                    fdump_api(['chargeNumberData' => $chargeNumberData,  'subjectId' => $subjectId, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+                    fdump_api(['chargeNumberData' => $chargeNumberData, 'subjectId' => $subjectId, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
                 }
                 $db_house_new_charge_project = new HouseNewChargeProject();
                 $whereChargeProject = [];
@@ -6280,8 +6410,12 @@ class HouseNewRepairService
                 fdump_api(['projectId' => $projectId, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
                 if (!$projectId) {
                     $chargeProjectData = [
-                        'village_id' => $village_id, 'subject_id' => $subjectId, 'status' => 1, 'type' => 1,
-                        'name' => $charge_project_name, 'add_time' => $nowTime,
+                        'village_id' => $village_id,
+                        'subject_id' => $subjectId,
+                        'status' => 1,
+                        'type' => 1,
+                        'name' => $charge_project_name,
+                        'add_time' => $nowTime,
                     ];
                     $db_house_new_charge = new HouseNewCharge();
                     $chargeInfo = $db_house_new_charge->get_one(['village_id' => $village_id]);
@@ -6311,12 +6445,24 @@ class HouseNewRepairService
                 fdump_api(['ruleId' => $ruleId, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
                 if (!$ruleId) {
                     $ruleData = [
-                        'village_id' => $village_id, 'subject_id' => $subjectId, 'charge_project_id' => $projectId,
-                        'charge_name' => $charge_name, 'unit_price' => $charge_price, 'charge_price' => $charge_price,
-                        'fees_type' => $fees_type, 'cyclicity_set' => $cyclicity_set, 'bill_create_set' => $bill_create_set,
-                        'bill_arrears_set' => $bill_arrears_set, 'bill_type' => $bill_type, 'is_prepaid' => $is_prepaid,
-                        'status' => $status, 'from_type' => $from_type, 'charge_valid_type' => $charge_valid_type,
-                        'charge_valid_time' => $charge_valid_time, 'not_house_rate' => 100, 'unit_gage' => $unit_gage,
+                        'village_id' => $village_id,
+                        'subject_id' => $subjectId,
+                        'charge_project_id' => $projectId,
+                        'charge_name' => $charge_name,
+                        'unit_price' => $charge_price,
+                        'charge_price' => $charge_price,
+                        'fees_type' => $fees_type,
+                        'cyclicity_set' => $cyclicity_set,
+                        'bill_create_set' => $bill_create_set,
+                        'bill_arrears_set' => $bill_arrears_set,
+                        'bill_type' => $bill_type,
+                        'is_prepaid' => $is_prepaid,
+                        'status' => $status,
+                        'from_type' => $from_type,
+                        'charge_valid_type' => $charge_valid_type,
+                        'charge_valid_time' => $charge_valid_time,
+                        'not_house_rate' => 100,
+                        'unit_gage' => $unit_gage,
                         'add_time' => $nowTime,
                     ];
                     $ruleId = $dbHouseNewChargeRule->addFind($ruleData);
@@ -6332,7 +6478,7 @@ class HouseNewRepairService
                 $ruleInfo = $dbHouseNewChargeRule->getOne($whereRepeatRule1, 'id, charge_price');
                 $rule_charge_price = isset($ruleInfo['charge_price']) && floatval($ruleInfo['charge_price']) > 0 ? $ruleInfo['charge_price'] : 0;
                 if ($rule_charge_price != $charge_price) {
-                    $ruleUpdate = ['unit_price' => $charge_price, 'charge_price' => $charge_price, 'charge_valid_time' => $charge_valid_time, ];
+                    $ruleUpdate = ['unit_price' => $charge_price, 'charge_price' => $charge_price, 'charge_valid_time' => $charge_valid_time,];
                     $dbHouseNewChargeRule->editFind($whereRepeatRule1, $ruleUpdate);
                 }
             }
@@ -6350,19 +6496,37 @@ class HouseNewRepairService
                 $phone = isset($work_order_info['phone']) && $work_order_info['phone'] ? trim($work_order_info['phone']) : '';
                 $uid = isset($work_order_info['uid']) && $work_order_info['uid'] ? intval($work_order_info['uid']) : 0;
                 $payOrderParam = [
-                    'order_type' => $charge_type, 'order_name' => "工单收费【ID：{$order_id}】", 'village_id' => $village_id,
-                    'property_id' => $property_id, 'total_money' => $charge_price, 'modify_money' => $charge_price,
-                    'role_id' => $role_id, 'is_prepare' => 2, 'rule_id' => $ruleId, 'project_id' => $projectId,
-                    'order_no' => 'works_order_' . $order_id, 'add_time' => $nowTime, 'from' => 4, 'service_start_time' => $nowTime,
-                    'service_end_time' => $nowTime, 'unit_price' => $charge_price, 'room_id' => $room_id,
-                    'pigcms_id' => $pigcms_id, 'uid' => $uid, 'name' => $name, 'phone' => $phone, 'is_paid' => 2,
-                    'pay_bind_id' => $pigcms_id, 'pay_bind_name' => $name, 'pay_bind_phone' => $phone,
+                    'order_type' => $charge_type,
+                    'order_name' => "工单收费【ID：{$order_id}】",
+                    'village_id' => $village_id,
+                    'property_id' => $property_id,
+                    'total_money' => $charge_price,
+                    'modify_money' => $charge_price,
+                    'role_id' => $role_id,
+                    'is_prepare' => 2,
+                    'rule_id' => $ruleId,
+                    'project_id' => $projectId,
+                    'order_no' => 'works_order_' . $order_id,
+                    'add_time' => $nowTime,
+                    'from' => 4,
+                    'service_start_time' => $nowTime,
+                    'service_end_time' => $nowTime,
+                    'unit_price' => $charge_price,
+                    'room_id' => $room_id,
+                    'pigcms_id' => $pigcms_id,
+                    'uid' => $uid,
+                    'name' => $name,
+                    'phone' => $phone,
+                    'is_paid' => 2,
+                    'pay_bind_id' => $pigcms_id,
+                    'pay_bind_name' => $name,
+                    'pay_bind_phone' => $phone,
                 ];
-                if($pay_type == 1) {
+                if ($pay_type == 1) {
                     $payOrderParam['pay_type'] = 4;
                 }
                 $pay_order_id = $db_house_new_pay_order->addOne($payOrderParam);
-                fdump_api(['msg' => '生成账单', 'payOrderParam' => $payOrderParam,  'pay_order_id' => $pay_order_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+                fdump_api(['msg' => '生成账单', 'payOrderParam' => $payOrderParam, 'pay_order_id' => $pay_order_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
                 // 同时生成父级账单 组合跳转链接
                 $summaryData = array();
                 $summaryData['village_id'] = $village_id;
@@ -6372,7 +6536,7 @@ class HouseNewRepairService
                 $summaryData['uid'] = $uid;
                 $summaryData['pay_uid'] = $uid;
                 $summaryData['pay_bind_id'] = $pigcms_id;
-                $summaryData['order_no'] =  build_real_orderid($summaryData['pay_uid']);
+                $summaryData['order_no'] = build_real_orderid($summaryData['pay_uid']);
                 $summaryData['total_money'] = $charge_price;
                 $summaryData['is_paid'] = 2;
                 $summaryData['pay_type'] = 4;
@@ -6381,28 +6545,28 @@ class HouseNewRepairService
                 $summaryData['rule_id'] = isset($ruleIdAry[0]) && $ruleIdAry[0] ? $ruleIdAry[0] : '';
                 $service_house_new_cashier = new HouseNewCashierService();
                 $summary_id = $service_house_new_cashier->addOrderSummary($summaryData);
-                fdump_api(['msg' => '生成父级账单', 'payOrderParam' => $summaryData,  'summary_id' => $summary_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
-                
+                fdump_api(['msg' => '生成父级账单', 'payOrderParam' => $summaryData, 'summary_id' => $summary_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+
                 $plat_order = array(
-                    'orderid' =>'',
+                    'orderid' => '',
                     'business_type' => 'village_new_pay',
                     'business_id' => $summary_id,
                     'order_name' => "工单收费【ID：{$order_id}】",
                     'uid' => $summaryData['pay_uid'],
                     'total_money' => $charge_price,
                     'wx_cheap' => 0,
-                    'add_time'=>time(),
+                    'add_time' => time(),
                 );
-                if($app_type == 'packapp'){
+                if ($app_type == 'packapp') {
                     $plat_order['is_mobile_pay'] = 1;
-                }elseif ($app_type == 'flutter' || $app_type == 1 || $app_type == 2){
+                } elseif ($app_type == 'flutter' || $app_type == 1 || $app_type == 2) {
                     $plat_order['is_mobile_pay'] = 2;
-                }elseif ($app_type == 'wxapp'){
+                } elseif ($app_type == 'wxapp') {
                     $plat_order['is_mobile_pay'] = 2;
                 }
                 $service_plat_order = new PlatOrderService();
                 $plat_id = $service_plat_order->addPlatOrder($plat_order);
-                fdump_api(['msg' => '生成plat_order账单', 'plat_order' => $plat_order,  'plat_id' => $plat_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+                fdump_api(['msg' => '生成plat_order账单', 'plat_order' => $plat_order, 'plat_id' => $plat_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
                 if ($charge_price <= 0 || $pay_type == 2) {
                     $sNewPayService = new NewPayService();
                     $res = $sNewPayService->offlineAfterPay($summary_id);
@@ -6417,7 +6581,7 @@ class HouseNewRepairService
                     $updatePayOrderParam['pay_money'] = $charge_price;
                     $updatePayOrderParam['summary_id'] = $summary_id;
                     $db_house_new_pay_order->saveOne(['order_id' => $pay_order_id], $updatePayOrderParam);
-                    fdump_api(['msg' => '更新账单为线下已支付', 'updatePayOrderParam' => $updatePayOrderParam,  'pay_order_id' => $pay_order_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+                    fdump_api(['msg' => '更新账单为线下已支付', 'updatePayOrderParam' => $updatePayOrderParam, 'pay_order_id' => $pay_order_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
 
                     $updateSummaryData = [];
                     $updateSummaryData['pay_type'] = $pay_type;
@@ -6429,12 +6593,12 @@ class HouseNewRepairService
                     $updateSummaryData['is_paid'] = 1;
                     $updateSummaryData['pay_money'] = $charge_price;
                     $service_house_new_cashier->saveOrder(['summary_id' => $summary_id], $updateSummaryData);
-                    fdump_api(['msg' => '更新总账单为线下已支付', 'updateSummaryData' => $updateSummaryData,  'plat_id' => $summary_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+                    fdump_api(['msg' => '更新总账单为线下已支付', 'updateSummaryData' => $updateSummaryData, 'plat_id' => $summary_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
 
                     $platUpdateData = ['pay_time' => time(), 'paid' => 1];
                     $service_plat_order->savePlatOrder(['order_id' => $plat_id], $platUpdateData);
-                    fdump_api(['msg' => '更新plat为已支付', 'platUpdateData' => $platUpdateData,  'plat_id' => $plat_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
-                    
+                    fdump_api(['msg' => '更新plat为已支付', 'platUpdateData' => $platUpdateData, 'plat_id' => $plat_id, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
+
                     $result['plat_id'] = $plat_id;
                     $result['summary_id'] = $summary_id;
                     $result['pay_order_url'] = '';
@@ -6449,7 +6613,9 @@ class HouseNewRepairService
                 fdump_api(['msg' => '订单返回', 'result' => $result, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
             }
             $worksOrderUpdate = [
-                'pay_order_id' => $pay_order_id, 'project_id' => $projectId, 'rule_id' => $ruleId,
+                'pay_order_id' => $pay_order_id,
+                'project_id' => $projectId,
+                'rule_id' => $ruleId,
             ];
             if ($pay_type > 0) {
                 $worksOrderUpdate['pay_type'] = $pay_type;
@@ -6461,14 +6627,14 @@ class HouseNewRepairService
                 }
             }
             fdump_api(['result' => $result, 'worksOrderUpdate' => $worksOrderUpdate, 'line' => __LINE__], 'worksOrder/addPayOrderLog', 1);
-            $db_house_new_repair_works_order->saveOne(['order_id'=>$order_id], $worksOrderUpdate);
+            $db_house_new_repair_works_order->saveOne(['order_id' => $order_id], $worksOrderUpdate);
         } elseif (!empty($work_order_info)) {
-            $field='r.*,c.charge_type,c.charge_number_name,c.property_id,p.name,p.subject_id,p.type';
-            $rule_info=$db_house_new_charge_rule->getFind(['r.id'=>$work_order_info['rule_id']],$field);
-            fdump_api([$work_order_info,$rule_info],'addPayOrder_0414',1);
-            if (!empty($rule_info)){
-                if (!empty($work_order_info['worker_id'])){
-                    $role_info=$db_house_admin->getOne(['wid'=>$work_order_info['worker_id']],'id');
+            $field = 'r.*,c.charge_type,c.charge_number_name,c.property_id,p.name,p.subject_id,p.type';
+            $rule_info = $db_house_new_charge_rule->getFind(['r.id' => $work_order_info['rule_id']], $field);
+            fdump_api([$work_order_info, $rule_info], 'addPayOrder_0414', 1);
+            if (!empty($rule_info)) {
+                if (!empty($work_order_info['worker_id'])) {
+                    $role_info = $db_house_admin->getOne(['wid' => $work_order_info['worker_id']], 'id');
                 }
                 $postData['order_type'] = $rule_info['charge_type'];
                 $postData['order_name'] = $service_house_new_charge->charge_type[$rule_info['charge_type']];
@@ -6476,7 +6642,7 @@ class HouseNewRepairService
                 $postData['property_id'] = $rule_info['property_id'];
                 $postData['total_money'] = $work_order_info['charge_price'];
                 $postData['modify_money'] = $postData['total_money'];
-                $postData['role_id'] =isset($role_info['id'])&&!empty($role_info['id'])?$role_info['id']:$work_order_info['worker_id'];
+                $postData['role_id'] = isset($role_info['id']) && !empty($role_info['id']) ? $role_info['id'] : $work_order_info['worker_id'];
                 $postData['is_prepare'] = 2;
                 $postData['rule_id'] = $rule_info['id'];
                 $postData['project_id'] = $rule_info['charge_project_id'];
@@ -6487,15 +6653,15 @@ class HouseNewRepairService
                 $postData['service_end_time'] = time();
                 $postData['unit_price'] = $rule_info['charge_price'];
                 $postData['room_id'] = $work_order_info['room_id'];
-                $postData['pigcms_id'] = $work_order_info['bind_id']?$work_order_info['bind_id']:0;
-                $postData['name'] = $work_order_info['name']?$work_order_info['name']:'';
-                $postData['phone'] = $work_order_info['phone']?$work_order_info['phone']:'';
+                $postData['pigcms_id'] = $work_order_info['bind_id'] ? $work_order_info['bind_id'] : 0;
+                $postData['name'] = $work_order_info['name'] ? $work_order_info['name'] : '';
+                $postData['phone'] = $work_order_info['phone'] ? $work_order_info['phone'] : '';
                 $db_house_new_pay_order = new HouseNewPayOrder();
                 $postData['is_paid'] = 2;
-                fdump_api(['postData' => $postData],'addPayOrder_0414',1);
+                fdump_api(['postData' => $postData], 'addPayOrder_0414', 1);
                 $pay_order_id = $db_house_new_pay_order->addOne($postData);
-                fdump_api(['pay_order_id' => $pay_order_id,'postData' => $postData, 'line' => __LINE__],'addPayOrder_0414',1);
-                $pay_time=0;
+                fdump_api(['pay_order_id' => $pay_order_id, 'postData' => $postData, 'line' => __LINE__], 'addPayOrder_0414', 1);
+                $pay_time = 0;
                 if ($work_order_info['pay_type'] == 2) {
                     $order_info = $db_house_new_pay_order->get_one(['order_id' => $pay_order_id]);
                     if ($order_info && !$order_info->isEmpty()) {
@@ -6506,10 +6672,10 @@ class HouseNewRepairService
                     $service_new_pay = new NewPayService();
                     $remark = '工单线下支付账单';
                     $service_new_pay->goPay($order_list, $rule_info['village_id'], 2, $work_order_info['offline_pay_type'], '', $remark);
-                    $pay_time=time();
+                    $pay_time = time();
                 }
                 if ($pay_order_id) {
-                    $db_house_new_repair_works_order->saveOne(['order_id'=>$order_id], ['pay_order_id' => $pay_order_id,'pay_time'=>$pay_time]);
+                    $db_house_new_repair_works_order->saveOne(['order_id' => $order_id], ['pay_order_id' => $pay_order_id, 'pay_time' => $pay_time]);
                 }
             }
         }
@@ -6519,38 +6685,41 @@ class HouseNewRepairService
 
 
     //todo 开启抢单模式，订单状态同步修改 event_status：15
-    public function grabOrder($village_id,$order_id,$cat_id=0){
-        $time=time();
-        if($cat_id <= 0){
+    public function grabOrder($village_id, $order_id, $cat_id = 0)
+    {
+        $time = time();
+        if ($cat_id <= 0) {
             return true;
         }
-        $is_status=(new HouseVillageService())->checkVillageField($village_id,'is_grab_order');
-        if(!$is_status){
+        $is_status = (new HouseVillageService())->checkVillageField($village_id, 'is_grab_order');
+        if (!$is_status) {
             return true;
         }
-        $cate=(new HouseNewRepairCate())->getOne(['id'=>$cat_id],'id,type,uid,parent_id');
-        if (!$cate || $cate->isEmpty()){
+        $cate = (new HouseNewRepairCate())->getOne(['id' => $cat_id], 'id,type,uid,parent_id');
+        if (!$cate || $cate->isEmpty()) {
             return true;
         }
-        if($cate['type'] == 1){ //工单二级分类负责人为单人
-            if(!empty($cate['uid'])){
+        if ($cate['type'] == 1) { //工单二级分类负责人为单人
+            if (!empty($cate['uid'])) {
                 return true;
             }
-        }else{  //工单二级分类负责人为多人
+        } else {  //工单二级分类负责人为多人
             $info = (new HouseNewRepairDirectorScheduling())->getOne(
                 [
                     ['cate_id', '=', $cate['id']],
                     ['date_type', '=', date('w')],
-                ],'start_time,end_time');
-            if($info && !$info->isEmpty()){
-                $start=strtotime(date('Y-m-d ').$info['start_time'].':00:00');
-                $end=strtotime(date('Y-m-d ').$info['end_time'].':59:59');
-                if($time >= $start && $time <= $end){
+                ],
+                'start_time,end_time'
+            );
+            if ($info && !$info->isEmpty()) {
+                $start = strtotime(date('Y-m-d ') . $info['start_time'] . ':00:00');
+                $end = strtotime(date('Y-m-d ') . $info['end_time'] . ':59:59');
+                if ($time >= $start && $time <= $end) {
                     return true;
                 }
             }
         }
-        $updateArr=[
+        $updateArr = [
             'event_status' => 15,
             'update_time' => $time,
         ];
@@ -6558,30 +6727,32 @@ class HouseNewRepairService
             ['order_id', '=', $order_id],
             ['event_status', 'in', [10, 16, 17]]
         ], $updateArr);
-        $this->triggerGrabOrderNoticeWork($village_id,$cate['parent_id']);
+        $this->triggerGrabOrderNoticeWork($village_id, $cate['parent_id']);
         return $res;
     }
 
 
     //todo 获取分类id 包含有无设置的关联部门
-    public function getRepairCateId($village_id,$wid){
-        $dbRelation=new HouseNewRepairCateGroupRelation();
-        $group_id=$this->getGroupId($wid);
-        $cate_id=$dbRelation->getColumn([
-            ['village_id','=',$village_id],
-            ['group_id','=',$group_id]
-        ],'cate_id');
+    public function getRepairCateId($village_id, $wid)
+    {
+        $dbRelation = new HouseNewRepairCateGroupRelation();
+        $group_id = $this->getGroupId($wid);
+        $cate_id = $dbRelation->getColumn([
+            ['village_id', '=', $village_id],
+            ['group_id', '=', $group_id]
+        ], 'cate_id');
         return $cate_id ? array_values(array_unique($cate_id)) : [];
     }
 
     //todo 工作人员抢单
-    public function grabRepairOrder($village_id,$login_role, $worker_id,$order_id){
+    public function grabRepairOrder($village_id, $login_role, $worker_id, $order_id)
+    {
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-        $is_status=(new HouseVillageService())->checkVillageField($village_id,'is_grab_order');
-        if(!$is_status){
+        $is_status = (new HouseVillageService())->checkVillageField($village_id, 'is_grab_order');
+        if (!$is_status) {
             throw new \think\Exception('该小区暂未开启抢单,不可操作');
         }
-        $time=time();
+        $time = time();
         $where_order = [];
         $where_order[] = ['village_id', '=', $village_id];
         $where_order[] = ['order_id', '=', $order_id];
@@ -6590,8 +6761,8 @@ class HouseNewRepairService
         if (empty($order_detail)) {
             throw new \think\Exception('该工单不存在或已被抢单');
         }
-        $property_id=$order_detail['property_id'];
-        $this->checkGrabOrder(2,$village_id,$worker_id,$order_detail);
+        $property_id = $order_detail['property_id'];
+        $this->checkGrabOrder(2, $village_id, $worker_id, $order_detail);
         if (HouseWorkConst::MANAGE_APP_VILLAGE_WORK == $login_role) {
             // 小区物业工作人员
             $info['wid'] = $worker_id;
@@ -6604,16 +6775,15 @@ class HouseNewRepairService
         } elseif (HouseWorkConst::MANAGE_APP_PROPERTY_ADMIN == $login_role) {
             // 物业总管理员
             $info = (new PropertyAdmin())->get_one([['id', '=', $worker_id]]);
-        }
-        else {
+        } else {
             throw new \think\Exception("当前身份无权限");
         }
-        if(empty($info)){
+        if (empty($info)) {
             throw new \think\Exception("当前身份不存在");
         }
-        $wid=$info['wid'];
-        $worker=(new HouseWorker())->getOne(['wid'=>$wid],'wid,name,phone,department_id');
-        if(empty($worker)){
+        $wid = $info['wid'];
+        $worker = (new HouseWorker())->getOne(['wid' => $wid], 'wid,name,phone,department_id');
+        if (empty($worker)) {
             throw new \think\Exception("当前用户不存在");
         }
         $log_data = [
@@ -6633,45 +6803,48 @@ class HouseNewRepairService
         ];
         Db::startTrans();
         try {
-            $otherData=array();
-            if($wid>0){
-                $otherData=array('opt_type'=>'assign_to_house_worker','wid'=>$wid,'village_id'=>$village_id);
+            $otherData = array();
+            if ($wid > 0) {
+                $otherData = array('opt_type' => 'assign_to_house_worker', 'wid' => $wid, 'village_id' => $village_id);
             }
-            $id = $this->addRepairLog($log_data,$otherData);
+            $id = $this->addRepairLog($log_data, $otherData);
             if ($id) {
                 $data['update_time'] = $time;
                 if ($wid) {
                     $data['event_status'] = 20;
                     $data['worker_id'] = $wid;
-                    $data['group_id']=$worker['department_id'];
+                    $data['group_id'] = $worker['department_id'];
                 } else {
                     $data['event_status'] = 40;
                 }
                 $db_house_new_repair_works_order->saveOne(['order_id' => $order_id], $data);
 
                 //当提交的工单有指派时
-                if($wid > 0){
-                    if($order_detail['order_type'] == 4){
+                if ($wid > 0) {
+                    if ($order_detail['order_type'] == 4) {
                         //针对工作人员提交的工单有指派时 给提交人发送通知
-                        $this->newRepairSendMsg(11,$order_id,$order_detail['uid'],$property_id);
+                        $this->newRepairSendMsg(11, $order_id, $order_detail['uid'], $property_id);
                         //给工作人员发送通知
-                        $this->newRepairSendMsg(12,$order_id,0,$property_id);
-                    }else{
+                        $this->newRepairSendMsg(12, $order_id, 0, $property_id);
+                    } else {
                         //给用户和工作人员发通知
-                        $this->newRepairSendMsg(10,$order_id,0,$property_id);
+                        $this->newRepairSendMsg(10, $order_id, 0, $property_id);
                     }
-                    
+
                     $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
                     if ($jz_open) {
                         $workRecord = [
-                            'worker_id' => $wid, 'village_id' => $village_id, 'property_id' => $order_detail['property_id'],
-                            'works_order_id' => $order_id, 'latest_receive_time' => $time
+                            'worker_id' => $wid,
+                            'village_id' => $village_id,
+                            'property_id' => $order_detail['property_id'],
+                            'works_order_id' => $order_id,
+                            'latest_receive_time' => $time
                         ];
                         $serviceHouseCommunityWorkOrder = new HouseCommunityWorkOrderService();
                         $serviceHouseCommunityWorkOrder->handleWorkOrderWorkRecord($workRecord);
                         $workName = isset($worker['name']) && $worker['name'] ? trim($worker['name']) : '';
                         $workPhone = isset($worker['phone']) && $worker['phone'] ? trim($worker['phone']) : '';
-                        $step = ['title' => '手动接单', 'name' => $workName, 'phone' => $workPhone, 'content' => $workName .'主动接单','type' => 'text', 'time' => $time, 'worker_id' => $worker_id];
+                        $step = ['title' => '手动接单', 'name' => $workName, 'phone' => $workPhone, 'content' => $workName . '主动接单', 'type' => 'text', 'time' => $time, 'worker_id' => $worker_id];
                         $serviceHouseCommunityWorkOrder->receiveWorkOrderSetConfig($order_id, $step, $village_id, 0, 1);
                     }
                 }
@@ -6685,103 +6858,105 @@ class HouseNewRepairService
     }
 
     //查询工作人员
-    public function getWorker($worker_id,$field='wid,name,openid,nickname,village_id'){
-        $worker=(new HouseWorker())->getOne(['wid'=>$worker_id],$field);
-        $data=[];
-        if($worker && !$worker->isEmpty()){
-            $data=$worker->toArray();
+    public function getWorker($worker_id, $field = 'wid,name,openid,nickname,village_id')
+    {
+        $worker = (new HouseWorker())->getOne(['wid' => $worker_id], $field);
+        $data = [];
+        if ($worker && !$worker->isEmpty()) {
+            $data = $worker->toArray();
         }
         return $data;
     }
 
     //todo 返回提示文字
-    public function getMsgTips($type){
-        $t1=$t2=$t3='';
+    public function getMsgTips($type)
+    {
+        $t1 = $t2 = $t3 = '';
         switch ($type) {
             case 10: //todo [工作人员]+[用户] 当有工单指派给自己时  针对用户提交的工单
-                $t1='您有新的工单待处理。';
-                $t2='您提交的工单已被指派。';
+                $t1 = '您有新的工单待处理。';
+                $t2 = '您提交的工单已被指派。';
                 break;
-            case 11://todo [工作人员]当自己提交的工单被指派处理人员时    针对工作人员提交的工单
-                $t3='您提交的工单已被指派。';
+            case 11: //todo [工作人员]当自己提交的工单被指派处理人员时    针对工作人员提交的工单
+                $t3 = '您提交的工单已被指派。';
                 break;
-            case 12://todo [工作人员]当有工单转单给自己时 给自己发送
-                $t1='您有新的工单待处理。';
+            case 12: //todo [工作人员]当有工单转单给自己时 给自己发送
+                $t1 = '您有新的工单待处理。';
                 break;
-            case 13://todo [工作人员]当工作人员关闭指派给自己的工单时
-                $t1='您负责的工单已被业主关闭。';
+            case 13: //todo [工作人员]当工作人员关闭指派给自己的工单时
+                $t1 = '您负责的工单已被业主关闭。';
                 break;
-            case 14://todo [工作人员]当工作人员撤回指派给自己的工单时
-                $t1='您负责的工单已被业主撤回。';
+            case 14: //todo [工作人员]当工作人员撤回指派给自己的工单时
+                $t1 = '您负责的工单已被业主撤回。';
                 break;
-            case 15://todo [工作人员]管理指派给工作人员
-                $t1='您有新的工单待处理。';
+            case 15: //todo [工作人员]管理指派给工作人员
+                $t1 = '您有新的工单待处理。';
                 break;
-            case 20://todo [工作人员]当业主评价自己结单的工单时
-                $t1='业主评价了您负责的工单。';
+            case 20: //todo [工作人员]当业主评价自己结单的工单时
+                $t1 = '业主评价了您负责的工单。';
                 break;
-            case 21://todo [工作人员]当业主关闭指派给自己的工单时
-                $t1='您负责的工单已被业主关闭。';
+            case 21: //todo [工作人员]当业主关闭指派给自己的工单时
+                $t1 = '您负责的工单已被业主关闭。';
                 break;
-            case 22://todo [工作人员]当业主撤回指派给自己的工单时
-                $t1='您负责的工单已被业主撤回。';
+            case 22: //todo [工作人员]当业主撤回指派给自己的工单时
+                $t1 = '您负责的工单已被业主撤回。';
                 break;
-            case 30://todo [用户]当用户提交的工单已结单时 此操作只有工作人员结单
-                $t2='您提交的工单已结单。';
+            case 30: //todo [用户]当用户提交的工单已结单时 此操作只有工作人员结单
+                $t2 = '您提交的工单已结单。';
                 break;
-            case 31://todo [工作人员]当工作人员提交的工单已结单时 此操作只有工作人员结单
-                $t3='您提交的工单已结单。';
+            case 31: //todo [工作人员]当工作人员提交的工单已结单时 此操作只有工作人员结单
+                $t3 = '您提交的工单已结单。';
                 break;
-            case 32://todo [用户]当用户提交的工单已结单时 此操作只有工作人员结单
-                $t2='您提交的工单已再一次结单。';
+            case 32: //todo [用户]当用户提交的工单已结单时 此操作只有工作人员结单
+                $t2 = '您提交的工单已再一次结单。';
                 break;
-            case 33://todo [工作人员]当工作人员提交的工单已结单时 此操作只有工作人员结单
-                $t3='您提交的工单已再一次结单。';
+            case 33: //todo [工作人员]当工作人员提交的工单已结单时 此操作只有工作人员结单
+                $t3 = '您提交的工单已再一次结单。';
                 break;
-            case 40://todo [用户]当自己提交的工单拒绝时 工作人员拒绝用户的工单给用户通知
-                $t2='您提交的工单已拒绝。';
+            case 40: //todo [用户]当自己提交的工单拒绝时 工作人员拒绝用户的工单给用户通知
+                $t2 = '您提交的工单已拒绝。';
                 break;
-            case 41://todo [工作人员]当工作人员A给工作人员B转单，工作人员B驳回时 发给A
-                $t3='您的转单已被驳回，请去处理。';
+            case 41: //todo [工作人员]当工作人员A给工作人员B转单，工作人员B驳回时 发给A
+                $t3 = '您的转单已被驳回，请去处理。';
                 break;
-            case 42://todo [工作人员]当自己提交的工单拒绝时 工作人员拒绝工作人员的工单给工作人员通知
-                $t3='您提交的工单已拒绝。';
+            case 42: //todo [工作人员]当自己提交的工单拒绝时 工作人员拒绝工作人员的工单给工作人员通知
+                $t3 = '您提交的工单已拒绝。';
                 break;
-            case 50://todo [用户]当工作人员跟进工作时，发送给业主 只有收费才有该项 且只发送一次
-                $t2='您提交的收费工单需要确认。';
+            case 50: //todo [用户]当工作人员跟进工作时，发送给业主 只有收费才有该项 且只发送一次
+                $t2 = '您提交的收费工单需要确认。';
                 break;
-            case 51://todo [工作人员]当业主同意收费工单时，发送给工作人员
-                $t1='业主已同意该笔费用，请去处理。';
+            case 51: //todo [工作人员]当业主同意收费工单时，发送给工作人员
+                $t1 = '业主已同意该笔费用，请去处理。';
                 break;
-            case 52://todo [工作人员]当业主拒绝收费工单时，发送给工作人员
-                $t1='业主已拒绝该笔费用，请去处理。';
+            case 52: //todo [工作人员]当业主拒绝收费工单时，发送给工作人员
+                $t1 = '业主已拒绝该笔费用，请去处理。';
                 break;
-            case 53://todo [工作人员]当业主拒绝收费工单时，发送给工作人员
-                $t1='业主已拒绝该方案，请去处理。';
+            case 53: //todo [工作人员]当业主拒绝收费工单时，发送给工作人员
+                $t1 = '业主已拒绝该方案，请去处理。';
                 break;
-            case 60://todo [工作人员]订单超时给指定工作人员发送
-                $t1='您负责的工单已超时，请去处理';
+            case 60: //todo [工作人员]订单超时给指定工作人员发送
+                $t1 = '您负责的工单已超时，请去处理';
                 break;
-            case 70://todo [工作人员or用户]后台工单中心操作已办结 
-                $t2='您提交的工单已办结，请去查看。';
+            case 70: //todo [工作人员or用户]后台工单中心操作已办结 
+                $t2 = '您提交的工单已办结，请去查看。';
                 break;
-            case 80://todo [工作人员]系统自动同意收费工单时，发送给工作人员
+            case 80: //todo [工作人员]系统自动同意收费工单时，发送给工作人员
                 $t1 = '系统自动同意该笔费用，请去处理。';
                 break;
-            case 81://todo [工作人员]系统自动拒绝收费工单时，发送给工作人员
-                $t1='系统自动拒绝该笔费用，请去处理。';
+            case 81: //todo [工作人员]系统自动拒绝收费工单时，发送给工作人员
+                $t1 = '系统自动拒绝该笔费用，请去处理。';
                 break;
-            case 82://todo [工作人员]施工人员提供施工方案，发送给工作人员
-                $t1='施工方提供施工方案，请去处理。';
+            case 82: //todo [工作人员]施工人员提供施工方案，发送给工作人员
+                $t1 = '施工方提供施工方案，请去处理。';
                 break;
-            case 83://todo [工作人员]工作人员同意施工方案，发送给工作人员
-                $t1='工作人员同意施工方案，请去处理。';
+            case 83: //todo [工作人员]工作人员同意施工方案，发送给工作人员
+                $t1 = '工作人员同意施工方案，请去处理。';
                 break;
-            case 84://todo [工作人员]拒绝施工方案，发送给工作人员
-                $t1='工作人员拒绝施工方案，请去处理。';
+            case 84: //todo [工作人员]拒绝施工方案，发送给工作人员
+                $t1 = '工作人员拒绝施工方案，请去处理。';
                 break;
         }
-        return ['worker'=>$t1,'user'=>$t2,'worker2'=>$t3];
+        return ['worker' => $t1, 'user' => $t2, 'worker2' => $t3];
     }
 
     /**
@@ -6794,38 +6969,38 @@ class HouseNewRepairService
      */
     public function newRepairSendMsg($type, $order_id, $wid = 0, $property_id = 0, $params = [])
     {
-        $TemplateNewsService=new TemplateNewsService();
-        $order=(new HouseNewRepairWorksOrder())->getOrderCate([['o.order_id', '=', $order_id]],'o.order_id,o.uid,o.bind_id,o.event_status,o.worker_id,o.order_type,c1.cate_name as t1,c2.cate_name as t2,o.address_txt,o.room_id,o.single_id,o.floor_id,o.layer_id,o.village_id');
-        if (!$order || $order->isEmpty()){
-            fdump_api(['$cate不存在=='.__LINE__,$type,$order_id,$wid,$order],'newRepair/sendMsg',1);
+        $TemplateNewsService = new TemplateNewsService();
+        $order = (new HouseNewRepairWorksOrder())->getOrderCate([['o.order_id', '=', $order_id]], 'o.order_id,o.uid,o.bind_id,o.event_status,o.worker_id,o.order_type,c1.cate_name as t1,c2.cate_name as t2,o.address_txt,o.room_id,o.single_id,o.floor_id,o.layer_id,o.village_id');
+        if (!$order || $order->isEmpty()) {
+            fdump_api(['$cate不存在==' . __LINE__, $type, $order_id, $wid, $order], 'newRepair/sendMsg', 1);
             return true;
         }
-        $order=$order->toArray();
-        $arr=[];
-        $title=$order['t1'].'/'.$order['t2'];
-        if (mb_strlen($title)>15) {
-            $title=msubstr($title,0,15);
+        $order = $order->toArray();
+        $arr = [];
+        $title = $order['t1'] . '/' . $order['t2'];
+        if (mb_strlen($title) > 15) {
+            $title = msubstr($title, 0, 15);
         }
-        $msgTips=$this->getMsgTips($type);
+        $msgTips = $this->getMsgTips($type);
         $isToOtherVillage = isset($params['isToOtherVillage']) ? intval($params['isToOtherVillage']) : 0;
-//        $toOtherVillageId = isset($params['toOtherVillageId']) ? intval($params['toOtherVillageId']) : 0;
-//        $toPropertyId = isset($params['toPropertyId']) ? intval($params['toPropertyId']) : 0;
-//        $toWorkId = isset($params['toWorkId']) ? intval($params['toWorkId']) : 0;
+        //        $toOtherVillageId = isset($params['toOtherVillageId']) ? intval($params['toOtherVillageId']) : 0;
+        //        $toPropertyId = isset($params['toPropertyId']) ? intval($params['toPropertyId']) : 0;
+        //        $toWorkId = isset($params['toWorkId']) ? intval($params['toWorkId']) : 0;
         //通知工单处理的工作人员
-        $href=cfg('site_url').'/packapp/community/pages/CommunityPages/workOrder/eventdetails?order_id='.$order_id.'&gotoIndex=tem_msg';
+        $href = cfg('site_url') . '/packapp/community/pages/CommunityPages/workOrder/eventdetails?order_id=' . $order_id . '&gotoIndex=tem_msg';
         $event_status = $order['event_status'] ? $this->order_work_status_txt[$order['event_status']] : '无';
 
-        
+
         $single_id = isset($order['single_id']) ? intval($order['single_id']) : 0;
         $floor_id = isset($order['floor_id']) ? intval($order['floor_id']) : 0;
         $layer_id = isset($order['layer_id']) ? intval($order['layer_id']) : 0;
         $room_id = isset($order['room_id']) ? intval($order['room_id']) : 0;
         $village_id = isset($order['village_id']) ? intval($order['village_id']) : 0;
-        if($single_id > 0 && $floor_id > 0 && $layer_id > 0 && $room_id > 0 && $village_id > 0){
-            $service_house_village=new HouseVillageService();
+        if ($single_id > 0 && $floor_id > 0 && $layer_id > 0 && $room_id > 0 && $village_id > 0) {
+            $service_house_village = new HouseVillageService();
             $address = $service_house_village->getSingleFloorRoom($single_id, $floor_id, $layer_id, $room_id, $village_id);
             $address = $address ? $address : '无';
-        }else{
+        } else {
             $address = $order['address_txt'] ?: '无';
         }
         if ($isToOtherVillage && $village_id) {
@@ -6833,14 +7008,14 @@ class HouseNewRepairService
             $village_name = isset($villageInfo['village_name']) ? trim($villageInfo['village_name']) : '';
             $address = $village_name . $address;
         }
-        if(!empty($msgTips['worker']) && $order['worker_id']){
-            $worker=$this->getWorker($order['worker_id']);
-            if(empty($worker)){
-                fdump_api(['通知工作人员openid不存在=='.__LINE__,$type,$order_id,$order['worker_id'],$worker],'newRepair/sendMsg',1);
-            }else{
-                $ticket = Token::createToken($worker['wid'],6);
-                $href=$href.'&ticket='.$ticket.'&village_id='.$worker['village_id'];
-                $arr[]=[
+        if (!empty($msgTips['worker']) && $order['worker_id']) {
+            $worker = $this->getWorker($order['worker_id']);
+            if (empty($worker)) {
+                fdump_api(['通知工作人员openid不存在==' . __LINE__, $type, $order_id, $order['worker_id'], $worker], 'newRepair/sendMsg', 1);
+            } else {
+                $ticket = Token::createToken($worker['wid'], 6);
+                $href = $href . '&ticket=' . $ticket . '&village_id=' . $worker['village_id'];
+                $arr[] = [
                     'href' => $href,
                     'wecha_id' => $worker['openid'],
                     'first' => $msgTips['worker'],
@@ -6848,25 +7023,25 @@ class HouseNewRepairService
                     'keyword2' => '已发送',
                     'keyword3' => date('H时i分', $_SERVER['REQUEST_TIME']),
                     'remark' => '请点击查看详细信息！',
-                    'new_info' => [//新版本发送需要的信息
-                        'tempKey'=>'44716',//新模板号
-                        'thing12'=>$title,//服务项目
-                        'phrase2'=>$event_status,//订单类型
-                        'time13'=>date('H:i', $_SERVER['REQUEST_TIME']),//服务时间
-                        'thing11'=>$address,//服务地址
+                    'new_info' => [ //新版本发送需要的信息
+                        'tempKey' => '44716', //新模板号
+                        'thing12' => $title, //服务项目
+                        'phrase2' => $event_status, //订单类型
+                        'time13' => date('H:i', $_SERVER['REQUEST_TIME']), //服务时间
+                        'thing11' => $address, //服务地址
                     ],
                 ];
             }
         }
         //通知上次操作的工作人员或工作人员自己提交的工单
-        if(!empty($msgTips['worker2']) && $wid > 0){
-            $worker=$this->getWorker($wid);
-            if(empty($worker)){
-                fdump_api(['通知上次操作的工作人员或工作人员自己提交的工单openid不存在2=='.__LINE__,$type,$order_id,$order['worker_id'],$worker,$arr],'newRepair/sendMsg',1);
-            }else{
-                $ticket = Token::createToken($worker['wid'],6);
-                $href=$href.'&ticket='.$ticket.'&village_id='.$worker['village_id'];
-                $arr[]=[
+        if (!empty($msgTips['worker2']) && $wid > 0) {
+            $worker = $this->getWorker($wid);
+            if (empty($worker)) {
+                fdump_api(['通知上次操作的工作人员或工作人员自己提交的工单openid不存在2==' . __LINE__, $type, $order_id, $order['worker_id'], $worker, $arr], 'newRepair/sendMsg', 1);
+            } else {
+                $ticket = Token::createToken($worker['wid'], 6);
+                $href = $href . '&ticket=' . $ticket . '&village_id=' . $worker['village_id'];
+                $arr[] = [
                     'href' => $href,
                     'wecha_id' => $worker['openid'],
                     'first' => $msgTips['worker2'],
@@ -6874,25 +7049,25 @@ class HouseNewRepairService
                     'keyword2' => '已发送',
                     'keyword3' => date('H时i分', $_SERVER['REQUEST_TIME']),
                     'remark' => '请点击查看详细信息！',
-                    'new_info' => [//新版本发送需要的信息
-                        'tempKey'=>'44716',//新模板号
-                        'thing12'=>$title,//服务项目
-                        'phrase2'=>$event_status,//订单类型
-                        'time13'=>date('H:i', $_SERVER['REQUEST_TIME']),//服务时间
-                        'thing11'=>$address,//服务地址
+                    'new_info' => [ //新版本发送需要的信息
+                        'tempKey' => '44716', //新模板号
+                        'thing12' => $title, //服务项目
+                        'phrase2' => $event_status, //订单类型
+                        'time13' => date('H:i', $_SERVER['REQUEST_TIME']), //服务时间
+                        'thing11' => $address, //服务地址
                     ],
                 ];
             }
         }
         //针对已完结 判断给工作人员发送通知
-        if($type == 70 && intval($order['order_type']) == 4 && $order['uid']){
-            $worker=$this->getWorker($order['uid']);
-            if(empty($worker)){
-                fdump_api(['针对已完结，工作人员openid不存在2=='.__LINE__,$type,$order_id,$worker,$arr],'newRepair/sendMsg',1);
-            }else{
-                $ticket = Token::createToken($worker['wid'],6);
-                $href=$href.'&ticket='.$ticket.'&village_id='.$worker['village_id'];
-                $arr[]=[
+        if ($type == 70 && intval($order['order_type']) == 4 && $order['uid']) {
+            $worker = $this->getWorker($order['uid']);
+            if (empty($worker)) {
+                fdump_api(['针对已完结，工作人员openid不存在2==' . __LINE__, $type, $order_id, $worker, $arr], 'newRepair/sendMsg', 1);
+            } else {
+                $ticket = Token::createToken($worker['wid'], 6);
+                $href = $href . '&ticket=' . $ticket . '&village_id=' . $worker['village_id'];
+                $arr[] = [
                     'href' => $href,
                     'wecha_id' => $worker['openid'],
                     'first' => $msgTips['worker2'],
@@ -6900,56 +7075,56 @@ class HouseNewRepairService
                     'keyword2' => '已发送',
                     'keyword3' => date('H时i分', $_SERVER['REQUEST_TIME']),
                     'remark' => '请点击查看详细信息！',
-                    'new_info' => [//新版本发送需要的信息
-                        'tempKey'=>'44716',//新模板号
-                        'thing12'=>$title,//服务项目
-                        'phrase2'=>$event_status,//订单类型
-                        'time13'=>date('H:i', $_SERVER['REQUEST_TIME']),//服务时间
-                        'thing11'=>$address,//服务地址
+                    'new_info' => [ //新版本发送需要的信息
+                        'tempKey' => '44716', //新模板号
+                        'thing12' => $title, //服务项目
+                        'phrase2' => $event_status, //订单类型
+                        'time13' => date('H:i', $_SERVER['REQUEST_TIME']), //服务时间
+                        'thing11' => $address, //服务地址
                     ],
                 ];
             }
         }
         //通知用户
-        if(!empty($msgTips['user']) && intval($order['order_type']) == 0 && $order['uid']){
-            if($type == 10 && empty($order['worker_id'])){
-                fdump_api(['no worker_id=='.__LINE__,$type,$order_id,$wid,$order,$msgTips,$arr],'newRepair/sendMsg',1);
-            }else{
-                $user = (new User())->getOne(['uid' => $order['uid']],'openid');
-                if($user && !$user->isEmpty()){
-                    if(empty($user['openid'])){
-                        fdump_api(['用户openid不存在=='.__LINE__,$type,$order_id,$wid,$user,$arr],'newRepair/sendMsg',1);
-                    }else{
-                        $arr[]= [
-                            'href' => get_base_url('pages/houseMeter/workOrder/eventdetails?order_id='.$order_id),
+        if (!empty($msgTips['user']) && intval($order['order_type']) == 0 && $order['uid']) {
+            if ($type == 10 && empty($order['worker_id'])) {
+                fdump_api(['no worker_id==' . __LINE__, $type, $order_id, $wid, $order, $msgTips, $arr], 'newRepair/sendMsg', 1);
+            } else {
+                $user = (new User())->getOne(['uid' => $order['uid']], 'openid');
+                if ($user && !$user->isEmpty()) {
+                    if (empty($user['openid'])) {
+                        fdump_api(['用户openid不存在==' . __LINE__, $type, $order_id, $wid, $user, $arr], 'newRepair/sendMsg', 1);
+                    } else {
+                        $arr[] = [
+                            'href' => get_base_url('pages/houseMeter/workOrder/eventdetails?order_id=' . $order_id),
                             'wecha_id' => $user['openid'],
                             'first' => $msgTips['user'],
                             'keyword1' => $title,
                             'keyword2' => '已发送',
                             'keyword3' => date('H时i分', $_SERVER['REQUEST_TIME']),
                             'remark' => '请点击查看详细信息！',
-                            'new_info' => [//新版本发送需要的信息
-                                'tempKey'=>'44716',//新模板号
-                                'thing12'=>$title,//服务项目
-                                'phrase2'=>$event_status,//订单类型
-                                'time13'=>date('H:i', $_SERVER['REQUEST_TIME']),//服务时间
-                                'thing11'=>$address,//服务地址
+                            'new_info' => [ //新版本发送需要的信息
+                                'tempKey' => '44716', //新模板号
+                                'thing12' => $title, //服务项目
+                                'phrase2' => $event_status, //订单类型
+                                'time13' => date('H:i', $_SERVER['REQUEST_TIME']), //服务时间
+                                'thing11' => $address, //服务地址
                             ],
                         ];
                     }
                 }
             }
         }
-        fdump_api(['$arr=='.__LINE__,$type,$order_id,$wid,$order,$msgTips,$arr],'newRepair/sendMsg',1);
-        if($arr){
-            $xtype=0;
-            if($property_id>0){
-                $xtype=1;
-            }else{
-                $property_id=0;
+        fdump_api(['$arr==' . __LINE__, $type, $order_id, $wid, $order, $msgTips, $arr], 'newRepair/sendMsg', 1);
+        if ($arr) {
+            $xtype = 0;
+            if ($property_id > 0) {
+                $xtype = 1;
+            } else {
+                $property_id = 0;
             }
-            foreach ($arr as $v){
-                $TemplateNewsService->sendTempMsg('OPENTM400166399', $v,0,$property_id,$xtype);//todo 类目模板OPENTM400166399
+            foreach ($arr as $v) {
+                $TemplateNewsService->sendTempMsg('OPENTM400166399', $v, 0, $property_id, $xtype); //todo 类目模板OPENTM400166399
             }
         }
         return true;
@@ -6957,71 +7132,74 @@ class HouseNewRepairService
 
     /**
      * 工单记录指派人信息
-     * @author: liukezhu
-     * @date : 2022/6/24
      * @param $log_id
      * @param $wid
      * @return bool
+     * @author: liukezhu
+     * @date : 2022/6/24
      */
-    public function workOrderLogSave($log_id,$wid){
-        $worker=$this->getWorker($wid,'wid,name,phone');
-        if(!$worker){
+    public function workOrderLogSave($log_id, $wid)
+    {
+        $worker = $this->getWorker($wid, 'wid,name,phone');
+        if (!$worker) {
             return true;
         }
         $where[] = ['log_id', '=', $log_id];
-        $log_info=[
-            'wid'=>$worker['wid'],
-            'name'=>$worker['name'],
-            'phone'=>$worker['phone']
+        $log_info = [
+            'wid' => $worker['wid'],
+            'name' => $worker['name'],
+            'phone' => $worker['phone']
         ];
-        return (new HouseNewRepairWorksOrderLog())->saveOne($where,['log_info'=>serialize($log_info)]);
+        return (new HouseNewRepairWorksOrderLog())->saveOne($where, ['log_info' => serialize($log_info)]);
     }
 
 
-    public function getUserAddress($village_id,$pigcms_id){
-        $db_house_village_user_bind=new HouseVillageUserBind();
-        $service_house_village=new HouseVillageService();
-        $address['address']='';
-        $address['id_arr']=0;
-        $address['type']='room';
-        $user_info=$db_house_village_user_bind->getOne(['pigcms_id'=>$pigcms_id,'village_id'=>$village_id],'pigcms_id,village_id,uid,floor_id,vacancy_id,single_id,layer_id');
-        if (!empty($user_info)){
-            if (!empty($user_info['village_id'])&&!empty($user_info['floor_id'])&&!empty($user_info['vacancy_id'])&&!empty($user_info['single_id'])&&!empty($user_info['layer_id'])){
-                $address['address']=$service_house_village->getSingleFloorRoom($user_info['single_id'],$user_info['floor_id'],$user_info['layer_id'],$user_info['vacancy_id'],$user_info['village_id']);
-                $address['id_arr']=$user_info['vacancy_id'];
-                $address['type']='room';
+    public function getUserAddress($village_id, $pigcms_id)
+    {
+        $db_house_village_user_bind = new HouseVillageUserBind();
+        $service_house_village = new HouseVillageService();
+        $address['address'] = '';
+        $address['id_arr'] = 0;
+        $address['type'] = 'room';
+        $user_info = $db_house_village_user_bind->getOne(['pigcms_id' => $pigcms_id, 'village_id' => $village_id], 'pigcms_id,village_id,uid,floor_id,vacancy_id,single_id,layer_id');
+        if (!empty($user_info)) {
+            if (!empty($user_info['village_id']) && !empty($user_info['floor_id']) && !empty($user_info['vacancy_id']) && !empty($user_info['single_id']) && !empty($user_info['layer_id'])) {
+                $address['address'] = $service_house_village->getSingleFloorRoom($user_info['single_id'], $user_info['floor_id'], $user_info['layer_id'], $user_info['vacancy_id'], $user_info['village_id']);
+                $address['id_arr'] = $user_info['vacancy_id'];
+                $address['type'] = 'room';
             }
-
         }
         return $address;
     }
 
     //todo 抢单模式 设置非工单分类部门人员不可操作
-    public function checkGrabOrder($type=1,$village_id,$wid,$order){
-        if($type == 1){
-            $is_status=(new HouseVillageService())->checkVillageField($village_id,'is_grab_order');
-            if(!$is_status){
+    public function checkGrabOrder($type = 1, $village_id, $wid, $order)
+    {
+        if ($type == 1) {
+            $is_status = (new HouseVillageService())->checkVillageField($village_id, 'is_grab_order');
+            if (!$is_status) {
                 return true;
             }
         }
-        $group_id=$this->getGroupId($wid);
-        $relation_id=(new HouseNewRepairCateGroupRelation())->getOne([
-            ['village_id','=',$village_id],
-            ['group_id','=',$group_id],
-            ['cate_id','=',$order['cat_fid']]
-        ],'id');
-        if (!$relation_id || $relation_id->isEmpty()){
+        $group_id = $this->getGroupId($wid);
+        $relation_id = (new HouseNewRepairCateGroupRelation())->getOne([
+            ['village_id', '=', $village_id],
+            ['group_id', '=', $group_id],
+            ['cate_id', '=', $order['cat_fid']]
+        ], 'id');
+        if (!$relation_id || $relation_id->isEmpty()) {
             throw new \think\Exception('当前工单您无权查看');
         }
         return true;
     }
 
     //todo 触发抢单通知工作人员
-    public function triggerGrabOrderNoticeWork($village_id,$cate_id=0){
-        $ProcessSubPlan=new ProcessSubPlan();
-        $arr= array();
+    public function triggerGrabOrderNoticeWork($village_id, $cate_id = 0)
+    {
+        $ProcessSubPlan = new ProcessSubPlan();
+        $arr = array();
         $arr['param'] = serialize(array(
-            'type'       => 'grab_order_notice',
+            'type' => 'grab_order_notice',
             'village_id' => $village_id,
             'cate_id' => $cate_id,
         ));
@@ -7030,13 +7208,13 @@ class HouseNewRepairService
         $arr['add_time'] = time();
         $arr['file'] = 'sub_house_village';
         $arr['time_type'] = 1;
-        $arr['unique_id'] = 'grab_order_notice_'.$village_id.'_'.$cate_id;
+        $arr['unique_id'] = 'grab_order_notice_' . $village_id . '_' . $cate_id;
         $arr['rand_number'] = mt_rand(1, max(cfg('sub_process_num'), 3));
-        $result=$ProcessSubPlan->get_one([
+        $result = $ProcessSubPlan->get_one([
             ['unique_id', '=', $arr['unique_id']]
-        ],'id');
-        fdump_api(['触发抢单通知工作人员=='.__LINE__,$village_id,$cate_id,$result],'grab_order/trigger_log',1);
-        if($result && !$result->isEmpty()){
+        ], 'id');
+        fdump_api(['触发抢单通知工作人员==' . __LINE__, $village_id, $cate_id, $result], 'grab_order/trigger_log', 1);
+        if ($result && !$result->isEmpty()) {
             return true;
         }
         $ProcessSubPlan->add($arr);
@@ -7044,89 +7222,89 @@ class HouseNewRepairService
     }
 
     //todo 发送模板消息通知工作人员
-    public function sendGrabOrderNoticeWork($village_id,$cate_id=0){
-        fdump_api(['发送模板消息通知工作人员=='.__LINE__,$village_id,$cate_id],'grab_order/send_log',1);
-        $TemplateNewsService=new TemplateNewsService();
-        $where[]=['o.village_id', '=', $village_id];
-        $where[]=['o.is_send_grab', '=', 0];
-        $where[]=['o.event_status', '=', 15];
-        $where[]=['r.id', 'exp', Db::raw('IS NOT NULL')];
-        $where[]=['w.is_del', '=', 0];
-        $where[]=['w.status', '<>', 4];
-        $where[]=['w.openid', '<>', ''];
-//        $where[]=['g.id', 'exp', Db::raw('IS NULL')];
-        if($cate_id){
-            $where[]=['o.cat_fid', '=', $cate_id];
+    public function sendGrabOrderNoticeWork($village_id, $cate_id = 0)
+    {
+        fdump_api(['发送模板消息通知工作人员==' . __LINE__, $village_id, $cate_id], 'grab_order/send_log', 1);
+        $TemplateNewsService = new TemplateNewsService();
+        $where[] = ['o.village_id', '=', $village_id];
+        $where[] = ['o.is_send_grab', '=', 0];
+        $where[] = ['o.event_status', '=', 15];
+        $where[] = ['r.id', 'exp', Db::raw('IS NOT NULL')];
+        $where[] = ['w.is_del', '=', 0];
+        $where[] = ['w.status', '<>', 4];
+        $where[] = ['w.openid', '<>', ''];
+        //        $where[]=['g.id', 'exp', Db::raw('IS NULL')];
+        if ($cate_id) {
+            $where[] = ['o.cat_fid', '=', $cate_id];
         }
-        $where['_string']='isNotTime';
-        $field='o.order_id,o.village_id,o.property_id,o.cat_fid,c1.cate_name as t1,c2.cate_name as t2,w.wid,w.name,w.phone,w.openid,o.event_status,o.room_id,o.single_id,o.floor_id,o.layer_id';
-        $list=(new HouseNewRepairWorksOrder())->getBindCateOrder($where,$field);
-        if($list && !$list->isEmpty()){
-            $list= $list->toArray();
-            $record=[];
-            $orderIdAll=[];
-            fdump_api(['$list=='.__LINE__,$village_id,$cate_id,$list],'grab_order/send_log',1);
-            foreach ($list as $v){
+        $where['_string'] = 'isNotTime';
+        $field = 'o.order_id,o.village_id,o.property_id,o.cat_fid,c1.cate_name as t1,c2.cate_name as t2,w.wid,w.name,w.phone,w.openid,o.event_status,o.room_id,o.single_id,o.floor_id,o.layer_id';
+        $list = (new HouseNewRepairWorksOrder())->getBindCateOrder($where, $field);
+        if ($list && !$list->isEmpty()) {
+            $list = $list->toArray();
+            $record = [];
+            $orderIdAll = [];
+            fdump_api(['$list==' . __LINE__, $village_id, $cate_id, $list], 'grab_order/send_log', 1);
+            foreach ($list as $v) {
                 $event_status = $v['event_status'] ? $this->order_work_status_txt[$v['event_status']] : '无';
-                if($v['single_id'] && $v['floor_id'] && $v['layer_id'] && $v['room_id'] && $v['village_id']){
-                    $service_house_village=new HouseVillageService();
+                if ($v['single_id'] && $v['floor_id'] && $v['layer_id'] && $v['room_id'] && $v['village_id']) {
+                    $service_house_village = new HouseVillageService();
                     $address = $service_house_village->getSingleFloorRoom($v['single_id'], $v['floor_id'], $v['layer_id'], $v['room_id'], $v['village_id']);
                     $address = $address ? $address : '无';
-                }else{
+                } else {
                     $address = $v['address_txt'] ?: '无';
                 }
-                $title=$v['t1'].'/'.$v['t2'];
-                if (mb_strlen($title)>15) {
-                    $title=msubstr($title,0,15);
+                $title = $v['t1'] . '/' . $v['t2'];
+                if (mb_strlen($title) > 15) {
+                    $title = msubstr($title, 0, 15);
                 }
-                $href=cfg('site_url').'/packapp/community/pages/CommunityPages/workOrder/eventdetails?order_id='.$v['order_id'].'&gotoIndex=tem_msg';
-                $ticket = Token::createToken($v['wid'],6);
-                $href=$href.'&ticket='.$ticket.'&village_id='.$v['village_id'];
-                
-                $param=[
-                    'href' =>$href,
+                $href = cfg('site_url') . '/packapp/community/pages/CommunityPages/workOrder/eventdetails?order_id=' . $v['order_id'] . '&gotoIndex=tem_msg';
+                $ticket = Token::createToken($v['wid'], 6);
+                $href = $href . '&ticket=' . $ticket . '&village_id=' . $v['village_id'];
+
+                $param = [
+                    'href' => $href,
                     'wecha_id' => $v['openid'],
                     'first' => '您有新的工单待抢单，请去处理。',
                     'keyword1' => $title,
                     'keyword2' => '已发送',
                     'keyword3' => date('H时i分', $_SERVER['REQUEST_TIME']),
                     'remark' => '请点击查看详细信息！',
-                    'is_repeat'=>1,
-                    'new_info' => [//新版本发送需要的信息
-                        'tempKey'=>'44716',//新模板号
-                        'thing12'=>$title,//服务项目
-                        'phrase2'=>$event_status,//订单类型
-                        'time13'=>date('H:i', $_SERVER['REQUEST_TIME']),//服务时间
-                        'thing11'=>$address,//服务地址
+                    'is_repeat' => 1,
+                    'new_info' => [ //新版本发送需要的信息
+                        'tempKey' => '44716', //新模板号
+                        'thing12' => $title, //服务项目
+                        'phrase2' => $event_status, //订单类型
+                        'time13' => date('H:i', $_SERVER['REQUEST_TIME']), //服务时间
+                        'thing11' => $address, //服务地址
                     ],
                 ];
-                $record[]=[
-                    'vllage_id'=>$v['village_id'],
-                    'cate_id'=>$v['cat_fid'],
-                    'wid'=>$v['wid'],
-                    'order_id'=>$v['order_id'],
-                    'add_time'=>date('Y-m-d H:i:s',time())
+                $record[] = [
+                    'vllage_id' => $v['village_id'],
+                    'cate_id' => $v['cat_fid'],
+                    'wid' => $v['wid'],
+                    'order_id' => $v['order_id'],
+                    'add_time' => date('Y-m-d H:i:s', time())
                 ];
-                $orderIdAll[$v['order_id']]=$v['order_id'];
+                $orderIdAll[$v['order_id']] = $v['order_id'];
 
-                fdump_api(['$param=='.__LINE__,$v,$param,$record],'grab_order/send_log',1);
+                fdump_api(['$param==' . __LINE__, $v, $param, $record], 'grab_order/send_log', 1);
 
-                $TemplateNewsService->sendTempMsg('OPENTM400166399', $param,0,$v['property_id'],1);
+                $TemplateNewsService->sendTempMsg('OPENTM400166399', $param, 0, $v['property_id'], 1);
             }
-            if($orderIdAll){
+            if ($orderIdAll) {
                 //已经发生通知的订单 不可再发送
                 (new HouseNewRepairWorksOrder())->saveOne([
                     ['order_id', 'in', (array_values($orderIdAll))]
-                ], ['is_send_grab'=>1]);
+                ], ['is_send_grab' => 1]);
             }
-            if($record){
+            if ($record) {
                 (new HouseNewRepairGraborderNoticeRecord())->addAll($record);
             }
         }
         return true;
     }
 
- 
 
     /**
      * 可视化工单数据统计
@@ -7135,186 +7313,231 @@ class HouseNewRepairService
      */
     public function getWorkorder($village_id)
     {
-	    $db_house_new_repair_works_order    = new HouseNewRepairWorksOrder();
-	    $db_house_new_repair_work_order_log = new HouseNewRepairWorksOrderLog();
-	    $start_time                         = date('Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, date("Y")));
-	    $all_count                          = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['village_id', '=', $village_id]]);//总共单数
-	    $processing_count                   = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['event_status', '>=', '30'], ['event_status', '<', '40'], ['village_id', '=', $village_id]]);//处理中数
-	    $untreated_count                    = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['event_status', '<', '30'], ['village_id', '=', $village_id]]);//未处理数
-	    $processed_count                    = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['event_status', '>=', '40'], ['village_id', '=', $village_id]]);//已处理数
-	    $favorable_comments_count           = $db_house_new_repair_work_order_log->getCount([['add_time', '>=', strtotime($start_time)], ['evaluate', '=', 5], ['village_id', '=', $village_id]],'order_id');//好评数
-	    $favorable_comments_rate            = $all_count ? intval(round_number(($favorable_comments_count / $all_count), 2) * 100) : 100;
-	    $data['all_count']                  = $all_count;
-	    $data['favorable_comments_rate']    = $favorable_comments_rate;
-	    $data['favorable_comments_count']   = $favorable_comments_count;
-	    $data['processing_count']           = $processing_count;
-	    $data['untreated_count']            = $untreated_count;
-	    $data['processed_count']            = $processed_count;
+        $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
+        $db_house_new_repair_work_order_log = new HouseNewRepairWorksOrderLog();
+        $start_time = date('Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, date("Y")));
+        $all_count = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['village_id', '=', $village_id]]); //总共单数
+        $processing_count = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['event_status', '>=', '30'], ['event_status', '<', '40'], ['village_id', '=', $village_id]]); //处理中数
+        $untreated_count = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['event_status', '<', '30'], ['village_id', '=', $village_id]]); //未处理数
+        $processed_count = $db_house_new_repair_works_order->getCount([['add_time', '>=', strtotime($start_time)], ['event_status', '>=', '40'], ['village_id', '=', $village_id]]); //已处理数
+        $favorable_comments_count = $db_house_new_repair_work_order_log->getCount([['add_time', '>=', strtotime($start_time)], ['evaluate', '=', 5], ['village_id', '=', $village_id]], 'order_id'); //好评数
+        $favorable_comments_rate = $all_count ? intval(round_number(($favorable_comments_count / $all_count), 2) * 100) : 100;
+        $data['all_count'] = $all_count;
+        $data['favorable_comments_rate'] = $favorable_comments_rate;
+        $data['favorable_comments_count'] = $favorable_comments_count;
+        $data['processing_count'] = $processing_count;
+        $data['untreated_count'] = $untreated_count;
+        $data['processed_count'] = $processed_count;
 
-	    return $data;
+        return $data;
     }
- 
-    public function getNewRepairWorksOrderLog($whereArr,$field='*',$page=1,$limit=20,$groupBy=''){
+
+    public function getNewRepairWorksOrderLog($whereArr, $field = '*', $page = 1, $limit = 20, $groupBy = '')
+    {
 
         $dataArr = ['list' => array(), 'total_limit' => $limit, 'count' => 0];
-        if(empty($whereArr)){
+        if (empty($whereArr)) {
             return $dataArr;
         }
-        $houseNewRepairWorksOrderLog= new HouseNewRepairWorksOrderLog();
-        $listObj=$houseNewRepairWorksOrderLog->getGroupByList($whereArr,$field,$page,$limit,$groupBy);
-        if($listObj && !$listObj->isEmpty()){
-            $list=$listObj->toArray();
-            $houseVillageDb=new HouseVillage();
-            $village_info=$houseVillageDb->getInfo(array('village_id'=>$list['0']['village_id']),'*');
-            $count=$houseNewRepairWorksOrderLog->getCountGroupBy($whereArr,$groupBy);
-            $dataArr['count']=$count>0 ?$count:0;
-            foreach ($list as $kk=>$vv){
-                $list[$kk]['evaluate1']=0;
-                $list[$kk]['evaluate2']=0;
-                $list[$kk]['evaluate3']=0;
-                $list[$kk]['evaluate4']=0;
-                $list[$kk]['evaluate5']=0;
-                $roomArr=$this->getUserAddress($vv['village_id'],$vv['operator_id']);
-                $list[$kk]['roomaddr']='';
-                if($roomArr && $roomArr['address']){
-                    $list[$kk]['roomaddr']=$roomArr['address'];
+        $houseNewRepairWorksOrderLog = new HouseNewRepairWorksOrderLog();
+        $listObj = $houseNewRepairWorksOrderLog->getGroupByList($whereArr, $field, $page, $limit, $groupBy);
+        if ($listObj && !$listObj->isEmpty()) {
+            $list = $listObj->toArray();
+            $houseVillageDb = new HouseVillage();
+            $village_info = $houseVillageDb->getInfo(array('village_id' => $list['0']['village_id']), '*');
+            $count = $houseNewRepairWorksOrderLog->getCountGroupBy($whereArr, $groupBy);
+            $dataArr['count'] = $count > 0 ? $count : 0;
+            foreach ($list as $kk => $vv) {
+                $list[$kk]['evaluate1'] = 0;
+                $list[$kk]['evaluate2'] = 0;
+                $list[$kk]['evaluate3'] = 0;
+                $list[$kk]['evaluate4'] = 0;
+                $list[$kk]['evaluate5'] = 0;
+                $roomArr = $this->getUserAddress($vv['village_id'], $vv['operator_id']);
+                $list[$kk]['roomaddr'] = '';
+                if ($roomArr && $roomArr['address']) {
+                    $list[$kk]['roomaddr'] = $roomArr['address'];
                 }
-                $evaluateWhere=array();
-                $evaluateWhere[]=array('village_id','=',$vv['village_id']);
-                $evaluateWhere[]=array('log_name','=','evaluate');
-                $evaluateWhere[]=array('log_operator','=',$vv['log_operator']);
-                $evaluateWhere[]=array('log_phone','=',$vv['log_phone']);
-                $evaluateWhere[]=array('operator_id	 ','=',$vv['operator_id']);
-                $evaluateWhere[]=array('log_uid','=',$vv['log_uid']);
-                $evaluate1Where=$evaluateWhere;
-                $evaluate1Where[]=array('evaluate','=',1);
-                $list[$kk]['evaluate1']=$houseNewRepairWorksOrderLog->getCount($evaluate1Where);
-                
-                $evaluate2Where=$evaluateWhere;
-                $evaluate2Where[]=array('evaluate','=',2);
-                $list[$kk]['evaluate2']=$houseNewRepairWorksOrderLog->getCount($evaluate2Where);
-                
-                $evaluate3Where=$evaluateWhere;
-                $evaluate3Where[]=array('evaluate','=',3);
-                $list[$kk]['evaluate3']=$houseNewRepairWorksOrderLog->getCount($evaluate3Where);
-                
-                $evaluate4Where=$evaluateWhere;
-                $evaluate4Where[]=array('evaluate','=',4);
-                $list[$kk]['evaluate4']=$houseNewRepairWorksOrderLog->getCount($evaluate4Where);
-                
-                $evaluate5Where=$evaluateWhere;
-                $evaluate5Where[]=array('evaluate','=',5);
-                $list[$kk]['evaluate5']=$houseNewRepairWorksOrderLog->getCount($evaluate5Where);
+                $evaluateWhere = array();
+                $evaluateWhere[] = array('village_id', '=', $vv['village_id']);
+                $evaluateWhere[] = array('log_name', '=', 'evaluate');
+                $evaluateWhere[] = array('log_operator', '=', $vv['log_operator']);
+                $evaluateWhere[] = array('log_phone', '=', $vv['log_phone']);
+                $evaluateWhere[] = array('operator_id	 ', '=', $vv['operator_id']);
+                $evaluateWhere[] = array('log_uid', '=', $vv['log_uid']);
+                $evaluate1Where = $evaluateWhere;
+                $evaluate1Where[] = array('evaluate', '=', 1);
+                $list[$kk]['evaluate1'] = $houseNewRepairWorksOrderLog->getCount($evaluate1Where);
+
+                $evaluate2Where = $evaluateWhere;
+                $evaluate2Where[] = array('evaluate', '=', 2);
+                $list[$kk]['evaluate2'] = $houseNewRepairWorksOrderLog->getCount($evaluate2Where);
+
+                $evaluate3Where = $evaluateWhere;
+                $evaluate3Where[] = array('evaluate', '=', 3);
+                $list[$kk]['evaluate3'] = $houseNewRepairWorksOrderLog->getCount($evaluate3Where);
+
+                $evaluate4Where = $evaluateWhere;
+                $evaluate4Where[] = array('evaluate', '=', 4);
+                $list[$kk]['evaluate4'] = $houseNewRepairWorksOrderLog->getCount($evaluate4Where);
+
+                $evaluate5Where = $evaluateWhere;
+                $evaluate5Where[] = array('evaluate', '=', 5);
+                $list[$kk]['evaluate5'] = $houseNewRepairWorksOrderLog->getCount($evaluate5Where);
                 if ($vv['log_phone']) {
-                    $list[$kk]['log_phone']=$houseVillageDb->phone_desensitization_v($vv['log_phone'],$vv['village_id'],$village_info);
+                    $list[$kk]['log_phone'] = $houseVillageDb->phone_desensitization_v($vv['log_phone'], $vv['village_id'], $village_info);
                 }
             }
-            $dataArr['list']=$list;
+            $dataArr['list'] = $list;
         }
         return $dataArr;
     }
-    
+
     /**
      * 工单自动评价 小区
      * 查那些小区开启了 工单自动评价
-    **/
+     **/
 
-    public function worksOrderAutoEvaluateVillage(){
-        $houseVillageInfo=new HouseVillageInfo();
-        $whereArr=array();
-        $whereArr[]=array('hvi.village_id','>',0);
-        $whereArr[]=array('hv.status','=',1);
-        $whereArr[]=array('hvi.is_auto_work_order_evaluate','=',1);
-        $whereArr[]=array('hvi.work_order_auto_evaluate_time','>',0);
-        $field='hvi.info_id,hvi.village_id,hvi.property_id';
-        $villageInfoObj=$houseVillageInfo->getVillageInfoList($whereArr,$field);
-        if($villageInfoObj && !$villageInfoObj->isEmpty()){
-            $villageInfo=$villageInfoObj->toArray();
-            fdump_api(['villageInfo'=>$villageInfo],'00worksOrderAutoEvaluateVillage',1);
-            foreach ($villageInfo as $vv){
-                $param=array();
-                $param['info_id']=$vv['info_id'];
-                $param['village_id']=$vv['village_id'];
+    public function worksOrderAutoEvaluateVillage()
+    {
+        $houseVillageInfo = new HouseVillageInfo();
+        $whereArr = array();
+        $whereArr[] = array('hvi.village_id', '>', 0);
+        $whereArr[] = array('hv.status', '=', 1);
+        $whereArr[] = array('hvi.is_auto_work_order_evaluate', '=', 1);
+        $whereArr[] = array('hvi.work_order_auto_evaluate_time', '>', 0);
+        $field = 'hvi.info_id,hvi.village_id,hvi.property_id';
+        $villageInfoObj = $houseVillageInfo->getVillageInfoList($whereArr, $field);
+        if ($villageInfoObj && !$villageInfoObj->isEmpty()) {
+            $villageInfo = $villageInfoObj->toArray();
+            fdump_api(['villageInfo' => $villageInfo], '00worksOrderAutoEvaluateVillage', 1);
+            foreach ($villageInfo as $vv) {
+                $param = array();
+                $param['info_id'] = $vv['info_id'];
+                $param['village_id'] = $vv['village_id'];
                 $this->worksOrderAutoEvaluateVillageQueuePushToJob($param);
             }
         }
         return true;
     }
-    public function getBindUserOrWorker($village_id=0,$keyV=''){
-        $returnArr=array('userList'=>array(array('is_work'=>0,'u_idd'=>'','xname'=>'无')));
-        $db_house_village_user_bind=new HouseVillageUserBind();
-        $where=array(['village_id','=',$village_id]);
-        $where[]=array('type','in',[0,1,2,3]);
-        $where[]=array('status','=',1);
-        $whereOr='name like "%'.$keyV.'%" or phone like "%'.$keyV.'%"';
-        $listObj=$db_house_village_user_bind->getLists($where,$whereOr,'pigcms_id,uid,name,phone','pigcms_id desc',1,20);
-        if($listObj && !$listObj->isEmpty()){
-            $listArr=$listObj->toArray();
-            foreach ($listArr as $vv){
-                $returnArr['userList'][]=array('is_work'=>0,'u_idd'=>'b_'.$vv['pigcms_id'],'xname'=>$vv['name'].'，手机号：'.$vv['phone'].'【住户人员】');
+
+    public function getBindUserOrWorker($village_id = 0, $keyV = '')
+    {
+        $returnArr = array('userList' => array(array('is_work' => 0, 'u_idd' => '', 'xname' => '无')));
+        $db_house_village_user_bind = new HouseVillageUserBind();
+        $where = array(['village_id', '=', $village_id]);
+        $where[] = array('type', 'in', [0, 1, 2, 3]);
+        $where[] = array('status', '=', 1);
+        $whereOr = 'name like "%' . $keyV . '%" or phone like "%' . $keyV . '%"';
+        $listObj = $db_house_village_user_bind->getLists($where, $whereOr, 'pigcms_id,uid,name,phone', 'pigcms_id desc', 1, 20);
+        if ($listObj && !$listObj->isEmpty()) {
+            $listArr = $listObj->toArray();
+            foreach ($listArr as $vv) {
+                $returnArr['userList'][] = array('is_work' => 0, 'u_idd' => 'b_' . $vv['pigcms_id'], 'xname' => $vv['name'] . '，手机号：' . $vv['phone'] . '【住户人员】');
             }
         }
-        $houseWorkerDb= new  HouseWorker();
-        $where=array(['village_id','=',$village_id]);
-        $where[]=array('is_del','<',0);
-        $where[]=array('status','<',4);
-        $whereOr='name like "%'.$keyV.'%" or phone like "%'.$keyV.'%"';
+        $houseWorkerDb = new  HouseWorker();
+        $where = array(['village_id', '=', $village_id]);
+        $where[] = array('is_del', '<', 0);
+        $where[] = array('status', '<', 4);
+        $whereOr = 'name like "%' . $keyV . '%" or phone like "%' . $keyV . '%"';
         $fieldStr = 'wid,phone,name';
-        $listObj=$houseWorkerDb->getWorkList($where,$whereOr,$fieldStr,'wid desc',1,10);
-        if($listObj && !$listObj->isEmpty()){
-            $listArr=$listObj->toArray();
-            foreach ($listArr as $vv){
-                $returnArr['userList'][]=array('is_work'=>1,'u_idd'=>'w_'.$vv['wid'],'xname'=>$vv['name'].'，手机号：'.$vv['phone'].'【工作人员】');
+        $listObj = $houseWorkerDb->getWorkList($where, $whereOr, $fieldStr, 'wid desc', 1, 10);
+        if ($listObj && !$listObj->isEmpty()) {
+            $listArr = $listObj->toArray();
+            foreach ($listArr as $vv) {
+                $returnArr['userList'][] = array('is_work' => 1, 'u_idd' => 'w_' . $vv['wid'], 'xname' => $vv['name'] . '，手机号：' . $vv['phone'] . '【工作人员】');
             }
         }
         return $returnArr;
     }
+
+    /**
+     * 工单自动关闭 工单
+     * 处理每个小区的 工单自动关闭
+     **/
+    public function worksOrderAutoClose()
+    {
+//        echo "<pre>";
+        $houseVillageInfo = new HouseVillageInfo();
+        $houseNewRepairWorksOrder = new HouseNewRepairWorksOrder();
+        $where = [
+            'ho.event_status' => 40
+        ];
+        $field = 'MAX(hv.close_order_time) AS close_order_time,ho.order_id,ho.timely_time,ho.order_content,ho.event_status';
+        $villageInfo = $houseVillageInfo->getVillageListAndWorkOrder($where, $field);
+        if (count($villageInfo) <= 0) {
+            return true;
+        }
+        $filteredVillage = array_filter($villageInfo, function ($item) {
+            return !empty($item['close_order_time']) && (float)$item['close_order_time'] >= 1;
+        });
+
+        $filteredVillage = array_values($filteredVillage);
+        $up_order_id_list = [];
+        foreach ($filteredVillage as $key => $val) {
+            if (!$val['order_id']) {
+                continue;
+            }
+            $current_time = time();
+            $overtime = ($val['close_order_time'] * 24 * 3600) + $val['timely_time'];
+            if ($current_time >= $overtime) {
+                array_push($up_order_id_list, $val['order_id']);
+            }
+        }
+        if (count($up_order_id_list) > 0) {
+            $where2[] = array('order_id', 'in', $up_order_id_list);
+            $houseNewRepairWorksOrder->updateStatus(['event_status' => 60], $where2);
+        }
+    }
+
     /**
      * 工单自动评价 工单
      * 处理每个小区的 工单自动评价
      **/
-    public function worksOrderAutoEvaluate($param=array()){
-        if(empty($param) || empty($param['info_id']) && empty($param['village_id'])){
+    public function worksOrderAutoEvaluate($param = array())
+    {
+        if (empty($param) || empty($param['info_id']) && empty($param['village_id'])) {
             return true;
         }
-        fdump_api(['param'=>$param],'00worksOrderAutoEvaluate',1);
-        $whereArr=array('info_id'=>$param['info_id'],'village_id'=>$param['village_id']);
-        $houseVillageInfo=new HouseVillageInfo();
-        $field='village_id,property_id,is_auto_work_order_evaluate,work_order_auto_evaluate_time,work_order_extra';
-        $villageInfoObj=$houseVillageInfo->getOne($whereArr,$field);
-        if($villageInfoObj && !$villageInfoObj->isEmpty()) {
+        fdump_api(['param' => $param], '00worksOrderAutoEvaluate', 1);
+        $whereArr = array('info_id' => $param['info_id'], 'village_id' => $param['village_id']);
+        $houseVillageInfo = new HouseVillageInfo();
+        $field = 'village_id,property_id,is_auto_work_order_evaluate,work_order_auto_evaluate_time,work_order_extra';
+        $villageInfoObj = $houseVillageInfo->getOne($whereArr, $field);
+        if ($villageInfoObj && !$villageInfoObj->isEmpty()) {
             $villageInfo = $villageInfoObj->toArray();
-            fdump_api(['villageInfo'=>$villageInfo],'00worksOrderAutoEvaluate',1);
-            $nowtime=time();
-            $work_order_extra=$villageInfo['work_order_extra'] ? json_decode($villageInfo['work_order_extra'],1):'';
-            $auto_evaluate=array();
-            if($work_order_extra && isset($work_order_extra['auto_evaluate']) && !empty($work_order_extra['auto_evaluate'])){
-                $auto_evaluate=$work_order_extra['auto_evaluate'];
+            fdump_api(['villageInfo' => $villageInfo], '00worksOrderAutoEvaluate', 1);
+            $nowtime = time();
+            $work_order_extra = $villageInfo['work_order_extra'] ? json_decode($villageInfo['work_order_extra'], 1) : '';
+            $auto_evaluate = array();
+            if ($work_order_extra && isset($work_order_extra['auto_evaluate']) && !empty($work_order_extra['auto_evaluate'])) {
+                $auto_evaluate = $work_order_extra['auto_evaluate'];
             }
-            if($auto_evaluate && $villageInfo['work_order_auto_evaluate_time']>0){
-                $query_time=0;
-                $stime_type=$auto_evaluate['stime_type'];  //hour 小时 day 天
-                $evaluate=$auto_evaluate['star'];
-                if($stime_type=='hour'){
-                    $query_time=$nowtime-$villageInfo['work_order_auto_evaluate_time']*3600;
-                }elseif ($stime_type=='day'){
-                    $query_time=$nowtime-($villageInfo['work_order_auto_evaluate_time']*24*3600);
+            if ($auto_evaluate && $villageInfo['work_order_auto_evaluate_time'] > 0) {
+                $query_time = 0;
+                $stime_type = $auto_evaluate['stime_type'];  //hour 小时 day 天
+                $evaluate = $auto_evaluate['star'];
+                if ($stime_type == 'hour') {
+                    $query_time = $nowtime - $villageInfo['work_order_auto_evaluate_time'] * 3600;
+                } elseif ($stime_type == 'day') {
+                    $query_time = $nowtime - ($villageInfo['work_order_auto_evaluate_time'] * 24 * 3600);
                 }
-                if($query_time<1){
+                if ($query_time < 1) {
                     return true;
                 }
-                $whereArr=array();
-                $whereArr[]=array('village_id','=',$param['village_id']);
-                $whereArr[]=array('event_status','>=',40);
-                $whereArr[]=array('event_status','<',50);
-                $whereArr[]=array('update_time','<',$query_time);
+                $whereArr = array();
+                $whereArr[] = array('village_id', '=', $param['village_id']);
+                $whereArr[] = array('event_status', '>=', 40);
+                $whereArr[] = array('event_status', '<', 50);
+                $whereArr[] = array('update_time', '<', $query_time);
                 $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-                $field='order_id,village_id,property_id,uid,bind_id,phone,name,worker_id,event_status,project_id,rule_id';
-                $works_order_obj=$db_house_new_repair_works_order->getAllList($whereArr,$field);
-                if($works_order_obj && !$works_order_obj->isEmpty()){
-                    $works_orders=$works_order_obj->toArray();
-                    foreach ($works_orders as $ovv){
-                        $updateArr=[
+                $field = 'order_id,village_id,property_id,uid,bind_id,phone,name,worker_id,event_status,project_id,rule_id';
+                $works_order_obj = $db_house_new_repair_works_order->getAllList($whereArr, $field);
+                if ($works_order_obj && !$works_order_obj->isEmpty()) {
+                    $works_orders = $works_order_obj->toArray();
+                    foreach ($works_orders as $ovv) {
+                        $updateArr = [
                             'event_status' => 70,
                             'update_time' => $nowtime,
                             'evaluate' => $evaluate,
@@ -7325,12 +7548,12 @@ class HouseNewRepairService
                             'log_name' => 'evaluate',
                             'operator_type' => 10,
                             'log_content' => '系统自动评价',
-                            'log_imgs' =>  '',
+                            'log_imgs' => '',
                             'add_time' => $nowtime,
-                            'log_operator' =>  '系统',
-                            'log_phone' =>  '',
-                            'operator_id' =>  0,
-                            'log_uid' =>  0,
+                            'log_operator' => '系统',
+                            'log_phone' => '',
+                            'operator_id' => 0,
+                            'log_uid' => 0,
                             'evaluate' => $evaluate,
                             'rule_id' => $ovv['rule_id'],
                             'project_id' => $ovv['project_id'],
@@ -7339,10 +7562,10 @@ class HouseNewRepairService
                             'offline_pay_type' => 0,
                             'village_id' => $ovv['village_id'],
                             'property_id' => $ovv['property_id'],
-                            
+
                         ]);
-                         //发模板消息
-                        $this->newRepairSendMsg(20,$ovv['order_id'],0,$ovv['property_id']);
+                        //发模板消息
+                        $this->newRepairSendMsg(20, $ovv['order_id'], 0, $ovv['property_id']);
                     }
                 }
             }

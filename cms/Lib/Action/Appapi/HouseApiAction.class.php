@@ -710,6 +710,11 @@ class HouseApiAction  extends BaseAction
             $res['guess_you_like_goods']=$house_village_nav_moduleDb->get_guess_you_like_goods_set($village_id);
         }
         $res['jz_open'] = $jz_open;
+
+        $database_house_village = D('House_village');
+        $now_village = $database_house_village->field(true)->where(array('village_id' => $village_id))->find();
+        $res['is_open_door_permission'] = !empty($now_village) && $now_village['lilin_pf_client_secret'] ? true : false;
+
         if(!empty($toCacheArr)){
             S($cacheindexkey,$toCacheArr,1800);
         }

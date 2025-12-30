@@ -3,11 +3,14 @@
 	<!-- 内容头部 -->
 	<div class="breadcrumbs" >
 		<ul class="breadcrumb">
-			<li>
-				<i class="ace-icon fa fa-tasks"></i>
-				<a href="{pigcms{:U('WisdomQrcode/cate_index')}">智慧巡检码</a>
-			</li>
-			<li class="active">编辑</li>
+<!--			<li>-->
+<!--				<i class="ace-icon fa fa-tasks"></i>-->
+<!--				<a href="{pigcms{:U('WisdomQrcode/cate_index')}">智慧巡检码</a>-->
+<!--			</li>-->
+            <li>
+                <a href="{pigcms{:U('WisdomQrcode/qrcode_index')}">二维码管理</a>
+            </li>
+			<li class="active">编辑二维码</li>
 		</ul>
 	</div>
 	<!-- 内容头部 -->
@@ -19,12 +22,12 @@
 						<div class="tab-content">
 							<input type="hidden" value="{pigcms{$_GET['cate_id']}" name="cate_id">
 							<input type="hidden" value="{pigcms{$cate.id}" name="id">
-							<div id="basicinfo" class="tab-pane active">
-								<div class="form-group">
-									<label class="col-sm-1"><label for="name">序号：</label></label>
-									<input class="col-sm-2" size="20" name="num_id" id="num_id" type="text" value="{pigcms{$cate['num_id']}"/>
-								</div>
-							</div>
+<!--							<div id="basicinfo" class="tab-pane active">-->
+<!--								<div class="form-group">-->
+<!--									<label class="col-sm-1"><label for="name">序号：</label></label>-->
+<!--									<input class="col-sm-2" readonly size="20" name="num_id" id="num_id" type="text" value="{pigcms{$cate['num_id']}"/>-->
+<!--								</div>-->
+<!--							</div>-->
 							<div id="basicinfo" class="tab-pane active">
 								<div class="form-group">
 									<label class="col-sm-1"><label for="name">二维码名称：</label></label>
@@ -49,6 +52,20 @@
 									<span class="form_tips">建议上传700*350的图片</span>
 								</div>
 							</div>
+                            <div id="basicinfo" class="tab-pane active">
+
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="category_id">所属分类：</label></label>
+                                    <select name="categoryId" id="categoryId">
+                                        <option value="">请选择分类</option>
+                                        <foreach name="categoryList" item="categoryList">
+                                            <option <if condition="$cate['category_id'] eq $categoryList['id']">selected="selected"</if> value="{pigcms{$categoryList.id}">
+                                                {pigcms{$categoryList.name}
+                                            </option>
+                                        </foreach>
+                                    </select>
+                                </div>
+                            </div>
                             <if condition="$dataList">
 								<volist name="dataList" id="vo">
 									<div id="basicinfo" class="tab-pane active">
@@ -251,7 +268,11 @@ function check_submit(){
 		alert('名称不能为空！');
 		return false;
 	}
-	}
+    if( $('#categoryId').val() == '' ){
+        alert('分类不能为空！');
+        return false;
+    }
+}
 </script>
 
 

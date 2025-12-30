@@ -177,7 +177,7 @@ class RecognitionAction extends BaseAction{
         $info = $this->parseUrlParams(htmlspecialchars_decode($_GET['qrCon'])); // 解析 URL 中的查询参数
 
         // 注意：这里的 img_url 不需要变
-        $img_url = U('get_own_qrcode',array('qrCon'=>urlencode(htmlspecialchars_decode($_GET['qrCon'])),'size'=>$_GET['size'],'down'=>$_GET['down'],'name'=>$info['name']));
+        $img_url = U('get_own_qrcode',array('qrCon'=>urlencode(htmlspecialchars_decode($_GET['qrCon'])),'size'=>$_GET['size'],'down'=>$_GET['down'],'name'=>$info['name'],'category_name'=>$info['category_name']));
 
         // HTML 使用新的高度
         echo '<html><head></head><body style="padding:0;margin:0;"><img src="'.$img_url.'" style="width:'.$img_width.'px;height:'.($img_height-30).'px"></body></html>';
@@ -193,93 +193,142 @@ class RecognitionAction extends BaseAction{
 //		QRcode::png(htmlspecialchars_decode(urldecode($qrCon)),false,0,$size,1,$is_down);
 //	}
     public function get_own_qrcode(){
-        // --- 【请在这里修改配置！！！】 ---
-
-        // 🚨 1. 将这里的值替换为测试时成功的【精确字体路径】！
+        // --- 【配置项：可直接修改】 ---
         $font_path = $_SERVER['DOCUMENT_ROOT'] . '/tpl/Static/fonts/simhei.ttf';
-        // 2. 确保你的文字是 UTF-8 编码
-        $text_to_add = $_GET['name'];
+        $font_size = 20;  // 下方文字（name）字体大小
+        $font_size2 = 30; // 顶部文字（category_name）大号字体
+        $qr_margin = 15;  // 二维码与上下文字的间距（适配大号字体，适当加大）
+        $top_text_padding = 15; // 顶部文字与画布顶端的内边距（保证30px字体完整显示）
         // ------------------------------------
 
-        $qrCon = $_GET['qrCon'];
-        // 确保你的 ThinkPHP import 路径是正确的
-        import('@.ORG.phpqrcode');
-        $size = $_GET['size'] ? $_GET['size']: 10;
-        $is_down = $_GET['down'] ? true: false;
+        // 1. 接收并过滤GET参数，避免恶意值和空值
+        $text_to_add = isset($_GET['name']) ? trim(urldecode($_GET['name'])) : '默认名称';
+        $category_name = isset($_GET['category_name']) ? trim(urldecode($_GET['category_name'])) : '默认分类';
+        $qrCon = isset($_GET['qrCon']) ? urldecode($_GET['qrCon']) : '';
+        $size = isset($_GET['size']) ? intval($_GET['size']) : 10;
+        $is_down = isset($_GET['down']) ? boolval($_GET['down']) : false;
 
-        // --- 字体路径检查（必须确保该路径是测试成功的那个！） ---
+        // 2. 验证二维码内容非空
+        if (empty($qrCon)) {
+            header('Content-Type: text/plain; charset=utf-8');
+            exit('错误：二维码内容不能为空');
+        }
+
+        // 3. 字体路径检查（必须确保文件存在且可读取）
         if (!file_exists($font_path) || !is_readable($font_path)) {
             header('Content-Type: text/plain; charset=utf-8');
-            exit('致命错误：字体文件无法访问。请检查 $font_path 变量和文件权限是否与测试脚本一致。当前路径: ' . $font_path);
+            exit('致命错误：字体文件无法访问。当前路径: ' . $font_path);
         }
 
-        // 忽略下载逻辑（if ($is_down) { ... } 略去）
-
-        // --- 图像处理：利用临时文件进行中转 (修复 ob_start 失败问题) ---
-
-        $temp_filename = tempnam(sys_get_temp_dir(), 'qr_'); // 1. 生成临时文件路径
+        // 4. 生成临时文件存储二维码（修复ob_start强制输出问题）
+        $temp_filename = tempnam(sys_get_temp_dir(), 'qr_');
         if ($temp_filename === false) {
-            header('Content-Type: text/plain');
-            exit('无法创建临时文件，请检查系统临时目录权限。');
+            header('Content-Type: text/plain; charset=utf-8');
+            exit('无法创建临时文件，请检查系统临时目录权限');
         }
 
-        // 2. 将二维码输出写入到临时文件 (使用静默缓冲丢弃强制输出)
+        // 5. 生成二维码并写入临时文件（静默丢弃多余输出）
         ob_start();
-        QRcode::png(htmlspecialchars_decode(urldecode($qrCon)), $temp_filename, 0, $size, 1, false);
-        ob_end_clean(); // 丢弃所有强制输出的数据
+        import('@.ORG.phpqrcode');
+        QRcode::png(htmlspecialchars_decode($qrCon), $temp_filename, 0, $size, 1, false);
+        ob_end_clean();
 
-        // 3. 从临时文件中读取图像资源
+        // 6. 从临时文件创建二维码图像资源
         $qr_image = imagecreatefrompng($temp_filename);
-
-        // 4. 删除临时文件
-        unlink($temp_filename);
-
         if (!$qr_image) {
-            header('Content-Type: text/plain');
-            exit('GD库无法从临时文件创建图像资源。');
+            unlink($temp_filename); // 清理无效临时文件
+            header('Content-Type: text/plain; charset=utf-8');
+            exit('GD库无法从临时文件创建二维码图像资源');
         }
+        unlink($temp_filename); // 二维码资源创建成功后，删除临时文件
 
-        // --- GD 逻辑：创建画布并绘制文字 ---
-
+        // 7. 获取二维码尺寸，重新计算最终画布尺寸（适配顶部大号字体）
         $qr_width = imagesx($qr_image);
         $qr_height = imagesy($qr_image);
+        // 画布高度：顶部预留（大号字体+内边距）+ 二维码高度 + 下方文字区域 + 底部间距
+        $top_reserve = $font_size2 + $top_text_padding; // 顶部预留空间（适配30px字体）
+        $bottom_reserve = 60; // 下方文字预留空间
         $new_width = $qr_width;
-        $new_height = $qr_height + 60; // 使用常量高度
+        $new_height = $top_reserve + $qr_height + $bottom_reserve;
 
+        // 8. 创建最终画布并填充白色背景（【关键】先填充背景，再绘制其他内容）
         $final_image = imagecreatetruecolor($new_width, $new_height);
-
+        if (!$final_image) {
+            imagedestroy($qr_image);
+            exit('无法创建最终画布图像资源');
+        }
+        // 分配颜色（关联当前画布，避免颜色无效）
         $white = imagecolorallocate($final_image, 255, 255, 255);
         $black = imagecolorallocate($final_image, 0, 0, 0);
-
+        // 填充白色背景（先填充，后续绘制的内容不会被覆盖）
         imagefill($final_image, 0, 0, $white);
-        imagecopy($final_image, $qr_image, 0, 0, 0, 0, $qr_width, $qr_height);
 
-        // ------------------- [ 绘制文字 (最安全的参数) ] -------------------
+        // 9. 复制二维码到最终画布（下移至顶部文字下方，避免重叠）
+        $qr_dst_y = $top_reserve + 10; // 二维码绘制在顶部预留空间下方，与顶部文字保持间距
+        imagecopy($final_image, $qr_image, 0, $qr_dst_y, 0, 0, $qr_width, $qr_height);
 
-        // 计算文字边界和居中X坐标
-        $text_box = imagettfbbox(20, 0, $font_path, $text_to_add);
-        $text_width = $text_box[2] - $text_box[0];
+        // 10. 计算两段文字的坐标（重点适配顶部大号字体居中）
+        // 10.1 下方文字（$text_to_add：二维码下方，20px字体）
+        $text1_box = imagettfbbox($font_size, 0, $font_path, $text_to_add);
+        $text1_width = $text1_box[2] - $text1_box[0];
+        $text1_x = ($new_width - $text1_width) / 2; // 水平居中
+        // 垂直坐标：二维码下方+间距+字体大小，确保完整显示
+        $text1_y = $qr_dst_y + $qr_height + $qr_margin + $font_size;
 
-        $x_coordinate = ($new_width - $text_width) / 2; // 居中X坐标
+        // 10.2 顶部文字（$category_name：画布最上方，30px大号字体）
+        // 单独基于font_size2计算文字边界，保证居中准确
+        $text2_box = imagettfbbox($font_size2, 0, $font_path, $category_name);
+        $text2_width = $text2_box[2] - $text2_box[0];
+        $text2_x = ($new_width - $text2_width) / 2; // 水平居中（适配30px字体宽度）
+        // 垂直坐标：基线位置=顶部内边距+字体大小，确保文字完整不截断（关键适配30px字体）
+        $text2_y = $top_text_padding + $font_size2;
 
-        // Y坐标：二维码底部 + 边距 (15px) + 字体大小 (确保文字完全在预留的 60px 空间内)
-        $y_coordinate = $qr_height + 15 + 20;
-
+        // 11. 绘制两段文字（先绘下方，再绘顶部，不影响覆盖，视觉更清晰）
+        // 绘制下方文字（$text_to_add：二维码下方，20px字体）
         imagettftext(
             $final_image,
-            20,
+            $font_size,
             0,
-            $x_coordinate,
-            $y_coordinate,
+            $text1_x,
+            $text1_y,
             $black,
-            $font_path, // 最终确定的字体路径
+            $font_path,
             $text_to_add
         );
 
-        // ------------------- [ 最终输出并清理 ] -------------------
-        header('Content-Type: image/png');
-        imagepng($final_image);
+        // 绘制顶部文字（$category_name：画布最上方，30px大号字体）
+        imagettftext(
+            $final_image,
+            $font_size2,
+            0,
+            $text2_x,
+            $text2_y,
+            $black,
+            $font_path,
+            $category_name
+        );
 
+        // 12. 最终输出图像（下载或直接展示，修复filesize错误）
+        if ($is_down) {
+            // 下载逻辑：先保存到临时文件，再获取文件大小
+            $download_filename = 'qrcode_with_text_' . date('YmdHis') . '.png';
+            $temp_output = tempnam(sys_get_temp_dir(), 'qr_output_');
+            imagepng($final_image, $temp_output);
+
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . $download_filename . '"');
+            header('Content-Length: ' . filesize($temp_output));
+
+            // 输出文件内容并清理临时文件
+            readfile($temp_output);
+            unlink($temp_output);
+        } else {
+            // 直接展示逻辑
+            header('Content-Type: image/png');
+            imagepng($final_image);
+        }
+
+        // 输出图像并释放所有内存资源
         imagedestroy($qr_image);
         imagedestroy($final_image);
     }

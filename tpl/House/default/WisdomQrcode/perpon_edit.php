@@ -1,9 +1,12 @@
 <include file="Public:header"/>
 <div class="main-content">
 	<!-- 内容头部 -->
-	<div class="breadcrumbs" id="breadcrumbs">
+	<div class="breadcrumbs">
 		<ul class="breadcrumb">
-
+            <li>
+                <a href="{pigcms{:U('WisdomQrcode/perpon_index',array('cate_id'=>$_GET['cate_id']))}">负责人管理</a>
+            </li>
+            <li class="active">编辑负责人</li>
 		</ul>
 	</div>
 	<!-- 内容头部 -->
@@ -31,204 +34,12 @@
 									</tr>
 								</div>
 							</div>
-							<div id="basicinfo" class="tab-pane active">
-								<div class="form-group">
-									<label class="col-sm-1"><label for="name">负责人手机号码：</label></label>
-									<input class="col-sm-2" size="20" name="user_phone" id="user_phone" type="text" value="{pigcms{$qrcode_person.user_phone}"/>
-								</div>
-							</div>
-							<div id="basicinfo" class="tab-pane active">
-								<div class="form-group">
-									<label class="col-sm-1"><label for="water_price">记录时间</label></label>
-									<label><input name="record_type" <if condition="$qrcode_person.record_type eq 1">checked="checked" </if>  class="record_type"   type="radio" value="1"/>&nbsp;&nbsp;每日</label>
-									&nbsp;&nbsp;&nbsp;
-									<label><input name="record_type" <if condition="$qrcode_person.record_type eq 2">checked="checked" </if> class="record_type"  type="radio" value="2"/>&nbsp;&nbsp;每周</label>
-									&nbsp;&nbsp;&nbsp;
-									<label><input name="record_type" <if condition="$qrcode_person.record_type eq 3">checked="checked" </if> class="record_type"  type="radio" value="3"/>&nbsp;&nbsp;每月</label>
-								</div>
-							</div>
-							<div id="basicinfo" class="tab-pane active_zhou">
-
-								<div class="form-group" id="choose_child_info" style="padding-left: 8.333%;">
-
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" type="checkbox" name="record_time2[]" value="1" <if condition="in_array(1,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked"</if> id="group_category_1"/>
-										<span class="lbl"><label for="group_category_1">周一</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(2,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked" </if> type="checkbox" name="record_time2[]" value="2" id="group_category_2"/>
-										<span class="lbl"><label for="group_category_2">周二</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(3,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked" </if> type="checkbox" name="record_time2[]" value="3" id="group_category_3"/>
-										<span class="lbl"><label for="group_category_3">周三</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(4,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked" </if> type="checkbox" name="record_time2[]" value="4" id="group_category_4"/>
-										<span class="lbl"><label for="group_category_4">周四</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(5,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked" </if> type="checkbox" name="record_time2[]" value="5" id="group_category_5"/>
-										<span class="lbl"><label for="group_category_5">周五</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(6,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked" </if> type="checkbox" name="record_time2[]" value="6" id="group_category_6"/>
-										<span class="lbl"><label for="group_category_6">周六</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(7,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 2">checked="checked" </if> type="checkbox" name="record_time2[]" value="7" id="group_category_7"/>
-										<span class="lbl"><label for="group_category_7">周日</label></span>
-									</label>
-								</div>
-							</div>
-
-							<div id="basicinfo" class="tab-pane active_yue">
-
-								<div class="form-group" id="choose_child_info" style="padding-left: 8.333%;">
-
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(1,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if> type="checkbox" name="record_time3[]" value="1" id="group_category_1"/>
-										<span class="lbl"><label for="group_category_1">1号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(2,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="2" id="group_category_2"/>
-										<span class="lbl"><label for="group_category_2">2号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(3,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="3" id="group_category_3"/>
-										<span class="lbl"><label for="group_category_3">3号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(4,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="4" id="group_category_4"/>
-										<span class="lbl"><label for="group_category_4">4号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(5,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="5" id="group_category_5"/>
-										<span class="lbl"><label for="group_category_5">5号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(6,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="6" id="group_category_6"/>
-										<span class="lbl"><label for="group_category_6">6号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(7,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="7" id="group_category_7"/>
-										<span class="lbl"><label for="group_category_7">7号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(8,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="8" id="group_category_8"/>
-										<span class="lbl"><label for="group_category_8">8号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(9,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="9" id="group_category_9"/>
-										<span class="lbl"><label for="group_category_9">9号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(10,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="10" id="group_category_10"/>
-										<span class="lbl"><label for="group_category_10">10号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(11,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="11" id="group_category_11"/>
-										<span class="lbl"><label for="group_category_11">11号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(12,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="12" id="group_category_12"/>
-										<span class="lbl"><label for="group_category_12">12号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(13,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="13" id="group_category_13"/>
-										<span class="lbl"><label for="group_category_13">13号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(14,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="14" id="group_category_14"/>
-										<span class="lbl"><label for="group_category_14">14号</label></span>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(15,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="15" id="group_category_15"/>
-										<span class="lbl"><label for="group_category_15">15号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(16,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="16" id="group_category_16"/>
-										<span class="lbl"><label for="group_category_16">16号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(17,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="17" id="group_category_17"/>
-										<span class="lbl"><label for="group_category_17">17号</label></span>
-									</label>
-									<label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(18,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="18" id="group_category_18"/>
-										<span class="lbl"><label for="group_category_18">18号</label></span>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(19,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="19" id="group_category_19"/>
-										<span class="lbl"><label for="group_category_19">19号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(20,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="20" id="group_category_20"/>
-										<span class="lbl"><label for="group_category_20">20号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(21,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="21" id="group_category_21"/>
-										<span class="lbl"><label for="group_category_21">21号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(22,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="22" id="group_category_22"/>
-										<span class="lbl"><label for="group_category_22">22号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(23,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="23" id="group_category_23"/>
-										<span class="lbl"><label for="group_category_23">23号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(24,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="24" id="group_category_24"/>
-										<span class="lbl"><label for="group_category_24">24号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(25,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="25" id="group_category_25"/>
-										<span class="lbl"><label for="group_category_25">25号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(26,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="26" id="group_category_26"/>
-										<span class="lbl"><label for="group_category_26">26号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(27,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="27" id="group_category_27"/>
-										<span class="lbl"><label for="group_category_27">27号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(28,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="28" id="group_category_28"/>
-										<span class="lbl"><label for="group_category_28">28号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(29,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="29" id="group_category_29"/>
-										<span class="lbl"><label for="group_category_29">29号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(30,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="30" id="group_category_30"/>
-										<span class="lbl"><label for="group_category_30">30号</label></span>
-									</label>
-									</label><label style="margin-right:10px;min-width: 55px;">
-										<input class="ace" <if condition="in_array(31,$qrcode_person['record_time']) AND $qrcode_person.record_type eq 3">checked="checked" </if>  type="checkbox" name="record_time3[]" value="31" id="group_category_31"/>
-										<span class="lbl"><label for="group_category_31">31号</label></span>
-									</label>
-
-
-
-
-								</div>
-							</div>
-							<div id="basicinfo" class="tab-pane tab-contents active">
-								<div class="form-group">
-									<label class="col-sm-1"><label for="name">起止时间：</label></label>
-									<input class="Config_shop_start_time" readonly size="20" name="start_time" id="start_time" type="text" value="{pigcms{$qrcode_person.start_time}"/>&nbsp;&nbsp;至&nbsp;&nbsp;
-									<input class="Config_shop_start_time" readonly size="20" name="end_time" id="end_time" type="text" value="{pigcms{$qrcode_person.end_time}"/>
-								</div>
-							</div>
-
-							<div id="basicinfo" class="tab-pane tab-contents active ">
-								<div class="form-group">
-									<label class="col-sm-1"><label for="name">提醒时间：</label></label>
-									将在
-									<input class="Config_shop_start_time" size="20" readonly name="remind_time" id="record_name" type="text" value="{pigcms{$qrcode_person.remind_time}"/>&nbsp;&nbsp;发送模板消息给工作人员
-								</div>
-							</div>
+                            <div id="basicinfo" class="tab-pane active">
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="name">负责人手机号码：</label></label>
+                                    <input class="col-sm-2" size="20" name="user_phone" id="user_phone" type="text" value="{pigcms{$qrcode_person.user_phone}"/>
+                                </div>
+                            </div>
 
 							<div id="basicinfo" class="tab-pane active">
 								<div class="form-group">

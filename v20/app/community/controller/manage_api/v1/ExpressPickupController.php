@@ -26,7 +26,7 @@ class ExpressPickupController extends BaseController
         $villageId = $this->request->param('village_id','','int');
         $pickup_code = $this->request->param('pickup_code','');
         $recipient_phone = $this->request->param('recipient_phone','');
-        $status = $this->request->param('status','');
+//        $status = $this->request->param('status','');
         $location_id = $this->request->param('location_id','');
         $search_list = $this->request->param('search','');
         if(empty($villageId)){
@@ -41,7 +41,7 @@ class ExpressPickupController extends BaseController
 
         $pickup_code && $where[] = ['p.pickup_code', 'like', '%'.$pickup_code.'%'];
         $recipient_phone && $where[] = ['p.recipient_phone', 'like', '%'.$recipient_phone.'%'];
-        ( $status || $status === 0 ) && $where[] = ['p.status', '=', $status];
+//        ( $status || $status === 0 ) && $where[] = ['p.status', '=', $status];
         $location_id && $where[] = ['p.location_id', '=', $location_id];
         if( $search_list['keyword'] != '' ){
             $where[] = ['p.track_num|p.pickup_code|p.recipient_phone|p.recipient_name|e.location', 'like', '%'.trim( $search_list['keyword'] ).'%'];
@@ -58,9 +58,9 @@ class ExpressPickupController extends BaseController
         }
 //        var_dump($search_list['status']);die;
 
-        if( count( $search_list['status'] )  > 0 && !in_array( 'all', $search_list['status'] ) ){
+//        if( count( $search_list['status'] )  > 0 && !in_array( 'all', $search_list['status'] ) ){
             $where[] =  ['p.status', 'in', $search_list['status']];
-        }
+//        }
         $order_where = $search_list['sort'] != '' ? 'p.create_time '. $search_list['sort']  : 'p.id DESC';
 
         $field = 'p.*,e.location';
