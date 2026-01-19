@@ -141,11 +141,11 @@ class SmartQrCodeService
                 $data_v['cate_id'] = $data_v['id'];
                 $q_where = [];
                 $q_where[] = ['cate_id', '=', $data_v['id']];
-//                $qrcode_count = $dbWisdomQrcode->getCount($q_where);
-                $jsonStr = $data_v['bind_qrcode'];
-                $jsonStr = htmlspecialchars_decode($jsonStr, ENT_QUOTES);
-                $qrcodeList = json_decode($jsonStr, true);
-                $qrcode_count = count( $qrcodeList );
+                $qrcode_count = $dbWisdomQrcode->getCount($q_where);
+//                $jsonStr = $data_v['bind_qrcode'];
+//                $jsonStr = htmlspecialchars_decode($jsonStr, ENT_QUOTES);
+//                $qrcodeList = json_decode($jsonStr, true);
+//                $qrcode_count = count( $qrcodeList );
                 $data_v['total_num'] = $qrcode_count;
 
                 if (empty($data_v['start_time'])) {
@@ -154,12 +154,12 @@ class SmartQrCodeService
                 if (empty($data_v['end_time'])) {
                     $data_v['end_time'] = '23:59';
                 }
-//                $qrcode = $dbWisdomQrcode->getList($q_where, '*');
-//                $qrcode_num = [];
-//                foreach ($qrcode as $ks => $vs) {
-//                    $qrcode_num[] = $vs['id'];
-//                }
-                $qrcode_num = array_column( $qrcodeList, 'id' );
+                $qrcode = $dbWisdomQrcode->getList($q_where, '*');
+                $qrcode_num = [];
+                foreach ($qrcode as $ks => $vs) {
+                    $qrcode_num[] = $vs['id'];
+                }
+//                $qrcode_num = array_column( $qrcodeList, 'id' );
                 $dates = date('Y-m-d', time());
                 $start_time = strtotime($dates . ' ' . $data_v['start_time']);
                 $end_time = strtotime($dates . ' ' . $data_v['end_time']);
@@ -551,11 +551,11 @@ class SmartQrCodeService
             throw new \think\Exception("暂无需要巡检的点位,请联系管理员添加！");
         }
 
-        $bind_qrcode_list = json_decode(htmlspecialchars_decode( $cate_list['bind_qrcode'] ));
-        $qrcodeIds = array_column($bind_qrcode_list, 'id');
-        $q_where[] = ['id', 'in', $qrcodeIds];
+//        $bind_qrcode_list = json_decode(htmlspecialchars_decode( $cate_list['bind_qrcode'] ));
+//        $qrcodeIds = array_column($bind_qrcode_list, 'id');
+//        $q_where[] = ['id', 'in', $qrcodeIds];
 
-//        $q_where[] = ['cate_id', '=', $cate_id];
+        $q_where[] = ['cate_id', '=', $cate_id];
         $limit = 20;
         $qrcode_list = $dbWisdomQrcode->getList($q_where, true, 'num_id', $page, $limit)->toArray();
         $qrcode_count = $dbWisdomQrcode->getCount($q_where);
@@ -772,10 +772,11 @@ class SmartQrCodeService
 //        $distance = 100;
         $wisdom_qrcode['qr_distance'] = $distance;
 //        if(($wisdom_qrcode['distance'] > $distance && $distance != 0)){
-        if (($distances > $distance && $distance != 0)) {
-            $res['code'] = '-1';
-            throw new \think\Exception("您超出了工作范围");
-        }
+
+//        if (($distances > $distance && $distance != 0)) {
+//            $res['code'] = '-1';
+//            throw new \think\Exception("您超出了工作范围");
+//        }
 
         $village_user_bind[] = ['village_id', '=', $village_id];
         $village_user_bind[] = ['type', '=', 4];
@@ -933,6 +934,21 @@ class SmartQrCodeService
                 unset($v['status']);
                 unset($v['cate_id']);
             }
+
+            //手动添加一个点位的二维码
+            $field_config_fixed = [
+                'record_name'=>'异常情况',
+                'category_id'=>'9999',
+                'record_cate_field_config'=>[[
+                    'is_must' => 1,
+                    'key' => 'FIXED_POINT_IS_ABNORMALITY',
+                    'title' => '点位是否存在异常情况',
+                    'type' => 3,
+                    'use_field' => ["是", "否"],
+                    'value' => 0,
+                ]]
+            ];
+            $dataList[] = $field_config_fixed;
         }
         $arr = array();
         $arr['to_repair_btn'] = $to_repair_btn;
@@ -1406,9 +1422,9 @@ class SmartQrCodeService
         $distance = (new WisdomQrcodeCate())->getValues([
             ['id', '=', $wisdom_qrcode['cate_id']]
         ], 'distance');
-        if ($distance && intval($distance) > 0 && $distances > $distance) {
-            throw new \think\Exception('您超出了工作范围');
-        }
+//        if ($distance && intval($distance) > 0 && $distances > $distance) {
+//            throw new \think\Exception('您超出了工作范围');
+//        }
         return true;
     }
 

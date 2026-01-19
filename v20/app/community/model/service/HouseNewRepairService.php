@@ -35,6 +35,7 @@ use app\community\model\db\HouseVillageUserVacancy;
 use app\community\model\db\HouseVillage;
 use app\community\model\db\PropertyGroup;
 use app\community\model\db\HouseNewRepairCateGroupRelation;
+use app\community\model\db\WisdomQrcode;
 use app\community\model\db\workorder\HouseCommunityAbout;
 use app\community\model\db\workorder\HouseCommunityConfig;
 use app\community\model\db\workorder\HouseCommunityQualityBindRepairCate;
@@ -530,8 +531,10 @@ class HouseNewRepairService
                 if (isset($v['address_type']) && $v['address_type'] == 'public') {
                     $db_house_village_public_area = new HouseVillagePublicArea();
                     $public_info = $db_house_village_public_area->getOne(['public_area_id' => $v['public_id']], 'public_area_name');
-                    $address = $public_info['public_area_name'];
-                    $data[$k]['address_txt'] = $plugAddress . $address;
+                    if( $v['inspection_auto_add'] != 1 ){
+                        $address = $public_info['public_area_name'];
+                        $data[$k]['address_txt'] = $plugAddress . $address;
+                    }
                 }
                 $cate_name = '';
                 /*if(isset($v['type_id'])){
@@ -4268,6 +4271,9 @@ class HouseNewRepairService
             $info = [];
             $log_arr = $this->log_name;
             foreach ($log_list as $val) {
+                if( $order_detail['inspection_auto_add'] === 1 ){
+                    $val['log_content'] = json_decode(htmlspecialchars_decode($val['log_content']), true);
+                }
                 if (isset($val['log_name']) && $val['log_name']) {
                     $log_name = $val['log_name'];
                     $log_id = $val['log_id'];
@@ -4419,7 +4425,8 @@ class HouseNewRepairService
                     $info[] = [
                         'title' => $title,
                         'log_time' => isset($val['add_time_txt']) ? $val['add_time_txt'] : '',
-                        'tip' => $tip
+                        'tip' => $tip,
+                        'inspection_auto_add' => $order_detail['inspection_auto_add']
                     ];
                 }
             }
@@ -4582,6 +4589,9 @@ class HouseNewRepairService
         $look_contact = 0;
         $contact_content = '';
         if ($orderInfo) {
+            if( $orderInfo['inspection_auto_add'] === 1 ){
+                $orderInfo['order_content'] = json_decode( htmlspecialchars_decode($orderInfo['order_content']) ,true);
+            }
             $showTab = 1;
             $now_handle_village_id = isset($orderInfo['now_handle_village_id']) ? intval($orderInfo['now_handle_village_id']) : 0;
             $order_village_id = isset($orderInfo['village_id']) ? intval($orderInfo['village_id']) : 0;
@@ -4684,6 +4694,9 @@ class HouseNewRepairService
             $record = $db_house_new_repair_works_order_log->getOne(['order_id' => $orderInfo['order_id']], 'log_id,log_operator,operator_id,log_phone,log_name,add_time,log_imgs,log_content');
             if ($record) {
                 $record = $record->toArray();
+                if( $orderInfo['inspection_auto_add'] === 1 ){
+                    $record['log_content'] = json_decode( htmlspecialchars_decode($record['log_content']) ,true);
+                }
                 if ($record['log_imgs']) {
                     if (strpos($record['log_imgs'], ';') > 0) {
                         $record['log_imgs'] = explode(';', $record['log_imgs']);
@@ -4799,8 +4812,14 @@ class HouseNewRepairService
             }
             if ($orderInfo['address_type'] == 'public') {
                 $db_house_village_public_area = new HouseVillagePublicArea();
+                $db_wisdom_qrcode = new WisdomQrcode();
                 $public_info = $db_house_village_public_area->getOne(['public_area_id' => $orderInfo['public_id']], 'public_area_name');
-                $address = $public_info['public_area_name'];
+                if( $orderInfo['inspection_auto_add'] == 1 ){
+                    $qrcodeInfo = $db_wisdom_qrcode->getFind(['id'=>$orderInfo['address_id']]);
+                    $address = $qrcodeInfo ? $qrcodeInfo['name'] : '';
+                }else{
+                    $address = $public_info['public_area_name'];
+                }
             }
             if ($address != '无' || !$orderInfo['address_txt']) {
                 $orderInfo['address_txt'] = $plugAddress . $address;
@@ -4994,6 +5013,15 @@ class HouseNewRepairService
                 "videos" => []
             ];
             $order_arr[] = [
+                "title" => "工单类目",
+                "type" => 1,
+                "content" => $subject_name,
+                "content_color" => "",
+                "children" => [],
+                "imgs" => [],
+                "videos" => []
+            ];
+            $order_arr[] = [
                 "title" => "工单分类",
                 "type" => 1,
                 "content" => $orderInfo['cate_name'],
@@ -5026,7 +5054,7 @@ class HouseNewRepairService
             $order_arr[] = [
                 "title" => "补充内容",
                 "type" => 1,
-                "content" => $orderInfo['order_content'],
+                "content" => $orderInfo['inspection_auto_add'] === 1 ? '' :$orderInfo['order_content'],
                 "content_color" => "",
                 "children" => [],
                 "imgs" => [],

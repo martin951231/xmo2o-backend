@@ -6,6 +6,12 @@
 
 namespace app\community\controller\manage_api\v1;
 use app\common\model\service\image\ImageService;
+use app\community\model\db\WisdomQrcodeRecordLog;
+use app\community\model\service\HouseNewRepairService;
+use app\community\model\service\HouseWorkerService;
+use app\community\model\service\ManageAppLoginService;
+use app\community\model\service\RepairCateService;
+use app\community\model\service\WisdowQrcodeService;
 use app\community\model\service\HouseVillageService;
 use file_handle\FileHandle;
 use think\Image;
@@ -543,10 +549,21 @@ class SmartQrCodeController extends BaseController
             }
 //        }
         $post = $this->request->param();
-    
         $serviceSmartQrCode = new SmartQrCodeService();
+        $serviceWisdowQrcode = new WisdowQrcodeService();
+
         try{
             $insert_id = $serviceSmartQrCode->postRecord($village_id,$wid,$phone,$cate_id,$qrcode_id,$post);
+            $record_cate_field_config = $post['test'][count($post['test'])-1]['record_cate_field_config'];
+            $record_cate_field_config_arr = array_combine( array_column($record_cate_field_config,'key'),array_column($record_cate_field_config,'value') );
+            //如果存在异常状态, 则直接提交工单
+            if( isset( $record_cate_field_config_arr['FIXED_POINT_IS_ABNORMALITY'] ) && $record_cate_field_config_arr['FIXED_POINT_IS_ABNORMALITY'] == '是' ){
+                $log_where = ['id'=>$insert_id];
+                $log_data = ['is_abnormal'=>1];
+                $serviceWisdowQrcode->updateWisdomQrcodeRecordLog($log_where,$log_data);
+                $post['inspection_id'] = $insert_id;
+                $this->inspectionOrderAdd($post,$info);
+            }
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }
@@ -556,6 +573,68 @@ class SmartQrCodeController extends BaseController
             return api_output_error(-1, '添加记录失败,请重试!');
         }
 
+    }
+
+    /**
+     * Notes: 提交工单
+     * @author: wanzy
+     * @date_time: 2021/8/17 10:27
+     */
+    public function inspectionOrderAdd($post,$userinfo)
+    {
+        $village_id = $post['village_id'];
+        $db_house_new_repair_works_order_service = new WisdowQrcodeService();
+        $wisdomQrcodeRecordLog = new WisdomQrcodeRecordLog();
+        $where['village_id'] = $village_id;
+        $where['id'] = $post['cate_id'];
+        $QrcodeCate = $db_house_new_repair_works_order_service->getWisdomQrcodeCateOne($where);
+        $QrcodeInfo = $db_house_new_repair_works_order_service->getQrcodeOne(['id'=>$post['qrcode_id']]);
+
+        $workorder_category_id = $QrcodeCate ? $QrcodeCate['workorder_category_id'] : 0;
+
+
+        $order_content = htmlspecialchars( json_encode( $post['test'], true) );
+
+        $repair_cate_service = new RepairCateService();
+        $userinfoD = (new HouseWorkerService())->getOneWorker(['village_id'=>$village_id,'phone'=>$userinfo['user']['login_phone'],'name'=>$userinfo['user']['login_name']], 'wid,name,type,phone');
+        $data = [
+            'village_id' => $village_id,
+            'category_id' => 0,
+            'type_id' => 0,
+            'cat_fid' => $workorder_category_id,
+            'cat_id' => 0,
+            'address_type' => 'public',
+            'address_id' => $QrcodeInfo ? $QrcodeInfo['id'] : 0 ,
+            'address_text_name' => $QrcodeInfo ? $QrcodeInfo['name'] : '',
+            'label_txt' => '',
+            'order_imgs' => '',
+            'order_type' => 4,
+            'order_content' => $order_content?$order_content:'',
+            'worker_type' => 0,
+            'worker_id' => $userinfoD?$userinfoD['wid']:0,
+            'login_role' => $userinfo['login_role'],
+            'phone' => $userinfo['user']['login_phone'],
+            'name' => $userinfo['user']['login_name'],
+            'event_status' => 10,
+            'wisdomqrcode_id' => $post['qrcode_id'],
+            'inspection_id' => $post['inspection_id'],
+            'inspection_auto_add' => 1,
+        ];
+        try{
+            $info = $repair_cate_service->addWorksOrder($data,true);
+            if( empty($info['order_id']) ){
+                return api_output_error(-1, '工单创建失败,请手动创建工单');
+            }else{
+                $work_order_id = $info['order_id'];
+                $record_log_where['id'] = $post['inspection_id'];
+                $wisdomQrcodeRecordLog->updateRecordData($record_log_where,['work_order_id'=>$work_order_id]);
+            }
+
+        }catch (\Exception $e){
+            fdump_api(['file' => $e->getFile(), 'code' => $e->getCode(), 'mes' => $e->getMessage(), 'line' => $e->getLine()], '$tryCatchErrLog', 1);
+            throw new \think\Exception('自动工单创建失败,请手动创建工单');
+            return api_output_error(-1, $e->getMessage());
+        }
     }
 
     /**

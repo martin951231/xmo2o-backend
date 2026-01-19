@@ -1,5 +1,7 @@
 <?php
 
+use app\community\model\service\RepairCateService;
+
 /**
  * Created by PhpStorm.
  * User: 郭先森
@@ -1116,13 +1118,32 @@ HTML;
         return $finalResult;
     }
 
+    /**
+     * 工单类目-类别列表
+     * @author wanzy
+     * @date_time 2021/08/13 17:07
+     */
+    public function getSubject()
+    {
+        $village_id = $this->village_id;
+        $where['village_id'] = $village_id;
+        $where['status'] = 1;
+        $where['parent_id'] = 0;
+        $field = 'cate_name as subject_name,id as workorder_id,color';
+        try{
+            $data = D('house_new_repair_cate')->where($where)->field($field)->select();
+            return $data;
+        }catch (\Exception $e){
+            return [];
+        }
+    }
+
 
     public function cate_index()
     {
         if (!in_array(426, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-
         $where['village_id'] = $this->village_id;
         $count_user = D('Wisdom_qrcode_cate')->where($where)->count();
         import('@.ORG.merchant_page');
@@ -1151,6 +1172,7 @@ HTML;
         if (!in_array(541, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
+        $wisdomQrcodeDB = D('Wisdom_qrcode');
         if (IS_POST) {
             if (!$_POST['cate_name']) {
                 $this->error('名称不能为空!');
@@ -1161,6 +1183,7 @@ HTML;
             $data['village_id'] = $this->village_id;
             $data['type'] = $_POST['type'] ?: 1;
             $data['record_type'] = $_POST['record_type'];
+            $data['workorder_category_id'] = $_POST['workorderCategoryId'];
             // 初始化结果数组
             $day_times = [];
 
@@ -1198,6 +1221,9 @@ HTML;
 
             $inset_id = D('Wisdom_qrcode_cate')->data($data)->add();
             if ($inset_id) {
+                $qrcodeList = array_column( json_decode(htmlspecialchars_decode($_POST['qrcodeCheckList'] ?? '[]'), true) ,'id');
+                $qrcodeWhere['id'] = [' in ',$qrcodeList];
+                $wisdomQrcodeDB->where($qrcodeWhere)->data(['cate_id'=> $inset_id])->save();
                 $this->success('添加成功！', U('cate_index'));
             } else {
                 $this->error('添加失败');
@@ -1218,11 +1244,13 @@ HTML;
                     $checkboxList[$v['category_id']]['data'][] = [
                         'id' => $v['id'],
                         'label' => $v['name'],
+                        'isChecked' => $v['cate_id'] != 0? true : false,
                     ];
                 }
             }
             sort($checkboxList);
-
+            $workOrderList = $this->getSubject();
+            $this->assign('workorderCategoryList', $workOrderList);
             $this->assign('qrcodeList', json_encode($checkboxList, true));
             $this->display();
         }
@@ -1233,15 +1261,20 @@ HTML;
         if (!in_array(542, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
+        $wisdomQrcodeDB = D('Wisdom_qrcode');
+        $wisdomQrcodeCateMapDB = D('Wisdom_qrcode_cate_map');
+        $wisdomQrcodeCateDB = D('Wisdom_qrcode_cate');
         if (IS_POST) {
+            if( empty($_POST['qrcodeCheckList']) ){
+                $this->error('请选择二维码');
+            }
             $id = $_POST['id'];
             $data['distance'] = $_POST['distance'] ? $_POST['distance'] : 0;
             $data['cate_name'] = $_POST['cate_name'];
             $data['record_type'] = $_POST['record_type'];
-
+            $data['workorder_category_id'] = $_POST['workorderCategoryId'];
             // 初始化结果数组
             $day_times = [];
-
             // 获取开始时间和结束时间的数组
             $startTimes = $_POST['day_start_time'] ?? [];
             $endTimes = $_POST['day_end_time'] ?? [];
@@ -1276,17 +1309,28 @@ HTML;
             $data['robot_code'] = '1';
             $data['task_instance_id'] = '1';
             $data['task_type'] = '1';
-            $data['bind_qrcode'] = $_POST['qrcodeCheckList'];
+//            $data['bind_qrcode'] = $_POST['qrcodeCheckList'];
 
-            $result = D('Wisdom_qrcode_cate')->where(array('id' => $id))->data($data)->save();
+            $result = $wisdomQrcodeCateDB->where(array('id' => $id))->data($data)->save();
             if ($result !== false) {
+                //先把当前cate_id原有的qrcode都清空
+                $wisdomQrcodeDB->where(['cate_id'=> $id])->data(['cate_id'=>null])->save();
+                $qrcodeList = array_column( json_decode(htmlspecialchars_decode($_POST['qrcodeCheckList'] ?? '[]'), true) ,'id');
+                $qrcodeWhere['id'] = [' in ',$qrcodeList];
+                $wisdomQrcodeDB->where($qrcodeWhere)->data(['cate_id'=> $id])->save();
                 $this->success('修改成功！', U('cate_index'));
             } else {
                 $this->error('修改失败！请重试。');
             }
         } else {
             $id = $_GET['id'];
-            $cate = D('Wisdom_qrcode_cate')->where(array('id' => $id))->find();
+            $cate = $wisdomQrcodeCateDB->where(array('id' => $id))->find();
+            $currentCateQrcode = D('Wisdom_qrcode as wq')
+                ->join('pigcms_wisdom_qrcode_category as wqc ON wq.category_id = wqc.id')
+                ->where(array('wq.cate_id' => $id))
+                ->field('wq.id as id,wq.name as label,wqc.id as category_id,wqc.name as category_name,wq.cate_id ')
+                ->select();
+            $cate['bind_qrcode'] = json_encode($currentCateQrcode, true);
             $cate['record_time'] = explode(',', $cate['record_time']);
 //            if( $cate['record_type'] == 1 && !empty($cate['record_time']) ){
 //                $result = ['day_start_time' => [], 'day_end_time' => []];
@@ -1312,12 +1356,13 @@ HTML;
                     $checkboxList[$v['category_id']]['data'][] = [
                         'id' => $v['id'],
                         'label' => $v['name'],
+                        'isChecked' => $v['cate_id'] != 0 && $v['cate_id'] != $id ? true : false,
                     ];
                 }
             }
-//            echo "<pre>";
             sort($checkboxList);
-//            var_dump($checkboxList);die;
+            $workOrderList = $this->getSubject();
+            $this->assign('workorderCategoryList', $workOrderList);
             $this->assign('qrcodeList', json_encode($checkboxList, true));
             $this->assign('cate', $cate);
             $this->display();
@@ -1614,6 +1659,90 @@ HTML;
         $this->assign('pagebar', $p->show());
         $this->assign('village_id', $this->village_id);
         $this->display();
+    }
+
+    //异常管理
+    public function qrcode_abnormality_index()
+    {
+        if (!in_array(545, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+
+        $where['qrl.village_id'] = $this->village_id;
+        $where['qrl.is_abnormal'] = 1;
+        if( isset($_GET['categoryId']) && !empty($_GET['categoryId']) && $_GET['categoryId'] != 0 ){
+            $where['wq.category_id'] = $_GET['categoryId'];
+            $this->assign('searchCategoryId', $_GET['categoryId']);
+        }else{
+            $this->assign('searchCategoryId', 0);
+        }
+        import('@.ORG.merchant_page');
+        $field = 'qrl.*,wqc.cate_name as plan_name,whw.name as worker_name,whw.phone as phone,pg.name as department_name,wq.name as qrcode_name,wqcg.name as qrcode_category_name';
+        $qrcode_record_log_num = M('wisdom_qrcode_record_log as qrl')
+            ->join('pigcms_wisdom_qrcode_cate as wqc ON qrl.cate_id = wqc.id')
+            ->join( 'pigcms_house_worker as whw ON qrl.uid = whw.wid' )
+            ->join( 'pigcms_property_group as pg ON pg.id = whw.department_id' )
+            ->join( 'pigcms_wisdom_qrcode as wq ON wq.id = qrl.qrcode_id' )
+            ->join( 'pigcms_wisdom_qrcode_category as wqcg ON wq.category_id = wqcg.id' )
+            ->where($where)
+            ->field($field)
+            ->count();
+        $p = new Page($qrcode_record_log_num, 20, 'page');
+        $qrcode_record_log = M('wisdom_qrcode_record_log as qrl')
+            ->join('pigcms_wisdom_qrcode_cate as wqc ON qrl.cate_id = wqc.id')
+            ->join( 'pigcms_house_worker as whw ON qrl.uid = whw.wid' )
+            ->join( 'pigcms_property_group as pg ON pg.id = whw.department_id' )
+            ->join( 'pigcms_wisdom_qrcode as wq ON wq.id = qrl.qrcode_id' )
+            ->join( 'pigcms_wisdom_qrcode_category as wqcg ON wq.category_id = wqcg.id' )
+            ->where($where)
+            ->limit($p->firstRow . ',' . $p->listRows)
+            ->field($field)
+            ->select();
+        $count_num = 0;
+        $abnormality_list = array();
+        foreach( $qrcode_record_log as &$log ){
+            if( empty($log['entication_field']) ){
+                continue;
+            }
+            $entication_field = unserialize( $log['entication_field']);
+            $log['entication_field_arr'] = $entication_field;
+
+            if( empty($entication_field['test']) ){
+                continue;
+            }
+            $works_order_str = implode( ',',array_slice( array_column($log['entication_field_arr']['test'], 'record_name') ,0,3) );
+            $log['works_order_str'] = $works_order_str;
+            foreach( $entication_field['test'] as $test ){
+                if( $this->checkHasFixedPointAbnormality($test['record_cate_field_config']) ){
+                    $abnormality_list[] = $log;
+                    $count_num++;
+                }
+            }
+        }
+
+        $category_list = M('wisdom_qrcode_category')->where(array('village_id' => $this->village_id))->select();
+        $this->assign('categoryList', $category_list);
+
+        $this->assign('pagebar', $p->show());
+        $this->assign('dataList', $abnormality_list);
+
+        $this->assign('village_id', $this->village_id);
+        $this->display();
+    }
+
+    function checkHasFixedPointAbnormality(array $arr): bool
+    {
+        // 遍历一维索引数组中的每个关联数组元素
+        foreach ($arr as $item) {
+            // 1. 判断当前元素是否包含指定key 2. 判断对应value是否为"是"（严格匹配）
+            if (isset($item['key']) && $item['key'] === 'FIXED_POINT_IS_ABNORMALITY'
+                && isset($item['value']) && $item['value'] === '是') {
+                return true; // 找到符合条件的元素，直接返回true
+            }
+        }
+
+        // 遍历结束未找到符合条件的元素，返回false
+        return false;
     }
 
     public function category_add()
@@ -3787,4 +3916,770 @@ HTML;
             $this->display();
         }
     }
+    public function get_inspection_detail()
+    {
+        if (!in_array(548, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        $cate_id = $_POST['cateId'] ? $_POST['cateId'] : '';
+        $fulldate = $_POST['fulldate'] ? $_POST['fulldate'] : '';
+        $type = $_POST['type'] ? $_POST['type'] : 'day';
+        if( empty($cate_id) || empty($fulldate) ){
+            $this->error('缺少查询参数, 请重试');
+        }
+        $where['wqc.village_id'] = $this->village_id;
+        $where['wqc.id'] = $cate_id;
+        $cateInfo = D('Wisdom_qrcode_cate as wqc')
+            ->join( 'pigcms_wisdom_qrcode as wq ON wqc.id = wq.cate_id' )
+            ->field("wqc.*,GROUP_CONCAT(wq.id SEPARATOR ',') as qrcode_ids,GROUP_CONCAT(wq.name SEPARATOR ',') as qrcode_names")
+            ->where($where)
+            ->group('wqc.id')
+//            ->buildSql();
+            ->select();
+
+        foreach ($cateInfo as $item) {
+            $item['qrcode_list'] = array();
+            // 拆分聚合的id和name
+            $ids = explode(',', $item['qrcode_ids']);
+            $names = explode(',', $item['qrcode_names']);
+            foreach ($ids as $k => $id) {
+                $item['qrcode_list'][] = array(
+                    'qrcode_id' => $id,
+                    'qrcode_name' => $names[$k] ?? ''
+                );
+            }
+            unset($item['qrcode_ids'], $item['qrcode_names']);
+            $finalData = $item;
+        }
+
+        $qrcodeRecordLogDB = D('Wisdom_qrcode_record_log as wqr');
+
+        $startTime = null;
+        $endTime = null;
+        if( $type == 'day' ){
+            $startTime = strtotime($fulldate . ' 00:00:00');
+            $endTime = strtotime($fulldate . ' 23:59:59');
+        }else if( $type == 'week' ){
+            $startTime = strtotime($fulldate[0] . ' 00:00:00');
+            $endTime = strtotime($fulldate[1] . ' 23:59:59');
+        }else if( $type == 'month' ){
+            $startTime = strtotime($fulldate.'-01' . ' 00:00:00');
+            $endTime = strtotime($this->getLastDayOfMonth($fulldate) . ' 23:59:59');
+        }
+
+        $logWhere['wqr.cate_id'] = $finalData['id'];
+        $logWhere['wqr.add_time'] = ['between', [$startTime, $endTime]];
+        foreach( $finalData['qrcode_list'] as $k => &$val ){
+            $logWhere['wqr.qrcode_id'] = $val['qrcode_id'];
+            $logInfo = $qrcodeRecordLogDB
+                ->join('pigcms_house_worker as hw ON wqr.uid = hw.wid')
+                ->field('wqr.*,hw.name,hw.phone')
+                ->where($logWhere)
+                ->select();
+            $parsedData = array_map(function($item) {
+                // 1. 反序列化entication_field（处理空值/异常）
+                $enticationField = '';
+                if (!empty($item['entication_field']) && is_string($item['entication_field'])) {
+                    // 修复序列化字符串可能的换行/空格问题（避免反序列化失败）
+                    $enticationField = unserialize($item['entication_field']); // @抑制非致命错误
+                }
+
+                // 2. 将解析后的数据添加到原数组，保留原字段（也可unset($item['entication_field'])删除原字段）
+                $item['entication_field_list'] = $enticationField ?: [];
+                return $item;
+            }, $logInfo);
+            $val['log_list'] = $parsedData;
+        }
+        unset($val);
+        $arr = [
+            'code'=> 0,
+            'data'=> $finalData,
+        ];
+        exit(json_encode($arr));
+    }
+    /**
+     * 修复序列化字符串的长度错误，解决unserialize返回false的问题
+     * @param string $str 原始序列化字符串
+     * @return array|false 解析后的数组
+     */
+    function safeUnserialize($str) {
+        // 步骤1：清理换行/回车/不可见字符
+        $str = str_replace(["\r", "\n", "\t"], '', $str);
+        // 步骤2：正则匹配所有 s:长度:"值" 格式，重新计算长度
+        $str = preg_replace_callback(
+            '/s:(\d+):"(.*?)";/s', // s:长度:"值"; 正则（s修饰符匹配换行）
+            function($matches) {
+                $realLen = strlen($matches[2]); // 计算值的实际字节长度
+                return "s:{$realLen}:\"{$matches[2]}\";"; // 替换为正确长度
+            },
+            $str
+        );
+        // 步骤3：反序列化（抑制警告，增加容错）
+        $result = @unserialize($str);
+        return $result;
+    }
+    public function inspection_statistics_index()
+    {
+        if (!in_array(548, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        $count_user = D('Wisdom_qrcode_cate')->where(['village_id'=>$this->village_id])->count();
+        import('@.ORG.merchant_page');
+        $p = new Page($count_user, 15, 'page');
+
+        $type = $_GET['type'] ? $_GET['type'] : 'day' ;
+        $startDate = $_GET['startDate'] ? $_GET['startDate'] : '';
+        $endDate = $_GET['endDate'] ? $_GET['endDate'] : '';
+
+        $currentHeaderList = $this->getHeaderList($startDate, $endDate, $type);
+        $where['village_id'] = $this->village_id;
+        //区分任务类型
+        switch( $type )
+        {
+            case 'day': $where['record_type'] = 1;break;
+            case 'week': $where['record_type'] = 2;break;
+            case 'month': $where['record_type'] = 3;break;
+            default : $where['record_type'] = 1;break;
+        }
+
+        $qrcodeDb = D('Wisdom_qrcode');
+        $qrcodeCateDb = D('Wisdom_qrcode_cate');
+        $qrcodeRecordLogDb = D('Wisdom_qrcode_record_log');
+        $cateList = $qrcodeCateDb->where($where)->limit($p->firstRow . ','. $p->listRows)->select();
+        $cateList = is_array($cateList) ? array_map(function($cateItem) use ($currentHeaderList) {
+            // 给每个元素添加date_list键
+            $cateItem['date_list'] = $currentHeaderList;
+            return $cateItem;
+        }, $cateList) : [];
+        foreach($cateList as $k => &$v){
+            $v['complete_rate'] = 0;
+            $currentCateQrcodeList = $qrcodeDb->where(['cate_id' => $v['id']])->select();
+            if( empty($currentCateQrcodeList) ){
+                continue;
+            }
+            $qrcodeIds = array_column( $currentCateQrcodeList,'id' );
+            //循环查询当前日期是否完成
+            $where['qrcode_id'] = ['in',$qrcodeIds];
+            $where['cate_id'] = ['in',$v['id']];
+
+            foreach( $v['date_list'] as &$vv ){
+                if( $type == 'day' ){
+                    //查看当前天是否区分了时间段,如果是,则查看每个时间段是否巡检,所有时间段都有巡检记录才为巡检完成, 如果没有设置时间段, 那只要当前天有记录就算完成
+                    if( empty( $v['record_time'] ) ){
+                        $startTime = strtotime($vv['fullDate'] . ' 00:00:00');
+                        $endTime = strtotime($vv['fullDate'] . ' 23:59:59');
+                        $where['add_time'] = ['between', [$startTime, $endTime]];
+                        $num = $qrcodeRecordLogDb->where($where)->count();
+                        $vv['isInspection'] = $num > 0 ? 1 : 2;//1为完成, 2为未完成
+                    }else{
+                        $day_range = explode( ',',$v['record_time']);
+                        //根据数组创建sql, 查看是否每个时间段都有巡检记录
+                        $vv['isInspection'] = 1;
+                        foreach($day_range as $dayV){
+                            $dayV = explode('-', $dayV);
+                            $startTime = strtotime($vv['fullDate'] . $dayV[0]);
+                            $endTime = strtotime($vv['fullDate'] . $dayV[1]);
+                            $where['add_time'] = ['between', [$startTime, $endTime]];
+                            $num = $qrcodeRecordLogDb->where($where)->count();
+                            if( $num <= 0 ){
+                                $vv['isInspection'] = 2;
+                                break;
+                            }
+                        }
+                    }
+                }else if( $type == 'week' ){
+                    //周任务查看是哪天需要巡检, 每天的那个时间段需要巡检,必须全部完成才算完成, 否则当前任务未完成
+                    //如果数据为空, 那默认为本周有一次巡检就算完成
+                    if( empty( $v['record_time'] ) ){
+                        $startTime = strtotime($vv['weekRangeArr'][0] . ' 00:00:00');
+                        $endTime = strtotime($vv['weekRangeArr'][1] . ' 23:59:59');
+                        $where['add_time'] = ['between', [$startTime, $endTime]];
+                        $num = $qrcodeRecordLogDb->where($where)->count();
+                        $vv['isInspection'] = $num > 0 ? 1 : 2;//1为完成, 2为未完成
+                    }else{
+                        $day_range = explode( ',',$v['record_time']);
+                        $vv['isInspection'] = 1;
+                        foreach($day_range as $rangeItem){
+                            $cur_day = $this->findDateByWeekday($vv['weekRangeArr'],$rangeItem);
+                            $day_start_time = strtotime($cur_day . ' ' . $v['start_time']);
+                            $day_end_time = strtotime($cur_day . ' ' . $v['end_time']);
+                            $where['add_time'] = ['between', [$day_start_time, $day_end_time]];
+                            $num = $qrcodeRecordLogDb->where($where)->count();
+                            if( $num <= 0 ){
+                                $vv['isInspection'] = 2;
+                                break;
+                            }
+                        }
+                    }
+                }else if( $type == 'month' ){
+                    //月任务查看是哪天需要巡检, 每天的那个时间段需要巡检,必须全部完成才算完成, 否则当前任务未完成
+                    //如果数据为空, 那默认为本月有一次巡检就算完成
+                    if( empty( $v['record_time'] ) ){
+                        $fullData = $this->getLastDayOfMonth($vv['fullMonth']);
+                        $startTime = strtotime($vv['fullMonth'].'-01' . ' 00:00:00');
+                        $endTime = strtotime($fullData . ' 23:59:59');
+                        $where['add_time'] = ['between', [$startTime, $endTime]];
+                        $num = $qrcodeRecordLogDb->where($where)->count();
+                        $vv['isInspection'] = $num > 0 ? 1 : 2;//1为完成, 2为未完成
+                    }else{
+                        $day_range = explode( ',',$v['record_time']);
+                        $vv['isInspection'] = 1;
+                        foreach($day_range as $rangeItem){
+                            $day_start_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['start_time']);
+                            $day_end_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['end_time']);
+                            $where['add_time'] = ['between', [$day_start_time, $day_end_time]];
+                            $num = $qrcodeRecordLogDb->where($where)->count();
+                            if( $num <= 0 ){
+                                $vv['isInspection'] = 2;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //添加完成率
+            $total_num = count($v['date_list']);
+            $inspectionArr = array_column($v['date_list'], 'isInspection', null);
+            // 补全未定义的字段值为0（避免sum时漏算）
+            $inspectionArr = array_map(function($val) {
+                return ($val === 1 || $val === '1') ? 1 : 0;
+            }, $inspectionArr);
+            // 求和（1+0+1=2）
+            $inspectin_num = array_sum($inspectionArr);
+            $v['inspectin_num'] = $inspectin_num;
+            $v['total_num'] = $total_num;
+            $v['inspectin_rate'] = round( ($inspectin_num/$total_num) * 100,2 );
+            unset($vv);
+        }
+
+        unset($v);
+        $this->assign('static_path',$this->static_path);
+        $this->assign('pagebar', $p->show());
+        $this->assign('currentActive', $type);
+        $this->assign('startDate', $startDate);
+        $this->assign('endDate', $endDate);
+        $this->assign('currentActive', $type);
+        $this->assign('dataList', $cateList);
+        $this->assign('dataListNum', count($cateList));
+        $this->assign('currentHeaderList', $currentHeaderList);
+        $this->display();
+
+    }
+    /**
+     * 从「年-月」格式字符串获取当月最后一天日期
+     * @param string $yearMonth 格式：Y-m（如2025-02）
+     * @return string 最后一天日期，格式：Y-m-d（如2025-02-28）
+     */
+    function getLastDayOfMonth($yearMonth) {
+        // 1. 拼接成「年-月-01」格式，确保DateTime能解析
+        $dateStr = $yearMonth . '-01';
+        // 2. 创建DateTime对象
+        $date = DateTime::createFromFormat('Y-m-d', $dateStr);
+        if (!$date) {
+            return ''; // 格式错误返回空
+        }
+        // 3. 调整为当月最后一天
+        $date->modify('last day of this month');
+        // 4. 返回格式化后的日期
+        return $date->format('Y-m-d');
+    }
+
+    /**
+     * 从时间区间中找出指定星期几的日期
+     * @param array $weekRangeArr 时间区间数组 [起始日期, 结束日期]，格式：Y-m-d
+     * @param int $weekNum 目标星期数（0=周日，1=周一，2=周二...6=周六）
+     * @return array 符合条件的日期列表（格式：Y-m-d）
+     */
+    function findDateByWeekday($weekRangeArr, $weekNum) {
+        // 1. 校验入参（避免报错）
+        if (count($weekRangeArr) != 2) {
+            return []; // 区间数组必须是2个元素
+        }
+        $startDateStr = $weekRangeArr[0];
+        $endDateStr = $weekRangeArr[1];
+
+        // 2. 转换为DateTime对象（方便日期遍历）
+        $startDate = DateTime::createFromFormat('Y-m-d', $startDateStr);
+        $endDate = DateTime::createFromFormat('Y-m-d', $endDateStr);
+        if (!$startDate || !$endDate) {
+            return []; // 日期格式错误
+        }
+
+        // 3. 遍历区间内的所有日期，筛选目标星期
+        $targetDates = null;
+        $currentDate = clone $startDate;
+
+        while ($currentDate <= $endDate) {
+            // 获取当前日期的星期数（0-6）
+            $currentWeekNum = (int)$currentDate->format('w');
+
+            // 匹配目标星期数，加入结果数组
+            if ($currentWeekNum == $weekNum) {
+                $targetDates = $currentDate->format('Y-m-d');
+            }
+
+            // 日期+1天，继续遍历
+            $currentDate->modify('+1 day');
+        }
+
+        return $targetDates;
+    }
+    function getHeaderList($startDateStr = null, $endDateStr = null, $type)
+    {
+        // 基准当前日期（所有推算的结束日期都不能超过当天）
+        $today = new DateTime();
+        $today->setTime(0, 0, 0); // 重置时间为当天0点，避免时分秒干扰
+
+        // 步骤1：根据传入的参数，计算最终的开始/结束日期
+        try {
+            $startDate = null;
+            $endDate = null;
+
+            // 情况1：同时传了开始和结束时间
+            if ($startDateStr && $endDateStr) {
+                $startDate = new DateTime($startDateStr);
+                $endDate = new DateTime($endDateStr);
+                // 确保结束时间不超过当天
+                if ($endDate > $today) {
+                    $endDate = clone $today;
+                }
+                // 确保开始时间 ≤ 结束时间
+                if ($startDate > $endDate) {
+                    throw new Exception('开始时间不能晚于结束时间（且结束时间不超过当天）');
+                }
+            }
+            // 情况2：只传了开始时间，没传结束时间
+            elseif ($startDateStr && !$endDateStr) {
+                $startDate = new DateTime($startDateStr);
+                // 根据类型推算结束时间，且不超过当天
+                switch ($type) {
+                    case 'day':
+                        $endDate = clone $startDate;
+                        $endDate->modify('+1 month'); // 日：往后推1个月
+                        break;
+                    case 'week':
+                        $endDate = clone $startDate;
+                        $endDate->modify('+2 months'); // 周：往后推2个月
+                        break;
+                    case 'month':
+                        $endDate = clone $startDate;
+                        $endDate->modify('+1 year'); // 月：往后推1年
+                        break;
+                    default:
+                        $endDate = clone $today;
+                }
+                // 最终结束时间不能超过当天
+                if ($endDate > $today) {
+                    $endDate = clone $today;
+                }
+            }
+            // 情况3：只传了结束时间，没传开始时间
+            elseif (!$startDateStr && $endDateStr) {
+                $endDate = new DateTime($endDateStr);
+                // 确保结束时间不超过当天
+                if ($endDate > $today) {
+                    $endDate = clone $today;
+                }
+                // 根据类型推算开始时间
+                switch ($type) {
+                    case 'day':
+                        $startDate = clone $endDate;
+                        $startDate->modify('-1 month'); // 日：往前推1个月
+                        break;
+                    case 'week':
+                        $startDate = clone $endDate;
+                        $startDate->modify('-2 weeks'); // 周：往前推2周
+                        break;
+                    case 'month':
+                        $startDate = clone $endDate;
+                        $startDate->modify('-1 year'); // 月：往前推1年
+                        break;
+                    default:
+                        $startDate = clone $endDate;
+                        $startDate->modify('-1 month');
+                }
+                // 确保开始时间不早于结束时间（极端情况：结束时间是当天，推算后开始时间可能更早，无需额外限制）
+            }
+            // 情况4：都没传（按补充需求调整兜底逻辑）
+            else {
+                $endDate = clone $today; // 结束时间固定为当天
+                switch ($type) {
+                    case 'day':
+                        $startDate = clone $today;
+                        $startDate->modify('-1 month'); // 日：当前时间往前推1个月
+                        break;
+                    case 'week':
+                        $startDate = clone $today;
+                        $startDate->modify('-2 months'); // 周：当前时间往前推2个月
+                        break;
+                    case 'month':
+                        $startDate = clone $today;
+                        $startDate->modify('-1 year'); // 月：当前月往前推1年
+                        break;
+                    default:
+                        $startDate = clone $today;
+                        $startDate->modify('-1 month');
+                }
+            }
+
+            // 最终校验：确保开始时间有效且不晚于结束时间
+            if (!$startDate || !$endDate || $startDate > $endDate) {
+                throw new Exception('时间范围计算异常，请检查传入参数');
+            }
+
+        } catch (Exception $e) {
+            // 时间格式错误或逻辑错误时返回空数组
+            return [];
+        }
+
+        // 步骤2：根据类型生成对应的时间列表（基于最终的startDate和endDate）
+        if ($type == 'day') {
+            $dayHeaderList = [];
+            $loopDate = clone $startDate;
+            while ($loopDate <= $endDate) {
+                $fullDate = $loopDate->format('Y-m-d');
+                $dayNum = (int)$loopDate->format('d');
+                $dayHeaderList[] = [
+                    'fullDate' => $fullDate,
+                    'dayNum' => $dayNum,
+                    'isInspection' => 2
+                ];
+                $loopDate->modify('+1 day');
+            }
+            return $dayHeaderList;
+
+        } elseif ($type == 'week') {
+            $weekHeaderList = [];
+            $weekNum = 1;
+            // 调整起始日期为开始时间所在周的周一
+            $currentWeekStart = clone $startDate;
+            $currentWeekStart->modify('this Monday');
+            if ($currentWeekStart > $startDate) {
+                $currentWeekStart->modify('-1 week');
+            }
+
+            while ($currentWeekStart <= $endDate) {
+                $currentWeekEnd = clone $currentWeekStart;
+                $currentWeekEnd->modify('this Sunday');
+                if ($currentWeekEnd > $endDate) {
+                    $currentWeekEnd = clone $endDate;
+                }
+
+                $weekRange = $currentWeekStart->format('Y-m-d') . ' 至 ' . $currentWeekEnd->format('Y-m-d');
+                $weekRangeArr = [
+                    $currentWeekStart->format('Y-m-d'),
+                    $currentWeekEnd->format('Y-m-d')
+                ];
+                $weekHeaderList[] = [
+                    'weekKey' => "week{$weekNum}",
+                    'weekRange' => $weekRange,
+                    'weekRangeArr' => $weekRangeArr,
+                    'weekNum' => $weekNum,
+                    'isInspection' => 2
+                ];
+                $weekNum++;
+                $currentWeekStart->modify('next Monday');
+            }
+            return $weekHeaderList;
+
+        } elseif ($type == 'month') {
+            $monthHeaderList = [];
+            // 从开始时间的当月第一天开始遍历
+            $loopDate = clone $startDate;
+            $loopDate->modify('first day of this month');
+
+            while ($loopDate <= $endDate) {
+                $year = (int)$loopDate->format('Y');
+                $month = (int)$loopDate->format('m');
+
+                $monthHeaderList[] = [
+                    'monthNum' => $month,
+                    'monthName' => $year . '年' . $month . '月',
+                    'fullMonth' => $year . '-' . sprintf('%02d', $month),
+                    'isInspection' => 2
+                ];
+
+                $loopDate->modify('first day of next month');
+            }
+            return $monthHeaderList;
+        }
+
+        // 非指定类型返回空数组
+        return [];
+    }
+    public function Inspection_statistics_index2()
+    {
+//        echo "<pre>";
+        $count_user = D('Wisdom_qrcode_cate')->where(['village_id'=>$this->village_id])->count();
+        import('@.ORG.merchant_page');
+        $p = new Page($count_user, 20, 'page');
+        $data_list = $this->get_inspection_statistics($p);
+//        var_dump($data_list);die;
+//        $data_list = [];
+
+
+        //当月日期表头数据
+        $dayHeaderList = [];
+        $year = date('Y');
+        $month = date('m');
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $fullDate = sprintf('%04d-%02d-%02d', $year, $month, $day);
+            $dayHeaderList[] = [
+                'fullDate' => $fullDate,
+                'dayNum' => $day
+            ];
+        }
+        // 生成当月所有周的表头列表（示例：2026-01-01到2026-01-07 为第1周）
+        $weekHeaderList = [];
+        $weekNum = 1;
+        $startDate = new DateTime("$year-$month-01");
+        $endDate = new DateTime("$year-$month-$daysInMonth");
+        $currentWeekStart = clone $startDate;
+        while ($currentWeekStart <= $endDate) {
+            // 计算本周最后一天（周日）
+            $currentWeekEnd = clone $currentWeekStart;
+            $currentWeekEnd->modify('this Sunday');
+            if ($currentWeekEnd > $endDate) $currentWeekEnd = clone $endDate;
+
+            $weekRange = $currentWeekStart->format('Y-m-d') . ' 至 ' . $currentWeekEnd->format('Y-m-d');
+            $weekHeaderList[] = [
+                'weekKey' => "week{$weekNum}",
+                'weekRange' => $weekRange,
+                'weekNum' => $weekNum
+            ];
+
+            // 下一周开始
+            $currentWeekStart->modify('next Monday');
+            $weekNum++;
+        }
+
+        // 生成1-12月表头列表
+        $monthHeaderList = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthHeaderList[] = [
+                'monthNum' => $m,
+                'monthName' => $m . '月'
+            ];
+        }
+
+        $day_list = $week_list = $month_list = [];
+
+        // 遍历拆分
+        foreach ($data_list as $item) {
+            $record_type = isset($item['record_type']) ? $item['record_type'] : 0;
+            if ($record_type == 1) {
+                $day_list[] = $item;
+            } elseif ($record_type == 2) {
+                $week_list[] = $item;
+            } elseif ($record_type == 3) {
+                $month_list[] = $item;
+            }
+        }
+
+        $day_completed_list = $this->addCompletedDatesToDataList($dayHeaderList, $day_list );
+        echo "<pre>";
+        var_dump($day_completed_list,$dayHeaderList);die;
+        $this->assign('pagebar', $p->show());
+        $this->assign('monthHeaderList', $monthHeaderList);
+        $this->assign('weekHeaderList', $weekHeaderList);
+        $this->assign('dayHeaderList', $dayHeaderList);
+        $this->assign('day_list', $day_completed_list);
+        $this->assign('week_list', $week_list);
+        $this->assign('month_list', $month_list);
+        $this->assign('countDateNum', count($data_list));
+        $this->assign('countWeekNum', count($week_list));
+        $this->assign('countMonthNum', count($month_list));
+        $this->display();
+    }
+
+    public function get_inspection_statistics($p)
+    {
+        if (!in_array(548, $this->house_session['menus'])) {
+            $this->error('对不起，您没有权限执行此操作');
+        }
+        $where['village_id'] = $this->village_id;
+        $dataList = D('Wisdom_qrcode_cate')
+            ->where($where)
+            ->limit($p->firstRow . ',' . $p->listRows)
+            ->order('id desc')
+            ->select();
+
+        //项目id
+        $detail_where['village_id'] = $this->village_id;
+
+        //开始结束时间
+        $add_time_start = $_GET['begin_time'];
+        $add_time_end = $_GET['end_time'];
+        if ($add_time_start && $add_time_end) {
+            $start_time = strtotime($add_time_start . '00:00:00');
+            $end_time = strtotime($add_time_end . '23:59:59');
+            $detail_where['add_time'] = array('between', array($start_time, $end_time));
+        } else if ($add_time_start) {
+            $add_time_start = strtotime($add_time_start);
+            $detail_where['add_time'] = array('egt', $add_time_start);
+        } else if ($add_time_end) {
+            $add_time_end = strtotime($add_time_end . '23:59:59');
+            $detail_where['add_time'] = array('lt', $add_time_end);
+        }
+
+        //二维码名称
+        $qrcode_name = $_GET['qrcode_name'];
+        if ($qrcode_name) {
+            $qrcode['name'] = $_GET['find_value'];
+            $qrcode['village_id'] = $this->village_id;
+            $qrcode_ids = [];
+            $qrcode_list = M('wisdom_qrcode')->where($qrcode)->select();
+            foreach ($qrcode_list as $k => $v) {
+                $qrcode_ids[] = $v['id'];
+            }
+            $detail_where['qrcode_id'] = array('in', $qrcode_ids);
+        }
+
+        //二维码类别
+        $qrcode_type = $_GET['qrcode_type'];
+        if ($qrcode_type) {
+            $qrcode['cate_name'] = $_GET['find_value'];
+            $cate_ids = [];
+            $qrcode_cate = M('wisdom_qrcode_cate')->where($qrcode)->select();
+            foreach ($qrcode_cate as $k => $v) {
+                $cate_ids[] = $v['id'];
+            }
+            $detail_where['cate_id'] = array('in', $cate_ids);
+        }
+
+        $count_user = D('Wisdom_qrcode_record_log')->where($detail_where)->count();
+
+        import('@.ORG.merchant_page');
+        // $p = new Page($count_user, 15, 'page');
+        $detailDataList = M('Wisdom_qrcode_record_log')
+            ->where($detail_where)
+            ->order('add_time desc')
+            // ->limit($p->firstRow . ',' . $p->listRows)
+            ->select();
+        $third_robot_deviceDb = D('Third_robot_device');
+
+        foreach ($detailDataList as $k => &$v) {
+            $cate = D('Wisdom_qrcode_cate')->where(array('id' => $v['cate_id']))->find();
+            if ($cate) {
+                $v['cate_name'] = $cate['cate_name'];
+            } else {
+                $v['cate_name'] = '';
+            }
+            $v['patrol_type_str'] = '系统巡检';
+            if ($v['from_type'] == 1 && $v['rtype'] == 1) {
+                $v['patrol_type_str'] = '智能巡检';
+            } else if ($v['from_type'] == 1 && $v['rtype'] == 2) {
+                $v['patrol_type_str'] = 'AI识别巡检';
+            }
+            $qrcode = D('Wisdom_qrcode')->where(array('id' => $v['qrcode_id']))->find();
+            if ($qrcode) {
+                $v['qrcode_name'] = $qrcode['name'];
+            } else {
+                $v['qrcode_name'] = '';
+            }
+            $v['name'] = '';
+            $v['phone'] = '';
+            if ($v['from_type'] == 1 && !empty($v['robot_code'])) {
+                $robot_device = $third_robot_deviceDb->where(array('robot_code' => $v['robot_code']))->field('village_id,name,robot_code')->find();
+                if ($robot_device) {
+                    $v['name'] = $robot_device['name'];
+                }
+            } elseif ($v['uid'] > 0) {
+                $worker = D('House_worker')->where(array('wid' => $v['uid']))->find();
+                if ($worker) {
+                    $v['name'] = $worker['name'];
+                    $v['phone'] = $worker['phone'];
+                }
+            }
+        }
+        unset($v);
+
+        foreach ($dataList as $k_ => &$v_) {
+            $v_['detailDataList'] = filterArrayByField($detailDataList, 'cate_name', $v_['cate_name']);
+        }
+        unset($v_);
+
+        if( !empty($dataList) ){
+            return $dataList;
+        }else{
+            return [];
+        }
+    }
+
+    /**
+     * 核心功能：为$dataList中每个巡检项目新增completed_dates字段，存储完成全点位巡检的日期列表
+     * @param array $dateList 日期数组（含fullDate/dayNum）
+     * @param array $dataList 原始巡检数据数组
+     * @return array 新增completed_dates字段后的$dataList
+     */
+    function addCompletedDatesToDataList($dateList, $dataList) {
+        // 遍历每个巡检项目
+        foreach ($dataList as &$projectItem) { // 注意&引用，直接修改原数组元素
+            $completedDates = []; // 当前项目的完成日期列表（默认空）
+
+            // 1. 解析当前项目的必检点位ID（bind_qrcode）
+            $bindQrcode = json_decode(htmlspecialchars_decode($projectItem['bind_qrcode'] ?? '[]'), true);
+            if (json_last_error() !== JSON_ERROR_NONE || empty($bindQrcode)) {
+                $projectItem['completed_dates'] = $completedDates;
+                continue; // bind_qrcode解析失败/无点位，完成日期为空
+            }
+            $allQrcodeIds = array_column($bindQrcode, 'id'); // 提取所有点位ID
+            $allQrcodeIds = array_unique($allQrcodeIds); // 去重
+            if (empty($allQrcodeIds)) {
+                $projectItem['completed_dates'] = $completedDates;
+                continue; // 无有效点位，完成日期为空
+            }
+
+            // 2. 遍历每个日期，校验是否完成全点位巡检
+            foreach ($dateList as $dateItem) {
+                $currentDate = $dateItem['fullDate']; // 当前校验日期（YYYY-MM-DD）
+                $isAllCompleted = true; // 标记：当日所有点位是否完成
+
+                // 3. 遍历所有点位，逐个校验当日是否有记录
+                foreach ($allQrcodeIds as $qrcodeId) {
+                    $hasRecord = false; // 该点位当日是否有记录
+
+                    // 4. 遍历detailDataList，匹配点位ID+日期
+                    if (!empty($projectItem['detailDataList'])) {
+                        foreach ($projectItem['detailDataList'] as $detail) {
+
+
+                            // 跳过无效记录（无add_time/qrcode_id）
+                            if (empty($detail['add_time']) || empty($detail['qrcode_id'])) {
+                                continue;
+                            }
+                            // 时间戳转日期（匹配fullDate格式）
+                            $recordDate = date('Y-m-d', $detail['add_time']);
+
+                            // 匹配条件：点位ID一致 + 记录日期=当前校验日期
+                            if ($detail['qrcode_id'] == $qrcodeId && $recordDate == $currentDate) {
+                                $hasRecord = true;
+                                break; // 该点位有记录，无需继续遍历
+                            }
+                        }
+                    }
+
+                    // 有一个点位无记录，当日未完成
+                    if (!$hasRecord) {
+                        $isAllCompleted = false;
+                        break;
+                    }
+                }
+
+                // 当日全点位完成，加入列表
+                if ($isAllCompleted) {
+                    $completedDates[] = $currentDate;
+                }
+            }
+
+            // 5. 为当前项目新增completed_dates字段
+            $projectItem['completed_dates'] = $completedDates;
+        }
+        unset($projectItem); // 解除引用，避免后续数组操作异常
+
+        return $dataList;
+    }
+
 }

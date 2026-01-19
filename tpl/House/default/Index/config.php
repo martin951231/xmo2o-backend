@@ -453,7 +453,7 @@
 <!--								</div>-->
 								<div class="form-group">
 									<label class="col-sm-1"><label for="long_lat">{pigcms{$config['house_name']}经纬度</label></label>
-									<input class="col-sm-2" size="10" name="long_lat" id="long_lat" type="text" readonly value="<if condition="$village_info['long']">{pigcms{$village_info.long},{pigcms{$village_info.lat}</if>"/>
+									<input class="col-sm-2" size="10" name="long_lat" id="long_lat" type="text"  value="<if condition="$village_info['long']">{pigcms{$village_info.long},{pigcms{$village_info.lat}</if>"/>
 									&nbsp;&nbsp;&nbsp;&nbsp;<a href="#modal-table" class="btn btn-sm btn-success" id="show_map_frame" data-toggle="modal">点击选取经纬度</a>
 								</div>
 								<div class="form-group">

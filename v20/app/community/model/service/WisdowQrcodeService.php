@@ -38,6 +38,13 @@ class WisdowQrcodeService
         $list = $this->wisdomQrcodeCateModel->getLists($where,$field);
         return $list;
     }
+
+    public function getWisdomQrcodeCateOne($where,$field=true)
+    {
+        $list = $this->wisdomQrcodeCateModel->getFind($where,$field);
+        return $list;
+    }
+
     public function getWisdomQrcodeCateLists($where,$field=true)
     {
         $list = $this->wisdomQrcodeCateModel->getSelect($where,$field);
@@ -57,6 +64,15 @@ class WisdowQrcodeService
         return $data;
     }
 
+    public function updateWisdomQrcodeRecordLog($where,$data = [])
+    {
+        if( empty($data) ){
+            return false;
+        }
+        $res =  $this->wisdomQrcodeRecordLogModel->saveOneData($where,$data);
+        return $res;
+    }
+
     /**
      * 获取巡检记录数
      * @author lijie
@@ -68,6 +84,18 @@ class WisdowQrcodeService
     {
         $count = $this->wisdomQrcodeRecordLogModel->getCount($where);
         return $count;
+    }
+    /**
+     * 获取巡检点位数据
+     * @author lijie
+     * @date_time 2020/08/04 16:49
+     * @param $where
+     * @return int
+     */
+    public function getQrcodeOne($where)
+    {
+        $list = $this->wisdomQrcode->getFind($where);
+        return $list;
     }
 
     /**

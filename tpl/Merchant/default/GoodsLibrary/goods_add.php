@@ -78,7 +78,7 @@
 									<div style="display:inline-block;" id="J_selectImage">
 										<div class="btn btn-sm btn-success" style="position:relative;">{pigcms{:L_("选择本地图片")}</div>
 									</div>
-									<span class="form_tips">{pigcms{:L_("图片尺寸支持900*500px与600*600px，图片后缀支持：jpg, jpeg, png, gif")}</span>
+									<span class="form_tips">{pigcms{:L_("图片尺寸支持900*500px与600*600px，图片后缀支持：jpg, jpeg, png, gif，大小不超过256kb")}</span>
 								</div>
 								<div class="form-group">
 									<label class="col-sm-1"><label>{pigcms{:L_("选择图片")}</label></label>

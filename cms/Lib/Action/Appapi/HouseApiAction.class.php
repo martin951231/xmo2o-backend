@@ -1,5 +1,10 @@
 <?php
 
+use app\community\model\db\WisdomQrcodeRecordLog;
+use app\community\model\service\HouseWorkerService;
+use app\community\model\service\RepairCateService;
+use app\community\model\service\WisdowQrcodeService;
+
 /**
  * Created by PhpStorm.
  * User: 郭先森
@@ -14419,6 +14424,7 @@ class HouseApiAction  extends BaseAction
         $arr = [];
 
         $qrcode_id = I('qrcode_id');
+        $cate_name = I('name');
         if(empty($qrcode_id)){
             $this->returnCode('20090237');
         }
@@ -14487,10 +14493,10 @@ class HouseApiAction  extends BaseAction
         $distances = $this->getDistance($lat,$lng,$wisdom_qrcode['lat'],$wisdom_qrcode['long']);
         $distance = M('Wisdom_qrcode_cate')->where(['id'=>$wisdom_qrcode['cate_id']])->getField('distance');
         $wisdom_qrcode['qr_distance'] = $distance;
-        if(($distances > $distance && $distance != 0)){
-            $res['code'] = '-1';
-            $this->returnCode(1,[],'您超出了工作范围');
-        }
+//        if(($distances > $distance && $distance != 0)){
+//            $res['code'] = '-1';
+//            $this->returnCode(1,[],'您超出了工作范围');
+//        }
 
 
         //下  暂不用（注释）
@@ -14647,7 +14653,7 @@ class HouseApiAction  extends BaseAction
             $this->returnCode('20090055');
         }
         $cate_id = $qrcode['cate_id'];
-        
+
         $whereArr=array('id'=>$cate_id);
         if($village_id>0){
             $whereArr['village_id']=$village_id;
@@ -14658,7 +14664,23 @@ class HouseApiAction  extends BaseAction
         }else{
             $this->returnCode('20090055');
         }
-        $dataList = M('wisdom_qrcode_record_cate')->where(array('cate_id'=>$cate_id,'status'=>1))->select();
+        $c_where['category_id'] = $qrcode['category_id'];
+        $c_where['status'] = 1;
+
+        $dataList = M('wisdom_qrcode_record_cate')->where($c_where)->select();
+        $field_config_fixed = [
+            'record_name'=>'异常情况',
+            'category_id'=>'9999',
+            'record_cate_field_config'=>[[
+                'is_must' => 1,
+                'key' => 'FIXED_POINT_IS_ABNORMALITY',
+                'title' => '点位是否存在异常情况',
+                'type' => 3,
+                'use_field' => ["是", "否"],
+                'value' => 0,
+            ]]
+        ];
+        $dataList[] = $field_config_fixed;
         if($dataList){
             foreach($dataList as $k=>&$v){
 
@@ -14870,15 +14892,16 @@ class HouseApiAction  extends BaseAction
         if($qrcode_person['status'] != 1){
             $this->returnCode('20090231');
         }
-        $cate_id = I('cate_id');
-        if(empty($cate_id)){
-            $this->returnCode('20090240');
-        }
-
         $qrcode_id = I('qrcode_id');
         if(empty($qrcode_id)){
             $this->returnCode('20090237');
         }
+        $cate_id_info = M('Wisdom_qrcode')->where(array('id'=>$qrcode_id))->field('cate_id')->find();
+        $cate_id = $cate_id_info['cate_id'];
+        if(empty($cate_id)){
+            $this->returnCode('20090240');
+        }
+
         $data['village_id'] = $village_id;
         $data['cate_id'] = $cate_id;
         $data['qrcode_id'] = $qrcode_id;
@@ -14905,6 +14928,7 @@ class HouseApiAction  extends BaseAction
             }
         }
         $data['entication_field'] = serialize($_POST);
+        $data['test'] = $_POST['test'];
 
         $insert_id = M('Wisdom_qrcode_record_log')->data($data)->add();
         if($insert_id){
@@ -14919,11 +14943,104 @@ class HouseApiAction  extends BaseAction
                 'order_id'=>$cate_id
             ];
             D('Wisdom_qrcode_cate')->addOrderTimely($param);
+            //如果存在异常状态, 则直接提交工单
+            $record_cate_field_config = $_POST['test'][count($_POST['test'])-1]['record_cate_field_config'];
+            $record_cate_field_config_arr = array_combine( array_column($record_cate_field_config,'key'),array_column($record_cate_field_config,'value') );
+            if( isset( $record_cate_field_config_arr['FIXED_POINT_IS_ABNORMALITY'] ) && $record_cate_field_config_arr['FIXED_POINT_IS_ABNORMALITY'] == '是' ){
+                $log_where = ['id'=>$insert_id];
+                $log_data = ['is_abnormal'=>1];
+                invoke_v20_service('app\community\model\service\WisdowQrcodeService/updateWisdomQrcodeRecordLog', ['where'=>$log_where,'data'=>$log_data]);
+                $data['village_id'] = $village_id;
+                $data['cate_id'] = $cate_id;
+                $data['qrcode_id'] = $qrcode_id;
+                $data['inspection_id'] = $insert_id;
+                $info = [
+                    'login_phone' => $bind_info['phone'],
+                    'login_name' => $bind_info['name']
+                ];
+                $this->inspectionOrderAdd($data,$info);
+            }
+
             $this->returnCodeOk(L_('添加记录成功!'));
         }else{
             $this->returnCodeOk(L_('添加记录失败,请重试!'));
         }
 
+    }
+
+
+    /**
+     * Notes: 提交工单
+     * @author: wanzy
+     * @date_time: 2021/8/17 10:27
+     */
+    function inspectionOrderAdd($post,$userinfo)
+    {
+        $village_id = $post['village_id'];
+//        $db_house_new_repair_works_order_service = new WisdowQrcodeService();
+        $where['village_id'] = $village_id;
+        $where['id'] = $post['cate_id'];
+//        $QrcodeCate = $db_house_new_repair_works_order_service->getWisdomQrcodeCateOne($where);
+        $QrcodeCateRes = invoke_v20_service('app\community\model\service\WisdowQrcodeService/getWisdomQrcodeCateOne', ['where'=>$where]);
+        $QrcodeCate = $QrcodeCateRes['data']['retval'];
+
+//        $QrcodeInfo = $db_house_new_repair_works_order_service->getQrcodeOne(['id'=>$post['qrcode_id']]);
+        $QrcodeInfoRes = invoke_v20_service('app\community\model\service\WisdowQrcodeService/getQrcodeOne', ['where'=>['id'=>$post['qrcode_id']]]);
+        $QrcodeInfo = $QrcodeInfoRes['data']['retval'];
+
+        $workorder_category_id = $QrcodeCate ? $QrcodeCate['workorder_category_id'] : 0;
+
+
+        $order_content = htmlspecialchars( json_encode( $post['test'], true) );
+
+//        $userinfoD = (new HouseWorkerService())->getOneWorker(['village_id'=>$village_id,'phone'=>$userinfo['user']['login_phone'],'name'=>$userinfo['user']['login_name']], 'wid,name,type,phone');
+        $getWorkerWhere = ['village_id'=>$village_id,'phone'=>$userinfo['login_phone'],'name'=>$userinfo['login_name']];
+        $getWorkerField = 'wid,name,type,phone';
+        $userinfoDRes = invoke_v20_service('app\community\model\service\HouseWorkerService/getOneWorker', ['where'=>$getWorkerWhere,'field'=>$getWorkerField]);
+        $userinfoD = $userinfoDRes['data']['retval'];
+
+        $data = [
+            'village_id' => $village_id,
+            'category_id' => 0,
+            'type_id' => 0,
+            'cat_fid' => $workorder_category_id,
+            'cat_id' => 0,
+            'address_type' => 'public',
+            'address_id' => $QrcodeInfo ? $QrcodeInfo['id'] : 0 ,
+            'address_text_name' => $QrcodeInfo ? $QrcodeInfo['name'] : '',
+            'label_txt' => '',
+            'order_imgs' => '',
+            'order_type' => 4,
+            'order_content' => $order_content?$order_content:'',
+            'worker_type' => 0,
+            'worker_id' => $userinfoD?$userinfoD['wid']:0,
+            'login_role' => $userinfo['login_role'],
+            'phone' => $userinfo['login_phone'],
+            'name' => $userinfo['login_name'],
+            'event_status' => 10,
+            'wisdomqrcode_id' => $post['qrcode_id'],
+            'inspection_id' => $post['inspection_id'],
+            'inspection_auto_add' => 1,
+        ];
+        try{
+//            $repair_cate_service = new RepairCateService();
+//            $info = $repair_cate_service->addWorksOrder($data,true);
+            $infoRes = invoke_v20_service('app\community\model\service\RepairCateService/addWorksOrder', ['data'=>$data,'auto_assign'=>true]);
+            $info = $infoRes['data']['retval'];
+            if( empty($info['order_id']) ){
+                fdump_api(['file' => 'app\community\model\service\RepairCateService/addWorksOrder', 'error_msg' => $infoRes['data']['error_msg']], 'autoAddWorksOrderErrLog', 1);
+              $this->returnCodeError('巡检上报成功,但工单创建失败,请手动创建工单');
+            }else{
+                $work_order_id = $info['order_id'];
+                $record_log_where['id'] = $post['inspection_id'];
+//                $wisdomQrcodeRecordLog = new WisdomQrcodeRecordLog();
+//                $wisdomQrcodeRecordLog->updateRecordData($record_log_where,['work_order_id'=>$work_order_id]);
+                M('Wisdom_qrcode_record_log')->where($record_log_where)->save(['work_order_id'=>$work_order_id]);
+            }
+        }catch (\Exception $e){
+            fdump_api(['file' => $e->getFile(), 'code' => $e->getCode(), 'mes' => $e->getMessage(), 'line' => $e->getLine()], '$tryCatchErrLog', 1);
+            $this->returnCodeError('自动工单创建失败,请手动创建工单');
+        }
     }
 
     //添加qrcode类别
