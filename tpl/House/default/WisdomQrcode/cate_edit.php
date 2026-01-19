@@ -22,8 +22,25 @@
                             <div id="basicinfo" class="tab-pane active">
                                 <div class="form-group">
                                     <label class="col-sm-1"><label for="name">名称：</label></label>
-                                    <input class="col-sm-2" size="20" name="cate_name" id="cate_name" type="text"
+                                    <input class="col-sm-2" style="padding-left: 16px;" size="20" name="cate_name" id="cate_name" type="text"
                                            value="{pigcms{$cate.cate_name}"/>
+                                </div>
+                            </div>
+                            <div id="basicinfo" class="tab-pane active">
+                                <div class="form-group">
+                                    <label class="col-sm-1"><label for="workorder_category_id">所属工单分类：</label></label>
+                                    <select class="col-sm-2" name="workorderCategoryId" id="workorderCategoryId">
+                                        <option value="0">请选择分类</option>
+                                        <foreach name="workorderCategoryList" item="workorderCategoryList">
+                                            <option
+                                            <if condition="$cate['workorder_category_id'] eq $workorderCategoryList['workorder_id']">
+                                                selected="selected"
+                                            </if>
+                                            value="{pigcms{$workorderCategoryList.workorder_id}">
+                                            {pigcms{$workorderCategoryList.subject_name}
+                                            </option>
+                                        </foreach>
+                                    </select>
                                 </div>
                             </div>
                             <div id="basicinfo" class="tab-pane active">
@@ -642,7 +659,11 @@
                         // 选项外层容器（核心点击区域）
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'checkbox-item';
+                        if( item.isChecked ){
+                            itemDiv.className = 'checkbox-item notChecked';
+                        }
                         itemDiv.dataset.label = item.label;
+                        itemDiv.dataset.isChecked = item.isChecked;
                         itemDiv.dataset.categoryId = groupItem.category_id;
                         itemDiv.dataset.itemId = item.id;
 
@@ -673,11 +694,10 @@
                         itemDiv.appendChild(itemContent);
 
                         // 点击切换选中状态
-                        itemDiv.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            toggleItemCheck(itemDiv, item.id, groupItem.category_id);
-                        });
-
+                            itemDiv.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                toggleItemCheck(itemDiv, item.id, groupItem.category_id, item.isChecked);
+                            });
                         // 初始选中样式
                         if (checkbox.checked) {
                             itemDiv.classList.add('checked');
@@ -694,6 +714,12 @@
 
                         childItems.forEach(childItem => {
                             const childId = childItem.dataset.itemId;
+                            const prevIsChecked = childItem.dataset.isChecked;
+
+                            if( prevIsChecked == true || prevIsChecked == 'true' ){
+                                return
+                            }
+
                             childItem.classList.toggle('checked', isChecked);
 
                             // 更新全局选中ID集合
@@ -713,7 +739,10 @@
              * @param {string} itemId - 选项ID
              * @param {string} categoryId - 所属分类ID
              */
-            function toggleItemCheck(itemDiv, itemId, categoryId) {
+            function toggleItemCheck(itemDiv, itemId, categoryId, itemIsChecked) {
+                if( itemIsChecked ){
+                    return
+                }
                 const isChecked = !itemDiv.classList.contains('checked');
 
                 // 更新选项样式
@@ -975,6 +1004,10 @@
                 $(".remind_time").show();
             }
         })
+
+        function clearCategory() {
+            $('#categoryId').val('0')
+        }
     </script>
     <style>
         .delete-row {
@@ -1266,17 +1299,27 @@
         #clear-keyword:hover svg {
             fill: #2563eb;
         }
-        .modal-content{
+
+        .modal-content {
             height: 80vh !important;
             overflow-y: scroll;
         }
-        .modal-body{
+
+        .modal-body {
             margin-bottom: 70px;
         }
-        .modal-footer{
+
+        .modal-footer {
             position: fixed;
             bottom: 1px;
             width: calc(100% - 24px);
+        }
+        .notChecked{
+            background-color: #e3e3e3;
+            cursor: no-drop;
+        }
+        .notChecked checkbox-item-label{
+            color: #686b6b;
         }
 
     </style>

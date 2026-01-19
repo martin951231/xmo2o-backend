@@ -133,6 +133,24 @@ class RepairCenterController extends CommunityBaseController
         try{
             $params = ['source_type' => 'village', 'village_id' => $village_id, 'jz_open' => $jz_open];
             $data = $service_house_new_repair->getOrderList($where,$field,$page,$limit,$order,0,[],$params);
+            $data = array_map(function($item) {
+                // 先解码HTML实体（&quot;等），再解析JSON为数组
+                if( $item['inspection_auto_add'] === 1 ){
+                    if (!empty($item['order_content'])) {
+                        $item['order_content'] = json_decode(htmlspecialchars_decode($item['order_content']), true);
+                        // 容错：JSON解析失败时赋值为空数组
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            $item['order_content'] = '';
+                        }
+                    } else {
+                        $item['order_content'] = '';
+                    }
+                }
+                return $item; // 必须返回修改后的item
+            }, $data);
+//            echo "<pre>";
+//            var_dump($data);die;
+
             $count = $service_house_new_repair->getOrderCount($where);
             $res['list'] = $data;
             $res['total'] = $count;

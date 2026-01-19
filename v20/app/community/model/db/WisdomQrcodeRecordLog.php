@@ -71,4 +71,10 @@ class WisdomQrcodeRecordLog extends Model
         $res = $this->where($where)->save($data);
         return $res;
     }
+
+    public function updateRecordData($where, $data)
+    {
+        $res = $this->where($where)->save($data);
+        return $res;
+    }
 }

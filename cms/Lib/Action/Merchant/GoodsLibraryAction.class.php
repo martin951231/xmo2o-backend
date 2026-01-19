@@ -1264,6 +1264,9 @@ class GoodsLibraryAction extends BaseAction
 
 	public function ajax_upload_pic()
 	{
+        if( $_FILES['file']['size'] > 256 * 1024){
+            exit(json_encode(array('error' => 1,'message' =>L_('上传图片大小不能超过256KB'))));
+        }
 		if ($_FILES['file']['error'] != 4) {
 			$param = array('size' => 10);
 			$image = D('Image')->handle($this->merchant_session['mer_id'], 'goods', 1, $param);

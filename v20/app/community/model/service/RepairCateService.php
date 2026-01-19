@@ -1771,12 +1771,13 @@ class RepairCateService
     /**
      * Notes: 移动管理端添加工单
      * @param $data
+     * @param $auto_assign 是否为巡检异常自动创建工单, true为是, false为否
      * @return array
      * @throws \think\Exception
      * @author: wanzy
      * @date_time: 2021/8/18 11:56
      */
-    public function addWorksOrder($data)
+    public function addWorksOrder($data,$auto_assign=false)
     {
         $house_new_repair_works_order_service = new HouseNewRepairService();
         if (!isset($data['village_id']) || !$data['village_id']) {
@@ -1793,39 +1794,53 @@ class RepairCateService
         if (empty($village_info_data)) {
             throw new \think\Exception('对应小区不存在');
         }
-        if (isset($data['is_complete']) && $data['is_complete'] == 1) {
-            $data['go_time'] = !empty($data['go_time']) ? strtotime($data['go_time']) : 0;
+        $property_id = isset($village_info['property_id']) ? intval($village_info['property_id']) : 0;
 
-        } else if ($village_info_data['is_timely'] == 1) {
-            if (empty($data['go_time'])) {
-                throw new \think\Exception('上门时间不能为空');
-            }
-            $data['go_time'] = strtotime($data['go_time']);
-            if (empty($data['go_time'])) {
-                throw new \think\Exception('上门时间不能为空');
-            }
-            if ($data['go_time'] < time()) {
-                throw new \think\Exception('上门时间不能小于当前时间');
-            }
-        } else {
-            if (!empty($data['go_time'])) {
+        if( $auto_assign === false ){
+            if (isset($data['is_complete']) && $data['is_complete'] == 1) {
+                $data['go_time'] = !empty($data['go_time']) ? strtotime($data['go_time']) : 0;
+
+            } else if ($village_info_data['is_timely'] == 1) {
+                if (empty($data['go_time'])) {
+                    throw new \think\Exception('上门时间不能为空');
+                }
                 $data['go_time'] = strtotime($data['go_time']);
-                if (!empty($data['go_time']) && $data['go_time'] < time()) {
+                if (empty($data['go_time'])) {
+                    throw new \think\Exception('上门时间不能为空');
+                }
+                if ($data['go_time'] < time()) {
                     throw new \think\Exception('上门时间不能小于当前时间');
-                } elseif (empty($data['go_time'])) {
-                    $data['go_time'] = 0;
+                }
+            } else {
+                if (!empty($data['go_time'])) {
+                    $data['go_time'] = strtotime($data['go_time']);
+                    if (!empty($data['go_time']) && $data['go_time'] < time()) {
+                        throw new \think\Exception('上门时间不能小于当前时间');
+                    } elseif (empty($data['go_time'])) {
+                        $data['go_time'] = 0;
+                    }
                 }
             }
-        }
-        $property_id = isset($village_info['property_id']) ? intval($village_info['property_id']) : 0;
-        if (!isset($data['cat_id']) || !$data['cat_id']) {
-            throw new \think\Exception('缺少必传参数');
-        }
-        $db_house_new_repair_cate = new HouseNewRepairCate();
-        $cat_id = $data['cat_id'];
-        $cate_info = $db_house_new_repair_cate->getOne(['id' => $cat_id,'village_id'=>$village_id], 'id,subject_id,cate_name,parent_id,type,uid');
-        if (empty($cate_info) || $cate_info->isEmpty()) {
-            throw new \think\Exception('对应分类信息不存在');
+            if (!isset($data['cat_id']) || !$data['cat_id']) {
+                throw new \think\Exception('缺少必传参数');
+            }
+            $db_house_new_repair_cate = new HouseNewRepairCate();
+            $cat_id = $data['cat_id'];
+            $cate_info = $db_house_new_repair_cate->getOne(['id' => $cat_id,'village_id'=>$village_id], 'id,subject_id,cate_name,parent_id,type,uid');
+            if (empty($cate_info) || $cate_info->isEmpty()) {
+                throw new \think\Exception('对应分类信息不存在');
+            }
+            $address_type = isset($data['address_type'])?trim($data['address_type']):'';
+            if($address_type){
+                if (!in_array($address_type,['public', 'room'])) {
+                    throw new \think\Exception('缺少必传参数');
+                }
+                if (!isset($data['address_id']) || !$data['address_id']) {
+                    throw new \think\Exception('缺少必传参数');
+                }
+            }
+        }else{
+            $address_type = $data['address_type'];
         }
         if (isset($data['cat_fid']) && $data['cat_fid']) {
             $cat_fid = intval($data['cat_fid']);
@@ -1833,15 +1848,6 @@ class RepairCateService
             $cat_fid = intval($cate_info['parent_id']);
         } else {
             throw new \think\Exception('缺少主分类');
-        }
-        $address_type = isset($data['address_type'])?trim($data['address_type']):'';
-        if($address_type){
-            if (!in_array($address_type,['public', 'room'])) {
-                throw new \think\Exception('缺少必传参数');
-            }
-            if (!isset($data['address_id']) || !$data['address_id']) {
-                throw new \think\Exception('缺少必传参数');
-            }
         }
         $houseWorkerDb= new HouseWorker();
         $houseVillageUserBind=new HouseVillageUserBind();
@@ -1853,61 +1859,64 @@ class RepairCateService
         $layer_id = 0;
         $address_txt = isset($data['address_txt']) ? trim($data['address_txt']) : '';
         $toSingleId = 0;
-        if ('public'==$address_type) {
-            $public_id = intval($data['address_id']);
-            // 获取下公共区域
-            $db_house_village_public_area = new HouseVillagePublicArea();
-            $wherePublicArea = [];
-            $wherePublicArea[] = ['public_area_id', '=', $public_id];
-            $publicAreaInfo = $db_house_village_public_area->getOne($wherePublicArea, 'public_area_id, public_area_name');
-            if (empty($publicAreaInfo)) {
-                throw new \think\Exception('所选公共区域不存在');
-            }
-            $address_txt = $publicAreaInfo['public_area_name'];
-        } elseif ('room'==$address_type) {
+        if($auto_assign === false){
+            if ('public'==$address_type) {
+                $public_id = intval($data['address_id']);
+                // 获取下公共区域
+                $db_house_village_public_area = new HouseVillagePublicArea();
+                $wherePublicArea = [];
+                $wherePublicArea[] = ['public_area_id', '=', $public_id];
+                $publicAreaInfo = $db_house_village_public_area->getOne($wherePublicArea, 'public_area_id, public_area_name');
+                if (empty($publicAreaInfo)) {
+                    throw new \think\Exception('所选公共区域不存在');
+                }
+                $address_txt = $publicAreaInfo['public_area_name'];
+            } elseif ('room'==$address_type) {
 
-            $room_id = intval($data['address_id']);
-            $db_house_village_user_vacancy = new HouseVillageUserVacancy();
-            $where_room = [];
-            $where_room[] = ['pigcms_id', '=', $room_id];
-            $field_room = 'pigcms_id, room, village_id, single_id, floor_id, layer_id';
-            $room_info = $db_house_village_user_vacancy->getOne($where_room, $field_room);
-            if (empty($room_info)) {
-                throw new \think\Exception('所选房屋不存在');
+                $room_id = intval($data['address_id']);
+                $db_house_village_user_vacancy = new HouseVillageUserVacancy();
+                $where_room = [];
+                $where_room[] = ['pigcms_id', '=', $room_id];
+                $field_room = 'pigcms_id, room, village_id, single_id, floor_id, layer_id';
+                $room_info = $db_house_village_user_vacancy->getOne($where_room, $field_room);
+                if (empty($room_info)) {
+                    throw new \think\Exception('所选房屋不存在');
+                }
+                if (isset($data['single_id']) && $data['single_id']) {
+                    $single_id = intval($data['single_id']);
+                    $toSingleId = $single_id;
+                } elseif (isset($room_info['single_id']) && $room_info['single_id']) {
+                    $single_id = intval($room_info['single_id']);
+                    $toSingleId = $single_id;
+                } else {
+                    throw new \think\Exception('缺少楼栋');
+                }
+                if (isset($data['floor_id']) && $data['floor_id']) {
+                    $floor_id = intval($data['floor_id']);
+                } elseif (isset($room_info['floor_id']) && $room_info['floor_id']) {
+                    $floor_id = intval($room_info['floor_id']);
+                } else {
+                    throw new \think\Exception('缺少单元');
+                }
+                if (isset($data['layer_id']) && $data['layer_id']) {
+                    $layer_id = intval($data['layer_id']);
+                } elseif (isset($room_info['layer_id']) && $room_info['layer_id']) {
+                    $layer_id = intval($room_info['layer_id']);
+                } else {
+                    throw new \think\Exception('缺少楼层');
+                }
+                $room_village_id = isset($room_info['village_id']) && $room_info['village_id'] ? intval($room_info['village_id']) : $village_id;
+                $service_house_village = new HouseVillageService();
+                $address_txt = $service_house_village->getSingleFloorRoom($single_id, $floor_id, $layer_id, $room_id, $room_village_id);
             }
-            if (isset($data['single_id']) && $data['single_id']) {
-                $single_id = intval($data['single_id']);
-                $toSingleId = $single_id;
-            } elseif (isset($room_info['single_id']) && $room_info['single_id']) {
-                $single_id = intval($room_info['single_id']);
-                $toSingleId = $single_id;
-            } else {
-                throw new \think\Exception('缺少楼栋');
-            }
-            if (isset($data['floor_id']) && $data['floor_id']) {
-                $floor_id = intval($data['floor_id']);
-            } elseif (isset($room_info['floor_id']) && $room_info['floor_id']) {
-                $floor_id = intval($room_info['floor_id']);
-            } else {
-                throw new \think\Exception('缺少单元');
-            }
-            if (isset($data['layer_id']) && $data['layer_id']) {
-                $layer_id = intval($data['layer_id']);
-            } elseif (isset($room_info['layer_id']) && $room_info['layer_id']) {
-                $layer_id = intval($room_info['layer_id']);
-            } else {
-                throw new \think\Exception('缺少楼层');
-            }
-            $room_village_id = isset($room_info['village_id']) && $room_info['village_id'] ? intval($room_info['village_id']) : $village_id;
-            $service_house_village = new HouseVillageService();
-            $address_txt = $service_house_village->getSingleFloorRoom($single_id, $floor_id, $layer_id, $room_id, $room_village_id);
+        }else{
+            $address_txt = $data['address_text_name'];
         }
         if ($address_txt && isset($village_info['village_name']) && $village_info['village_name']) {
             $address_txt = $village_info['village_name'] . ' ' . $address_txt;
         } elseif (!$address_txt) {
             $address_txt = '';
         }
-        
         $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
 
         $toWorkId = 0;
@@ -1989,7 +1998,7 @@ class RepairCateService
         } elseif (is_string($label_txt)) {
             $label_txt = trim($label_txt);
         }
-        if (empty($order_imgs) && !$order_content && empty($label_txt)) {
+        if ( $auto_assign === false && empty($order_imgs) && !$order_content && empty($label_txt)) {
             throw new \think\Exception('缺少必传参数');
         }
         $videos = isset($data['videos']) ? $data['videos'] : '';
@@ -2022,13 +2031,13 @@ class RepairCateService
             'label_txt' => $label_txt,
             'order_content' => $order_content,
             'order_imgs' => $order_imgs,
-            'order_type' => $order_type,
-            'uid' => $uid,
-            'phone' => '',
-            'name' => '',
+            'order_type' => $auto_assign ? $data['order_type'] :$order_type,
+            'uid' => $auto_assign ? $data['worker_id'] :$uid,
+            'phone' => $auto_assign ?$data['phone'] :'',
+            'name' => $auto_assign ?$data['name'] :'',
             'now_role' => $now_role,
             'worker_type' => 0,
-            'worker_id' => $worker_id,
+            'worker_id' => $auto_assign ? $data['worker_id'] :$worker_id,
             'event_status' => $event_status,
             'address_type' => $address_type,
             'address_id' => $address_id,
@@ -2040,6 +2049,8 @@ class RepairCateService
             'address_txt' => $address_txt,
             'add_time' => $now_time,
             'go_time' => $data['go_time'],
+            'inspection_id' => $data['inspection_id'],
+            'inspection_auto_add' => $data['inspection_auto_add'],
         ];
         if(isset($data['is_complete']) && $data['is_complete']==1){
             $order['event_status']=40; //办结 
