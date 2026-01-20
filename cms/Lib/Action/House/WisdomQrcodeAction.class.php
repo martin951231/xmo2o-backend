@@ -1677,13 +1677,14 @@ HTML;
             $this->assign('searchCategoryId', 0);
         }
         import('@.ORG.merchant_page');
-        $field = 'qrl.*,wqc.cate_name as plan_name,whw.name as worker_name,whw.phone as phone,pg.name as department_name,wq.name as qrcode_name,wqcg.name as qrcode_category_name';
+        $field = 'qrl.*,wqc.cate_name as plan_name,whw.name as worker_name,whw.phone as phone,pg.name as department_name,wq.name as qrcode_name,wqcg.name as qrcode_category_name,hnrwo.event_status';
         $qrcode_record_log_num = M('wisdom_qrcode_record_log as qrl')
             ->join('pigcms_wisdom_qrcode_cate as wqc ON qrl.cate_id = wqc.id')
             ->join( 'pigcms_house_worker as whw ON qrl.uid = whw.wid' )
             ->join( 'pigcms_property_group as pg ON pg.id = whw.department_id' )
             ->join( 'pigcms_wisdom_qrcode as wq ON wq.id = qrl.qrcode_id' )
             ->join( 'pigcms_wisdom_qrcode_category as wqcg ON wq.category_id = wqcg.id' )
+            ->join( 'pigcms_house_new_repair_works_order as hnrwo ON qrl.work_order_id = hnrwo.order_id' )
             ->where($where)
             ->field($field)
             ->count();
@@ -1694,11 +1695,11 @@ HTML;
             ->join( 'pigcms_property_group as pg ON pg.id = whw.department_id' )
             ->join( 'pigcms_wisdom_qrcode as wq ON wq.id = qrl.qrcode_id' )
             ->join( 'pigcms_wisdom_qrcode_category as wqcg ON wq.category_id = wqcg.id' )
+            ->join( 'pigcms_house_new_repair_works_order as hnrwo ON qrl.work_order_id = hnrwo.order_id' )
             ->where($where)
             ->limit($p->firstRow . ',' . $p->listRows)
             ->field($field)
             ->select();
-        $count_num = 0;
         $abnormality_list = array();
         foreach( $qrcode_record_log as &$log ){
             if( empty($log['entication_field']) ){
@@ -1706,20 +1707,25 @@ HTML;
             }
             $entication_field = unserialize( $log['entication_field']);
             $log['entication_field_arr'] = $entication_field;
-
             if( empty($entication_field['test']) ){
                 continue;
             }
+            switch($log['event_status'])
+            {
+                case 10: $log['event_status_str'] = '未指派';break;
+                case 20: $log['event_status_str'] = '已指派';break;
+                case 30: $log['event_status_str'] = '处理中';break;
+                case 40: $log['event_status_str'] = '已办结';break;
+                case 50: $log['event_status_str'] = '已撤回';break;
+                case 60: $log['event_status_str'] = '已关闭';break;
+                case 70: $log['event_status_str'] = '已评价';break;
+                default: $log['event_status_str'] = '未指派';break;
+            }
+
             $works_order_str = implode( ',',array_slice( array_column($log['entication_field_arr']['test'], 'record_name') ,0,3) );
             $log['works_order_str'] = $works_order_str;
-            foreach( $entication_field['test'] as $test ){
-                if( $this->checkHasFixedPointAbnormality($test['record_cate_field_config']) ){
-                    $abnormality_list[] = $log;
-                    $count_num++;
-                }
-            }
+            $abnormality_list[] = $log;
         }
-
         $category_list = M('wisdom_qrcode_category')->where(array('village_id' => $this->village_id))->select();
         $this->assign('categoryList', $category_list);
 

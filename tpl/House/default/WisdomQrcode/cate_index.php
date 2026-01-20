@@ -27,11 +27,6 @@
                 <else/>
                 <button class="btn btn-success" style="margin-bottom: 10px" disabled>二维码记录</button>
             </if>&nbsp;&nbsp;
-            <if condition="in_array(548,$house_session['menus'])">
-                <button class="btn btn-success" style="margin-bottom: 10px" onclick="inspection_record_detail('{pigcms{$vo}')" >巡检统计</button>
-                <else/>
-                <button class="btn btn-success" style="margin-bottom: 10px" disabled>巡检统计</button>
-            </if>
             <div class="row">
 
                 <div class="col-xs-12">

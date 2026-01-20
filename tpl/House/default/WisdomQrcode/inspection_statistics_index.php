@@ -299,7 +299,7 @@
     .tab-content {
         overflow: scroll;
         display: none;
-        padding: 10px;
+        padding: 0 !important;
         border: 1px solid #dee2e6;
         border-radius: 0 6px 6px 6px;
     }
@@ -344,6 +344,9 @@
 
     /* 巡检项目列样式 */
     .project-col {
+        position: sticky;
+        z-index: 10;
+        left: 1px;
         width: 180px;
         text-align: left !important;
         padding-left: 10px !important;
@@ -355,10 +358,46 @@
         text-overflow: ellipsis;
         word-break: break-all;
     }
+    .inspection-table th.project-col:first-child{
+        position: sticky !important;
+        left: 0 !important; /* 改为0，和td保持一致 */
+        z-index: 11 !important; /* 表头层级高于单元格，避免遮挡 */
+        background-color: #f8f9fa !important;
+        border-right: 1px solid #dee2e6 !important; /* 强制显示右侧边框 */
+    }
+    .inspection-table th.rate-col:nth-child(2) {
+        position: sticky !important;
+        left: 200px !important;
+        z-index: 10 !important; /* 层级略低于第一列 */
+        background-color: #f8f9fa !important;
+        border-right: 1px solid #dee2e6 !important; /* 可选：给完成率列也加右侧边框 */
+    }
 
-    /* 完成率列样式 */
+    .inspection-table td.project-col:first-child{
+        position: sticky !important;
+        left: 0 !important;
+        z-index: 10 !important;
+        background-color: #ffffff !important;
+        border-right: 1px solid #dee2e6 !important; /* 恢复单元格右侧边框 */
+    }
+    .inspection-table td.rate-col:nth-child(2){
+        position: sticky !important;
+        left: 200px !important;
+        z-index: 9 !important; /* 层级低于表头 */
+        background-color: #ffffff !important;
+        border-right: 1px solid #dee2e6 !important; /* 可选：完成率单元格加右侧边框 */
+    }
+    .inspection-table {
+        border-collapse: separate !important; /* 改为separate，避免边框合并 */
+        border-spacing: 0 !important; /* 消除单元格间距 */
+    }
+
+
+        /* 完成率列样式 */
     .rate-col {
         width: 120px;
+        z-index: 10;
+        left: 200px;
     }
 
     /* 当前项高亮（月标签页当前月、日标签页当日） */

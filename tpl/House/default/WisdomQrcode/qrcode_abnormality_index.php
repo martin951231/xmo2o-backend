@@ -45,10 +45,11 @@
                                 <th width="10%">二维码分类</th>
                                 <th width="15%">二维码名称</th>
                                 <th width="10%">工单名称</th>
-                                <th width="10%">上报人</th>
-                                <th width="10%">上报人电话</th>
-                                <th width="10%">上报人部门</th>
-                                <th width="10%">添加时间</th>
+                                <th width="5%">上报人</th>
+                                <th width="8%">上报人电话</th>
+                                <th width="8%">上报人部门</th>
+                                <th width="8%">工单状态</th>
+                                <th width="12%">添加时间</th>
                                 <th class="button-column" width="15%">操作</th>
                             </tr>
                             </thead>
@@ -86,6 +87,9 @@
                             </td>
                             <td>
                                 <div class="tagDiv">{pigcms{$vo.department_name}</div>
+                            </td>
+                            <td>
+                                <div class="tagDiv">{pigcms{$vo.event_status_str}</div>
                             </td>
                             <td>
                                 <div class="tagDiv">{pigcms{$vo.add_time|date="Y-m-d H:i:s",###}</div>
