@@ -1376,34 +1376,34 @@ HTML;
         }
 
         //介绍字段
-        $qrcode_field_cate = M('Wisdom_qrcode_field_cate')->where(array('cate_id' => $_GET['id']))->find();
-        if ($qrcode_field_cate) {
-
-            //介绍字段配置项
-            $qrcode_cate_field_cate_config = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id' => $qrcode_field_cate['id']))->find();
-            if ($qrcode_cate_field_cate_config) {
-                $this->error('请先删除当前设备介绍字段管理下面的配置项列表');
-            } else {
-                $this->error('请先删除当前设备介绍字段管理列表');
-            }
-        }
+//        $qrcode_field_cate = M('Wisdom_qrcode_field_cate')->where(array('cate_id' => $_GET['id']))->find();
+//        if ($qrcode_field_cate) {
+//
+//            //介绍字段配置项
+//            $qrcode_cate_field_cate_config = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id' => $qrcode_field_cate['id']))->find();
+//            if ($qrcode_cate_field_cate_config) {
+//                $this->error('请先删除当前设备介绍字段管理下面的配置项列表');
+//            } else {
+//                $this->error('请先删除当前设备介绍字段管理列表');
+//            }
+//        }
 
         //二维码
-        $qrcode = M('Wisdom_qrcode')->where(array('cate_id' => $_GET['id']))->find();
-        if ($qrcode) {
-            $this->error('请删除当前类别下的所有二维码!');
-        }
+//        $qrcode = M('Wisdom_qrcode')->where(array('cate_id' => $_GET['id']))->find();
+//        if ($qrcode) {
+//            $this->error('请删除当前类别下的所有二维码!');
+//        }
 
         //记录内容管理
-        $record_cate = M('Wisdom_qrcode_record_cate')->where(array('cate_id' => $_GET['id']))->find();
-        if ($record_cate) {
-            $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $record_cate['id']))->find();
-            if ($qrcode_record_cate_field_config) {
-                $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
-            } else {
-                $this->error('请先删除当前记录记录内容管理列表');
-            }
-        }
+//        $record_cate = M('Wisdom_qrcode_record_cate')->where(array('cate_id' => $_GET['id']))->find();
+//        if ($record_cate) {
+//            $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $record_cate['id']))->find();
+//            if ($qrcode_record_cate_field_config) {
+//                $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
+//            } else {
+//                $this->error('请先删除当前记录记录内容管理列表');
+//            }
+//        }
 
         //负责人
         $qrcode_person = M('Wisdom_qrcode_person')->where(array('cate_id' => $_GET['id']))->find();
@@ -4083,11 +4083,13 @@ HTML;
                         $vv['isInspection'] = 1;
                         foreach($day_range as $dayV){
                             $dayV = explode('-', $dayV);
-                            $startTime = strtotime($vv['fullDate'] . $dayV[0]);
-                            $endTime = strtotime($vv['fullDate'] . $dayV[1]);
+                            $startTime = strtotime($vv['fullDate'] .' '. $dayV[0]);
+                            $endTime = strtotime($vv['fullDate'] .' '. $dayV[1]);
                             $where['add_time'] = ['between', [$startTime, $endTime]];
-                            $num = $qrcodeRecordLogDb->where($where)->count();
-                            if( $num <= 0 ){
+                            $list__ = $qrcodeRecordLogDb->where($where)->select();
+                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $isExists = $this->checkEachQrcodeHasTimeData($num_list, $startTime, $endTime);
+                            if( $isExists == 'false' ){
                                 $vv['isInspection'] = 2;
                                 break;
                             }
@@ -4171,6 +4173,95 @@ HTML;
         $this->assign('currentHeaderList', $currentHeaderList);
         $this->display();
 
+    }
+    /**
+     * 判断分组数组中每个qrcode_id下是否都有指定时间段内的数据
+     * @param array $groupedData 按qrcode_id分组的数组（如你提供的格式）
+     * @param int $startTime 起始时间戳（如1766200000）
+     * @param int $endTime 结束时间戳（如1766300000）
+     */
+    function checkEachQrcodeHasTimeData(array $groupedData, int $startTime, int $endTime)
+    {
+        // 遍历每个qrcode_id的分组
+        foreach ($groupedData as $qrcodeId => $items) {
+            // 标记当前qrcode_id是否有符合时间段的数据
+            $hasValidData = false;
+            // 遍历当前qrcode_id下的所有数据项
+            foreach ($items as $item) {
+                // 校验add_time字段是否存在且为有效数字
+                if (empty($item['add_time']) || !is_numeric($item['add_time'])) {
+                    continue;
+                }
+
+                // 转换为整型时间戳，判断是否在指定时间段内
+                $addTime = (int)$item['add_time'];
+
+                if ($addTime >= $startTime && $addTime <= $endTime) {
+                    $hasValidData = true;
+                    break; // 找到一条即停止遍历当前qrcode_id的其他数据
+                }
+            }
+
+            // 若当前qrcode_id无符合条件的数据，直接返回「否」
+            if (!$hasValidData) {
+                return 'false';
+            }
+        }
+        // 所有qrcode_id都有符合条件的数据，返回「是」
+        return 'true';
+    }
+    /**
+     * 根据qrcode_id对多维数组分组，保留所有重复项，并补全指定qrcode_id列表中缺失的项（值为空数组）
+     * @param array $data 原始多维数组（如你提供的格式）
+     * @param array $qrcodeIdList 需校验补全的qrcode_id列表（如['61','62','63']）
+     * @param string $key 分组字段名（默认qrcode_id）
+     * @return array 分组后的数组，key为qrcode_id（包含列表中所有项），value为对应元素数组（缺失则为空数组）
+     */
+    function groupByQrcodeId(array $data, array $qrcodeIdList = [], string $key = 'qrcode_id'): array
+    {
+        // 初始化分组结果数组
+        $groupedData = [];
+
+        // 第一步：遍历原始数据，按qrcode_id分组（保留原有核心逻辑）
+        foreach ($data as $item) {
+            // 校验当前元素是否包含目标分组字段，避免报错
+            if (!isset($item[$key])) {
+                continue;
+            }
+
+            // 获取qrcode_id值（确保是字符串类型，统一格式）
+            $qrcodeId = (string)$item[$key];
+
+            // 若该qrcode_id分组不存在，先初始化空数组
+            if (!isset($groupedData[$qrcodeId])) {
+                $groupedData[$qrcodeId] = [];
+            }
+
+            // 将当前元素添加到对应分组中（保留重复项核心逻辑）
+            $groupedData[$qrcodeId][] = $item;
+        }
+
+        // 第二步：补全qrcode_id列表中缺失的项（核心新增逻辑）
+        if (!empty($qrcodeIdList)) {
+            foreach ($qrcodeIdList as $targetQrcodeId) {
+                // 统一转为字符串，避免数字/字符串类型不匹配导致的漏补
+                $targetQrcodeId = (string)$targetQrcodeId;
+                // 若分组结果中无该qrcode_id，补充key并赋值为空数组
+                if (!isset($groupedData[$targetQrcodeId])) {
+                    $groupedData[$targetQrcodeId] = [];
+                }
+            }
+
+            // 可选：按qrcode_id列表的顺序重新排序（保持结果顺序和传入列表一致）
+            $sortedGroupedData = [];
+            foreach ($qrcodeIdList as $targetQrcodeId) {
+                $targetQrcodeId = (string)$targetQrcodeId;
+                $sortedGroupedData[$targetQrcodeId] = $groupedData[$targetQrcodeId];
+            }
+            $groupedData = $sortedGroupedData;
+        }
+
+        return $groupedData;
     }
     /**
      * 从「年-月」格式字符串获取当月最后一天日期
