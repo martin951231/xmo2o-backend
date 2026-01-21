@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0bd983"],{"2d50":function(n,p,c){n.exports=c.p+"img/party_branch.3ce6e480.png"}}]);

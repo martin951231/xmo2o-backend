@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d34f7"],{"5be9":function(n,p,o){n.exports=o.p+"img/coupon.1348e7a4.png"}}]);
