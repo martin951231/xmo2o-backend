@@ -2001,10 +2001,10 @@ HTML;
         if (!in_array(546, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $_GET['id']))->find();
-        if ($qrcode_record_cate_field_config) {
-            $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
-        }
+//        $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $_GET['id']))->find();
+//        if ($qrcode_record_cate_field_config) {
+//            $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
+//        }
         $id = M('Wisdom_qrcode_record_cate')->where(array('id' => $_GET['id']))->delete();
         if ($id) {
 
@@ -3994,6 +3994,49 @@ HTML;
                 $item['entication_field_list'] = $enticationField ?: [];
                 return $item;
             }, $logInfo);
+            if( empty( $parsedData ) ){
+                $val['is_inspection'] = false;
+            }
+            $val['is_inspection'] = true;
+            if( $type == 'day' ){
+                $timeRange = explode(',', $finalData['record_time']);
+                foreach ($timeRange as $timeK => $timeV) {
+                    $timeRange_ = explode('-', $timeV);
+                    $timeRange_start = strtotime($fulldate.' '.$timeRange_[0]);
+                    $timeRange_end = strtotime($fulldate.' '.$timeRange_[1]);
+                    $is_exists = $this->checkAddTimeInRange($parsedData,$timeRange_start,$timeRange_end);
+                    if( !$is_exists ){
+                        $val['is_inspection'] = false;
+                        break;
+                    }
+                }
+            }else if( $type == 'week' ){
+                $weekList = explode(',', $finalData['record_time']);
+                $dateRange = $this->getDatesByWeekInRange($fulldate[0],$fulldate[1],$weekList);
+                foreach ($dateRange as $dateK => $dateV) {
+                    $timeRange_start = strtotime($dateV.' '.$finalData['start_time']);
+                    $timeRange_end = strtotime($dateV.' '.$finalData['end_time']);
+                    $is_exists = $this->checkAddTimeInRange($parsedData,$timeRange_start,$timeRange_end);
+                    if( !$is_exists ){
+                        $val['is_inspection'] = false;
+                        break;
+                    }
+                }
+            }else if( $type == 'month' ){
+                $monthList = explode(',', $finalData['record_time']);
+                $dateRange = array_map(function ($item) use($fulldate){
+                    return $fulldate.'-'.sprintf('%02d', (int)$item);
+                },$monthList);
+                foreach ($dateRange as $dateK => $dateV) {
+                    $timeRange_start = strtotime($dateV.' '.$finalData['start_time']);
+                    $timeRange_end = strtotime($dateV.' '.$finalData['end_time']);
+                    $is_exists = $this->checkAddTimeInRange($parsedData,$timeRange_start,$timeRange_end);
+                    if( !$is_exists ){
+                        $val['is_inspection'] = false;
+                        break;
+                    }
+                }
+            }
             $val['log_list'] = $parsedData;
         }
         unset($val);
@@ -4002,6 +4045,86 @@ HTML;
             'data'=> $finalData,
         ];
         exit(json_encode($arr));
+    }
+    /**
+     * 找出时间区间内指定星期几的具体日期
+     * @param string|int $start 开始时间（支持时间戳/日期字符串，如"2026-01-01"或1768899618）
+     * @param string|int $end 结束时间（格式同start）
+     * @param array $weekList 目标星期列表（如["2","3","4"]，对应周二、周三、周四）
+     * @return array 符合条件的日期列表（格式：["2026-01-06", "2026-01-07"...]）
+     */
+    function getDatesByWeekInRange($start, $end, $weekList) {
+        // 1. 统一转换为时间戳（处理日期字符串/时间戳两种输入）
+        $startTime = is_numeric($start) ? (int)$start : strtotime($start);
+        $endTime = is_numeric($end) ? (int)$end : strtotime($end);
+
+        // 校验时间区间合法性
+        if ($startTime > $endTime) {
+            return [];
+        }
+
+        // 2. 格式化星期列表（转为整数，避免字符串/数字对比问题）
+        $targetWeeks = array_map('intval', $weekList);
+
+        // 3. 遍历区间内每一天，筛选符合条件的日期
+        $currentTime = $startTime;
+        $resultDates = [];
+        $oneDay = 86400; // 一天的秒数
+
+        while ($currentTime <= $endTime) {
+            // 获取当前日期的星期数（1=周一，2=周二...7=周日）
+            $currentWeek = (int)date('N', $currentTime);
+
+            // 判断是否在目标星期列表中
+            if (in_array($currentWeek, $targetWeeks)) {
+                // 格式化日期为YYYY-MM-DD格式
+                $resultDates[] = date('Y-m-d', $currentTime);
+            }
+
+            // 推进到下一天
+            $currentTime += $oneDay;
+        }
+
+        return $resultDates;
+    }
+    /**
+     * 检查数组中是否存在add_time在指定时间戳范围内的数据
+     *
+     * @param array $data 待检查的多维数组（格式如你提供的示例）
+     * @param int $startTimestamp 开始时间戳（整数）
+     * @param int $endTimestamp 结束时间戳（整数）
+     * @return bool 存在返回true，不存在返回false
+     */
+    function checkAddTimeInRange($data, $startTimestamp, $endTimestamp) {
+        // 验证输入参数的合法性
+        if (!is_array($data) || empty($data)) {
+            return false;
+        }
+
+        if (!is_numeric($startTimestamp) || !is_numeric($endTimestamp)) {
+            throw new InvalidArgumentException("开始时间和结束时间必须是有效的数字（时间戳）");
+        }
+
+        // 转换为整数（确保是整型时间戳）
+        $start = (int)$startTimestamp;
+        $end = (int)$endTimestamp;
+
+        // 遍历外层数组（你的数据外层是索引数组）
+        foreach ($data as $item) {
+            // 检查当前项是否是数组，且包含add_time字段
+            if (is_array($item) && isset($item['add_time']) && !empty($item['add_time'])) {
+                // 将add_time转换为整数（你的数据中是字符串类型的时间戳）
+                $addTime = (int)$item['add_time'];
+
+                // 检查是否在时间范围内
+                if ($addTime >= $start && $addTime <= $end) {
+                    return true;
+                }
+            }
+        }
+
+        // 遍历完所有项都没找到符合条件的
+        return false;
     }
     /**
      * 修复序列化字符串的长度错误，解决unserialize返回false的问题
@@ -4112,8 +4235,10 @@ HTML;
                             $day_start_time = strtotime($cur_day . ' ' . $v['start_time']);
                             $day_end_time = strtotime($cur_day . ' ' . $v['end_time']);
                             $where['add_time'] = ['between', [$day_start_time, $day_end_time]];
-                            $num = $qrcodeRecordLogDb->where($where)->count();
-                            if( $num <= 0 ){
+                            $list__ = $qrcodeRecordLogDb->where($where)->select();
+                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $isExists = $this->checkEachQrcodeHasTimeData($num_list, $day_start_time, $day_end_time);
+                            if( $isExists == 'false' ){
                                 $vv['isInspection'] = 2;
                                 break;
                             }
@@ -4136,8 +4261,11 @@ HTML;
                             $day_start_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['start_time']);
                             $day_end_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['end_time']);
                             $where['add_time'] = ['between', [$day_start_time, $day_end_time]];
-                            $num = $qrcodeRecordLogDb->where($where)->count();
-                            if( $num <= 0 ){
+//                            $num = $qrcodeRecordLogDb->where($where)->count();
+                            $list__ = $qrcodeRecordLogDb->where($where)->select();
+                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $isExists = $this->checkEachQrcodeHasTimeData($num_list, $day_start_time, $day_end_time);
+                            if( $isExists == 'false' ){
                                 $vv['isInspection'] = 2;
                                 break;
                             }

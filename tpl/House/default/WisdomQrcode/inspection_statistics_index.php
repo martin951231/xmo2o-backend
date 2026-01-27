@@ -430,6 +430,12 @@
     .qrcode-item:hover{
         background: #f1f1f1 !important;
     }
+    .uninspection{
+        .qrcode-item-title{
+            color: #fff !important;
+            background: #ff2424 !important;
+        }
+    }
 </style>
 <div class="main-content">
     <!-- 内容头部 -->
@@ -724,6 +730,7 @@
     }
     // 核心渲染函数：接收完整数据，渲染到inspection_container
     function renderInspectionDetail(fullData) {
+        console.log( fullData );
         const $container = $('#inspection_container');
         // 清空容器旧数据
         $container.html('');
@@ -761,19 +768,28 @@
         html += `
     <div class="inspection-log-list" style="padding: 15px; border: 1px solid #eee; border-radius: 4px; background: #f8f9fa;">
         <h4 style="margin: 0 0 15px 0; color: #333; font-size: 16px;">
-            <i class="fa fa-history" style="color: #ffc107;"></i> 二维码巡检日志（共${qrcodeList.length}个二维码）
+            <i class="fa fa-history" style="color: #ffc107;"></i> 二维码巡检日志（共${qrcodeList.length}个二维码,${qrcodeList.filter(item => item.is_inspection == false).length}个未完成）
         </h4>
 `;
         if (qrcodeList.length > 0) {
             qrcodeList.forEach((qItem, qIndex) => {
                 // 解析当前二维码的巡检日志（log_list）- 新数据结构是数组
                 const logList = qItem.log_list || [];
-                html += `
-            <div class="qrcode-item" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #fff;">
-                <div style="margin-bottom: 10px; font-weight: 600; color: #333;background: #ffc107;padding: 5px 10px;">
-                    ${qItem.qrcode_name || '未知'}（ID：${qItem.qrcode_id || '无'}）
+                if(qItem.is_inspection == true){
+                    html += `
+            <div class="qrcode-item inspection" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #fff;">
+                <div class="qrcode-item-title" style="margin-bottom: 10px; font-weight: 600; color: #333;background: #ffc107;padding: 5px 10px;">
+                    ${qItem.qrcode_name || '未知'}（ID：${qItem.qrcode_id || '无'}）（已完成）
                 </div>
         `;
+                }else{
+                    html += `
+            <div class="qrcode-item uninspection" style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; background: #fff;">
+                <div class="qrcode-item-title" style="margin-bottom: 10px; font-weight: 600; color: #333;background: #ffc107;padding: 5px 10px;">
+                    ${qItem.qrcode_name || '未知'}（ID：${qItem.qrcode_id || '无'}）（未完成）
+                </div>
+        `;
+                }
                 // 渲染当前二维码的巡检日志 - 适配新数据结构
                 if (logList.length > 0) {
                     logList.forEach((log, lIndex) => {
@@ -792,7 +808,7 @@
                                 const useField = Array.isArray(field.use_field)
                                     ? field.use_field.map(item => item.replace(/\r|\n/g, '').trim()).join(' / ')
                                     : '无';
-                                const fieldValue = (field.value || '').replace(/\r|\n/g, '').trim() || '未填写';
+                                const fieldValue = (field.value || '') || '未填写';
                                 // 字段类型名称转换（兼容字符串类型的type，如"2"）
                                 const fieldTypeName = getFieldTypeName(Number(field.type));
 
