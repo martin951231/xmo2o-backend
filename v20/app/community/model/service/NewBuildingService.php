@@ -2864,6 +2864,181 @@ class NewBuildingService
     }
 
     /**
+     * 查询房间列表和已缴账单
+     * @param $param
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @author : lkz
+     * Date: 2023/1/7
+     * Time: 15:04
+     */
+    public function getRoomDataListAndOrder($param){
+        $key='newV20:getRoomDataListAndOrder:';
+        $room_status=[
+            1=>1,//空置
+            2=>2,//审核中
+            3=>3,//已绑定业主
+            4=>0,//关闭
+        ];
+        $where=[
+            ['village_id','=',$param['village_id']],
+            ['is_public_rental','=',0],
+        ];
+        switch ($param['find_type']) {
+            case 1: //物业编号
+                if($param['find_value']){
+                    $where[]  = ['usernum|property_number','like',"%".$param['find_value']."%"];
+                }
+                break;
+            case 2: //姓名
+                if($param['find_value']){
+                    $user_bind=$this->getHouseVillageUserBindColumnMethod([
+                        ['village_id','=',$param['village_id']],
+                        ['status','=',1],
+                        ['name','like',"%".$param['find_value']."%"]
+                    ],'vacancy_id');
+                    if($user_bind){
+                        $user_bind=array_values(array_unique($user_bind));
+                        $where[]= ['pigcms_id','in',$user_bind];
+                    }
+                }
+                break;
+            case 3: //手机号
+                if($param['find_value']){
+                    $user_bind=$this->getHouseVillageUserBindColumnMethod([
+                        ['village_id','=',$param['village_id']],
+                        ['status','=',1],
+                        ['phone','like',"%".$param['find_value']."%"]
+                    ],'vacancy_id');
+                    if($user_bind){
+                        $user_bind=array_values(array_unique($user_bind));
+                        $where[]= ['pigcms_id','in',$user_bind];
+                    }
+                }
+                break;
+            case 4: //地址
+                if($param['find_value']){
+                    $where[]  = ['address','like',"%".$param['find_value']."%"];
+                }
+                break;
+            case 5: //门禁卡编号
+                if($param['find_value']){
+                    $where[]  = ['card_no','like',"%".$param['find_value']."%"];
+                }
+                break;
+        }
+        if(isset($room_status[$param['room_status']])){
+            $where[]=['status','=',$param['room_status']];
+        }
+        if(intval($param['single_id']) > 0){
+            $where[]=['single_id','=',intval($param['single_id'])];
+        }
+        if(intval($param['floor_id']) > 0){
+            $where[]=['floor_id','=',intval($param['floor_id'])];
+        }
+        if(intval($param['layer_id']) > 0){
+            $where[]=['layer_id','=',intval($param['layer_id'])];
+        }
+        if(intval($param['vacancy_id']) > 0){
+            $where[]=['pigcms_id','=',intval($param['vacancy_id'])];
+        }
+        $where[] = ['is_del','=',0];
+        $field = 'pigcms_id,usernum,single_id,floor_id,layer_id,room,user_status,status,sort';
+        $order='sort DESC,pigcms_id DESC';
+        $result=$this->getHouseVillageUserVacancyListMethod($where,$field,$order,$param['page'],$param['limit']);
+        $service_house_new_property = new HouseNewPorpertyService();
+        $HouseVillageUserVacancyService=new HouseVillageUserVacancyService();
+        $is_new_charge = $service_house_new_property->getTakeEffectTimeJudge($param['property_id']);
+        if($result['list']){
+            //单元集合
+            $floor_list=$this->getHouseVillageFloorSelectMethod([
+                ['village_id','=',$param['village_id']],
+                ['status','=',1],
+            ],'floor_id,floor_name,floor_layer,floor_type,single_id','floor_id');
+            //单元类型集合
+            $floor_type_key=$key.'floor_type';
+            if(Cache::get($floor_type_key)){
+                $floor_type_list=Cache::get($floor_type_key);
+            }else{
+                $floor_type_list=$this->getHouseVillageFloorTypeSelectMethod([
+                    ['village_id','=',$param['village_id']],
+                    ['status','=',1],
+                ],'id,name','id');
+                Cache::set($floor_type_key, $floor_type_list, 120);
+            }
+            //楼栋、楼层
+            $single_id_arr=$this->getHouseVillageUserVacancyColumnMethod($where,'single_id');
+            $sing_arr = [];
+            $layer_arr = [];
+            if($single_id_arr){
+                $sing_arr=$this->getHouseVillageSingleSelectMethod([
+                    ['village_id','=',$param['village_id']],
+                    ['id','in',$single_id_arr]
+                ],'id,single_name','id');
+                $layer_arr=$this->getHouseVillageLayerSelectMethod([
+                    ['village_id','=',$param['village_id']],
+                    ['single_id','in',$single_id_arr],
+                ],'id,layer_name','id');
+            }
+            foreach ($result['list'] as &$v){
+                if($is_new_charge){
+                    $serviceTimeInfo = $HouseVillageUserVacancyService->getRoomEndTime($v['pigcms_id'],$param['village_id'],$param['property_id']);
+                    if ($serviceTimeInfo['propertyStartTime']>1){
+                        $v['service_start_time'] = date('Y-m-d',$serviceTimeInfo['propertyStartTime']);
+                    }else{
+                        $v['service_start_time'] = '未设置';
+                    }
+                    if ($serviceTimeInfo['propertyEndTime']>1){
+                        $v['service_end_time'] = date('Y-m-d',$serviceTimeInfo['propertyEndTime']);
+                    }else{
+                        $v['service_end_time'] = '未设置';
+                    }
+                    $v['service_cycle'] = $v['service_start_time'].' - '.$v['service_end_time'];
+                }
+                $whereArr=array();
+                $whereArr[]=array('village_id','=',$param['village_id']);
+                $whereArr[]=array('room_id','=',$v['pigcms_id']);
+                $whereArr[]=array('is_paid','=',2);
+                $whereArr[]=array('is_discard','=',1);
+                $notpayordercount=$this->HouseNewPayOrder->getPayCount($whereArr);
+                $v['notpayordercount']=$notpayordercount ? $notpayordercount:0;
+                $single=$this->getHouseVillageSingleFindMethod([
+                    ['id','=',$v['single_id']],
+                ],'single_name');
+                $v['floor_name'] = isset($floor_list[$v['floor_id']]['floor_name']) ? $floor_list[$v['floor_id']]['floor_name'] : '';
+                if ($v['single_id'] && isset($sing_arr[$v['single_id']])) {
+                    $v['building_name'] = isset($sing_arr[$v['single_id']]['single_name']) ? $sing_arr[$v['single_id']]['single_name'] : '';
+                }
+                else {
+                    $v['building_name'] = (isset($floor_list[$v['floor_id']]) && isset($floor_list[$v['floor_id']]['floor_layer'])) ? $floor_list[$v['floor_id']]['floor_layer'] :'';
+                }
+                if ($v['layer_id']) {
+                    $v['layer_name'] = (isset($layer_arr[$v['layer_id']]) && isset($layer_arr[$v['layer_id']]['layer_name'])) ? $layer_arr[$v['layer_id']]['layer_name'] : '';
+                }
+                $v['floor_type_name'] = (isset($floor_list[$v['floor_id']]['floor_type']) && $floor_list[$v['floor_id']]['floor_type']) ? $floor_type_list[$floor_list[$v['floor_id']]['floor_type']] : '';
+                $word_data = [
+                    'floor_name'=>$v['floor_name'],
+                    'layer'=>$v['layer_name'],
+                    'room'=>$v['room'],
+                    'single_name'=>$single ? $single['single_name']:$v['building_name']
+                ];
+                $room_diy_name = $this->HouseVillageService->word_replce_msg($word_data,$param['village_id']);
+                $v['address'] = $room_diy_name;
+                $v['building_name'] = $v['building_name']? $v['building_name']:$word_data['single_name'];
+                $v['user_status_txt']= isset($this->HouseVillageService->user_status_arr[$v['user_status']]) ? $this->HouseVillageService->user_status_arr[$v['user_status']] : '无';
+                $v['room_status_txt']= isset($this->HouseVillageService->room_status_arr[$v['status']]) ? $this->HouseVillageService->room_status_arr[$v['status']] : '关闭';
+                unset($v['single_id'],$v['floor_id'],$v['layer_id'],$v['user_status'],$v['status'],$v['service_start_time'],$v['service_end_time'],$v['floor_type_name']);
+            }
+        }
+        $data['list'] = $result['list'];
+        $data['total_limit'] = $param['limit'];
+        $data['count'] = $result['count'];
+        return $data;
+    }
+
+    /**
      * 查询房间列表
      * @param $param
      * @return array

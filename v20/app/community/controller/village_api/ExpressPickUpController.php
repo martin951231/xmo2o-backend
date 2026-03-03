@@ -256,23 +256,32 @@ class ExpressPickUpController extends CommunityBaseController
                 // 按列填充数据（使用字母数组更清晰）
                 $columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
                 $values = [
-                    $village_name,
-                    $value['room_name'] ?? '',
-                    $value['track_num'] ?? '',
-                    $value['pickup_code'] ?? '',
-                    $value['location'] ?? '',
-                    $value['recipient_name'] ?? '',
-                    $value['recipient_phone'] ?? '',
-                    $value['create_time'] ?? '',
-                    $statusText,
-                    $value['remark'] ?? '',
-                    $value['reason'] ?? '',
+                    (string)$village_name,
+                    (string)$value['room_name'] ?? '',
+                    (string)$value['track_num'] ?? '',
+                    (string)$value['pickup_code'] ?? '',
+                    (string)$value['location'] ?? '',
+                    (string)$value['recipient_name'] ?? '',
+                    (string)$value['recipient_phone'] ?? '',
+                    (string)$value['create_time'] ?? '',
+                    (string)$statusText,
+                    (string)$value['remark'] ?? '',
+                    (string)$value['reason'] ?? '',
                 ];
 
                 // 循环赋值，避免重复代码
                 foreach ($columns as $index => $col) {
-                    $worksheet->setCellValue($col . $currentRow, $values[$index]);
+                    // 校验：如果values索引不存在，赋值为空字符串
+                    $cellValue = isset($values[$index]) ? $values[$index] : '';
+                    $cellCoordinate = $col . $currentRow;
+
+                    // 核心修复1：强制将所有单元格设为文本格式，避免类型识别错误
+                    $worksheet->getCell($cellCoordinate)->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING // 强制文本类型
+                    );
                 }
+
 
                 $currentRow++;
             }

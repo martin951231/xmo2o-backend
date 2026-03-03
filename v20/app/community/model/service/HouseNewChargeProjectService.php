@@ -31,6 +31,42 @@ class HouseNewChargeProjectService{
         $this->HouseNewChargeNumber =  new HouseNewChargeNumber();
         $this->HouseNewChargeService =  new HouseNewChargeService();
     }
+    /**
+     * 收费项目列表
+     * @author: liukezhu
+     * @date : 2021/6/10
+     * @param $param
+     * @return mixed
+     */
+    public function getListALL($param)
+    {
+        if(intval($param['page']) > 0){
+            $page = $param['page'];
+        }
+        if (empty($param['limit'])){
+            $limit = 999999;
+        }else{
+            $limit = $param['limit'];
+        }
+        if (isset($param['village_id'])) {
+            $where[] = ['p.village_id', '=', $param['village_id']];
+        }
+        if(isset($param['project_type']) && $param['project_type']=='cycle'){
+            $where[]=['p.type', '=', 2];
+        }else{
+            $where[]=['p.type', '=', 1];
+        }
+        $where[]=['p.status', '=', $param['status']];
+
+
+        $orderby='p.id desc';
+        $field = 'p.id,p.village_id,p.name,c.charge_number_name as subject,p.status,p.type,c.charge_type,hr.unit_price,hr.fees_type,hr.charge_price,hr.bill_create_set,hr.unit_gage_type';
+        $data = $this->HouseNewChargeProject->getListAll($where, $field,$orderby,$page,$limit)->toArray();
+
+        var_dump($data);die;
+        return $data;
+    }
+
 
     /**
      * 收费项目列表

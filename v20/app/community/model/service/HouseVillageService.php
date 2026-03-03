@@ -811,6 +811,21 @@ class HouseVillageService {
     }
 
     /**
+     * 获取单个小区数据信息
+     * @author:wanziyang
+     * @date_time: 2020/4/23 13:18
+     * @param array $village_id 社区ID
+     * @param string|bool $field 需要获取的对应字段
+     * @return array|null|\think\Model
+     */
+    public function getFind($where = [],$field = true) {
+        // 初始化 物业管理员 数据层
+        $db_house_village = new HouseVillage();
+        $list = $db_house_village->getInfo($where,$field);
+        return $list;
+    }
+
+    /**
      * 编辑社区信息
      * @author: wanziyang
      * @date_time: 2020/4/24 17:45

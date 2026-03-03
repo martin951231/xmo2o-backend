@@ -21,6 +21,35 @@ class HouseNewChargeProject extends Model{
 	{
 		Cache::tag($this->cacheTag)->clear();
 	}
+
+    /**
+     * 查询列表
+     * @param $where
+     * @param string $field
+     * @param string $order
+     * @param int $page
+     * @param int $limit
+     * @return mixed
+     */
+    public function getListAll($where,$field='*',$order='p.id desc',$page=0,$limit=20)
+    {
+        $sql = $this->alias('p')
+            ->leftJoin('house_new_charge_rule hr','p.id=hr.charge_project_id')
+            ->leftJoin('house_new_charge_number c','c.id = p.subject_id')
+            ->Distinct(true)
+            ->where($where)
+            ->field($field)
+            ->order($order)
+            ->buildSql();
+        var_dump($sql);die;
+        if($page){
+            $list = $sql->page($page,$limit)->select();
+        }else{
+            $list = $sql->select();
+        }
+        //Cache::tag($this->cacheTag)->set($cachKey,$list,7200-mt_rand(10,30));
+        return $list;
+    }
 	
     /**
      * 查询列表

@@ -44,7 +44,7 @@ class HouseNewRepairWorksOrderLog extends Model
         return $data;
     }
 
-    public function getLists($where=[],$field=true,$group='o.worker_id')
+    public function getLists($where=[],$field=true,$group='o.worker_id',$sort='l.log_id desc')
     {
         $data = $this->alias('l')
             ->leftJoin('house_new_repair_works_order o','o.order_id = l.order_id')

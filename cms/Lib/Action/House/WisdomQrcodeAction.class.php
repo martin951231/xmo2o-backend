@@ -4413,8 +4413,8 @@ HTML;
     /**
      * 从时间区间中找出指定星期几的日期
      * @param array $weekRangeArr 时间区间数组 [起始日期, 结束日期]，格式：Y-m-d
-     * @param int $weekNum 目标星期数（0=周日，1=周一，2=周二...6=周六）
-     * @return array 符合条件的日期列表（格式：Y-m-d）
+     * @param int $weekNum 目标星期数（1=周一，2=周二...6=周六，7=周日）【已适配你的定义】
+     * @return array 符合条件的日期列表（格式：Y-m-d），无匹配返回空数组
      */
     function findDateByWeekday($weekRangeArr, $weekNum) {
         // 1. 校验入参（避免报错）
@@ -4431,17 +4431,25 @@ HTML;
             return []; // 日期格式错误
         }
 
-        // 3. 遍历区间内的所有日期，筛选目标星期
-        $targetDates = null;
+        // 新增：校验星期数入参（仅允许1-7，防止传非法值）
+        if (!is_int($weekNum) || $weekNum < 1 || $weekNum > 7) {
+            return [];
+        }
+
+        // 3. 初始化结果数组【修复：改为空数组，而非null】
+        $targetDates = [];
         $currentDate = clone $startDate;
 
+        // 4. 遍历区间内的所有日期，筛选目标星期【核心修复星期数匹配逻辑】
         while ($currentDate <= $endDate) {
-            // 获取当前日期的星期数（0-6）
+            // 获取PHP默认星期数（0=周日，1=周一...6=周六）
             $currentWeekNum = (int)$currentDate->format('w');
+            // 转换为你的业务星期数（0→7，1-6保持不变），实现匹配
+            $bizWeekNum = $currentWeekNum === 0 ? 7 : $currentWeekNum;
 
-            // 匹配目标星期数，加入结果数组
-            if ($currentWeekNum == $weekNum) {
-                $targetDates = $currentDate->format('Y-m-d');
+            // 匹配目标星期数，追加到结果数组【修复：用[]追加，而非覆盖】
+            if ($bizWeekNum == $weekNum) {
+                $targetDates[] = $currentDate->format('Y-m-d');
             }
 
             // 日期+1天，继续遍历

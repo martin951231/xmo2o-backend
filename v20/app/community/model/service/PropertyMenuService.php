@@ -406,6 +406,38 @@ class PropertyMenuService
             $returnArr[] = $tmpMenu;
         }
 
+        if(!$roleJudge || (isset($property_menus) && in_array('property_4_6',$property_menus))) {
+            $tmpMenu = [];
+            $tmpMenu['name'] = 'budgetList';
+            $tmpMenu['parentId'] = 'property_4';
+            $tmpMenu['id'] = 'property_4_6';
+            $tmpMenu['meta'] = [
+                'icon' => '',
+                'title' => '预算管理',
+                'show' => true,
+                'permission' => 'system',
+            ];
+            $tmpMenu['component'] = 'budgetList';
+            $tmpMenu['path'] = '/property/property/charge/budgetList';
+            $returnArr[] = $tmpMenu;
+        }
+
+        if(!$roleJudge || (isset($property_menus) && in_array('property_4_7',$property_menus))) {
+            $tmpMenu = [];
+            $tmpMenu['name'] = 'budgetCategoryList';
+            $tmpMenu['parentId'] = 'property_4';
+            $tmpMenu['id'] = 'property_4_7';
+            $tmpMenu['meta'] = [
+                'icon' => '',
+                'title' => '预算分类管理',
+                'show' => true,
+                'permission' => 'system',
+            ];
+            $tmpMenu['component'] = 'budgetCategoryList';
+            $tmpMenu['path'] = '/property/property/charge/budgetCategoryList';
+            $returnArr[] = $tmpMenu;
+        }
+
         if(!$roleJudge || (isset($property_menus) && in_array('property_4_2',$property_menus))) {
             $tmpMenu = [];
             $tmpMenu['name'] = 'chargeNumberList';
