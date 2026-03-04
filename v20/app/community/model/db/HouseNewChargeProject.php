@@ -39,9 +39,7 @@ class HouseNewChargeProject extends Model{
             ->Distinct(true)
             ->where($where)
             ->field($field)
-            ->order($order)
-            ->buildSql();
-        var_dump($sql);die;
+            ->order($order);
         if($page){
             $list = $sql->page($page,$limit)->select();
         }else{

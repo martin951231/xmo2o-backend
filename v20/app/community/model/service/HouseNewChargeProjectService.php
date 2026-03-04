@@ -50,6 +50,7 @@ class HouseNewChargeProjectService{
         }
         if (isset($param['village_id'])) {
             $where[] = ['p.village_id', '=', $param['village_id']];
+            $where[] = ['hr.village_id', '=', $param['village_id']];
         }
         if(isset($param['project_type']) && $param['project_type']=='cycle'){
             $where[]=['p.type', '=', 2];
@@ -57,13 +58,13 @@ class HouseNewChargeProjectService{
             $where[]=['p.type', '=', 1];
         }
         $where[]=['p.status', '=', $param['status']];
+        $where[]=['hr.status', '=', $param['status']];
 
 
         $orderby='p.id desc';
-        $field = 'p.id,p.village_id,p.name,c.charge_number_name as subject,p.status,p.type,c.charge_type,hr.unit_price,hr.fees_type,hr.charge_price,hr.bill_create_set,hr.unit_gage_type';
+        $field = 'p.id,p.village_id,p.name,c.charge_number_name as subject,p.status,p.type,c.charge_type,hr.id as rule_id,hr.unit_price,hr.fees_type,hr.charge_price,hr.bill_create_set,hr.unit_gage_type';
         $data = $this->HouseNewChargeProject->getListAll($where, $field,$orderby,$page,$limit)->toArray();
 
-        var_dump($data);die;
         return $data;
     }
 

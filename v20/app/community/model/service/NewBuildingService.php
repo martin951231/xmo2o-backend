@@ -3119,8 +3119,11 @@ class NewBuildingService
         if(intval($param['vacancy_id']) > 0){
             $where[]=['pigcms_id','=',intval($param['vacancy_id'])];
         }
+        if(intval($param['house_type']) > 0){
+            $where[]=['house_type','=',intval($param['house_type'])];
+        }
         $where[] = ['is_del','=',0];
-        $field = 'pigcms_id,usernum,single_id,floor_id,layer_id,room,user_status,status,sort';
+        $field = 'pigcms_id,usernum,single_id,floor_id,layer_id,room,user_status,status,sort,house_type';
         $order='sort DESC,pigcms_id DESC';
         $result=$this->getHouseVillageUserVacancyListMethod($where,$field,$order,$param['page'],$param['limit']);
         $service_house_new_property = new HouseNewPorpertyService();

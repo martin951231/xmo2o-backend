@@ -2,11 +2,13 @@
 
 
 namespace app\community\controller\village_api;
+use app\common\model\service\config\ConfigCustomizationService;
 use app\community\model\db\ExpressApplication;
 use app\community\model\db\HouseNewRepairCate;
 use app\community\model\db\HouseNewRepairWorksOrder;
 use app\community\model\db\HouseNewRepairWorksOrderLog;
 use app\community\model\db\HouseVillageInfo;
+use app\community\model\db\HouseVillageUserVacancy;
 use app\community\model\db\UtilitiesCategory;
 use app\community\model\db\UtilitiesLog;
 use app\community\model\db\VillageBill;
@@ -16,6 +18,7 @@ use app\community\model\db\WisdomQrcodeRecordLog;
 use app\community\model\service\BudgetManagementService;
 use app\community\model\service\HouseNewCashierService;
 use app\community\model\service\HouseNewChargeProjectService;
+use app\community\model\service\HouseNewChargeRuleService;
 use app\community\model\service\HouseNewRepairService;
 use app\community\model\service\HouseVillageUserBindService;
 use app\community\model\service\NewBuildingService;
@@ -222,60 +225,85 @@ class StatisticalController extends CommunityBaseController
             // 转换为数组，框架模型对象转数组兼容
             $villageAboutInfo = $villageAboutInfo->toArray() ?: [];
 
-            // -------------- 3. 核心配置：字段/名称/堆叠映射（唯一修改入口） --------------
-            $fieldMap = [
-                // 房屋类型：数据库字段前缀 => X轴显示名 + 索引
-                'type' => [
-                    'zhuzhai' => '住宅',
-                    'shangpu' => '商铺',
-                    'chewei'  => '车位'
+            $data = [
+                [
+                    'name' => '住宅',
+                    'yishou' => $villageAboutInfo['zhuzhai_yishou'],
+                    'weishou' => $villageAboutInfo['zhuzhai_weishou'],
+                    'yijiao' => $villageAboutInfo['zhuzhai_yijiao'],
+                    'weijiao' => $villageAboutInfo['zhuzhai_weijiao'],
                 ],
-                // 统计项：数据库字段后缀 => 系列名 + 堆叠分组 + 索引
-                'item' => [
-                    'yishou' => ['name' => '已售', 'stack' => 'group1'],
-                    'weishou' => ['name' => '未售', 'stack' => 'group1'],
-                    'yijiao' => ['name' => '已交', 'stack' => 'group2'],
-                    'weijiao' => ['name' => '未交', 'stack' => 'group2']
-                ]
+                [
+                    'name' => '商铺',
+                    'yishou' => $villageAboutInfo['shangpu_yishou'],
+                    'weishou' => $villageAboutInfo['shangpu_weishou'],
+                    'yijiao' => $villageAboutInfo['shangpu_yijiao'],
+                    'weijiao' => $villageAboutInfo['shangpu_weijiao'],
+                ],
+                [
+                    'name' => '车位',
+                    'yishou' => $villageAboutInfo['chewei_yishou'],
+                    'weishou' => $villageAboutInfo['chewei_weishou'],
+                    'yijiao' => $villageAboutInfo['chewei_yijiao'],
+                    'weijiao' => $villageAboutInfo['chewei_weijiao'],
+                ],
             ];
+
+            // -------------- 3. 核心配置：字段/名称/堆叠映射（唯一修改入口） --------------
+//            $fieldMap = [
+//                // 房屋类型：数据库字段前缀 => X轴显示名 + 索引
+//                'type' => [
+//                    'zhuzhai' => '住宅',
+//                    'shangpu' => '商铺',
+//                    'chewei'  => '车位'
+//                ],
+//                // 统计项：数据库字段后缀 => 系列名 + 堆叠分组 + 索引
+//                'item' => [
+//                    'yishou' => ['name' => '已售', 'stack' => 'group1'],
+//                    'weishou' => ['name' => '未售', 'stack' => 'group1'],
+//                    'yijiao' => ['name' => '已交', 'stack' => 'group2'],
+//                    'weijiao' => ['name' => '未交', 'stack' => 'group2']
+//                ]
+//            ];
 
             // -------------- 4. 初始化ECharts图表数据结构（基于fieldMap自动生成，无需硬编码） --------------
-            $baseChartData = [
-                'xAxis'  => array_values($fieldMap['type']), // 自动提取X轴名称
-                'series' => []
-            ];
+//            $baseChartData = [
+//                'xAxis'  => array_values($fieldMap['type']), // 自动提取X轴名称
+//                'series' => []
+//            ];
             // 按统计项自动初始化系列（名称/堆叠/默认0数据）
-            $typeCount = count($fieldMap['type']);
-            foreach ($fieldMap['item'] as $itemConf) {
-                $baseChartData['series'][] = [
-                    'name'  => $itemConf['name'],
-                    'stack' => $itemConf['stack'],
-                    'data'  => array_fill(0, $typeCount, 0) // 按类型数量填充默认0，避免错位
-                ];
-            }
+//            $typeCount = count($fieldMap['type']);
+//            foreach ($fieldMap['item'] as $itemConf) {
+//                $baseChartData['series'][] = [
+//                    'name'  => $itemConf['name'],
+//                    'stack' => $itemConf['stack'],
+//                    'data'  => array_fill(0, $typeCount, 0) // 按类型数量填充默认0，避免错位
+//                ];
+//            }
+//
+//            // -------------- 5. 建立快速索引（基于fieldMap，后续扩展无需改索引） --------------
+//            $typeKeyToIdx = array_flip(array_keys($fieldMap['type'])); // zhuzhai=>0, shangpu=>1, chewei=>2
+//            $itemKeyToIdx = array_flip(array_keys($fieldMap['item'])); // yishou=>0, weishou=>1...
+//
+//            // -------------- 6. 遍历映射提取数据（全容错，适配字段缺失/非数字场景） --------------
+//            foreach ($fieldMap['type'] as $typeKey => $typeName) {
+//                foreach ($fieldMap['item'] as $itemKey => $itemConf) {
+//                    $fieldName = $typeKey . '_' . $itemKey; // 拼接数据库字段名
+//                    // 严格容错：字段存在+是有效数字才赋值，否则保留0
+//                    $fieldValue = 0;
+//                    if (isset($villageAboutInfo[$fieldName]) && is_numeric($villageAboutInfo[$fieldName])) {
+//                        $fieldValue = intval($villageAboutInfo[$fieldName]);
+//                    }
+//                    // 赋值到对应系列的对应位置
+//                    $baseChartData['series'][$itemKeyToIdx[$itemKey]]['data'][$typeKeyToIdx[$typeKey]] = $fieldValue;
+//                }
+//            }
+//
+//            // -------------- 7. 组装最终返回数据 --------------
+//            $res['data'] = $villageAboutInfo;       // 小区原始基础数据
+//            $res['chartList'] = $baseChartData;     // ECharts适配的图表数据
 
-            // -------------- 5. 建立快速索引（基于fieldMap，后续扩展无需改索引） --------------
-            $typeKeyToIdx = array_flip(array_keys($fieldMap['type'])); // zhuzhai=>0, shangpu=>1, chewei=>2
-            $itemKeyToIdx = array_flip(array_keys($fieldMap['item'])); // yishou=>0, weishou=>1...
-
-            // -------------- 6. 遍历映射提取数据（全容错，适配字段缺失/非数字场景） --------------
-            foreach ($fieldMap['type'] as $typeKey => $typeName) {
-                foreach ($fieldMap['item'] as $itemKey => $itemConf) {
-                    $fieldName = $typeKey . '_' . $itemKey; // 拼接数据库字段名
-                    // 严格容错：字段存在+是有效数字才赋值，否则保留0
-                    $fieldValue = 0;
-                    if (isset($villageAboutInfo[$fieldName]) && is_numeric($villageAboutInfo[$fieldName])) {
-                        $fieldValue = intval($villageAboutInfo[$fieldName]);
-                    }
-                    // 赋值到对应系列的对应位置
-                    $baseChartData['series'][$itemKeyToIdx[$itemKey]]['data'][$typeKeyToIdx[$typeKey]] = $fieldValue;
-                }
-            }
-
-            // -------------- 7. 组装最终返回数据 --------------
-            $res['data'] = $villageAboutInfo;       // 小区原始基础数据
-            $res['chartList'] = $baseChartData;     // ECharts适配的图表数据
-
+            $res['chartList'] = $data;
         } catch (\Exception $e) {
             // 异常捕获：避免服务调用/数据处理报错导致接口500
             log_write('获取小区项目基础数据异常：' . $e->getMessage(), 'error'); // 框架日志记录
@@ -1785,7 +1813,6 @@ class StatisticalController extends CommunityBaseController
 
     public function getChargeStatusData()
     {
-        echo "<pre>";
         $villageId = $this->adminUser['village_id'] ?? 0;
         $villageId = is_numeric($villageId) ? intval($villageId) : 0;
 
@@ -1809,16 +1836,6 @@ class StatisticalController extends CommunityBaseController
         // 获取当年最后一天（格式：YYYY-12-31 23:59:59）
         $lastDayOfYear = date('Y-m-d H:i:s', strtotime($currentYear . '-12-31 23:59:59'));
 
-        $roomDataWhere=array(
-            'village_id'=>$villageId,
-        );
-        $roomDataList = (new NewBuildingService())->getRoomDataList($roomDataWhere);
-        if( empty($roomDataList) ){
-            $roomDataList = [];
-        }else{
-            $roomDataList = $roomDataList['list'];
-        }
-
         $HouseNewChargeProjectService = new HouseNewChargeProjectService();
         $param=[
             'village_id'=>$villageId,
@@ -1837,17 +1854,141 @@ class StatisticalController extends CommunityBaseController
             'end_time'=>$lastDayOfYear,
         ];
         $payableOrderList = $this->payableOrderList($order_where);
-        var_dump($projectList);die;
 
-        //总户数
-        $account_num = $roomDataList['count'];
-        foreach ($projectList as $item) {
-//            $paidOrderList =
-            var_dump($item);
+//        //房屋面积
+//        $residenceRoomDataWhere=array(
+//            'village_id'=>$villageId,
+//            'house_type'=>1
+//        );
+//        $storeRoomDataWhere=array(
+//            'village_id'=>$villageId,
+//            'house_type'=>2
+//        );
+//        $residenceRoomDataList = (new NewBuildingService())->getRoomDataList($residenceRoomDataWhere);
+//        $storeRoomDataList = (new NewBuildingService())->getRoomDataList($storeRoomDataWhere);
+//
+//        $roomDataList = array_merge($residenceRoomDataList['list'], $storeRoomDataList['list']);
+//        $pigcms_ids = array_column($roomDataList, 'pigcms_id');
+//        $vacancy_where[] = ['pigcms_id','in', $pigcms_ids];
+//        $roomDateList = (new HouseVillageUserVacancy())->getList($vacancy_where);
+//        $residenceRoomArea = 0;
+//        $storeRoomArea = 0;
+//        if(!empty($roomDateList)){
+//            $roomDateList = $roomDateList->toArray();
+//            $residenceRoomList = $this->filterByPigcmsId($roomDateList,array_column($residenceRoomDataList['list'], 'pigcms_id'));
+//            $storeRoomList = $this->filterByPigcmsId($roomDateList,array_column($storeRoomDataList['list'], 'pigcms_id'));
+//            $residenceRoomArea = array_sum( array_column( $residenceRoomList , 'housesize') );
+//            $storeRoomArea = array_sum( array_column( $storeRoomList , 'housesize') );
+//        }
+
+        foreach ($projectList as &$item) {
+            $item['account_num'] = 0;//总户数
+            $item['paid_account_num'] = 0;//已缴户数
+            $item['remaining_paid_account_num'] = 0;//剩余应缴户数
+            $item['paid_account_rate'] = 0;//户数缴费率
+            $item['amound'] = 0;//应缴费总金额
+            $item['paid_amound'] = 0;//已缴费总金额
+            $item['remaining_paid_amound_num'] = 0;//剩余应缴金额
+            $item['paid_amound_rate'] = 0;//缴费率
+
+            //已缴户数
+            $origin_project_name_key = 'project_name';
+            $origin_project_name_value = $item['name'];
+            // 第一步：先按project_name筛选出匹配的数组
+            $matchedArr = array_filter($payableOrderList, function($item) use ($origin_project_name_key, $origin_project_name_value) {
+                return isset($item[$origin_project_name_key]) && $item[$origin_project_name_key] == $origin_project_name_value;
+            });
+
+            // 第二步：按room_id去重，每个room_id只保留第一条匹配的数据
+            $uniqueArr = [];
+            // 记录已经处理过的room_id，避免重复
+            $roomIdRecord = [];
+
+            foreach ($matchedArr as $value) {
+                // 先校验room_id字段是否存在且非空
+                if (isset($value['room_id']) && !empty($value['room_id'])) {
+                    $roomId = $value['room_id'];
+                    // 如果该room_id未记录过，则保留这条数据并标记已记录
+                    if (!in_array($roomId, $roomIdRecord)) {
+                        $roomIdRecord[] = $roomId;
+                        $uniqueArr[] = $value;
+                    }
+                } else {
+                    // 可选：如果没有room_id，是否保留？这里默认保留（也可以注释掉这行不保留）
+                    $uniqueArr[] = $value;
+                }
+            }
+
+            /*获取当前收费标准绑定用户数结束*/
+                $current_project_where = [
+                    'village_id'=>$villageId,
+                    'rule_id'=>$item['rule_id'],
+                    'bind_type'=>1,
+                ];
+                $currentRoomList = $this->standardBindList($current_project_where);
+                $currentRoomList = isset($currentRoomList['list']) && $currentRoomList['list'] > 0 ? $currentRoomList['list'] : [];
+                $currentProjectRoomNum = count($currentRoomList);
+            /*获取当前收费标准绑定用户数*/
+
+            $item['account_num'] = $currentProjectRoomNum;//总户数
+            if($currentProjectRoomNum<=0){
+                continue;
+            }
+            $item['paid_account_num'] = count($uniqueArr);//已缴户数
+            $item['remaining_paid_account_num'] = round( $currentProjectRoomNum - count($uniqueArr) ,0 );//剩余应缴户数
+            $item['paid_account_rate'] = $currentProjectRoomNum > 0? round( count($uniqueArr) / $currentProjectRoomNum ,2 ) * 100 : 0;//户数缴费率
+            $item['paid_amound'] =  array_sum( array_column( $matchedArr , 'pay_money' ) );//已缴费总金额
+            $item['paid_amound_txt'] = $this->formatAmountToWan( $item['paid_amound'] ).'万元';//已缴费总金额
+
+
+            if( count( $matchedArr ) > 0 ) {
+                //判断账单是按月生成, 还是按年, 还是按日, 1：按日生成2：按月生成3：按年生成, 默认按年生成
+                if( $item['bill_create_set'] == 1 ){
+                    $charge_price = $item['charge_price'] * 365;
+                }else if( $item['bill_create_set'] == 2 ){
+                    $charge_price = $item['charge_price'] * 12;
+                }else if( $item['bill_create_set'] == 3 ){
+                    $charge_price = $item['charge_price'];
+                }else{
+                    $charge_price = $item['charge_price'];
+                }
+
+                if( $item['fees_type'] == 2){//单位计价
+                    if( $item['unit_gage_type'] == 2 ){//车位面积
+                        //车位面积
+                        $roomArea = array_sum( array_column( $currentRoomList ,'position_area') );
+                    }else{//其余的都默认为房屋面积
+                        $roomArea = array_sum( array_column( $currentRoomList ,'housesize') );
+                    }
+
+                    //应缴费总金额
+                    $item['amound'] = round( $roomArea * $charge_price , 2);
+                    $item['amound_txt'] = $this->formatAmountToWan( $item['amound'] ) . '万元';
+                }else {//默认固定费用
+                    //应缴费总金额
+                    $item['amound'] = round( $item['account_num'] * $charge_price , 2);
+                    $item['amound_txt'] = $item['amound'] . '万元';
+                }
+                $item['area'] = $roomArea;
+
+                //剩余应缴
+                $item['remaining_paid_amound_num'] = round( $item['amound'] - $item['paid_amound'] ,2);
+                $item['remaining_paid_amound_num_txt'] = $this->formatAmountToWan( $item['remaining_paid_amound_num'] ) . '万元';
+                //缴费率
+                $item['paid_amound_rate'] = $item['amound'] > 0? round( $item['paid_amound'] / $item['amound'] , 2) * 100 : 2;
+
+                $item['paid_amound_str'] = $this->formatAmountToWan( $item['paid_amound'] );
+                $item['remaining_paid_amound_num_str'] = $this->formatAmountToWan( $item['remaining_paid_amound_num'] );
+            }
         }
-
-        var_dump(123);die;
-
+        unset($item);
+        foreach ($projectList as $item) {
+            // 严格判断account_num不等于0（避免空值/字符串0的干扰）
+            if (isset($item['account_num']) && $item['account_num'] !== 0) {
+                $filteredData[] = $item;
+            }
+        }
+        return api_output(1000,$filteredData);
     }
 
     /**
@@ -1878,6 +2019,86 @@ class StatisticalController extends CommunityBaseController
             return [];
         }
         return $list;
+    }
+
+    /**
+     * 查询收费标准绑定列表, 以及房间信息
+     * @author:zhubaodi
+     * @date_time: 2021/6/18 10:27
+     */
+    public function standardBindList($param)
+    {
+        $data['village_id'] = $param['village_id'];
+        $data['rule_id'] = $param['rule_id'];
+        $data['bind_type'] = $param['bind_type'];
+
+        if ($data['bind_type']==1){
+            $data['vecancy_id'] = $param['vecancy_id'];
+        }else{
+            $data['garage_id'] = $param['garage_id'];
+            $data['position_num'] = $param['position_num'];
+        }
+
+        $data['page'] = 1;
+        $data['limit']= 999999999;
+        $serviceChargeProject = new HouseNewChargeRuleService();
+
+
+        // print_r($data);exit;
+        try {
+            $chargeSetInfo = $serviceChargeProject->getStandardBindList2($data);
+            $configCustomizationService=new ConfigCustomizationService();
+            $isWSXCustomizedOpen=$configCustomizationService->getWSXCustomizedOpen();
+            $is_aihorse_customized=$configCustomizationService->getAihorseCustomizedJudge();
+
+            $standardBindImportBtnJudge=$configCustomizationService->getStandardBindImportBtnJudge();
+
+            $is_standard_bind_import_btn=0;
+            if($isWSXCustomizedOpen || $is_aihorse_customized || $standardBindImportBtnJudge){
+                $is_standard_bind_import_btn=1;
+            }
+
+            $chargeSetInfo['standard_bind_import_btn']=$is_standard_bind_import_btn;
+
+        } catch (\Exception $e) {
+            return [
+                'count'=>0,
+                'list'=>[],
+            ];
+        }
+        return $chargeSetInfo;
+    }
+
+    /**
+     * 筛选出数组中pigcms_id匹配的元素
+     * @param array $sourceArray 原始房源数据数组（就是你说的包含1645个元素的数组）
+     * @param array $targetIds 需要匹配的pigcms_id列表（可以是一维数组，如[14415, 12345]）
+     * @return array 匹配到的房源数据新数组
+     */
+    function filterByPigcmsId(array $sourceArray, array $targetIds): array
+    {
+        // 空值校验：原始数组为空或匹配ID列表为空，直接返回空数组
+        if (empty($sourceArray) || empty($targetIds)) {
+            return [];
+        }
+
+        // 将目标ID列表转为键值对（key为ID，value为true），提升匹配效率（避免循环内多次in_array）
+        $idMap = array_flip($targetIds);
+        $result = [];
+
+        // 遍历原始数组，筛选匹配的元素
+        foreach ($sourceArray as $item) {
+            // 校验元素是否包含pigcms_id字段，且字段值为有效数字
+            if (isset($item['pigcms_id']) && is_numeric($item['pigcms_id'])) {
+                $currentId = (int)$item['pigcms_id'];
+                // 匹配到目标ID，加入结果数组
+                if (isset($idMap[$currentId])) {
+                    $result[] = $item;
+                }
+            }
+        }
+
+        return $result;
     }
 
 }

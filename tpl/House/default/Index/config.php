@@ -628,30 +628,30 @@
                                             <td style="position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 500; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
                                                 住宅
                                             </td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[zhuzhai][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[zhuzhai][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[zhuzhai][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[zhuzhai][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_yishou']}" name="house[zhuzhai][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_weishou']}" name="house[zhuzhai][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_yijiao']}" name="house[zhuzhai][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_weijiao']}" name="house[zhuzhai][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
                                         </tr>
                                         <!-- 商铺行 -->
                                         <tr>
                                             <td style="position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 500; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
                                                 商铺
                                             </td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[shangpu][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[shangpu][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[shangpu][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[shangpu][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_yishou']}" name="house[shangpu][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_weishou']}" name="house[shangpu][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_yijiao']}" name="house[shangpu][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_weijiao']}" name="house[shangpu][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
                                         </tr>
                                         <!-- 车位行 -->
                                         <tr>
                                             <td style="position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 500; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
                                                 车位
                                             </td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[chewei][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[chewei][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[chewei][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
-                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" name="house[chewei][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_yishou']}" name="house[chewei][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_weishou']}" name="house[chewei][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_yijiao']}" name="house[chewei][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_weijiao']}" name="house[chewei][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
                                         </tr>
                                         </tbody>
                                     </table>

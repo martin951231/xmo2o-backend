@@ -32,6 +32,37 @@ class HouseNewChargeStandardBind extends Model
      * @date_time: 2021/6/17 9:48
      */
 
+    public function getBindList2($where, $field = true, $page = 0, $limit = 15, $order = 'b.id DESC')
+    {
+        $data = $this->alias('b')
+            ->leftJoin('house_village_parking_garage pg', 'b.garage_id = pg.garage_id')
+            ->leftJoin('house_village_user_vacancy vv', 'vv.pigcms_id = b.vacancy_id')
+            ->leftJoin('house_village_parking_position pp', 'pp.position_id = b.position_id')
+            ->where($where)->field($field);
+        if (!$page) {
+            $data = $data->order($order)
+                ->select();
+        } else {
+            $data = $data->page($page, $limit)
+                ->order($order)
+                ->select();
+        }
+        //  print_r($this->getLastSql());exit;
+        return $data;
+    }
+
+    /**
+     * 获取列表
+     * @param $where
+     * @param bool $field
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @return mixed
+     * @author:zhubaodi
+     * @date_time: 2021/6/17 9:48
+     */
+
     public function getBindList($where, $field = true, $page = 0, $limit = 15, $order = 'b.id DESC')
     {
         $data = $this->alias('b')
@@ -73,6 +104,28 @@ class HouseNewChargeStandardBind extends Model
         return $data;
     }
 
+    /**
+     * 获取列表
+     * @param $where
+     * @param bool $field
+     * @param int $page
+     * @param int $limit
+     * @param string $order
+     * @return mixed
+     * @author:zhubaodi
+     * @date_time: 2021/6/17 9:48
+     */
+
+    public function getBindCount2($where)
+    {
+        $data = $this->alias('b')
+            ->leftJoin('house_village_parking_garage pg', 'b.garage_id = pg.garage_id')
+            ->leftJoin('house_village_user_vacancy vv', 'vv.pigcms_id = b.vacancy_id')
+            ->leftJoin('house_village_parking_position pp', 'pp.position_id = b.position_id')
+            ->where($where)->count();
+        // print_r($this->getLastSql());exit;
+        return $data;
+    }
 
     /**
      * 房间/车位绑定消费标准列表
