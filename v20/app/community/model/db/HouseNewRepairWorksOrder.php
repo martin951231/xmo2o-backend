@@ -55,6 +55,19 @@ class HouseNewRepairWorksOrder extends Model
         return $dataObj;
     }
 
+    public function getAllCateList($where = [], $field = true, $order = 'update_time ASC,order_id ASC')
+    {
+        $dataObj = $this->alias('o')
+            ->leftJoin('House_new_repair_cate hc', 'o.cat_fid = hc.id')
+            ->leftJoin('House_worker hw', 'o.worker_id = hw.wid')
+            ->leftjoin('House_village hv','o.village_id = hv.village_id')
+            ->where($where)
+            ->field($field)
+            ->order($order)
+            ->select();
+        return $dataObj;
+    }
+
     public function getAllList($where = [], $field = true, $order = 'update_time ASC,order_id ASC')
     {
         $dataObj = $this->alias('o')->where($where)->field($field)->order($order)->select();

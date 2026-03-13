@@ -537,19 +537,22 @@ class StatisticalController extends CommunityBaseController
             if( $cateV['record_type'] == 1){
                 $diff =  abs(strtotime($endDate) - strtotime($startDate)) / 86400;
                 $diff = $diff ? $diff : 1;
+                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 1);
             }else if( $cateV['record_type'] == 2){
                 $should_be_inspection_current_week = explode( ',',$cateV['record_time'] );
                 $should_be_inspection_total = count( $this->findDatesByWeekdays([$startDate,$endDate],$should_be_inspection_current_week) );
                 $diff = $should_be_inspection_total ? $should_be_inspection_total : 1;
+                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 1);
             }else if( $cateV['record_type'] == 3){
                 $should_be_inspection_current_month = explode( ',',$cateV['record_time'] );
                 $should_be_inspection_total = count( $this->findDatesByDayNums([$startDate,$endDate],$should_be_inspection_current_month) );
                 $diff = $should_be_inspection_total ? $should_be_inspection_total : 1;
+                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 1);
             }else{
                 $diff = 1;
             }
             $should_be_inspection_amount = $diff * $should_be_inspection_qrcode;
-            $actual_inspection_amount = $inspection_list ? count( $inspection_list ) : 0;
+            $actual_inspection_amount = $inspection_list ? count( $inspection_list['data'] ) : 0;
             $cateV['should_be_inspection_amount'] = $should_be_inspection_amount;
             $cateV['actual_inspection_amount'] = $actual_inspection_amount;
             if( $should_be_inspection_amount == 0 || $actual_inspection_amount == 0){
@@ -1164,153 +1167,223 @@ class StatisticalController extends CommunityBaseController
     }
 
     /**
-     * 获取用户使用报修,快递代取人数
-     *
-     * */
+     * 获取工单响应时间
+     */
     public function getWorkOrderResponseData()
     {
-        $propertyId = $this->adminUser['property_id'] ?? 0;
         $villageId = $this->adminUser['village_id'] ?? 0;
-        $propertyId = is_numeric($propertyId) ? intval($propertyId) : 0;
         $villageId = is_numeric($villageId) ? intval($villageId) : 0;
-        // 严格校验：非数字/0直接返回参数错误
-        if (!is_numeric($villageId) || intval($villageId) <= 0) {
+
+        if ($villageId <= 0) {
             return api_output_error(1001, '必传参数【小区ID】缺失或无效');
         }
+
         [$startDate, $endDate] = $this->completeDateRange($_GET['startDate'] ?? '', $_GET['endDate'] ?? '', 12);
 
-        $where[] = ['o.village_id','=',$villageId];
-        //获取工单
-        $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-        $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
-        $workOrderList = $db_house_new_repair_works_order->getAllList($where)->toArray();
-        if( !empty($workOrderList) ){
-            foreach( $workOrderList as $k => &$v ){
-                $v['add_time_text'] = date('Y-m-d', $v['add_time']);
-                $log_where[] = ['order_id','=',$v['order_id']];
-                $log_info = $db_house_new_repair_works_order_log->getOne($log_where,true,'add_time ASC');
-                $v['first_record_time'] = $log_info['add_time']?$log_info['add_time']:'';
-                $v['response_time'] = $log_info['add_time']? round(abs($log_info['add_time'] - $v['add_time'] ?? 0) / 60, 1) :0;
-                $v['completed_time'] = $v['timely_time']? round( abs($v['timely_time'] - $v['add_time'] ?? 0) / 60, 1) :0;
+        $startTs = strtotime($startDate . ' 00:00:00');
+        $endTs   = strtotime($endDate . ' 23:59:59');
+
+        $dbWorkOrder = new HouseNewRepairWorksOrder();
+        $dbWorkOrderLog = new HouseNewRepairWorksOrderLog();
+
+        // 1. 一次性查出指定小区、指定时间范围内的工单
+        $where = [];
+        $where[] = ['o.village_id', '=', $villageId];
+        $where[] = ['o.add_time', '>=', $startTs];
+        $where[] = ['o.add_time', '<=', $endTs];
+
+        $workOrderList = $dbWorkOrder->getAllList($where)->toArray();
+
+        if (empty($workOrderList)) {
+            $finalList['data'] = [
+                'xAxis' => $this->buildMonthAxis($startDate, $endDate),
+                'series' => [
+                    ['name' => '响应时间', 'data' => array_fill(0, count($this->buildMonthAxis($startDate, $endDate)), 0)],
+                    ['name' => '处理时间', 'data' => array_fill(0, count($this->buildMonthAxis($startDate, $endDate)), 0)],
+                ]
+            ];
+            return api_output(0, $finalList);
+        }
+
+        // 2. 一次性查所有工单的首条响应日志
+        $orderIds = array_column($workOrderList, 'order_id');
+
+        $statusList = [
+            'center_assign_work',
+            'property_admin_assign',
+            'property_work_assign',
+            'house_admin_assign',
+            'house_auto_assign',
+            'work_grab',
+        ];
+
+        $logWhere = [];
+        $logWhere[] = ['order_id', 'in', $orderIds];
+        $logWhere[] = ['log_name', 'in', $statusList];
+
+        $logList = $dbWorkOrderLog->where($logWhere)
+            ->field('order_id,add_time')
+            ->order('add_time ASC')
+            ->select()
+            ->toArray();
+
+        // 每个工单取最早的一条日志
+        $firstLogMap = [];
+        foreach ($logList as $log) {
+            $orderId = $log['order_id'];
+            if (!isset($firstLogMap[$orderId])) {
+                $firstLogMap[$orderId] = $log['add_time'];
             }
         }
-        unset($v);
+
+        // 3. 给工单补充 response_time / completed_time
+        foreach ($workOrderList as &$item) {
+            $item['add_time_text'] = !empty($item['add_time']) ? date('Y-m-d', $item['add_time']) : '';
+
+            $orderId = $item['order_id'] ?? 0;
+            $addTime = isset($item['add_time']) && is_numeric($item['add_time']) ? (int)$item['add_time'] : 0;
+            $timelyTime = isset($item['timely_time']) && is_numeric($item['timely_time']) ? (int)$item['timely_time'] : 0;
+            $firstRecordTime = $firstLogMap[$orderId] ?? 0;
+
+            $item['first_record_time'] = $firstRecordTime ?: '';
+            $item['response_time'] = ($firstRecordTime && $addTime)
+                ? round(abs($firstRecordTime - $addTime) / 3600, 2)
+                : 0;
+
+            $item['completed_time'] = ($timelyTime && $addTime)
+                ? round(abs($timelyTime - $addTime) / 3600, 2)
+                : 0;
+        }
+        unset($item);
+
+        // 4. completed_time 只统计指定状态
         $completedList = [];
-        $unfinishedList = [];
         $targetStatus = [40, 60, 70];
 
         foreach ($workOrderList as $item) {
-            // 提取event_status，处理空值/非数值情况
-            $eventStatus = isset($item['event_status']) ? $item['event_status'] : '';
-            // 统一转为数值型（避免字符串"10"和数字10被误判）
-            $eventStatus = is_numeric($eventStatus) ? (int)$eventStatus : '';
+            $eventStatus = isset($item['event_status']) && is_numeric($item['event_status'])
+                ? (int)$item['event_status']
+                : 0;
 
-            // 判断分组
             if (empty($eventStatus) || in_array($eventStatus, $targetStatus)) {
-                // 空值 或 10/20/30 → 归为normal组
                 $completedList[] = $item;
-            } else {
-                // 其他值 → 归为other组
-                $unfinishedList[] = $item;
             }
         }
 
-        $finalCompletedList = $this->calcMonthlyAvgByType($completedList, $startDate, $endDate,'completed_time');
-        $finalUnfinishedList = $this->calcMonthlyAvgByType($workOrderList, $startDate, $endDate,'response_time');
+        // 5. 按月统计平均值
+        $finalCompletedList = $this->calcMonthlyAvgByType($completedList, $startDate, $endDate, 'completed_time');
+        $finalResponseList  = $this->calcMonthlyAvgByType($workOrderList, $startDate, $endDate, 'response_time');
 
         $finalList['data'] = [
-            'xAxis' => array_keys( $finalCompletedList ),
+            'xAxis' => array_keys($finalCompletedList),
             'series' => [
-                [ 'name'=> '响应时间','data'=> array_values($finalUnfinishedList) ],
-                [ 'name'=> '处理时间','data'=> array_values($finalCompletedList) ]
+                [
+                    'name' => '响应时间',
+                    'data' => array_values($finalResponseList)
+                ],
+                [
+                    'name' => '处理时间',
+                    'data' => array_values($finalCompletedList)
+                ]
             ]
         ];
+
         return api_output(0, $finalList);
     }
 
     /**
-     * 按指定类型统计对应字段的月度平均值（仅过滤当前类型字段的异常值）
-     * @param array $data 原始多维数组（包含completed_time/response_time字段，值为时间戳/数值）
-     * @param string $startDate 开始日期（Y-m-d，如"2026-02-26"）
-     * @param string $endDate 结束日期（Y-m-d，如"2027-02-26"）
-     * @param string $type 统计类型："completed_time" / "response_time"
-     * @return array 月度平均值（key=Y-m，value=保留1位小数的平均值，无数据为0.0）
+     * 按指定类型统计对应字段的月度平均值
+     * @param array $data
+     * @param string $startDate
+     * @param string $endDate
+     * @param string $type
+     * @return array
      */
-    function calcMonthlyAvgByType($data, $startDate, $endDate, $type) {
-        // 1. 基础参数校验
-        $startTs = strtotime($startDate);
-        $endTs = strtotime($endDate);
+    private function calcMonthlyAvgByType($data, $startDate, $endDate, $type)
+    {
+        $startTs = strtotime($startDate . ' 00:00:00');
+        $endTs   = strtotime($endDate . ' 23:59:59');
+
         if ($startTs === false || $endTs === false || $startTs > $endTs) {
             return [];
         }
 
-        // 字段映射（仅支持指定类型）
-        $fieldMap = [
-            'completed_time' => 'completed_time',
-            'response_time' => 'response_time'
-        ];
-        if (!isset($fieldMap[$type])) {
+        if (!in_array($type, ['completed_time', 'response_time'])) {
             return [];
         }
-        $targetField = $fieldMap[$type];
 
-        // 2. 初始化时间区间内的所有月份（默认0.0）
+        // 初始化月份
         $monthAvg = [];
-        $currentTs = $startTs;
-        while ($currentTs <= $endTs) {
-            $monthKey = date('Y-m', $currentTs);
-            $monthAvg[$monthKey] = 0.0;
-            $currentTs = strtotime('+1 month', strtotime(date('Y-m-01', $currentTs)));
+        $currentMonthTs = strtotime(date('Y-m-01', $startTs));
+        $endMonthTs = strtotime(date('Y-m-01', $endTs));
+
+        while ($currentMonthTs <= $endMonthTs) {
+            $monthKey = date('Y-m', $currentMonthTs);
+            $monthAvg[$monthKey] = 0;
+            $currentMonthTs = strtotime('+1 month', $currentMonthTs);
         }
 
-        // 3. 统计：仅过滤当前目标字段的异常值，其他字段不处理
         $monthStats = [];
-        // 3. 核心统计逻辑（修正：月份用add_time_text，仅过滤目标字段异常值）
-        $monthStats = [];
+
         foreach ($data as $item) {
-            // ========== 第一步：先判断add_time_text的合法性和时间区间 ==========
-            // 过滤无add_time_text或格式错误的条目（月份归属以该字段为准）
-            if (empty($item['add_time_text']) || strtotime($item['add_time_text']) === false) {
-                continue;
-            }
-            $addTimeTs = strtotime($item['add_time_text']);
-            // 过滤add_time_text不在指定时间区间内的条目
-            if ($addTimeTs < $startTs || $addTimeTs > $endTs) {
-                continue;
-            }
-            // 确定当前条目的月份（以add_time_text为准）
-            $itemMonthKey = date('Y-m', $addTimeTs);
-
-            // ========== 第二步：仅处理目标字段，过滤其异常值 ==========
-            // 提取目标字段值（仅处理当前类型字段，其他字段不管）
-            $fieldValue = isset($item[$targetField]) ? $item[$targetField] : 0;
-            $fieldValue = is_numeric($fieldValue) ? (float)$fieldValue : 0;
-            // 仅过滤当前目标字段的异常值（负数，0保留可按需调整）
-            if ($fieldValue < 0) {
+            if (empty($item['add_time'])) {
                 continue;
             }
 
-            // ========== 第三步：累加目标字段的有效数据 ==========
-            // 初始化当月统计数据
-            if (!isset($monthStats[$itemMonthKey])) {
-                $monthStats[$itemMonthKey] = ['total' => 0, 'count' => 0];
+            $addTimeTs = is_numeric($item['add_time']) ? (int)$item['add_time'] : strtotime($item['add_time']);
+            if (!$addTimeTs || $addTimeTs < $startTs || $addTimeTs > $endTs) {
+                continue;
             }
-            // 仅累加当前目标字段的有效数据
-            $monthStats[$itemMonthKey]['total'] += $fieldValue;
-            $monthStats[$itemMonthKey]['count']++;
+
+            $value = isset($item[$type]) && is_numeric($item[$type]) ? (float)$item[$type] : 0;
+            if ($value < 0) {
+                continue;
+            }
+
+            $monthKey = date('Y-m', $addTimeTs);
+
+            if (!isset($monthStats[$monthKey])) {
+                $monthStats[$monthKey] = [
+                    'total' => 0,
+                    'count' => 0
+                ];
+            }
+
+            $monthStats[$monthKey]['total'] += $value;
+            $monthStats[$monthKey]['count']++;
         }
 
-        // 4. 计算平均值（保留1位小数）
         foreach ($monthStats as $month => $stats) {
-            if ($stats['count'] > 0 && isset($monthAvg[$month])) {
-                $avg = $stats['total'] / $stats['count'];
-                $monthAvg[$month] = round($avg, 1);
+            if ($stats['count'] > 0) {
+                $monthAvg[$month] = round($stats['total'] / $stats['count'], 1);
             }
         }
 
-        // 5. 按时间排序返回
         ksort($monthAvg);
         return $monthAvg;
+    }
+
+    /**
+     * 生成月份横轴
+     * @param string $startDate
+     * @param string $endDate
+     * @return array
+     */
+    private function buildMonthAxis($startDate, $endDate)
+    {
+        $startTs = strtotime($startDate . ' 00:00:00');
+        $endTs   = strtotime($endDate . ' 23:59:59');
+
+        $months = [];
+        $currentMonthTs = strtotime(date('Y-m-01', $startTs));
+        $endMonthTs = strtotime(date('Y-m-01', $endTs));
+
+        while ($currentMonthTs <= $endMonthTs) {
+            $months[] = date('Y-m', $currentMonthTs);
+            $currentMonthTs = strtotime('+1 month', $currentMonthTs);
+        }
+
+        return $months;
     }
 
     /**
@@ -1827,8 +1900,8 @@ class StatisticalController extends CommunityBaseController
 
 
         // 获取当前年份
-//        $currentYear = date('Y');
-        $currentYear = date('2025');
+        $currentYear = date('Y');
+//        $currentYear = date('2025');
 
         // 获取当年第一天（格式：YYYY-01-01 00:00:00）
         $firstDayOfYear = date('Y-m-d H:i:s', strtotime($currentYear . '-01-01 00:00:00'));
@@ -2099,6 +2172,108 @@ class StatisticalController extends CommunityBaseController
         }
 
         return $result;
+    }
+
+    /**
+     * 针对单个 cate 的巡检记录去重
+     *
+     * 去重维度：
+     * period(日/周/月) + qrcode_id + village_id
+     *
+     * 只处理当前 cate_id 的数据
+     * 每组最多保留条数 = 当前 cate 的 record_time 按逗号拆分后的数量
+     *
+     * @param array $cate 单个分类数据
+     * @param array $recordList 巡检记录列表
+     * @param int $status 1=自然日 2=自然周 3=自然月
+     * @return array
+     */
+    function uniqueRecordByCatePeriodQrcodeVillage(array $cate, array $recordList, int $status): array
+    {
+        if (empty($cate) || empty($recordList)) {
+            return [
+                'data' => [],
+                'date_list' => [],
+            ];
+        }
+
+        $cateId = (int)($cate['id'] ?? 0);
+        if ($cateId <= 0) {
+            return [
+                'data' => [],
+                'date_list' => [],
+            ];
+        }
+
+        // 当前分类每个周期最多保留几条
+        $recordTime = trim((string)($cate['record_time'] ?? ''));
+        $timeList = array_values(array_filter(array_map('trim', explode(',', $recordTime))));
+        $limit = count($timeList) ?: 1;
+
+        // 只取当前 cate_id 的记录
+        $currentRecordList = array_filter($recordList, function ($item) use ($cateId) {
+            return (int)($item['cate_id'] ?? 0) === $cateId;
+        });
+
+        if (empty($currentRecordList)) {
+            return [
+                'data' => [],
+                'date_list' => [],
+            ];
+        }
+
+        // 按时间升序，保留最早的几条
+        usort($currentRecordList, function ($a, $b) {
+            return (int)($a['add_time'] ?? 0) <=> (int)($b['add_time'] ?? 0);
+        });
+
+        $groupCount = [];
+        $result = [];
+        $dateList = [];
+
+        foreach ($currentRecordList as $item) {
+            $addTime = (int)($item['add_time'] ?? 0);
+            if ($addTime <= 0) {
+                continue;
+            }
+
+            $qrcodeId = $item['qrcode_id'] ?? '';
+            $villageId = $item['village_id'] ?? '';
+
+            // 按状态生成日期分组
+            if ($status == 1) {
+                $periodKey = date('Y-m-d', $addTime);
+            } elseif ($status == 2) {
+                $periodKey = date('o-W', $addTime);
+            } elseif ($status == 3) {
+                $periodKey = date('Y-m', $addTime);
+            } else {
+                $periodKey = date('Y-m-d', $addTime);
+            }
+
+            // 最终分组键：日期 + qrcode_id + village_id
+            $groupKey = $periodKey . '_' . (string)$qrcodeId . '_' . (string)$villageId;
+
+            if (!isset($groupCount[$groupKey])) {
+                $groupCount[$groupKey] = 0;
+                $dateList[$groupKey] = [
+                    'period_key' => $periodKey,
+                    'qrcode_id' => $qrcodeId,
+                    'village_id' => $villageId,
+                    'group_key' => $groupKey,
+                ];
+            }
+
+            if ($groupCount[$groupKey] < $limit) {
+                $result[] = $item;
+                $groupCount[$groupKey]++;
+            }
+        }
+
+        return [
+            'data' => array_values($result),
+            'date_list' => array_values($dateList),
+        ];
     }
 
 }

@@ -17,6 +17,29 @@ class UtilitiesLog extends Model
         return $data;
     }
 
+    public function getListByType($where = [], $field = true, $page = 1, $limit = 10, $order = 'ul.id DESC')
+    {
+        if ($page) {
+            $data = $this->alias('ul')
+                ->leftjoin('Utilities_category uc','ul.category_id = uc.id')
+                ->leftjoin('House_village hv','ul.village_id = hv.village_id')
+                ->where($where)
+                ->field($field)
+                ->page($page, $limit)
+                ->order($order)
+                ->select();
+        } else {
+            $data = $this->alias('ul')
+                ->leftjoin('Utilities_category uc','ul.category_id = uc.id')
+                ->leftjoin('House_village hv','ul.village_id = hv.village_id')
+                ->where($where)
+                ->field($field)
+                ->order($order)
+                ->select();
+        }
+        return $data;
+    }
+
     public function getCount($where) {
         $list = $this->where($where)->count();
         return $list;
