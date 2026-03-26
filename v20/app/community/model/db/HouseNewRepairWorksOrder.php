@@ -43,7 +43,7 @@ class HouseNewRepairWorksOrder extends Model
         return $datas;
     }
 
-    public function getComplainList($where = [], $field = true, $order = 'update_time ASC,order_id ASC')
+    public function getComplainList($where = [], $field = true, $order = 'update_time ASC,order_id ASC',$page = 0, $pagesize = 99999)
     {
         $dataObj = $this->alias('o')
             ->leftJoin('House_new_repair_cate hc', 'o.cat_id = hc.id')
@@ -51,6 +51,7 @@ class HouseNewRepairWorksOrder extends Model
             ->where($where)
             ->field($field)
             ->order($order)
+            ->page($page,$pagesize)
             ->select();
         return $dataObj;
     }

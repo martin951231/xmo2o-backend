@@ -1621,13 +1621,7 @@ class CommunityStatisticsService
     }
 
     public function bigDataChange($num) {
-        if (floatval($num)>=100000000) {
-            $changeNum = round_number($num/100000000) . '亿';
-        } elseif  (floatval($num)>=10000000) {
-            $changeNum = round_number($num/10000000) . '千万';
-        } elseif  (floatval($num)>=1000000) {
-            $changeNum = round_number($num/1000000) . '百万';
-        } elseif  (floatval($num)>=10000) {
+        if (floatval($num)>=10000) {
             $changeNum = round_number($num/10000) . '万';
         } else {
             $changeNum = round_number($num);

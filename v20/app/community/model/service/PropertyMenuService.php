@@ -406,7 +406,7 @@ class PropertyMenuService
             $returnArr[] = $tmpMenu;
         }
 
-        if(!$roleJudge || (isset($property_menus) && in_array('property_4_6',$property_menus))) {
+        if(!$roleJudge || (isset($property_menus) && in_array('property_4_2',$property_menus))) {
             $tmpMenu = [];
             $tmpMenu['name'] = 'budgetList';
             $tmpMenu['parentId'] = 'property_4';
@@ -422,7 +422,7 @@ class PropertyMenuService
             $returnArr[] = $tmpMenu;
         }
 
-        if(!$roleJudge || (isset($property_menus) && in_array('property_4_7',$property_menus))) {
+        if(!$roleJudge || (isset($property_menus) && in_array('property_4_2',$property_menus))) {
             $tmpMenu = [];
             $tmpMenu['name'] = 'budgetCategoryList';
             $tmpMenu['parentId'] = 'property_4';

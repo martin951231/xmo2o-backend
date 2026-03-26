@@ -309,7 +309,6 @@ class StatisticalController extends CommunityBaseController
             log_write('获取小区项目基础数据异常：' . $e->getMessage(), 'error'); // 框架日志记录
             return api_output_error(500, '服务器内部错误，获取数据失败');
         }
-
         // 正常返回
         return api_output(0, $res);
     }
@@ -327,15 +326,21 @@ class StatisticalController extends CommunityBaseController
             return api_output_error(1001, '必传参数【小区ID】缺失或无效');
         }
         $villageId = intval($villageId);
-        $startDate = $_GET['startDate'];
-        $endDate = $_GET['endDate'];
-        if( empty($startDate) && empty( $endDate ) ){
-            $startDate = date('Y-m-d', strtotime('-1 month'));
+        $startDate = $this->request->post('start_date');
+        $endDate = $this->request->post('end_date');
+
+        // 统一处理：开始时间为开始月首日，结束时间为规则日期
+        $startDate = !empty($startDate) ? $startDate : ( !empty($endDate) ? $endDate : date('Y-m-d') );
+        $startDate = date('Y-m-01', strtotime($startDate)); // 转为月初
+
+        $endDate = !empty($endDate) ? $endDate : ( !empty($startDate) ? $startDate : date('Y-m-d'));
+        // 如果结束日期所在月份是当前月，设置为今天，否则为该月最后一天
+        $currentMonth = date('Y-m');
+        $endDateMonth = date('Y-m', strtotime($endDate));
+        if ($endDateMonth === $currentMonth) {
             $endDate = date('Y-m-d');
-        }else if( !empty($startDate) && empty( $endDate ) ){
-            $endDate = date('Y-m-d');
-        }else if( empty($startDate) && !empty( $endDate ) ){
-            $startDate = date('Y-m-d', strtotime($endDate.'-1 month'));
+        } else {
+            $endDate = date('Y-m-t', strtotime($endDate));
         }
 
         $qrcodeCateDb = new WisdomQrcodeCate();
@@ -368,6 +373,10 @@ class StatisticalController extends CommunityBaseController
         $result = [
             'data' => $list,
             'chart_list' => array_column($list, 'chart_data'),
+            'dateRange' => [
+                'start_date' =>  date('Y-m', strtotime($startDate)),
+                'end_date' => date('Y-m', strtotime($endDate)),
+            ]
         ];
 
         return api_output(0, $result);
@@ -375,6 +384,7 @@ class StatisticalController extends CommunityBaseController
 
     function getInspectionCompletedRate($cateList, $villageId, $startDate, $endDate)
     {
+        $where = [];
         $where[] = ['village_id', '=', $villageId];
 
         $qrcodeDb = new WisdomQrcode();
@@ -397,85 +407,95 @@ class StatisticalController extends CommunityBaseController
             if( empty($currentCateQrcodeList) ){
                 continue;
             }
-            $qrcodeIds = array_column( $currentCateQrcodeList,'id' );
-            //循环查询当前日期是否完成
-            $where[] = ['qrcode_id','in',$qrcodeIds];
-            $where[] = ['cate_id','in',[$v['id']]];
+            $qrcodeIds = array_column($currentCateQrcodeList, 'id');
 
-            foreach( $v['date_list'] as &$vv ){
-                if( $v['record_type'] == 1 ){
+            foreach ($v['date_list'] as &$vv) {
+                // 每次循环都初始化$where，避免条件累加
+                $where = [];
+                $where[] = ['qrcode_id', 'in', $qrcodeIds];
+                $where[] = ['cate_id', 'in', [$v['id']]];
+
+                if ($v['record_type'] == 1) {
                     //查看当前天是否区分了时间段,如果是,则查看每个时间段是否巡检,所有时间段都有巡检记录才为巡检完成, 如果没有设置时间段, 那只要当前天有记录就算完成
-                    if( empty( $v['record_time'] ) ){
+                    if (empty($v['record_time'])) {
                         $startTime = strtotime($vv['fullDate'] . ' 00:00:00');
                         $endTime = strtotime($vv['fullDate'] . ' 23:59:59');
-                        $where[] = ['add_time','between', [$startTime, $endTime]];
-                        $num = $qrcodeRecordLogDb->getCount($where);
+                        $where_time = $where;
+                        $where_time[] = ['add_time', 'between', [$startTime, $endTime]];
+                        $num = $qrcodeRecordLogDb->getCount($where_time);
                         $vv['isInspection'] = $num > 0 ? 1 : 2;//1为完成, 2为未完成
-                    }else{
-                        $day_range = explode( ',',$v['record_time']);
+                    } else {
+                        $day_range = explode(',', $v['record_time']);
                         //根据数组创建sql, 查看是否每个时间段都有巡检记录
                         $vv['isInspection'] = 1;
-                        foreach($day_range as $dayV){
+                        foreach ($day_range as $dayV) {
                             $dayV = explode('-', $dayV);
-                            $startTime = strtotime($vv['fullDate'] .' '. $dayV[0]);
-                            $endTime = strtotime($vv['fullDate'] .' '. $dayV[1]);
-                            $where[] = ['add_time','between', [$startTime, $endTime]];
-                            $list__ = $qrcodeRecordLogDb->where($where)->select()->toArray();
-                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+
+                            $startTime = strtotime($vv['fullDate'] . ' ' . $dayV[0]);
+                            $endTime = strtotime($vv['fullDate'] . ' ' . $dayV[1]);
+                            $where_time = $where;
+                            $where_time[] = ['add_time', 'between', [$startTime, $endTime]];
+                            $list__ = $qrcodeRecordLogDb->where($where_time)->select()->toArray();
+                            $num_list = $this->groupByQrcodeId($list__, $qrcodeIds);
+                        
                             $isExists = $this->checkEachQrcodeHasTimeData($num_list, $startTime, $endTime);
-                            if( $isExists == 'false' ){
+                            if ($isExists == 'false') {
                                 $vv['isInspection'] = 2;
                                 break;
                             }
                         }
                     }
-                }else if( $v['record_type'] == 2 ){
+                } else if ($v['record_type'] == 2) {
                     //周任务查看是哪天需要巡检, 每天的那个时间段需要巡检,必须全部完成才算完成, 否则当前任务未完成
                     //如果数据为空, 那默认为本周有一次巡检就算完成
-                    if( empty( $v['record_time'] ) ){
+                    if (empty($v['record_time'])) {
                         $startTime = strtotime($vv['weekRangeArr'][0] . ' 00:00:00');
                         $endTime = strtotime($vv['weekRangeArr'][1] . ' 23:59:59');
-                        $where[] = ['add_time','between', [$startTime, $endTime]];
-                        $num = $qrcodeRecordLogDb->getCount($where);
+                        $where_time = $where;
+                        $where_time[] = ['add_time', 'between', [$startTime, $endTime]];
+                        $num = $qrcodeRecordLogDb->getCount($where_time);
                         $vv['isInspection'] = $num > 0 ? 1 : 2;//1为完成, 2为未完成
-                    }else{
-                        $day_range = explode( ',',$v['record_time']);
+                    } else {
+                        $day_range = explode(',', $v['record_time']);
                         $vv['isInspection'] = 1;
-                        foreach($day_range as $rangeItem){
-                            $cur_day = $this->findDateByWeekday($vv['weekRangeArr'],$rangeItem);
+                        foreach ($day_range as $rangeItem) {
+                            $cur_day = $this->findDateByWeekday($vv['weekRangeArr'], $rangeItem);
                             $day_start_time = strtotime($cur_day . ' ' . $v['start_time']);
                             $day_end_time = strtotime($cur_day . ' ' . $v['end_time']);
-                            $where[] = ['add_time','between', [$day_start_time, $day_end_time]];
-                            $list__ = $qrcodeRecordLogDb->where($where)->select()->toArray();
-                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $where_time = $where;
+                            $where_time[] = ['add_time', 'between', [$day_start_time, $day_end_time]];
+                            $list__ = $qrcodeRecordLogDb->where($where_time)->select()->toArray();
+                            $num_list = $this->groupByQrcodeId($list__, $qrcodeIds);
                             $isExists = $this->checkEachQrcodeHasTimeData($num_list, $day_start_time, $day_end_time);
-                            if( $isExists == 'false' ){
+                            if ($isExists == 'false') {
                                 $vv['isInspection'] = 2;
                                 break;
                             }
                         }
                     }
-                }else if( $v['record_type'] == 3 ){
+                } else if ($v['record_type'] == 3) {
                     //月任务查看是哪天需要巡检, 每天的那个时间段需要巡检,必须全部完成才算完成, 否则当前任务未完成
                     //如果数据为空, 那默认为本月有一次巡检就算完成
-                    if( empty( $v['record_time'] ) ){
+                    if (empty($v['record_time'])) {
                         $fullData = $this->getLastDayOfMonth($vv['fullMonth']);
-                        $startTime = strtotime($vv['fullMonth'].'-01' . ' 00:00:00');
+                        $startTime = strtotime($vv['fullMonth'] . '-01' . ' 00:00:00');
                         $endTime = strtotime($fullData . ' 23:59:59');
-                        $where[] = ['add_time','between', [$startTime, $endTime]];
-                        $num = $qrcodeRecordLogDb->getCount($where);
+                        $where_time = $where;
+                        $where_time[] = ['add_time', 'between', [$startTime, $endTime]];
+                        $num = $qrcodeRecordLogDb->getCount($where_time);
                         $vv['isInspection'] = $num > 0 ? 1 : 2;//1为完成, 2为未完成
-                    }else{
-                        $day_range = explode( ',',$v['record_time']);
+                    } else {
+                        $day_range = explode(',', $v['record_time']);
                         $vv['isInspection'] = 1;
-                        foreach($day_range as $rangeItem){
-                            $day_start_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['start_time']);
-                            $day_end_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['end_time']);
-                            $where[] = ['add_time','between', [$day_start_time, $day_end_time]];
-                            $list__ = $qrcodeRecordLogDb->where($where)->select()->toArray();
-                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                        foreach ($day_range as $rangeItem) {
+                            $day_start_time = strtotime($vv['fullMonth'] . '-' . sprintf('%02d', $rangeItem) . ' ' . $v['start_time']);
+                            $day_end_time = strtotime($vv['fullMonth'] . '-' . sprintf('%02d', $rangeItem) . ' ' . $v['end_time']);
+                            $where_time = $where;
+                            $where_time[] = ['add_time', 'between', [$day_start_time, $day_end_time]];
+                            $list__ = $qrcodeRecordLogDb->where($where_time)->select()->toArray();
+                            $num_list = $this->groupByQrcodeId($list__, $qrcodeIds);
                             $isExists = $this->checkEachQrcodeHasTimeData($num_list, $day_start_time, $day_end_time);
-                            if( $isExists == 'false' ){
+                            if ($isExists == 'false') {
                                 $vv['isInspection'] = 2;
                                 break;
                             }
@@ -491,11 +511,11 @@ class StatisticalController extends CommunityBaseController
             $inspectionArr = array_map(function($val) {
                 return ($val === 1 || $val === '1') ? 1 : 0;
             }, $inspectionArr);
-//             求和（1+0+1=2）
+            // 求和（1+0+1=2）
             $inspectin_num = array_sum($inspectionArr);
             $v['inspectin_num'] = $inspectin_num;
             $v['total_num'] = $total_num;
-            $v['complete_rate'] = round( ($inspectin_num/$total_num) * 100,2 );
+            $v['complete_rate'] = round(($inspectin_num / $total_num) * 100, 2);
             unset($vv);
         }
         return $cateList;
@@ -529,14 +549,14 @@ class StatisticalController extends CommunityBaseController
             $startTime = strtotime($startDate . ' 00:00:00');
             $endTime = strtotime($endDate . ' 23:59:59');
             $log_where[] = ['add_time', 'between', [$startTime, $endTime]];
-            $inspection_list = $qrcodeRecordLogDb->where($log_where)->buildSql();
+            // $inspection_list = $qrcodeRecordLogDb->where($log_where)->buildSql();
             $inspection_list = $qrcodeRecordLogDb->where($log_where)->select()->toArray();
             $should_be_inspection = json_decode(htmlspecialchars_decode($cateV['bind_qrcode'] ?? '[]'), true);
             $should_be_inspection_qrcode = count( $should_be_inspection );
             //计算总应巡检
             if( $cateV['record_type'] == 1){
                 $diff =  abs(strtotime($endDate) - strtotime($startDate)) / 86400;
-                $diff = $diff ? $diff : 1;
+                $diff = $diff ? $diff + 1 : 1;
                 $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 1);
             }else if( $cateV['record_type'] == 2){
                 $should_be_inspection_current_week = explode( ',',$cateV['record_time'] );
@@ -551,7 +571,9 @@ class StatisticalController extends CommunityBaseController
             }else{
                 $diff = 1;
             }
-            $should_be_inspection_amount = $diff * $should_be_inspection_qrcode;
+            $frequency = $cateV['record_time'] ? count(explode( ',',$cateV['record_time'] )) : 1 ;
+            $should_be_inspection_amount = $diff * $should_be_inspection_qrcode * $frequency;
+
             $actual_inspection_amount = $inspection_list ? count( $inspection_list['data'] ) : 0;
             $cateV['should_be_inspection_amount'] = $should_be_inspection_amount;
             $cateV['actual_inspection_amount'] = $actual_inspection_amount;
@@ -1134,6 +1156,7 @@ class StatisticalController extends CommunityBaseController
         [$startDate, $endDate] = $this->completeDateRange($_GET['startDate'] ?? '', $_GET['endDate'] ?? '', 12);
 
         $where[] = ['o.village_id','=',$villageId];
+        $where[] = ['o.order_type','=',0];
 //        $where[] = ['o.add_time','between',[strtotime($startDate),strtotime($endDate)]];
         //获取工单
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
@@ -1145,6 +1168,7 @@ class StatisticalController extends CommunityBaseController
         }
         unset($v);
         $finalWorkOrderList = $this->countDataByMonth($workOrderList, $startDate, $endDate);
+
         //获取快递代取
         $db_express_application = new ExpressApplication();
         $express_where[] = ['p.village_id' , '=' , $villageId];
@@ -1493,19 +1517,23 @@ class StatisticalController extends CommunityBaseController
         $db_house_new_repair_cate = new HouseNewRepairCate();
         $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
 
-        $cate_where[] = ['cate_name','=','投诉建议'];
+//        $cate_where[] = ['cate_name','=','投诉建议'];
         $cate_where[] = ['village_id','=',$villageId];
-        $cate_id = $db_house_new_repair_cate->getOne($cate_where);
+        $cate_where[] = ['status','=',1];
+        $cate_id = $db_house_new_repair_cate->getList($cate_where);
         if( empty($cate_id) ){
-            return api_output_error(1001, '找不到投诉建议分类');
+            return api_output_error(1001, '找不到分类');
         }
 
+        $cate_id = $cate_id->toArray();
+
         [$prev_start, $prev_end] = $this->getLastCycleDateRange($startDate, $endDate);
-        $list_where[] = ['o.cat_fid','=',$cate_id['id']];
+        $list_where[] = ['o.cat_id','in',array_column($cate_id, 'id')];
         $list_where[] = ['o.village_id','=',$villageId];
         $list_where[] = ['o.add_time','between',[strtotime($startDate),strtotime($endDate)]];
 
-        $list = $db_house_new_repair_works_order->getComplainList($list_where,'o.*,hc.cate_name,hw.name as wname')->toArray();
+        $list = $db_house_new_repair_works_order->getComplainList($list_where,'o.*,hc.cate_name,hw.name as wname','',0,20)->toArray();
+
         foreach( $list as &$item ){
             if( in_array($item['event_status'],[40,60,70]) ){
                 $item['accumulate_time'] = round( abs($item['timely_time'] - $item['add_time']) / 60 / 60, 1 );
@@ -1513,6 +1541,7 @@ class StatisticalController extends CommunityBaseController
                 $item['accumulate_time'] = 0;
             }
         }
+
         unset($item);
         $prev_list_where[] = ['o.cat_fid','=',$cate_id['id']];
         $prev_list_where[] = ['o.village_id','=',$villageId];
@@ -1541,6 +1570,7 @@ class StatisticalController extends CommunityBaseController
             $finallist[] = [
                 'id' => $item['order_id'],
                 'event_type' => $item['cate_name'],
+                'add_time' => date("Y-m-d", $item['add_time']),
                 'order_content' => $item['order_content'],
                 'event_status' => $item['event_status'],
                 'event_status_txt' => $event_status_txt,
@@ -1672,7 +1702,9 @@ class StatisticalController extends CommunityBaseController
         $db_utilities_log = new UtilitiesLog();
         $db_utilities_category = new UtilitiesCategory();
         $where[] = ['village_id','=',$villageId];
-        $list = $db_utilities_log->getList($villageId,true,1,9999)->toArray();
+
+        $ulWhere[] = ['ul.village_id','=',$villageId];
+        $list = $db_utilities_log->getListAndParentId($ulWhere,'ul.*,uc.parent_id,uc.name',1,9999)->toArray();
         $date_range = $this->getMonthListBetweenDates($startDate, $endDate);
 
         $map = [
@@ -1688,17 +1720,65 @@ class StatisticalController extends CommunityBaseController
         $category_where[] = ['parent_id','=',$type_num];
 
         $categoryList = $db_utilities_category->getList($category_where,true,1,9999)->toArray();
-
-
         $heatData = $this->buildHeatData($categoryList,$date_range,$list);
-
         $finallist = [
             'monthList' => $date_range,
             'categoryList' => array_column( $categoryList, 'name' ),
             'heatData' => $heatData,
+            'utilitiesChartData' => $this->buildUtilitiesChartData( $list, $date_range )
         ];
 
         return api_output(0, $finallist);
+    }
+
+    /**
+     * 按指定月份统计水费、电费，返回当前柱状图组件支持的数据结构
+     *
+     * @param array $rawData 原始数据
+     * @param array $monthList 月份数组，例如 ['2025-03', '2025-04', ...]
+     * @return array
+     */
+    function buildUtilitiesChartData($rawData, $monthList)
+    {
+        // 1. 先按月份初始化，没数据的默认补0
+        $monthMap = [];
+        foreach ($monthList as $month) {
+            $monthMap[$month] = [
+                'month' => $month,
+                'shuifei' => 0,
+                'dianfei' => 0
+            ];
+        }
+
+        // 2. 遍历原始数据，累加到对应月份
+        foreach ($rawData as $item) {
+            $month = $item['add_date'] ?? '';
+            $name = $item['name'] ?? '';
+            $value = floatval($item['rate'] ?? 0);
+
+            // 不在传入月份范围内的，直接跳过
+            if (!isset($monthMap[$month])) {
+                continue;
+            }
+
+            if (mb_strpos($name, '水费') !== false) {
+                $monthMap[$month]['shuifei'] += $value;
+            } elseif (mb_strpos($name, '电费') !== false) {
+                $monthMap[$month]['dianfei'] += $value;
+            }
+        }
+
+        // 3. 保留两位小数，并按 monthList 原顺序输出
+        $result = [];
+        foreach ($monthList as $month) {
+            $result[] = [
+                'month' => $month,
+                'shuifei' => round($monthMap[$month]['shuifei'], 2),
+                'dianfei' => round($monthMap[$month]['dianfei'], 2)
+            ];
+        }
+
+        return $result;
     }
 
     /**
@@ -1759,22 +1839,39 @@ class StatisticalController extends CommunityBaseController
         $villageId = $this->adminUser['village_id'] ?? 0;
         $villageId = is_numeric($villageId) ? intval($villageId) : 0;
 
-        $startDate = $this->request->post('startDate');
-        $endDate = $this->request->post('endDate');
+        $startDate = $this->request->post('start_date');
+        $endDate = $this->request->post('end_date');
 
         // 严格校验：非数字/0直接返回参数错误
         if (!is_numeric($villageId) || intval($villageId) <= 0) {
             return api_output_error(1001, '必传参数【小区ID】缺失或无效');
         }
 
+        //当前年
+        $currentYear = date('Y');
+        // 获取当年第一天（格式：YYYY-01-01 00:00:00）
+        $startDate_ = $startDate ? strtotime( $startDate.'00:00:00' ) : strtotime($currentYear . '-01-01 00:00:00');
+        // 获取当年最后一天（格式：YYYY-12-31 23:59:59）
+        $endDate_ = $endDate ? strtotime( $endDate.'23:59:59' ) :strtotime($currentYear . '-12-31 23:59:59');
+
+        // 获取当年第一天（格式：YYYY-01-01 00:00:00）
+        $startDate_2 = $startDate ? $startDate: $currentYear . '-01';
+        // 获取当年最后一天（格式：YYYY-12-31 23:59:59）
+        $endDate_2 = $endDate ? $endDate: $currentYear . '-12';
+
         $where[] = ['vb.village_id','=',$villageId];
 
+        $vbWhere[] = ['vb.village_id','=',$villageId];
+        $vbWhere[] = ['vb.payment_time','between',[$startDate_,$endDate_]];
+
         $dbVillageBill = new VillageBill();
-        $list = $dbVillageBill->getListAll($where,'vb.*,bc.category_name',1,999999)->toArray();
+        $list = $dbVillageBill->getListAll($vbWhere,'vb.*,bc.category_name',1,999999)->toArray();
 
         $finallist = $this->convertToSunburstData($list);
 
-        $budgetList = (new BudgetManagementService())->getBudgetList($where,'vb.*,bc.category_name',false,1,999999);
+        $bcWhere[] = ['vb.village_id','=',$villageId];
+        $bcWhere[] = ['vb.month','between',[$startDate_2,$endDate_2]];
+        $budgetList = (new BudgetManagementService())->getBudgetList($bcWhere,'vb.*,bc.category_name',false,1,999999);
         $totalBudget = array_reduce($budgetList, function($carry, $item) {
             // $carry是累加结果，$item是当前数组元素
             return $carry + (float)($item['amount'] ?? 0);
@@ -1789,6 +1886,10 @@ class StatisticalController extends CommunityBaseController
             'count' => [
                 'total_budget' => $this->formatAmountToWan( $totalBudget ),
                 'total_expend' => $this->formatAmountToWan( $totalExpend )
+            ],
+            'dateRange' => [
+                'start_date' => $startDate_2,
+                'end_date' => $endDate_2
             ]
         ];
         return api_output(1000, $data);
@@ -1889,26 +1990,27 @@ class StatisticalController extends CommunityBaseController
         $villageId = $this->adminUser['village_id'] ?? 0;
         $villageId = is_numeric($villageId) ? intval($villageId) : 0;
 
-        $startDate = $this->request->post('startDate');
-        $endDate = $this->request->post('endDate');
+        // 获取并规范化前端传入的起止日期，自动扩展到整月的头尾，并且做合理校验
+        $startDate = trim((string)$this->request->post('start_date'));
+        $endDate = trim((string)$this->request->post('end_date'));
 
-        // 严格校验：非数字/0直接返回参数错误
-        if (!is_numeric($villageId) || intval($villageId) <= 0) {
+        // 校正为有效日期格式，否则置空
+        $startDate = (strtotime($startDate) !== false) ? date('Y-m-01', strtotime($startDate)) : '';
+        $endDate = (strtotime($endDate) !== false) ? date('Y-m-t', strtotime($endDate)) : '';
+
+        // 校验小区ID有效性
+        $villageId = intval($villageId);
+        if (!$villageId) {
             return api_output_error(1001, '必传参数【小区ID】缺失或无效');
         }
-        [$startDate, $endDate] = $this->completeDateRange($startDate ?? '', $endDate ?? '', 12);
 
-
-        // 获取当前年份
+        // 使用当前年份做兜底
         $currentYear = date('Y');
-//        $currentYear = date('2025');
 
-        // 获取当年第一天（格式：YYYY-01-01 00:00:00）
-        $firstDayOfYear = date('Y-m-d H:i:s', strtotime($currentYear . '-01-01 00:00:00'));
-
-        // 获取当年最后一天（格式：YYYY-12-31 23:59:59）
-        $lastDayOfYear = date('Y-m-d H:i:s', strtotime($currentYear . '-12-31 23:59:59'));
-
+        // 优先使用前端传入的起止日期（传入就按传入内容换算，否则默认本年起止）
+        $firstDayOfYear = $startDate ? ($startDate . ' 00:00:00') : ($currentYear . '-01-01 00:00:00');
+        $lastDayOfYear = $endDate ? ($endDate . ' 23:59:59') : ($currentYear . '-12-31 23:59:59');
+       
         $HouseNewChargeProjectService = new HouseNewChargeProjectService();
         $param=[
             'village_id'=>$villageId,
@@ -1923,11 +2025,10 @@ class StatisticalController extends CommunityBaseController
 
         $order_where = [
             'village_id'=>$villageId,
-            'start_time'=>$firstDayOfYear,
-            'end_time'=>$lastDayOfYear,
+            // 'start_time'=>$firstDayOfYear,
+            // 'end_time'=>$lastDayOfYear,
         ];
         $payableOrderList = $this->payableOrderList($order_where);
-
 //        //房屋面积
 //        $residenceRoomDataWhere=array(
 //            'village_id'=>$villageId,
@@ -1968,8 +2069,35 @@ class StatisticalController extends CommunityBaseController
             $origin_project_name_key = 'project_name';
             $origin_project_name_value = $item['name'];
             // 第一步：先按project_name筛选出匹配的数组
-            $matchedArr = array_filter($payableOrderList, function($item) use ($origin_project_name_key, $origin_project_name_value) {
-                return isset($item[$origin_project_name_key]) && $item[$origin_project_name_key] == $origin_project_name_value;
+            $matchedArr = array_filter($payableOrderList, function($item) use ($origin_project_name_key, $origin_project_name_value, $firstDayOfYear, $lastDayOfYear) {
+                // 必须有项目名并且匹配
+                if (!isset($item[$origin_project_name_key]) || $item[$origin_project_name_key] != $origin_project_name_value) {
+                    return false;
+                }
+
+                // 取service_start_time、service_end_time（格式可为 Y-m-d 或带时分秒，需要兼容）
+                $serviceStartTime = 0;
+                if (isset($item['service_start_time']) && $item['service_start_time']) {
+                    $serviceStartTime = strtotime(preg_match('/\d{2}:\d{2}:\d{2}$/', $item['service_start_time']) ? $item['service_start_time'] : $item['service_start_time'] . ' 00:00:00');
+                }
+                $serviceEndTime = 0;
+                if (isset($item['service_end_time']) && $item['service_end_time']) {
+                    $serviceEndTime = strtotime(preg_match('/\d{2}:\d{2}:\d{2}$/', $item['service_end_time']) ? $item['service_end_time'] : $item['service_end_time'] . ' 23:59:59');
+                }
+
+                // $firstDayOfYear, $lastDayOfYear本身已为完整时间格式
+                $filterStartTime = strtotime($firstDayOfYear); // 形如 2025-01-01 00:00:00
+                $filterEndTime = strtotime($lastDayOfYear);     // 形如 2025-09-30 23:59:59
+
+                // 时间区间有效
+                if ($serviceStartTime == 0 || $serviceEndTime == 0) {
+                    return false;
+                }
+
+                // 当前账单完全覆盖筛选区间或者有交集都应该保留
+                // 只要 $serviceEndTime >= $filterStartTime 并且 $serviceStartTime <= $filterEndTime 即重叠
+                // 即使账单大于区间，只要有交集就保留
+                return ($serviceEndTime >= $filterStartTime && $serviceStartTime <= $filterEndTime);
             });
 
             // 第二步：按room_id去重，每个room_id只保留第一条匹配的数据
@@ -2010,21 +2138,165 @@ class StatisticalController extends CommunityBaseController
             $item['paid_account_num'] = count($uniqueArr);//已缴户数
             $item['remaining_paid_account_num'] = round( $currentProjectRoomNum - count($uniqueArr) ,0 );//剩余应缴户数
             $item['paid_account_rate'] = $currentProjectRoomNum > 0? round( count($uniqueArr) / $currentProjectRoomNum ,2 ) * 100 : 0;//户数缴费率
-            $item['paid_amound'] =  array_sum( array_column( $matchedArr , 'pay_money' ) );//已缴费总金额
+
+            // $firstDayOfYear, $lastDayOfYear
+
+            // 1. 计算每条缴费账单对应的月份数，如果不足1个月算1个月
+            $paidMonthlyAmountArr = [];
+            foreach ($matchedArr as $bill) {
+                // service_start_time, service_end_time可能为时间戳或字符串，需要兼容处理
+                $start = isset($bill['service_start_time']) && $bill['service_start_time'] ? $bill['service_start_time'] : 0;
+                $end = isset($bill['service_end_time']) && $bill['service_end_time'] ? $bill['service_end_time'] : 0;
+                if ($start && $end) {
+                    // 处理时间类型
+                    if (is_numeric($start)) {
+                        $startStr = date('Y-m-d', $start);
+                    } else {
+                        $startStr = date('Y-m-d', strtotime($start));
+                    }
+                    if (is_numeric($end)) {
+                        $endStr = date('Y-m-d', $end);
+                    } else {
+                        $endStr = date('Y-m-d', strtotime($end));
+                    }
+                    // 用DateTime计算月数
+                    $dateStart = new \DateTime($startStr);
+                    $dateEnd = new \DateTime($endStr);
+                    // 若结束时间小于开始时间，按1个月处理
+                    if ($dateEnd < $dateStart) {
+                        $months = 1;
+                    } else {
+                        $diff = $dateStart->diff($dateEnd);
+                        $months = ($diff->y * 12) + $diff->m;
+                        // 如果有天数，不满一个整月按一个月算（只要有多1天就加1）
+                        if ($diff->d > 0) {
+                            $months += 1;
+                        } else {
+                            // 如果diff->d==0，那刚好整月，但任何duration都要算至少1个月
+                            if ($months == 0) $months = 1;
+                        }
+                    }
+                } else {
+                    // 没有起止时间，按1个月处理
+                    $months = 1;
+                }
+
+                // 避免pay_money未定义
+                $payMoney = isset($bill['pay_money']) && $bill['pay_money'] > 0 ? $bill['pay_money'] : 0;
+                // 计算每月金额
+                $monthlyAmount = $months > 0 ? ($payMoney / $months) : $payMoney;
+                // 记录该账单的相关信息，方便后续月份分摊汇总
+                $paidMonthlyAmountArr[] = [
+                    'bill' => $bill,
+                    'months' => $months,
+                    'monthly_amount' => $monthlyAmount,
+                    'start' => isset($dateStart) ? clone $dateStart : null,
+                    'end' => isset($dateEnd) ? clone $dateEnd : null,
+                    'pay_money' => $payMoney
+                ];
+            }
+
+            // 2. 计算传入时间区间$firstDayOfYear, $lastDayOfYear内的缴费金额
+            $paidAmountInRange = 0;
+            if (!empty($firstDayOfYear) && !empty($lastDayOfYear)) {
+                $rangeStartObj = new \DateTime(date('Y-m-d', strtotime($firstDayOfYear)));
+                $rangeEndObj = new \DateTime(date('Y-m-d', strtotime($lastDayOfYear)));
+
+                foreach ($paidMonthlyAmountArr as $row) {
+                    $startObj = $row['start'];
+                    $endObj = $row['end'];
+                    $monthlyAmount = $row['monthly_amount'];
+                    $months = $row['months'];
+
+                    // 如果账单时间未知，则认为全部计入区间
+                    if (!$startObj || !$endObj) {
+                        $paidAmountInRange += $row['pay_money'];
+                        continue;
+                    }
+                    // 账单与查询区间无交集，跳过
+                    if ($endObj < $rangeStartObj || $startObj > $rangeEndObj) {
+                        continue;
+                    }
+                    // 交集部分：求出账单与区间重叠的月份数
+                    $intersectStart = $startObj > $rangeStartObj ? $startObj : clone $rangeStartObj;
+                    $intersectEnd = $endObj < $rangeEndObj ? $endObj : clone $rangeEndObj;
+
+                    $diff = $intersectStart->diff($intersectEnd);
+                    $interMonths = ($diff->y * 12) + $diff->m;
+                    if ($diff->d > 0) {
+                        $interMonths += 1;
+                    } else {
+                        if ($interMonths == 0) $interMonths = 1;
+                    }
+                    // 最大不超过该账单本身的月份数
+                    $realMonths = min($interMonths, $months);
+                    $amount = $realMonths * $monthlyAmount;
+
+                    // 防止超出pay_money本身
+                    if ($amount > $row['pay_money']) {
+                        $amount = $row['pay_money'];
+                    }
+                    $paidAmountInRange += $amount;
+                }
+            }
+
+            // 3. 求和所有数据的总缴费金额
+            $totalPaidAmount = array_sum(array_column($matchedArr, 'pay_money'));
+
+            // 可以将这些金额赋值到$item里，或用于后续显示
+            // $item['paid_amound_total'] = $totalPaidAmount;
+            // $item['paid_amound_in_range'] = round($paidAmountInRange, 2);
+
+            $item['paid_amound'] =  round($paidAmountInRange, 2);//已缴费总金额
             $item['paid_amound_txt'] = $this->formatAmountToWan( $item['paid_amound'] ).'万元';//已缴费总金额
 
-
             if( count( $matchedArr ) > 0 ) {
-                //判断账单是按月生成, 还是按年, 还是按日, 1：按日生成2：按月生成3：按年生成, 默认按年生成
-                if( $item['bill_create_set'] == 1 ){
-                    $charge_price = $item['charge_price'] * 365;
-                }else if( $item['bill_create_set'] == 2 ){
-                    $charge_price = $item['charge_price'] * 12;
-                }else if( $item['bill_create_set'] == 3 ){
-                    $charge_price = $item['charge_price'];
-                }else{
-                    $charge_price = $item['charge_price'];
+                // 优化账单生成方式及单价计算逻辑
+                // bill_create_set: 1=按日, 2=按月, 3=按年, 默认按年
+
+                $billCreateSet = isset($item['bill_create_set']) ? intval($item['bill_create_set']) : 3;
+                $chargePriceRaw = isset($item['charge_price']) ? floatval($item['charge_price']) : 0;
+
+                // 确定周期类型和周期数
+                switch ($billCreateSet) {
+                    case 1:
+                        $unitCount = 365;
+                        $unitLabel = 'day';
+                        break;
+                    case 2:
+                        $unitCount = 1;
+                        $unitLabel = 'month';
+                        break;
+                    case 3:
+                    default:
+                        $unitCount = 12;
+                        $unitLabel = 'year';
+                        break;
                 }
+
+                $unitPrice = $chargePriceRaw / $unitCount;
+
+                // 获取区间时间戳
+                $startDate = strtotime($firstDayOfYear);
+                $endDate = strtotime($lastDayOfYear);
+
+                // 计算区间内包含多少周期份数（防止超出最大周期数，比如只统计一年内）
+                if ($unitLabel === 'day') {
+                    // 按天：包含首尾，天数不能超过365
+                    $diffDays = max(1, (int)floor(($endDate - $startDate) / (60 * 60 * 24)) + 1);
+                    $totalParts = min($diffDays, 365);
+                } else {
+                    // 按月、按年统一按月
+                    $startYear = (int)date('Y', $startDate);
+                    $startMonth = (int)date('m', $startDate);
+                    $endYear = (int)date('Y', $endDate);
+                    $endMonth = (int)date('m', $endDate);
+                    $diffMonths = ($endYear - $startYear) * 12 + ($endMonth - $startMonth) + 1;
+                    $totalParts = min(max(1, $diffMonths), 12);
+                }
+
+                // 计算该区间实际应收单价
+                $charge_price = round($totalParts * $unitPrice, 2);
 
                 if( $item['fees_type'] == 2){//单位计价
                     if( $item['unit_gage_type'] == 2 ){//车位面积
@@ -2033,7 +2305,6 @@ class StatisticalController extends CommunityBaseController
                     }else{//其余的都默认为房屋面积
                         $roomArea = array_sum( array_column( $currentRoomList ,'housesize') );
                     }
-
                     //应缴费总金额
                     $item['amound'] = round( $roomArea * $charge_price , 2);
                     $item['amound_txt'] = $this->formatAmountToWan( $item['amound'] ) . '万元';
@@ -2061,27 +2332,266 @@ class StatisticalController extends CommunityBaseController
                 $filteredData[] = $item;
             }
         }
-        return api_output(1000,$filteredData);
+
+        $list = $this->buildPeriodicFeeTableDataWithDefault($filteredData ?? []);
+        $list['dateRange'] = [
+            'start_date' => date('Y-m', strtotime($firstDayOfYear)),
+            'end_date' => date('Y-m', strtotime($lastDayOfYear)),
+        ];
+        return api_output(1000,$list);
+    }
+
+    function buildPeriodicFeeTableDataWithDefault(array $list = [])
+    {
+        $defaultTypes = [
+            'property' => '住宅物业费',
+            'merchant_property' => '商铺物业费',
+            'parking_management' => '车位管理费',
+        ];
+
+        $map = [];
+        foreach ($list as $item) {
+            $chargeType = $item['charge_type'] ?? '';
+            if ($chargeType) {
+                $map[$chargeType] = $item;
+            }
+        }
+
+        $newList = [];
+        foreach ($defaultTypes as $chargeType => $name) {
+            if (isset($map[$chargeType])) {
+                $map[$chargeType]['name'] = $name;
+                $newList[] = $map[$chargeType];
+            } else {
+                $newList[] = [
+                    'name' => $name,
+                    'charge_type' => $chargeType,
+                    'account_num' => 0,
+                    'paid_account_num' => 0,
+                    'remaining_paid_account_num' => 0,
+                    'paid_account_rate' => 0,
+                    'amound' => 0,
+                    'paid_amound' => 0,
+                    'remaining_paid_amound_num' => 0,
+                    'paid_amound_rate' => 0,
+                ];
+            }
+        }
+
+        return $this->buildPeriodicFeeTableData($newList);
+    }
+
+    /**
+     * 周期性缴费情况（年）表格数据组装
+     *
+     * @param array $list 原始费用项目数据
+     * @return array
+     */
+    function buildPeriodicFeeTableData(array $list = [])
+    {
+        $tableData = [];
+        $totalAmount = 0;
+        $totalPaidAmount = 0;
+        $totalRemainAmount = 0;
+
+        foreach ($list as $item) {
+            $accountNum = (int)($item['account_num'] ?? 0);
+            $paidAccountNum = (int)($item['paid_account_num'] ?? 0);
+            $remainAccountNum = (int)($item['remaining_paid_account_num'] ?? 0);
+
+            $amount = (float)($item['amound'] ?? 0);
+            $paidAmount = (float)($item['paid_amound'] ?? 0);
+            $remainAmount = (float)($item['remaining_paid_amound_num'] ?? 0);
+
+            $paidAccountRate = (float)($item['paid_account_rate'] ?? 0);
+            $paidAmountRate = (float)($item['paid_amound_rate'] ?? 0);
+
+            $totalAmount += $amount;
+            $totalPaidAmount += $paidAmount;
+            $totalRemainAmount += $remainAmount;
+
+            $tableData[] = [
+                'name' => $item['name'] ?? '',
+                'amount' => $this->formatWan($accountNum),
+                'paid_account_num' => $paidAccountNum,
+                'remaining_paid_account_num' => $remainAccountNum,
+                'paid_account_rate' => $this->formatPercent($paidAccountRate),
+
+                'paid_amound' => $this->formatWan($paidAmount),
+                'remaining_paid_amound_num' => $this->formatWan($remainAmount),
+                'paid_amound_rate' => $this->formatPercent($paidAmountRate),
+            ];
+        }
+
+        // 综合收缴率（金额）
+        $totalPaidAmountRate = $totalAmount > 0 ? round($totalPaidAmount / $totalAmount * 100, 2) : 0;
+
+        return [
+            // 顶部标题和汇总信息
+            'title' => '周期性缴费情况（年）',
+            'summary' => [
+                'total_amount' => $this->formatWan($totalPaidAmount),             // 收缴总金额
+                'total_amount_rate' => $this->formatPercent($totalPaidAmountRate) // 综合收缴率（金额）
+            ],
+
+            // 多级表头
+            'headerRows' => [
+                [
+                    [
+                        'label' => '缴费项目',
+                        'prop' => 'name',
+                        'rowspan' => 2,
+                        'width' => '16%',
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '户数',
+                        'colspan' => 3,
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '金额',
+                        'colspan' => 3,
+                        'align' => 'center'
+                    ]
+                ],
+                [
+                    [
+                        'label' => '收缴户数',
+                        'prop' => 'paid_account_num',
+                        'width' => '15%',
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '剩余户数',
+                        'prop' => 'remaining_paid_account_num',
+                        'width' => '15%',
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '收缴率',
+                        'prop' => 'paid_account_rate',
+                        'width' => '13%',
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '收缴金额',
+                        'prop' => 'paid_amound',
+                        'width' => '15%',
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '剩余金额',
+                        'prop' => 'remaining_paid_amound_num',
+                        'width' => '15%',
+                        'align' => 'center'
+                    ],
+                    [
+                        'label' => '收缴率',
+                        'prop' => 'paid_amound_rate',
+                        'width' => '13%',
+                        'align' => 'center'
+                    ]
+                ]
+            ],
+
+            // 最终实际列
+            'columns' => [
+                [
+                    'label' => '缴费项目',
+                    'prop' => 'name',
+                    'width' => '17%',
+                    'align' => 'center'
+                ],
+                [
+                    'label' => '收缴户数',
+                    'prop' => 'paid_account_num',
+                    'width' => '15%',
+                    'align' => 'center'
+                ],
+                [
+                    'label' => '剩余户数',
+                    'prop' => 'remaining_paid_account_num',
+                    'width' => '15%',
+                    'align' => 'center'
+                ],
+                [
+                    'label' => '收缴率',
+                    'prop' => 'paid_account_rate',
+                    'width' => '12%',
+                    'align' => 'center'
+                ],
+                [
+                    'label' => '收缴金额',
+                    'prop' => 'paid_amound',
+                    'width' => '15%',
+                    'align' => 'center'
+                ],
+                [
+                    'label' => '剩余金额',
+                    'prop' => 'remaining_paid_amound_num',
+                    'width' => '15%',
+                    'align' => 'center'
+                ],
+                [
+                    'label' => '收缴率',
+                    'prop' => 'paid_amound_rate',
+                    'width' => '12%',
+                    'align' => 'center'
+                ]
+            ],
+
+            // 表格行数据
+            'data' => $tableData
+        ];
+    }
+
+    /**
+     * 金额转万元显示
+     *
+     * @param float|int $amount
+     * @return string
+     */
+    function formatWan($amount)
+    {
+        $amount = (float)$amount;
+        return number_format($amount / 10000, 2) . '万元';
+    }
+
+    /**
+     * 百分比格式化
+     *
+     * @param float|int $rate
+     * @return string
+     */
+    function formatPercent($rate)
+    {
+        return number_format((float)$rate, 2) . '%';
     }
 
     /**
      * 获取所有已缴账单
      * @author lijie
      * @date_time 2021/07/08
-     * @return \json
+     * @param array $param
+     * @return array
      */
-    function payableOrderList($param){
+    function payableOrderList(array $param): array{
         $service_house_new_cashier = new HouseNewCashierService();
         $village_id = $param['village_id'];
 
         try{
-            $where[] = ['o.pay_time','>=',strtotime($param['start_time'])];
-            $where[] = ['o.pay_time','<=',strtotime($param['end_time'])];
+            if (!empty($param['start_time'])) {
+                $where[] = ['o.pay_time','>=',strtotime($param['start_time'])];
+            }
+            if (!empty($param['end_time'])) {
+                $where[] = ['o.pay_time','<=',strtotime($param['end_time'])];
+            }
             $where[] = ['o.is_discard','=',1];
             $where[] = ['o.is_paid','=',1];
             $where[] = ['o.order_type','<>','non_motor_vehicle'];
             $where[] = ['o.village_id','=',$village_id];
-            $field='o.car_number,o.car_type,o.order_id,o.order_no,o.room_id,o.position_id,p.name as project_name,o.pay_money,o.pay_bind_name,o.pay_bind_phone,o.pay_time,o.pay_type,o.is_refund,o.refund_money,o.village_id,o.property_id,o.order_type,o.invoice_status';
+            $field='o.car_number,o.car_type,o.order_id,o.order_no,o.room_id,o.position_id,p.name as project_name,o.pay_money,o.pay_bind_name,o.pay_bind_phone,o.pay_time,o.pay_type,o.is_refund,o.refund_money,o.village_id,o.property_id,o.order_type,o.invoice_status,o.service_start_time,o.service_end_time';
             $list = $service_house_new_cashier->getCancelOrderUser($where,'',$field,1,99999999,'o.pay_time DESC');
             if( empty($list['list']) ){
                 return [];
@@ -2177,15 +2687,12 @@ class StatisticalController extends CommunityBaseController
     /**
      * 针对单个 cate 的巡检记录去重
      *
-     * 去重维度：
-     * period(日/周/月) + qrcode_id + village_id
-     *
-     * 只处理当前 cate_id 的数据
-     * 每组最多保留条数 = 当前 cate 的 record_time 按逗号拆分后的数量
+     * 去重纬度：cate_id + qrcode_id + village_id + 日期（add_time转成Y-m-d）
+     * 对于同一天（按Y-m-d）同一cate_id+qrcode_id+village_id保留N条（N为record_time逗号切开后数量，默认1）
      *
      * @param array $cate 单个分类数据
      * @param array $recordList 巡检记录列表
-     * @param int $status 1=自然日 2=自然周 3=自然月
+     * @param int $status 备用参数，可忽略
      * @return array
      */
     function uniqueRecordByCatePeriodQrcodeVillage(array $cate, array $recordList, int $status): array
@@ -2205,12 +2712,12 @@ class StatisticalController extends CommunityBaseController
             ];
         }
 
-        // 当前分类每个周期最多保留几条
+        // 按record_time逗号切分，得到保留条数
         $recordTime = trim((string)($cate['record_time'] ?? ''));
         $timeList = array_values(array_filter(array_map('trim', explode(',', $recordTime))));
-        $limit = count($timeList) ?: 1;
+        $maxPerDay = count($timeList) ?: 1;
 
-        // 只取当前 cate_id 的记录
+        // 只保留当前cate_id的记录
         $currentRecordList = array_filter($recordList, function ($item) use ($cateId) {
             return (int)($item['cate_id'] ?? 0) === $cateId;
         });
@@ -2222,12 +2729,12 @@ class StatisticalController extends CommunityBaseController
             ];
         }
 
-        // 按时间升序，保留最早的几条
+        // 按add_time升序排
         usort($currentRecordList, function ($a, $b) {
             return (int)($a['add_time'] ?? 0) <=> (int)($b['add_time'] ?? 0);
         });
 
-        $groupCount = [];
+        $groupTrack = []; // 计数同组出现次数
         $result = [];
         $dateList = [];
 
@@ -2240,33 +2747,26 @@ class StatisticalController extends CommunityBaseController
             $qrcodeId = $item['qrcode_id'] ?? '';
             $villageId = $item['village_id'] ?? '';
 
-            // 按状态生成日期分组
-            if ($status == 1) {
-                $periodKey = date('Y-m-d', $addTime);
-            } elseif ($status == 2) {
-                $periodKey = date('o-W', $addTime);
-            } elseif ($status == 3) {
-                $periodKey = date('Y-m', $addTime);
-            } else {
-                $periodKey = date('Y-m-d', $addTime);
-            }
+            // 日期去重使用Y-m-d
+            $dateStr = date('Y-m-d', $addTime);
 
-            // 最终分组键：日期 + qrcode_id + village_id
-            $groupKey = $periodKey . '_' . (string)$qrcodeId . '_' . (string)$villageId;
+            // 唯一分组维度：cate_id + qrcode_id + village_id + date
+            $groupKey = $cateId . '_' . $qrcodeId . '_' . $villageId . '_' . $dateStr;
 
-            if (!isset($groupCount[$groupKey])) {
-                $groupCount[$groupKey] = 0;
+            if (!isset($groupTrack[$groupKey])) {
+                $groupTrack[$groupKey] = 0;
                 $dateList[$groupKey] = [
-                    'period_key' => $periodKey,
+                    'date' => $dateStr,
                     'qrcode_id' => $qrcodeId,
                     'village_id' => $villageId,
+                    'cate_id' => $cateId,
                     'group_key' => $groupKey,
                 ];
             }
 
-            if ($groupCount[$groupKey] < $limit) {
+            if ($groupTrack[$groupKey] < $maxPerDay) {
                 $result[] = $item;
-                $groupCount[$groupKey]++;
+                $groupTrack[$groupKey]++;
             }
         }
 
