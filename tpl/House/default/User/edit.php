@@ -33,6 +33,59 @@
                     background-color: #ffffff;
                     color: #939192;
                 }
+                .attachment-toolbar{
+                    margin: 10px 0 15px;
+                }
+                .attachment-toolbar .form_tips{
+                    margin-left: 10px;
+                }
+                .attachment-item{
+                    border: 1px solid #e5e5e5;
+                    background: #fafafa;
+                    padding: 15px 15px 5px;
+                    margin-bottom: 15px;
+                }
+                .attachment-item .form-group{
+                    margin-bottom: 12px;
+                }
+                .attachment-title-input{
+                    width: 320px;
+                    height: 34px;
+                    line-height: 34px;
+                    padding: 6px 12px;
+                    border: 1px solid #d5d5d5;
+                    border-radius: 4px;
+                    vertical-align: middle;
+                }
+                .attachment-title-action{
+                    margin-left: 10px;
+                    vertical-align: middle;
+                }
+                .attachment-file-input{
+                    display: inline-block;
+                    height: 34px;
+                }
+                .attachment-file-list,
+                .attachment-selected-list{
+                    margin-top: 10px;
+                }
+                .attachment-file-tag{
+                    display: inline-block;
+                    padding: 6px 10px;
+                    margin: 0 10px 10px 0;
+                    border: 1px solid #d5d5d5;
+                    background: #ffffff;
+                    border-radius: 4px;
+                    line-height: 20px;
+                }
+                .attachment-file-tag a{
+                    color: #428bca;
+                }
+                .remove-attachment-file{
+                    margin-left: 8px;
+                    color: #d15b47;
+                    cursor: pointer;
+                }
 			</style>
 			<div class="row">
 				<div class="col-xs-12">
@@ -56,12 +109,15 @@
                                 <a href="#userLabel" data-toggle="tab">用户标签</a>
                             </li>
                             <li>
+                                <a href="#attachments" data-toggle="tab">附件</a>
+                            </li>
+                            <li>
                                 <a href="#audit" data-toggle="tab">审核流程</a>
 
                             </li>
 						</ul>
 					</div>
-					<form  class="form-horizontal" method="post" id="edit_form" action="{pigcms{:U('User/edit')}" onsubmit="return chk_submit()">
+					<form  class="form-horizontal" method="post" id="edit_form" action="{pigcms{:U('User/edit')}" enctype="multipart/form-data" onsubmit="return chk_submit()">
 						<input  name="pigcms_id" type="hidden"  value="{pigcms{$info.pigcms_id}"/>
 						<input  name="usernum" type="hidden"  value="{pigcms{$info.usernum}"/>
 						<input type="hidden" name="page" value="{pigcms{$_GET['page']}" />
@@ -665,6 +721,67 @@
                                     </volist>
                                 </if>
                             </div>
+                            <div class="tab-pane" id="attachments">
+                                <div class="attachment-toolbar">
+                                    <span class="form_tips">附件字段取自“添加档案字段”里配置的图片/PDF类型，可为空，支持多次保存补传，单个文件不能超过2M。</span>
+                                </div>
+                                <div id="attachmentContainer">
+                                    <if condition="$attachment_field_list">
+                                        <volist name="attachment_field_list" id="attachment">
+                                            <div class="attachment-item" data-key="{pigcms{$attachment.key}" data-field-title="{pigcms{$attachment.title|htmlspecialchars=###}" data-type-name="{pigcms{$attachment.type_name|htmlspecialchars=###}" data-allow-exts="{pigcms{$attachment.allow_exts_text}">
+                                                <div class="form-group">
+                                                    <label class="col-sm-1"><label>{pigcms{$attachment.title}</label></label>
+                                                    <div class="col-sm-10">
+                                                        <input type="file" class="attachment-file-input js-attachment-file" name="attachment_files_{pigcms{$attachment.key}[]" accept="{pigcms{$attachment.accept}" multiple />
+                                                        <span class="form_tips">可一次选择多个文件，仅支持 {pigcms{$attachment.type_name}，可为空，支持多次保存补传，单个文件不能超过2M。</span>
+                                                        <div class="attachment-selected-list js-selected-files"></div>
+                                                        <div class="attachment-file-list">
+                                                            <volist name="attachment.files" id="file">
+                                                                <div class="attachment-file-tag existing-attachment-file">
+                                                                    <a href="{pigcms{$file.file_url_full}" target="_blank">{pigcms{$file.original_name|htmlspecialchars=###}</a>
+                                                                    <span class="remove-attachment-file js-remove-existing-file">删除</span>
+                                                                    <input type="hidden" name="attachment_existing_url[{pigcms{$attachment.key}][]" value="{pigcms{$file.file_url|htmlspecialchars=###}" />
+                                                                    <input type="hidden" name="attachment_existing_name[{pigcms{$attachment.key}][]" value="{pigcms{$file.original_name|htmlspecialchars=###}" />
+                                                                    <input type="hidden" name="attachment_existing_size[{pigcms{$attachment.key}][]" value="{pigcms{$file.size}" />
+                                                                    <input type="hidden" name="attachment_existing_suffix[{pigcms{$attachment.key}][]" value="{pigcms{$file.suffix|htmlspecialchars=###}" />
+                                                                    <input type="hidden" name="attachment_existing_time[{pigcms{$attachment.key}][]" value="{pigcms{$file.add_time}" />
+                                                                </div>
+                                                            </volist>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </volist>
+                                        <else/>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-1 col-sm-10">
+                                                <span class="form_tips">请先到“添加档案字段”中新增图片或 PDF 类型字段。</span>
+                                            </div>
+                                        </div>
+                                    </if>
+                                </div>
+                                <if condition="$legacy_attachment_list">
+                                    <div class="attachment-toolbar">
+                                        <span class="form_tips">历史附件为旧版手工标题数据，当前保留只读展示；如需迁移，可重新上传到上面的对应字段。</span>
+                                    </div>
+                                    <volist name="legacy_attachment_list" id="legacyAttachment">
+                                        <div class="attachment-item">
+                                            <div class="form-group">
+                                                <label class="col-sm-1"><label>{pigcms{$legacyAttachment.title}</label></label>
+                                                <div class="col-sm-10">
+                                                    <div class="attachment-file-list">
+                                                        <volist name="legacyAttachment.files" id="file">
+                                                            <div class="attachment-file-tag">
+                                                                <a href="{pigcms{$file.file_url_full}" target="_blank">{pigcms{$file.original_name|htmlspecialchars=###}</a>
+                                                            </div>
+                                                        </volist>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </volist>
+                                </if>
+                            </div>
 
 
                             <div class="tab-pane" id="audit">
@@ -696,6 +813,51 @@
 						</div>
 						<script>
                             var car_id = [];
+                            function escapeAttachmentHtml(text) {
+                                if (text === null || text === undefined) {
+                                    return '';
+                                }
+                                return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                            }
+                            function getAttachmentItemConfig(input) {
+                                var $item = $(input).closest('.attachment-item');
+                                var allowExtsText = String($item.attr('data-allow-exts') || '').toLowerCase();
+                                var allowExts = allowExtsText ? allowExtsText.split(',') : [];
+                                return {
+                                    item: $item,
+                                    fieldTitle: $item.attr('data-field-title') || '\u9644\u4ef6',
+                                    typeName: $item.attr('data-type-name') || 'PDF/\u56fe\u7247',
+                                    allowExts: allowExts
+                                };
+                            }
+                            function validateAttachmentFiles(input) {
+                                var config = getAttachmentItemConfig(input);
+                                if (!input || !input.files || !input.files.length) {
+                                    return true;
+                                }
+                                for (var i = 0; i < input.files.length; i++) {
+                                    var fileName = input.files[i].name || '';
+                                    var fileExt = fileName.split('.').pop().toLowerCase();
+                                    if ($.inArray(fileExt, config.allowExts) === -1) {
+                                        alert('\u3010' + config.fieldTitle + '\u3011\u53ea\u652f\u6301' + config.typeName + '\u683c\u5f0f\uff01');
+                                        return false;
+                                    }
+                                    if (input.files[i].size > 2 * 1024 * 1024) {
+                                        alert('\u5355\u4e2a\u9644\u4ef6\u4e0d\u80fd\u8d85\u8fc72M\uff01');
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }
+                            function renderSelectedAttachmentFiles(input) {
+                                var html = [];
+                                if (input.files && input.files.length) {
+                                    for (var i = 0; i < input.files.length; i++) {
+                                        html.push('<div class="attachment-file-tag">' + escapeAttachmentHtml(input.files[i].name) + '</div>');
+                                    }
+                                }
+                                $(input).closest('.attachment-item').find('.js-selected-files').html(html.join(''));
+                            }
                             $(function (){
                                 var url = "{pigcms{:U('Unit/vehicle_management_user_list')}";
                                 $.post(url,{'pigcms_id': "{pigcms{$info.pigcms_id}"},function(result) {
@@ -712,6 +874,17 @@
                                     }
                                 },'json');
                             })
+                            $(document).on('click', '.js-remove-existing-file', function () {
+                                $(this).closest('.existing-attachment-file').remove();
+                            });
+                            $(document).on('change', '.js-attachment-file', function () {
+                                if (!validateAttachmentFiles(this)) {
+                                    this.value = '';
+                                    $(this).closest('.attachment-item').find('.js-selected-files').html('');
+                                    return false;
+                                }
+                                renderSelectedAttachmentFiles(this);
+                            });
 							function payment_del(bind_id,position_id) {
 								var payment_del_url = "{pigcms{:U('payment_del')}";
 								var pigcms_id = "{pigcms{$_GET['pigcms_id']}";
@@ -842,7 +1015,19 @@ function chk_submit(){
 	if(!confirm('确认进行修改?')){
 		return false;
 	}
+    var attachmentValidateError = false;
+    $('#attachmentContainer .js-attachment-file').each(function () {
+        if (!validateAttachmentFiles(this)) {
+            $(this).focus();
+            attachmentValidateError = true;
+            return false;
+        }
+    });
+    if (attachmentValidateError) {
+        return false;
+    }
     layer.load(0, {shade: [0.6,'#fff']});
+    return true;
 }
 
 function edit_price(pigcms_id,type){

@@ -45,7 +45,10 @@
 												<option value="1">文本</option>
 												<option value="2">单选</option>
                                                 <option value="4">日期</option>  <!--2020/07/29 注释：3有人用了，用到 籍贯上了 -->
+                                                <option value="5">&#22270;&#29255;</option>
+                                                <option value="6">PDF</option>
 											</select>
+                                            <span class="form_tips" style="margin-left: 10px;">&#22270;&#29255;&#31867;&#22411;&#20165;&#25903;&#25345;&#22270;&#29255;&#19978;&#20256;&#65292;PDF &#31867;&#22411;&#20165;&#25903;&#25345; PDF &#19978;&#20256;&#65292;&#20855;&#20307;&#25991;&#20214;&#22312;&#19994;&#20027;&#32534;&#36753;&#39029;&#8220;&#38468;&#20214;&#8221;&#39029;&#31614;&#20013;&#32500;&#25252;&#12290;</span>
 										</td>
 
 									</tr>
@@ -142,6 +145,31 @@ $("#type").click(function(){
 		$(".class_radio").hide();
 	}
 })
+function check_submit(){
+	if($.trim($('#title').val())==''){
+		alert('\u5b57\u6bb5\u540d\u79f0\u4e0d\u80fd\u4e3a\u7a7a\uff01');
+		return false;
+	}
+	if($('#type').val() == '2' && $.trim($('textarea[name="use_field"]').val()) == ''){
+		alert('\u5355\u9009\u5185\u5bb9\u4e0d\u80fd\u4e3a\u7a7a\uff01');
+		return false;
+	}
+	return true;
+}
+function toggleUseField(){
+	if($("#type").val() == '2'){
+		$(".class_radio").show();
+	}else{
+		$(".class_radio").hide();
+	}
+}
+$(function(){
+	$('input[name="is_close"][value="0"]').prop('checked', true);
+	toggleUseField();
+});
+$("#type").change(function(){
+	toggleUseField();
+});
 </script>
 
 

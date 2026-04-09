@@ -45,6 +45,10 @@
                                                         单选
                                                     <elseif condition="$vo.type eq 4"/>  <!--2020/07/29 注释：3有人用了，用到 籍贯上了-->
                                                         日期
+                                                    <elseif condition="$vo.type eq 5"/>
+                                                        &#22270;&#29255;
+                                                    <elseif condition="$vo.type eq 6"/>
+                                                        PDF
                                                     </if>
                                                 </div>
                                             </td>

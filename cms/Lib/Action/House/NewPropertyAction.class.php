@@ -1487,16 +1487,20 @@ class NewPropertyAction extends BaseAction{
             if(empty($_POST['title'])){
                 $this->error('名称不能为空!');
             }
-
+            $type = intval($_POST['type']);
+            $allow_type = array(1, 2, 4, 5, 6);
+            if (!in_array($type, $allow_type)) {
+                $this->error('字段类型错误！');
+            }
             $_POST['key'] = uniqid() . mt_rand(10000,99999);
-            if($_POST['type'] == 3){
-                if(empty($_POST['title'])){
+            if($type == 2){
+                if(empty($_POST['use_field'])){
                     $this->error('单选内容不能为空!');
                 }
             }
             $data['title'] = trim($_POST['title']);
             $data['sort'] = $_POST['sort'] ? intval($_POST['sort']) : 0;
-            $data['type'] = $_POST['type'];
+            $data['type'] = $type;
             $data['key'] = $_POST['key'] ? $_POST['key'] : '';
             $data['is_display'] = $_POST['is_display'] ? intval($_POST['is_display']) : 0;
             $data['is_must'] = $_POST['is_must'] ? intval($_POST['is_must']) : 0;
@@ -1516,8 +1520,10 @@ class NewPropertyAction extends BaseAction{
             }
             //是否是系统自带
 
-            if($_POST['use_field']){
+            if($type == 2 && $_POST['use_field']){
                 $data['use_field'] = implode(',',explode(PHP_EOL, $_POST['use_field']));
+            } else {
+                $data['use_field'] = '';
             }
             $inset_id = M('House_village_data_config')->data($data)->add();
             if($inset_id){
@@ -1542,8 +1548,13 @@ class NewPropertyAction extends BaseAction{
             if(empty($_POST['title'])){
                 $this->error('名称不能为空!');
             }
-            if($_POST['type'] == 2){
-                if(empty($_POST['title'])){
+            $type = intval($_POST['type']);
+            $allow_type = array(1, 2, 4, 5, 6);
+            if (!in_array($type, $allow_type)) {
+                $this->error('字段类型错误！');
+            }
+            if($type == 2){
+                if(empty($_POST['use_field'])){
                     $this->error('单选内容不能为空!');
                 }
             }
@@ -1552,9 +1563,9 @@ class NewPropertyAction extends BaseAction{
                 $this->error('编辑对象不存在');
             }
             if($_POST['is_system'] == 0){
-                $data['type'] = $_POST['type'];
+                $data['type'] = $type;
                 $data['title'] = $_POST['title'];
-                if($_POST['type'] == 2){
+                if($type == 2){
                     if($_POST['use_field']){
                         $data['use_field'] = implode(',',explode(PHP_EOL, $_POST['use_field']));
                     }

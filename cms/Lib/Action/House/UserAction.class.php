@@ -4339,7 +4339,7 @@ class UserAction extends BaseAction
     {
         $is_new_charge=D('House_village')->checkNewCharge($this->house_session['property_id']);
         $this->assign('new_charge_time', $is_new_charge);
-        $house_village = M('House_village')->where(['village_id'=>$this->village_id])->field('set_id_code,street_id,community_id,owe_property_open_door')->find();
+        $house_village = M('House_village')->where(['village_id'=>$this->village_id])->field('property_id,set_id_code,street_id,community_id,owe_property_open_door')->find();
         $set_id_code=intval($house_village['set_id_code']);
         $user_bind_uid=0;
         if (IS_POST) {
@@ -4373,6 +4373,23 @@ class UserAction extends BaseAction
             unset($data_post['city_idss']);
             unset($data_post['province_idss']);
             unset($data_post['door_control']);
+            $attachment_post = [
+                'existing_url' => isset($_POST['attachment_existing_url']) && is_array($_POST['attachment_existing_url']) ? $_POST['attachment_existing_url'] : [],
+                'existing_name' => isset($_POST['attachment_existing_name']) && is_array($_POST['attachment_existing_name']) ? $_POST['attachment_existing_name'] : [],
+                'existing_size' => isset($_POST['attachment_existing_size']) && is_array($_POST['attachment_existing_size']) ? $_POST['attachment_existing_size'] : [],
+                'existing_suffix' => isset($_POST['attachment_existing_suffix']) && is_array($_POST['attachment_existing_suffix']) ? $_POST['attachment_existing_suffix'] : [],
+                'existing_time' => isset($_POST['attachment_existing_time']) && is_array($_POST['attachment_existing_time']) ? $_POST['attachment_existing_time'] : [],
+            ];
+            $attachment_files = [];
+            if (!empty($_FILES) && is_array($_FILES)) {
+                foreach ($_FILES as $file_key => $file_value) {
+                    if (strpos($file_key, 'attachment_files_') === 0) {
+                        $attachment_files[substr($file_key, strlen('attachment_files_'))] = $file_value;
+                    }
+                }
+            }
+            unset($data_post['attachment_existing_url'], $data_post['attachment_existing_name'], $data_post['attachment_existing_size'], $data_post['attachment_existing_suffix'], $data_post['attachment_existing_time']);
+            unset($_POST['attachment_existing_url'], $_POST['attachment_existing_name'], $_POST['attachment_existing_size'], $_POST['attachment_existing_suffix'], $_POST['attachment_existing_time']);
             $database_house_village_user_bind = D('House_village_user_bind');
             $database_house_village_floor = D('House_village_floor');
             $database_house_village_user_vacancy = D('house_village_user_vacancy');
@@ -4383,6 +4400,11 @@ class UserAction extends BaseAction
             if(!$user_info){
                 $this->error('数据不存在！');
             }
+            $origin_authentication_field = $user_info['authentication_field'] ? @unserialize($user_info['authentication_field']) : [];
+            if (!is_array($origin_authentication_field)) {
+                $origin_authentication_field = [];
+            }
+            $attachment_field_list = $this->getUserAttachmentFieldList($house_village['property_id']);
             if($data_post['user_political_affiliation'] == 1 && $data_post['party_type'] < 1){
                 $this->error('请选择党员属性！');
             }
@@ -4431,6 +4453,7 @@ class UserAction extends BaseAction
             unset($v);
             unset($_POST['province_idss']);
             unset($_POST['city_idss']);
+            $data_post = $this->mergeUserAttachmentFieldData($data_post, $_POST['pigcms_id'], $attachment_post, $attachment_files, $attachment_field_list, $origin_authentication_field);
             $data_post_list['authentication_field'] = serialize($data_post);
             $page = $_POST['page'];
             unset($_POST['page']);
@@ -4785,6 +4808,8 @@ class UserAction extends BaseAction
                 $this->error('对不起，您没有权限执行此操作');
             }
             //$house_village_config['_string'] = "( village_id=".$this->village_id.") OR (village_id = 0)";
+            $attachment_field_list = [];
+            $legacy_attachment_list = [];
 
             $where_village['village_id'] = $this->village_id;
             $property_id = D('House_village')->where($where_village)->getField('property_id');
@@ -4880,7 +4905,14 @@ class UserAction extends BaseAction
                 }
 
                 if($info['authentication_field']){
-                    $info['authentication_field'] = unserialize($info['authentication_field']);
+                    $info['authentication_field'] = @unserialize($info['authentication_field']);
+                }
+                if (!is_array($info['authentication_field'])) {
+                    $info['authentication_field'] = [];
+                }
+                if (!empty($info['authentication_field']['user_attachment_list'])) {
+                    $legacy_attachment_list = $this->formatUserAttachmentList($info['authentication_field']['user_attachment_list']);
+                    unset($info['authentication_field']['user_attachment_list']);
                 }
 
                 if ($floor_info && $floor_info['single_id']>0 && !$info['single_id']) {
@@ -4991,6 +5023,12 @@ class UserAction extends BaseAction
                 $v['is_edit']=$is_edit;
 
             }
+            $attachment_config_list = $this->getUserAttachmentFieldList($property_id);
+            if (!empty($info['authentication_field'])) {
+                $attachment_field_list = $this->formatUserAttachmentFieldList($attachment_config_list, $info['authentication_field']);
+            } else {
+                $attachment_field_list = $this->formatUserAttachmentFieldList($attachment_config_list, []);
+            }
             $this->assign('dataList',$dataList);
             // 用户标签列表
             $param = [
@@ -5023,8 +5061,345 @@ class UserAction extends BaseAction
             }
             $this->assign('userOpenDoorDay', $userOpenDoorDayTmp);
             $this->assign('readCard_denake', C('customization.readCard_denake'));
+            $this->assign('attachment_field_list', $attachment_field_list);
+            $this->assign('legacy_attachment_list', $legacy_attachment_list);
             $this->display();
         }
+    }
+
+    private function getUserAttachmentTypeConfig($type = 0)
+    {
+        $config = [
+            5 => [
+                'name' => '图片',
+                'accept' => '.jpg,.jpeg,.png,.gif,.bmp',
+                'allow_exts' => ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
+            ],
+            6 => [
+                'name' => 'PDF',
+                'accept' => '.pdf',
+                'allow_exts' => ['pdf'],
+            ],
+        ];
+        if ($type) {
+            $type = intval($type);
+            return isset($config[$type]) ? $config[$type] : [];
+        }
+        return $config;
+    }
+
+    private function getUserAttachmentFieldList($property_id)
+    {
+        $property_id = intval($property_id);
+        if ($property_id <= 0) {
+            return [];
+        }
+        $type_config = $this->getUserAttachmentTypeConfig();
+        $where = [
+            'village_id' => 0,
+            'property_id' => $property_id,
+            'is_close' => 0,
+            'type' => ['in', array_keys($type_config)],
+        ];
+        return D('House_village_data_config')->where($where)->order('sort desc')->select();
+    }
+
+    private function mergeUserAttachmentFieldData($data_post, $pigcms_id, $attachment_post = [], $attachment_files = [], $attachment_field_list = [], $origin_authentication_field = [])
+    {
+        if (!is_array($data_post)) {
+            $data_post = [];
+        }
+        if (!is_array($origin_authentication_field)) {
+            $origin_authentication_field = [];
+        }
+        $type_config = $this->getUserAttachmentTypeConfig();
+        foreach ($origin_authentication_field as $origin_key => $origin_value) {
+            if ($origin_key === 'user_attachment_list') {
+                $data_post[$origin_key] = $origin_value;
+                continue;
+            }
+            if (is_array($origin_value) && isset($origin_value['type']) && isset($type_config[intval($origin_value['type'])])) {
+                $data_post[$origin_key] = $origin_value;
+            }
+        }
+        foreach ($attachment_field_list as $field) {
+            $field_key = isset($field['key']) ? trim($field['key']) : '';
+            if (!$field_key) {
+                continue;
+            }
+            $current_files = $this->buildUserAttachmentCurrentFiles($attachment_post, $field_key);
+            $current_type_config = $this->getUserAttachmentTypeConfig(isset($field['type']) ? $field['type'] : 0);
+            if (isset($attachment_files[$field_key]) && !$this->isEmptyUserAttachmentUpload($attachment_files[$field_key])) {
+                $upload_result = $this->uploadUserAttachmentFiles($attachment_files[$field_key], $pigcms_id, $current_type_config ? $current_type_config['allow_exts'] : []);
+                if ($upload_result['error']) {
+                    $field_title = isset($field['title']) && $field['title'] ? $field['title'] : 'attachment';
+                    $this->error($field_title . ': ' . $upload_result['msg']);
+                }
+                $current_files = array_merge($current_files, $upload_result['files']);
+            }
+            if (empty($current_files)) {
+                unset($data_post[$field_key]);
+                continue;
+            }
+            $file_name_list = [];
+            foreach ($current_files as $file_item) {
+                if (!empty($file_item['original_name'])) {
+                    $file_name_list[] = $file_item['original_name'];
+                }
+            }
+            $data_post[$field_key] = [
+                'type' => isset($field['type']) ? intval($field['type']) : 0,
+                'is_must' => isset($field['is_must']) ? intval($field['is_must']) : 0,
+                'key' => $field_key,
+                'title' => isset($field['title']) ? $field['title'] : '',
+                'value' => implode(', ', $file_name_list),
+                'file_list' => array_values($current_files),
+            ];
+        }
+        return $data_post;
+    }
+
+    private function buildUserAttachmentCurrentFiles($attachment_post = [], $field_key = '')
+    {
+        $field_key = trim($field_key);
+        if ($field_key === '') {
+            return [];
+        }
+        $existing_url_list = isset($attachment_post['existing_url']) && is_array($attachment_post['existing_url']) ? $attachment_post['existing_url'] : [];
+        $existing_name_list = isset($attachment_post['existing_name']) && is_array($attachment_post['existing_name']) ? $attachment_post['existing_name'] : [];
+        $existing_size_list = isset($attachment_post['existing_size']) && is_array($attachment_post['existing_size']) ? $attachment_post['existing_size'] : [];
+        $existing_suffix_list = isset($attachment_post['existing_suffix']) && is_array($attachment_post['existing_suffix']) ? $attachment_post['existing_suffix'] : [];
+        $existing_time_list = isset($attachment_post['existing_time']) && is_array($attachment_post['existing_time']) ? $attachment_post['existing_time'] : [];
+        $current_urls = isset($existing_url_list[$field_key]) && is_array($existing_url_list[$field_key]) ? $existing_url_list[$field_key] : [];
+        $current_names = isset($existing_name_list[$field_key]) && is_array($existing_name_list[$field_key]) ? $existing_name_list[$field_key] : [];
+        $current_sizes = isset($existing_size_list[$field_key]) && is_array($existing_size_list[$field_key]) ? $existing_size_list[$field_key] : [];
+        $current_suffixes = isset($existing_suffix_list[$field_key]) && is_array($existing_suffix_list[$field_key]) ? $existing_suffix_list[$field_key] : [];
+        $current_times = isset($existing_time_list[$field_key]) && is_array($existing_time_list[$field_key]) ? $existing_time_list[$field_key] : [];
+        $current_count = max(count($current_urls), count($current_names), count($current_sizes), count($current_suffixes), count($current_times));
+        $files = [];
+        for ($i = 0; $i < $current_count; $i++) {
+            $file_url = isset($current_urls[$i]) ? trim($current_urls[$i]) : '';
+            if (!$file_url) {
+                continue;
+            }
+            $original_name = isset($current_names[$i]) && $current_names[$i] ? $current_names[$i] : basename($file_url);
+            $suffix = isset($current_suffixes[$i]) && $current_suffixes[$i] ? strtolower($current_suffixes[$i]) : strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+            $files[] = [
+                'file_url' => $file_url,
+                'original_name' => $original_name,
+                'file_name' => basename($file_url),
+                'size' => isset($current_sizes[$i]) ? intval($current_sizes[$i]) : 0,
+                'suffix' => $suffix,
+                'add_time' => isset($current_times[$i]) ? intval($current_times[$i]) : 0,
+            ];
+        }
+        return $files;
+    }
+
+    private function formatUserAttachmentFieldList($data_list, $authentication_field = [])
+    {
+        $format_list = [];
+        if (!is_array($data_list)) {
+            return $format_list;
+        }
+        if (!is_array($authentication_field)) {
+            $authentication_field = [];
+        }
+        foreach ($data_list as $field) {
+            $field_key = isset($field['key']) ? trim($field['key']) : '';
+            $type_config = $this->getUserAttachmentTypeConfig(isset($field['type']) ? $field['type'] : 0);
+            if (!$field_key || empty($type_config)) {
+                continue;
+            }
+            $field_value = isset($authentication_field[$field_key]) && is_array($authentication_field[$field_key]) ? $authentication_field[$field_key] : [];
+            $file_list = [];
+            if (!empty($field_value['file_list']) && is_array($field_value['file_list'])) {
+                $file_list = $field_value['file_list'];
+            } elseif (!empty($field_value['files']) && is_array($field_value['files'])) {
+                $file_list = $field_value['files'];
+            }
+            $format_list[] = [
+                'key' => $field_key,
+                'title' => isset($field['title']) ? $field['title'] : '',
+                'type' => isset($field['type']) ? intval($field['type']) : 0,
+                'type_name' => $type_config['name'],
+                'accept' => $type_config['accept'],
+                'allow_exts_text' => implode(',', $type_config['allow_exts']),
+                'files' => $this->formatUserAttachmentFiles($file_list),
+            ];
+        }
+        return $format_list;
+    }
+
+    private function buildUserAttachmentList($pigcms_id, $attachment_post = [], $attachment_files = [])
+    {
+        $title_list = isset($attachment_post['title']) && is_array($attachment_post['title']) ? $attachment_post['title'] : [];
+        $existing_url_list = isset($attachment_post['existing_url']) && is_array($attachment_post['existing_url']) ? $attachment_post['existing_url'] : [];
+        $existing_name_list = isset($attachment_post['existing_name']) && is_array($attachment_post['existing_name']) ? $attachment_post['existing_name'] : [];
+        $existing_size_list = isset($attachment_post['existing_size']) && is_array($attachment_post['existing_size']) ? $attachment_post['existing_size'] : [];
+        $existing_suffix_list = isset($attachment_post['existing_suffix']) && is_array($attachment_post['existing_suffix']) ? $attachment_post['existing_suffix'] : [];
+        $existing_time_list = isset($attachment_post['existing_time']) && is_array($attachment_post['existing_time']) ? $attachment_post['existing_time'] : [];
+        $attachment_indexes = array_unique(array_merge(array_keys($title_list), array_keys($existing_url_list), array_keys($attachment_files)));
+        sort($attachment_indexes);
+        $attachment_list = [];
+        foreach ($attachment_indexes as $attachment_index) {
+            $title = isset($title_list[$attachment_index]) ? trim($title_list[$attachment_index]) : '';
+            $files = [];
+            $current_urls = isset($existing_url_list[$attachment_index]) && is_array($existing_url_list[$attachment_index]) ? $existing_url_list[$attachment_index] : [];
+            $current_names = isset($existing_name_list[$attachment_index]) && is_array($existing_name_list[$attachment_index]) ? $existing_name_list[$attachment_index] : [];
+            $current_sizes = isset($existing_size_list[$attachment_index]) && is_array($existing_size_list[$attachment_index]) ? $existing_size_list[$attachment_index] : [];
+            $current_suffixes = isset($existing_suffix_list[$attachment_index]) && is_array($existing_suffix_list[$attachment_index]) ? $existing_suffix_list[$attachment_index] : [];
+            $current_times = isset($existing_time_list[$attachment_index]) && is_array($existing_time_list[$attachment_index]) ? $existing_time_list[$attachment_index] : [];
+            $current_count = max(count($current_urls), count($current_names), count($current_sizes), count($current_suffixes), count($current_times));
+            for ($i = 0; $i < $current_count; $i++) {
+                $file_url = isset($current_urls[$i]) ? trim($current_urls[$i]) : '';
+                if (!$file_url) {
+                    continue;
+                }
+                $original_name = isset($current_names[$i]) && $current_names[$i] ? $current_names[$i] : basename($file_url);
+                $suffix = isset($current_suffixes[$i]) && $current_suffixes[$i] ? strtolower($current_suffixes[$i]) : strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+                $files[] = [
+                    'file_url' => $file_url,
+                    'original_name' => $original_name,
+                    'file_name' => basename($file_url),
+                    'size' => isset($current_sizes[$i]) ? intval($current_sizes[$i]) : 0,
+                    'suffix' => $suffix,
+                    'add_time' => isset($current_times[$i]) ? intval($current_times[$i]) : 0,
+                ];
+            }
+            if (isset($attachment_files[$attachment_index]) && !$this->isEmptyUserAttachmentUpload($attachment_files[$attachment_index])) {
+                if ($title === '') {
+                    $this->error('请填写附件标题！');
+                }
+                $upload_result = $this->uploadUserAttachmentFiles($attachment_files[$attachment_index], $pigcms_id);
+                if ($upload_result['error']) {
+                    $this->error($upload_result['msg']);
+                }
+                $files = array_merge($files, $upload_result['files']);
+            }
+            if (empty($files)) {
+                continue;
+            }
+            if ($title === '') {
+                $this->error('请填写附件标题！');
+            }
+            $attachment_list[] = [
+                'title' => $title,
+                'files' => $files,
+            ];
+        }
+        return $attachment_list;
+    }
+
+    private function isEmptyUserAttachmentUpload($file)
+    {
+        if (empty($file) || !isset($file['error'])) {
+            return true;
+        }
+        if (is_array($file['error'])) {
+            foreach ($file['error'] as $error) {
+                if (intval($error) !== 4) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return intval($file['error']) === 4;
+    }
+
+    private function uploadUserAttachmentFiles($file, $pigcms_id, $allow_exts = [])
+    {
+        $pigcms_id = intval($pigcms_id);
+        if ($pigcms_id <= 0) {
+            return ['error' => 1, 'msg' => '用户信息不存在！'];
+        }
+        $attachment_id = sprintf("%09d", $pigcms_id);
+        $rand_num = mt_rand(10, 99) . '/' . substr($attachment_id, 0, 3) . '/' . substr($attachment_id, 3, 3) . '/' . substr($attachment_id, 6, 3);
+        $upload_dir = './upload/house/user_attachment/' . $rand_num . '/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        import('ORG.Net.UploadFile');
+        $upload = new UploadFile();
+        $upload->maxSize = 2 * 1024 * 1024;
+        if (empty($allow_exts)) {
+            foreach ($this->getUserAttachmentTypeConfig() as $attachment_type) {
+                if (!empty($attachment_type['allow_exts'])) {
+                    $allow_exts = array_merge($allow_exts, $attachment_type['allow_exts']);
+                }
+            }
+        }
+        $upload->allowExts = array_values(array_unique(array_map('strtolower', $allow_exts)));
+        $upload->allowTypes = [];
+        $upload->savePath = $upload_dir;
+        $upload->saveRule = 'uniqid';
+        $origin_files = $_FILES;
+        $_FILES = ['attachment_file' => $file];
+        $upload_status = $upload->upload($upload_dir);
+        $_FILES = $origin_files;
+        if (!$upload_status) {
+            return ['error' => 1, 'msg' => $upload->getErrorMsg()];
+        }
+        $upload_list = $upload->getUploadFileInfo();
+        $file_list = [];
+        foreach ($upload_list as $upload_item) {
+            $file_url = preg_replace('#^\./#', '', $upload_item['savepath'] . $upload_item['savename']);
+            $file_list[] = [
+                'file_url' => $file_url,
+                'original_name' => $upload_item['name'],
+                'file_name' => $upload_item['savename'],
+                'size' => intval($upload_item['size']),
+                'suffix' => strtolower($upload_item['extension']),
+                'add_time' => time(),
+            ];
+        }
+        return ['error' => 0, 'files' => $file_list];
+    }
+
+    private function formatUserAttachmentFiles($file_list)
+    {
+        $format_files = [];
+        if (!is_array($file_list)) {
+            return $format_files;
+        }
+        foreach ($file_list as $file_item) {
+            $file_url = isset($file_item['file_url']) ? trim($file_item['file_url']) : '';
+            if (!$file_url) {
+                continue;
+            }
+            $original_name = isset($file_item['original_name']) && $file_item['original_name'] ? $file_item['original_name'] : basename($file_url);
+            $suffix = isset($file_item['suffix']) && $file_item['suffix'] ? strtolower($file_item['suffix']) : strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+            $format_files[] = [
+                'file_url' => $file_url,
+                'file_url_full' => getAttachmentUrl($file_url),
+                'original_name' => $original_name,
+                'file_name' => isset($file_item['file_name']) && $file_item['file_name'] ? $file_item['file_name'] : basename($file_url),
+                'size' => isset($file_item['size']) ? intval($file_item['size']) : 0,
+                'suffix' => $suffix,
+                'add_time' => isset($file_item['add_time']) ? intval($file_item['add_time']) : 0,
+            ];
+        }
+        return $format_files;
+    }
+
+    private function formatUserAttachmentList($attachment_list)
+    {
+        $format_list = [];
+        if (!is_array($attachment_list)) {
+            return $format_list;
+        }
+        foreach ($attachment_list as $attachment_item) {
+            $title = isset($attachment_item['title']) ? trim($attachment_item['title']) : '';
+            $files = $this->formatUserAttachmentFiles(isset($attachment_item['files']) ? $attachment_item['files'] : []);
+            if (empty($files)) {
+                continue;
+            }
+            $format_list[] = [
+                'title' => $title,
+                'files' => $files,
+            ];
+        }
+        return $format_list;
     }
 
     // 删除缴费项目
