@@ -27,6 +27,9 @@
     .help_body .help_custom .col-sm-1{
         width: 8.98%;
     }
+    .flex{
+        display: flex;
+    }
 </style>
 <div class="main-content">
 	<!-- 内容头部 -->
@@ -596,43 +599,165 @@
                             </div>
                           </if>
 							<div class="tab-pane" id="aboutInfo">
-								<div class="form-group">
-									<label class="col-sm-1"><label for="plot_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>占地面积</label></label>
-									<input class="col-sm-2" size="20" name="plot_area" value="{pigcms{$village_about_info['plot_area']}" type="text" style=""/>
-									<span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                <div class="flex form-group">
+                                    <table class="table table-bordered" style="width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0;">
+                                        <thead>
+                                        <tr style="background: #f8f9fa;">
+                                            <!-- 固定首列表头：房屋类型 -->
+                                            <th style="position: sticky; left: 0; z-index: 3; background: #f8f9fa; width: 120px; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                房屋类型
+                                            </th>
+                                            <!-- 其他表头：已售/未售/已交/未交 -->
+                                            <th style="position: sticky; top: 0; z-index: 2; background: #f8f9fa; width: 100px; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                已售
+                                            </th>
+                                            <th style="position: sticky; top: 0; z-index: 2; background: #f8f9fa; width: 100px; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                未售
+                                            </th>
+                                            <th style="position: sticky; top: 0; z-index: 2; background: #f8f9fa; width: 100px; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                已交
+                                            </th>
+                                            <th style="position: sticky; top: 0; z-index: 2; background: #f8f9fa; width: 100px; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                未交
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!-- 住宅行：name命名规则 类型_字段，方便后端解析 -->
+                                        <tr>
+                                            <td style="position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 500; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                住宅
+                                            </td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_yishou']}" name="house[zhuzhai][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_weishou']}" name="house[zhuzhai][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_yijiao']}" name="house[zhuzhai][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['zhuzhai_weijiao']}" name="house[zhuzhai][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                        </tr>
+                                        <!-- 商铺行 -->
+                                        <tr>
+                                            <td style="position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 500; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                商铺
+                                            </td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_yishou']}" name="house[shangpu][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_weishou']}" name="house[shangpu][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_yijiao']}" name="house[shangpu][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['shangpu_weijiao']}" name="house[shangpu][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                        </tr>
+                                        <!-- 车位行 -->
+                                        <tr>
+                                            <td style="position: sticky; left: 0; z-index: 1; background: #fff; font-weight: 500; text-align: center; border: 1px solid #e5e6eb; padding: 8px 5px;">
+                                                车位
+                                            </td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_yishou']}" name="house[chewei][yishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_weishou']}" name="house[chewei][weishou]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_yijiao']}" name="house[chewei][yijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                            <td style="text-align: center; border: 1px solid #e5e6eb; padding: 5px;"><input type="number" value="{pigcms{$village_about_info['chewei_weijiao']}" name="house[chewei][weijiao]" class="form-control input-sm" placeholder="" style="width: 100%; margin: 0 auto;"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+								<div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="plot_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>占地面积</label></label>
+                                        <input class="col-sm-3" size="20" name="plot_area" value="{pigcms{$village_about_info['plot_area']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="decoration_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>装修中数量</label></label>
+                                        <input class="col-sm-3" size="20" name="decoration_num" value="{pigcms{$village_about_info['decoration_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(套)</span>
+                                    </div>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-1"><label for="building_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>建筑面积</label></label>
-									<input class="col-sm-2" size="20" name="building_area" value="{pigcms{$village_about_info['building_area']}" type="text" style=""/>
-									<span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+								<div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="building_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>建筑面积</label></label>
+                                        <input class="col-sm-3" size="20" name="building_area" value="{pigcms{$village_about_info['building_area']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="decorated_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>已装修数量</label></label>
+                                        <input class="col-sm-3" size="20" name="decorated_num" value="{pigcms{$village_about_info['decorated_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(套)</span>
+                                    </div>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-1"><label for="public_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>公共场所面积</label></label>
-									<input class="col-sm-2" size="20" name="public_area" value="{pigcms{$village_about_info['public_area']}" type="text" style=""/>
-									<span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+								<div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="public_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>公共场所面积</label></label>
+                                        <input class="col-sm-3" size="20" name="public_area" value="{pigcms{$village_about_info['public_area']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="undecorate_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>未装修数量</label></label>
+                                        <input class="col-sm-3" size="20" name="undecorate_num" value="{pigcms{$village_about_info['undecorate_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(套)</span>
+                                    </div>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-1"><label for="green_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>绿化面积</label></label>
-									<input class="col-sm-2" size="20" name="green_area" value="{pigcms{$village_about_info['green_area']}" type="text" style=""/>
-									<span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+								<div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="green_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>绿化面积</label></label>
+                                        <input class="col-sm-3" size="20" name="green_area" value="{pigcms{$village_about_info['green_area']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="non_motor_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>非机动车数量</label></label>
+                                        <input class="col-sm-3" size="20" name="non_motor_num" value="{pigcms{$village_about_info['non_motor_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(辆)</span>
+                                    </div>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-1"><label for="garage_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>车库面积</label></label>
-									<input class="col-sm-2" size="20" name="garage_area" value="{pigcms{$village_about_info['garage_area']}" type="text" style=""/>
-									<span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+								<div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="garage_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>车库面积</label></label>
+                                        <input class="col-sm-3" size="20" name="garage_area" value="{pigcms{$village_about_info['garage_area']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="charger_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>充电桩数量</label></label>
+                                        <input class="col-sm-3" size="20" name="charger_num" value="{pigcms{$village_about_info['charger_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(个)</span>
+                                    </div>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-1"><label for="design_parking_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>设计车位面积</label></label>
-									<input class="col-sm-2" size="20" name="design_parking_area" value="{pigcms{$village_about_info['design_parking_area']}" type="text" style=""/>
-									<span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+								<div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="design_parking_area"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>设计车位面积</label></label>
+                                        <input class="col-sm-3" size="20" name="design_parking_area" value="{pigcms{$village_about_info['design_parking_area']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：㎡(平方米)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="new_energy_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>新能源车辆数</label></label>
+                                        <input class="col-sm-3" size="20" name="new_energy_num" value="{pigcms{$village_about_info['new_energy_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(辆)</span>
+                                    </div>
 								</div>
-								<div class="form-group" <if condition="$village_about_info.park_new_switch eq 1">style="display:none"</if>>
-									<label class="col-sm-1"><label for="cars_park_num">车位数</label></label>
-									<input class="col-sm-2" size="20" name="cars_park_num" value="{pigcms{$village_about_info['cars_park_num']}" type="text" style=""/>
+                                <div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="ground_charger_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>地面充电桩</label></label>
+                                        <input class="col-sm-3" size="20" name="ground_charger_num" value="{pigcms{$village_about_info['ground_charger_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(个)</span>
+                                    </div>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="fuel_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>燃油车辆</label></label>
+                                        <input class="col-sm-3" size="20" name="fuel_num" value="{pigcms{$village_about_info['fuel_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(辆)</span>
+                                    </div>
+                                </div>
+                                <div class="flex form-group">
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="garage_charger_num"><?php echo (D('House_village')->getHouseAlias('house_name')?:'小区') ?>车库充电桩</label></label>
+                                        <input class="col-sm-3" size="20" name="garage_charger_num" value="{pigcms{$village_about_info['garage_charger_num']}" type="text" style=""/>
+                                        <span class="form_tips" style="color: gray;margin-left:5px;">单位：(个)</span>
+                                    </div>
+                                </div>
+								<div class="flex form-group" <if condition="$village_about_info.park_new_switch eq 1">style="display:none"</if>>
+                                    <div style="width: 50%;">
+                                        <label class="col-sm-3"><label for="cars_park_num">车位数</label></label>
+                                        <input class="col-sm-3" size="20" name="cars_park_num" value="{pigcms{$village_about_info['cars_park_num']}" type="text" style=""/>
+                                    </div>
 								</div>
-								<div class="form-group">
-									<label class="col-sm-1"><label for="remark">备注</label></label>
-									<textarea class="col-sm-2" size="20" name="remark" placeholder="请填写备注">{pigcms{$village_about_info['remark']}</textarea>
+								<div class="flex form-group">
+                                 <div style="width: 50%;">
+                                     <label class="col-sm-3"><label for="remark">备注</label></label>
+                                     <textarea class="col-sm-3" size="20" name="remark" placeholder="请填写备注">{pigcms{$village_about_info['remark']}</textarea>
+                                 </div>
 								</div>
 							</div>
 

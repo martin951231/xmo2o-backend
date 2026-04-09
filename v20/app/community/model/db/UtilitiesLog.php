@@ -1,0 +1,108 @@
+<?php
+
+
+namespace app\community\model\db;
+
+use think\Model;
+
+class UtilitiesLog extends Model
+{
+    public function getList($where = [], $field = true, $page = 1, $limit = 10, $order = 'id DESC')
+    {
+        if ($page) {
+            $data = $this->where($where)->field($field)->page($page, $limit)->order($order)->select();
+        } else {
+            $data = $this->where($where)->field($field)->order($order)->select();
+        }
+        return $data;
+    }
+
+    public function getListAndParentId($where = [], $field = true, $page = 1, $limit = 10, $order = 'id DESC')
+    {
+        if ($page) {
+            $data = $this->alias('ul')
+                ->leftjoin('Utilities_category uc','ul.category_id = uc.id')
+                ->where($where)
+                ->field($field)
+                ->page($page, $limit)
+                ->order($order)
+                ->select();
+        } else {
+            $data = $this->alias('ul')
+                ->leftjoin('Utilities_category uc','ul.category_id = uc.id')
+                ->where($where)
+                ->field($field)
+                ->order($order)
+                ->select();
+        }
+        return $data;
+    }
+
+    public function getListByType($where = [], $field = true, $page = 1, $limit = 10, $order = 'ul.id DESC')
+    {
+        if ($page) {
+            $data = $this->alias('ul')
+                ->leftjoin('Utilities_category uc','ul.category_id = uc.id')
+                ->leftjoin('House_village hv','ul.village_id = hv.village_id')
+                ->where($where)
+                ->field($field)
+                ->page($page, $limit)
+                ->order($order)
+                ->select();
+        } else {
+            $data = $this->alias('ul')
+                ->leftjoin('Utilities_category uc','ul.category_id = uc.id')
+                ->leftjoin('House_village hv','ul.village_id = hv.village_id')
+                ->where($where)
+                ->field($field)
+                ->order($order)
+                ->select();
+        }
+        return $data;
+    }
+
+    public function getCount($where) {
+        $list = $this->where($where)->count();
+        return $list;
+    }
+
+    public function getOne($where=[],$field=true)
+    {
+        $data = $this->where($where)->field($field)->find();
+        return $data;
+    }
+
+
+    /**
+     * 修改信息
+     * @author: zhubaodi
+     * @date_time: 2021/8/13 9:52
+     * @param array $where 改写内容的条件
+     * @param array $save 修改内容
+     * @return bool
+     */
+    public function saveOne($where, $save) {
+        $set_info = $this->where($where)->save($save);
+        return $set_info;
+    }
+
+
+    /**
+     * 添加添加购买的月卡信息
+     * @author: zhubaodi
+     * @date_time: 2021/8/13 9:52
+     * @param array $data 要进行添加的数据
+     * @return mixed
+     */
+    public function addOne($data) {
+        $order_id = $this->insertGetId($data);
+        return $order_id;
+    }
+
+
+    public function getColumn($where, $field, string $key = '')
+    {
+        $data = $this->where($where)->column($field, $key);
+        return $data;
+    }
+}

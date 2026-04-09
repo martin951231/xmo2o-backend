@@ -39,8 +39,34 @@ class HouseNewRepairWorksOrder extends Model
         if ($page)
             $data = $data->page($page, $limit);
         $datas = $data->select();
-        //echo $data->getLastSql();
+//        echo $data->getLastSql();
         return $datas;
+    }
+
+    public function getComplainList($where = [], $field = true, $order = 'update_time ASC,order_id ASC',$page = 0, $pagesize = 99999)
+    {
+        $dataObj = $this->alias('o')
+            ->leftJoin('House_new_repair_cate hc', 'o.cat_id = hc.id')
+            ->leftJoin('House_worker hw', 'o.worker_id = hw.wid')
+            ->where($where)
+            ->field($field)
+            ->order($order)
+            ->page($page,$pagesize)
+            ->select();
+        return $dataObj;
+    }
+
+    public function getAllCateList($where = [], $field = true, $order = 'update_time ASC,order_id ASC')
+    {
+        $dataObj = $this->alias('o')
+            ->leftJoin('House_new_repair_cate hc', 'o.cat_fid = hc.id')
+            ->leftJoin('House_worker hw', 'o.worker_id = hw.wid')
+            ->leftjoin('House_village hv','o.village_id = hv.village_id')
+            ->where($where)
+            ->field($field)
+            ->order($order)
+            ->select();
+        return $dataObj;
     }
 
     public function getAllList($where = [], $field = true, $order = 'update_time ASC,order_id ASC')

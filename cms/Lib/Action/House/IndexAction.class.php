@@ -1395,6 +1395,97 @@ class IndexAction extends BaseAction{
                 $village_about_data['cars_park_num'] = $_POST['cars_park_num'];
                 unset($_POST['cars_park_num']);
             }
+
+            if (isset($_POST['house']['zhuzhai']['yishou'])) {
+                $village_about_data['zhuzhai_yishou'] = $_POST['house']['zhuzhai']['yishou'];
+                unset($_POST['house']['zhuzhai']['yishou']);
+            }
+            if (isset($_POST['house']['zhuzhai']['weishou'])) {
+                $village_about_data['zhuzhai_weishou'] = $_POST['house']['zhuzhai']['weishou'];
+                unset($_POST['house']['zhuzhai']['weishou']);
+            }
+            if (isset($_POST['house']['zhuzhai']['yijiao'])) {
+                $village_about_data['zhuzhai_yijiao'] = $_POST['house']['zhuzhai']['yijiao'];
+                unset($_POST['house']['zhuzhai']['yijiao']);
+            }
+            if (isset($_POST['house']['zhuzhai']['weijiao'])) {
+                $village_about_data['zhuzhai_weijiao'] = $_POST['house']['zhuzhai']['weijiao'];
+                unset($_POST['house']['zhuzhai']['weijiao']);
+            }
+
+            if (isset($_POST['house']['shangpu']['yishou'])) {
+                $village_about_data['shangpu_yishou'] = $_POST['house']['shangpu']['yishou'];
+                unset($_POST['house']['shangpu']['yishou']);
+            }
+            if (isset($_POST['house']['shangpu']['weishou'])) {
+                $village_about_data['shangpu_weishou'] = $_POST['house']['shangpu']['weishou'];
+                unset($_POST['house']['shangpu']['weishou']);
+            }
+            if (isset($_POST['house']['shangpu']['yijiao'])) {
+                $village_about_data['shangpu_yijiao'] = $_POST['house']['shangpu']['yijiao'];
+                unset($_POST['house']['shangpu']['yijiao']);
+            }
+            if (isset($_POST['house']['shangpu']['weijiao'])) {
+                $village_about_data['shangpu_weijiao'] = $_POST['house']['shangpu']['weijiao'];
+                unset($_POST['house']['shangpu']['weijiao']);
+            }
+
+            if (isset($_POST['house']['chewei']['yishou'])) {
+                $village_about_data['chewei_yishou'] = $_POST['house']['chewei']['yishou'];
+                unset($_POST['house']['chewei']['yishou']);
+            }
+            if (isset($_POST['house']['chewei']['weishou'])) {
+                $village_about_data['chewei_weishou'] = $_POST['house']['chewei']['weishou'];
+                unset($_POST['house']['chewei']['weishou']);
+            }
+            if (isset($_POST['house']['chewei']['yijiao'])) {
+                $village_about_data['chewei_yijiao'] = $_POST['house']['chewei']['yijiao'];
+                unset($_POST['house']['chewei']['yijiao']);
+            }
+            if (isset($_POST['house']['chewei']['weijiao'])) {
+                $village_about_data['chewei_weijiao'] = $_POST['house']['chewei']['weijiao'];
+                unset($_POST['house']['chewei']['weijiao']);
+            }
+
+
+            if (isset($_POST['decoration_num'])) {
+                $village_about_data['decoration_num'] = $_POST['decoration_num'];
+                unset($_POST['decoration_num']);
+            }
+            if (isset($_POST['decorated_num'])) {
+                $village_about_data['decorated_num'] = $_POST['decorated_num'];
+                unset($_POST['decorated_num']);
+            }
+            if (isset($_POST['undecorate_num'])) {
+                $village_about_data['undecorate_num'] = $_POST['undecorate_num'];
+                unset($_POST['undecorate_num']);
+            }
+            if (isset($_POST['non_motor_num'])) {
+                $village_about_data['non_motor_num'] = $_POST['non_motor_num'];
+                unset($_POST['non_motor_num']);
+            }
+            if (isset($_POST['charger_num'])) {
+                $village_about_data['charger_num'] = $_POST['charger_num'];
+                unset($_POST['charger_num']);
+            }
+            if (isset($_POST['new_energy_num'])) {
+                $village_about_data['new_energy_num'] = $_POST['new_energy_num'];
+                unset($_POST['new_energy_num']);
+            }
+            if (isset($_POST['ground_charger_num'])) {
+                $village_about_data['ground_charger_num'] = $_POST['ground_charger_num'];
+                unset($_POST['ground_charger_num']);
+            }
+            if (isset($_POST['fuel_num'])) {
+                $village_about_data['fuel_num'] = $_POST['fuel_num'];
+                unset($_POST['fuel_num']);
+            }
+            if (isset($_POST['garage_charger_num'])) {
+                $village_about_data['garage_charger_num'] = $_POST['garage_charger_num'];
+                unset($_POST['garage_charger_num']);
+            }
+
+
             if(isset($_POST['meter_type']) && $_POST['meter_type'] == 1){
                 $_POST['meter_time'] = $_POST['meter_day'];
                 unset($_POST['meter_day']);

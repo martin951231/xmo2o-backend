@@ -5,6 +5,9 @@ namespace app\community\controller\village_api;
 
 
 use app\common\model\service\config\ConfigCustomizationService;
+use app\community\model\db\HouseVillageFloor;
+use app\community\model\db\HouseVillageSingle;
+use app\community\model\db\HouseVillageUserVacancy;
 use app\community\model\service\CommonPickupPersonService;
 use app\community\model\service\ExpressPickupService;
 use app\community\controller\CommunityBaseController;
@@ -300,7 +303,19 @@ class ExpressPickUpApiController extends CommunityBaseController
         $data['location_id'] = $this->request->post()['location_id'];
 
         $userInfo = $this->getUserinfo($pigcms_id);
+        $database_house_village_floor = new HouseVillageFloor();
+        $database_house_village_single = new HouseVillageSingle();
+        $database_house_village_user_vacancy = new HouseVillageUserVacancy();
 
+        $floor_info = $database_house_village_floor->where(array('floor_id'=>$userInfo['floor_id']))->find();
+
+        $room_info = $database_house_village_user_vacancy->where(array('pigcms_id'=>$userInfo['room_id']))->find();
+
+        $single = $database_house_village_single->where(array('id'=>$floor_info['single_id']))->find();
+
+        $sing_name = $single['single_name'] ? $single['single_name'] : $floor_info['floor_layer'];
+
+        $userInfo['room_name'] = $sing_name.'-'.$floor_info['floor_name'].'-'.$room_info['layer'].'-'.$room_info['room'];
         $data['single_id'] = $userInfo['single_id'];
         $data['floor_id'] = $userInfo['floor_id'];
         $data['layer_id'] = $userInfo['layer_id'];

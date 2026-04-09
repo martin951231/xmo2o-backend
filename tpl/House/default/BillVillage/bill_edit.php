@@ -20,9 +20,20 @@
 							<div class="form-group">
 								<label class="col-sm-1">类型:</label>
 
-								<label style="padding-left:0px;padding-right:20px;"><input type="radio" <if condition="$bill['bill_type'] eq 2">checked="checked"</if>  class="ace" value="0" name="bill_type"><span style="z-index: 1" class="lbl">收入</span></label>
-								<label style="padding-left:0px;"><input type="radio" <if condition="$bill['bill_type'] eq 1">checked="checked"</if> class="ace" value="1" name="bill_type"><span style="z-index: 1" class="lbl">支出</span></label>
+<!--								<label style="padding-left:0px;padding-right:20px;"><input type="radio" <if condition="$bill['bill_type'] eq 2">checked="checked"</if>  class="ace" value="0" name="bill_type"><span style="z-index: 1" class="lbl">收入</span></label>-->
+								<label style="padding-left:0px;"><input type="radio" checked="checked" class="ace" value="1" name="bill_type"><span style="z-index: 1" class="lbl">支出</span></label>
 							</div>
+                            <div class="form-group">
+                                <label class="col-sm-1"><label for="budgetCategoryId">所属分类：</label></label>
+                                <select class="col-sm-2" name="budgetCategoryId" id="budgetCategoryId">
+                                    <option value="0">请选择分类</option>
+                                    <foreach name="categoryList" item="vo">
+                                        <option value="{pigcms{$vo.id}">
+                                            {pigcms{$vo.category_name}
+                                        </option>
+                                    </foreach>
+                                </select>
+                            </div>
 
 							<div class="form-group">
 								<label class="col-sm-1"><label for="housesize">单价：</label></label>

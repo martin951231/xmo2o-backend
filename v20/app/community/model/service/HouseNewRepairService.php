@@ -4000,6 +4000,8 @@ class HouseNewRepairService
 
         $db_house_new_repair_works_order_log = new HouseNewRepairWorksOrderLog();
 
+        $order_info = ( new HouseNewRepairWorksOrder() )->getOne(['order_id'=>$order_id])->toArray();
+
         $where_log = [];
         $where_log[] = ['order_id', '=', $order_id];
         $log_list = $db_house_new_repair_works_order_log->getList($where_log, true, 0, 0);
@@ -4049,6 +4051,8 @@ class HouseNewRepairService
                             'title' => '内容',
                             'content' => $val['log_content'],
                             'content_color' => '',
+                            'inspection_auto_add' => $order_info['inspection_auto_add'],
+                            'content_arr' => $order_info['inspection_auto_add'] == 1 ? json_decode(htmlspecialchars_decode($val['log_content']), true) : [],
                             'type' => 1,
                             'imgs' => [],
                             'videos' => [],

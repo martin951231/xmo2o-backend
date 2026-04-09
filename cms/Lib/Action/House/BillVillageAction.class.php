@@ -32,7 +32,7 @@ class BillVillageAction extends BaseAction{
             $this->error('对不起，您没有权限执行此操作');
         }
 
-        $where['village_id'] = $this->village_id;
+        $where['vb.village_id'] = $this->village_id;
         $add_time_start = $_GET['add_time_start'];
         $add_time_end = $_GET['add_time_end'];
         $this->assign('add_time_start', $add_time_start);
@@ -43,19 +43,19 @@ class BillVillageAction extends BaseAction{
             $start_time = strtotime($add_time_start);
             $end_time = strtotime($add_time_end.'23:59:59');
 
-            $where['payment_time'] = array('between',array($start_time,$end_time));
+            $where['vb.payment_time'] = array('between',array($start_time,$end_time));
         }else if($add_time_start){
             $add_time_start = strtotime($add_time_start);
-            $where['payment_time'] = array('egt',$add_time_start);
+            $where['vb.payment_time'] = array('egt',$add_time_start);
         }else if($add_time_end){
             $add_time_end = strtotime($add_time_end.'23:59:59');
-            $where['payment_time'] = array('lt',$add_time_end);
+            $where['vb.payment_time'] = array('lt',$add_time_end);
         }
         if(!empty($_GET['title'])){
             $title = $_GET['title'];
             $this->assign('title', $title);
             if($title){
-                $where['title'] = $title;
+                $where['vb.title'] = $title;
             }
         }
 
@@ -65,16 +65,24 @@ class BillVillageAction extends BaseAction{
 
         $this->assign('bill_type', $bill_type);
         if($bill_type == 2){
-            $where['bill_type'] = 2;
+            $where['vb.bill_type'] = 2;
         }elseif($bill_type == 1){
-            $where['bill_type'] = 1;
+            $where['vb.bill_type'] = 1;
 
         }
 
-        $count_user = M('Village_bill')->where($where)->count();
+        $count_user = M('vb.Village_bill')
+            ->join('pigcms_budget_category bc ON bc.id = vb.category_id')
+            ->where($where)
+            ->count();
         import('@.ORG.merchant_page');
         $p = new Page($count_user, 20, 'page');
-        $dataList = M('Village_bill')->where($where)->limit($p->firstRow . ',' . $p->listRows)->select();
+        $dataList = M('Village_bill vb')
+            ->join('pigcms_budget_category bc ON bc.id = vb.category_id')
+            ->where($where)
+            ->limit($p->firstRow . ',' . $p->listRows)
+//            ->buildSql();
+            ->select();
         $this->assign('pagebar',$p->show());
         $bill_type0 = M('Village_bill')->where($where)->where(array('bill_type'=>2))->sum('price');
         $bill_type1 = M('Village_bill')->where($where)->where(array('bill_type'=>1))->sum('price');
@@ -115,6 +123,7 @@ class BillVillageAction extends BaseAction{
             $data['operation_name'] = $this->house_session['account'];
             $data['village_id'] = $this->village_id;
             $data['payment_time'] = strtotime($_POST['payment_time']);
+            $data['category_id'] = $_POST['budgetCategoryId'];
             if($_POST['pic']){
                 $data['image'] = implode(';',$_POST['pic']);
             }
@@ -125,6 +134,9 @@ class BillVillageAction extends BaseAction{
                 $this->error('添加失败！');
             }
         }else{
+            $cate_where['status'] = 1;
+            $categoryList = M('budget_category')->where($cate_where)->select();
+            $this->assign('categoryList', $categoryList );
             $this->display();
         }
 
@@ -174,7 +186,9 @@ class BillVillageAction extends BaseAction{
             if($bill['image']){
                 $bill['image'] = explode(';',$bill['image']);
             }
-            
+            $cate_where['status'] = 1;
+            $categoryList = M('budget_category')->where($cate_where)->select();
+            $this->assign('categoryList', $categoryList );
             $this->assign('bill',$bill);
            $this->display();
         }

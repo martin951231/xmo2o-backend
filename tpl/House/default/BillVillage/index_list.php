@@ -51,6 +51,7 @@
 
                                     <th width="5%">费用名称</th>
                                     <th width="5%">类型</th>
+                                    <th width="5%">所属分类名称</th>
                                     <th width="5%">单价</th>
                                     <th width="5%">数量</th>
                                     <th width="5%">金额</th>
@@ -77,6 +78,7 @@
                                                     <div class="tagDiv">收入</div>
                                                 </if>
                                             </td>
+                                            <td><div class="tagDiv">{pigcms{$vo.category_name}</div></td>
                                             <td><div class="tagDiv">{pigcms{$vo.unit_price}</div></td>
                                             <td><div class="tagDiv">{pigcms{$vo.num}</div></td>
                                             <td><div class="tagDiv">{pigcms{$vo.price}</div></td>

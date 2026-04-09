@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0aeadd"],{"0aa7":function(n,d,p){n.exports=p.p+"img/icon_resident.7d4e925d.png"}}]);

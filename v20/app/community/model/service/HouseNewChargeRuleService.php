@@ -1456,6 +1456,79 @@ class HouseNewChargeRuleService
      * @author:zhubaodi
      * @date_time: 2021/6/17 9:48
      */
+    public function getStandardBindList2($data)
+    {
+        if (empty($data['rule_id'])) {
+            throw new \think\Exception("收费标准id不能为空");
+        }
+        $db_rule = new HouseNewChargeRule();
+        $ruleInfo = $db_rule->getOne(['id' => $data['rule_id']]);
+        if (empty($ruleInfo)) {
+            throw new \think\Exception("收费标准信息不存在");
+        }
+        $db_subject = new HouseNewChargeNumber();
+        $subjectInfo = $db_subject->get_one(['id' => $ruleInfo['subject_id']]);
+        if (empty($subjectInfo)) {
+            throw new \think\Exception("收费科目信息不存在");
+        }
+        $where[] = ['b.rule_id', '=', $data['rule_id']];
+        $where[] = ['b.village_id', '=', $data['village_id']];
+        $where[] = ['b.bind_type', '=', $data['bind_type']];
+        $where[] = ['b.is_del', '=', 1];
+
+
+        $db_bind = new HouseNewChargeStandardBind();
+        if (isset($data['garage_id']) && !empty($data['garage_id'])) {
+            $where[] = ['b.garage_id', '=', $data['garage_id']];
+        }
+        if (isset($data['position_num']) && !empty($data['position_num'])) {
+            $where[] = ['pp.position_num', 'like','%'.$data['position_num'].'%'];
+        }
+        //  print_r($where);exit;
+        $count = $db_bind->getBindCount2($where);
+        $bindList = $db_bind->getBindList2($where, 'b.*,pp.position_num,pg.garage_num,pp.position_area,vv.housesize', $data['page'], $data['limit']);
+
+        if (!empty($bindList)){
+            $bindList=$bindList->toArray();
+            if (!empty($bindList)){
+                foreach ($bindList as &$v){
+                    if (empty($v['order_add_time'])){
+                        $v['order_add_time']='--';
+                    }else{
+
+                        $v['order_add_time']=date('Y-m-d',$v['order_add_time']);
+                    }
+                    if (in_array($subjectInfo['charge_type'],['electric','gas','water'])){
+                        $v['date_status']='--';
+                    }else{
+                        if ($v['order_add_type']==1)
+                        {
+                            $v['date_status']='按日生成';
+                        }elseif ($v['order_add_type']==2){
+                            $v['date_status']='按月生成';
+                        }elseif ($v['order_add_type']==3){
+                            $v['date_status']='按年生成';
+                        }
+                    }
+                }
+            }
+        }
+
+        // print_r($bindList);exit;
+        $data1 = [];
+        $data1['count'] = $count;
+        $data1['total_limit'] = $data['limit'];
+        $data1['list'] = $bindList;
+        $data1['rule_info'] = $ruleInfo;
+        return $data1;
+    }
+
+
+    /**
+     * 查询收费标准绑定的列表
+     * @author:zhubaodi
+     * @date_time: 2021/6/17 9:48
+     */
     public function getStandardBindList($data)
     {
         if (empty($data['rule_id'])) {

@@ -17,13 +17,23 @@
 								<input class="col-sm-2" size="20" name="title" id="title" placeholder="费用名称" type="text" value=""/>
 								&nbsp;&nbsp;&nbsp;&nbsp;<span class="red">*必填项</span>
 							</div>
-							<div class="form-group">
+							<div class="form-group" style="display: none;">
 								<label class="col-sm-1">类型:</label>
 
-								<label style="padding-left:0px;padding-right:20px;"><input type="radio" checked="checked" class="ace" value="2" name="bill_type"><span style="z-index: 1" class="lbl">收入</span></label>
-								<label style="padding-left:0px;"><input type="radio" class="ace" value="1" name="bill_type"><span style="z-index: 1" class="lbl">支出</span></label>
+<!--								<label style="padding-left:0px;padding-right:20px;"><input type="radio" checked="checked" class="ace" value="2" name="bill_type"><span style="z-index: 1" class="lbl">收入</span></label>-->
+								<label style="padding-left:0px;"><input type="radio" checked="checked" class="ace" value="1" name="bill_type"><span style="z-index: 1" class="lbl">支出</span></label>
 							</div>
-
+                            <div class="form-group">
+                                <label class="col-sm-1"><label for="budgetCategoryId">所属分类：</label></label>
+                                <select class="col-sm-2" name="budgetCategoryId" id="budgetCategoryId">
+                                    <option value="0">请选择分类</option>
+                                    <foreach name="categoryList" item="vo">
+                                        <option value="{pigcms{$vo.id}">
+                                        {pigcms{$vo.category_name}
+                                        </option>
+                                    </foreach>
+                                </select>
+                            </div>
 							<div class="form-group">
 								<label class="col-sm-1"><label for="housesize">单价:</label></label>
 								<input class="col-sm-2" size="20" name="unit_price" id="unit_price" placeholder="" type="text" value=""/>

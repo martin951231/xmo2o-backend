@@ -1376,34 +1376,34 @@ HTML;
         }
 
         //介绍字段
-        $qrcode_field_cate = M('Wisdom_qrcode_field_cate')->where(array('cate_id' => $_GET['id']))->find();
-        if ($qrcode_field_cate) {
-
-            //介绍字段配置项
-            $qrcode_cate_field_cate_config = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id' => $qrcode_field_cate['id']))->find();
-            if ($qrcode_cate_field_cate_config) {
-                $this->error('请先删除当前设备介绍字段管理下面的配置项列表');
-            } else {
-                $this->error('请先删除当前设备介绍字段管理列表');
-            }
-        }
+//        $qrcode_field_cate = M('Wisdom_qrcode_field_cate')->where(array('cate_id' => $_GET['id']))->find();
+//        if ($qrcode_field_cate) {
+//
+//            //介绍字段配置项
+//            $qrcode_cate_field_cate_config = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id' => $qrcode_field_cate['id']))->find();
+//            if ($qrcode_cate_field_cate_config) {
+//                $this->error('请先删除当前设备介绍字段管理下面的配置项列表');
+//            } else {
+//                $this->error('请先删除当前设备介绍字段管理列表');
+//            }
+//        }
 
         //二维码
-        $qrcode = M('Wisdom_qrcode')->where(array('cate_id' => $_GET['id']))->find();
-        if ($qrcode) {
-            $this->error('请删除当前类别下的所有二维码!');
-        }
+//        $qrcode = M('Wisdom_qrcode')->where(array('cate_id' => $_GET['id']))->find();
+//        if ($qrcode) {
+//            $this->error('请删除当前类别下的所有二维码!');
+//        }
 
         //记录内容管理
-        $record_cate = M('Wisdom_qrcode_record_cate')->where(array('cate_id' => $_GET['id']))->find();
-        if ($record_cate) {
-            $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $record_cate['id']))->find();
-            if ($qrcode_record_cate_field_config) {
-                $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
-            } else {
-                $this->error('请先删除当前记录记录内容管理列表');
-            }
-        }
+//        $record_cate = M('Wisdom_qrcode_record_cate')->where(array('cate_id' => $_GET['id']))->find();
+//        if ($record_cate) {
+//            $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $record_cate['id']))->find();
+//            if ($qrcode_record_cate_field_config) {
+//                $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
+//            } else {
+//                $this->error('请先删除当前记录记录内容管理列表');
+//            }
+//        }
 
         //负责人
         $qrcode_person = M('Wisdom_qrcode_person')->where(array('cate_id' => $_GET['id']))->find();
@@ -1677,13 +1677,14 @@ HTML;
             $this->assign('searchCategoryId', 0);
         }
         import('@.ORG.merchant_page');
-        $field = 'qrl.*,wqc.cate_name as plan_name,whw.name as worker_name,whw.phone as phone,pg.name as department_name,wq.name as qrcode_name,wqcg.name as qrcode_category_name';
+        $field = 'qrl.*,wqc.cate_name as plan_name,whw.name as worker_name,whw.phone as phone,pg.name as department_name,wq.name as qrcode_name,wqcg.name as qrcode_category_name,hnrwo.event_status';
         $qrcode_record_log_num = M('wisdom_qrcode_record_log as qrl')
             ->join('pigcms_wisdom_qrcode_cate as wqc ON qrl.cate_id = wqc.id')
             ->join( 'pigcms_house_worker as whw ON qrl.uid = whw.wid' )
             ->join( 'pigcms_property_group as pg ON pg.id = whw.department_id' )
             ->join( 'pigcms_wisdom_qrcode as wq ON wq.id = qrl.qrcode_id' )
             ->join( 'pigcms_wisdom_qrcode_category as wqcg ON wq.category_id = wqcg.id' )
+            ->join( 'pigcms_house_new_repair_works_order as hnrwo ON qrl.work_order_id = hnrwo.order_id' )
             ->where($where)
             ->field($field)
             ->count();
@@ -1694,11 +1695,11 @@ HTML;
             ->join( 'pigcms_property_group as pg ON pg.id = whw.department_id' )
             ->join( 'pigcms_wisdom_qrcode as wq ON wq.id = qrl.qrcode_id' )
             ->join( 'pigcms_wisdom_qrcode_category as wqcg ON wq.category_id = wqcg.id' )
+            ->join( 'pigcms_house_new_repair_works_order as hnrwo ON qrl.work_order_id = hnrwo.order_id' )
             ->where($where)
             ->limit($p->firstRow . ',' . $p->listRows)
             ->field($field)
             ->select();
-        $count_num = 0;
         $abnormality_list = array();
         foreach( $qrcode_record_log as &$log ){
             if( empty($log['entication_field']) ){
@@ -1706,20 +1707,25 @@ HTML;
             }
             $entication_field = unserialize( $log['entication_field']);
             $log['entication_field_arr'] = $entication_field;
-
             if( empty($entication_field['test']) ){
                 continue;
             }
+            switch($log['event_status'])
+            {
+                case 10: $log['event_status_str'] = '未指派';break;
+                case 20: $log['event_status_str'] = '已指派';break;
+                case 30: $log['event_status_str'] = '处理中';break;
+                case 40: $log['event_status_str'] = '已办结';break;
+                case 50: $log['event_status_str'] = '已撤回';break;
+                case 60: $log['event_status_str'] = '已关闭';break;
+                case 70: $log['event_status_str'] = '已评价';break;
+                default: $log['event_status_str'] = '未指派';break;
+            }
+
             $works_order_str = implode( ',',array_slice( array_column($log['entication_field_arr']['test'], 'record_name') ,0,3) );
             $log['works_order_str'] = $works_order_str;
-            foreach( $entication_field['test'] as $test ){
-                if( $this->checkHasFixedPointAbnormality($test['record_cate_field_config']) ){
-                    $abnormality_list[] = $log;
-                    $count_num++;
-                }
-            }
+            $abnormality_list[] = $log;
         }
-
         $category_list = M('wisdom_qrcode_category')->where(array('village_id' => $this->village_id))->select();
         $this->assign('categoryList', $category_list);
 
@@ -1995,10 +2001,10 @@ HTML;
         if (!in_array(546, $this->house_session['menus'])) {
             $this->error('对不起，您没有权限执行此操作');
         }
-        $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $_GET['id']))->find();
-        if ($qrcode_record_cate_field_config) {
-            $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
-        }
+//        $qrcode_record_cate_field_config = M('Wisdom_qrcode_record_cate_field_config')->where(array('record_cate_id' => $_GET['id']))->find();
+//        if ($qrcode_record_cate_field_config) {
+//            $this->error('请先删除当前记录记录内容管理列表下面的配置项列表');
+//        }
         $id = M('Wisdom_qrcode_record_cate')->where(array('id' => $_GET['id']))->delete();
         if ($id) {
 
@@ -3988,6 +3994,49 @@ HTML;
                 $item['entication_field_list'] = $enticationField ?: [];
                 return $item;
             }, $logInfo);
+            if( empty( $parsedData ) ){
+                $val['is_inspection'] = false;
+            }
+            $val['is_inspection'] = true;
+            if( $type == 'day' ){
+                $timeRange = explode(',', $finalData['record_time']);
+                foreach ($timeRange as $timeK => $timeV) {
+                    $timeRange_ = explode('-', $timeV);
+                    $timeRange_start = strtotime($fulldate.' '.$timeRange_[0]);
+                    $timeRange_end = strtotime($fulldate.' '.$timeRange_[1]);
+                    $is_exists = $this->checkAddTimeInRange($parsedData,$timeRange_start,$timeRange_end);
+                    if( !$is_exists ){
+                        $val['is_inspection'] = false;
+                        break;
+                    }
+                }
+            }else if( $type == 'week' ){
+                $weekList = explode(',', $finalData['record_time']);
+                $dateRange = $this->getDatesByWeekInRange($fulldate[0],$fulldate[1],$weekList);
+                foreach ($dateRange as $dateK => $dateV) {
+                    $timeRange_start = strtotime($dateV.' '.$finalData['start_time']);
+                    $timeRange_end = strtotime($dateV.' '.$finalData['end_time']);
+                    $is_exists = $this->checkAddTimeInRange($parsedData,$timeRange_start,$timeRange_end);
+                    if( !$is_exists ){
+                        $val['is_inspection'] = false;
+                        break;
+                    }
+                }
+            }else if( $type == 'month' ){
+                $monthList = explode(',', $finalData['record_time']);
+                $dateRange = array_map(function ($item) use($fulldate){
+                    return $fulldate.'-'.sprintf('%02d', (int)$item);
+                },$monthList);
+                foreach ($dateRange as $dateK => $dateV) {
+                    $timeRange_start = strtotime($dateV.' '.$finalData['start_time']);
+                    $timeRange_end = strtotime($dateV.' '.$finalData['end_time']);
+                    $is_exists = $this->checkAddTimeInRange($parsedData,$timeRange_start,$timeRange_end);
+                    if( !$is_exists ){
+                        $val['is_inspection'] = false;
+                        break;
+                    }
+                }
+            }
             $val['log_list'] = $parsedData;
         }
         unset($val);
@@ -3996,6 +4045,86 @@ HTML;
             'data'=> $finalData,
         ];
         exit(json_encode($arr));
+    }
+    /**
+     * 找出时间区间内指定星期几的具体日期
+     * @param string|int $start 开始时间（支持时间戳/日期字符串，如"2026-01-01"或1768899618）
+     * @param string|int $end 结束时间（格式同start）
+     * @param array $weekList 目标星期列表（如["2","3","4"]，对应周二、周三、周四）
+     * @return array 符合条件的日期列表（格式：["2026-01-06", "2026-01-07"...]）
+     */
+    function getDatesByWeekInRange($start, $end, $weekList) {
+        // 1. 统一转换为时间戳（处理日期字符串/时间戳两种输入）
+        $startTime = is_numeric($start) ? (int)$start : strtotime($start);
+        $endTime = is_numeric($end) ? (int)$end : strtotime($end);
+
+        // 校验时间区间合法性
+        if ($startTime > $endTime) {
+            return [];
+        }
+
+        // 2. 格式化星期列表（转为整数，避免字符串/数字对比问题）
+        $targetWeeks = array_map('intval', $weekList);
+
+        // 3. 遍历区间内每一天，筛选符合条件的日期
+        $currentTime = $startTime;
+        $resultDates = [];
+        $oneDay = 86400; // 一天的秒数
+
+        while ($currentTime <= $endTime) {
+            // 获取当前日期的星期数（1=周一，2=周二...7=周日）
+            $currentWeek = (int)date('N', $currentTime);
+
+            // 判断是否在目标星期列表中
+            if (in_array($currentWeek, $targetWeeks)) {
+                // 格式化日期为YYYY-MM-DD格式
+                $resultDates[] = date('Y-m-d', $currentTime);
+            }
+
+            // 推进到下一天
+            $currentTime += $oneDay;
+        }
+
+        return $resultDates;
+    }
+    /**
+     * 检查数组中是否存在add_time在指定时间戳范围内的数据
+     *
+     * @param array $data 待检查的多维数组（格式如你提供的示例）
+     * @param int $startTimestamp 开始时间戳（整数）
+     * @param int $endTimestamp 结束时间戳（整数）
+     * @return bool 存在返回true，不存在返回false
+     */
+    function checkAddTimeInRange($data, $startTimestamp, $endTimestamp) {
+        // 验证输入参数的合法性
+        if (!is_array($data) || empty($data)) {
+            return false;
+        }
+
+        if (!is_numeric($startTimestamp) || !is_numeric($endTimestamp)) {
+            throw new InvalidArgumentException("开始时间和结束时间必须是有效的数字（时间戳）");
+        }
+
+        // 转换为整数（确保是整型时间戳）
+        $start = (int)$startTimestamp;
+        $end = (int)$endTimestamp;
+
+        // 遍历外层数组（你的数据外层是索引数组）
+        foreach ($data as $item) {
+            // 检查当前项是否是数组，且包含add_time字段
+            if (is_array($item) && isset($item['add_time']) && !empty($item['add_time'])) {
+                // 将add_time转换为整数（你的数据中是字符串类型的时间戳）
+                $addTime = (int)$item['add_time'];
+
+                // 检查是否在时间范围内
+                if ($addTime >= $start && $addTime <= $end) {
+                    return true;
+                }
+            }
+        }
+
+        // 遍历完所有项都没找到符合条件的
+        return false;
     }
     /**
      * 修复序列化字符串的长度错误，解决unserialize返回false的问题
@@ -4077,11 +4206,13 @@ HTML;
                         $vv['isInspection'] = 1;
                         foreach($day_range as $dayV){
                             $dayV = explode('-', $dayV);
-                            $startTime = strtotime($vv['fullDate'] . $dayV[0]);
-                            $endTime = strtotime($vv['fullDate'] . $dayV[1]);
+                            $startTime = strtotime($vv['fullDate'] .' '. $dayV[0]);
+                            $endTime = strtotime($vv['fullDate'] .' '. $dayV[1]);
                             $where['add_time'] = ['between', [$startTime, $endTime]];
-                            $num = $qrcodeRecordLogDb->where($where)->count();
-                            if( $num <= 0 ){
+                            $list__ = $qrcodeRecordLogDb->where($where)->select();
+                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $isExists = $this->checkEachQrcodeHasTimeData($num_list, $startTime, $endTime);
+                            if( $isExists == 'false' ){
                                 $vv['isInspection'] = 2;
                                 break;
                             }
@@ -4104,8 +4235,10 @@ HTML;
                             $day_start_time = strtotime($cur_day . ' ' . $v['start_time']);
                             $day_end_time = strtotime($cur_day . ' ' . $v['end_time']);
                             $where['add_time'] = ['between', [$day_start_time, $day_end_time]];
-                            $num = $qrcodeRecordLogDb->where($where)->count();
-                            if( $num <= 0 ){
+                            $list__ = $qrcodeRecordLogDb->where($where)->select();
+                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $isExists = $this->checkEachQrcodeHasTimeData($num_list, $day_start_time, $day_end_time);
+                            if( $isExists == 'false' ){
                                 $vv['isInspection'] = 2;
                                 break;
                             }
@@ -4128,8 +4261,11 @@ HTML;
                             $day_start_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['start_time']);
                             $day_end_time = strtotime($vv['fullMonth'] .'-'.sprintf('%02d', $rangeItem). ' ' . $v['end_time']);
                             $where['add_time'] = ['between', [$day_start_time, $day_end_time]];
-                            $num = $qrcodeRecordLogDb->where($where)->count();
-                            if( $num <= 0 ){
+//                            $num = $qrcodeRecordLogDb->where($where)->count();
+                            $list__ = $qrcodeRecordLogDb->where($where)->select();
+                            $num_list = $this->groupByQrcodeId($list__,$qrcodeIds);
+                            $isExists = $this->checkEachQrcodeHasTimeData($num_list, $day_start_time, $day_end_time);
+                            if( $isExists == 'false' ){
                                 $vv['isInspection'] = 2;
                                 break;
                             }
@@ -4167,6 +4303,95 @@ HTML;
 
     }
     /**
+     * 判断分组数组中每个qrcode_id下是否都有指定时间段内的数据
+     * @param array $groupedData 按qrcode_id分组的数组（如你提供的格式）
+     * @param int $startTime 起始时间戳（如1766200000）
+     * @param int $endTime 结束时间戳（如1766300000）
+     */
+    function checkEachQrcodeHasTimeData(array $groupedData, int $startTime, int $endTime)
+    {
+        // 遍历每个qrcode_id的分组
+        foreach ($groupedData as $qrcodeId => $items) {
+            // 标记当前qrcode_id是否有符合时间段的数据
+            $hasValidData = false;
+            // 遍历当前qrcode_id下的所有数据项
+            foreach ($items as $item) {
+                // 校验add_time字段是否存在且为有效数字
+                if (empty($item['add_time']) || !is_numeric($item['add_time'])) {
+                    continue;
+                }
+
+                // 转换为整型时间戳，判断是否在指定时间段内
+                $addTime = (int)$item['add_time'];
+
+                if ($addTime >= $startTime && $addTime <= $endTime) {
+                    $hasValidData = true;
+                    break; // 找到一条即停止遍历当前qrcode_id的其他数据
+                }
+            }
+
+            // 若当前qrcode_id无符合条件的数据，直接返回「否」
+            if (!$hasValidData) {
+                return 'false';
+            }
+        }
+        // 所有qrcode_id都有符合条件的数据，返回「是」
+        return 'true';
+    }
+    /**
+     * 根据qrcode_id对多维数组分组，保留所有重复项，并补全指定qrcode_id列表中缺失的项（值为空数组）
+     * @param array $data 原始多维数组（如你提供的格式）
+     * @param array $qrcodeIdList 需校验补全的qrcode_id列表（如['61','62','63']）
+     * @param string $key 分组字段名（默认qrcode_id）
+     * @return array 分组后的数组，key为qrcode_id（包含列表中所有项），value为对应元素数组（缺失则为空数组）
+     */
+    function groupByQrcodeId(array $data, array $qrcodeIdList = [], string $key = 'qrcode_id'): array
+    {
+        // 初始化分组结果数组
+        $groupedData = [];
+
+        // 第一步：遍历原始数据，按qrcode_id分组（保留原有核心逻辑）
+        foreach ($data as $item) {
+            // 校验当前元素是否包含目标分组字段，避免报错
+            if (!isset($item[$key])) {
+                continue;
+            }
+
+            // 获取qrcode_id值（确保是字符串类型，统一格式）
+            $qrcodeId = (string)$item[$key];
+
+            // 若该qrcode_id分组不存在，先初始化空数组
+            if (!isset($groupedData[$qrcodeId])) {
+                $groupedData[$qrcodeId] = [];
+            }
+
+            // 将当前元素添加到对应分组中（保留重复项核心逻辑）
+            $groupedData[$qrcodeId][] = $item;
+        }
+
+        // 第二步：补全qrcode_id列表中缺失的项（核心新增逻辑）
+        if (!empty($qrcodeIdList)) {
+            foreach ($qrcodeIdList as $targetQrcodeId) {
+                // 统一转为字符串，避免数字/字符串类型不匹配导致的漏补
+                $targetQrcodeId = (string)$targetQrcodeId;
+                // 若分组结果中无该qrcode_id，补充key并赋值为空数组
+                if (!isset($groupedData[$targetQrcodeId])) {
+                    $groupedData[$targetQrcodeId] = [];
+                }
+            }
+
+            // 可选：按qrcode_id列表的顺序重新排序（保持结果顺序和传入列表一致）
+            $sortedGroupedData = [];
+            foreach ($qrcodeIdList as $targetQrcodeId) {
+                $targetQrcodeId = (string)$targetQrcodeId;
+                $sortedGroupedData[$targetQrcodeId] = $groupedData[$targetQrcodeId];
+            }
+            $groupedData = $sortedGroupedData;
+        }
+
+        return $groupedData;
+    }
+    /**
      * 从「年-月」格式字符串获取当月最后一天日期
      * @param string $yearMonth 格式：Y-m（如2025-02）
      * @return string 最后一天日期，格式：Y-m-d（如2025-02-28）
@@ -4188,8 +4413,8 @@ HTML;
     /**
      * 从时间区间中找出指定星期几的日期
      * @param array $weekRangeArr 时间区间数组 [起始日期, 结束日期]，格式：Y-m-d
-     * @param int $weekNum 目标星期数（0=周日，1=周一，2=周二...6=周六）
-     * @return array 符合条件的日期列表（格式：Y-m-d）
+     * @param int $weekNum 目标星期数（1=周一，2=周二...6=周六，7=周日）【已适配你的定义】
+     * @return array 符合条件的日期列表（格式：Y-m-d），无匹配返回空数组
      */
     function findDateByWeekday($weekRangeArr, $weekNum) {
         // 1. 校验入参（避免报错）
@@ -4206,17 +4431,25 @@ HTML;
             return []; // 日期格式错误
         }
 
-        // 3. 遍历区间内的所有日期，筛选目标星期
-        $targetDates = null;
+        // 新增：校验星期数入参（仅允许1-7，防止传非法值）
+        if (!is_int($weekNum) || $weekNum < 1 || $weekNum > 7) {
+            return [];
+        }
+
+        // 3. 初始化结果数组【修复：改为空数组，而非null】
+        $targetDates = [];
         $currentDate = clone $startDate;
 
+        // 4. 遍历区间内的所有日期，筛选目标星期【核心修复星期数匹配逻辑】
         while ($currentDate <= $endDate) {
-            // 获取当前日期的星期数（0-6）
+            // 获取PHP默认星期数（0=周日，1=周一...6=周六）
             $currentWeekNum = (int)$currentDate->format('w');
+            // 转换为你的业务星期数（0→7，1-6保持不变），实现匹配
+            $bizWeekNum = $currentWeekNum === 0 ? 7 : $currentWeekNum;
 
-            // 匹配目标星期数，加入结果数组
-            if ($currentWeekNum == $weekNum) {
-                $targetDates = $currentDate->format('Y-m-d');
+            // 匹配目标星期数，追加到结果数组【修复：用[]追加，而非覆盖】
+            if ($bizWeekNum == $weekNum) {
+                $targetDates[] = $currentDate->format('Y-m-d');
             }
 
             // 日期+1天，继续遍历

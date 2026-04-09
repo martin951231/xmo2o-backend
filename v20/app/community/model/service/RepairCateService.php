@@ -36,7 +36,7 @@ class RepairCateService
 
 
    //todo 查询分类数据
-   public function getRepairCate($where, $field=true, $page=0, $limit=10,$order){
+   public function getRepairCate($where, $field=true, $page=0, $limit=10,$order=''){
        $db_repair_cate = new HouseNewRepairCate();
        $cate_list = $db_repair_cate->getList($where, $field, $page, $limit,$order);
        $count = $db_repair_cate->getCount($where);
