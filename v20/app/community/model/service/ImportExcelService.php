@@ -423,6 +423,9 @@ class ImportExcelService
             case self::UPLOAD_BILL_EXCEL:
                 $data = [];
                 break;
+            case 'billPayExcel':
+                $data = [];
+                break;
             case self::upload_express_application:
                 $data = [
                     ['key' => '小区名称', 'val' => [

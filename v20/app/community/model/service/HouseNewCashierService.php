@@ -1991,6 +1991,14 @@ class HouseNewCashierService
                             'title' => '房间号',
                             'val' => $number_room
                         );
+                        $return_data[0]['list'][] = array(
+                            'title' => '业主姓名',
+                            'val' => $room1['name']
+                        );
+                        $return_data[0]['list'][] = array(
+                            'title' => '房屋面积',
+                            'val' => $room1['housesize']
+                        );
                     }
                 }
             }
@@ -8640,6 +8648,15 @@ class HouseNewCashierService
         // 新版打印模板处理表格器数据
 
         $tab_list = [];
+        if (!empty($order_body[0]['car_position_no']) && !empty($printList1)) {
+            foreach ($printList1 as &$print_item) {
+                if (isset($print_item['field_name']) && $print_item['field_name'] == 'parking_number') {
+                    $print_item['value'] = $order_body[0]['car_position_no'];
+                    break;
+                }
+            }
+            unset($print_item);
+        }
         if(!empty($order_body) && !empty($printList2)){
             foreach ($order_body as $value){
                 $temp = [];
