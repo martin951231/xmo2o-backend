@@ -959,6 +959,7 @@ class HouseApiAction  extends BaseAction
         $village_info = M('House_village')->where($where)->find();
         if ($village_info) {
             $arr['village_name'] = empty($village_info['village_name']) ? '' : $village_info['village_name'];
+            $arr['seal_img_new'] = !empty($village_info['seal_img_new']) ? replace_file_domain($village_info['seal_img_new']) : '';
             if ($village_info['village_logo']) {
                 $arr['village_logo'] = replace_file_domain($village_info['village_logo']);
             } elseif ($this->config['wechat_share_img']) {
@@ -1103,6 +1104,7 @@ class HouseApiAction  extends BaseAction
                 $return['village_list'][$k]['village_address'] = $v['village_address'];
                 $return['village_list'][$k]['range'] = $v['range'];
                 $return['village_list'][$k]['village_logo'] = $v['village_logo'];
+                $return['village_list'][$k]['seal_img_new'] = !empty($v['seal_img_new']) ? $v['seal_img_new'] : '';
                 /*
                 $header_id = $v['header_id'] ? $v['header_id'] : $this->config['house_village_group_headerId'];
                 $exist = M('Village_group_header')->where(array('id' => $header_id))->find();
@@ -12638,6 +12640,7 @@ class HouseApiAction  extends BaseAction
                 $list['village_name'] = $v['village_name'];
                 $list['village_address'] = $v['village_address'];
                 $list['village_logo'] = $v['village_logo'] ? file_domain().$v['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+                $list['seal_img_new'] = !empty($v['seal_img_new']) ? file_domain().$v['seal_img_new'] : '';
                 $dataList[] = $list;
             }
             $count = $database_house_village->where($village_where)->count();
@@ -12665,6 +12668,7 @@ class HouseApiAction  extends BaseAction
         $arr['village_name'] = $village_info['village_name'];
         $arr['village_address'] = $village_info['village_address'];
         $arr['village_logo'] = $village_info['village_logo'] ? file_domain().$village_info['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+        $arr['seal_img_new'] = !empty($village_info['seal_img_new']) ? file_domain().$village_info['seal_img_new'] : '';
 
         //查询小区楼栋信息
         $condition['village_id'] = $village_id;
@@ -12711,6 +12715,7 @@ class HouseApiAction  extends BaseAction
         $arr['village_name'] = $village_info['village_name'];
         $arr['village_address'] = $village_info['village_address'];
         $arr['village_logo'] = $village_info['village_logo'] ? file_domain().$village_info['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+        $arr['seal_img_new'] = !empty($village_info['seal_img_new']) ? file_domain().$village_info['seal_img_new'] : '';
 
         //查询小区单元信息
         $condition['village_id'] = $village_id;
@@ -12757,6 +12762,7 @@ class HouseApiAction  extends BaseAction
         $arr['village_name'] = $village_info['village_name'];
         $arr['village_address'] = $village_info['village_address'];
         $arr['village_logo'] = $village_info['village_logo'] ? file_domain().$village_info['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+        $arr['seal_img_new'] = !empty($village_info['seal_img_new']) ? file_domain().$village_info['seal_img_new'] : '';
 
         //查询小区单元信息
         $condition['village_id'] = $village_id;

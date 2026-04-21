@@ -84,6 +84,7 @@ class HouseAction  extends BaseAction{
                 $exist = M('Village_group_header')->where(array('id'=>$header_id))->find();
                 $header_id = $exist ? $header_id : 0;
                 $arr['village_list'][$k]['village_group_url'] = $this->config['site_url'] . '/wap.php?g=Wap&c=Villagr_group&a=index&leader_id=' . $header_id;
+                $arr['village_list'][$k]['seal_img_new'] = !empty($v['seal_img_new']) ? $v['seal_img_new'] : '';
                 
                 if ($this->config['open_house_logo_show']) {
                     $arr['village_list'][$k]['village_logo'] =  $v['village_logo'];
@@ -121,6 +122,7 @@ class HouseAction  extends BaseAction{
                         $exist = M('Village_group_header')->where(array('id'=>$header_id))->find();
                         $header_id = $exist ? $header_id : 0;
                         $arr['village_me'][$k]['village_group_url'] = $this->config['site_url'] . '/wap.php?g=Wap&c=Villagr_group&a=index&leader_id=' . $header_id;
+                        $arr['village_me'][$k]['seal_img_new'] = !empty($v['seal_img_new']) ? $v['seal_img_new'] : '';
 
                         if ($this->config['open_house_logo_show']) {
                             $arr['village_me'][$k]['village_logo'] =   $v['village_logo'];
@@ -159,6 +161,7 @@ class HouseAction  extends BaseAction{
                             $exist = M('Village_group_header')->where(array('id'=>$header_id))->find();
                             $header_id = $exist ? $header_id : 0;
                             $tmp['village_group_url'] = $this->config['site_url'] . '/wap.php?g=Wap&c=Villagr_group&a=index&leader_id=' . $header_id;
+                            $tmp['seal_img_new'] = !empty($v['seal_img_new']) ? $v['seal_img_new'] : '';
 
                             if ($this->config['open_house_logo_show']) {
                                 $tmp['village_logo'] =  $v['village_logo'];

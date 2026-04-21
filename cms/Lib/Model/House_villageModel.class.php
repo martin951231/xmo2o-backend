@@ -486,6 +486,7 @@ class House_villageModel extends Model{
 					$village_value['range'] = getRange(getDistance($village_value['lat'],$village_value['long'],$long_lat['lat'],$long_lat['long']));
 				}
 				$village_value['village_logo'] = $village_value['village_logo'] ? file_domain().$village_value['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+				$village_value['seal_img_new'] = !empty($village_value['seal_img_new']) ? file_domain().$village_value['seal_img_new'] : '';
 			}
 		}
 
@@ -508,6 +509,7 @@ class House_villageModel extends Model{
 	    foreach($list as $k=>$v){
 			$list[$k]['flag'] = 1;
 			$list[$k]['village_logo'] = $v['village_logo'] ? file_domain().$v['village_logo']: C('config.site_url').'/static/images/wap_house/village_logo.png';
+			$list[$k]['seal_img_new'] = !empty($v['seal_img_new']) ? file_domain().$v['seal_img_new'] : '';
 			if($long_lat){
 				$list[$k]['range'] = getRange(getDistance($v['lat'],$v['long'],$long_lat['lat'],$long_lat['long']));
 			}else{
@@ -547,6 +549,7 @@ class House_villageModel extends Model{
 					$village_value['range'] = getRange(getDistance($village_value['lat'],$village_value['long'],$long_lat['lat'],$long_lat['long']));
 				}
 				$village_value['village_logo'] = $village_value['village_logo'] ? file_domain().$village_value['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+				$village_value['seal_img_new'] = !empty($village_value['seal_img_new']) ? file_domain().$village_value['seal_img_new'] : '';
 			}
 		}
 		$return = array();
@@ -598,6 +601,7 @@ class House_villageModel extends Model{
 					$village_value['range'] = '';
 				}
 				$village_value['village_logo'] = $village_value['village_logo'] ? file_domain().$village_value['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+				$village_value['seal_img_new'] = !empty($village_value['seal_img_new']) ? file_domain().$village_value['seal_img_new'] : '';
 			}
 		}
 //		$dataList = array();
@@ -668,6 +672,7 @@ class House_villageModel extends Model{
 		}
 		
 		$info['village_logo'] = $info['village_logo'] ? file_domain().$info['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+		$info['seal_img_new'] = !empty($info['seal_img_new']) ? file_domain().$info['seal_img_new'] : '';
 		
 		return $info;
 	}
@@ -701,6 +706,7 @@ class House_villageModel extends Model{
 					$village_value['range'] = '';
 				}
 				$village_value['village_logo'] = $village_value['village_logo'] ? file_domain().$village_value['village_logo'] : C('config.site_url').'/static/images/wap_house/village_logo.png';
+				$village_value['seal_img_new'] = !empty($village_value['seal_img_new']) ? file_domain().$village_value['seal_img_new'] : '';
 			}
 		}
 //		$dataList = array();

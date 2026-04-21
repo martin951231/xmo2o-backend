@@ -1959,6 +1959,17 @@ class HouseNewCashierService
         }else{
             $data['prepare_money'] = 0;
         }
+        $seal_img = '';
+        if (!empty($data['village_id'])) {
+            $db_house_village = new HouseVillage();
+            $village_info = $db_house_village->getInfo(['village_id' => $data['village_id']], 'village_id,seal_img_new');
+            if ($village_info && !is_array($village_info)) {
+                $village_info = $village_info->toArray();
+            }
+            if (!empty($village_info['seal_img_new'])) {
+                $seal_img = replace_file_domain($village_info['seal_img_new']);
+            }
+        }
         if ($isKeyVal) {
             $return_data[0]['title'] = '账单基本信息';
             $return_data[0]['list'][] = array(
@@ -2083,6 +2094,12 @@ class HouseNewCashierService
                 'title' => '支付时间',
                 'val' => $data['pay_time_txt']
             );
+            if ($seal_img) {
+                $return_data[0]['list'][] = array(
+                    'title' => 'seal_img',
+                    'val' => $seal_img
+                );
+            }
             $return_data[0]['list'][] = array(
                 'title' => '计费开始时间',
                 'val' => $data['service_start_time']

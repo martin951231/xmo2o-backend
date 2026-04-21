@@ -723,7 +723,7 @@
                             </div>
                             <div class="tab-pane" id="attachments">
                                 <div class="attachment-toolbar">
-                                    <span class="form_tips">附件字段取自“添加档案字段”里配置的图片/PDF类型，可为空，支持多次保存补传，单个文件不能超过2M。</span>
+                                    <span class="form_tips">附件字段取自“添加档案字段”里配置的图片/PDF类型，可为空，支持多次保存补传，单个文件不能超过20M。</span>
                                 </div>
                                 <div id="attachmentContainer">
                                     <if condition="$attachment_field_list">
@@ -733,7 +733,7 @@
                                                     <label class="col-sm-1"><label>{pigcms{$attachment.title}</label></label>
                                                     <div class="col-sm-10">
                                                         <input type="file" class="attachment-file-input js-attachment-file" name="attachment_files_{pigcms{$attachment.key}[]" accept="{pigcms{$attachment.accept}" multiple />
-                                                        <span class="form_tips">可一次选择多个文件，仅支持 {pigcms{$attachment.type_name}，可为空，支持多次保存补传，单个文件不能超过2M。</span>
+                                                        <span class="form_tips">可一次选择多个文件，仅支持 {pigcms{$attachment.type_name}，可为空，支持多次保存补传，单个文件不能超过20M。</span>
                                                         <div class="attachment-selected-list js-selected-files"></div>
                                                         <div class="attachment-file-list">
                                                             <volist name="attachment.files" id="file">
@@ -842,8 +842,8 @@
                                         alert('\u3010' + config.fieldTitle + '\u3011\u53ea\u652f\u6301' + config.typeName + '\u683c\u5f0f\uff01');
                                         return false;
                                     }
-                                    if (input.files[i].size > 2 * 1024 * 1024) {
-                                        alert('\u5355\u4e2a\u9644\u4ef6\u4e0d\u80fd\u8d85\u8fc72M\uff01');
+                                    if (input.files[i].size > 20 * 1024 * 1024) {
+                                        alert('\u5355\u4e2a\u9644\u4ef6\u4e0d\u80fd\u8d85\u8fc720M\uff01');
                                         return false;
                                     }
                                 }

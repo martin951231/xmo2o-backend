@@ -5321,7 +5321,7 @@ class UserAction extends BaseAction
         }
         import('ORG.Net.UploadFile');
         $upload = new UploadFile();
-        $upload->maxSize = 2 * 1024 * 1024;
+        $upload->maxSize = 20 * 1024 * 1024;
         if (empty($allow_exts)) {
             foreach ($this->getUserAttachmentTypeConfig() as $attachment_type) {
                 if (!empty($attachment_type['allow_exts'])) {

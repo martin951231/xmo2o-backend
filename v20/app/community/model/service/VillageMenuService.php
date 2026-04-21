@@ -247,6 +247,11 @@ class VillageMenuService
 
         $false=0;
         $newPathComponentArr=array('visitorTmpParking');
+        $cloudAccessIframeUrlMap = [
+            'access_device@device_list' => cfg('site_url') . '/v20/public/platform/house_access_manager.html?view=device',
+            'sensors@sensors_list' => cfg('site_url') . '/v20/public/platform/house_access_manager.html?view=sensor',
+            'records@records_list' => cfg('site_url') . '/v20/public/platform/house_access_manager.html?view=record',
+        ];
 
         // 单独针对部分进行处理  比如老版本收费和新版本收费
         $topApplicationArr = [65,665];
@@ -409,6 +414,13 @@ class VillageMenuService
             }
             if ((isset($value['url']) && $value['url']) || (isset($value['jump_type']) && $value['jump_type']==3)) {
                 $tmpMenu = [];
+                $moduleActionKey = strtolower(trim($value['module'])).'@'.strtolower(trim($value['action']));
+                if (isset($cloudAccessIframeUrlMap[$moduleActionKey])) {
+                    $value['jump_type'] = 0;
+                    $value['component'] = '';
+                    $value['path'] = '';
+                    $value['url'] = $cloudAccessIframeUrlMap[$moduleActionKey];
+                }
                 if (isset($value['jump_type']) && $value['jump_type']==3 && isset($value['component']) && $value['component']) {
                     if (isset($value['module']) && $value['module'] && isset($value['action']) &&  $value['action']) {
                         $tmpMenu['name'] = 'house_'.strtolower($value['module']).'_'.strtolower($value['action']);

@@ -26,7 +26,7 @@ return [
             'queue'      => 'default',
             'host'       => '127.0.0.1',
             'port'       => 6379,
-            'password'   => '123456',
+            'password'   => 'jXn9ir3wYfapOAMU',
             'select'     => 1,
             'timeout'    => 0,
             'persistent' => false,

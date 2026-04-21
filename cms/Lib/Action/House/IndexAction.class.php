@@ -1270,6 +1270,10 @@ class IndexAction extends BaseAction{
             }
 
             $village_info = D('House_village')->where($condition_village)->find();
+            $house_village_fields = D('House_village')->getDbFields();
+            if (isset($_POST['seal_img_new']) && (!is_array($house_village_fields) || !in_array('seal_img_new', $house_village_fields))) {
+                unset($_POST['seal_img_new']);
+            }
 
 			if($_POST['pwd']){
                 $_POST['pwd'] = md5($_POST['pwd']);

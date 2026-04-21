@@ -411,15 +411,13 @@
 
                                     <span class="form_tips">建议上传200*200的图片</span>
                                 </div>
-                                <if condition="$is_aihorse_customized">
                                 <div class="form-group">
-                                    <label class="col-sm-1"><label for="village_seal_img">{pigcms{$config['house_name']}电子印章图片</label></label>
-                                    <input class="btn btn-primary" type="button" id="seal_img" value="选择图片" />
-                                    <input type="hidden" name="seal_img" value="{pigcms{$village_info.seal_img}" id="village_seal_img" />
+                                    <label class="col-sm-1"><label for="village_seal_img_new">{pigcms{$config['house_name']}电子印章图片</label></label>
+                                    <input class="btn btn-primary" type="button" id="seal_img_new_btn" value="选择图片" />
+                                    <input type="hidden" name="seal_img_new" value="{pigcms{$village_info.seal_img_new}" id="village_seal_img_new" />
 
-                                    <img src="{pigcms{:replace_file_domain($village_info['seal_img'])}" id="village_seal_view" style="padding: 15px; width: 120px; <if condition="!$village_info['seal_img']">display: none;</if>">
+                                    <img src="{pigcms{:replace_file_domain($village_info['seal_img_new'])}" id="village_seal_view" style="padding: 15px; width: 120px; <if condition="!$village_info['seal_img_new']">display: none;</if>">
                                 </div>
-                                </if>
                                 <div class="form-group">
                                     <label class="col-sm-1"><label for="contract_time">合同时间</label></label>
                                     <input type="text" name="contract_time_start" class="input-text" value="{pigcms{$village_about_info.contract_time_start}"  style="height:30px;" onfocus="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd'})" placeholder="合同开始时间"/>
@@ -1939,7 +1937,7 @@ var choose_street="{pigcms{:U('Area/ajax_street')}",choose_community="{pigcms{:U
                 });
             });
         });
-        K('#seal_img').click(function() {
+        K('#seal_img_new_btn').click(function() {
             editor.uploadJson = "{pigcms{:U('Cashier/ajax_upload_pic')}";
             editor.loadPlugin('image', function() {
                 editor.plugin.imageDialog({
@@ -1949,7 +1947,7 @@ var choose_street="{pigcms{:U('Area/ajax_street')}",choose_community="{pigcms{:U
                         var img = K('#village_seal_view');
                         img.attr("src",url);
                         img.show();
-                        K("#village_seal_img").val(url);
+                        K("#village_seal_img_new").val(url);
                         editor.hideDialog();
                     }
                 });
