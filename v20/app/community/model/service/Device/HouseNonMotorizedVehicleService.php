@@ -219,7 +219,7 @@ class HouseNonMotorizedVehicleService
     protected function buildSaveData($village_id, $params = [], $excludeId = 0)
     {
         $type = intval($params['type'] ?? 1);
-        if (!in_array($type, [1, 2], true)) {
+        if (!in_array($type, [1, 2, 3, 99], true)) {
             throw new \Exception('车辆类型参数错误');
         }
 
