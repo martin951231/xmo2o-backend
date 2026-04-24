@@ -65,6 +65,7 @@ class HouseAccessDeviceService
         $data['createdAt'] = $now;
         $data['updatedAt'] = $now;
         $id = $this->deviceModel->add($data);
+        (new HouseAccessSensorsService())->refreshWhitelistAggregateStatus(intval($village_id));
         return ['id' => $id];
     }
 
@@ -90,6 +91,7 @@ class HouseAccessDeviceService
         $data = $this->buildSaveData($village_id, $params, $id);
         $data['updatedAt'] = date('Y-m-d H:i:s');
         $this->deviceModel->updateThis($where, $data);
+        (new HouseAccessSensorsService())->refreshWhitelistAggregateStatus(intval($village_id));
 
         return ['id' => $id];
     }
@@ -118,7 +120,9 @@ class HouseAccessDeviceService
             throw new \Exception('当前设备已有关联出入记录，暂不支持删除');
         }
 
+        (new HouseAccessSensorsService())->resetWhitelistDeviceRecordsByDeviceIds([$id]);
         $this->deviceModel->where($where)->delete();
+        (new HouseAccessSensorsService())->refreshWhitelistAggregateStatus(intval($village_id));
         return true;
     }
 

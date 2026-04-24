@@ -8,7 +8,7 @@ class TcpCloudCBase
     {
         $normalized = [];
         foreach ($bytes as $byte) {
-            $normalized[] = Tool::normalizeHexByte($byte);
+            $normalized[] = Tool::normalizeFrameByte($byte);
         }
         $normalized[] = Tool::checksum($normalized);
         $normalized[] = '03';

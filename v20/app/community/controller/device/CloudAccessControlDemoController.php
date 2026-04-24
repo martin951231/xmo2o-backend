@@ -7,39 +7,32 @@ use app\community\model\service\Device\CloudPlusTypeC\CommandFactory;
 use app\community\model\service\Device\HouseAccessDeviceService;
 use app\community\model\service\Device\HouseAccessRecordsService;
 use app\community\model\service\Device\HouseAccessSensorsService;
-use JMessage\Cross\Message;
 
 class CloudAccessControlDemoController extends CommunityBaseController
 {
     protected $rawRequestBody = null;
 
-    public function getDemoState()
+    public function deviceHeartbeat()
     {
         $request_data = $this->collectRequestData();
-        $response = [];
-        if (!empty($request_data['Key'])) {
-            $response['Key'] = (string)$request_data['Key'];
+        $serial = $this->extractRequestSerial($request_data);
+        $village_id = $this->resolveVillageId($request_data);
+        $this->writeRootRequestLog('heartbeat_request', [
+            'village_id' => intval($village_id),
+            'serial' => $serial,
+            'request_data' => $request_data,
+        ]);
+        $state = $village_id > 0 ? $this->readState($village_id) : $this->defaultState();
+        $response = $this->handleHeartbeat($state, $request_data, $village_id);
+        if ($village_id > 0) {
+            $this->writeState($village_id, $state);
         }
-        return $this->renderDeviceJson($response);
-    }
-
-    public function saveDemoConfig()
-    {
-        $village_id = $this->getVillageId();
-        $state = $this->readState($village_id);
-        $request_data = $this->collectRequestData();
-
-        $state['config']['device_name'] = trim((string)($request_data['device_name'] ?? $state['config']['device_name']));
-        $state['config']['serial'] = trim((string)($request_data['Serial'] ?? $request_data['serial'] ?? $state['config']['serial']));
-        $state['config']['time'] = trim((string)($request_data['Time'] ?? $request_data['time'] ?? $state['config']['time']));
-        $state['config']['door'] = trim((string)($request_data['door'] ?? $state['config']['door']));
-        if (!empty($request_data['Key'])) {
-            $state['config']['key'] = trim((string)$request_data['Key']);
-        }
-
-        $this->appendLog($state, 'save_config', 'save device config', $state['config']);
-        $this->writeState($village_id, $state);
-        return $this->renderRawJson([]);
+        $this->writeRootRequestLog('heartbeat_response', [
+            'village_id' => intval($village_id),
+            'serial' => $serial,
+            'response_data' => $response,
+        ]);
+        return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
     public function queueCommand()
@@ -75,11 +68,9 @@ class CloudAccessControlDemoController extends CommunityBaseController
             ];
         }
 
-        $recordResult = [];
-        $recordError = '';
         $recordVillageId = intval($deviceInfo['village_id'] ?? $sensorInfo['village_id'] ?? 0);
         try {
-            $recordResult = (new HouseAccessRecordsService())->recordsAdd($recordVillageId, [
+            (new HouseAccessRecordsService())->recordsAdd($recordVillageId, [
                 'type' => intval($request_data['type'] ?? 0),
                 'reader' => intval($request_data['Reader'] ?? 0),
                 'card_id' => intval($sensorInfo['id'] ?? 0),
@@ -88,274 +79,265 @@ class CloudAccessControlDemoController extends CommunityBaseController
                 'access_time' => date('Y-m-d H:i:s'),
             ]);
         } catch (\Exception $e) {
-            $recordError = $e->getMessage();
         }
 
-        $this->writeRootRequestLog('queueCommand', $request_data, [
-            'serial' => $serial,
-            'card' => $card,
-            'mac' => $mac,
-            'response' => $res,
-            'sensor_id' => intval($sensorInfo['id'] ?? 0),
-            'serial_id' => intval($deviceInfo['id'] ?? 0),
-            'record_result' => $recordResult,
-            'record_error' => $recordError,
-        ]);
         $this->storeRecentQueueResponse($serial, $card, $mac, $res);
 
         return $this->renderRawJson($res);
     }
 
-    public function queueOpenDoor()
+    private function handleHeartbeat(array &$state, array $request_data, $village_id = 0)
     {
-        return $this->requestOpenDoor();
-    }
-
-    private function handleQueueCommand($village_id, $command, array $request_data)
-    {
-        $state = $this->readState($village_id);
-        $serial = trim((string)($request_data['Serial'] ?? $request_data['serial'] ?? $state['config']['serial']));
-        $device_name = trim((string)($request_data['device_name'] ?? $state['config']['device_name']));
-        $door = trim((string)($request_data['door'] ?? $state['config']['door'] ?: '01'));
-        $key = trim((string)($request_data['Key'] ?? $state['config']['key']));
-
-        if ($key !== '') {
-            $state['config']['key'] = $key;
+        $serial = $this->extractRequestSerial($request_data, $state);
+        $village_id = intval($village_id);
+        $sensorService = new HouseAccessSensorsService();
+        $deviceState =& $this->getDeviceState($state, $serial);
+        $deviceInfo = [];
+        if ($village_id > 0 && $serial !== '') {
+            $deviceInfo = (new HouseAccessDeviceService())->getDeviceBySerial($serial, $village_id);
         }
-        if ($serial !== '') {
-            $state['config']['serial'] = $serial;
-        }
-        if ($device_name !== '') {
-            $state['config']['device_name'] = $device_name;
-        }
-        if ($door !== '') {
-            $state['config']['door'] = $door;
-        }
-
-        if ($serial === '' || $state['config']['key'] === '') {
-            $this->writeState($village_id, $state);
-            return $this->renderDeviceJson([
-                'Key' => (string)$state['config']['key']
-            ]);
-        }
-
-        try {
-            $built = CommandFactory::build($command, $door);
-        } catch (\Exception $e) {
-            $this->writeState($village_id, $state);
-            return $this->renderDeviceJson([
-                'Key' => (string)$state['config']['key']
-            ]);
-        }
-
-        $state['pending_command'] = [
-            'index_cmd' => (string)$this->nextIndexCmd($state),
-            'command' => $built['command'],
-            'label' => $built['label'],
-            'door' => $built['door'],
-            'cmd_value' => $built['cmd_value'],
-            'serial' => $serial,
-            'status' => 'queued',
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-
-        $this->appendLog($state, 'queue_command', 'queue command', $state['pending_command']);
-        $this->writeState($village_id, $state);
-
-        return $this->renderDeviceJson([
-            'Key' => (string)$state['config']['key'],
-            'IndexCmd' => (string)$state['pending_command']['index_cmd'],
-            'CmdValue' => (string)$state['pending_command']['cmd_value'],
-        ]);
-    }
-
-    private function requestOpenDoor()
-    {
-        $res = [
-            'AcsRes' => 1,
-            'ActIndex' => 0,
-            'Time' => 1,
-        ];
-        $url = 'http://192.168.0.243/cdor.cgi?open=1&door=0';
-        $authorization = 'Basic ' . base64_encode('admin:888888');
-        $response_body = '';
-        $http_code = 0;
-
-        if (function_exists('curl_init')) {
-            $ch = curl_init();
-            curl_setopt_array($ch, [
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT => 10,
-                CURLOPT_CONNECTTIMEOUT => 5,
-                CURLOPT_HTTPHEADER => [
-                    'Authorization: ' . $authorization,
-                ],
-            ]);
-            $response_body = curl_exec($ch);
-            if ($response_body === false) {
-                $error_message = curl_error($ch);
-                curl_close($ch);
-                return api_output(1003, [], $error_message ?: 'Open door request failed');
-            }
-            $http_code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-        } else {
-            $context = stream_context_create([
-                'http' => [
-                    'method' => 'GET',
-                    'timeout' => 10,
-                    'header' => "Authorization: {$authorization}\r\n",
-                ]
-            ]);
-            $response_body = @file_get_contents($url, false, $context);
-            if ($response_body === false) {
-                return api_output(1003, [], 'Open door request failed');
-            }
-            if (!empty($http_response_header) && preg_match('/\s(\d{3})\s/', $http_response_header[0], $matches)) {
-                $http_code = (int)$matches[1];
-            }
-        }
-
-        if ($http_code !== 0 && ($http_code < 200 || $http_code >= 300)) {
-            return api_output(1003, [
-                'http_code' => $http_code,
-                'response' => is_string($response_body) ? trim($response_body) : $response_body,
-            ], 'Open door request failed');
-        }
-
-        return api_output(0, $res, 'Open door success');
-    }
-
-    public function httpCallback()
-    {
-        $request_data = $this->collectRequestData();
-        fdump_api([
-            'msg' => 'cloud access control callback',
-            '_GET' => $_GET,
-            '_POST' => $_POST,
-            '_REQUEST' => $_REQUEST,
-            'request' => $request_data,
-            '_SERVER' => $_SERVER
-        ], 'cloud_access_control/demo_callback', 1);
-
-        $village_id = (int)($request_data['village_id'] ?? 0);
-        if (empty($village_id)) {
-            $village_id = (int)$this->matchVillageIdBySerial((string)($request_data['Serial'] ?? $request_data['serial'] ?? ''));
-        }
-        if (empty($village_id)) {
-            return $this->renderDeviceJson(['Key' => (string)($request_data['Key'] ?? '')]);
-        }
-
-        $state = $this->readState($village_id);
-        $method = trim((string)($request_data['method'] ?? ''));
-
-        if ($method === 'GetStatus') {
-            $response = $this->handleHeartbeat($state, $request_data);
-            $this->writeState($village_id, $state);
-            return $this->renderDeviceJson($response);
-        }
-
-        if (isset($request_data['IndexEvent']) && $request_data['IndexEvent'] !== '') {
-            $this->appendLog($state, 'history_event', 'history swipe event', $request_data);
-            $this->writeState($village_id, $state);
-            return $this->renderRawJson(['IndexEvent' => (string)$request_data['IndexEvent']]);
-        }
-
-        if (isset($request_data['IndexAlarm']) && $request_data['IndexAlarm'] !== '') {
-            $this->appendLog($state, 'history_alarm', 'history alarm event', $request_data);
-            $this->writeState($village_id, $state);
-            return $this->renderRawJson(['IndexAlarm' => (string)$request_data['IndexAlarm']]);
-        }
-
-        if ($method === 'SearchCardAcs') {
-            $response = $this->handleSearchCardAcs($state, $request_data);
-            $this->writeState($village_id, $state);
-            return $this->renderDeviceJson($response);
-        }
-
-        $this->appendLog($state, 'unknown_request', 'unknown request', $request_data);
-        $this->writeState($village_id, $state);
-        return $this->renderDeviceJson(['Key' => (string)($request_data['Key'] ?? $state['config']['key'])]);
-    }
-
-    private function handleHeartbeat(array &$state, array $request_data)
-    {
-        $state['last_heartbeat'] = array_merge($request_data, [
+        $device_id = intval($deviceInfo['id'] ?? 0);
+        $deviceState['last_heartbeat'] = array_merge($request_data, [
             'received_at' => date('Y-m-d H:i:s')
         ]);
 
         if (!empty($request_data['Key'])) {
-            $state['config']['key'] = (string)$request_data['Key'];
-        }
-        if (!empty($request_data['Serial'])) {
-            $state['config']['serial'] = (string)$request_data['Serial'];
+            $deviceState['key'] = (string)$request_data['Key'];
         }
 
-        if (isset($request_data['IndexCmd']) && isset($request_data['CmdOK']) && !empty($state['pending_command'])) {
-            if ((string)$request_data['IndexCmd'] === (string)($state['pending_command']['index_cmd'] ?? '')) {
-                $state['pending_command']['status'] = ((string)$request_data['CmdOK'] === '1') ? 'done' : 'failed';
-                $state['pending_command']['feedback_at'] = date('Y-m-d H:i:s');
-                $this->appendLog(
-                    $state,
-                    'command_feedback',
-                    ((string)$request_data['CmdOK'] === '1') ? 'command success' : 'command failed',
-                    $request_data
-                );
-                if ((string)$request_data['CmdOK'] === '1') {
-                    $state['last_command'] = $state['pending_command'];
-                    $state['pending_command'] = [];
-                }
-            }
+        if (
+            $village_id > 0 &&
+            isset($request_data['IndexCmd']) &&
+            isset($request_data['CmdOK']) &&
+            !empty($deviceState['pending_command']) &&
+            (string)$request_data['IndexCmd'] === (string)($deviceState['pending_command']['index_cmd'] ?? '') &&
+            (string)($deviceState['pending_command']['serial'] ?? '') === $serial &&
+            $this->isWhitelistSyncCommand($deviceState['pending_command'])
+        ) {
+            $feedback_command = $deviceState['pending_command'];
+            $is_success = ((string)$request_data['CmdOK'] === '1');
+            $deviceState['pending_command']['status'] = $is_success ? 'done' : 'failed';
+            $deviceState['pending_command']['feedback_at'] = date('Y-m-d H:i:s');
+            $updated_count = $sensorService->markWhitelistResultForDevice(
+                $village_id,
+                intval($deviceState['pending_command']['device_id'] ?? $device_id),
+                (string)($deviceState['pending_command']['serial'] ?? $serial),
+                $deviceState['pending_command']['sensor_ids'] ?? [],
+                (string)($deviceState['pending_command']['index_cmd'] ?? ''),
+                (string)($deviceState['pending_command']['cmd_value'] ?? ''),
+                $is_success
+            );
+            $deviceState['pending_command']['updated_whitelist_count'] = intval($updated_count);
+            $this->writeWhitelistCommandLog(
+                'result',
+                $feedback_command,
+                $request_data,
+                [],
+                [
+                    'village_id' => $village_id,
+                    'serial' => $serial,
+                    'device_id' => intval($deviceState['pending_command']['device_id'] ?? $device_id),
+                    'execution_result' => $is_success ? 'success' : 'failed',
+                    'request_index_cmd' => (string)$request_data['IndexCmd'],
+                    'request_cmd_ok' => (string)$request_data['CmdOK'],
+                    'updated_whitelist_count' => intval($deviceState['pending_command']['updated_whitelist_count'] ?? 0),
+                ]
+            );
+            $deviceState['last_command'] = $deviceState['pending_command'];
+            $deviceState['pending_command'] = [];
+        } elseif (
+            $village_id > 0 &&
+            isset($request_data['IndexCmd']) &&
+            isset($request_data['CmdOK']) &&
+            ((string)$request_data['IndexCmd'] !== '') &&
+            ((string)$request_data['IndexCmd'] !== '0')
+        ) {
+            $this->writeRootRequestLog('command_result', [
+                'phase' => 'result',
+                'village_id' => $village_id,
+                'serial' => $serial,
+                'device_id' => $device_id,
+                'execution_result' => 'unmatched',
+                'request_index_cmd' => (string)$request_data['IndexCmd'],
+                'request_cmd_ok' => (string)$request_data['CmdOK'],
+                'request_data' => $request_data,
+            ]);
+        }
+
+        if (empty($deviceState['pending_command']) && $village_id > 0) {
+            $this->queuePendingWhitelistSync($deviceState, $request_data, $village_id, $serial);
         }
 
         $response = [
-            'Key' => (string)($request_data['Key'] ?? $state['config']['key'])
+            'Key' => (string)($request_data['Key'] ?? $deviceState['key'] ?? '')
         ];
-
         if (
-            !empty($state['pending_command']) &&
-            ($state['pending_command']['status'] ?? '') === 'queued' &&
-            (string)($state['pending_command']['serial'] ?? '') === (string)($request_data['Serial'] ?? '')
+            !empty($deviceState['pending_command']) &&
+            $this->isWhitelistSyncCommand($deviceState['pending_command']) &&
+            (string)($deviceState['pending_command']['serial'] ?? '') === $serial
         ) {
-            $response['IndexCmd'] = (string)$state['pending_command']['index_cmd'];
-            $response['CmdValue'] = (string)$state['pending_command']['cmd_value'];
-            $state['pending_command']['status'] = 'sent';
-            $state['pending_command']['sent_at'] = date('Y-m-d H:i:s');
-            $this->appendLog($state, 'heartbeat_with_command', 'heartbeat response with command', $response);
-        } else {
-            $this->appendLog($state, 'heartbeat', 'heartbeat response key only', $request_data);
+            $response['IndexCmd'] = (string)$deviceState['pending_command']['index_cmd'];
+            $response['CmdValue'] = (string)$deviceState['pending_command']['cmd_value'];
+            $deviceState['pending_command']['status'] = 'sent';
+            $deviceState['pending_command']['sent_at'] = date('Y-m-d H:i:s');
+            $sensorService->markWhitelistCommandSentForDevice(
+                $village_id,
+                intval($deviceState['pending_command']['device_id'] ?? $device_id),
+                (string)($deviceState['pending_command']['serial'] ?? $serial),
+                $deviceState['pending_command']['sensor_ids'] ?? [],
+                (string)$deviceState['pending_command']['index_cmd'],
+                (string)$deviceState['pending_command']['cmd_value']
+            );
+            $this->writeWhitelistCommandLog('send', $deviceState['pending_command'], $request_data, $response, [
+                'village_id' => $village_id,
+                'serial' => $serial,
+                'device_id' => intval($deviceState['pending_command']['device_id'] ?? $device_id),
+                'execution_result' => 'pending',
+            ]);
         }
 
         return $response;
     }
 
-    private function handleSearchCardAcs(array &$state, array $request_data)
+    private function queuePendingWhitelistSync(array &$deviceState, array $request_data, $village_id, $serial = '')
     {
-        $reader = isset($request_data['Reader']) ? intval($request_data['Reader']) : 0;
-        $response = [
-            'ActIndex' => (string)($reader & 0x01),
-            'AcsRes' => '1',
-            'Time' => (string)($state['config']['time'] ?: '1')
-        ];
+        $village_id = intval($village_id);
+        if ($village_id <= 0) {
+            return;
+        }
 
-        $state['last_auth_request'] = array_merge($request_data, [
-            'received_at' => date('Y-m-d H:i:s')
-        ]);
-        $this->appendLog($state, 'search_card_acs', 'search card acs', array_merge($request_data, $response));
-        return $response;
+        $serial = trim((string)$serial);
+        if ($serial === '') {
+            $serial = $this->extractRequestSerial($request_data);
+        }
+        if ($serial === '') {
+            return;
+        }
+
+        $deviceInfo = (new HouseAccessDeviceService())->getDeviceBySerial($serial, $village_id);
+        $device_id = intval($deviceInfo['id'] ?? 0);
+        if ($device_id <= 0 || intval($deviceInfo['enable'] ?? 0) !== 1) {
+            return;
+        }
+
+        $door = trim((string)($request_data['door'] ?? $deviceState['door'] ?? '01')) ?: '01';
+        $deviceState['door'] = $door;
+        $sensorService = new HouseAccessSensorsService();
+        $pending_sensors = $sensorService->getPendingWhitelistSensors($village_id, $device_id, 1);
+        if (empty($pending_sensors)) {
+            return;
+        }
+
+        $command = 'Command_C1';
+        $command_options = $this->buildWhitelistCommandOptions($pending_sensors);
+        if (empty($command_options['code'])) {
+            return;
+        }
+
+        $sensor_id = intval($pending_sensors[0]['id'] ?? 0);
+        if ($sensor_id <= 0) {
+            return;
+        }
+
+        try {
+            $built = CommandFactory::build($command, $door, $command_options);
+        } catch (\Exception $e) {
+            $this->writeRootRequestLog('command_result', [
+                'phase' => 'build_failed',
+                'village_id' => intval($village_id),
+                'serial' => $serial,
+                'execution_result' => 'build_failed',
+                'message' => $e->getMessage(),
+                'request_data' => $request_data,
+                'command_options' => $command_options,
+            ]);
+            return;
+        }
+
+        $deviceState['pending_command'] = [
+            'index_cmd' => (string)$sensor_id,
+            'command' => $built['command'],
+            'cmd_value' => $built['cmd_value'],
+            'serial' => $serial,
+            'device_id' => $device_id,
+            'status' => 'queued',
+            'created_at' => date('Y-m-d H:i:s'),
+            'sync_type' => 'whitelist_single',
+            'sensor_ids' => [$sensor_id],
+        ];
+    }
+
+    private function buildWhitelistCommandOptions(array $pending_sensors)
+    {
+        $sensor = $pending_sensors[0];
+        $sensor_id = intval($sensor['id'] ?? 0);
+        $sensor_enable = intval($sensor['enable'] ?? 0);
+        return [
+            'index' => $sensor_id,
+            'code' => (string)$sensor['code'],
+            'name' => (string)($sensor['parking_num'] ?: $sensor['code']),
+            'qrcode' => '',
+            'china_card' => '',
+            'pin' => '',
+            'tz' => $sensor_enable === 0 ? 0 : 1,
+            'start_time' => '2022-07-28 00:00',
+            'end_time' => '2048-01-01 01:01',
+        ];
+    }
+
+    private function isWhitelistSyncCommand(array $command)
+    {
+        return (string)($command['sync_type'] ?? '') === 'whitelist_single';
     }
 
     private function collectRequestData()
     {
-        $data = $_REQUEST;
+        $data = [];
+
+        if (function_exists('request')) {
+            try {
+                $params = request()->param();
+                if (is_array($params)) {
+                    $data = array_merge($data, $params);
+                }
+            } catch (\Throwable $e) {
+            }
+        }
+
+        if (function_exists('input')) {
+            try {
+                $params = input();
+                if (is_array($params)) {
+                    $data = array_merge($data, $params);
+                }
+            } catch (\Throwable $e) {
+            }
+        }
+
+        $data = array_merge($data, $_GET, $_POST, $_REQUEST);
+
         $input = $this->getRawRequestBody();
         if ($input !== '') {
             $json = json_decode($input, true);
             if (is_array($json)) {
                 $data = array_merge($data, $json);
+            } else {
+                $parsed = [];
+                parse_str($input, $parsed);
+                if (!empty($parsed)) {
+                    $data = array_merge($data, $parsed);
+                }
             }
         }
+
+        if (empty($data) && !empty($_SERVER['QUERY_STRING'])) {
+            $query = [];
+            parse_str((string)$_SERVER['QUERY_STRING'], $query);
+            if (!empty($query)) {
+                $data = array_merge($data, $query);
+            }
+        }
+
         return $data;
     }
 
@@ -371,28 +353,14 @@ class CloudAccessControlDemoController extends CommunityBaseController
         return $this->rawRequestBody;
     }
 
-    private function writeRootRequestLog($scene, array $request_data = [], array $extra = [])
-    {
-        $log_file = rtrim(root_path(), '/\\') . DIRECTORY_SEPARATOR . 'cloud_access_control_request.log';
-        $log_data = [
-            'time' => date('Y-m-d H:i:s'),
-            'scene' => (string)$scene,
-            'method' => (string)($_SERVER['REQUEST_METHOD'] ?? ''),
-            'uri' => (string)($_SERVER['REQUEST_URI'] ?? ''),
-            'ip' => (string)($_SERVER['REMOTE_ADDR'] ?? ''),
-            'raw_input' => $this->getRawRequestBody(),
-            '_POST' => $_POST,
-            '_REQUEST' => $_REQUEST,
-            'request_data' => $request_data,
-            'extra' => $extra,
-        ];
-
-        file_put_contents($log_file, json_encode($log_data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND | LOCK_EX);
-    }
-
     private function normalizeQueueValue($value)
     {
         return strtoupper(trim((string)$value));
+    }
+
+    private function extractRequestSerial(array $request_data, array $state = [])
+    {
+        return trim((string)($request_data['Serial'] ?? $request_data['serial'] ?? $state['config']['serial'] ?? ''));
     }
 
     private function normalizeMacValue($value)
@@ -411,6 +379,22 @@ class CloudAccessControlDemoController extends CommunityBaseController
         }
 
         return md5($serial . '|' . $card . '|' . $mac);
+    }
+
+    private function &getDeviceState(array &$state, $serial)
+    {
+        if (empty($state['device_states']) || !is_array($state['device_states'])) {
+            $state['device_states'] = [];
+        }
+        $serial = trim((string)$serial);
+        if ($serial === '') {
+            $serial = '__default__';
+        }
+        if (empty($state['device_states'][$serial]) || !is_array($state['device_states'][$serial])) {
+            $state['device_states'][$serial] = $this->defaultDeviceState();
+        }
+
+        return $state['device_states'][$serial];
     }
 
     private function getRecentQueueResponse($serial, $card, $mac)
@@ -489,32 +473,71 @@ class CloudAccessControlDemoController extends CommunityBaseController
         return runtime_path() . 'community/cloud_access_control_demo/request_cache.json';
     }
 
-    private function getVillageId()
+    private function resolveVillageId(array $request_data)
     {
-        return 3;
-    }
-
-    private function nextIndexCmd(array &$state)
-    {
-        $last = (int)($state['meta']['last_index_cmd'] ?? 1000);
-        $next = $last + 1;
-        if ($next <= 0) {
-            $next = 1001;
+        $serial = trim((string)($request_data['Serial'] ?? $request_data['serial'] ?? ''));
+        if ($serial !== '') {
+            $village_id = (int)$this->matchVillageIdBySerial($serial);
+            if ($village_id > 0) {
+                return $village_id;
+            }
         }
-        $state['meta']['last_index_cmd'] = $next;
-        return $next;
+
+        $village_id = (int)($request_data['village_id'] ?? 0);
+        if ($village_id > 0) {
+            return $village_id;
+        }
+
+        return 0;
     }
 
-    private function appendLog(array &$state, $event_type, $summary, array $payload = [])
+    private function writeRootRequestLog($scene, array $payload = [])
     {
-        array_unshift($state['logs'], [
-            'log_id' => uniqid('', true),
-            'event_type' => $event_type,
-            'summary' => $summary,
-            'payload' => $payload,
-            'created_at' => date('Y-m-d H:i:s')
-        ]);
-        $state['logs'] = array_slice($state['logs'], 0, 30);
+        $scene = (string)$scene;
+        if (!in_array($scene, ['heartbeat_request', 'heartbeat_response', 'command_result'], true)) {
+            return;
+        }
+
+        $log_file = $this->getRootLogFileByScene($scene);
+        $entry = array_merge([
+            'time' => date('Y-m-d H:i:s'),
+            'scene' => $scene,
+        ], $payload);
+        file_put_contents($log_file, json_encode($entry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL, FILE_APPEND | LOCK_EX);
+    }
+
+    private function writeWhitelistCommandLog($phase, array $command, array $request_data = [], array $response_data = [], array $extra = [])
+    {
+        $payload = [
+            'phase' => (string)$phase,
+            'village_id' => intval($extra['village_id'] ?? 0),
+            'serial' => (string)($extra['serial'] ?? $command['serial'] ?? ''),
+            'device_id' => intval($extra['device_id'] ?? $command['device_id'] ?? 0),
+            'instruction_command' => (string)($command['command'] ?? ''),
+            'instruction_value' => (string)($command['cmd_value'] ?? ''),
+            'index_cmd' => (string)($command['index_cmd'] ?? ''),
+            'sensor_ids' => array_values($command['sensor_ids'] ?? []),
+            'execution_result' => (string)($extra['execution_result'] ?? ''),
+            'request_index_cmd' => (string)($extra['request_index_cmd'] ?? ''),
+            'request_cmd_ok' => (string)($extra['request_cmd_ok'] ?? ''),
+            'updated_whitelist_count' => intval($extra['updated_whitelist_count'] ?? 0),
+            'request_data' => $request_data,
+            'response_data' => $response_data,
+        ];
+
+        $this->writeRootRequestLog('command_result', $payload);
+    }
+
+    private function getRootLogFileByScene($scene)
+    {
+        $scene = (string)$scene;
+        $map = [
+            'heartbeat_request' => 'cloud_access_control_heartbeat_request.log',
+            'heartbeat_response' => 'cloud_access_control_heartbeat_response.log',
+            'command_result' => 'cloud_access_control_command_result.log',
+        ];
+        $filename = $map[$scene] ?? 'cloud_access_control_command_result.log';
+        return rtrim(root_path(), '/\\') . DIRECTORY_SEPARATOR . $filename;
     }
 
     private function readState($village_id)
@@ -549,91 +572,32 @@ class CloudAccessControlDemoController extends CommunityBaseController
         if ($serial === '') {
             return 0;
         }
-        $dir = runtime_path() . 'community/cloud_access_control_demo/';
-        if (!is_dir($dir)) {
-            return 0;
-        }
-        $files = glob($dir . 'village_*.json');
-        if (empty($files)) {
-            return 0;
-        }
-        foreach ($files as $file) {
-            $content = file_get_contents($file);
-            $data = json_decode($content, true);
-            if (!empty($data['config']['serial']) && (string)$data['config']['serial'] === $serial) {
-                if (preg_match('/village_(\d+)\.json$/', $file, $matches)) {
-                    return (int)$matches[1];
-                }
-            }
-        }
-        return 0;
+
+        $device_info = (new HouseAccessDeviceService())->getDeviceBySerial($serial);
+        return intval($device_info['village_id'] ?? 0);
     }
 
     private function defaultState()
     {
         return [
-            'config' => [
-                'device_name' => '',
-                'serial' => '',
-                'key' => '',
-                'time' => '1',
-                'door' => '01',
-            ],
-            'pending_command' => [],
-            'last_command' => [],
-            'last_heartbeat' => [],
-            'last_auth_request' => [],
-            'logs' => [],
-            'meta' => [
-                'last_index_cmd' => 1000
-            ]
+            'device_states' => [],
+            'meta' => []
         ];
     }
 
-    private function renderDeviceJson(array $payload)
+    private function defaultDeviceState()
     {
-        return $this->renderRawJson($this->filterDeviceResponseFields($payload));
+        return [
+            'key' => '',
+            'door' => '01',
+            'pending_command' => [],
+            'last_command' => [],
+            'last_heartbeat' => [],
+        ];
     }
 
     private function renderRawJson(array $payload)
     {
         return json_encode($payload, JSON_UNESCAPED_UNICODE);
-    }
-
-    private function filterDeviceResponseFields(array $payload)
-    {
-        $allowed_fields = [
-            'Key',
-            'Now',
-            'AcsRes',
-            'ActIndex',
-            'Time',
-            'Reader',
-            'LCD',
-            'LCDTime',
-            'Name',
-            'Note',
-            'Card',
-            'Systime',
-            'Voice',
-            'QRCode',
-            'OEM',
-            'IndexCmd',
-            'CmdValue',
-            'CmdBase64',
-        ];
-
-        $filtered = [];
-        foreach ($allowed_fields as $field) {
-            if (!array_key_exists($field, $payload)) {
-                continue;
-            }
-            if ($payload[$field] === null || $payload[$field] === '') {
-                continue;
-            }
-            $filtered[$field] = (string)$payload[$field];
-        }
-
-        return $filtered;
     }
 }

@@ -4,7 +4,7 @@ namespace app\community\model\service\Device\CloudPlusTypeC;
 
 class CommandFactory
 {
-    public static function build($command, $door = '01')
+    public static function build($command, $door = '01', array $options = [])
     {
         $command = trim((string)$command);
         $door = trim((string)$door) ?: '01';
@@ -22,6 +22,9 @@ class CommandFactory
                 return self::result($command, 'Unlock Door', $door, TcpCloudCCmd::command2F($door, '0'));
             case 'Command_07':
                 return self::result($command, 'Sync Time', $door, TcpCloudCCmd::command07());
+            case 'Command_C1':
+            case 'Command_c1':
+                return self::result($command, 'Add Offline Card', $door, TcpCloudCCmd::commandC1($door, $options));
             default:
                 throw new \InvalidArgumentException('Unsupported command type: ' . $command);
         }
