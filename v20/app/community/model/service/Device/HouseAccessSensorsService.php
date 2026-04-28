@@ -6,6 +6,7 @@ use app\community\model\db\Device\HouseSmartAccessDevice;
 use app\community\model\db\Device\HouseSmartAccessRecords;
 use app\community\model\db\Device\HouseSmartAccessSensorDeviceWhitelist;
 use app\community\model\db\Device\HouseSmartAccessSensors;
+use think\facade\Db;
 
 class HouseAccessSensorsService
 {
@@ -36,28 +37,13 @@ class HouseAccessSensorsService
         $village_id = intval($village_id);
         $page = max(1, intval($params['page'] ?? 1));
         $pageSize = max(1, min(500, intval($params['pageSize'] ?? 10)));
-        $where = [
-            ['village_id', '=', $village_id],
-        ];
 
-        $code = trim((string)($params['code'] ?? ''));
-        if ($code !== '') {
-            $where[] = ['code', 'like', '%' . $code . '%'];
-        }
-
-        $parking_num = trim((string)($params['parking_num'] ?? ''));
-        if ($parking_num !== '') {
-            $where[] = ['parking_num', 'like', '%' . $parking_num . '%'];
-        }
-
-        if ($this->hasValue($params, 'enable')) {
-            $where[] = ['enable', '=', intval($params['enable'])];
-        }
-
-        $list = $this->sensorModel->where($where)->order('id DESC')->page($page, $pageSize)->select();
-        if ($list && !is_array($list)) {
-            $list = $list->toArray();
-        }
+        $list = $this->buildSensorsListQuery($village_id, $params)
+            ->field('s.*,n.user_id as bind_user_id,u.name as owner_name,u.phone as owner_phone')
+            ->order('s.id DESC')
+            ->page($page, $pageSize)
+            ->select()
+            ->toArray();
         if (empty($list)) {
             $list = [];
         }
@@ -79,7 +65,7 @@ class HouseAccessSensorsService
 
         return [
             'list' => $list,
-            'count' => $this->sensorModel->getCount($where),
+            'count' => $this->buildSensorsListQuery($village_id, $params)->count('s.id'),
             'pageSize' => $pageSize,
         ];
     }
@@ -492,8 +478,13 @@ class HouseAccessSensorsService
         $item['id'] = intval($item['id'] ?? 0);
         $item['enable'] = intval($item['enable'] ?? 0);
         $item['is_add_to_whitelist'] = intval($item['is_add_to_whitelist'] ?? 0);
+        $item['bind_user_id'] = intval($item['bind_user_id'] ?? 0);
         $item['code'] = (string)($item['code'] ?? '');
         $item['parking_num'] = (string)($item['parking_num'] ?? '');
+        $item['owner_name'] = (string)($item['owner_name'] ?? '');
+        $item['owner_phone'] = (string)($item['owner_phone'] ?? '');
+        $item['is_bind_owner'] = $item['bind_user_id'] > 0 ? 1 : 0;
+        $item['owner_bind_text'] = $this->buildOwnerBindText($item);
         $item['createdAt'] = (string)($item['createdAt'] ?? '');
         $item['updatedAt'] = (string)($item['updatedAt'] ?? '');
         $item['whitelist_device_list'] = is_array($item['whitelist_device_list'] ?? null) ? $item['whitelist_device_list'] : [];
@@ -502,6 +493,60 @@ class HouseAccessSensorsService
         $item['whitelist_target_device_count'] = intval($item['whitelist_target_device_count'] ?? 0);
         $item['whitelist_progress'] = (string)($item['whitelist_progress'] ?? '0/0');
         return $item;
+    }
+
+    protected function buildSensorsListQuery($village_id, $params = [])
+    {
+        $query = Db::name('house_smart_access_sensors')->alias('s')
+            ->leftJoin('house_non_motor_vehicle n', 'n.sensors_id = s.id AND n.village_id = s.village_id')
+            ->leftJoin('house_village_user_bind u', 'u.pigcms_id = n.user_id AND u.village_id = s.village_id')
+            ->where('s.village_id', '=', intval($village_id));
+
+        $code = trim((string)($params['code'] ?? ''));
+        if ($code !== '') {
+            $query->where('s.code', 'like', '%' . $code . '%');
+        }
+
+        $parking_num = trim((string)($params['parking_num'] ?? ''));
+        if ($parking_num !== '') {
+            $query->where('s.parking_num', 'like', '%' . $parking_num . '%');
+        }
+
+        if ($this->hasValue($params, 'enable')) {
+            $query->where('s.enable', '=', intval($params['enable']));
+        }
+
+        if ($this->hasValue($params, 'is_bind_owner')) {
+            if (intval($params['is_bind_owner']) === 1) {
+                $query->where('n.user_id', '>', 0);
+            } else {
+                $query->where(function ($subQuery) {
+                    $subQuery->whereNull('n.user_id')->whereOr('n.user_id', '=', 0);
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    protected function buildOwnerBindText($item)
+    {
+        if (intval($item['bind_user_id'] ?? 0) <= 0) {
+            return '未绑定';
+        }
+
+        $ownerName = trim((string)($item['owner_name'] ?? ''));
+        $ownerPhone = trim((string)($item['owner_phone'] ?? ''));
+        if ($ownerName !== '' && $ownerPhone !== '') {
+            return $ownerName . '(' . $ownerPhone . ')';
+        }
+        if ($ownerName !== '') {
+            return $ownerName;
+        }
+        if ($ownerPhone !== '') {
+            return $ownerPhone;
+        }
+        return '已绑定';
     }
 
     protected function hasValue($params, $key)

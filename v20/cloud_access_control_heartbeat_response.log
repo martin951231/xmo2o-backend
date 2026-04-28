@@ -1,0 +1,6 @@
+{"time":"2026-04-23 15:03:58","scene":"heartbeat_response","village_id":0,"serial":"","response_data":{"Key":""}}
+{"time":"2026-04-23 15:04:14","scene":"heartbeat_response","village_id":0,"serial":"","response_data":{"Key":""}}
+{"time":"2026-04-23 15:04:33","scene":"heartbeat_response","village_id":0,"serial":"","response_data":{"Key":""}}
+{"time":"2026-04-23 15:07:31","scene":"heartbeat_response","village_id":3,"serial":"80D243","response_data":{"Key":"2153","IndexCmd":"1001","CmdValue":"0200C100013F00000000EA2ACE00000000000000000000000000000000000000000000000000000000FFFFFFFFFFFF00010100003F0C1F113B0000000000361E1E1E1F000000CA03"}}
+{"time":"2026-04-24 16:52:35","scene":"heartbeat_response","village_id":3,"serial":"80D243","response_data":{"Key":"TEST2153","IndexCmd":"1","CmdValue":"0200C100013F00010000EA66CE00000000000000000000000000000000000000000000000000000000FFFFFFFF010016071C0000300101010100000000005430303031000000D703"}}
+{"time":"2026-04-24 16:52:54","scene":"heartbeat_response","village_id":3,"serial":"80D243","response_data":{"Key":"TEST2153","IndexCmd":"2","CmdValue":"0200C100013F0002000072FCE100000000000000000000000000000000000000000000000000000000FFFFFFFF010016071C0000300101010100000000005430303032000000FA03"}}

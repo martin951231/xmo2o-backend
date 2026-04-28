@@ -4351,6 +4351,7 @@ class UserAction extends BaseAction
             $newData=$_POST;
             $nmv_card = trim($_POST['nmv_card']);
             unset($_POST['nmv_card']);
+            $attachment_auto_save = intval($_POST['attachment_auto_save']);
             
             $data_post = $_POST;
             unset($data_post['pigcms_id']);
@@ -4373,6 +4374,7 @@ class UserAction extends BaseAction
             unset($data_post['city_idss']);
             unset($data_post['province_idss']);
             unset($data_post['door_control']);
+            unset($data_post['attachment_auto_save']);
             $attachment_post = [
                 'existing_url' => isset($_POST['attachment_existing_url']) && is_array($_POST['attachment_existing_url']) ? $_POST['attachment_existing_url'] : [],
                 'existing_name' => isset($_POST['attachment_existing_name']) && is_array($_POST['attachment_existing_name']) ? $_POST['attachment_existing_name'] : [],
@@ -4457,6 +4459,7 @@ class UserAction extends BaseAction
             $data_post_list['authentication_field'] = serialize($data_post);
             $page = $_POST['page'];
             unset($_POST['page']);
+            unset($_POST['attachment_auto_save']);
             if($_POST['property_starttime'] > $_POST['property_endtime']){
                 $this->error('请填写正确的物业时间！');
             }
@@ -4795,7 +4798,11 @@ class UserAction extends BaseAction
                 $param=array('logData'=>$logData);
                 $result = invoke_v20_service($models, $param);
 
-                $this->success('修改成功', U('User/index',array('page'=>$page)));
+                if($attachment_auto_save){
+                    $this->success('修改成功', U('User/edit',array('pigcms_id'=>$_POST['pigcms_id'],'usernum'=>$newData['usernum'])).'#attachments');
+                }else{
+                    $this->success('修改成功', U('User/index',array('page'=>$page)));
+                }
                 exit;
             }
 

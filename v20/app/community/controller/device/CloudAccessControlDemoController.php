@@ -17,21 +17,21 @@ class CloudAccessControlDemoController extends CommunityBaseController
         $request_data = $this->collectRequestData();
         $serial = $this->extractRequestSerial($request_data);
         $village_id = $this->resolveVillageId($request_data);
-        $this->writeRootRequestLog('heartbeat_request', [
-            'village_id' => intval($village_id),
-            'serial' => $serial,
-            'request_data' => $request_data,
-        ]);
+        // $this->writeRootRequestLog('heartbeat_request', [
+        //     'village_id' => intval($village_id),
+        //     'serial' => $serial,
+        //     'request_data' => $request_data,
+        // ]);
         $state = $village_id > 0 ? $this->readState($village_id) : $this->defaultState();
         $response = $this->handleHeartbeat($state, $request_data, $village_id);
         if ($village_id > 0) {
             $this->writeState($village_id, $state);
         }
-        $this->writeRootRequestLog('heartbeat_response', [
-            'village_id' => intval($village_id),
-            'serial' => $serial,
-            'response_data' => $response,
-        ]);
+        // $this->writeRootRequestLog('heartbeat_response', [
+        //     'village_id' => intval($village_id),
+        //     'serial' => $serial,
+        //     'response_data' => $response,
+        // ]);
         return json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
@@ -69,17 +69,17 @@ class CloudAccessControlDemoController extends CommunityBaseController
         }
 
         $recordVillageId = intval($deviceInfo['village_id'] ?? $sensorInfo['village_id'] ?? 0);
-        try {
-            (new HouseAccessRecordsService())->recordsAdd($recordVillageId, [
-                'type' => intval($request_data['type'] ?? 0),
-                'reader' => intval($request_data['Reader'] ?? 0),
-                'card_id' => intval($sensorInfo['id'] ?? 0),
-                'serial_id' => intval($deviceInfo['id'] ?? 0),
-                'MAC' => $mac,
-                'access_time' => date('Y-m-d H:i:s'),
-            ]);
-        } catch (\Exception $e) {
-        }
+        // try {
+        //     (new HouseAccessRecordsService())->recordsAdd($recordVillageId, [
+        //         'type' => intval($request_data['type'] ?? 0),
+        //         'reader' => intval($request_data['Reader'] ?? 0),
+        //         'card_id' => intval($sensorInfo['id'] ?? 0),
+        //         'serial_id' => intval($deviceInfo['id'] ?? 0),
+        //         'MAC' => $mac,
+        //         'access_time' => date('Y-m-d H:i:s'),
+        //     ]);
+        // } catch (\Exception $e) {
+        // }
 
         $this->storeRecentQueueResponse($serial, $card, $mac, $res);
 
@@ -152,16 +152,16 @@ class CloudAccessControlDemoController extends CommunityBaseController
             ((string)$request_data['IndexCmd'] !== '') &&
             ((string)$request_data['IndexCmd'] !== '0')
         ) {
-            $this->writeRootRequestLog('command_result', [
-                'phase' => 'result',
-                'village_id' => $village_id,
-                'serial' => $serial,
-                'device_id' => $device_id,
-                'execution_result' => 'unmatched',
-                'request_index_cmd' => (string)$request_data['IndexCmd'],
-                'request_cmd_ok' => (string)$request_data['CmdOK'],
-                'request_data' => $request_data,
-            ]);
+            // $this->writeRootRequestLog('command_result', [
+            //     'phase' => 'result',
+            //     'village_id' => $village_id,
+            //     'serial' => $serial,
+            //     'device_id' => $device_id,
+            //     'execution_result' => 'unmatched',
+            //     'request_index_cmd' => (string)$request_data['IndexCmd'],
+            //     'request_cmd_ok' => (string)$request_data['CmdOK'],
+            //     'request_data' => $request_data,
+            // ]);
         }
 
         if (empty($deviceState['pending_command']) && $village_id > 0) {

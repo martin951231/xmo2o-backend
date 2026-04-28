@@ -122,6 +122,7 @@
 						<input  name="usernum" type="hidden"  value="{pigcms{$info.usernum}"/>
 						<input type="hidden" name="page" value="{pigcms{$_GET['page']}" />
 						<input type="hidden" name="iframe" value="{pigcms{$_GET['iframe']}" />
+						<input type="hidden" name="attachment_auto_save" id="attachment_auto_save" value="0" />
 						<div class="tab-content">
 							<div id="basicinfo" class="tab-pane active">
 
@@ -494,6 +495,16 @@
                                             //$('#myTab').children('li').eq(0).removeClass('active');
                                             $('.about').trigger('click');
                                         }
+                                        if(window.location.hash){
+                                            var $hashTab = $('#myTab a[href="' + window.location.hash + '"]');
+                                            var $hashPane = $(window.location.hash);
+                                            if($hashTab.length && $hashPane.length){
+                                                $('#myTab li').removeClass('active');
+                                                $hashTab.closest('li').addClass('active');
+                                                $('.tab-content > .tab-pane').removeClass('active in');
+                                                $hashPane.addClass('active in');
+                                            }
+                                        }
                                         packageaskhelp(".propertyTime",'1、未设置物业（服务开始时间-服务结束时间）业主服务时间无限制；<br/>2、设置物业（服务开始时间-服务结束时间）业主服务时间限制；<br/>3、设置物业服务开始时间，未设置物业服务结束时间，业主服务时间无限制；<br/>4、未设置物业服务开始时间，设置物业服务结束时间，业主服务时间限制；<br/>备注：物业服务时间关联的功能有人脸识别门禁、蓝牙门禁等');
                                     });
                                     function getUrlParam(name) {
@@ -812,7 +823,22 @@
                             </div>
 						</div>
 						<script>
+                            function activateUserEditTabByHash() {
+                                if(!window.location.hash){
+                                    return;
+                                }
+                                var $hashTab = $('#myTab a[href="' + window.location.hash + '"]');
+                                var $hashPane = $(window.location.hash);
+                                if($hashTab.length && $hashPane.length){
+                                    $('#myTab li').removeClass('active');
+                                    $hashTab.closest('li').addClass('active');
+                                    $('.tab-content > .tab-pane').removeClass('active in');
+                                    $hashPane.addClass('active in');
+                                }
+                            }
                             var car_id = [];
+                            var attachmentAutoSubmit = false;
+                            var attachmentAutoSubmitting = false;
                             function escapeAttachmentHtml(text) {
                                 if (text === null || text === undefined) {
                                     return '';
@@ -858,7 +884,19 @@
                                 }
                                 $(input).closest('.attachment-item').find('.js-selected-files').html(html.join(''));
                             }
+                            function autoSaveAttachmentFiles(input) {
+                                if (!input || !input.files || !input.files.length || attachmentAutoSubmitting) {
+                                    return;
+                                }
+                                attachmentAutoSubmit = true;
+                                attachmentAutoSubmitting = true;
+                                $('#attachment_auto_save').val('1');
+                                $('#edit_form').find('button[type="submit"]').prop('disabled', true);
+                                $('#edit_form').trigger('submit');
+                            }
                             $(function (){
+                                activateUserEditTabByHash();
+                                setTimeout(activateUserEditTabByHash, 0);
                                 var url = "{pigcms{:U('Unit/vehicle_management_user_list')}";
                                 $.post(url,{'pigcms_id': "{pigcms{$info.pigcms_id}"},function(result) {
                                     if (result['status'] == 1) {
@@ -884,6 +922,7 @@
                                     return false;
                                 }
                                 renderSelectedAttachmentFiles(this);
+                                autoSaveAttachmentFiles(this);
                             });
 							function payment_del(bind_id,position_id) {
 								var payment_del_url = "{pigcms{:U('payment_del')}";
@@ -1012,7 +1051,7 @@ function chk_submit(){
 		return false;
 	}*/
 	
-	if(!confirm('确认进行修改?')){
+	if(!attachmentAutoSubmit && !confirm('确认进行修改?')){
 		return false;
 	}
     var attachmentValidateError = false;

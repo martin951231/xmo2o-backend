@@ -20,6 +20,7 @@ class HouseAccessSensorsController extends CommunityBaseController
             'code' => $this->request->param('code', '', 'trim'),
             'parking_num' => $this->request->param('parking_num', '', 'trim'),
             'enable' => $this->request->param('enable', '', 'trim'),
+            'is_bind_owner' => $this->request->param('is_bind_owner', '', 'trim'),
         ];
 
         try {
