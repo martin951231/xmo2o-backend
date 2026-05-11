@@ -218,6 +218,8 @@ class IndexAction extends BaseAction{
             $user_count =  D('House_village_user_bind')
                 ->where($where_user)
                 ->count();
+            $profile_completion = $this->getProfileCompletionStats($village_info['property_id'], $this->village_id);
+            $this->assign('profile_completion',$profile_completion);
             // 车辆数量
             $car_count =  D('House_village_parking_car')->where(array('village_id'=>$this->village_id))->count();
             // 车位数量
@@ -4007,6 +4009,250 @@ class IndexAction extends BaseAction{
         }
     }
 
+
+    private function getProfileCompletionStats($property_id, $village_id)
+    {
+        $property_id = intval($property_id);
+        $village_id = intval($village_id);
+        $field_data = $this->getProfileCompletionFieldData($property_id);
+        $selected_keys = $this->getSelectedProfileCompletionKeys($field_data);
+        $selected_field_list = [];
+        foreach ($field_data['profile_fields'] as $field) {
+            if (in_array($field['key'], $selected_keys, true)) {
+                $selected_field_list[] = $field;
+            }
+        }
+        $attachment_selected = in_array('__attachment__', $selected_keys, true) && !empty($field_data['attachment_fields']);
+        $room_ids = D('House_village_user_vacancy')->where(array('is_del'=>0,'village_id'=>$village_id))->getField('pigcms_id', true);
+        $room_ids = $room_ids ? array_values(array_unique(array_map('intval', $room_ids))) : [];
+        $room_count = count($room_ids);
+        $bind_group = $this->getProfileCompletionBindGroup($village_id);
+        $people_count = $this->countProfileCompletionPeople($bind_group);
+        $type_map = [
+            'owner' => ['title' => '业主', 'types' => [0,3], 'attachment' => true],
+            'family' => ['title' => '家属', 'types' => [1], 'attachment' => false],
+            'tenant' => ['title' => '租客', 'types' => [2], 'attachment' => false],
+        ];
+        $stats = [];
+        foreach ($type_map as $type_key => $type_config) {
+            $field_count = count($selected_field_list);
+            if ($type_config['attachment'] && $attachment_selected) {
+                $field_count += count($field_data['attachment_fields']);
+            }
+            $current_people_count = isset($people_count[$type_key]) ? $people_count[$type_key] : 0;
+            $denominator = $field_count * $current_people_count;
+            $numerator = $field_count > 0 ? $this->getProfileCompletionScoreByPeople(
+                $bind_group,
+                $type_config['types'],
+                $selected_field_list,
+                ($type_config['attachment'] && $attachment_selected) ? $field_data['attachment_fields'] : []
+            ) : 0;
+            $stats[$type_key] = [
+                'title' => $type_config['title'],
+                'numerator' => $numerator,
+                'denominator' => $denominator,
+                'percent' => $denominator > 0 ? round($numerator * 100 / $denominator, 2) : 0,
+                'room_count' => $room_count,
+                'field_count' => $field_count,
+                'people_count' => $current_people_count,
+            ];
+        }
+        $stats['all'] = [
+            'title' => '全部',
+            'numerator' => $stats['owner']['numerator'] + $stats['family']['numerator'] + $stats['tenant']['numerator'],
+            'denominator' => $stats['owner']['denominator'] + $stats['family']['denominator'] + $stats['tenant']['denominator'],
+            'percent' => round(($stats['owner']['percent'] + $stats['family']['percent'] + $stats['tenant']['percent']) / 3, 2),
+            'room_count' => $room_count,
+            'field_count' => $stats['owner']['field_count'] + $stats['family']['field_count'] + $stats['tenant']['field_count'],
+            'people_count' => $stats['owner']['people_count'] + $stats['family']['people_count'] + $stats['tenant']['people_count'],
+        ];
+        return [
+            'fields' => $this->formatProfileCompletionFilterFields($field_data, $selected_keys),
+            'selected_keys' => $selected_keys,
+            'attachment_count' => count($field_data['attachment_fields']),
+            'room_count' => $room_count,
+            'stats' => [
+                'all' => $stats['all'],
+                'owner' => $stats['owner'],
+                'family' => $stats['family'],
+                'tenant' => $stats['tenant'],
+            ],
+        ];
+    }
+
+    private function getProfileCompletionFieldData($property_id)
+    {
+        $property_id = intval($property_id);
+        if ($property_id <= 0) {
+            return ['profile_fields' => [], 'attachment_fields' => []];
+        }
+        $where = [
+            'village_id' => 0,
+            'property_id' => $property_id,
+            'is_display' => 1,
+            'is_close' => 0,
+        ];
+        $data_list = D('House_village_data_config')->where($where)->order('sort desc')->select();
+        $profile_fields = [];
+        $attachment_fields = [];
+        foreach ((array)$data_list as $field) {
+            $field_key = trim((string)(isset($field['key']) ? $field['key'] : ''));
+            if ($field_key === '') {
+                continue;
+            }
+            $field['key'] = $field_key;
+            if (in_array(intval($field['type']), [5,6], true)) {
+                $attachment_fields[] = $field;
+            } else {
+                $profile_fields[] = $field;
+            }
+        }
+        return ['profile_fields' => $profile_fields, 'attachment_fields' => $attachment_fields];
+    }
+
+    private function getSelectedProfileCompletionKeys(array $field_data)
+    {
+        $selected = isset($_GET['profile_fields']) ? $_GET['profile_fields'] : [];
+        if (!is_array($selected)) {
+            $selected = explode(',', (string)$selected);
+        }
+        $selected = array_values(array_unique(array_filter(array_map(function ($key) {
+            return trim((string)$key);
+        }, $selected), function ($key) {
+            return $key !== '';
+        })));
+        if (isset($_GET['profile_filter_submitted'])) {
+            return $selected;
+        }
+        if (!empty($selected)) {
+            return $selected;
+        }
+        $default = [];
+        foreach ($field_data['profile_fields'] as $field) {
+            $default[] = $field['key'];
+        }
+        if (!empty($field_data['attachment_fields'])) {
+            $default[] = '__attachment__';
+        }
+        return $default;
+    }
+
+    private function formatProfileCompletionFilterFields(array $field_data, array $selected_keys)
+    {
+        $fields = [];
+        foreach ($field_data['profile_fields'] as $field) {
+            $fields[] = [
+                'key' => $field['key'],
+                'title' => $field['title'],
+                'checked' => in_array($field['key'], $selected_keys, true) ? 1 : 0,
+            ];
+        }
+        if (!empty($field_data['attachment_fields'])) {
+            $fields[] = [
+                'key' => '__attachment__',
+                'title' => '附件',
+                'checked' => in_array('__attachment__', $selected_keys, true) ? 1 : 0,
+            ];
+        }
+        return $fields;
+    }
+
+    private function getProfileCompletionBindGroup($village_id)
+    {
+        $where = [
+            'village_id' => intval($village_id),
+            'vacancy_id' => ['gt', 0],
+            'status' => 1,
+            'type' => ['in', [0,1,2,3]],
+        ];
+        $where['_string'] = "(uid>0 OR phone<>'' OR name<>'')";
+        $bind_list = D('House_village_user_bind')->where($where)->field('pigcms_id,vacancy_id,type,authentication_field')->select();
+        $group = [];
+        foreach ((array)$bind_list as $bind) {
+            $room_id = intval($bind['vacancy_id']);
+            if ($room_id <= 0) {
+                continue;
+            }
+            if (!isset($group[$room_id])) {
+                $group[$room_id] = [];
+            }
+            $group[$room_id][] = $bind;
+        }
+        return $group;
+    }
+
+    private function countProfileCompletionPeople(array $bind_group)
+    {
+        $count = ['owner' => 0, 'family' => 0, 'tenant' => 0];
+        foreach ($bind_group as $bind_list) {
+            foreach ((array)$bind_list as $bind) {
+                $type = intval($bind['type']);
+                if (in_array($type, [0,3], true)) {
+                    $count['owner']++;
+                } elseif ($type == 1) {
+                    $count['family']++;
+                } elseif ($type == 2) {
+                    $count['tenant']++;
+                }
+            }
+        }
+        return $count;
+    }
+
+    private function getProfileCompletionScoreByPeople(array $bind_group, array $types, array $profile_fields, array $attachment_fields)
+    {
+        $score = 0;
+        foreach ($bind_group as $bind_list) {
+            foreach ((array)$bind_list as $bind) {
+                if (!in_array(intval($bind['type']), $types, true)) {
+                    continue;
+                }
+                $authentication_field = $this->parseProfileAuthenticationField($bind['authentication_field']);
+                $score += $this->countProfileFieldCompleted($authentication_field, $profile_fields)
+                    + $this->countProfileAttachmentCompleted($authentication_field, $attachment_fields);
+            }
+        }
+        return $score;
+    }
+
+    private function parseProfileAuthenticationField($value)
+    {
+        if (empty($value)) {
+            return [];
+        }
+        $data = @unserialize($value);
+        return is_array($data) ? $data : [];
+    }
+
+    private function countProfileFieldCompleted(array $authentication_field, array $profile_fields)
+    {
+        $count = 0;
+        foreach ($profile_fields as $field) {
+            $key = $field['key'];
+            $value = isset($authentication_field[$key]['value']) ? $authentication_field[$key]['value'] : '';
+            if (is_array($value)) {
+                if (!empty(array_filter($value))) {
+                    $count++;
+                }
+            } elseif (trim((string)$value) !== '' && trim((string)$value) !== '0') {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    private function countProfileAttachmentCompleted(array $authentication_field, array $attachment_fields)
+    {
+        $count = 0;
+        foreach ($attachment_fields as $field) {
+            $key = $field['key'];
+            $field_value = isset($authentication_field[$key]) && is_array($authentication_field[$key]) ? $authentication_field[$key] : [];
+            if (!empty($field_value['file_list']) || !empty($field_value['files'])) {
+                $count++;
+            }
+        }
+        return $count;
+    }
 
     //工作量统计图
     public function get_work_order_stack(){

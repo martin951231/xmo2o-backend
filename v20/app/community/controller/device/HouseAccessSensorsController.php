@@ -113,4 +113,29 @@ class HouseAccessSensorsController extends CommunityBaseController
 
         return api_output(0, []);
     }
+    public function sensors_import()
+    {
+        $village_id = intval($this->adminUser['village_id'] ?? 0);
+        if (empty($village_id)) {
+            return api_output(1002, [], '请先登录到小区后台！');
+        }
+
+        $file = $this->request->file('file');
+        if (empty($file)) {
+            return api_output(1001, [], '请上传导入文件');
+        }
+
+        try {
+            validate(['file' => [
+                'fileSize' => 1024 * 1024 * 20,
+                'fileExt' => 'xls,xlsx,csv,txt',
+            ]])->check(['file' => $file]);
+
+            $result = (new HouseAccessSensorsService())->sensorsImport($village_id, $file);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+
+        return api_output(0, $result, '导入成功');
+    }
 }

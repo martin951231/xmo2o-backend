@@ -10,6 +10,9 @@ use app\community\model\service\Device\HouseAccessSensorsService;
 
 class CloudAccessControlDemoController extends CommunityBaseController
 {
+    private const QUEUE_RECORD_CACHE_SECONDS = 60;
+    private const QUEUE_RECORD_CACHE_KEEP_SECONDS = 60;
+
     protected $rawRequestBody = null;
 
     public function deviceHeartbeat()
@@ -42,9 +45,11 @@ class CloudAccessControlDemoController extends CommunityBaseController
         $card = $this->normalizeQueueValue($request_data['Card'] ?? $request_data['card'] ?? $request_data['code'] ?? '');
         $mac = $this->normalizeMacValue($request_data['MAC'] ?? $request_data['mac'] ?? '');
 
-        $cachedResponse = $this->getRecentQueueResponse($serial, $card, $mac);
-        if (!empty($cachedResponse)) {
-            return $this->renderRawJson($cachedResponse);
+        if(intval($request_data['type'] ?? 0) != 100 && $serial == ''){
+            $this->writeRootRequestLog('queueCommand_response', [
+                'serial' => $serial,
+                'response_data' => $request_data,
+            ]);
         }
 
         $deviceInfo = (new HouseAccessDeviceService())->getDeviceBySerial($serial);
@@ -69,19 +74,21 @@ class CloudAccessControlDemoController extends CommunityBaseController
         }
 
         $recordVillageId = intval($deviceInfo['village_id'] ?? $sensorInfo['village_id'] ?? 0);
-        // try {
-        //     (new HouseAccessRecordsService())->recordsAdd($recordVillageId, [
-        //         'type' => intval($request_data['type'] ?? 0),
-        //         'reader' => intval($request_data['Reader'] ?? 0),
-        //         'card_id' => intval($sensorInfo['id'] ?? 0),
-        //         'serial_id' => intval($deviceInfo['id'] ?? 0),
-        //         'MAC' => $mac,
-        //         'access_time' => date('Y-m-d H:i:s'),
-        //     ]);
-        // } catch (\Exception $e) {
-        // }
-
-        $this->storeRecentQueueResponse($serial, $card, $mac, $res);
+        try {
+            if(intval($request_data['type'] ?? 0) != 100 && $this->markQueueRecordIfAllowed($serial, $card, $mac)){
+                (new HouseAccessRecordsService())->recordsAdd($recordVillageId, [
+                    'type' => intval($request_data['type'] ?? 0),
+                    'reader' => intval($request_data['Reader'] ?? 0),
+                    'status' => $res['AcsRes'],
+                    'card_id' => intval($sensorInfo['id'] ?? 0),
+                    'serial_id' => intval($deviceInfo['id'] ?? 0),
+                    'MAC' => $mac,
+                    'access_time' => date('Y-m-d H:i:s'),
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->renderRawJson($res);
+        }
 
         return $this->renderRawJson($res);
     }
@@ -397,75 +404,61 @@ class CloudAccessControlDemoController extends CommunityBaseController
         return $state['device_states'][$serial];
     }
 
-    private function getRecentQueueResponse($serial, $card, $mac)
+    private function markQueueRecordIfAllowed($serial, $card, $mac)
     {
         $signature = $this->buildQueueRequestSignature($serial, $card, $mac);
         if ($signature === '') {
-            return [];
+            return true;
         }
 
-        $cache = $this->readQueueRequestCache();
-        $currentTime = time();
-        $cacheChanged = false;
-        foreach ($cache as $key => $item) {
-            if ($currentTime - intval($item['time'] ?? 0) > 10) {
-                unset($cache[$key]);
-                $cacheChanged = true;
-            }
-        }
-
-        $response = [];
-        if (!empty($cache[$signature]) && ($currentTime - intval($cache[$signature]['time'] ?? 0) <= 3)) {
-            $response = is_array($cache[$signature]['response'] ?? null) ? $cache[$signature]['response'] : [];
-        }
-
-        if ($cacheChanged) {
-            $this->writeQueueRequestCache($cache);
-        }
-
-        return $response;
-    }
-
-    private function storeRecentQueueResponse($serial, $card, $mac, array $response)
-    {
-        $signature = $this->buildQueueRequestSignature($serial, $card, $mac);
-        if ($signature === '') {
-            return;
-        }
-
-        $cache = $this->readQueueRequestCache();
-        $cache[$signature] = [
-            'time' => time(),
-            'response' => $response,
-        ];
-        $this->writeQueueRequestCache($cache);
-    }
-
-    private function readQueueRequestCache()
-    {
-        $file = $this->getQueueRequestCacheFile();
-        if (!file_exists($file)) {
-            return [];
-        }
-
-        $content = file_get_contents($file);
-        if ($content === false || $content === '') {
-            return [];
-        }
-
-        $data = json_decode($content, true);
-        return is_array($data) ? $data : [];
-    }
-
-    private function writeQueueRequestCache(array $cache)
-    {
         $file = $this->getQueueRequestCacheFile();
         $dir = dirname($file);
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
 
-        file_put_contents($file, json_encode($cache, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), LOCK_EX);
+        $handle = fopen($file, 'c+');
+        if ($handle === false) {
+            return true;
+        }
+
+        try {
+            if (!flock($handle, LOCK_EX)) {
+                fclose($handle);
+                return true;
+            }
+
+            $content = stream_get_contents($handle);
+            $cache = $content !== false && $content !== '' ? json_decode($content, true) : [];
+            if (!is_array($cache)) {
+                $cache = [];
+            }
+
+            $currentTime = time();
+            foreach ($cache as $key => $item) {
+                if ($currentTime - intval($item['time'] ?? 0) > self::QUEUE_RECORD_CACHE_KEEP_SECONDS) {
+                    unset($cache[$key]);
+                }
+            }
+
+            if (!empty($cache[$signature]) && ($currentTime - intval($cache[$signature]['time'] ?? 0) <= self::QUEUE_RECORD_CACHE_SECONDS)) {
+                flock($handle, LOCK_UN);
+                fclose($handle);
+                return false;
+            }
+
+            $cache[$signature] = ['time' => $currentTime];
+            rewind($handle);
+            ftruncate($handle, 0);
+            fwrite($handle, json_encode($cache, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            fflush($handle);
+            flock($handle, LOCK_UN);
+            fclose($handle);
+            return true;
+        } catch (\Throwable $e) {
+            fclose($handle);
+            return true;
+        }
     }
 
     private function getQueueRequestCacheFile()
@@ -494,7 +487,7 @@ class CloudAccessControlDemoController extends CommunityBaseController
     private function writeRootRequestLog($scene, array $payload = [])
     {
         $scene = (string)$scene;
-        if (!in_array($scene, ['heartbeat_request', 'heartbeat_response', 'command_result'], true)) {
+        if (!in_array($scene, ['heartbeat_request', 'heartbeat_response', 'command_result','queueCommand_response'], true)) {
             return;
         }
 
@@ -535,6 +528,7 @@ class CloudAccessControlDemoController extends CommunityBaseController
             'heartbeat_request' => 'cloud_access_control_heartbeat_request.log',
             'heartbeat_response' => 'cloud_access_control_heartbeat_response.log',
             'command_result' => 'cloud_access_control_command_result.log',
+            'queueCommand_response' => 'cloud_access_control_queueCommand_response.log',
         ];
         $filename = $map[$scene] ?? 'cloud_access_control_command_result.log';
         return rtrim(root_path(), '/\\') . DIRECTORY_SEPARATOR . $filename;

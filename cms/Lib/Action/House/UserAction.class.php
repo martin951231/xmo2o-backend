@@ -5021,6 +5021,9 @@ class UserAction extends BaseAction
                 }else{
                     $v['use_field'] = [];
                 }
+                if($v['key'] == 'is_sign_agreement' && empty($v['use_field'])){
+                    $v['use_field'] = ['是','否'];
+                }
                 $is_edit='';
                 if($set_id_code == 1 && $is_edit_attribute && in_array($v['key'],['birthday','sex'])){
                     //$is_edit='disabled="disabled"';

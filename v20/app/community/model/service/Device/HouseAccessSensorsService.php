@@ -7,6 +7,7 @@ use app\community\model\db\Device\HouseSmartAccessRecords;
 use app\community\model\db\Device\HouseSmartAccessSensorDeviceWhitelist;
 use app\community\model\db\Device\HouseSmartAccessSensors;
 use think\facade\Db;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class HouseAccessSensorsService
 {
@@ -101,6 +102,9 @@ class HouseAccessSensorsService
         }
 
         $data = $this->buildSaveData($village_id, $params, $id);
+        if (intval($data['enable'] ?? 0) === 1) {
+            $this->assertSensorBindOwner($village_id, $id);
+        }
         $data['updatedAt'] = date('Y-m-d H:i:s');
         $shouldResetWhitelist = (
             (string)($detail['code'] ?? '') !== (string)$data['code'] ||
@@ -147,6 +151,137 @@ class HouseAccessSensorsService
         $this->resetWhitelistDeviceRecordsBySensorIds([$id]);
         $this->sensorModel->where($where)->delete();
         return true;
+    }
+
+    public function sensorsImport($village_id, $file)
+    {
+        $village_id = intval($village_id);
+        if ($village_id <= 0) {
+            throw new \Exception('请先登录到小区后台！');
+        }
+        if (empty($file)) {
+            throw new \Exception('请上传导入文件');
+        }
+
+        $rows = $this->readImportFileRows($file);
+        if (count($rows) <= 1) {
+            throw new \Exception('导入文件不能为空');
+        }
+
+        $now = date('Y-m-d H:i:s');
+        $codeMap = [];
+        $validRows = [];
+        $failRows = [];
+        foreach ($rows as $index => $row) {
+            if (intval($index) === 1) {
+                continue;
+            }
+            $rowNumber = intval($index);
+            $parking_num = $this->cleanImportCell($row['B'] ?? '');
+            $code = $this->cleanImportCell($row['E'] ?? '');
+            if ($parking_num === '' && $code === '') {
+                continue;
+            }
+            if ($parking_num === '' || $code === '') {
+                $failRows[] = ['row' => $rowNumber, 'msg' => '关联编号或感应器编码为空'];
+                continue;
+            }
+            if (strlen($parking_num) > 50 || strlen($code) > 50) {
+                $failRows[] = ['row' => $rowNumber, 'msg' => '关联编号或感应器编码长度不能超过50位'];
+                continue;
+            }
+            if (isset($codeMap[$code])) {
+                $failRows[] = ['row' => $rowNumber, 'msg' => '文件内感应器编码重复'];
+                continue;
+            }
+            $codeMap[$code] = true;
+            $validRows[] = [
+                'row' => $rowNumber,
+                'village_id' => $village_id,
+                'code' => $code,
+                'parking_num' => $parking_num,
+                'enable' => 0,
+                'createdAt' => $now,
+                'updatedAt' => $now,
+            ];
+        }
+
+        if (empty($validRows)) {
+            throw new \Exception('没有可导入的数据');
+        }
+
+        $existingCodes = $this->getExistingSensorCodes($village_id, array_column($validRows, 'code'));
+        $insertRows = [];
+        foreach ($validRows as $row) {
+            if (isset($existingCodes[$row['code']])) {
+                $failRows[] = ['row' => $row['row'], 'msg' => '感应器编码已存在'];
+                continue;
+            }
+            unset($row['row']);
+            $insertRows[] = $row;
+        }
+
+        if (empty($insertRows)) {
+            throw new \Exception('没有可导入的数据');
+        }
+
+        foreach (array_chunk($insertRows, 500) as $chunk) {
+            $this->sensorModel->addAll($chunk);
+        }
+
+        return [
+            'success_count' => count($insertRows),
+            'fail_count' => count($failRows),
+            'fail_rows' => array_slice($failRows, 0, 50),
+        ];
+    }
+
+    protected function readImportFileRows($file)
+    {
+        $filePath = method_exists($file, 'getPathname') ? $file->getPathname() : '';
+        if ($filePath === '' || !is_file($filePath)) {
+            throw new \Exception('导入文件读取失败');
+        }
+
+        $reader = IOFactory::createReaderForFile($filePath);
+        if (method_exists($reader, 'setReadDataOnly')) {
+            $reader->setReadDataOnly(true);
+        }
+        $spreadsheet = $reader->load($filePath);
+        $sheet = $spreadsheet->getSheet(0);
+        $rows = $sheet->toArray(null, true, true, true);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        return is_array($rows) ? $rows : [];
+    }
+
+    protected function getExistingSensorCodes($village_id, array $codes)
+    {
+        $codes = array_values(array_unique(array_filter($codes, function ($code) {
+            return $code !== '';
+        })));
+        if (empty($codes)) {
+            return [];
+        }
+
+        $existing = [];
+        foreach (array_chunk($codes, 500) as $chunk) {
+            $list = $this->sensorModel
+                ->where([['village_id', '=', intval($village_id)]])
+                ->where('code', 'in', $chunk)
+                ->column('code');
+            foreach ($list as $code) {
+                $existing[(string)$code] = true;
+            }
+        }
+
+        return $existing;
+    }
+
+    protected function cleanImportCell($value)
+    {
+        return trim((string)$value);
     }
 
     public function getEnabledSensorByCode($code, $village_id = 0)
@@ -427,6 +562,17 @@ class HouseAccessSensorsService
             ->delete();
     }
 
+    protected function assertSensorBindOwner($village_id, $sensor_id)
+    {
+        $bindCount = Db::name('house_non_motor_vehicle')
+            ->where('village_id', '=', intval($village_id))
+            ->where('sensors_id', '=', intval($sensor_id))
+            ->where('user_id', '>', 0)
+            ->count('id');
+        if (intval($bindCount) <= 0) {
+            throw new \Exception('没有绑定业主不能启用');
+        }
+    }
     protected function buildSaveData($village_id, $params = [], $exclude_id = 0)
     {
         $code = trim((string)($params['code'] ?? ''));

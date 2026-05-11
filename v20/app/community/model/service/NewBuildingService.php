@@ -1594,13 +1594,13 @@ class NewBuildingService
         $agreement_info = $this->getValueByKey($param['basic_data'], 'is_sign_agreement');
         $agreement_info_origin = $this->getValueByKey(unserialize($user_bind['authentication_field']), 'is_sign_agreement');
 
-        if( (!$agreement_info_origin && $agreement_info) || $agreement_info['value'] != $agreement_info_origin['value'] ){
+        if( $agreement_info && (!$agreement_info_origin || $agreement_info['value'] != $agreement_info_origin['value']) ){
             $arr['is_sign_agreement'] = [
                 'key' => 'is_sign_agreement',
                 'is_must' => $agreement_info['is_must'],
                 'type' => $agreement_info['type'],
                 'title' => $agreement_info['title'],
-                'value' => $agreement_info_origin['value'],
+                'value' => isset($agreement_info_origin['value']) ? $agreement_info_origin['value'] : '',
             ];
 
             $authentication_field_arr = is_array( unserialize($user_bind['authentication_field']) )? unserialize($user_bind['authentication_field']) : [];

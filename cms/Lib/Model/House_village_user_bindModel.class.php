@@ -2703,7 +2703,9 @@ class House_village_user_bindModel extends Model
                     $value=$valueNew;
                 }
                 if(isset($authentication_field[$key])){
-                    $authentication_field[$key]['value']=$value;
+                    if(isset($fieldArr[$key]) || !isset($authentication_field[$key]['value'])){
+                        $authentication_field[$key]['value']=$value;
+                    }
                 }else{
                     $authentication_field[$key]=[
                         'type'=>$v['type'],

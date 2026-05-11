@@ -90,8 +90,10 @@ class HouseNonMotorizedVehicleController extends CommunityBaseController
 
         $params = [
             'sensors_id' => $sensors_id,
+            'person_type' => $this->request->param('person_type', $this->request->param('bind_type', 1, 'intval'), 'intval'),
             'user_id' => $this->request->param('user_id', 0, 'intval'),
             'type' => $this->request->param('type', 1, 'intval'),
+            'group_id' => $this->request->param('group_id', 0, 'intval'),
         ];
 
         try {
@@ -118,8 +120,10 @@ class HouseNonMotorizedVehicleController extends CommunityBaseController
         $params = [
             'id' => $this->request->param('id', 0, 'intval'),
             'sensors_id' => $sensors_id,
+            'person_type' => $this->request->param('person_type', $this->request->param('bind_type', 1, 'intval'), 'intval'),
             'user_id' => $this->request->param('user_id', 0, 'intval'),
             'type' => $this->request->param('type', 1, 'intval'),
+            'group_id' => $this->request->param('group_id', 0, 'intval'),
         ];
 
         try {

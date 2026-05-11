@@ -5,6 +5,7 @@ namespace app\community\model\service\Device;
 use app\community\model\db\Device\HouseNonMotorVehicle;
 use app\community\model\db\Device\HouseSmartAccessSensors;
 use app\community\model\db\HouseVillageUserBind;
+use app\community\model\db\HouseWorker;
 use app\community\model\service\HouseVillageService;
 use think\facade\Db;
 
@@ -33,7 +34,7 @@ class HouseNonMotorizedVehicleService
 
         $count = $this->buildQuery($village_id, $params)->count('n.id');
         $list = $this->buildQuery($village_id, $params)
-            ->field('n.id,n.user_id,n.sensors_id,n.type,n.createdAt,n.updatedAt,u.name as user_name,u.phone as user_phone,u.single_id,u.floor_id,u.layer_id,u.vacancy_id,s.parking_num,s.code as sensor_code')
+            ->field('n.id,n.user_id,n.sensors_id,n.type,n.person_type,n.createdAt,n.updatedAt,u.name as owner_name,u.phone as owner_phone,u.single_id,u.floor_id,u.layer_id,u.vacancy_id,w.name as worker_name,w.phone as worker_phone,g.name as group_name,w.department_id,s.parking_num,s.code as sensor_code')
             ->order('n.id DESC')
             ->page($page, $pageSize)
             ->select()
@@ -62,6 +63,7 @@ class HouseNonMotorizedVehicleService
         $data['createdAt'] = $now;
         $data['updatedAt'] = $now;
         $id = $this->vehicleModel->add($data);
+        $this->enableBindSensor($village_id, intval($data['sensors_id'] ?? 0));
         return ['id' => $id];
     }
 
@@ -80,6 +82,7 @@ class HouseNonMotorizedVehicleService
         $data = $this->buildSaveData($village_id, $params, $id);
         $data['updatedAt'] = date('Y-m-d H:i:s');
         $this->vehicleModel->updateThis([['id', '=', $id]], $data);
+        $this->enableBindSensor($village_id, intval($data['sensors_id'] ?? 0));
 
         return ['id' => $id];
     }
@@ -186,7 +189,9 @@ class HouseNonMotorizedVehicleService
     protected function buildQuery($village_id, $params = [])
     {
         $query = Db::name('house_non_motor_vehicle')->alias('n')
-            ->leftJoin('house_village_user_bind u', 'u.pigcms_id = n.user_id')
+            ->leftJoin('house_village_user_bind u', 'u.pigcms_id = n.user_id AND n.person_type = 1 AND u.village_id = n.village_id AND u.status in (0,1,2) AND u.type in (0,1,2,3)')
+            ->leftJoin('house_worker w', 'w.wid = n.user_id AND n.person_type = 2 AND w.village_id = n.village_id AND w.is_del = 0 AND w.status <> 4')
+            ->leftJoin('property_group g', 'g.id = w.department_id')
             ->leftJoin('house_smart_access_sensors s', 's.id = n.sensors_id AND s.village_id = n.village_id')
             ->leftJoin('house_village_user_vacancy v', 'v.pigcms_id = u.vacancy_id')
             ->where('n.village_id', '=', intval($village_id));
@@ -209,7 +214,11 @@ class HouseNonMotorizedVehicleService
             $query->where(function ($subQuery) use ($userKeyword) {
                 $subQuery->where('u.name', 'like', '%' . $userKeyword . '%')
                     ->whereOr('u.phone', 'like', '%' . $userKeyword . '%')
-                    ->whereOr('v.room', 'like', '%' . $userKeyword . '%');
+                    ->whereOr('v.room', 'like', '%' . $userKeyword . '%')
+                    ->whereOr('w.name', 'like', '%' . $userKeyword . '%')
+                    ->whereOr('w.phone', 'like', '%' . $userKeyword . '%')
+                    ->whereOr('w.job_number', 'like', '%' . $userKeyword . '%')
+                    ->whereOr('g.name', 'like', '%' . $userKeyword . '%');
             });
         }
 
@@ -228,17 +237,15 @@ class HouseNonMotorizedVehicleService
             throw new \Exception('请选择用户');
         }
 
-        $userInfo = (new HouseVillageUserBind())->getOne([
-            ['pigcms_id', '=', $userId],
-            ['village_id', '=', intval($village_id)],
-            ['status', 'in', [0, 1, 2]],
-            ['type', 'in', [0, 1, 2, 3]],
-        ], 'pigcms_id');
-        if ($userInfo && !is_array($userInfo)) {
-            $userInfo = $userInfo->toArray();
+        $personType = intval($params['person_type'] ?? $params['bind_type'] ?? 1);
+        if (!in_array($personType, [1, 2], true)) {
+            throw new \Exception('人员类型参数错误');
         }
-        if (empty($userInfo)) {
-            throw new \Exception('所选用户不存在');
+
+        if ($personType === 2) {
+            $this->checkSelectedWorker($village_id, $userId, $params);
+        } else {
+            $this->checkSelectedOwner($village_id, $userId);
         }
 
         $sensorsId = intval($params['sensors_id'] ?? $params['sensor_id'] ?? 0);
@@ -274,12 +281,74 @@ class HouseNonMotorizedVehicleService
 
         return [
             'village_id' => intval($village_id),
+            'person_type' => $personType,
             'user_id' => $userId,
             'sensors_id' => $sensorsId,
             'type' => $type,
         ];
     }
 
+    protected function enableBindSensor($village_id, $sensors_id)
+    {
+        $sensors_id = intval($sensors_id);
+        if ($sensors_id <= 0) {
+            return false;
+        }
+
+        (new HouseSmartAccessSensors())->updateThis([
+            ['id', '=', $sensors_id],
+            ['village_id', '=', intval($village_id)],
+        ], [
+            'enable' => 1,
+            'is_add_to_whitelist' => 0,
+            'updatedAt' => date('Y-m-d H:i:s'),
+        ]);
+
+        (new HouseAccessSensorsService())->resetWhitelistDeviceRecordsBySensorIds([$sensors_id]);
+        return true;
+    }
+    protected function checkSelectedOwner($village_id, $userId)
+    {
+        $userInfo = (new HouseVillageUserBind())->getOne([
+            ['pigcms_id', '=', intval($userId)],
+            ['village_id', '=', intval($village_id)],
+            ['status', 'in', [0, 1, 2]],
+            ['type', 'in', [0, 1, 2, 3]],
+        ], 'pigcms_id');
+        if ($userInfo && !is_array($userInfo)) {
+            $userInfo = $userInfo->toArray();
+        }
+        if (empty($userInfo)) {
+            throw new \Exception('所选用户不存在');
+        }
+    }
+
+    protected function checkSelectedWorker($village_id, $userId, $params = [])
+    {
+        $where = [
+            ['w.wid', '=', intval($userId)],
+            ['w.village_id', '=', intval($village_id)],
+            ['w.is_del', '=', 0],
+            ['w.status', '<>', 4],
+            ['g.is_del', '=', 0],
+            ['g.village_id', '=', intval($village_id)],
+        ];
+        if (!empty($params['group_id'])) {
+            $where[] = ['w.department_id', '=', intval($params['group_id'])];
+        }
+
+        $workerInfo = (new HouseWorker())->alias('w')
+            ->leftJoin('property_group g', 'g.id = w.department_id')
+            ->where($where)
+            ->field('w.wid')
+            ->find();
+        if ($workerInfo && !is_array($workerInfo)) {
+            $workerInfo = $workerInfo->toArray();
+        }
+        if (empty($workerInfo)) {
+            throw new \Exception('所选工作人员不存在');
+        }
+    }
     protected function getDetail($village_id, $id)
     {
         $detail = $this->vehicleModel->getOne([
@@ -316,9 +385,18 @@ class HouseNonMotorizedVehicleService
         $item['type'] = intval($item['type'] ?? 0);
         $item['parking_num'] = (string)($item['parking_num'] ?? '');
         $item['sensor_code'] = (string)($item['sensor_code'] ?? '');
-        $item['user_name'] = (string)($item['user_name'] ?? '');
-        $item['user_phone'] = (string)($item['user_phone'] ?? '');
-        $item['room'] = (string)($item['room'] ?? '');
+        $item['person_type'] = intval($item['person_type'] ?? 1);
+        if ($item['person_type'] === 2) {
+            $item['user_name'] = (string)($item['worker_name'] ?? '');
+            $item['user_phone'] = (string)($item['worker_phone'] ?? '');
+            $item['room'] = (string)($item['group_name'] ?? '');
+            $item['group_id'] = intval($item['department_id'] ?? 0);
+            $item['group_name'] = (string)($item['group_name'] ?? '');
+        } else {
+            $item['user_name'] = (string)($item['owner_name'] ?? $item['user_name'] ?? '');
+            $item['user_phone'] = (string)($item['owner_phone'] ?? $item['user_phone'] ?? '');
+            $item['room'] = (string)($item['room'] ?? '');
+        }
         $item['createdAt'] = (string)($item['createdAt'] ?? '');
         $item['updatedAt'] = (string)($item['updatedAt'] ?? '');
         return $item;

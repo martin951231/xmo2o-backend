@@ -65,6 +65,62 @@
 			</div>
 			<div class="row">
 				<div class="am-margin-bottom">
+					<div class="widget clearfix profile-completion-widget">
+						<div class="widget-head">
+							<div class="widget-title">个人信息完成度</div>
+						</div>
+						<div class="widget-body clearfix">
+							<form class="profile-completion-filter" method="get" action="{pigcms{:U('Index/index')}">
+								<input type="hidden" name="iframe" value="{pigcms{$_GET['iframe']}" />
+								<input type="hidden" name="profile_filter_submitted" value="1" />
+								<div class="profile-completion-filter-title">统计字段</div>
+								<div class="profile-completion-fields">
+									<?php if (!empty($profile_completion['fields'])) { ?>
+										<button type="button" class="profile-completion-select-trigger">
+											<span class="profile-completion-select-text">请选择统计字段</span>
+											<span class="profile-completion-clear" title="清除已选"><i class="ace-icon fa fa-times"></i></span>
+											<i class="ace-icon fa fa-angle-down"></i>
+										</button>
+										<div class="profile-completion-select-panel">
+											<?php foreach ($profile_completion['fields'] as $field) { ?>
+												<label class="profile-completion-field">
+													<input type="checkbox" name="profile_fields[]" value="<?php echo htmlspecialchars($field['key'], ENT_QUOTES); ?>" <?php if (!empty($field['checked'])) { ?>checked="checked"<?php } ?> />
+													<span><?php echo htmlspecialchars($field['title'], ENT_QUOTES); ?></span>
+												</label>
+											<?php } ?>
+										</div>
+									<?php } else { ?>
+										<span class="profile-completion-empty">暂无可统计字段</span>
+									<?php } ?>
+								</div>
+								<button type="submit" class="btn btn-sm btn-primary profile-completion-submit">查询</button>
+								<a class="btn btn-sm btn-default" href="{pigcms{:U('Index/index',array('iframe'=>$_GET['iframe']))}">重置</a>
+							</form>
+							<div class="profile-completion-cards">
+								<?php foreach (array('all','owner','family','tenant') as $completion_type) { $completion_item = $profile_completion['stats'][$completion_type]; ?>
+									<div class="profile-completion-card">
+										<div class="profile-completion-card-title"><?php echo htmlspecialchars($completion_item['title'], ENT_QUOTES); ?></div>
+										<div class="profile-completion-card-value"><?php echo floatval($completion_item['percent']); ?>%</div>
+										<div class="profile-completion-progress">
+											<div class="profile-completion-progress-bar" style="width: <?php echo min(100, max(0, floatval($completion_item['percent']))); ?>%;"></div>
+										</div>
+										<div class="profile-completion-card-desc">
+											<?php echo intval($completion_item['numerator']); ?> / <?php echo intval($completion_item['denominator']); ?>
+										</div>
+										<div class="profile-completion-card-meta">
+											<span>总户数：<?php echo intval($completion_item['room_count']); ?></span>
+											<span>字段数量：<?php echo intval($completion_item['field_count']); ?></span>
+											<span><?php echo $completion_type == 'all' ? '业主+家属+租客数量' : htmlspecialchars($completion_item['title'], ENT_QUOTES) . '数量'; ?>：<?php echo intval($completion_item['people_count']); ?></span>
+										</div>
+									</div>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="am-margin-bottom">
 					<div class="widget clearfix">
 						<div class="widget-head">
 							<div class="widget-title">实时概况</div>
@@ -486,12 +542,279 @@
     .widget-body .sjqh-s{
         padding: 8px 0px;
     }
+    .profile-completion-widget .widget-body{
+        padding: 18px 20px;
+    }
+    .profile-completion-filter{
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 8px;
+        margin-bottom: 18px;
+        position: relative;
+    }
+    .profile-completion-filter-title{
+        color: #344054;
+        font-size: 13px;
+        line-height: 36px;
+        margin-right: 2px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .profile-completion-fields{
+        position: relative;
+        min-width: 420px;
+        flex: 1 1 auto;
+    }
+    .profile-completion-select-trigger{
+        position: relative;
+        width: 100%;
+        height: 36px;
+        padding: 0 64px 0 14px;
+        border: 1px solid #cfd8e3;
+        border-radius: 8px;
+        background: #fff;
+        color: #344054;
+        font-size: 13px;
+        line-height: 34px;
+        text-align: left;
+        outline: none;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .profile-completion-select-trigger:hover,
+    .profile-completion-fields.open .profile-completion-select-trigger{
+        border-color: #409eff;
+        box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.12);
+    }
+    .profile-completion-select-trigger .fa{
+        position: absolute;
+        top: 50%;
+        right: 14px;
+        margin-top: -7px;
+        color: #667085;
+        line-height: 14px;
+        transition: transform .15s ease;
+    }
+    .profile-completion-fields.open .profile-completion-select-trigger .fa{
+        transform: rotate(180deg);
+    }
+    .profile-completion-select-text{
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .profile-completion-clear{
+        display: none;
+        position: absolute;
+        top: 50%;
+        right: 36px;
+        width: 20px;
+        height: 20px;
+        margin-top: -10px;
+        border-radius: 50%;
+        background: #eef4ff;
+        color: #1f6fd1;
+        font-size: 12px;
+        line-height: 20px;
+        text-align: center;
+    }
+    .profile-completion-clear .fa{
+        position: static;
+        margin: 0;
+        line-height: 20px;
+        color: inherit;
+        transform: none !important;
+    }
+    .profile-completion-fields.has-checked .profile-completion-clear{
+        display: inline-block;
+    }
+    .profile-completion-clear:hover{
+        background: #dbeafe;
+    }
+    .profile-completion-select-panel{
+        display: none;
+        position: absolute;
+        top: 42px;
+        left: 0;
+        z-index: 20;
+        width: 100%;
+        max-width: 100%;
+        max-height: 260px;
+        overflow-y: auto;
+        padding: 12px;
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    }
+    .profile-completion-fields.open .profile-completion-select-panel{
+        display: block;
+    }
+    .profile-completion-field{
+        display: inline-block;
+        margin: 0 8px 8px 0;
+        padding: 7px 12px;
+        border: 1px solid #e4e7ed;
+        border-radius: 16px;
+        background: #f8fafc;
+        font-size: 13px;
+        color: #475467;
+        font-weight: normal;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all .15s ease;
+    }
+    .profile-completion-field:hover{
+        border-color: #b9d7ff;
+        background: #f0f7ff;
+        color: #1f6fd1;
+    }
+    .profile-completion-field input{
+        display: none;
+    }
+    .profile-completion-field.is-checked{
+        border-color: #409eff;
+        background: #eaf4ff;
+        color: #1f6fd1;
+        box-shadow: inset 0 0 0 1px rgba(64, 158, 255, 0.12);
+    }
+    .profile-completion-empty{
+        color: #999;
+        line-height: 30px;
+    }
+    .profile-completion-submit{
+        height: 36px;
+        min-width: 70px;
+        margin-left: 0;
+        border-radius: 8px;
+    }
+    .profile-completion-filter .btn-default{
+        height: 36px;
+        line-height: 24px;
+        border-radius: 8px;
+    }
+    .profile-completion-cards{
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -7px;
+    }
+    .profile-completion-card{
+        width: calc(25% - 14px);
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        padding: 16px;
+        border-radius: 4px;
+        min-height: 128px;
+        margin: 0 7px 14px;
+    }
+    .profile-completion-card-title{
+        color: #666;
+        font-size: 13px;
+        line-height: 20px;
+    }
+    .profile-completion-card-value{
+        color: #1f6fd1;
+        font-size: 30px;
+        line-height: 42px;
+        font-weight: 600;
+        margin: 4px 0 8px;
+    }
+    .profile-completion-progress{
+        height: 8px;
+        background: #edf1f7;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .profile-completion-progress-bar{
+        height: 8px;
+        background: #3b82f6;
+        border-radius: 4px;
+    }
+    .profile-completion-card-desc{
+        margin-top: 8px;
+        color: #999;
+        font-size: 12px;
+    }
+    .profile-completion-card-meta{
+        margin-top: 8px;
+        color: #666;
+        font-size: 12px;
+        line-height: 22px;
+    }
+    .profile-completion-card-meta span{
+        display: inline-block;
+        margin-right: 14px;
+        white-space: nowrap;
+    }
+    @media (max-width: 1200px){
+        .profile-completion-card{
+            width: calc(50% - 14px);
+        }
+    }
+    @media (max-width: 640px){
+        .profile-completion-filter{
+            flex-wrap: wrap;
+        }
+        .profile-completion-fields{
+            min-width: 100%;
+        }
+        .profile-completion-select-panel{
+            width: 100%;
+            max-width: 100%;
+        }
+        .profile-completion-card{
+            width: calc(100% - 14px);
+        }
+    }
 
 </style>
 <script src="{pigcms{$static_public}echarts/echarts.min.js"></script>
 <script src="{pigcms{$static_public}echarts/echarts-walden.js"></script>
 <script>
 	var echartsTrade = null,echartsWorksOrderStack=null;
+    function refreshProfileCompletionSelect(){
+        var $fields = $('.profile-completion-fields');
+        var $checked = $fields.find('.profile-completion-field input:checked');
+        var titles = [];
+        $fields.find('.profile-completion-field').removeClass('is-checked');
+        $fields.toggleClass('has-checked', $checked.length > 0);
+        $checked.each(function(){
+            var $field = $(this).closest('.profile-completion-field');
+            $field.addClass('is-checked');
+            titles.push($.trim($field.find('span').text()));
+        });
+        if(titles.length < 1){
+            $fields.find('.profile-completion-select-text').text('请选择统计字段');
+        }else if(titles.length <= 2){
+            $fields.find('.profile-completion-select-text').text(titles.join('、'));
+        }else{
+            $fields.find('.profile-completion-select-text').text('已选择 ' + titles.length + ' 个字段');
+        }
+    }
+    $(function(){
+        refreshProfileCompletionSelect();
+        $(document).on('click', '.profile-completion-select-trigger', function(e){
+            e.stopPropagation();
+            $(this).closest('.profile-completion-fields').toggleClass('open');
+        });
+        $(document).on('click', '.profile-completion-clear', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var $fields = $(this).closest('.profile-completion-fields');
+            $fields.find('.profile-completion-field input').prop('checked', false);
+            refreshProfileCompletionSelect();
+        });
+        $(document).on('change', '.profile-completion-field input', refreshProfileCompletionSelect);
+        $(document).on('click', '.profile-completion-select-panel', function(e){
+            e.stopPropagation();
+        });
+        $(document).on('click', function(){
+            $('.profile-completion-fields').removeClass('open');
+        });
+    });
     $('#showMerchantAppPop').hover(function(){
         console.log('showMerchantAppPop',1)
         $('#downMerchantAppPop').css({position:'fixed',top:$(this).offset().top,left:$(this).offset().left-160}).removeClass('hide');
