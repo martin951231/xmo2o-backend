@@ -183,6 +183,24 @@ class ChatSidebarController extends CommunityBaseController
      * 缴费记录
      * @return \json
      */
+    public function getUserAttachmentList()
+    {
+        $pigcms_id = $this->request->post('pigcms_id', 0, 'int');
+        $village_id = $this->adminUser['village_id'];
+        if (!$village_id) {
+            return api_output(1002, [], '请先登录到小区后台！');
+        }
+        if (!$pigcms_id) {
+            return api_output_error(1003, '缺少关键参数');
+        }
+        try {
+            $data = (new ChatSidebarService())->getUserAttachmentList($village_id, $pigcms_id);
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+        return api_output(0, $data);
+    }
+
     public function getLivingPaymentLog(){
         $village_id = $this->request->post('village_id',0);
         $uid = $this->request->post('uid',0);
@@ -581,8 +599,8 @@ class ChatSidebarController extends CommunityBaseController
         }
         try {
             validate(['imgFile' => [
-                'fileSize' => 1024 * 1024 * 10,
-                'fileExt' => 'jpg,png,jpeg',
+                'fileSize' => 1024 * 1024 * 20,
+                'fileExt' => 'jpg,png,jpeg,gif,bmp,pdf,doc,docx,xls,xlsx',
             ]])->check(['imgFile' => $file]);
 
             $imgName = $file->getOriginalName();
@@ -593,6 +611,7 @@ class ChatSidebarController extends CommunityBaseController
             $data['url'] = '/upload/'.$savename;
             $params = ['savepath' => $data['url']];
             $file_handle = new FileHandle();
+            $result = ['retval' => ''];
             if($file_handle->check_open_oss()) {
                 $result = invoke_cms_model('Image/oss_upload_image',$params);
             }

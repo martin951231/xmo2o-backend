@@ -38,6 +38,7 @@
                 }
                 .attachment-toolbar .form_tips{
                     margin-left: 10px;
+                    color: #f5222d;
                 }
                 .attachment-item{
                     border: 1px solid #e5e5e5;
@@ -64,15 +65,26 @@
                 .attachment-file-input{
                     display: inline-block;
                     height: 34px;
+                    vertical-align: middle;
+                }
+                .attachment-item .form_tips{
+                    display: inline-block;
+                    margin-left: 12px;
+                    vertical-align: middle;
+                    color: #f5222d;
                 }
                 .attachment-file-list,
                 .attachment-selected-list{
                     margin-top: 10px;
                 }
+                .attachment-file-row{
+                    display: inline-block;
+                    margin: 0 16px 10px 0;
+                }
                 .attachment-file-tag{
                     display: inline-block;
                     padding: 6px 10px;
-                    margin: 0 10px 10px 0;
+                    margin: 0 4px 0 0;
                     border: 1px solid #d5d5d5;
                     background: #ffffff;
                     border-radius: 4px;
@@ -82,7 +94,8 @@
                     color: #428bca;
                 }
                 .remove-attachment-file{
-                    margin-left: 8px;
+                    display: inline-block;
+                    margin-left: 6px;
                     color: #d15b47;
                     cursor: pointer;
                 }
@@ -744,12 +757,12 @@
                                                     <label class="col-sm-1"><label>{pigcms{$attachment.title}</label></label>
                                                     <div class="col-sm-10">
                                                         <input type="file" class="attachment-file-input js-attachment-file" name="attachment_files_{pigcms{$attachment.key}[]" accept="{pigcms{$attachment.accept}" multiple />
-                                                        <span class="form_tips">可一次选择多个文件，仅支持 {pigcms{$attachment.type_name}，可为空，支持多次保存补传，单个文件不能超过20M。</span>
+                                                        <span class="form_tips">仅支持 {pigcms{$attachment.type_name}</span>
                                                         <div class="attachment-selected-list js-selected-files"></div>
                                                         <div class="attachment-file-list">
                                                             <volist name="attachment.files" id="file">
-                                                                <div class="attachment-file-tag existing-attachment-file">
-                                                                    <a href="{pigcms{$file.file_url_full}" target="_blank">{pigcms{$file.original_name|htmlspecialchars=###}</a>
+                                                                <div class="attachment-file-row existing-attachment-file">
+                                                                    <span class="attachment-file-tag"><a href="{pigcms{$file.file_url_full}" target="_blank">{pigcms{$file.original_name|htmlspecialchars=###}</a></span>
                                                                     <span class="remove-attachment-file js-remove-existing-file">删除</span>
                                                                     <input type="hidden" name="attachment_existing_url[{pigcms{$attachment.key}][]" value="{pigcms{$file.file_url|htmlspecialchars=###}" />
                                                                     <input type="hidden" name="attachment_existing_name[{pigcms{$attachment.key}][]" value="{pigcms{$file.original_name|htmlspecialchars=###}" />

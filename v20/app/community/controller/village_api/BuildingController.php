@@ -16,6 +16,7 @@
 	use app\community\controller\CommunityBaseController;
     use app\community\model\db\HouseVillageThirdConfig;
     use app\community\model\service\AreaService;
+    use app\community\model\service\ChatSidebarService;
     use app\community\model\service\HardwareBrandService;
     use app\community\model\service\HouseNewCashierService;
     use app\community\model\service\HouseNewChargeService;
@@ -1831,6 +1832,43 @@
          * @date : 2022/12/9
          * @return \json
          */
+        public function getRoomAttachmentList()
+        {
+            $vacancy_id = $this->request->param('vacancy_id', 0, 'int');
+            $village_id = $this->adminUser['village_id'];
+            if (!$village_id) {
+                return api_output(1002, [], '请先登录到小区后台！');
+            }
+            if (!$vacancy_id) {
+                return api_output(1001, [], '缺少必要参数');
+            }
+            try {
+                $list = (new ChatSidebarService())->getRoomAttachmentList($village_id, $vacancy_id);
+            } catch (\Exception $e) {
+                return api_output_error(-1, $e->getMessage());
+            }
+            return api_output(0, $list);
+        }
+
+        public function saveRoomAttachmentList()
+        {
+            $vacancy_id = $this->request->param('vacancy_id', 0, 'int');
+            $files = $this->request->param('files', []);
+            $village_id = $this->adminUser['village_id'];
+            if (!$village_id) {
+                return api_output(1002, [], '请先登录到小区后台！');
+            }
+            if (!$vacancy_id) {
+                return api_output(1001, [], '缺少必要参数');
+            }
+            try {
+                $list = (new ChatSidebarService())->saveRoomAttachmentList($village_id, $vacancy_id, $files);
+            } catch (\Exception $e) {
+                return api_output_error(-1, $e->getMessage());
+            }
+            return api_output(0, $list);
+        }
+
         public function subRoomAttribute(){
             //房间属性参数
             $vacancy_id = $this->request->param('vacancy_id',0,'int');

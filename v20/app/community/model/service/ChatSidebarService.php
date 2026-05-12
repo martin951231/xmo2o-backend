@@ -67,6 +67,18 @@ class ChatSidebarService
         'image/png', 'image/x-png', 'image/jpg', 'image/jpeg',
         'image/pjpeg', 'image/gif', 'image/x-icon'
     );
+    public $attachment_type_config = [
+        5 => [
+            'name' => '图片',
+            'accept' => '.jpg,.jpeg,.png,.gif,.bmp',
+            'allow_exts' => ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
+        ],
+        6 => [
+            'name' => 'PDF',
+            'accept' => '.pdf',
+            'allow_exts' => ['pdf'],
+        ],
+    ];
     public $express_goods_type = array('0'=>'文件','1'=>'数码产品','2'=>'生活用品','3'=>'服饰','4'=>'食品','5'=>'其他');
     public $express_status = array('0'=>'未送','1'=>'业主确认取件','2'=>'物业确认取件');
     // 工作人员工单状态对应中文
@@ -939,6 +951,252 @@ class ChatSidebarService
         $data['total_limit'] = $page_size;
         $data['list'] = $list;
         return $data;
+    }
+
+    public function getUserAttachmentList($village_id, $pigcms_id)
+    {
+        $user = (new HouseVillageUserBind())->getOne([
+            ['village_id', '=', $village_id],
+            ['pigcms_id', '=', $pigcms_id],
+        ], 'pigcms_id,authentication_field');
+        if (!$user || $user->isEmpty()) {
+            throw new \think\Exception('用户不存在');
+        }
+        $config_list = $this->getAttachmentConfigListByVillage($village_id);
+        $authentication_field = $this->parseAuthenticationField(isset($user['authentication_field']) ? $user['authentication_field'] : '');
+        return [
+            'bind_id' => intval($user['pigcms_id']),
+            'list' => $this->formatAttachmentFieldList($config_list, $authentication_field),
+        ];
+    }
+
+    public function getRoomAttachmentList($village_id, $vacancy_id)
+    {
+        $user = $this->getRoomOwnerBind($village_id, $vacancy_id);
+        $config_list = $this->getAttachmentConfigListByVillage($village_id);
+        $authentication_field = $user ? $this->parseAuthenticationField(isset($user['authentication_field']) ? $user['authentication_field'] : '') : [];
+        return [
+            'bind_id' => $user ? intval($user['pigcms_id']) : 0,
+            'list' => $this->formatAttachmentFieldList($config_list, $authentication_field),
+        ];
+    }
+
+    public function saveRoomAttachmentList($village_id, $vacancy_id, $files)
+    {
+        $user = $this->getRoomOwnerBind($village_id, $vacancy_id);
+        if (!$user) {
+            throw new \think\Exception('room owner not found');
+        }
+        $groups = $files;
+        if (is_string($groups)) {
+            $groups = json_decode($groups, true);
+        }
+        if (!is_array($groups)) {
+            $groups = [];
+        }
+        $group_map = [];
+        foreach ($groups as $group) {
+            if (!is_array($group) || empty($group['key'])) {
+                continue;
+            }
+            $group_map[trim($group['key'])] = isset($group['files']) && is_array($group['files']) ? $group['files'] : [];
+        }
+        $config_list = $this->getAttachmentConfigListByVillage($village_id);
+        $authentication_field = $this->parseAuthenticationField(isset($user['authentication_field']) ? $user['authentication_field'] : '');
+        foreach ($config_list as $field) {
+            $field_key = isset($field['key']) ? trim($field['key']) : '';
+            if (!$field_key || !array_key_exists($field_key, $group_map)) {
+                continue;
+            }
+            $save_files = $this->formatAttachmentFiles($group_map[$field_key]);
+            $allow_exts = isset($this->attachment_type_config[intval($field['type'])]['allow_exts']) ? $this->attachment_type_config[intval($field['type'])]['allow_exts'] : [];
+            if ($allow_exts && $save_files) {
+                foreach ($save_files as $save_file) {
+                    if (!in_array(strtolower($save_file['suffix']), $allow_exts)) {
+                        throw new \think\Exception('attachment type error');
+                    }
+                }
+            }
+            if (!$save_files) {
+                unset($authentication_field[$field_key]);
+                continue;
+            }
+            $file_name_list = [];
+            foreach ($save_files as $file_item) {
+                $file_name_list[] = $file_item['original_name'];
+            }
+            $authentication_field[$field_key] = [
+                'type' => isset($field['type']) ? intval($field['type']) : 0,
+                'is_must' => isset($field['is_must']) ? intval($field['is_must']) : 0,
+                'key' => $field_key,
+                'title' => isset($field['title']) ? $field['title'] : '',
+                'value' => implode(', ', $file_name_list),
+                'file_list' => $save_files,
+            ];
+        }
+        (new HouseVillageUserBind())->saveOne(['pigcms_id' => $user['pigcms_id'], 'village_id' => $village_id], [
+            'authentication_field' => serialize($authentication_field),
+        ]);
+        return [
+            'bind_id' => intval($user['pigcms_id']),
+            'list' => $this->formatAttachmentFieldList($config_list, $authentication_field),
+        ];
+    }
+
+    private function getRoomOwnerBind($village_id, $vacancy_id)
+    {
+        $room = (new HouseVillageUserVacancy())->getOne([
+            ['village_id', '=', $village_id],
+            ['pigcms_id', '=', $vacancy_id],
+            ['is_del', '=', 0],
+        ], 'pigcms_id');
+        if (!$room || $room->isEmpty()) {
+            throw new \think\Exception('room not found');
+        }
+        $user = (new HouseVillageUserBind())->getOne([
+            ['village_id', '=', $village_id],
+            ['vacancy_id', '=', $vacancy_id],
+            ['type', 'in', [0, 3]],
+            ['status', '<>', 4],
+        ], 'pigcms_id,authentication_field', 'pigcms_id desc');
+        if (!$user || $user->isEmpty()) {
+            return [];
+        }
+        return $user->toArray();
+    }
+
+    private function getAttachmentConfigListByVillage($village_id)
+    {
+        $village = (new HouseVillageService())->getHouseVillageInfo([
+            ['village_id', '=', $village_id],
+        ], 'property_id');
+        $property_id = isset($village['property_id']) ? intval($village['property_id']) : 0;
+        if ($property_id <= 0) {
+            return [];
+        }
+        $config_list = (new HouseVillageDataConfig())->getList([
+            ['village_id', '=', 0],
+            ['property_id', '=', $property_id],
+            ['is_close', '=', 0],
+            ['type', 'in', array_keys($this->attachment_type_config)],
+        ], true, 'sort desc');
+        return ($config_list && !$config_list->isEmpty()) ? $config_list->toArray() : [];
+    }
+
+    private function parseAuthenticationField($authentication_field)
+    {
+        if (!$authentication_field) {
+            return [];
+        }
+        if (is_array($authentication_field)) {
+            return $authentication_field;
+        }
+        return @unserialize($authentication_field) ? unserialize($authentication_field) : [];
+    }
+
+    private function formatAttachmentFieldList($config_list, $authentication_field = [])
+    {
+        $list = [];
+        if (!is_array($config_list)) {
+            return $list;
+        }
+        if (!is_array($authentication_field)) {
+            $authentication_field = [];
+        }
+        foreach ($config_list as $field) {
+            $key = isset($field['key']) ? trim($field['key']) : '';
+            $type = isset($field['type']) ? intval($field['type']) : 0;
+            if (!$key || empty($this->attachment_type_config[$type])) {
+                continue;
+            }
+            $field_value = isset($authentication_field[$key]) && is_array($authentication_field[$key]) ? $authentication_field[$key] : [];
+            $file_list = [];
+            if (!empty($field_value['file_list']) && is_array($field_value['file_list'])) {
+                $file_list = $field_value['file_list'];
+            } elseif (!empty($field_value['files']) && is_array($field_value['files'])) {
+                $file_list = $field_value['files'];
+            }
+            $list[] = [
+                'key' => $key,
+                'title' => isset($field['title']) ? $field['title'] : '',
+                'type' => $type,
+                'type_name' => $this->attachment_type_config[$type]['name'],
+                'accept' => isset($this->attachment_type_config[$type]['accept']) ? $this->attachment_type_config[$type]['accept'] : '',
+                'allow_exts' => $this->attachment_type_config[$type]['allow_exts'],
+                'allow_exts_text' => implode(',', $this->attachment_type_config[$type]['allow_exts']),
+                'files' => $this->formatAttachmentFiles($file_list),
+            ];
+        }
+        return $list;
+    }
+
+    public function formatRoomAttachmentFiles($room_imgs)
+    {
+        if (!$room_imgs) {
+            return [];
+        }
+        $files = is_array($room_imgs) ? $room_imgs : json_decode($room_imgs, true);
+        if (!is_array($files)) {
+            return [];
+        }
+        $file_list = [];
+        foreach ($files as $file) {
+            if (is_string($file)) {
+                $file_list[] = ['file_url' => $file];
+            } elseif (is_array($file)) {
+                $file_list[] = $file;
+            }
+        }
+        return $this->formatAttachmentFiles($file_list);
+    }
+
+    public function formatAttachmentFiles($file_list)
+    {
+        $format_files = [];
+        if (!is_array($file_list)) {
+            return $format_files;
+        }
+        foreach ($file_list as $file_item) {
+            if (!is_array($file_item)) {
+                continue;
+            }
+            $file_url = isset($file_item['file_url']) ? trim($file_item['file_url']) : (isset($file_item['url']) ? trim($file_item['url']) : '');
+            if (!$file_url) {
+                continue;
+            }
+            $file_url = $this->normalizeAttachmentPath($file_url);
+            $original_name = isset($file_item['original_name']) && $file_item['original_name'] ? $file_item['original_name'] : (isset($file_item['name']) && $file_item['name'] ? $file_item['name'] : basename($file_url));
+            $suffix = isset($file_item['suffix']) && $file_item['suffix'] ? strtolower($file_item['suffix']) : strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+            $format_files[] = [
+                'uid' => md5($file_url),
+                'file_url' => $file_url,
+                'file_url_full' => replace_file_domain($file_url),
+                'url' => replace_file_domain($file_url),
+                'original_name' => $original_name,
+                'name' => $original_name,
+                'file_name' => isset($file_item['file_name']) && $file_item['file_name'] ? $file_item['file_name'] : basename($file_url),
+                'size' => isset($file_item['size']) ? intval($file_item['size']) : 0,
+                'suffix' => $suffix,
+                'is_image' => in_array($suffix, ['jpg', 'jpeg', 'png', 'gif', 'bmp']),
+                'add_time' => isset($file_item['add_time']) ? intval($file_item['add_time']) : 0,
+                'status' => 'done',
+            ];
+        }
+        return $format_files;
+    }
+
+    private function normalizeAttachmentPath($file_url)
+    {
+        $file_url = trim($file_url);
+        $site_url = rtrim(cfg('site_url'), '/');
+        if ($site_url && strpos($file_url, $site_url) === 0) {
+            $file_url = substr($file_url, strlen($site_url));
+        }
+        $upload_pos = strpos($file_url, '/upload/');
+        if ($upload_pos !== false) {
+            $file_url = substr($file_url, $upload_pos);
+        }
+        return $file_url;
     }
 
     /**
