@@ -103,7 +103,7 @@ class ApiAction extends BaseAction
         $where_vote = array(
             'vote_id' => $vote_id
         );
-        $vote_info = $d_plugin_vote->where($where_vote)->field('from, from_id, limit_type,limit_num')->find();
+        $vote_info = $d_plugin_vote->where($where_vote)->find();
         if (empty($vote_info)) {
             returnCode(31, [], '获取对象不存在！');
         }
@@ -172,7 +172,7 @@ class ApiAction extends BaseAction
         $where_vote = array(
             'vote_id' => $vote_id
         );
-        $vote_info = $d_plugin_vote->where($where_vote)->field('from, from_id, limit_type')->find();
+        $vote_info = $d_plugin_vote->where($where_vote)->find();
         if (empty($vote_info)) {
             returnCode(61, [], '获取对象不存在！');
         }
@@ -229,6 +229,32 @@ class ApiAction extends BaseAction
         $join_data['join_ip'] = get_client_ip();
 
         $d_plugin_vote_join = M('Plugin_vote_join');
+
+        if (isset($vote_info['house_limit_once']) && intval($vote_info['house_limit_once']) == 1 && $this->from == 'house') {
+            $vacancy_id = isset($this->village_bind['vacancy_id']) ? intval($this->village_bind['vacancy_id']) : 0;
+            $village_id = $this->from_id ? intval($this->from_id) : (isset($this->village_bind['village_id']) ? intval($this->village_bind['village_id']) : 0);
+            if (!$vacancy_id || !$village_id) {
+                returnCode(65, [], '当前房间信息不存在，无法提交投票');
+            }
+            $room_bind_ids = M('House_village_user_bind')->where(array(
+                'village_id' => $village_id,
+                'vacancy_id' => $vacancy_id,
+                'status' => 1,
+            ))->getField('pigcms_id', true);
+            if (empty($room_bind_ids)) {
+                $room_bind_ids = array($this->village_bind['pigcms_id']);
+            }
+            $house_join_where = array(
+                'vote_id' => $vote_id,
+                'from' => 'house',
+                'from_id' => $village_id,
+                'bind_id' => array('in', $room_bind_ids),
+            );
+            $house_join_msg = $d_plugin_vote_join->where($house_join_where)->find();
+            if ($house_join_msg) {
+                returnCode(65, [], '当前房间已提交过该投票，每户只允许提交一次');
+            }
+        }
 
         if ($vote_info['limit_num']>1) {
             $join_vote_msg = [];

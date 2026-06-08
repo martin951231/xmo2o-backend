@@ -393,7 +393,7 @@ class VisualizeAction extends BaseAction{
                 } else {
                     exit('<html><head><script>window.top.msg(0,"添加失败，请重试！",true,2);window.parent.closeiframe();</script></head></html>');
                 }
-         
+
         } else {
             //小程序列表
             $wxapp_list = M('Wxapp_other')->field(true)->select();
@@ -605,4 +605,31 @@ class VisualizeAction extends BaseAction{
         return $village_arr;
     }
 
+    /**
+     * 社群活动展示开关
+     */
+    public function change_social_events_slot_show(){
+        D('Config')->remove_cache();
+        if (isset($this->config['social_events_slot_show'])) {
+            if (D('Config')->where(array('name' => 'social_events_slot_show'))->save(array('value' => $_POST['value']))) {
+
+                //删除缓存
+                D('Config')->clearDataCacheDir('system_config');
+
+                $this->success('切换成功');
+            } else {
+                $this->error('切换失败');
+            }
+        } else {
+            if (D('Config')->add(array('name' => 'social_events_slot_show', 'value' => $_POST['value'], 'info' => '可以设置社群活动位是否展示', 'gid' => 0, 'status' => 1))) {
+
+                //删除缓存
+                D('Config')->clearDataCacheDir('system_config');
+
+                $this->success('切换成功');
+            } else {
+                $this->error('切换失败');
+            }
+        }
+    }
 }

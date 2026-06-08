@@ -535,8 +535,35 @@ class HouseNewPayOrderService
     public function getOrderLog($where = [], $field = true, $order = 'id DESC')
     {
         $db_house_new_order_log = new HouseNewOrderLog();
-        $data = $db_house_new_order_log->getOne($where, $field, $order);
-        return $data;
+        $log_list = $db_house_new_order_log->getList($where, true, 0, 20, $order);
+        if (empty($log_list) || $log_list->isEmpty()) {
+            return [];
+        }
+        $db_house_new_pay_order = new HouseNewPayOrder();
+        foreach ($log_list as $log) {
+            if ($log && !is_array($log)) {
+                $log = $log->toArray();
+            }
+            if (empty($log['id']) || empty($log['order_id'])) {
+                continue;
+            }
+            $order_where = [
+                ['order_id', '=', $log['order_id']],
+                ['is_discard', '=', 1],
+            ];
+            $order_where['string'] = $this->activePayOrderRaw();
+            $order_info = $db_house_new_pay_order->get_one($order_where, 'order_id');
+            if (!empty($order_info) && !$order_info->isEmpty()) {
+                return $db_house_new_order_log->getOne(['id' => $log['id']], $field, $order);
+            }
+        }
+        return [];
+    }
+
+    private function activePayOrderRaw($alias = 'o')
+    {
+        $prefix = $alias ? '`' . $alias . '`.' : '';
+        return '(' . $prefix . '`is_paid`=2 OR ' . $prefix . '`is_refund`=1 OR ' . $prefix . '`refund_money`<' . $prefix . '`pay_money`)';
     }
 
     /**

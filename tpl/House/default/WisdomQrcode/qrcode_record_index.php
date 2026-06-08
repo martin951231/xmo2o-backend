@@ -53,7 +53,12 @@
                     </if>
 					<a onclick="location.href='{pigcms{:U('WisdomQrcode/qrcode_record_index')}'" class="btn btn-success">重置</a>
 <!--					<button class="btn btn-success fr" style="margin-top: -35px;" onclick="download()">导出二维码记录</button>-->
-					<a onclick="location.href='{pigcms{:U('download_record_list')}&begin_time={pigcms{$_GET['begin_time']}&end_time={pigcms{$_GET['end_time']}&find_type={pigcms{$_GET['find_type']}&find_value=<?php echo urlencode($_GET['find_value']); ?>'" class="btn btn-success">导出二维码记录</a>
+					<a href="javascript:;" data-url="{pigcms{:U('download_record_list')}&begin_time={pigcms{$_GET['begin_time']}&end_time={pigcms{$_GET['end_time']}&find_type={pigcms{$_GET['find_type']}&find_value=<?php echo urlencode($_GET['find_value']); ?>" class="btn btn-success qrcodeRecordListExport" style="margin-left: 10px;">导出二维码记录</a>
+                    <div id="qrcodeRecordExportProgress" style="display:none;width:260px;margin-left:10px;vertical-align:middle;">
+                        <div style="height:18px;border:1px solid #5cb85c;border-radius:3px;overflow:hidden;background:#f5f5f5;">
+                            <div class="progress-bar-inner" style="width:0%;height:100%;line-height:18px;text-align:center;color:#fff;background:#5cb85c;font-size:12px;">0%</div>
+                        </div>
+                    </div>
                     <if condition="$qrcodeRecordExportDetails">
                         <a  class="qrcodeRecordExport btn btn-success" href="javascript:;" style="margin-left: 15px;">导出巡检明细表</a>
                     </if>
@@ -195,6 +200,102 @@
         layer.closeAll();
         window.location.reload()
     }
+    var qrcodeRecordListExporting = false;
+    var qrcodeRecordListProgressTimer = null;
+
+    function setQrcodeRecordListProgress(percent) {
+        percent = Math.max(0, Math.min(100, parseInt(percent, 10) || 0));
+        $('#qrcodeRecordExportProgress').css('display', 'inline-block');
+        $('#qrcodeRecordExportProgress .progress-bar-inner').css('width', percent + '%').html(percent + '%');
+    }
+
+    function resetQrcodeRecordListExport($btn) {
+        qrcodeRecordListExporting = false;
+        clearInterval(qrcodeRecordListProgressTimer);
+        qrcodeRecordListProgressTimer = null;
+        $btn.html('导出二维码记录').addClass('btn-success').removeAttr('disabled');
+        setTimeout(function () {
+            $('#qrcodeRecordExportProgress').hide();
+            $('#qrcodeRecordExportProgress .progress-bar-inner').css('width', '0%').html('0%');
+        }, 800);
+    }
+
+    function getQrcodeRecordExportFileName() {
+        var now = new Date();
+        var pad = function (num) {
+            return String(num).replace(/^(\d)$/, '0$1');
+        };
+        return 'qrcode_record_' +
+            now.getFullYear() +
+            pad(now.getMonth() + 1) +
+            pad(now.getDate()) + '_' +
+            pad(now.getHours()) +
+            pad(now.getMinutes()) +
+            pad(now.getSeconds()) +
+            '.xls';
+    }
+
+    $('.qrcodeRecordListExport').click(function () {
+        if (qrcodeRecordListExporting) {
+            layer.msg('当前导出中，请稍后再试!', {icon: 0, time: 1500});
+            return false;
+        }
+
+        var $btn = $(this);
+        var url = $btn.data('url');
+        var xhr = new XMLHttpRequest();
+        var fakeProgress = 0;
+
+        qrcodeRecordListExporting = true;
+        $btn.html('数据导出中...').removeClass('btn-success').attr('disabled', 'disabled');
+        setQrcodeRecordListProgress(0);
+        layer.msg('正在为您导出数据，如果数据多时间会较长，请耐心等待!', {icon: 0, time: 2000});
+
+        qrcodeRecordListProgressTimer = setInterval(function () {
+            if (fakeProgress < 90) {
+                fakeProgress += fakeProgress < 60 ? 5 : 2;
+                setQrcodeRecordListProgress(fakeProgress);
+            }
+        }, 500);
+
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+        xhr.onprogress = function (event) {
+            if (event.lengthComputable) {
+                fakeProgress = Math.floor(event.loaded / event.total * 100);
+                setQrcodeRecordListProgress(fakeProgress);
+            }
+        };
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var blob = xhr.response;
+                var fileName = getQrcodeRecordExportFileName();
+
+                if (navigator.msSaveBlob == null) {
+                    var a = document.createElement('a');
+                    a.download = fileName;
+                    a.href = URL.createObjectURL(blob);
+                    $('body').append(a);
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                    $(a).remove();
+                } else {
+                    navigator.msSaveBlob(blob, fileName);
+                }
+                setQrcodeRecordListProgress(100);
+            } else {
+                layer.msg('导出失败，请稍后重试!', {icon: 2, time: 2000});
+            }
+            resetQrcodeRecordListExport($btn);
+        };
+        xhr.onerror = function () {
+            layer.msg('导出失败，请检查网络后重试!', {icon: 2, time: 2000});
+            resetQrcodeRecordListExport($btn);
+        };
+        xhr.send();
+        return false;
+    });
+
     var loadExport = false;
    $('.qrcodeRecordExport').click(function () {
         if (loadExport) {

@@ -38,6 +38,11 @@
 
             <if condition="1||in_array(459,$house_session['menus'])">
 			    <button class="btn btn-success" onclick="add_bill()">添加收支记录</button>&nbsp;
+                <button class="btn btn-success" onclick="import_bill()">导入收支记录</button>&nbsp;
+                <a class="btn btn-success" href="{pigcms{:U('BillVillage/bill_import_template')}">导出模板</a>&nbsp;
+                <form id="bill_import_form" method="post" enctype="multipart/form-data" action="{pigcms{:U('BillVillage/bill_import')}" style="display:none;">
+                    <input type="file" name="import_file" id="bill_import_file" accept=".xls,.xlsx"/>
+                </form>
             </if>
 
 
@@ -192,6 +197,23 @@ function add_bill(){
     });
 
 }
+
+function import_bill(){
+    $('#bill_import_file').click();
+}
+
+$('#bill_import_file').change(function(){
+    var filePath = $(this).val();
+    if (!filePath) {
+        return false;
+    }
+    if (!/\.(xls|xlsx)$/i.test(filePath)) {
+        alert('请选择xls或xlsx格式文件');
+        $(this).val('');
+        return false;
+    }
+    $('#bill_import_form').submit();
+});
 
 function edit_bill(id){
 

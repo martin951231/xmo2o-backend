@@ -102,6 +102,336 @@ class HouseNewCashierService
         'jpg', 'jpeg', 'png', 'gif','ico',
         'xls', 'xlsx', 'txt', 'jnt', 'doc', 'docx', 'rtf', 'pdf'
     );
+
+    private function buildOrderPayDetailList($summary_info = array(), $pay_type_name = '')
+    {
+        if (empty($summary_info)) {
+            return array();
+        }
+        if (!is_array($summary_info) && method_exists($summary_info, 'toArray')) {
+            $summary_info = $summary_info->toArray();
+        }
+        $detail = array();
+        if (!empty($summary_info['pay_detail'])) {
+            $payDetail = json_decode($summary_info['pay_detail'], true);
+            if (!empty($payDetail['list']) && is_array($payDetail['list'])) {
+                foreach ($payDetail['list'] as $item) {
+                    $money = isset($item['paymoney']) ? round(floatval($item['paymoney']), 2) : 0;
+                    if ($money <= 0) {
+                        continue;
+                    }
+                    $name = isset($item['offlinepay_name']) && $item['offlinepay_name'] !== '' ? $item['offlinepay_name'] : '未知支付方式';
+                    $detail[] = array(
+                        'title' => $name,
+                        'val' => sprintf('%.2f', $money),
+                        'money_type' => isset($item['money_type']) ? intval($item['money_type']) : 1,
+                    );
+                }
+            }
+        }
+        if (!empty($detail)) {
+            return $detail;
+        }
+
+        $money = isset($summary_info['pay_money']) ? round(floatval($summary_info['pay_money']), 2) : 0;
+        if ($money <= 0) {
+            return array();
+        }
+        return array(array(
+            'title' => $pay_type_name ?: '支付金额',
+            'val' => sprintf('%.2f', $money),
+            'money_type' => 1,
+        ));
+    }
+
+    private function buildPayMethodTitle($order_info = array(), $summary_info = array(), $pay_type_name = '')
+    {
+        $payType = 0;
+        if (isset($summary_info['pay_type']) && intval($summary_info['pay_type']) > 0) {
+            $payType = intval($summary_info['pay_type']);
+        } elseif (isset($order_info['pay_type']) && intval($order_info['pay_type']) > 0) {
+            $payType = intval($order_info['pay_type']);
+        }
+
+        $payTypeTitle = array(
+            1 => '扫码支付',
+            2 => '线下支付',
+            3 => '收款码支付',
+            4 => '线上支付',
+            9 => '混合支付',
+            22 => '线下支付(组合支付)',
+        );
+        if ($payType > 0 && isset($payTypeTitle[$payType])) {
+            return $payTypeTitle[$payType];
+        }
+
+        return $pay_type_name ?: '支付金额';
+    }
+
+    private function buildSubOrderPayDetailList($order_info = array(), $summary_info = array(), $pay_type_name = '')
+    {
+        if (!is_array($order_info) && method_exists($order_info, 'toArray')) {
+            $order_info = $order_info->toArray();
+        }
+        if (!is_array($summary_info) && method_exists($summary_info, 'toArray')) {
+            $summary_info = $summary_info->toArray();
+        }
+        if (empty($summary_info['pay_detail']) && !empty($order_info['extra_data'])) {
+            $legacyPayDetail = $this->buildOfflineMixPayDetailFromExtraData($order_info['extra_data']);
+            if (!empty($legacyPayDetail['list'])) {
+                $summary_info['pay_detail'] = json_encode($legacyPayDetail, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
+        if (empty($order_info['discount_detail']) && !empty($summary_info['pay_detail'])) {
+            $order_info = $this->fillOldMixPayOrderDetail($order_info, $summary_info);
+        }
+
+        $detail = array();
+        $orderId = isset($order_info['order_id']) ? intval($order_info['order_id']) : 0;
+        $hasMixDetail = !empty($summary_info['pay_detail']) || !empty($order_info['discount_detail']);
+        $cashTitle = $pay_type_name ?: '支付金额';
+        $cashPayId = 0;
+        if (!empty($summary_info['pay_detail'])) {
+            $summaryPayDetail = json_decode($summary_info['pay_detail'], true);
+            if (!empty($summaryPayDetail['list']) && is_array($summaryPayDetail['list'])) {
+                foreach ($summaryPayDetail['list'] as $item) {
+                    $moneyType = isset($item['money_type']) ? intval($item['money_type']) : 1;
+                    if ($moneyType == 1 && !empty($item['offlinepay_name'])) {
+                        $cashTitle = $item['offlinepay_name'];
+                        $cashPayId = isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : 0;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $cashMoney = isset($order_info['pay_money']) ? round(floatval($order_info['pay_money']), 2) : 0;
+        if ($hasMixDetail && $cashMoney > 0) {
+            $detail[] = array(
+                'order_id' => $orderId,
+                'offlinepay_id' => $cashPayId,
+                'title' => $cashTitle,
+                'val' => sprintf('%.2f', $cashMoney),
+                'money_type' => 1,
+            );
+        }
+
+        if (!empty($order_info['discount_detail'])) {
+            $discountDetail = json_decode($order_info['discount_detail'], true);
+            if (!empty($discountDetail) && is_array($discountDetail)) {
+                foreach ($discountDetail as $item) {
+                    $money = isset($item['paymoney']) ? round(floatval($item['paymoney']), 2) : 0;
+                    if ($money <= 0) {
+                        continue;
+                    }
+                    $detail[] = array(
+                        'order_id' => $orderId,
+                        'offlinepay_id' => isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : 0,
+                        'title' => isset($item['offlinepay_name']) && $item['offlinepay_name'] !== '' ? $item['offlinepay_name'] : '非现金抵扣',
+                        'val' => sprintf('%.2f', $money),
+                        'money_type' => 2,
+                    );
+                }
+            }
+        }
+
+        $onlineMoney = isset($order_info['pay_amount_points']) ? round(floatval($order_info['pay_amount_points']) / 100, 2) : 0;
+        if ($onlineMoney > 0) {
+            $detail[] = array('order_id' => $orderId, 'offlinepay_id' => 0, 'title' => '线上支付', 'val' => sprintf('%.2f', $onlineMoney), 'money_type' => 1);
+        }
+        $systemBalance = isset($order_info['system_balance']) ? round(floatval($order_info['system_balance']), 2) : 0;
+        if ($systemBalance > 0) {
+            $detail[] = array('order_id' => $orderId, 'offlinepay_id' => 0, 'title' => '余额支付', 'val' => sprintf('%.2f', $systemBalance), 'money_type' => 1);
+        }
+        $villageBalance = isset($order_info['village_balance']) ? round(floatval($order_info['village_balance']), 2) : 0;
+        if ($villageBalance > 0) {
+            $detail[] = array('order_id' => $orderId, 'offlinepay_id' => 0, 'title' => ((new HouseVillageService())->getHouseAlias('house_name')?:'小区') . '余额支付', 'val' => sprintf('%.2f', $villageBalance), 'money_type' => 1);
+        }
+        $scoreDeducte = isset($order_info['score_deducte']) ? round(floatval($order_info['score_deducte']), 2) : 0;
+        if ($scoreDeducte > 0) {
+            $detail[] = array('order_id' => $orderId, 'offlinepay_id' => 0, 'title' => '积分抵扣', 'val' => sprintf('%.2f', $scoreDeducte), 'money_type' => 2);
+        }
+
+        if (!empty($detail)) {
+            return $detail;
+        }
+        $payMethodTitle = $this->buildPayMethodTitle($order_info, $summary_info, $pay_type_name);
+        $orderMoney = isset($order_info['pay_money']) ? round(floatval($order_info['pay_money']), 2) : 0;
+        if ($orderMoney <= 0 && isset($order_info['modify_money'])) {
+            $orderMoney = round(floatval($order_info['modify_money']) + floatval($order_info['late_payment_money'] ?? 0), 2);
+        }
+        return array(array(
+            'order_id' => $orderId,
+            'offlinepay_id' => 0,
+            'title' => $payMethodTitle ?: '支付金额',
+            'val' => sprintf('%.2f', $orderMoney),
+            'money_type' => 1,
+        ));
+    }
+
+    private function buildOfflineMixPayDetailFromExtraData($extraData = '')
+    {
+        $extraData = is_array($extraData) ? $extraData : json_decode($extraData, true);
+        if (empty($extraData['offline_pay_type_mix']) || !is_array($extraData['offline_pay_type_mix'])) {
+            return array('list' => array(), 'cash_money' => 0, 'discount_money' => 0, 'total_money' => 0);
+        }
+
+        $ids = array();
+        foreach ($extraData['offline_pay_type_mix'] as $item) {
+            $id = isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : (isset($item['id']) ? intval($item['id']) : 0);
+            if ($id > 0) {
+                $ids[] = $id;
+            }
+        }
+        $ids = array_unique($ids);
+        $payConfig = array();
+        if (!empty($ids)) {
+            $payList = (new HouseNewOfflinePay())->getList(array(array('id', 'in', $ids)), 'id,name,money_type');
+            if ($payList && !$payList->isEmpty()) {
+                foreach ($payList->toArray() as $pay) {
+                    $payConfig[$pay['id']] = $pay;
+                }
+            }
+        }
+
+        $list = array();
+        $cashMoney = 0;
+        $discountMoney = 0;
+        $totalMoney = 0;
+        foreach ($extraData['offline_pay_type_mix'] as $item) {
+            $id = isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : (isset($item['id']) ? intval($item['id']) : 0);
+            $money = isset($item['paymoney']) ? round(floatval($item['paymoney']), 2) : 0;
+            if ($money <= 0) {
+                continue;
+            }
+            $name = isset($item['offlinepay_name']) ? trim($item['offlinepay_name']) : '';
+            if ($name === '' && isset($payConfig[$id]['name'])) {
+                $name = $payConfig[$id]['name'];
+            }
+            if (isset($payConfig[$id]['money_type'])) {
+                $moneyType = intval($payConfig[$id]['money_type']);
+            } elseif (isset($item['money_type'])) {
+                $moneyType = intval($item['money_type']);
+            } else {
+                $moneyType = (strpos($name, "\xE7\x8E\xB0\xE9\x87\x91") !== false || stripos($name, 'cash') !== false) ? 1 : 2;
+            }
+            $moneyType = $moneyType == 2 ? 2 : 1;
+            $list[] = array(
+                'offlinepay_id' => $id,
+                'offlinepay_name' => $name,
+                'paymoney' => sprintf('%.2f', $money),
+                'money_type' => $moneyType,
+            );
+            $totalMoney = round($totalMoney + $money, 2);
+            if ($moneyType == 2) {
+                $discountMoney = round($discountMoney + $money, 2);
+            } else {
+                $cashMoney = round($cashMoney + $money, 2);
+            }
+        }
+
+        return array(
+            'list' => $list,
+            'cash_money' => $cashMoney,
+            'discount_money' => $discountMoney,
+            'total_money' => $totalMoney,
+        );
+    }
+
+    private function fillOldMixPayOrderDetail($order_info = array(), $summary_info = array())
+    {
+        $summaryId = isset($order_info['summary_id']) ? intval($order_info['summary_id']) : 0;
+        $orderId = isset($order_info['order_id']) ? intval($order_info['order_id']) : 0;
+        if ($summaryId < 1 || $orderId < 1 || empty($summary_info['pay_detail'])) {
+            return $order_info;
+        }
+        $payDetail = json_decode($summary_info['pay_detail'], true);
+        if (empty($payDetail['list']) || !is_array($payDetail['list'])) {
+            return $order_info;
+        }
+
+        $discountItems = array();
+        foreach ($payDetail['list'] as $item) {
+            $moneyType = isset($item['money_type']) ? intval($item['money_type']) : 1;
+            $money = isset($item['paymoney']) ? round(floatval($item['paymoney']), 2) : 0;
+            if ($moneyType == 2 && $money > 0) {
+                $discountItems[] = array(
+                    'offlinepay_id' => isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : 0,
+                    'offlinepay_name' => isset($item['offlinepay_name']) ? $item['offlinepay_name'] : '',
+                    'paymoney' => $money,
+                    'money_type' => 2,
+                );
+            }
+        }
+        if (empty($discountItems)) {
+            return $order_info;
+        }
+
+        $dbHouseNewPayOrder = new HouseNewPayOrder();
+        $orderList = $dbHouseNewPayOrder->getList(array('o.summary_id' => $summaryId), 'o.order_id,o.modify_money,o.late_payment_money', 0, 0, 'o.order_id ASC');
+        if (empty($orderList) || $orderList->isEmpty()) {
+            return $order_info;
+        }
+
+        $discountIndex = 0;
+        $discountRemain = $discountItems[$discountIndex]['paymoney'];
+        foreach ($orderList->toArray() as $order) {
+            $currentOrderId = isset($order['order_id']) ? intval($order['order_id']) : 0;
+            $orderMoney = round(floatval($order['modify_money']) + floatval($order['late_payment_money']), 2);
+            $orderRemain = $orderMoney;
+            $orderDiscount = 0;
+            $orderDetail = array();
+            while ($orderRemain > 0 && isset($discountItems[$discountIndex])) {
+                $used = min($orderRemain, $discountRemain);
+                $used = round($used, 2);
+                if ($used <= 0) {
+                    break;
+                }
+                $orderRemain = round($orderRemain - $used, 2);
+                $discountRemain = round($discountRemain - $used, 2);
+                $orderDiscount = round($orderDiscount + $used, 2);
+
+                $item = $discountItems[$discountIndex];
+                $item['order_id'] = $currentOrderId;
+                $item['paymoney'] = sprintf('%.2f', $used);
+                $orderDetail[] = $item;
+
+                if ($discountRemain <= 0) {
+                    $discountIndex++;
+                    if (isset($discountItems[$discountIndex])) {
+                        $discountRemain = $discountItems[$discountIndex]['paymoney'];
+                    }
+                }
+            }
+
+            if ($currentOrderId == $orderId) {
+                $order_info['pay_money'] = max(round($orderMoney - $orderDiscount, 2), 0);
+                $order_info['discount_money'] = $orderDiscount;
+                $order_info['discount_detail'] = $orderDiscount > 0 ? json_encode($orderDetail, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '';
+                return $order_info;
+            }
+            if (!isset($discountItems[$discountIndex])) {
+                break;
+            }
+        }
+        return $order_info;
+    }
+
+    private function formatOrderPayDetailText($pay_detail = array())
+    {
+        if (empty($pay_detail)) {
+            return '';
+        }
+        $text = array();
+        foreach ($pay_detail as $item) {
+            $title = isset($item['title']) ? $item['title'] : '';
+            $val = isset($item['val']) ? $item['val'] : '0.00';
+            if ($title !== '') {
+                $text[] = $title . '￥' . $val;
+            }
+        }
+        return implode(' ', $text);
+    }
     // 图片文件的后缀
     public $image_exts = array(
         'jpg', 'jpeg', 'png', 'gif'
@@ -1298,7 +1628,7 @@ class HouseNewCashierService
                         $data[$k]['fees_type'] = $serviceHouseNewChargeRule->getFeesTypeTxt($v['fees_type']);
                     }
                     if(isset($v['bill_create_set'])){
-                        $data[$k]['bill_create_set'] = empty($v['bill_create_set']) ? '-' : (($v['bill_create_set'] == 1) ? '按日生成' : (($v['bill_create_set'] == 2) ? '按月生成' : '按年生成'));
+                        $data[$k]['bill_create_set'] = empty($v['bill_create_set']) ? '-' : (($v['bill_create_set'] == 1) ? '按日生成' : (($v['bill_create_set'] == 2) ? '按月生成' : (($v['bill_create_set'] == 3) ? '按年生成' : '自定义收费周期')));
                     }
                     if(isset($v['bill_arrears_set'])){
                         $data[$k]['bill_arrears_set'] = empty($v['bill_arrears_set']) ? '-' : (($v['bill_arrears_set'] == 1) ? '预生成' : '后生成');
@@ -1850,6 +2180,7 @@ class HouseNewCashierService
         $digit_info=array();
         $late_payment_money = formatNumber($data['late_payment_money'],2,1);
         $db_house_new_pay_order_summary = new HouseNewPayOrderSummary();
+        $summary_info = array();
         if (isset($data['summary_id']) && !empty($data['summary_id'])){
             $summary_info= $db_house_new_pay_order_summary->getOne(['summary_id' => $data['summary_id']]);
             if (!empty($summary_info)){
@@ -1858,6 +2189,8 @@ class HouseNewCashierService
                 $data['remark']=$summary_info['remark'];
             }
         }
+        $data['pay_detail'] = $this->buildSubOrderPayDetailList($data, $summary_info, '支付金额');
+        $data['pay_detail_text'] = $this->formatOrderPayDetailText($data['pay_detail']);
         $late_payment_day = $data['late_payment_day'];
         $data['late_payment_money'] = $late_payment_money;
         $data['late_payment_day'] = $late_payment_day;
@@ -2004,7 +2337,7 @@ class HouseNewCashierService
                         );
                         $return_data[0]['list'][] = array(
                             'title' => '业主姓名',
-                            'val' => $room1['name']
+                            'val' => isset($data['name']) ? $data['name'] : ''
                         );
                         $return_data[0]['list'][] = array(
                             'title' => '房屋面积',
@@ -2033,7 +2366,7 @@ class HouseNewCashierService
                 'title' => '修改原因',
                 'val' => $data['modify_reason']
             );
-            $discount_money=$data['modify_money']-$data['pay_money'];
+            $discount_money=isset($data['discount_money']) && $data['discount_money']>0 ? $data['discount_money'] : ($data['modify_money']-$data['pay_money']);
             $discount_money=$discount_money>0 ? formatNumber($discount_money):0;
             $return_data[0]['list'][] = array(
                 'title' => '优惠金额',
@@ -2272,6 +2605,11 @@ class HouseNewCashierService
                     'val' => $data['refund_money']
                 );
             }
+            $return_data[0]['list'][] = array(
+                'title' => '支付方式和支付金额',
+                'val' => $data['pay_detail_text'],
+                'list' => $data['pay_detail']
+            );
             return array_values($return_data);
         }
         $data['late_fee_rate'] = $data['late_fee_rate'].'%';
@@ -2396,7 +2734,7 @@ class HouseNewCashierService
                     $data['fees_type_txt'] = (new HouseNewChargeRuleService())->getFeesTypeTxt($data['fees_type']);
                 }
                 if(isset($data['bill_create_set'])){
-                    $data['bill_create_set_txt'] = empty($data['bill_create_set']) ? '-' : (($data['bill_create_set'] == 1) ? '按日生成' : (($data['bill_create_set'] == 2) ? '按月生成' : '按年生成'));
+                    $data['bill_create_set_txt'] = empty($data['bill_create_set']) ? '-' : (($data['bill_create_set'] == 1) ? '按日生成' : (($data['bill_create_set'] == 2) ? '按月生成' : (($data['bill_create_set'] == 3) ? '按年生成' : '自定义收费周期')));
                 }
                 if(isset($data['bill_arrears_set'])){
                     $data['bill_arrears_set_txt'] = empty($data['bill_arrears_set']) ? '-' : (($data['bill_arrears_set'] == 1) ? '预生成' : '后生成');
@@ -3074,7 +3412,7 @@ class HouseNewCashierService
                         $data[$k]['fees_type_txt'] = $service_house_new_charge_rule->getFeesTypeTxt($v['fees_type']);
                     }
                     if(isset($v['bill_create_set'])){
-                        $data[$k]['bill_create_set_txt'] = empty($v['bill_create_set']) ? '-' : (($v['bill_create_set'] == 1) ? '按日生成' : (($v['bill_create_set'] == 2) ? '按月生成' : '按年生成'));
+                        $data[$k]['bill_create_set_txt'] = empty($v['bill_create_set']) ? '-' : (($v['bill_create_set'] == 1) ? '按日生成' : (($v['bill_create_set'] == 2) ? '按月生成' : (($v['bill_create_set'] == 3) ? '按年生成' : '自定义收费周期')));
                     }
                     if(isset($v['bill_arrears_set'])){
                         $data[$k]['bill_arrears_set_txt'] = empty($v['bill_arrears_set']) ? '-' : (($v['bill_arrears_set'] == 1) ? '预生成' : '后生成');
@@ -3902,15 +4240,23 @@ class HouseNewCashierService
                     }
                     $v['project_name'] .= ']';
                 }
+                $realPayMoney = isset($v['pay_money']) ? round(floatval($v['pay_money']), 2) : 0;
+                $receivableMoney = isset($v['modify_money']) ? round(floatval($v['modify_money']) + floatval($v['late_payment_money'] ?? 0), 2) : $realPayMoney;
                 if(empty($digit_info)){
-                    $v['pay_money'] = formatNumber($v['pay_money'],2,1);
+                    $v['real_pay_money'] = formatNumber($realPayMoney,2,1);
+                    $v['receivable_money'] = formatNumber($receivableMoney,2,1);
+                    $v['pay_money'] = $v['receivable_money'];
                 }else{
                     if($v['order_type'] == 'water' || $v['order_type'] == 'electric' || $v['order_type'] == 'gas'){
                         $digit_info['meter_digit'] = $digit_info['meter_digit']>2 || empty($digit_info['meter_digit'])?2:$digit_info['meter_digit'];
-                        $v['pay_money'] = formatNumber($v['pay_money'],$digit_info['meter_digit'],$digit_info['type']);
+                        $v['real_pay_money'] = formatNumber($realPayMoney,$digit_info['meter_digit'],$digit_info['type']);
+                        $v['receivable_money'] = formatNumber($receivableMoney,$digit_info['meter_digit'],$digit_info['type']);
+                        $v['pay_money'] = $v['receivable_money'];
                     }else{
                         $digit_info['other_digit'] = ($digit_info['other_digit']>2 || empty($digit_info['other_digit'])) && $digit_info['other_digit']!=0?2:$digit_info['other_digit'];
-                        $v['pay_money'] = formatNumber($v['pay_money'],$digit_info['other_digit'],$digit_info['type']);
+                        $v['real_pay_money'] = formatNumber($realPayMoney,$digit_info['other_digit'],$digit_info['type']);
+                        $v['receivable_money'] = formatNumber($receivableMoney,$digit_info['other_digit'],$digit_info['type']);
+                        $v['pay_money'] = $v['receivable_money'];
                     }
                 }
                 $summary_id       = isset($v['summary_id']) ? $v['summary_id'] : 0;
@@ -3998,7 +4344,7 @@ class HouseNewCashierService
                 if ($v['is_refund'] == 1) {
                     $v['order_status'] = '正常';
                 } else {
-                    if ($v['refund_money'] == $v['pay_money']) {
+                    if (round(floatval($v['refund_money']), 2) == $realPayMoney) {
                         $v['order_status'] = '已退款';
                     } else {
                         $v['order_status'] = '部分退款';
@@ -9145,6 +9491,8 @@ class HouseNewCashierService
                     $data['score_used_count'] = $list[0]['score_used_count'];
                     $data['pay_time'] = date('Y-m-d H:i:s', $list[0]['pay_time']);
                     $data['pay_type'] = $pay_type;
+                    $data['pay_detail'] = $this->buildSubOrderPayDetailList($list[0], $summary_info, $pay_type);
+                    $data['pay_detail_text'] = $this->formatOrderPayDetailText($data['pay_detail']);
                     if ($list[0]['service_start_time'] > 1) {
                         $data['service_start_time'] = date('Y-m-d H:i:s', $list[0]['service_start_time']);
                         $data['service_end_time'] = date('Y-m-d H:i:s', $list[0]['service_end_time']);
@@ -9295,6 +9643,11 @@ class HouseNewCashierService
                         'val'=>$data['pay_type']
                     );
                     $list[]=array(
+                        'title'=>'支付方式和支付金额',
+                        'val'=>$data['pay_detail_text'],
+                        'list'=>$data['pay_detail']
+                    );
+                    $list[]=array(
                         'title'=>$ammeter_name,
                         'val'=>$data['ammeter']
                     );
@@ -9384,6 +9737,7 @@ class HouseNewCashierService
                     $order_data['type'] = 1;
                     $order_data['total_money'] = $data['pay_money1'];
                     $order_data['data'] = $list;
+                    $order_data['pay_detail'] = $data['pay_detail'];
                 } else {
                     $order_data['type'] = 2;
                     $pay_type=$data['pay_type'];
@@ -9422,6 +9776,8 @@ class HouseNewCashierService
                         $data['order_serial'] = $list[0]['order_no'];
                         $data['number'] = $number;
                         $data['pay_type'] = $pay_type;
+                        $data['pay_detail'] = $this->buildOrderPayDetailList($summary_info, $pay_type);
+                        $data['pay_detail_text'] = $this->formatOrderPayDetailText($data['pay_detail']);
                         /*if ($list[0]['pay_type'] == 2) {
                             $data['pay_type'] = $this->pay_type[$list[0]['pay_type']] . $list[0]['pay_type_name'];
                         } elseif (in_array($list[0]['pay_type'], [1, 3])) {
@@ -9489,6 +9845,11 @@ class HouseNewCashierService
                             'title'=>'备注',
                             'val'=>$data['remarks']
                         );
+                        $list1[]=array(
+                            'title'=>'支付方式和支付金额',
+                            'val'=>$data['pay_detail_text'],
+                            'list'=>$data['pay_detail']
+                        );
                         $order_list = [];
                         $sum_money = 0;
                         foreach ($list as $k => $val) {
@@ -9519,6 +9880,7 @@ class HouseNewCashierService
                         $order_data['sum_money'] = $sum_money;
                         $order_data['list'] = $order_list;
                         $order_data['data'] = $list1;
+                        $order_data['pay_detail'] = $data['pay_detail'];
                     }
                 }
             }
@@ -11997,8 +12359,35 @@ class HouseNewCashierService
     public function getOrderLog($where=[],$field=true,$order='id DESC')
     {
         $db_house_new_order_log = new HouseNewOrderLog();
-        $data = $db_house_new_order_log->getOne($where,$field,$order);
-        return $data;
+        $log_list = $db_house_new_order_log->getList($where, true, 0, 20, $order);
+        if (empty($log_list) || $log_list->isEmpty()) {
+            return [];
+        }
+        $db_house_new_pay_order = new HouseNewPayOrder();
+        foreach ($log_list as $log) {
+            if ($log && !is_array($log)) {
+                $log = $log->toArray();
+            }
+            if (empty($log['id']) || empty($log['order_id'])) {
+                continue;
+            }
+            $order_where = [
+                ['order_id', '=', $log['order_id']],
+                ['is_discard', '=', 1],
+            ];
+            $order_where['string'] = $this->activePayOrderRaw();
+            $order_info = $db_house_new_pay_order->get_one($order_where, 'order_id');
+            if (!empty($order_info) && !$order_info->isEmpty()) {
+                return $db_house_new_order_log->getOne(['id' => $log['id']], $field, $order);
+            }
+        }
+        return [];
+    }
+
+    private function activePayOrderRaw($alias = 'o')
+    {
+        $prefix = $alias ? '`' . $alias . '`.' : '';
+        return '(' . $prefix . '`is_paid`=2 OR ' . $prefix . '`is_refund`=1 OR ' . $prefix . '`refund_money`<' . $prefix . '`pay_money`)';
     }
     public function saveOrderLog($where=[],$update=array())
     {

@@ -34,6 +34,8 @@ class ImportExcelService
     const upload_three_table = 'uploadThreeTable'; //定制三表 水电燃
     const UPLOAD_BILL_EXCEL = 'billExcel'; // 定制 欠费账单导入
     const UPLOAD_BILL_PAY_EXCEL = 'billPayExcel'; // 定制 一次性费用已缴账单导入
+    const UPLOAD_CYCLE_BILL_EXCEL = 'cycleBillExcel'; // 定制 周期性账单导入
+    const UPLOAD_CYCLE_BILL_PAY_EXCEL = 'cycleBillPayExcel'; // 定制 周期性已缴账单导入
     const upload_standard_vacancy_bind = 'standardVacancyBind'; // 定制 导入标准绑定房间数据
     const upload_standard_position_bind = 'standardPositionBind'; // 定制 导入标准绑定车位数据
     const upload_express_application = 'expressApplication';
@@ -49,6 +51,8 @@ class ImportExcelService
         self::upload_three_table => 'threeTableImport',
         self::UPLOAD_BILL_EXCEL => 'billExcelImport',
         self::UPLOAD_BILL_PAY_EXCEL => 'billExcelImport',
+        self::UPLOAD_CYCLE_BILL_EXCEL => 'billExcelImport',
+        self::UPLOAD_CYCLE_BILL_PAY_EXCEL => 'billExcelImport',
         self::upload_standard_vacancy_bind => 'standardVacancyBindImport',
         self::upload_standard_position_bind => 'standardPositionBindImport',
         self::upload_express_application => 'expressApplication',
@@ -145,6 +149,12 @@ class ImportExcelService
                 $data = [];
                 break;
             case 'billPayExcel':
+                $data = [];
+                break;
+            case self::UPLOAD_CYCLE_BILL_EXCEL:
+                $data = [];
+                break;
+            case self::UPLOAD_CYCLE_BILL_PAY_EXCEL:
                 $data = [];
                 break;
             case self::upload_standard_vacancy_bind:
@@ -424,6 +434,12 @@ class ImportExcelService
                 $data = [];
                 break;
             case 'billPayExcel':
+                $data = [];
+                break;
+            case self::UPLOAD_CYCLE_BILL_EXCEL:
+                $data = [];
+                break;
+            case self::UPLOAD_CYCLE_BILL_PAY_EXCEL:
                 $data = [];
                 break;
             case self::upload_express_application:
@@ -730,6 +746,23 @@ class ImportExcelService
         }
         $replaceField = $this->getReplaceFieldSelectMethod($type);
         return  ['worksheet' => $worksheetData, 'allData' => $allData['data'],'invalidData' => $allData['invalidData'],'requiredFieldsMap' => $allData['requiredFieldsMap'], 'replaceFieldSelect' => $replaceField, 'type' => $type];
+    }
+
+    // 周期性账单上传后只需要读取sheet信息，具体表头和数据由周期性账单导入命令单独校验
+    public function readCycleBillImportFile($param)
+    {
+        try {
+            $reader = $this->getFileReaderMethod($param['inputFileName']);
+            $worksheetData = $reader->listWorksheetInfo($param['inputFileName']);
+            foreach ($worksheetData as &$sheetInfo) {
+                $sheetInfo['totalRows'] = max(1, intval($sheetInfo['totalRows']) - 3);
+            }
+            unset($sheetInfo);
+        } catch (\Exception $e) {
+            throw new \think\Exception($e->getMessage());
+        }
+        $type = isset($param['type']) && $param['type'] ? $param['type'] : self::UPLOAD_CYCLE_BILL_EXCEL;
+        return  ['worksheet' => $worksheetData, 'allData' => [], 'invalidData' => [], 'requiredFieldsMap' => [], 'replaceFieldSelect' => [], 'type' => $type];
     }
 
     public function readImportFileList($type, $param)

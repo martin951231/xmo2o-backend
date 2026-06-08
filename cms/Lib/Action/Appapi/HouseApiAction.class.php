@@ -1,10 +1,5 @@
 <?php
 
-use app\community\model\db\WisdomQrcodeRecordLog;
-use app\community\model\service\HouseWorkerService;
-use app\community\model\service\RepairCateService;
-use app\community\model\service\WisdowQrcodeService;
-
 /**
  * Created by PhpStorm.
  * User: 郭先森
@@ -74,7 +69,7 @@ class HouseApiAction  extends BaseAction
             'house_service' => 'pages/village_menu/convenient?type=property',// 社区功能库-便民服务
             'house_meter_new_collect'=>$house_meter_new_collect,
         );
-        
+
     }
 
 
@@ -143,7 +138,8 @@ class HouseApiAction  extends BaseAction
         } else {
             $res['page_title'] = $this->config['wechat_name'];
         }
-        $now_village = D('House_village')->field('village_id,province_id,city_id,property_id,has_kefu,is_platform_guess,village_name,street_id,community_id,`long`,`lat`')->where(array('village_id' => $village_id))->find();
+        $now_village = D('House_village')->field('village_id,province_id,city_id,property_id,has_kefu,is_platform_guess,village_name,street_id,community_id,`long`,`lat`,lilin_pf_client_secret')->where(array('village_id' => $village_id))->find();
+        $res['is_open_door_permission'] = !empty($now_village) && $now_village['lilin_pf_client_secret'] ? true : false;
         $res['Popup'] = array();
         // 首页是否处于游客
         $tourist = $this->getHasConfig($village_id, 'tourist');
@@ -298,8 +294,10 @@ class HouseApiAction  extends BaseAction
         $toCacheUidArr=array();
         if (!empty($cacheUidArr) && isset($cacheUidArr['single_nav']) && $cacheUidArr['single_nav']) {
             $single_nav = $cacheUidArr['single_nav'];
+            $single_nav = $this->getIndexWxappPage($single_nav);
         } else {
             $single_nav = D('House_village_nav')->get_village_nav($village_id, $village_modules, $this->_uid, 1, $now_village);
+            $single_nav = $this->getIndexWxappPage($single_nav);
             $toCacheUidArr['single_nav'] = $single_nav;
         }
         $res['single_nav']['list'] = $single_nav;
@@ -313,6 +311,7 @@ class HouseApiAction  extends BaseAction
         if($yuanJino2oCustomized){
             $res['is_have_pop_and_m']=1;
             $middle_nav = D('House_village_nav')->get_village_nav($village_id,$village_modules,$this->_uid,2,$now_village);
+            $middle_nav = $this->getIndexWxappPage($middle_nav);
             $res['middle_nav']['is_have_middle_nav'] = 1;
             $res['middle_nav']['list'] = $middle_nav;
             if ($village_info['template_top'] == 5) {
@@ -347,8 +346,10 @@ class HouseApiAction  extends BaseAction
         $jz_open = D('Config_customization')->getWSXCustomizedOpen();
         if (!empty($cacheUidArr) && isset($cacheUidArr['house_app_index_top']) && $cacheUidArr['house_app_index_top']) {
             $res['house_app_index_top'] = $cacheUidArr['house_app_index_top'];
+            $res['house_app_index_top'] = $this->getIndexWxappPage($res['house_app_index_top']);
         } else {
             $res['house_app_index_top'] = D('House_adver')->adver_list('house_app_index_top', 99, $village_id, $param, 1, $village_modules);
+            $res['house_app_index_top'] = $this->getIndexWxappPage($res['house_app_index_top']);
             $toCacheUidArr['house_app_index_top'] = $res['house_app_index_top'];
         }
         $size_width = isset($res['house_app_index_top'][0]['size_width']) && $res['house_app_index_top'][0]['size_width'] ? intval($res['house_app_index_top'][0]['size_width']) : 0;
@@ -458,12 +459,22 @@ class HouseApiAction  extends BaseAction
             $village_nav = array_slice($village_nav, 0, 10);
             $res['nav'] = $village_nav;
         }
+        if (! empty($res['nav'])) {
+            // 处理 nav 中的 wxapp_page 字段，将 &amp; 替换为 &
+            foreach ($res['nav'] as $key => $navGroup) {
+                $res['nav'][$key] = $this->getIndexWxappPage($navGroup);
+            }
+            unset($navGroup, $key);
+        }
+
         $res['single_effect_config'] = $village_info['single_effect'];
         if (!empty($cacheUidArr) && isset($cacheUidArr['wap_index_center']) && $cacheUidArr['wap_index_center']) {
             $res['wap_index_center'] = $cacheUidArr['wap_index_center'];
+            $res['wap_index_center'] = $this->getIndexWxappPage($res['wap_index_center']);
         } else {
             //中间栏轮播广告图（三张，手动滑动）
             $res['wap_index_center'] = D('House_adver')->adver_list('house_app_index_center', 3, $village_id, $param, 2, $village_modules);
+            $res['wap_index_center'] = $this->getIndexWxappPage($res['wap_index_center']);
             $toCacheUidArr['wap_index_center'] = $res['wap_index_center'];
         }
         $size_width = isset($res['wap_index_center'][0]['size_width']) && $res['wap_index_center'][0]['size_width'] ? intval($res['wap_index_center'][0]['size_width']) : 0;
@@ -482,22 +493,28 @@ class HouseApiAction  extends BaseAction
         $otherParam['uid'] = $this->_uid;
         if (!empty($cacheUidArr) && isset($cacheUidArr['house_four_adver']) && $cacheUidArr['house_four_adver']) {
             $res['house_four_adver'] = $cacheUidArr['house_four_adver'];
+            $res['house_four_adver'] = $this->getIndexWxappPage($res['house_four_adver']);
         } else {
             $res['house_four_adver'] = D('House_adver')->adver_list('house_four_adver', 4, $village_id, $otherParam, 5, $village_modules);
+            $res['house_four_adver'] = $this->getIndexWxappPage($res['house_four_adver']);
             $toCacheUidArr['house_four_adver'] = $res['house_four_adver'];
         }
         if (!empty($cacheUidArr) && isset($cacheUidArr['house_center_adver']) && $cacheUidArr['house_center_adver']) {
             $res['house_center_adver'] = $cacheUidArr['house_center_adver'];
+            $res['house_center_adver'] = $this->getIndexWxappPage($res['house_center_adver']);
         } else {
             //中部单图广告图（一张单独展示）
             $res['house_center_adver'] = D('House_adver')->adver_list('house_center_adver', 1, $village_id, $otherParam, 3, $village_modules);
+            $res['house_center_adver'] = $this->getIndexWxappPage($res['house_center_adver']);
             $toCacheUidArr['house_center_adver'] = $res['house_center_adver'];
         }
         if (!empty($cacheUidArr) && isset($cacheUidArr['house_footer_adver']) && $cacheUidArr['house_footer_adver']) {
             $res['house_footer_adver'] = $cacheUidArr['house_footer_adver'];
+            $res['house_footer_adver'] = $this->getIndexWxappPage($res['house_footer_adver']);
         } else {
             //底部单图广告图（展示一到五张，单独展示）
             $res['house_footer_adver'] = D('House_adver')->adver_list('house_footer_adver', 5, $village_id, $otherParam, 4, $village_modules);
+            $res['house_footer_adver'] = $this->getIndexWxappPage($res['house_footer_adver']);
             $toCacheUidArr['house_footer_adver'] = $res['house_footer_adver'];
         }
         //重要通知
@@ -692,7 +709,7 @@ class HouseApiAction  extends BaseAction
         $res['new_block_nav']=array('is_new_block_nav'=>0);
         $mobile_village_logo=$this->config['mobile_village_logo'] ? replace_file_domain($this->config['mobile_village_logo']):'';
         $res['mobile_village_logo']=$mobile_village_logo;
-        
+        $res['mobile_village_fudai_back']=$this->config['site_url'].'/static/wxapp/villageindex/fudai_back.png';
         if($jsdhwy_new_wap_index>0){
             $res['is_new_block_nav']=1;
             $house_village_nav_moduleDb = D('House_village_nav_module');
@@ -715,20 +732,50 @@ class HouseApiAction  extends BaseAction
             $res['guess_you_like_goods']=$house_village_nav_moduleDb->get_guess_you_like_goods_set($village_id);
         }
         $res['jz_open'] = $jz_open;
-
-        $database_house_village = D('House_village');
-        $now_village = $database_house_village->field(true)->where(array('village_id' => $village_id))->find();
-        $res['is_open_door_permission'] = !empty($now_village) && $now_village['lilin_pf_client_secret'] ? true : false;
-
         if(!empty($toCacheArr)){
             S($cacheindexkey,$toCacheArr,1800);
         }
         if(!empty($toCacheUidArr)){
             S($cacheindexuidkey,$toCacheUidArr,1800);
         }
+	    $socialActivity = [];
+	    if (C('config.social_events_slot_show')) {
+		    $visualizeVillage = D('House_visualize_assign')->where(['type' => 41, 'village_id'=>$village_id])->find();
+			if($visualizeVillage) {
+				$activitys = D('Social_activity')->alias('sa')
+					->join(C('DB_PREFIX') . 'social_activity_session s ON sa.id = s.activity_id')
+					->where(['sa.status' => 10])
+					->where("find_in_set({$village_id}, s.village_id)")
+					->limit(3)
+					->order('sa.start_time desc')
+					->field('sa.position_poster, sa.id activity_id, sa.name activity_name')
+					->select();
+				foreach ($activitys as $activity) {
+					$socialActivity[] = [
+						'image' => replace_file_domain($activity['position_poster']),
+						'url' => C('config.site_url') . '/packapp/plat/pages/socialActivity/detail?id=' . $activity['activity_id'],
+					];
+				}
+			}
+	    }
+	    $res['social_activity_list'] = $socialActivity;
+
         $this->returnCode(0, $res);
     }
-    
+
+    public function getIndexWxappPage($navGroup)
+    {
+        if (! empty($navGroup) && is_array($navGroup)) {
+            foreach ($navGroup as &$navItem) {
+                if (is_array($navItem) && isset($navItem['wxapp_page']) && !empty($navItem['wxapp_page'])) {
+                    $navItem['wxapp_page'] = str_replace('&amp;', '&', $navItem['wxapp_page']);
+                }
+            }
+            unset($navItem);
+        }
+        return $navGroup;
+    }
+
     public function update_user_web_first_login_popnum(){
         $sqAeondeLightJiangsuCustomized_judge = D('Config_customization')->getSqAeondeLightJiangsuCustomized();
         $issqaeondelightjiangsu=0;
@@ -740,7 +787,7 @@ class HouseApiAction  extends BaseAction
         $res=array('uid'=>$this->_uid,'device_id'=>$this->DEVICE_ID,'issqaeondelightjiangsu'=>$issqaeondelightjiangsu);
         $this->returnCode(0, $res);
     }
-    
+
     public function get_user_web_first_login_judge(){
         $returnArr=array();
         $returnArr['uid']=0;
@@ -755,7 +802,7 @@ class HouseApiAction  extends BaseAction
         }
         $this->returnCode(0, $returnArr);
     }
-    
+
     public function get_user_web_first_popnum_data(){
         $village_id = I('village_id', 0, 'intval');
         $popnum_data=array();
@@ -797,7 +844,7 @@ class HouseApiAction  extends BaseAction
         $returnArr=array('listdata'=>$popnum_data,'my_user_centre_url'=>$my_user_centre_url,'uid'=>$this->_uid,'village_id'=>$village_id);
         $this->returnCode(0,$returnArr);
     }
-   
+
     public function getVoiceAsrIdentifySet($village_id = 0)
     {
         $village_id = $village_id ? intval($village_id) : 0;
@@ -1355,8 +1402,8 @@ class HouseApiAction  extends BaseAction
         $now_user_info = $this->get_user_village_info($pigcms_id, $village_id, $this->_uid, true);
         if($now_village['set_id_code'] == 1){
             if(empty($now_user_info['id_card'])){
-//                $res['set_id_code'] = true;
-//                $res['set_id_code_info'] = '您的身份证信息未完善，请前去完善';
+                $res['set_id_code'] = true;
+                $res['set_id_code_info'] = '您的身份证信息未完善，请前去完善';
             }else{
                 $res['set_id_code'] = false;
                 $res['set_id_code_info'] = '';
@@ -3750,6 +3797,8 @@ class HouseApiAction  extends BaseAction
     {
         $village_id = I('village_id');
         $cat_id = I('cat_id', 0);
+        $page= I('page', 1);
+        $page=$page>0 ? $page:1;
         $now_village = $this->get_village($village_id);
         $arr = [];$news_id=false;
         $category_list = D('House_village_news_category')->get_limit_list($now_village['village_id']);
@@ -3762,8 +3811,7 @@ class HouseApiAction  extends BaseAction
             $arr['category_list'] = $category_list;
 
 
-//            $cat_id = $cat_id ? $cat_id : '_999';
-
+            $cat_id = $cat_id ? $cat_id : '_99';
 
             // 处理下
             $pigcms_id = I('pigcms_id');
@@ -3789,15 +3837,12 @@ class HouseApiAction  extends BaseAction
                 }
             }
             $floor_id = 0;
-
-            $news_list = D('House_village_news')->get_list_by_cid($cat_id, $floor_id,$news_id,$village_id);
-
+            $news_list = D('House_village_news')->get_list_by_cid($cat_id, $floor_id,$news_id,$page);
             foreach ($news_list as $k => &$v) {
                 $v['add_time'] = date('m-d H:i', $v['add_time']);
             }
 
             $arr['news_list'] = $news_list;
-
             $this->returnCode(0, $arr);
         } else {
             $arr['news_list'] = [];
@@ -6717,7 +6762,7 @@ class HouseApiAction  extends BaseAction
             $info['end_time_str']=date('Y-m-d',$end_time_stamp);
         }
         $info['end_time'] = $parking_car['end_time'] ? date('Y-m-d',$parking_car['end_time']):'无';
-        
+
         $whereArr=array('position_id'=>$parking_car['car_position_id']);
         if($position_id>0){
             $whereArr['position_id']=$position_id;
@@ -6758,9 +6803,9 @@ class HouseApiAction  extends BaseAction
         }
         $info['village_name'] = $house_village['village_name'];
         $arr['info'] = $info;
-        
+
         $house_park_garage_config=D('House_village_park_garage_config')->getVillageParkConfig($garage_id,$village_id);
-        
+
         if (!empty($house_park_garage_config)&&$house_park_garage_config['park_sys_type']=='D7'&&(empty($parking_car['parking_car_type'])||$parking_car['parking_car_type']>17)){
             $this->returnCodeError('当前车辆非月租车类型，无法续费!');
         }
@@ -7073,7 +7118,7 @@ class HouseApiAction  extends BaseAction
             $garage_id=$parking_car['garage_id'];
         }
         $info['car_number'] = $parking_car['province'].$parking_car['car_number'];
-        
+
         $whereArr=array('position_id'=>$parking_car['car_position_id']);
         if($position_id>0){
             $whereArr['position_id']=$position_id;
@@ -7094,7 +7139,7 @@ class HouseApiAction  extends BaseAction
         $info['village_name'] = $house_village['village_name'];
         $arr['info'] = $info;
         $arr['stored_balance'] = isset($parking_car['stored_balance']) ? $parking_car['stored_balance']:0;
-        
+
         $house_park_garage_config=D('House_village_park_garage_config')->getVillageParkConfig($garage_id,$village_id);
         if (!empty($house_park_garage_config) && $house_park_garage_config['park_sys_type']=='D7'&&($parking_car['parking_car_type']<17||$parking_car['parking_car_type']>20)){
 
@@ -7355,7 +7400,7 @@ class HouseApiAction  extends BaseAction
             $this->returnCode('20120048');
         }
         $data_order['money'] = I('money') + 0;
-        
+
         $house_order_name=$this->config['house_name'];
         if(empty($house_order_name)){
             $house_order_name='社区';
@@ -8412,7 +8457,7 @@ class HouseApiAction  extends BaseAction
         $userInfo = D('User')->where(array('uid' => $this->_uid))->field('now_money,nickname,phone')->find();
         //业务处理
         if (I('send_price')) {
-            
+
             if ($userInfo['now_money'] < I('send_price')) {
                 $this->returnCode('50000005');
             }
@@ -8478,7 +8523,7 @@ class HouseApiAction  extends BaseAction
                 $save_paid_order_record['pay_time']=time();
                 $save_paid_order_record['village_id']=$village_id;
                 D('Paid_order_record')->data($save_paid_order_record)->add();
-                
+
                 D('User_money_list')->add_row($this->_uid, 2, I('send_price', 0), "支付待寄快递服务费 " . I('send_price', 0) . C('config.Currency_txt') . "", true, 5, $res);
             }
             $order_param['village_id'] = $village_id;
@@ -8543,7 +8588,7 @@ class HouseApiAction  extends BaseAction
         $arr['is_park_rate'] = $is_park_rate;
         $arr['is_open_door'] = $is_open_door;
         $arr['is_face'] = $this->config['is_face'];
-        
+
         //是否必填项设置（访客姓名，身份证）
         $visitorSet = [
             'name'=>1,
@@ -8816,11 +8861,11 @@ class HouseApiAction  extends BaseAction
                     $href .= '&pigcms_id='.$pigcms_id;
                     $model->sendTempMsg('OPENTM408101810', //todo 类目模板OPENTM408101810
                         array(
-                            'href' => $href, 
-                            'wecha_id' => $userInfo['openid'], 
-                            'first' => '您好，'.$house_village_info['village_name'].'业主，您有新访客到访', 
+                            'href' => $href,
+                            'wecha_id' => $userInfo['openid'],
+                            'first' => '您好，'.$house_village_info['village_name'].'业主，您有新访客到访',
                             'keyword1' => $data['visitor_name'],
-                            'keyword2' => $data['visitor_phone'], 
+                            'keyword2' => $data['visitor_phone'],
                             'keyword3' => date('Y年m月d日 H时i分'),
                             'remark' => '\n访客正在等候，需要您的确认！',
                             'new_info' => [//新版本发送需要的信息
@@ -8846,7 +8891,7 @@ class HouseApiAction  extends BaseAction
                     Sms::sendSms(($sms_data));
                     M('House_village')->where(array('village_id' =>$village_id))->setDec('now_sms_number');
                 }
-                
+
             }
             $add_time = I('add_time');
             $effectTimeStamp = strtotime($add_time);
@@ -8926,7 +8971,7 @@ class HouseApiAction  extends BaseAction
                 ];
                 if ($qrCodeUrl) {
                     $bind_arr['face_img'] = $qrCodeUrl; // 对应访客开门用二维码
-                    $bind_arr['face_status'] = 2; 
+                    $bind_arr['face_status'] = 2;
                 } else {
                     $bind_arr['face_status'] = 3;
                     $bind_arr['face_reason'] = isset($visitor_device_result['message']) && $visitor_device_result['message'] ? $visitor_device_result['message'] : '获取失败';
@@ -9075,7 +9120,7 @@ class HouseApiAction  extends BaseAction
         $property_endtime = strtotime(date('Y-m-d 23:59:59', $add_time));
         $arr['property_starttime'] = $property_starttime;
         $arr['property_endtime'] = $property_endtime;
-        
+
         $pigcms_id = D('House_village_user_bind')->add($arr);
         $data['uid'] = $uid;
         $data['bind_id'] = $pigcms_id;
@@ -9205,7 +9250,7 @@ class HouseApiAction  extends BaseAction
             $qrCodeUrl = isset($aboutFaceUser['face_img']) && $aboutFaceUser['face_img'] ? $aboutFaceUser['face_img'] : '';
             $add_time = $res['add_time'];
             $end_time = strtotime(date('Y-m-d 23:59:59', $add_time));
-            
+
             if ($end_time <= $now_time) {
                 $qrCodeUrl = $this->config['site_url'].'/static/images/house/visitor/QRCodeinvalid.png';// 默认失效图片
             }
@@ -9235,7 +9280,7 @@ class HouseApiAction  extends BaseAction
             if ($employeeQRCode) {
                 $qrCodeUrl = $this->config['site_url'] . "/index.php?c=Recognition&a=get_own_qrcode&qrCon={$employeeQRCode}";
             }
-            
+
             $add_time = $res['add_time'];
             $end_time = strtotime(date('Y-m-d 23:59:59', $add_time));
             $now_time = time();
@@ -9360,7 +9405,7 @@ class HouseApiAction  extends BaseAction
 
         $this->returnCode(0, $arr);
     }
-    
+
     //修改车牌号或者访客姓名和手机号
     public function edit_visitor_car()
     {
@@ -10654,10 +10699,10 @@ class HouseApiAction  extends BaseAction
             }
         }
 
-        
+
         $this->returnCode(0, $my_village);
     }
-    
+
     public function get_user_bind_vacancy_protocol(){
         $village_id=trim($_POST['village_id']);
         $village_id=intval($village_id);
@@ -10715,7 +10760,7 @@ class HouseApiAction  extends BaseAction
         }
         $this->returnCode(0, $house_register_protocol);
     }
-    
+
     //确认拒绝绑定
     public function child_bind()
     {
@@ -10975,7 +11020,7 @@ class HouseApiAction  extends BaseAction
         $data['user_bind_id'] = $data_pigcms_id;
         $data['add_time'] = time();
         M('house_village_user_record')->data($data)->add();
-        
+
         fdump_api([$user_bind, $_POST],'house_user_bind/user_bind_delete_log',1);
         $nowTime = time();
         $insert_id = $database_house_village_user_bind->where($where)->data(['usernum'=>$user_bind['usernum'].'_'.$data_pigcms_id.'del'.$nowTime,'status'=>4])->save();
@@ -10986,7 +11031,7 @@ class HouseApiAction  extends BaseAction
         }catch (\Exception $e) {
             fdump_api(['删除时同步设备出错'.__LINE__,$data_pigcms_id,$user_bind,$e->getMessage()],'house_user_bind/del_a3_user_bind_log_err',1);
         }
-        
+
         if($insert_id){
             $this->returnCodeOk('删除成功!');
         }else{
@@ -11142,7 +11187,7 @@ class HouseApiAction  extends BaseAction
                     'relatives_type_desc'=>[],
                 );
             }
-            
+
             $arr['role_list'] = $role_list_data;
         }else{
             $arr['room_true_find'] = ''; //判断是否有业主===>郭杰
@@ -11483,7 +11528,7 @@ class HouseApiAction  extends BaseAction
         if ($room_bind_people_num > 0 && $binded_people_num >= $room_bind_people_num) {
             $this->returnCodeError("房间人员已满，请联系管理人员处理！");
         }
-  
+
 
         if ($phone) {
             $uid = D('User')->get_user_by_phone($phone);
@@ -12673,7 +12718,7 @@ class HouseApiAction  extends BaseAction
         //查询小区楼栋信息
         $condition['village_id'] = $village_id;
         $condition['status'] = 1;
-        
+
         $unit_list = M('House_village_single')->where($condition)->order('sort desc, id desc')->select();
         $dataList = [];
         foreach($unit_list as $k=>$v){
@@ -13227,12 +13272,15 @@ class HouseApiAction  extends BaseAction
 
         }
         $arr['set_id_code'] = D('House_village')->where(array('village_id'=>$village_id))->getField('set_id_code');
+        /*
         $arr['face_status'] = D('House_village_about_config')->where(array('village_id'=>$village_id))->getField('face_status');
         $my_face_door_switch = $this->config['my_face_door_switch']?1:0;
         if ($my_face_door_switch==1) {
             // 用户端人脸入口，关闭后用户端相关人脸相关入口均会隐藏
             $arr['face_status'] = 3;
         }
+        */
+        $arr['face_status'] = 3;
         $arr['uid'] = isset($relatives_user_uid)?$relatives_user_uid:0;
         $arr['is_face_upload'] = isset($is_face_upload)?$is_face_upload:false;
 	    $arr['use_new_page'] = $this->config['faceImgUseNewPage'] == 1 ? 1 : 0; //有这个值表示后端代码已更新，前端页面根据这个参数判断是否是用新版的人脸上传页面
@@ -13367,7 +13415,7 @@ class HouseApiAction  extends BaseAction
         if ($room_bind_people_num > 0 && $binded_people_num >= $room_bind_people_num) {
             $this->returnCodeError("房间人员已满，请联系管理人员处理！");
         }
-        
+
         $bind_condition['parent_id'] =   $parent_id;
         $bind_condition['phone']     =   $phone;
         $bind_condition['type']      =   $type;
@@ -14419,7 +14467,7 @@ class HouseApiAction  extends BaseAction
         }
         return round($s, $decimal);
     }
-    
+
     //设备详情
     public function equipment_info()
     {
@@ -14430,18 +14478,25 @@ class HouseApiAction  extends BaseAction
         $arr = [];
 
         $qrcode_id = I('qrcode_id');
-        $cate_name = I('name');
         if(empty($qrcode_id)){
             $this->returnCode('20090237');
         }
         //2020/8/10 新增 start
         $lat = I('lat',0);
         $lng = I('lng',0);
-        
+
         if(empty($lat) || empty($lng)){
             $this->returnCode('20200002');
         }
         $village_id = I('village_id', '');
+        $field = 'round( ACOS(SIN(('.$lat.' * 3.1415) / 180 ) *SIN((q.lat * 3.1415) / 180 ) +COS(('.$lat.' * 3.1415) / 180 ) * COS((q.lat * 3.1415) / 180 ) *COS(('.$lng.' * 3.1415) / 180 - (q.long * 3.1415) / 180 ) ) * 6380,2) as distance';
+        $wisdom_qrcode = M('Wisdom_qrcode')->alias('q')->where(array('id'=>$qrcode_id))->field($field.',q.*')->find();
+        $distances = $this->getDistance($lat,$lng,$wisdom_qrcode['lat'],$wisdom_qrcode['long']);
+        $qrcodeCateInfo = M('Wisdom_qrcode_cate')->where(['id'=>$wisdom_qrcode['cate_id']])->field('*')->find();
+        $distance=$qrcodeCateInfo['distance'];
+        $wisdom_qrcode['qr_distance'] = $distance;
+        $village_id=$qrcodeCateInfo ? $qrcodeCateInfo['village_id']:$village_id;
+
         fdump_api(['lat'=>$lat,'lng'=>$lng,'map_type'=>$map_type,'_uid'=>$this->_uid,'village_id'=>$village_id],'00equipment_info',1);
         if($village_id>0){
             $house_village = D('House_village')->where(array('village_id'=>$village_id))->field('property_id')->find();
@@ -14486,7 +14541,7 @@ class HouseApiAction  extends BaseAction
                         }
                         if ($now_time > intval($package_order['package_end_time'])) {
                             $is_expired=1;
-                        } 
+                        }
                     }
                     if($is_expired==1){
                         $this->returnCode(20090055,[],'物业已到期，二维码已失效！');
@@ -14494,15 +14549,10 @@ class HouseApiAction  extends BaseAction
                 }
             }
         }
-        $field = 'round( ACOS(SIN(('.$lat.' * 3.1415) / 180 ) *SIN((q.lat * 3.1415) / 180 ) +COS(('.$lat.' * 3.1415) / 180 ) * COS((q.lat * 3.1415) / 180 ) *COS(('.$lng.' * 3.1415) / 180 - (q.long * 3.1415) / 180 ) ) * 6380,2) as distance';
-        $wisdom_qrcode = M('Wisdom_qrcode')->alias('q')->where(array('id'=>$qrcode_id))->field($field.',q.*')->find();
-        $distances = $this->getDistance($lat,$lng,$wisdom_qrcode['lat'],$wisdom_qrcode['long']);
-        $distance = M('Wisdom_qrcode_cate')->where(['id'=>$wisdom_qrcode['cate_id']])->getField('distance');
-        $wisdom_qrcode['qr_distance'] = $distance;
-//        if(($distances > $distance && $distance != 0)){
-//            $res['code'] = '-1';
-//            $this->returnCode(1,[],'您超出了工作范围');
-//        }
+        if(($distances > $distance && $distance != 0)){
+            $res['code'] = '-1';
+            $this->returnCode(1,[],'您超出了工作范围');
+        }
 
 
         //下  暂不用（注释）
@@ -14515,7 +14565,6 @@ class HouseApiAction  extends BaseAction
         $userInfo= M('User')->where(array('uid'=>$this->_uid))->field('uid,openid,phone')->find();
         if($map_type == 1){
             //增加工作人员判断
-            $village_id = I('village_id', '');
             if (empty($village_id)) {
                 $this->returnCode('30000001');
             }
@@ -14545,7 +14594,7 @@ class HouseApiAction  extends BaseAction
             }elseif($bind_info){
                 $house_worker = D('House_worker')->where(array('village_id'=>$bind_info['village_id'],'phone'=>$bind_info['phone'],'status'=>1,'is_del'=>0))->find();
             }
-            
+
             if(empty($bind_info)){
                 $this->returnCode('20120052');
             }
@@ -14565,7 +14614,7 @@ class HouseApiAction  extends BaseAction
             }
         }else{
             //增加工作人员判断
-            $village_id = I('village_id', '');
+
             if (empty($village_id)) {
                 $this->returnCode('30000001');
             }
@@ -14613,7 +14662,7 @@ class HouseApiAction  extends BaseAction
 
         $wisdom_qrcode['image_path'] = file_domain().$wisdom_qrcode['image_path'];
         $wisdom_qrcode['add_time'] = date('Y-m-d',$wisdom_qrcode['add_time']);
-
+        $field_cate_show=isset($wisdom_qrcode['field_cate_show']) && $wisdom_qrcode['field_cate_show'] ? json_decode($wisdom_qrcode['field_cate_show'],true):array();
         $wisdom_qrcode['entication_field'] = $wisdom_qrcode['entication_field']?unserialize($wisdom_qrcode['entication_field']):[];
         $cate_id = $wisdom_qrcode['cate_id'];
         $dataList = M('Wisdom_qrcode_field_cate')->where(array('cate_id'=>$cate_id))->select();
@@ -14621,6 +14670,11 @@ class HouseApiAction  extends BaseAction
             foreach($dataList as $k=>&$v){
                 unset($v['add_time']);
                 unset($v['sort']);
+                if($field_cate_show && isset($field_cate_show[$v['id']]) && $field_cate_show[$v['id']]==2){
+                   //不显示 不传给前端
+                    unset($dataList[$k]);
+                    continue;
+                }
                 $v['field_cate_test'] = M('Wisdom_qrcode_cate_field_cate_config')->where(array('field_cate_id'=>$v['id']))->select();
                 foreach($v['field_cate_test'] as &$v9){
                     unset($v9['acid']);
@@ -14629,11 +14683,14 @@ class HouseApiAction  extends BaseAction
                     unset($v9['field_sort']);
                     if($v9['type'] == 2){
                         $v9['value_test'] = file_domain().$wisdom_qrcode['entication_field'][$v9['key']]['value'][0];
+                    }elseif($v9['type'] == 4){
+                        $v9['value_test'] = file_domain().$wisdom_qrcode['entication_field'][$v9['key']]['value'][0];
                     }else{
                         $v9['value_test'] = $wisdom_qrcode['entication_field'][$v9['key']]['value'][0];
                     }
                 }
             }
+            $dataList=$dataList ? array_values($dataList):array();
         }
 
         //unset($wisdom_qrcode['entication_field']);
@@ -14642,6 +14699,159 @@ class HouseApiAction  extends BaseAction
         $arr['qrcode_list'] = $dataList;
         $arr['code'] = '0';
         $this->returnCode(0, $arr);
+    }
+
+    public function checkQrcodeGroupSort($qrcode_id=0,$village_id=0){
+
+        $dbWisdomQrcodeGroup = M('Wisdom_qrcode_group');
+        $dbWisdomQrcodeGroupItem= M('Wisdom_qrcode_group_item');
+        $returnArr=array('is_continue'=>1,'nextQrcode'=>'','prefixQrcode'=>'','tips'=>'');
+        $village_user_bind=array();
+        $village_user_bind['village_id'] = $village_id;
+        $village_user_bind['type'] = 4;
+        $village_user_bind['uid'] = $this->_uid;
+        $village_user_bind['status'] = ['not in', [3,4]];
+        $bind_info = M('House_village_user_bind')->where($village_user_bind)->find();
+        if(empty($bind_info)){
+            $returnArr['is_continue']=0;
+            $returnArr['tips']="你还不是本小区的工作的人员";
+            return $returnArr;
+        }
+        $house_worker = D('House_worker')->where(array('village_id'=>$bind_info['village_id'],'phone'=>$bind_info['phone'],'status'=>1,'is_del'=>0))->find();
+        if(empty($house_worker)){
+            $returnArr['is_continue']=0;
+            $returnArr['tips']="你不是本小区的工作的人员,请联系管理员添加!";
+            return $returnArr;
+        }
+        $wid=$house_worker['wid'];
+        $whereArr=array('qrcode_id'=>$qrcode_id,'village_id'=>$village_id,'del_time'=>0);
+        $qrcodeGroupItem=$dbWisdomQrcodeGroupItem->where($whereArr)->order('add_time desc')->find();
+        if(empty($qrcodeGroupItem)){
+            return $returnArr;
+        }
+
+        $dbWisdomQrcodePerson =M('Wisdom_qrcode_person');
+        $qrcode_person = $dbWisdomQrcodePerson->where(array('uid'=>$house_worker['wid'],'cate_id'=>$qrcodeGroupItem['cate_id']))->find();
+        if(empty($qrcode_person)){
+            $returnArr['is_continue']=0;
+            $returnArr['tips']="你不是智慧二维码负责人!";
+            return $returnArr;
+        }
+        if($qrcode_person['status'] != 1){
+            $returnArr['is_continue']=0;
+            $returnArr['tips']="你的智慧二维码负责人信息正在审核中!";
+            return $returnArr;
+        }
+        $whereArr=array('id'=>$qrcodeGroupItem['gid'],'village_id'=>$village_id,'del_time'=>0);
+        $qrcodeGroup=$dbWisdomQrcodeGroup->where($whereArr)->find();
+        if(empty($qrcodeGroup) || $qrcodeGroup['is_open']<1){
+            return $returnArr;
+        }
+        $whereArr=array('gid'=>$qrcodeGroupItem['gid'],'village_id'=>$village_id,'del_time'=>0);
+        $qrcodeGroupItemAll=$dbWisdomQrcodeGroupItem->where($whereArr)->order('xsort ASC')->select();
+        $newGroupItemAll=array();
+        $mc=0;
+        foreach ($qrcodeGroupItemAll as $item){
+            $newGroupItemAll[$item['xsort']]=$item;
+            $mc++;
+        }
+        if($mc<=2){
+            return $returnArr;
+        }
+        unset($qrcodeGroupItemAll);
+        $nextsort=$qrcodeGroupItem['xsort']+1;
+        $prefixsort=$qrcodeGroupItem['xsort']-1;
+        if(isset($newGroupItemAll[$nextsort])){
+            $returnArr['nextQrcode']=$newGroupItemAll[$nextsort];
+        }else{
+            //最后一个
+            return $returnArr;
+        }
+        if(isset($newGroupItemAll[$prefixsort])){
+            $returnArr['prefixQrcode']=$newGroupItemAll[$prefixsort];
+        }else{
+            //第一个
+            return $returnArr;
+        }
+        $dbWisdomQrcode =  M('Wisdom_qrcode');
+        $isCompletePrefixRecord=$this->checkQrcodeRecordLog($returnArr['prefixQrcode'],$qrcode_person,$wid);
+        $isCompleteNextRecord=$this->checkQrcodeRecordLog($returnArr['nextQrcode'],$qrcode_person,$wid);
+        if($isCompletePrefixRecord || $isCompleteNextRecord){
+            //前后的有一个完成即可继续
+            return $returnArr;
+        }else{
+            //前后的都没完成
+            $q_where=array('id'=>$returnArr['prefixQrcode']['qrcode_id']);
+            $prefixQrcode = $dbWisdomQrcode->where($q_where)->find();
+            $tips='';
+            if($prefixQrcode){
+                $tips= '请先完成'.$qrcodeGroup['g_name'].'分组里的二维码【'.$prefixQrcode['name'].'】记录添加！';
+            }else{
+                $q_where=array('id'=>$returnArr['nextQrcode']['qrcode_id']);
+                $nextQrcode = $dbWisdomQrcode->where($q_where)->find();
+                if($nextQrcode){
+                    $tips= '请先完成'.$qrcodeGroup['g_name'].'分组里的二维码【'.$nextQrcode['name'].'】记录添加！';
+                }
+            }
+            if($tips){
+                $returnArr['is_continue']=0;
+                $returnArr['tips']=$tips;
+                return $returnArr;
+            }else{
+                return $returnArr;
+            }
+        }
+        return $returnArr;
+    }
+
+    //todo 添加巡检 同步记录
+    public function checkQrcodeRecordLog($qrcodeInfo,$qrcode_person=array(),$wid=0){
+        if($qrcode_person && $qrcode_person['start_time']){
+            $qrcode_person['start_time']='00:00:01';
+        }
+        if($qrcode_person && $qrcode_person['end_time']){
+            $qrcode_person['end_time']='23:59:59';
+        }
+        $dbWisdomQrcodeRecordLog =M('Wisdom_qrcode_record_log');
+        $where = [];
+        $where['qrcode_id'] = $qrcodeInfo['qrcode_id'];
+        $where['cate_id'] = $qrcodeInfo['cate_id'];
+        $where['village_id'] = $qrcodeInfo['village_id'];
+        $where['uid'] = $wid;
+        $today = date('Y-m-d');
+        $start_time = strtotime($today.' '.$qrcode_person['start_time']);
+        $end_time =strtotime($today.' '.$qrcode_person['end_time']);
+        $where['add_time'] = array('between',array($start_time,$end_time));
+        $isRecordLog=false;
+        if($qrcode_person['record_type'] == 1){
+            //每日
+            $record_log_count = $dbWisdomQrcodeRecordLog->where($where)->count();
+            if($record_log_count>0){
+                $isRecordLog=true;
+            }
+        } elseif($qrcode_person['record_type'] == 2){
+            //每周
+            $record_time = explode(',',$qrcode_person['record_time']);
+            $weekday = date('w',time());
+            if(in_array($weekday,$record_time)){
+                $record_log_count = $dbWisdomQrcodeRecordLog->where($where)->count();
+                if($record_log_count>0){
+                    $isRecordLog=true;
+                }
+            }
+        }
+        elseif($qrcode_person['record_type'] == 3){
+            //每月
+            $record_time = explode(',',$qrcode_person['record_time']);
+            $monthday = date('d',time());
+            if(in_array($monthday,$record_time)){
+                $record_log_count = $dbWisdomQrcodeRecordLog->where($where)->count();
+                if($record_log_count>0){
+                    $isRecordLog=true;
+                }
+            }
+        }
+        return $isRecordLog;
     }
 
     //记录详情==>页面==>数据添加
@@ -14670,10 +14880,15 @@ class HouseApiAction  extends BaseAction
         }else{
             $this->returnCode('20090055');
         }
-        $c_where['category_id'] = $qrcode['category_id'];
-        $c_where['status'] = 1;
+        $have_qrcode_group_customized = D('Config_customization')->getWSXCustomizedOpen();
+        if($have_qrcode_group_customized){
+            $checkQrcodeGroupInfo=$this->checkQrcodeGroupSort($qrcode_id,$village_id);
+            if($checkQrcodeGroupInfo['is_continue']<1){
+                $this->returnCodeError($checkQrcodeGroupInfo['tips']);
+            }
+        }
 
-        $dataList = M('wisdom_qrcode_record_cate')->where($c_where)->select();
+        $dataList = M('wisdom_qrcode_record_cate')->where(array('cate_id'=>$cate_id,'status'=>1))->select();
         $field_config_fixed = [
             'record_name'=>'异常情况',
             'category_id'=>'9999',
@@ -14846,7 +15061,7 @@ class HouseApiAction  extends BaseAction
                     ];
                     invoke_v20_service($models,$param);
                 }catch (\Exception $e){
-                    
+
                 }
                 if (true) {
                     $file_handle = new file_handle();
@@ -14855,7 +15070,7 @@ class HouseApiAction  extends BaseAction
                     $imageUrl = $path;
                     if ($file_handle->check_open_oss() && file_exists('.'.$path)) {
                         unlink('.'.$path);
-                       
+
                     }
                 }
                 unlink($img_url);
@@ -14898,16 +15113,22 @@ class HouseApiAction  extends BaseAction
         if($qrcode_person['status'] != 1){
             $this->returnCode('20090231');
         }
-        $qrcode_id = I('qrcode_id');
-        if(empty($qrcode_id)){
-            $this->returnCode('20090237');
-        }
-        $cate_id_info = M('Wisdom_qrcode')->where(array('id'=>$qrcode_id))->field('cate_id')->find();
-        $cate_id = $cate_id_info['cate_id'];
+        $cate_id = I('cate_id');
         if(empty($cate_id)){
             $this->returnCode('20090240');
         }
 
+        $qrcode_id = I('qrcode_id');
+        if(empty($qrcode_id)){
+            $this->returnCode('20090237');
+        }
+        $have_qrcode_group_customized = D('Config_customization')->getWSXCustomizedOpen();
+        if($have_qrcode_group_customized){
+            $checkQrcodeGroupInfo=$this->checkQrcodeGroupSort($qrcode_id,$village_id);
+            if($checkQrcodeGroupInfo['is_continue']<1){
+                $this->returnCodeError($checkQrcodeGroupInfo['tips']);
+            }
+        }
         $data['village_id'] = $village_id;
         $data['cate_id'] = $cate_id;
         $data['qrcode_id'] = $qrcode_id;
@@ -14966,14 +15187,12 @@ class HouseApiAction  extends BaseAction
                 ];
                 $this->inspectionOrderAdd($data,$info);
             }
-
             $this->returnCodeOk(L_('添加记录成功!'));
         }else{
             $this->returnCodeOk(L_('添加记录失败,请重试!'));
         }
 
     }
-
 
     /**
      * Notes: 提交工单
@@ -14983,23 +15202,18 @@ class HouseApiAction  extends BaseAction
     function inspectionOrderAdd($post,$userinfo)
     {
         $village_id = $post['village_id'];
-//        $db_house_new_repair_works_order_service = new WisdowQrcodeService();
         $where['village_id'] = $village_id;
         $where['id'] = $post['cate_id'];
-//        $QrcodeCate = $db_house_new_repair_works_order_service->getWisdomQrcodeCateOne($where);
         $QrcodeCateRes = invoke_v20_service('app\community\model\service\WisdowQrcodeService/getWisdomQrcodeCateOne', ['where'=>$where]);
         $QrcodeCate = $QrcodeCateRes['data']['retval'];
 
-//        $QrcodeInfo = $db_house_new_repair_works_order_service->getQrcodeOne(['id'=>$post['qrcode_id']]);
         $QrcodeInfoRes = invoke_v20_service('app\community\model\service\WisdowQrcodeService/getQrcodeOne', ['where'=>['id'=>$post['qrcode_id']]]);
         $QrcodeInfo = $QrcodeInfoRes['data']['retval'];
 
         $workorder_category_id = $QrcodeCate ? $QrcodeCate['workorder_category_id'] : 0;
 
-
         $order_content = htmlspecialchars( json_encode( $post['test'], true) );
 
-//        $userinfoD = (new HouseWorkerService())->getOneWorker(['village_id'=>$village_id,'phone'=>$userinfo['user']['login_phone'],'name'=>$userinfo['user']['login_name']], 'wid,name,type,phone');
         $getWorkerWhere = ['village_id'=>$village_id,'phone'=>$userinfo['login_phone'],'name'=>$userinfo['login_name']];
         $getWorkerField = 'wid,name,type,phone';
         $userinfoDRes = invoke_v20_service('app\community\model\service\HouseWorkerService/getOneWorker', ['where'=>$getWorkerWhere,'field'=>$getWorkerField]);
@@ -15029,18 +15243,14 @@ class HouseApiAction  extends BaseAction
             'inspection_auto_add' => 1,
         ];
         try{
-//            $repair_cate_service = new RepairCateService();
-//            $info = $repair_cate_service->addWorksOrder($data,true);
             $infoRes = invoke_v20_service('app\community\model\service\RepairCateService/addWorksOrder', ['data'=>$data,'auto_assign'=>true]);
             $info = $infoRes['data']['retval'];
             if( empty($info['order_id']) ){
                 fdump_api(['file' => 'app\community\model\service\RepairCateService/addWorksOrder', 'error_msg' => $infoRes['data']['error_msg']], 'autoAddWorksOrderErrLog', 1);
-              $this->returnCodeError('巡检上报成功,但工单创建失败,请手动创建工单');
+                $this->returnCodeError('巡检上报成功,但工单创建失败,请手动创建工单');
             }else{
                 $work_order_id = $info['order_id'];
                 $record_log_where['id'] = $post['inspection_id'];
-//                $wisdomQrcodeRecordLog = new WisdomQrcodeRecordLog();
-//                $wisdomQrcodeRecordLog->updateRecordData($record_log_where,['work_order_id'=>$work_order_id]);
                 M('Wisdom_qrcode_record_log')->where($record_log_where)->save(['work_order_id'=>$work_order_id]);
             }
         }catch (\Exception $e){
@@ -16393,7 +16603,7 @@ class HouseApiAction  extends BaseAction
                     if (mb_strlen($v['name'], 'utf8') > 12) {
                         $thing10 = mb_substr($v['name'], 0, 12, 'utf8') . '......';
                     }
-                
+
                     $model->sendTempMsg('TM01008',//todo 类目模板TM01008
                         array(
                             'href' => $href,
@@ -16698,7 +16908,7 @@ class HouseApiAction  extends BaseAction
                 'visitor_open_img' => $visitor_open_img,
                 'info' => $info,
                 'temporary_visitor_time_limit' => $temporary_visitor_time_limit,
-                'temporary_visitor_switch'=>$temporary_visitor_switch,  
+                'temporary_visitor_switch'=>$temporary_visitor_switch,
                 'time_list' => $time_list
             ];
             $this->returnCode(0, $village_floor_list);
@@ -17415,7 +17625,7 @@ class HouseApiAction  extends BaseAction
         }
         // 1标识 前端开启人脸识别  2标识 关闭用户端人脸
         $now_village_bind['my_face_door_switch'] = $this->config['my_face_door_switch'] ? 2 : 1;
-        
+
         $this->returnCode(0, $now_village_bind);
     }
     /*     * *图片上传** */
@@ -17476,8 +17686,8 @@ class HouseApiAction  extends BaseAction
             $this->returnCode(1001, [], isset($errors[$_FILES['imgFile']['error']]) ? $errors[$_FILES['imgFile']['error']] : '上传失败');
         }
     }
-	
-	
+
+
     // 绑定人脸信息
     public function face_img_add() {
 //	    if (!$this->is_weixin_browser && !$this->is_app_browser) {
@@ -18736,7 +18946,7 @@ class HouseApiAction  extends BaseAction
             }
             $park_coupons = D('Park_coupons')->where(['c_id'=>$coupons_info['cid']])->find();
             if (empty($park_coupons)){
-                $this->returnCodeError('未查询到优惠券信息!'); 
+                $this->returnCodeError('未查询到优惠券信息!');
             }
             if ($park_coupons['status']!=0){
                 $this->returnCodeError('当前优惠券已停止使用!');
@@ -18802,7 +19012,7 @@ class HouseApiAction  extends BaseAction
                 'receive_time' => $nowTime, 'is_download' => 0, 'add_time' => $nowTime,
             ];
             $uniqueArr = [
-                'car_number' => $car_number, 'uid' => $this->_uid, 'village_id' => $village_id, 
+                'car_number' => $car_number, 'uid' => $this->_uid, 'village_id' => $village_id,
                 'park_sys_type' => $park_sys_type, 'is_use' => 0,
             ];
             $unique_id = md5(json_encode($uniqueArr, JSON_UNESCAPED_UNICODE));
@@ -18909,7 +19119,7 @@ class HouseApiAction  extends BaseAction
                 }else{
                     $this->returnCodeError('领取失败!');
                 }
-            } 
+            }
             else {
                 $house_village = M('House_village')->where(['village_id' => $village_id])->field('village_name,property_id')->find();
                 $property_id = 0;
@@ -19007,7 +19217,7 @@ class HouseApiAction  extends BaseAction
         if (empty($village_id)) {
             $this->returnCode('30000001');
         }
-        $channel_id = I('channel_id','0', 'trim');  
+        $channel_id = I('channel_id','0', 'trim');
         if(isset($_POST['channel_id']) && !empty($_POST['channel_id'])){
             $channel_id=trim($_POST['channel_id']);
         }
@@ -19029,7 +19239,7 @@ class HouseApiAction  extends BaseAction
             $garage_id=$channel_info['garage_id'];
         }
         fdump_api([$channel_info],'park_pay_order_0411_2',1);
-  
+
         $house_park_garage_config=D('House_village_park_garage_config')->getVillageParkConfig($garage_id,$village_id);
         if(!$house_park_garage_config || $house_park_garage_config['park_versions'] != 2){
             fdump_api(['智慧停车功能已停用,请联系停车场人员配置'.__LINE__,$house_park_garage_config,$this->_uid,$_REQUEST],'park/'.$village_id.'/errParkPayOrderLog',1);
@@ -19041,7 +19251,7 @@ class HouseApiAction  extends BaseAction
         $data = [];
         $data['car_number'] = $car_number;
         $data['spread'] = $spread;
-        
+
         $village_park_config=$house_park_garage_config;
         fdump_api([$village_park_config,$village_id,$spread],'park_pay_order_0411',1);
         if($channel_info['park_sys_type']=='third_ai_park'){
@@ -19865,14 +20075,14 @@ class HouseApiAction  extends BaseAction
             }
             $data_order['car_number'] = $car_number;//如果是临时车,则需要传
 			$data_order['order_name'].= '（ ' . $car_number . ' ）';
-            
+
             $whereTemp = [
                 'car_number' => $car_number,
                 'village_id' => $village_id,
                 'is_paid' => 0,
             ];
             $temp = M('House_village_parking_temp')->where($whereTemp)->field('id,order_id, price')->order('id DESC')->find();
-            
+
 			// 如果是d1查询当前记录订单金额
             //$village_park_config = M('House_village_park_config')->where(array('village_id'=>$village_id))->find();
             if ( $temp && 'D1'==$temp['park_sys_type']) {
@@ -19972,9 +20182,9 @@ class HouseApiAction  extends BaseAction
                 $provice=mb_substr($car_number,0,1);
                 if ($provice=='临'||$provice=='L'||$provice=='无'){
                     $nolicence=true;
-                } 
+                }
             }
-            
+
             //添加到订单，直接支付
             $now_order = D('House_village_pay_order')->field(true)->where(array('order_id' => $order_id))->find();
             $pay_order_param = array(
@@ -20027,9 +20237,9 @@ class HouseApiAction  extends BaseAction
 
     public function park_go_pay()
     {
-        
+
         fdump_api($_POST,'go_pay_0507',1);
-        
+
         $pay_type = I('type','park');
 
         $pay_name = $this->pay_list_type[$pay_type];
@@ -20233,7 +20443,7 @@ class HouseApiAction  extends BaseAction
             }
             $data_order['car_number'] = $car_number;//如果是临时车,则需要传
             $data_order['order_name'].= '（ ' . $car_number . ' ）';
-            
+
             $whereTemp = [
                 'car_number' => $car_number,
                 'village_id' => $village_id,
@@ -20271,7 +20481,7 @@ class HouseApiAction  extends BaseAction
                     if ($temp['order_id']) {
                         $data_order['third_id'] = $temp['order_id'];
                     }
-  
+
             }
             elseif($temp && ('HXT85'==$temp['park_sys_type'] || 'D3'==$temp['park_sys_type'])){
                 /*
@@ -20296,7 +20506,7 @@ class HouseApiAction  extends BaseAction
                     !$out_record_id && $out_record_id = isset($temp['out_record_id']) && $temp['out_record_id'] ? intval($temp['out_record_id']) : 0;
                     !$in_time && $in_time = isset($temp['in_time']) && $temp['in_time'] ? intval($temp['in_time']) : 0;
                     !$query_time && $query_time = isset($temp['query_time']) && $temp['query_time'] ? intval($temp['query_time']) : 0;
- 
+
             }
             elseif($temp && 'D6'==$temp['park_sys_type']){
                 //todo D6智慧停车生成订单
@@ -20334,7 +20544,7 @@ class HouseApiAction  extends BaseAction
                         $this->returnCodeError('您已经在'.$pay_order_info['addtime'].'发起的支付正在支付中，请勿重复支付！');
                     }
                 }
-                
+
             }elseif($new_pay_order && $new_pay_order['pay_time']>100 && $new_pay_order['add_time']>$pre_temp_time){
                 $this->returnCodeError('您已经在'.date('Y-m-d H:i:s',$new_pay_order['pay_time']).'支付过一笔金额是'.$new_pay_order['pay_money'].'元的车费订单了，请勿重复支付！');
             }
@@ -20352,7 +20562,7 @@ class HouseApiAction  extends BaseAction
                         $this->returnCodeError('您已经在'.$pay_order_info['addtime'].'发起的支付正在支付中，请勿重复支付！');
                     }
                 }
-                
+
             }elseif($new_pay_order && $new_pay_order['pay_time']>100 && $new_pay_order['pay_time']>$pre_temp_time){
                 $this->returnCodeError('您已经在'.date('Y-m-d H:i:s',$new_pay_order['pay_time']).'支付过一笔金额是'.$new_pay_order['pay_money'].'元的车费订单了，请勿重复支付！');
             }

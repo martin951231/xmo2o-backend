@@ -167,8 +167,8 @@ class UtilitiesAction extends BaseAction
         // 获取当前时间
         $currentTime = new DateTime();
 
-        // 循环生成近12个月（包含当前月）
-        for ($i = 0; $i < 12; $i++) {
+        // 循环生成当前月到2000年1月（包含当前月）
+        for ($i = 0; $i <= (date('Y') - 2000) * 12 + date('n') - 1; $i++) {
             // 往前推i个月
             $date = clone $currentTime;
             $date->modify("-$i month");

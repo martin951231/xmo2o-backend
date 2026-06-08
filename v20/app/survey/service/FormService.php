@@ -24,7 +24,7 @@ class FormService
 	public function getFormList($params = []): Paginator
 	{
 		return SurveyForm::where('is_del', 0)
-			->withSearch(['title', 'status'], $params)
+			->withSearch(['title', 'status', 'type'], $params)
 			->order('create_time desc')
 			->paginate(min($params['pageSize'] ?? 10, 100))
 			->each(function ($item) {
@@ -81,9 +81,14 @@ class FormService
 		$this->validateFormData($data);
 
 		return Db::transaction(function () use ($data) {
-
 			$formData = $this->prepareFormData($data);
 			$form = new SurveyForm();
+			if($data['type'] == SurveyForm::TYPE_SIGNUP) {
+				$formData['start_time'] = '';
+				$formData['end_time'] = '';
+			}
+
+			$form->type = in_array($data['type'], [SurveyForm::TYPE_SURVEY, SurveyForm::TYPE_SIGNUP]) ? $data['type'] : SurveyForm::TYPE_SURVEY;
 			$form->save($formData);
 			$formId = $form->id;
 
@@ -142,14 +147,14 @@ class FormService
 			'title' => $data['title'],
 			'description' => $data['description'] ?? '',
 			'status' => $data['status'] ?? surveyForm::STATUS_DRAFT,
-			'start_time' => $data['start_time'] ?: Carbon::now()->startOfDay()->toDateTimeString(),
-			'end_time' => $data['end_time'] ?: Carbon::now()->endOfDay()->toDateTimeString(),
+			'start_time' => !empty($data['start_time']) ? $data['start_time'] : Carbon::now()->startOfDay()->toDateTimeString(),
+			'end_time' => !empty($data['end_time']) ? $data['end_time'] : Carbon::now()->endOfDay()->toDateTimeString(),
 			'theme_config' => $data['theme_config'] ?? [],
-			'submit_user_type' => $data['submit_user_type'] ?: 'all',
-			'user_notice_switch' => $data['user_notice_switch'] ?: 0,
-			'max_submit_num' => $data['max_submit_num'] ?: 0,
-			'max_day_submit_num' => $data['max_day_submit_num'] ?: 0,
-			'show_result' => $data['show_result'] ?: 0,
+			'submit_user_type' => !empty($data['submit_user_type']) ? $data['submit_user_type'] : 'all',
+			'user_notice_switch' => !empty($data['user_notice_switch']) ? $data['user_notice_switch'] : 0,
+			'max_submit_num' => !empty($data['max_submit_num']) ? $data['max_submit_num'] : 0,
+			'max_day_submit_num' => !empty($data['max_day_submit_num']) ? $data['max_day_submit_num'] : 0,
+			'show_result' => !empty($data['show_result']) ? $data['show_result'] : 0,
 			'is_del' => 0,
 		];
 	}
@@ -226,7 +231,7 @@ class FormService
 		}
 		SurveyQuestion::where('form_id', $formId)->delete();
 	}
-	
+
 	public function sendFormNotice(): bool
 	{
 		$form = SurveyForm::where('status', SurveyForm::STATUS_ENABLE)
@@ -238,7 +243,7 @@ class FormService
 		if (empty($form)) {
 			return false;
 		}
-		
+
 		User::where('status', 1)->chunk(300, function ($users) use ($form) {
 			$userType = $form->submit_user_type;
 			foreach ($users as $user) {

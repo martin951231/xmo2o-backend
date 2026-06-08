@@ -25,6 +25,7 @@ use app\pay\model\service\channel\TianqueService;
 use app\pay\model\service\env\EnvService;
 use app\pay\model\service\PayService;
 use app\thirdRobot\model\service\ThirdRobotDeliveryOrderService;
+use think\facade\Cache;
 use think\facade\Db;
 use customization\customization;
 class PayController
@@ -33,7 +34,7 @@ class PayController
 	/**
 	 * 收银台界面接口
 	 */
-	public function check(){	
+	public function check(){
 		try {
 			$compute = $this->compute('check');
 		} catch (\Exception $e) {
@@ -65,28 +66,30 @@ class PayController
 		$villageId = $order_info['village_id'] ?? 0;// 社区id
         $wxapp_own_village_id	    = request()->param('wxapp_own_village_id', 0, 'intval');// 物业自有小程序的物业ID
         $pay_service = new PayService($order_info['city_id'], $order_info['mer_id'], $order_info['store_id'], $villageId, $wxapp_own_village_id);
-        $extra_cfg = [];
-        // if($pay_info['select_pay_type'] == 'wechat'){
-            $extra_cfg = ['openid'=> $compute['user_info']['openid'], 'wxapp_openid'=> $compute['user_info']['wxapp_openid']];
-        // }
+        $extra_cfg = ['openid'=> $compute['user_info']['openid'], 'wxapp_openid'=> $compute['user_info']['wxapp_openid']];
         if($pay_info['select_pay_type'] == 'alipay'){
             $extra_cfg = ['alipay_uid'=> $compute['user_info']['alipay_uid']];
         }
         $extra_cfg = array_merge($extra_cfg,$compute['extra_cfg']??[]);
         $extra_cfg['uid'] = $compute['user_info']['uid'];
+        $extra_cfg['phone'] = $compute['user_info']['phone'] ?? '';
+        $extra_cfg['nickname'] = $compute['user_info']['nickname'] ?? '';
         $extra_cfg['appPackName'] = $compute['user_info']['appPackName'] ?? '';
         $extra_cfg['appPackSign'] = $compute['user_info']['appPackSign'] ?? '';
         $extra_cfg['appBundleId'] = $compute['user_info']['appBundleId'] ?? '';
        	if($villageId > 0){
        		$extra_cfg['village_id'] = $villageId;
        	}
-
+        $extra_cfg['mer_id'] = (string) $compute['order_info']['mer_id'];
         $env = new EnvService($order_info['city_id'], $order_info['mer_id'], $order_info['store_id'], $villageId, $wxapp_own_village_id);
         $envService = $env->getEnvService();
         if($envService !== null){
             $judge = $envService->judgeOpenChinaums();
         } else {
             $judge = false;
+        }
+        if($pay_info['select_pay_type'] == 'icbc') {
+            $judge = true;
         }
 		//  银联分账
 		if($judge){
@@ -108,9 +111,9 @@ class PayController
 			}
 		}
         if(
-            empty($pay_info['current_village_hot_water_balance']) && 
-            empty($pay_info['current_village_cold_water_balance']) && 
-            empty($pay_info['current_village_electric_balance']) && 
+            empty($pay_info['current_village_hot_water_balance']) &&
+            empty($pay_info['current_village_cold_water_balance']) &&
+            empty($pay_info['current_village_electric_balance']) &&
             empty($pay_info['current_village_balance']) &&
             empty($pay_info['select_pay_type']) &&
             empty($pay_info['current_score_use']) &&
@@ -121,7 +124,7 @@ class PayController
             empty($pay_info['current_employee_balance']) &&
             empty($pay_info['current_employee_score_deducte']) &&
             empty($pay_info['current_internal_card_balance']) &&
-            $order_info['order_money'] > 0 
+            $order_info['order_money'] > 0
         ){
             fdump_api(['param' => $_POST,'compute' => $compute,'pay_info' => $pay_info,'order_info' => $order_info,'msg' => '当前未选择合适的支付方式'],'errPay/goPayLog',1);
             return api_output_error(1001, '当前未选择合适的支付方式！');
@@ -170,7 +173,7 @@ class PayController
 		if (!empty($return['redirect_mini'])) {
 			return api_output(0, $return);
 		}
-		
+
         if (!empty($return['url'])) {
             return api_output_redirect($return['url']);
         }
@@ -194,18 +197,18 @@ class PayController
 			return api_output_error(1002, '当前未登录');
 		}
 		$order_type 	= request()->param('order_type');//业务标识 shop:外卖|mall:商城|village_group:社区拼团|...
-		$order_id 		= request()->param('order_id', null, 'intval');//业务订单ID（主键哦） 
+		$order_id 		= request()->param('order_id', null, 'intval');//业务订单ID（主键哦）
         $resource_from 		= request()->param('resource_from', '', 'trim');//订单来源 做一些判断用
 		if(empty($order_type) || empty($order_id)){
             fdump_api(['param' => $_POST,'msg' => '必填参数未传递'],'errPay/computeLog',1);
-			return api_output_error(1001, '必填参数未传递');		
+			return api_output_error(1001, '必填参数未传递');
 		}
         $internal_card_ids          = request()->param('internal_card_ids');//会员卡支付id
         $use_village_balance	    = request()->param('use_village_balance', 0, 'intval');//是否使用用户余额支付
         $use_village_hot_water_balance	    = request()->param('use_village_hot_water_balance', 0, 'intval');//是否使用用户热水余额支付
         $use_village_cold_water_balance	    = request()->param('use_village_cold_water_balance', 0, 'intval');//是否使用用户冷水余额支付
         $use_village_electric_balance	    = request()->param('use_village_electric_balance', 0, 'intval');//是否使用用户电费余额支付
-		$use_system_balance			= request()->param('use_system_balance', 0, 'intval');//是否使用用户余额支付 
+		$use_system_balance			= request()->param('use_system_balance', 0, 'intval');//是否使用用户余额支付
 		$use_merchant_balance		= request()->param('use_merchant_balance', 0, 'intval');//是否使用用户商家会员卡余额
 		$use_qiye_balance			= request()->param('use_qiye_balance', 0, 'intval');//是否使用企业预存款余额
 		$pay_type					= request()->param('pay_type', '');
@@ -220,9 +223,7 @@ class PayController
         $appPackSign = request()->param('appPackSign', '', 'trim'); //安卓包签名
         $appBundleId = request()->param('appBundleId', '', 'trim'); //IOS bundleId
 
-
         $wxapp_own_village_id	    = request()->param('wxapp_own_village_id', 0, 'intval');// 物业自有小程序的物业ID
-        
 
 		//获取业务订单信息  getOrderPayInfo(order_id)   paid,is_cancel(1=已取消),time_remaining(剩余时间，单位：秒),mer_id,city_id,store_id,order_money（需支付的金额）,	uid, order_no(用户看到的长订单号), title（订单标题）
 		//判断订单是否已经支付过？如果已经支付，则跳转到业务订单对应的url  getPayResultUrl(order_id);
@@ -295,6 +296,9 @@ class PayController
 			case 'shopping_mall_park': //商场停车缴费
 				$business = new \app\building\service\ParkOrderService();
 				break;
+			case 'social_activity': //活动报名
+				$business = new \app\social_activity\model\service\SocialActivityOrderService();
+				break;
 			default:
 				return api_output_error(1001, '当前业务（'.$order_type.'）未对接');
 		}
@@ -344,7 +348,7 @@ class PayController
 		} catch (\Exception $e) {
             fdump_api(['param' => $_POST,'now_order' => $now_order,'msg' => $e->getMessage()],'errPay/computeLog',1);
 			return api_output_error(1005, $e->getMessage());
-		}	
+		}
         $village_order_type_flag='';
         if(isset($now_order['village_order_type_flag']) && !empty($now_order['village_order_type_flag'])){
             $village_order_type_flag=$now_order['village_order_type_flag'];
@@ -363,12 +367,31 @@ class PayController
                 }
             }
         }
+
+        if($cfrom=='check' && request()->agent == 'wechat_h5'){
+            foreach ($pay_types as $pkk=>$pvv){
+                if($pvv['name']=='alipay'){
+                    unset($pay_types[$pkk]);
+                }
+            }
+        }
+        //商家指定了支付方式，只显示指定的支付方式
+        if ($now_order['mer_id'] > 0) {
+            $nowMerchant = (new \app\merchant\model\service\MerchantService())->getMerchantByMerId($now_order['mer_id']);
+            if (isset($nowMerchant['pay_method']) && !empty($nowMerchant['pay_method'])) {
+                $now_order['use_system_balance'] = 0;
+                $pay_types = array_values(array_filter($pay_types, function ($v) use ($nowMerchant) {
+                    return in_array($v['name'], explode(',', $nowMerchant['pay_method']));
+                }));
+            }
+        }
+
         $jz_open = (new ConfigCustomizationService())->getWSXCustomizedOpen();
         if ($jz_open) {
             if (in_array($order_type, ['village_pay', 'house_meter', 'pile', 'village_new_pay'])) {
-                // 社区业务 
+                // 社区业务
                 foreach ($pay_types as $keyVal1 => $itemVal1) {
-                    if(!in_array($itemVal1['name'], ['constructionApp', 'constructionPay'])) {
+                    if(!in_array($itemVal1['name'], ['constructionApp', 'constructionPay', 'icbc'])) {
                         unset($pay_types[$keyVal1]);
                     }
                 }
@@ -376,6 +399,9 @@ class PayController
                 // 非社区业务 算作商业业务
                 foreach ($pay_types as $keyVal1 => $itemVal1) {
                     if(!in_array($itemVal1['name'], ['wechat'])) {
+                        if(customization('internal_membership_card') && $itemVal1['name'] == 'icbc') {
+                            continue;
+                        }
                         unset($pay_types[$keyVal1]);
                     }
                 }
@@ -435,7 +461,7 @@ class PayController
                 return api_output_error(1001, '请至少选择一项有效支付方式！');
             }
         }
-		
+
 		//如果是商家自有支付（微信端）
 		if($select_pay_type == 'wechat' && $now_order['mer_id'] > 0 && request()->agent == 'wechat_h5'){
  			//需要做一个授权的跳转（新版暂时没做）
@@ -445,14 +471,13 @@ class PayController
 		$env = new EnvService($now_order['city_id'], $now_order['mer_id'], $now_order['store_id'], $villageId, $wxapp_own_village_id);
 		$envService = $env->getEnvService();
 		$channel = $envService->getChannel($select_pay_type,$order_type);
-		
 
 		// 服务商子商户不允许使用积分抵扣
 		$can_use_score = true;
 		if(isset($channel['config']['sub_mch_discount']) && !$channel['config']['sub_mch_discount'] && !in_array($order_type, ['lifetoolscard'])){ //景区次卡订单不能使用积分
 			$can_use_score = false;
 		}
-		
+
 		//社区物业费拖欠，社区缴费不允许使用积分
         if(isset($now_order['use_score']) && !$now_order['use_score']){
             $can_use_score = false;
@@ -468,7 +493,7 @@ class PayController
         if($now_order['is_recharge'] == 1){
             $can_use_system_balance = false;
         }
-		
+
 		//获取当前的用户信息（openid、余额、剩余积分）
 		$now_user = [];
 		$user = new UserService;
@@ -491,7 +516,7 @@ class PayController
             $now_user['openid']       = isset($bindUser['openid'])       && $bindUser['openid']       ? $bindUser['openid']       : '';
             $now_user['wxapp_openid'] = isset($bindUser['wxapp_openid']) && $bindUser['wxapp_openid'] ? $bindUser['wxapp_openid'] : '';
         }
-        
+
         //获取当前的用户信息（openid、余额、剩余积分）
         $now_village_user = [];
         $village_user = new StorageService();
@@ -573,7 +598,7 @@ class PayController
         if($order_type == 'village_new_pay' && $can_use_score && isset($now_user['score_count']) && isset($now_order['room_id'])){
             $now_user['score_count'] = (new NewPayService())->getUserScoreCount($now_order['room_id'],$now_user['score_count']);
         }
-        
+
 		//================================先使用积分抵扣，再用余额================================
         if(in_array($order_type,['machine_sales','water_card_recharge','water_card_usage','pile_user_charge_balance'])){//machine_sales无人售货柜
             $can_use_score = false;
@@ -609,7 +634,7 @@ class PayController
 					$user_score_max_use = $business->getScoreMaxUse($order_id);
 					break;
                 case 'village_new_pay'://社区新版收费业务
-                    $user_score_info = $business->get_score($order_id,$now_user);
+                    $user_score_info = $business->get_score($order_id,$now_user,true,false);
                     $user_score_max_use=$user_score_info['score_can_use'];
                     fdump_api([$user_score_info],'pay_0224',1);
                     break;
@@ -626,7 +651,7 @@ class PayController
 
 			$score_use = min($user_score_max_use, $now_user['score_count']);
 			$score_deducte_money = sprintf('%.2f',$score_use/$user_score_use_percent);
-			
+
 			if($score_deducte_money >= $order_money){
 				if($open_user_score == 1 && $use_user_score == 1){
 					$current_score_use_ed = ceil($order_money*$user_score_use_percent);
@@ -652,9 +677,6 @@ class PayController
 				$current_score_deducte = $score_deducte_money;
 			}
 		}
-
-
-
 		############################### 使用员工卡支付begin ###########################
 		$employee_balance = 0;
 		$employee_score = 0;
@@ -697,7 +719,7 @@ class PayController
 						}
 					}else{
 						$use_employee_score = 0;
-					} 
+					}
 
 					//使用余额
 					if($use_employee_balance && $employee_balance > 0 && $online_pay_money > 0){
@@ -716,7 +738,7 @@ class PayController
 					}else{
 						$use_employee_balance = 0;
 					}
-					
+
 					//使用积分或余额，记录员工卡ID
 					if($current_employee_balance > 0 || $current_employee_score_deducte > 0){
 						$employee_card_user_id = $employeeCardUser->user_id;
@@ -726,10 +748,8 @@ class PayController
 			}
 
 		}
-		
-		################################# 使用员工卡支付end ###########################
 
-        
+		################################# 使用员工卡支付end ###########################
 
 		//================================使用商家会员卡余额================================
 		$merchant_balance = 0;
@@ -818,7 +838,6 @@ class PayController
                 $village_water_electric_balance=$online_pay_money;
             }else{
                 $village_water_electric_balance =  $now_village_user[$village_order_type_flag];
-
             }
         }
         $current_village_hot_water_balance=0;
@@ -861,7 +880,7 @@ class PayController
                 $is_use_village_electric_balance=true;
             }
         }
-        
+
 		//================================使用平台余额================================
 		//如果业务订单返回了不能使用平台余额，则需要屏蔽
 		if (isset($now_order['use_system_balance']) && $now_order['use_system_balance'] == 0) {
@@ -926,7 +945,7 @@ class PayController
         }
         if($cfrom=='go_pay' && $online_pay_money>0 && empty($select_pay_type)){
             return api_output_error(1001, '您还有'.$online_pay_money.'元，无法在线支付！');
-        }        
+        }
         //================================输出================================
 		$symbol = cfg('Currency_symbol') ?? '￥';
 		$output = [
@@ -952,6 +971,8 @@ class PayController
 				'openid' => $now_user ? $now_user['openid'] : '',
 				'wxapp_openid' => $now_user ? $now_user['wxapp_openid'] : '',
 				'alipay_uid' => $now_user ? $now_user['alipay_uid'] : '',
+                'phone'=>$now_user ? $now_user['phone'] : '',
+                'nickname'=>$now_user ? $now_user['nickname'] : '',
 				'appPackName' => $appPackName ?? '',
                 'appPackSign' => $appPackSign ?? '',
                 'appBundleId' => $appBundleId ?? '',
@@ -1064,7 +1085,8 @@ class PayController
                 'summary_order_no' => $now_order['summary_order_no'] ?? ''
             ];
         }
-      
+        $output['extra_cfg']['orders'] = $now_order['orders'] ?? [];
+        $output['extra_cfg']['user'] = $now_user;
 		//当业务端指定不使用余额（平台余额，商家余额）时，支付中心不展示此模块
 		if(isset($now_order['use_platform_balance']) && $now_order['use_platform_balance'] == false){
 			$output['system_balance']['display'] = false;
@@ -1110,7 +1132,7 @@ class PayController
 			echo json_encode(['url'=>'', 'already' =>1]);
 		}
 		else{
-			echo json_encode(['url'=>'']);	
+			echo json_encode(['url'=>'']);
 		}
 			exit;
 	}
@@ -1126,52 +1148,47 @@ class PayController
 			return api_output(0, ['money' => 0, 'url' => '']);
 		}
 		$money = get_format_number($order['money']/100);
-		switch ($order['business']) {
-            case 'shop':
-                #  这里调用外卖的service
-                break;
+        switch ($order['business']) {
             case 'dining':
                 #  这里调用餐饮的service
-            	$business = new \app\foodshop\model\service\order\DiningOrderPayService;
+                $business = new \app\foodshop\model\service\order\DiningOrderPayService;
                 break;
             case 'package_room':
-				$business = new \app\community\model\service\PackageRoomOrderService;
-				break;
-			case 'package':
-				$business = new \app\community\model\service\PackageOrderService;
-				break;
-			case 'village_pay':
-				$business = new \app\community\model\service\VillagePayOrderService;
-				break;
-			case 'mall':
-				$business = new \app\mall\model\service\MallOrderCombineService;
-				break;
-			case 'shop':
-				$business = new \app\shop\model\service\order\ShopOrderPayService;
-				break;
-
-			case 'house_meter':
-				$business = new \app\community\model\service\HouseMeterPayService;
+                $business = new \app\community\model\service\PackageRoomOrderService;
                 break;
-			case 'reward':
-				$business = new \app\reward\model\service\order\RewardOrderPayService;
-				break;
-
+            case 'package':
+                $business = new \app\community\model\service\PackageOrderService;
+                break;
+            case 'village_pay':
+                $business = new \app\community\model\service\VillagePayOrderService;
+                break;
+            case 'mall':
+                $business = new \app\mall\model\service\MallOrderCombineService;
+                break;
+            case 'shop':
+                $business = new \app\shop\model\service\order\ShopOrderPayService;
+                break;
+            case 'house_meter':
+                $business = new \app\community\model\service\HouseMeterPayService;
+                break;
+            case 'reward':
+                $business = new \app\reward\model\service\order\RewardOrderPayService;
+                break;
             case 'pile':
                 $business = new \app\community\model\service\PileOrderPayService;
                 break;
-			case 'village_new_pay':
-				$business = new \app\community\model\service\NewPayService();
-				break;
-			case 'employee_card':// 员工卡充值
-				$business = new \app\employee\model\service\EmployeeCardOrderService();
-				break;
-			case 'lifetools'://体育健身
-				$business = new \app\life_tools\model\service\LifeToolsOrderService();
-				break;
-			case 'lifetoolscard'://景区次卡
-				$business = new \app\life_tools\model\service\LifeToolsCardOrderService();
-				break;
+            case 'village_new_pay':
+                $business = new \app\community\model\service\NewPayService();
+                break;
+            case 'employee_card':// 员工卡充值
+                $business = new \app\employee\model\service\EmployeeCardOrderService();
+                break;
+            case 'lifetools'://体育健身
+                $business = new \app\life_tools\model\service\LifeToolsOrderService();
+                break;
+            case 'lifetoolscard'://景区次卡
+                $business = new \app\life_tools\model\service\LifeToolsCardOrderService();
+                break;
             case 'appoint_reward'://预约打赏技师
                 $business = new \app\appoint\model\service\AppointRewardOrderService();
                 break;
@@ -1195,7 +1212,7 @@ class PayController
 		if (empty($orderNo)) {
 			return "非法请求";
 		}
-		return \think\facade\Cache::get($orderNo);
+		return Cache::get($orderNo);
 	}
     //用户信息弹出层会员卡列表 会员卡名称、会员卡号、可用余额、开卡时间
     public function user_card_list(){
@@ -1207,7 +1224,7 @@ class PayController
             return api_output(0, []);
         }
         $store_id = input('post.store_id', 0, 'int');
-        
+
         try{
             $cardList = (new InternalCardService())->internalCard($store_id, '', '', [
                 'no_check_password' => true,
@@ -1219,7 +1236,7 @@ class PayController
         }catch (\Exception $e){
             return api_output(0, []);
         }
-        
+
 		return api_output(0, $cardList['internal_card_ids']);
     }
 }

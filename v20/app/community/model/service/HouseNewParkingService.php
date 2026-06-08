@@ -1529,6 +1529,62 @@ class HouseNewParkingService
     }
 
     public function delParkPosition($data){
+        $positionIds = $this->formatPositionIds($data['position_id']);
+        if (empty($positionIds)) {
+            return 0;
+        }
+        $positionBillIds = $this->getPositionBillIds($positionIds, $data['village_id']);
+        if (!empty($positionBillIds)) {
+            if (count($positionIds) == 1) {
+                throw new \think\Exception('当前车位有账单');
+            }
+            $positionIds = array_values(array_diff($positionIds, $positionBillIds));
+            if (empty($positionIds)) {
+                return 0;
+            }
+        }
+
+        $id = 0;
+        foreach ($positionIds as $positionId) {
+            $deleteData = $data;
+            $deleteData['position_id'] = $positionId;
+            $id += $this->deleteParkPosition($deleteData);
+        }
+        return $id;
+    }
+
+    private function formatPositionIds($positionId)
+    {
+        if (is_string($positionId)) {
+            $positionId = explode(',', $positionId);
+        } elseif (!is_array($positionId)) {
+            $positionId = [$positionId];
+        }
+        $positionId = array_map('intval', $positionId);
+        $positionId = array_filter($positionId, function ($id) {
+            return $id > 0;
+        });
+        return array_values(array_unique($positionId));
+    }
+
+    private function getPositionBillIds($positionIds, $villageId)
+    {
+        $where = [
+            ['position_id', 'in', $positionIds],
+            ['village_id', '=', $villageId],
+            ['is_paid', 'in', [1, 2]],
+            ['is_discard', '=', 1],
+        ];
+        $positionBillIds = (new HouseNewPayOrder())->where($where)->column('position_id');
+        if (empty($positionBillIds)) {
+            return [];
+        }
+        $positionBillIds = array_map('intval', $positionBillIds);
+        return array_values(array_unique($positionBillIds));
+    }
+
+    private function deleteParkPosition($data)
+    {
         $db_house_village_parking_position=new HouseVillageParkingPosition();
         $bind_where=[];
         $bind_where['position_id'] =$data['position_id'];
@@ -1541,7 +1597,7 @@ class HouseNewParkingService
             $parent_where['children_type'] = 2;
             $parent_arr=$db_house_village_parking_position->getColumn($parent_where,'position_id');
             if (!empty($parent_arr)){
-                $db_house_village_parking_position->saveOne(['position_id'=>$parent_arr],['parent_position_id'=>0]);
+                $db_house_village_parking_position->saveOne([['position_id','in',$parent_arr]],['parent_position_id'=>0]);
             }
         }
         $id=$db_house_village_parking_position->delOne(['position_id'=>$data['position_id']]);
@@ -7346,6 +7402,10 @@ class HouseNewParkingService
                 if (empty($position_id)){
                     $errFailReason = "";
                     foreach ($position_num_arr as $position_num) {
+                        $position_num = trim($position_num);
+                        if ($position_num === '') {
+                            continue;
+                        }
                         if(strlen($position_num) > 30){
                             $errFailReason = '车位号[' . $position_num . ']不能超过30位';
                             break;
@@ -7354,7 +7414,8 @@ class HouseNewParkingService
                         if ($position_info) {
                             if ($position_info['position_num'] == $position_num && $position_info['garage_id'] == $garage_info['garage_id']) {
                                 $errFailReason = '车位号[' . $position_num . ']已存在，请正确填写参数';
-                                break;
+                                $errFailReason = "";
+                                continue;
                             }
                         }
                         /*
@@ -7385,10 +7446,15 @@ class HouseNewParkingService
                     }
                 } else {
                     $position_info1 = $db_house_village_parking_position->getFind(['position_id' => $position_id,'village_id'=>$village_id],'*');
-                    $position_num1 = isset($position_num_arr[0]) && $position_num_arr[0] ? $position_num_arr[0] : '';
+                    $position_num1 = isset($position_num_arr[0]) && $position_num_arr[0] ? trim($position_num_arr[0]) : '';
                     fdump_api(['position_num1' => $position_num1, 'position_info1' => $position_info1 && !is_array($position_info1) ? $position_info1->toArray() : $position_info1], '111111uplodePosition', 1);
                     if (empty($position_info1) || $position_info1->isEmpty()) {
+                        $errFailReason = "";
                         foreach ($position_num_arr as $position_num) {
+                            $position_num = trim($position_num);
+                            if ($position_num === '') {
+                                continue;
+                            }
                             if(strlen($position_num) > 30){
                                 $errFailReason = '车位号[' . $position_num . ']不能超过30位';
                                 break;
@@ -7397,7 +7463,8 @@ class HouseNewParkingService
                             if ($position_info) {
                                 if ($position_info['garage_id'] == $garage_info['garage_id']) {
                                     $errFailReason = '车位号[' . $position_num . ']已存在，请正确填写参数';
-                                    break;
+                                    $errFailReason = "";
+                                    continue;
                                 }
                             }
                             /*
@@ -7435,15 +7502,23 @@ class HouseNewParkingService
                             continue;
                         }
                         */
-                            $updatePositionData = [
-                                'garage_id' => $garage_info['garage_id'], 'position_num' => $position_num1, 'position_area' => $position_area,
-                                'position_note' => $position_note, 'village_id' => $village_id, 'position_pattern' => 1,
-                            ];
-                            $updatePositionData['start_time']=$start_time;
-                            $updatePositionData['end_time']=$end_time;
-                            $db_house_village_parking_position->saveOne(['position_id' => $position_id,'village_id'=>$village_id], $updatePositionData);
-                            $tmpPositionIds[] = $position_id;
-                            fdump_api(['position_id' => $position_id, 'updatePositionData' => $updatePositionData, 'tmpPositionIds' => $tmpPositionIds], '111111uplodePosition', 1);
+                            $position_info = $db_house_village_parking_position->getFind([
+                                'position_num' => $position_num1,
+                                'garage_id' => $garage_info['garage_id'],
+                                'village_id' => $village_id,
+                            ], 'position_id');
+                            if ($position_info && $position_info['position_id'] != $position_id) {
+                            } else {
+                                $updatePositionData = [
+                                    'garage_id' => $garage_info['garage_id'], 'position_num' => $position_num1, 'position_area' => $position_area,
+                                    'position_note' => $position_note, 'village_id' => $village_id, 'position_pattern' => 1,
+                                ];
+                                $updatePositionData['start_time']=$start_time;
+                                $updatePositionData['end_time']=$end_time;
+                                $db_house_village_parking_position->saveOne(['position_id' => $position_id,'village_id'=>$village_id], $updatePositionData);
+                                $tmpPositionIds[] = $position_id;
+                                fdump_api(['position_id' => $position_id, 'updatePositionData' => $updatePositionData, 'tmpPositionIds' => $tmpPositionIds], '111111uplodePosition', 1);
+                            }
 
                     }
                 }
@@ -7469,7 +7544,7 @@ class HouseNewParkingService
                         }
                         $db_house_village_parking_position->saveOne(['position_id' => $tmp_position_id], ['position_status' => 2]);
                     }
-                } elseif ($is_yezhu_info) {
+                } elseif ($is_yezhu_info && !empty($tmpPositionIds)) {
                     $value['failReason'] = '车位已导入成功，绑定业主失败，请仔细检查所填业主信息是否正确！';
                     $data_print[] = $value;
                     unset($value);

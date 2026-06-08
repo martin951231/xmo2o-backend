@@ -23,10 +23,10 @@ class SubmitService
 		if ($detail->status != SurveyForm::STATUS_ENABLE) {
 			throw_exception('问卷未启用');
 		}
-		if ($detail->start_time > date('Y-m-d H:i:s')) {
+		if ($detail->type != 'signup' && $detail->start_time > date('Y-m-d H:i:s')) {
 			throw_exception('问卷调查未开始');
 		}
-		if ($detail->end_time < date('Y-m-d H:i:s')) {
+		if ($detail->type != 'signup' && $detail->end_time < date('Y-m-d H:i:s')) {
 			throw_exception('问卷调查已结束');
 		}
 		return $detail;

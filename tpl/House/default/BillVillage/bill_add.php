@@ -17,10 +17,10 @@
 								<input class="col-sm-2" size="20" name="title" id="title" placeholder="费用名称" type="text" value=""/>
 								&nbsp;&nbsp;&nbsp;&nbsp;<span class="red">*必填项</span>
 							</div>
-							<div class="form-group" style="display: none;">
+							<div class="form-group" style="">
 								<label class="col-sm-1">类型:</label>
 
-<!--								<label style="padding-left:0px;padding-right:20px;"><input type="radio" checked="checked" class="ace" value="2" name="bill_type"><span style="z-index: 1" class="lbl">收入</span></label>-->
+								<label style="padding-left:0px;padding-right:20px;"><input type="radio" checked="checked" class="ace" value="2" name="bill_type"><span style="z-index: 1" class="lbl">收入</span></label>
 								<label style="padding-left:0px;"><input type="radio" checked="checked" class="ace" value="1" name="bill_type"><span style="z-index: 1" class="lbl">支出</span></label>
 							</div>
                             <div class="form-group">

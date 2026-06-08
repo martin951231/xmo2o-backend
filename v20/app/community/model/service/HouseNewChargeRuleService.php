@@ -348,7 +348,7 @@ class HouseNewChargeRuleService
                     $v['unit_price'] = '--';
                     $fees_type = isset($v['fees_type']) ? $v['fees_type'] : '';
                     $v['fees_type'] = $this->getFeesTypeTxt($fees_type);
-                    $v['bill_create_set'] = empty($v['bill_create_set']) ? '--' : ($v['bill_create_set'] == 1 ? '按日生成' : ($v['bill_create_set'] == 2 ? '按月生成' : '按年生成'));
+                    $v['bill_create_set'] = empty($v['bill_create_set']) ? '--' : ($v['bill_create_set'] == 1 ? '按日生成' : ($v['bill_create_set'] == 2 ? '按月生成' : ($v['bill_create_set'] == 3 ? '按年生成' : '自定义收费周期')));
                     $v['bill_arrears_set'] = empty($v['bill_arrears_set']) ? '--' : ($v['bill_arrears_set'] == 1 ? '预生成' : '后生成');
                     $v['bill_type'] = empty($v['bill_type']) ? '--' : ($v['bill_type'] == 1 ? '手动生成' : '自动生成');
                     $v['is_prepaid'] = empty($v['is_prepaid']) ? '--' : ($v['is_prepaid'] == 1 ? '支持' : '不支持');
@@ -538,6 +538,10 @@ class HouseNewChargeRuleService
                 array(
                     'key' => 3,
                     'value' => '按年生成'
+                ),
+                array(
+                    'key' => 4,
+                    'value' => '自定义收费周期'
                 )
             ),
             'arrears_array' => array(
@@ -2827,7 +2831,8 @@ class HouseNewChargeRuleService
                 '0' => '',
                 '1' => '按日生成',
                 '2' => '按月生成',
-                '3' => '按年生成'
+                '3' => '按年生成',
+                '4' => '自定义收费周期'
             ],
             'bill_arrears_set' => [
                 'title' => '账单欠费模式',
@@ -3731,8 +3736,10 @@ class HouseNewChargeRuleService
                     $data_list[$k]['bill_create_set_txt'] = '按日生成';
                 } elseif ($v['bill_create_set'] == 2) {
                     $data_list[$k]['bill_create_set_txt'] = '按月生成';
-                } else {
+                } elseif ($v['bill_create_set'] == 3) {
                     $data_list[$k]['bill_create_set_txt'] = '按年生成';
+                } else {
+                    $data_list[$k]['bill_create_set_txt'] = '自定义收费周期';
                 }
                 if (!empty($v['charge_valid_time'])) {
                     $data_list[$k]['charge_valid_time'] = date('Y-m-d', $v['charge_valid_time']);

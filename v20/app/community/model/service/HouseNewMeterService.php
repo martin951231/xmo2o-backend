@@ -579,7 +579,6 @@ class HouseNewMeterService
                 }elseif($vv['is_discard'] == 3 && $vv['is_paid'] == 2){
                     $data[$kk]['order_status'] = '已挂单';
                 }
-
             }
             $returnArr['list'] = $data;
         }

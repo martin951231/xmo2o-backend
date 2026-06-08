@@ -80,9 +80,9 @@ class AdminUserService {
                         $this->laterAdminLoginLogQueue($logData);
                         throw new \think\Exception("账号或密码错误");
                     }
-    
+
                     break;
-        }  
+        }
 
         // 用户ID
         $userId = $user['id'];
@@ -114,7 +114,7 @@ class AdminUserService {
         }
 
         // 生成ticket
-        $ticket = Token::createToken($userId);
+        $ticket = Token::createToken($userId, 'admin');
         return $ticket ? ["ticket" => $ticket] : false;
     }
 
@@ -180,12 +180,12 @@ class AdminUserService {
 
         if( $user['area_id']!=0) $user['menus'].=',9999'; //强制给用户修改信息的权限
 
-       
+
         /*if($user['level']<2){
             $user['menus'] = str_replace('231,','',$user['menus']);
         }*/
 
-        if ($user['menus']) { 
+        if ($user['menus']) {
             // 获得用户有权限的菜单
             $systemMenuService = new SystemMenuService();
             $where = [];
@@ -262,7 +262,7 @@ class AdminUserService {
                 ],
             ]
         ];
-        
+
         return $returnArr;
     }
 
@@ -324,13 +324,13 @@ class AdminUserService {
         if(!$user) {
             throw new \think\Exception("不存在该用户");
         }
-       
+
         return $this->userObj->updateById($id, $data);
-    }    
+    }
 
     /**
      * 根据条件获取一条数据
-     * @param $where array 
+     * @param $where array
      * @return array
      */
     public function getOne($where) {
@@ -342,13 +342,13 @@ class AdminUserService {
         if(!$admin) {
             return [];
         }
-        
-        return $admin->toArray(); 
+
+        return $admin->toArray();
     }
 
     /**
      * 根据条件返回数据列表
-     * @param $where array 
+     * @param $where array
      * @return array
      */
     public function getList($where) {
@@ -360,7 +360,7 @@ class AdminUserService {
         if(!$admin) {
             return [];
         }
-        
-        return $admin->toArray(); 
+
+        return $admin->toArray();
     }
 }

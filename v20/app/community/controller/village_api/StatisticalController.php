@@ -1717,7 +1717,7 @@ class StatisticalController extends CommunityBaseController
             return api_output_error(1001, '找不到该类别的能耗');
         }
         $category_where[] = ['village_id','=',$villageId];
-        $category_where[] = ['parent_id','=',$type_num];
+        // $category_where[] = ['parent_id','=',$type_num];
 
         $categoryList = $db_utilities_category->getList($category_where,true,1,9999)->toArray();
         $heatData = $this->buildHeatData($categoryList,$date_range,$list);
@@ -2334,6 +2334,7 @@ class StatisticalController extends CommunityBaseController
         }
 
         $list = $this->buildPeriodicFeeTableDataWithDefault($filteredData ?? []);
+
         $list['dateRange'] = [
             'start_date' => date('Y-m', strtotime($firstDayOfYear)),
             'end_date' => date('Y-m', strtotime($lastDayOfYear)),

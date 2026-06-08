@@ -8,19 +8,27 @@
 
 namespace app\pay\model\service;
 
+use app\common\model\db\Merchant;
 use app\common\model\db\PaidOrderRecord;
 use app\common\model\service\UserService;
+use app\community\model\db\HouseVillage;
 use app\community\model\db\PlatOrder;
 use app\community\model\db\WeixinAppBind;
 use app\community\model\service\NewPayService;
 use app\community\model\service\PlatOrderService;
+use app\group\model\service\GroupOrderService;
 use app\internal_card\model\service\InternalCardService;
 use app\maiyatian\service\MaiyatianRechargeService;
+use app\mall\model\db\MallOrder;
+use app\mall\model\service\MallOrderCombineService;
+use app\pay\model\db\IcbcPayInfo;
+use app\pay\model\db\IcbcPaySubInfo;
 use app\pay\model\db\PayChannel;
 use app\pay\model\db\PayChannelParam;
 use app\pay\model\db\PayOrderInfo;
 use app\pay\model\db\PayType;
 use app\pay\model\service\channel\ChannelService;
+use app\pay\model\service\channel\IcbcService;
 use app\pay\model\service\env\EnvService;
 use app\thirdRobot\model\service\ThirdRobotDeliveryOrderService;
 
@@ -44,7 +52,7 @@ class PayService{
         'ebankpay' => '日照银行',
         'hqpay' => '环球汇通',
         'douyin_mini' => '抖音支付',
-        'icbc' => '工行支付',
+        'icbc' => '工行聚富通支付',
     ];
 
     public $agent = [
@@ -75,6 +83,7 @@ class PayService{
         'douyin' => '抖音官方通道',
         'chinaums' => '银联',
         'lakala' => '拉卡拉通道',
+	    'icbc' => '工行支付通道'
     ];
 
 	public $channelType = [
@@ -139,7 +148,7 @@ class PayService{
 	/**
 	 * 支付动作
 	 * @param  [string] 	$business 支付业务 shop、mall、dining...
-	 * @param  [int] 		$business_order_id 支付业务对应订单ID 
+	 * @param  [int] 		$business_order_id 支付业务对应订单ID
 	 * @param  [string] 	$pay_type 支付类型 alipay、wechat、...
 	 * @param  [float] 		$money    支付金额  元为单位
 	 * @param  [array] 		$pay_info [
@@ -161,7 +170,7 @@ class PayService{
 	public function pay($business, $business_order_id, $pay_type = '', $money = 0, $pay_info = [], $extra_cfg = [], $rate = 1){
 		if(empty($business) || empty($business_order_id)){
             fdump_api(['business' => $business,'business_order_id' => $business_order_id,'pay_type' => $pay_type,'money' => $money,'pay_info' => $pay_info,'extra_cfg' => $extra_cfg,'rate' => $rate,'msg' => '必填参数错误!'],'errPay/payServicePayLog');
-			throw new \think\Exception("必填参数错误！");			
+			throw new \think\Exception("必填参数错误！");
 		}
         $extra_cfg['pay_type']   = $pay_type;
         $extra_cfg['order_type'] = $business;
@@ -198,9 +207,9 @@ class PayService{
                 'pay_info'  => $pay_info,
                 'extra_cfg' => $extra_cfg,
                 'rate'      => $rate,
-                'msg'       => '支付通道配置信息'
+                'msg'       => '支付通道配置!'
             ], 'pay/payServicePayLog');
-            
+
 			if(empty($channel) || empty($channel['config'])){
                 fdump_api(['channel' => $channel,'pay_type' => $pay_type,'business' => $business,'money' => $money,'pay_info' => $pay_info,'extra_cfg' => $extra_cfg,'rate' => $rate,'msg' => '支付通道未配置!'],'errPay/payServicePayLog');
                 throw new \think\Exception("支付通道未配置！");
@@ -208,7 +217,7 @@ class PayService{
 
 			//如果是商家自有小程序openid和wxapp_openid需要重置
 			$uid = request()->log_uid;
-			if ($pay_type == 'wechat' && $channel['is_own'] ==1 && $channel['channel'] != 'chinaums' && $this->mer_id > 0 && $uid > 0) {
+			if ($pay_type == 'wechat' && $channel['is_own'] ==1 && ($channel['channel'] != 'chinaums' && $channel['channel'] != 'leshua') && $this->mer_id > 0 && $uid > 0) {
                 if(request()->agent == 'wechat_h5'){
                     $bindUser = (new \app\community\model\db\WeixinBindUser())->getFind([['mer_id', '=', $this->mer_id], ['uid', '=', $uid], ['openid', '<>', '']]);
                 }else{
@@ -232,11 +241,16 @@ class PayService{
 				$extra_cfg['wxapp_openid'] = $bindUser['wxapp_openid'];
 			}
 
-
 			if(!empty($extra_cfg)){
 				$channel['config'] = array_merge($channel['config'], $extra_cfg);
 			}
-
+            $extra_cfg['sub_orders'] = [];
+            $extra_cfg['pay_order_no'] = $order_no;//支付单号
+            if($pay_type == 'icbc') {
+                $extra_cfg['pay_icbc_merid'] = $channel['config']['pay_icbc_merid'];
+                $extra_cfg['village_id'] = $this->village_id;
+                $extra_cfg['sub_orders'] = $this->getSubOrders($business, $business_order_id, $money*$rate, $extra_cfg);
+            }
             $pay_type != 'hqpay' && $channel['config']['pay_type'] = $pay_type;
             $s = microtime(true);
 			//new 支付通道 调用第三方支付
@@ -349,7 +363,7 @@ class PayService{
             $orderRecordArr['extra_data']=json_encode($extra,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
             $orderRecordId = $paidOrderRecordDb->addOneData($orderRecordArr);
             $extra['order_record_id']=$orderRecordId;
-            
+
 			$this->afterPay($business, $business_order_id, $extra);
 			$return['type'] = 'pay_success';
 			$redirect_url = $this->getPayResultUrl($business, $business_order_id);
@@ -364,7 +378,7 @@ class PayService{
             $useResult = (new UserService())->userMoney($extra_cfg['uid'], $extra['current_system_balance'], L_("物业后台缴费，订购房间套餐扣除余额，订单编号X1", array("X1" => $old_order_no)));
             fdump_api(['uid'=>$extra_cfg['uid'],'current_system_balance'=>$extra['current_system_balance'],'extra_cfg'=>$extra_cfg,'useResult'=>$useResult],'00current_system_balance',1);
         }
-        
+
         $n1=microtime(true);
         fdump_api(['$pay_type花费时长',$n1-$s1,$s1,$n1],'microtime_0706',1);
 		//写入支付订单信息表 pigcms_pay_order_info
@@ -439,6 +453,81 @@ class PayService{
 		return $return;
 	}
 
+    public function getSubOrders($orderType, $orderId, $money, $extraCfg): array
+    {
+        if($money <= 0){
+            throw_exception('在线支付金额错误');
+        }
+        switch ($orderType) {
+            case 'dining':
+                $business = new \app\foodshop\model\service\order\DiningOrderPayService;
+                break;
+            case 'group':
+                $business = new \app\group\model\service\order\GroupOrderService;
+                break;
+            case 'mall':
+                return (new MallOrderCombineService())->getSubOrders($orderId, $money, $extraCfg);
+            case 'shop':
+                $business = new \app\shop\model\service\order\ShopOrderPayService;
+                break;
+            case 'life_tools_appoint_join':// 门票预约报名
+                $business = new \app\life_tools\model\service\appoint\LifeToolsAppointJoinOrderService();
+                break;
+            case 'lifetools': //体育健身
+                $business = new \app\life_tools\model\service\LifeToolsOrderService();
+                break;
+            case 'lifetoolscard'://景区次卡
+                $business = new \app\life_tools\model\service\LifeToolsCardOrderService();
+                break;
+            case 'village_new_pay':
+                $business = new \app\community\model\service\NewPayService();
+                break;
+            default:
+                throw_exception('当前业务（'.$orderType.'）未对接');
+        }
+        $order = $business->getOrderPayInfo($orderId);
+        $payOrderNo = $extraCfg['pay_order_no'];
+
+        $subOrders = [];
+        //金额转成元
+        $extraCfg['platform_get'] = bcdiv($extraCfg['platform_get'], 100, 2);
+        $extraCfg['merchant_get'] = bcdiv($extraCfg['merchant_get'], 100, 2);
+        if($extraCfg['platform_get']) {
+            $subOrders[] = [
+                'business_order_no' => $order['order_no'],
+                'type' => 'platform',
+                'order_no' => $payOrderNo.'_plat',//合作方子订单ID,确保唯一
+                'sub_icbc_no' => $extraCfg['pay_icbc_merid'], //收方商户编号
+                'order_title' => '平台抽成', //子商品名称
+                'pay_money' => $extraCfg['platform_get'], //支付金额(元)
+            ];
+        }
+        if($orderType == 'village_new_pay') {
+            $village = HouseVillage::where('village_id', $extraCfg['village_id'])->find();
+            $subOrders[] = [
+                'business_order_no' => $order['order_no'],
+                'type' => 'village',
+                'order_no' => $payOrderNo.'_'.$village['village_id'],
+                'sub_icbc_no' => $village['sub_icbc_no'],
+                'mer_id' => 0,
+                'order_title' => '社区收入',
+                'pay_money' => $extraCfg['merchant_get'],
+            ];
+        }else{
+            $merchant = Merchant::where('mer_id', $order['mer_id'])->find();
+            $subOrders[] = [
+                'business_order_no' => $order['order_no'],
+                'type' => 'merchant',
+                'order_no' => $payOrderNo.'_'.$merchant['mer_id'],
+                'sub_icbc_no' => $merchant['sub_icbc_no'],
+                'mer_id' => $merchant['mer_id'],
+                'order_title' => '商家收入',
+                'pay_money' => $extraCfg['merchant_get'],
+            ];
+        }
+
+        return $subOrders;
+    }
 	/**
 	 * 生成订单号（唯一）
 	 * @return String 如：202005251408217989725219
@@ -460,9 +549,7 @@ class PayService{
 		$order_id_sum = 0;
 
 		for($i=0; $i<$order_id_len; $i++){
-
 			$order_id_sum += (int)(substr($order_id_main,$i,1));
-
 		}
 
 		$osn = $order_id_main . str_pad((100 - $order_id_sum % 100) % 100,2,'0',STR_PAD_LEFT);
@@ -477,21 +564,21 @@ class PayService{
 	 *         business:'shop',//业务代号  shop=外卖...
 	 *         business_order_id:11,//业务订单ID
 	 *         extra:[//一些支付信息，给业务方记录
-	 *         	
+	 *
 	 *         ]
 	 * ]
 	 */
 	public function notice($order_no,$noticeArr=array()){
 		if(empty($order_no)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'msg' => 'order_no 异常！'],'errPay/payServiceNoticeLog');
-			throw new \think\Exception("order_no 异常");			
+			throw new \think\Exception("order_no 异常");
 		}
 		//找到本系统中的支付订单
 		$pay_db = new PayOrderInfo;
 		$order = $pay_db->getByOrderNo($order_no);
 		if(empty($order)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'order' => $order,'msg' => '没有找到支付订单'],'errPay/payServiceNoticeLog');
-			throw new \think\Exception("没有找到支付订单");			
+			throw new \think\Exception("没有找到支付订单");
 		}
 
 		if($order['paid'] == '1'){
@@ -557,7 +644,7 @@ class PayService{
                 throw new \think\Exception("notice 返回有误", $orderStat);
             }
         }
-		return $this->saveData($order, $notice);		
+		return $this->saveData($order, $notice);
 	}
     public function notice_test($order_no){
         if(empty($order_no)){
@@ -593,7 +680,7 @@ class PayService{
 	public function query($order_no){
 		if(empty($order_no)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'msg' => 'order_no 异常！'],'errPay/payServiceQueryLog');
-			throw new \think\Exception("order_no 异常");			
+			throw new \think\Exception("order_no 异常");
 		}
 
 		//找到本系统中的支付订单
@@ -601,13 +688,13 @@ class PayService{
 		$order = $pay_db->getByOrderNo($order_no);
 		if(empty($order)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'order' => $order,'msg' => '没有找到支付订单'],'errPay/payServiceQueryLog');
-			throw new \think\Exception("没有找到支付订单");			
+			throw new \think\Exception("没有找到支付订单");
 		}
 
 		if($order['paid'] == '1'){
 		    if ($order['business']=='village_new_pay'&&!empty($order['business_order_id'])){
                 $db_plat_order = new PlatOrder();
-                $plat_order = $db_plat_order->get_one(['order_id'=>$order['business_order_id'],'business_type'=>'village_new_pay'],'order_id,pay_money,pay_time,paid'); 
+                $plat_order = $db_plat_order->get_one(['order_id'=>$order['business_order_id'],'business_type'=>'village_new_pay'],'order_id,pay_money,pay_time,paid');
                 fdump_api([$order,$plat_order],'query_zbd_0923',1);
                 if (!empty($plat_order)&&$plat_order['paid']!=1){
                     return [
@@ -625,7 +712,7 @@ class PayService{
                             'pay_order_info_id' => $order['id'],
                             'paid_extra'=> $order['paid_extra'] ? $order['paid_extra']:'',
                         ]
-                    ];  
+                    ];
                 }
             }
 			return [
@@ -649,9 +736,9 @@ class PayService{
             throw new \think\Exception("query 返回有误");
 		}
 
-		return $this->saveData($order, $result);		
+		return $this->saveData($order, $result);
 	}
-	
+
 
 	/**
 	 * 退款service
@@ -664,6 +751,12 @@ class PayService{
 	 * ]
 	 */
 	public function refund($order_no, $refund_money = false,$refundAry=[]){
+        fdump_api([
+            'param' => $_POST,
+            'order_no' => $order_no,
+            'refund_money' => $refund_money,
+            'refundAry' => $refundAry,
+        ],'refund/payServiceRefundLog',1);
 		if(empty($order_no)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'refund_money' => $refund_money,'msg' => 'order_no 支付单号传递异常'],'errPay/payServiceRefundLog');
 			throw new \think\Exception("order_no 支付单号传递异常");
@@ -678,7 +771,7 @@ class PayService{
 		$order = $pay_db->getByOrderNo($order_no);
 		if(empty($order)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'order' => $order,'refund_money' => $refund_money,'msg' => '没有找到支付订单'],'errPay/payServiceRefundLog');
-			throw new \think\Exception("没有找到支付订单");			
+			throw new \think\Exception("没有找到支付订单");
 		}
 
 		if($order['paid'] == '0'){
@@ -717,7 +810,7 @@ class PayService{
 		if($refundAry){
             $channel_config['refund_ary'] = $refundAry;
         }
-        
+
         if (isset($order['own_from']) && trim($order['own_from']) == 'property_wxapp' && isset($order['own_from_id']) && intval($order['own_from_id']) > 0) {
             $channel_pay_wxapp_appid = isset($channel_config['pay_wxapp_appid']) ? trim($channel_config['pay_wxapp_appid']) : '';
             $channel_pay_wxapp_mchid = isset($channel_config['pay_wxapp_mchid']) ? trim($channel_config['pay_wxapp_mchid']) : '';
@@ -725,7 +818,7 @@ class PayService{
             $channel_pay_wxapp_appsecret = isset($channel_config['pay_wxapp_appsecret']) ? trim($channel_config['pay_wxapp_appsecret']) : '';
             $channel_pay_weixin_client_cert = isset($channel_config['pay_weixin_client_cert']) ? trim($channel_config['pay_weixin_client_cert']) : '';
             $channel_pay_wxapp_cert_key = isset($channel_config['pay_wxapp_cert_key']) ? trim($channel_config['pay_wxapp_cert_key']) : '';
-            
+
             $db_weixin_app_bind = new WeixinAppBind();
             $whereOwnFrom = [];
             $whereOwnFrom[] = ['bind_type', '=', 1];
@@ -736,7 +829,7 @@ class PayService{
             $appsecret = isset($property_wxapp_info['appsecret']) ? trim($property_wxapp_info['appsecret']) : '';
             $public_key = isset($property_wxapp_info['public_key']) ? trim($property_wxapp_info['public_key']) : '';
             $private_key = isset($property_wxapp_info['private_key']) ? trim($property_wxapp_info['private_key']) : '';
-            
+
             if ($wxpay_key && $wxpay_key != $channel_pay_wxapp_key) {
                 $channel_config['pay_wxapp_key'] = $wxpay_key;
             }
@@ -753,8 +846,18 @@ class PayService{
         }
 		$channel_obj = ChannelService::getChannelService($order['channel'], $order['env'], $channel_config);
 
-        fdump_sql(['order_no' => $order_no,'money' => get_format_number(($refund_money/100)*$order['rate']*100),'refund_money' => $refund_money,'channel_config'=>$channel_obj], 'payServiceRefundLog');
-		$result = $channel_obj->refund($order_no, $order['paid_money'], get_format_number(($refund_money/100)*$order['rate']*100), $order['paid_extra']);
+        if($order['channel']=='icbc'){
+            fdump_api([
+                'order_no' => $order_no,
+                'money' => get_format_number(($refund_money/100)*$order['rate']*100),
+                'refund_money' => $refund_money,
+                'channel_config'=>$channel_obj
+            ], 'pay/icbc_refund', 1);
+            $result = $this->icbcRefund($order, get_format_number(($refund_money/100)*$order['rate']*100));
+        } else {
+            fdump_sql(['order_no' => $order_no,'money' => get_format_number(($refund_money/100)*$order['rate']*100),'refund_money' => $refund_money,'channel_config'=>$channel_obj], 'payServiceRefundLog');
+            $result = $channel_obj->refund($order_no, $order['paid_money'], get_format_number(($refund_money/100)*$order['rate']*100), $order['paid_extra']);
+        }
 
         fdump_api([
             'param' => $_POST,
@@ -795,7 +898,7 @@ class PayService{
             fdump_api(['param' => $_POST,'order_no' => $order_no,'order' => $order,'save_data' => $save_data,'msg' => '更新退款信息失败'],'errPay/payServiceRefundLog');
 			throw new \think\Exception("更新退款信息失败！");
 		}
-		
+
 	}
 
     /**
@@ -870,13 +973,13 @@ class PayService{
                 }
                 $orderRecordArr['pay_money']=$paid_money_tmp;
                 $orderRecordArr['pay_type']=$order['pay_type'];
-                if(empty($orderRecordArr['pay_type']) && ($order['current_system_balance']>0 
+                if(empty($orderRecordArr['pay_type']) && ($order['current_system_balance']>0
                         || (isset($order['current_village_balance']) && $order['current_village_balance']>0)
                         || (isset($order['current_merchant_balance']) && $order['current_merchant_balance']>0)
-                        || (isset($order['current_qiye_balance']) && $order['current_qiye_balance']>0 ) 
+                        || (isset($order['current_qiye_balance']) && $order['current_qiye_balance']>0 )
                         || (isset($order['current_employee_balance']) && $order['current_employee_balance']>0)
                         || (isset($order['current_village_hot_water_balance']) && $order['current_village_hot_water_balance']>0)
-                        || (isset($order['current_village_cold_water_balance']) && $order['current_village_cold_water_balance']>0) 
+                        || (isset($order['current_village_cold_water_balance']) && $order['current_village_cold_water_balance']>0)
                         || (isset($order['current_merchant_give_balance']) && $order['current_merchant_give_balance']>0)
                         || (isset($order['current_village_electric_balance']) && $order['current_village_electric_balance']>0)
                     ) ){
@@ -934,7 +1037,7 @@ class PayService{
                 $orderRecordArr['pay_time']=$data['paid_time'];
                 $orderRecordId=$paidOrderRecordDb->addOneData($orderRecordArr);
             }
-            
+
 		    $paid_money=$data['paid_money']/100;
 		    if($order['channel'] == 'hqpay'){
                 $paid_money = $data['paid_money'];
@@ -977,7 +1080,7 @@ class PayService{
 		else{
             fdump_api(['param' => $_POST,'data' => $data,'order' => $order,'save_data' => $save_data,'msg' => '更新退款信息失败'],'errPay/payServiceSaveDataLog');
 			throw new \think\Exception("更新订单信息失败！");
-		}		
+		}
 	}
 
 	/**
@@ -1000,10 +1103,10 @@ class PayService{
      * ]
      */
     public function afterPay($order_type, $order_id, $extra){
-    	
-    	if(isset($extra['paid_orderid']) && !isset($extra['current_score_use'])){    
+
+        if(isset($extra['paid_orderid']) && !isset($extra['current_score_use'])){
     		$pay_db = new PayOrderInfo;
-    		$order_info = $pay_db->getByOrderNo($extra['paid_orderid']);	    		
+            $order_info = $pay_db->getByOrderNo($extra['paid_orderid']);
     		$extra['current_score_use'] = $order_info['current_score_use'];
     		$extra['current_score_deducte'] = $order_info['current_score_deducte']/100;
     		$extra['current_system_balance'] = $order_info['current_system_balance']/100;
@@ -1124,6 +1227,9 @@ class PayService{
             case 'shopping_mall_park': //商场停车缴费
 				$business = new \app\building\service\ParkOrderService();
 				break;
+            case 'social_activity': //活动报名
+                $business = new \app\social_activity\model\service\SocialActivityOrderService();
+                break;
             default:
                 break;
         }
@@ -1209,6 +1315,9 @@ class PayService{
             case 'shopping_mall_park': //商场停车缴费
 				$business = new \app\building\service\ParkOrderService();
 				break;
+            case 'social_activity': //活动报名
+                $business = new \app\social_activity\model\service\SocialActivityOrderService();
+                break;
             default:
                 break;
         }
@@ -1319,7 +1428,7 @@ class PayService{
      * @param int $store_id 门店ID
      * @param int $city_id 城市ID
      * @param array $param 额外参数
-     * @return  按环境分组返回
+     * @return array 按环境分组返回
      */
     public function getChannelByCode($code, $mer_id = 0, $store_id = 0, $city_id = 0, $param = []){
     	if(empty($code)) return [];
@@ -1590,7 +1699,7 @@ class PayService{
 		if(isset($data['rate'])){
 			unset($data['rate']);
 		}
-		
+
     	foreach ($data as $key => $value) {
     		$save = [];
     		$save['value'] = $value;
@@ -1614,7 +1723,7 @@ class PayService{
     }
 
     public function getByExtendsField($where){
-    	return (new PayOrderInfo)->getOne($where)->toArray();	
+        return (new PayOrderInfo)->getOne($where)->toArray();
     }
 
     /**
@@ -1624,7 +1733,7 @@ class PayService{
      */
     public function getPayOrders($orderids, $where = []){
     	if(empty($orderids)) return [];
-    	
+
     	if(is_array($orderids)){
     		$where[] = ['orderid', 'in', $orderids];
     	}else{
@@ -1638,7 +1747,7 @@ class PayService{
      * 商家通过设备扫描用户的付款码支付
      * $auth_code  用户的付款码
      * $money      需要支付的金额
-     * return bool|Array  
+     * return bool|Array
      * 		[
      * 			status:,//1=支付成功  2=用户支付中  0=支付失败
      * 			pay_type:,//支付方式
@@ -1649,7 +1758,7 @@ class PayService{
     public function scanPay($auth_code, $money){
 		if(empty($auth_code)){
             fdump_api(['param' => $_POST,'auth_code' => $auth_code,'money' => $money,'msg' => '付款码必传'],'errPay/payServiceScanPayLog');
-			throw new \think\Exception("付款码必传！");	
+			throw new \think\Exception("付款码必传！");
 		}
 
         if(preg_match('/^1[0-6][0-9]{16}$/',$auth_code)){
@@ -1657,7 +1766,7 @@ class PayService{
 			$pay_type = 'wechat';
 		}
 		else{
-			$pay_type = 'alipay';	
+			$pay_type = 'alipay';
 		}
     	//判断支付方式，拿到对应的支付环境参数
 		switch ($pay_type) {
@@ -1669,11 +1778,11 @@ class PayService{
 				break;
 			default:
                 fdump_api(['param' => $_POST,'auth_code' => $auth_code,'money' => $money,'pay_type' => $pay_type,'msg' => '不支持的支付方式'],'errPay/payServiceScanPayLog');
-				throw new \think\Exception("不支持的支付方式！");	
+				throw new \think\Exception("不支持的支付方式！");
 		}
 		if($money <= 0){
             fdump_api(['param' => $_POST,'auth_code' => $auth_code,'money' => $money,'msg' => '不支持的支付金额'],'errPay/payServiceScanPayLog');
-			throw new \think\Exception("不支持的支付金额！");	
+			throw new \think\Exception("不支持的支付金额！");
 		}
     	//1、生成支付订单号
 		$order_no = $this->createOrderNo();
@@ -1684,7 +1793,7 @@ class PayService{
 
 		if(empty($channel) || empty($channel['config'])){
             fdump_api(['param' => $_POST,'auth_code' => $auth_code,'money' => $money,'msg' => '支付通道未配置'],'errPay/payServiceScanPayLog');
-			throw new \think\Exception("支付通道未配置！");	
+			throw new \think\Exception("支付通道未配置！");
 		}
 		$channel['config']['pay_type'] = $pay_type;
 
@@ -1737,7 +1846,7 @@ class PayService{
 				'pay_type' => $pay_type,
 				'order_no' => $order_no,
 				'is_own' => $channel['is_own']
-			];	
+			];
 		}
 		return false;
     }
@@ -1764,7 +1873,7 @@ class PayService{
 				break;
 			default:
                 fdump_api(['param' => $_POST,'order_no' => $order_no,'pay_type' => $pay_type,'msg' => '不支持的支付方式'],'errPay/payServiceQueryScanPayLog');
-				throw new \think\Exception("不支持的支付方式！");	
+				throw new \think\Exception("不支持的支付方式！");
 				break;
 		}
 		//找到本系统中的支付订单
@@ -1772,7 +1881,7 @@ class PayService{
 		$order = $pay_db->getByOrderNo($order_no);
 		if(empty($order)){
             fdump_api(['param' => $_POST,'order_no' => $order_no,'order' => $order,'msg' => '没有找到支付订单'],'errPay/payServiceQueryScanPayLog');
-			throw new \think\Exception("没有找到支付订单");			
+			throw new \think\Exception("没有找到支付订单");
 		}
 		//实例化通道
 		$channel_config = json_decode($order['pay_config'], true);
@@ -1783,7 +1892,7 @@ class PayService{
 		// $channel = $envService->getChannel($pay_type);
 
 		// if(empty($channel) || empty($channel['config'])){
-		// 	throw new \think\Exception("支付通道未配置！");	
+		// 	throw new \think\Exception("支付通道未配置！");
 		// }
 		// $channel['config']['pay_type'] = $pay_type;
 
@@ -1902,13 +2011,14 @@ class PayService{
             'alipay' => '支付宝支付',
             'ebankpay' => '日照银行',
             'douyin' => '抖音支付',
+            'icbc' => '工行聚富通支付',
         ];
 
         if(isset($type[$payType])){
             $text[] = $type[$payType];
         }
         $balanceType = [
-            'money_score' => '积分抵扣',
+            'money_score' => cfg('score_name') . '抵扣',
             'money_system_balance' => '平台余额支付',
             'money_merchant_balance' => '商家会员卡余额',
             'money_merchant_give_balance' => '商家会员卡余额',
@@ -1927,7 +2037,7 @@ class PayService{
                 }
             }
         }
-        return $text ? implode(' + ', $text) : '待付款';
+        return $text ? implode(' + ', $text) : '无';
     }
 
 
@@ -1961,7 +2071,7 @@ class PayService{
 	 * 获取业务订单
 	 *
 	 * @param string $payOrderid 支付订单号pigcms_pay_order_info表orderid
-	 * @return void
+	 * @return array
 	 * @author: zt
 	 * @date: 2022/09/01
 	 */
@@ -2013,11 +2123,14 @@ class PayService{
             case 'shopping_mall_park': //商场停车缴费
 				$business = new \app\building\service\ParkOrderService();
 				break;
+            case 'social_activity': //活动报名
+                $business = new \app\social_activity\model\service\SocialActivityOrderService();
+                break;
 			default:
 				throw new \think\Exception('当前业务（' . $order->business . '）未对接');
-				break;
 		}
 		$nowOrder = $business->getOrderPayInfo($order->business_order_id);
+        $nowOrder['order_type'] = $order->business;
 		return $nowOrder;
 	}
 
@@ -2047,7 +2160,7 @@ class PayService{
         //实例化通道
         $channel_config = json_decode($order['pay_config'], true);
         $channel_obj = ChannelService::getChannelService($order['channel'], $order['env'], $channel_config);
-        
+
         if ('alipay' == $order['channel']) {
             $result = $channel_obj->getQueryDetail($order_no);
             $resultCode  = isset($result['resultCode'])  && $result['resultCode']  ? $result['resultCode']  : '';
@@ -2159,4 +2272,38 @@ class PayService{
         return $result;
     }
 
+    public function icbcRefund($order, $refundMoney)
+    {
+        $icbcPayInfo = IcbcPayInfo::where(['order_type' => $order['business'], 'order_no' => $order['orderid']])->find();
+        if(empty($icbcPayInfo)) {
+            throw_exception('支付信息不存在');
+        }
+        $refundMoney = bcdiv($refundMoney, 100, 2);
+        $refundAll = false;
+        if((float) $refundMoney == (float) $icbcPayInfo['pay_amount']) {
+            $refundAll = true;
+        }
+        $subInfo = IcbcPaySubInfo::where(['pay_id' => $icbcPayInfo->id])->select()->toArray();
+        $subRefunds = [];
+        $merchant['mer_id'] = 0;
+        foreach ($subInfo as $sub) {
+            $subRefundMoney = $refundAll ? $sub['pay_money'] : bcmul($refundMoney/$icbcPayInfo['pay_amount'], $sub['pay_money'], 2);
+            $subRefunds[] = [
+                //收方商户编号
+                'oV' => $sub['sub_icbc_no'],
+                //子订单号
+                'oI' => $sub['order_no'],
+                //子退款订单号
+                'rI' => $sub['order_no']."_".'r',
+                //子订单退款金额
+                'pA' => (string) $subRefundMoney
+            ];
+            $merchant['mer_id'] = $sub['mer_id'];
+        }
+
+        $channelConfig = json_decode($order['pay_config'], true);
+        $refundOrder['order_type'] = $order['business'];
+        $refundOrder['pay_orderno'] = $order['orderid'];
+        return (new IcbcService($order['env'], $channelConfig))->refund($refundOrder, $merchant, $subRefunds);
+    }
 }

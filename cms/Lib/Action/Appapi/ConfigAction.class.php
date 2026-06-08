@@ -22,7 +22,7 @@ class ConfigAction  extends BaseAction{
         }else{
             $city    =   $this->nowCity($config['now_city']);
         }
-        
+
         if($app_version){
 			$arr['city']    =   $city;
         }else{
@@ -73,13 +73,13 @@ class ConfigAction  extends BaseAction{
 		$arr['config']['close_estart_time']   =   $this->config['close_estart_time'];// 关闭直播预开始时间
 		//模板类型
 		$arr['config']['mobile_index_tpl'] = $this->config['mobile_index_tpl'];
-		
+
 		$arr['config']['have_plat']   =  true;
 		$arr['config']['have_shop']   =  true;
 		$arr['config']['have_merchant']   =  true;
-		
+
 		$arr['config']['is_demo_domain']   =   $this->config['is_demo_domain'] ? true : false;
-		
+
 		$arr['config']['open_voice_search'] = $this->config['open_voice_search'];	//是否开启语音
 		$arr['config']['have_appoint'] 		= $this->config['appoint_page_row'] ? 1 : 0;
         $arr['config']['group_alias_name']  =   $this->config['group_alias_name'];
@@ -93,10 +93,10 @@ class ConfigAction  extends BaseAction{
 		$arr['config']['house_show_center']   =   $this->config['house_show_center'];
         $arr['config']['group_index_name']   =   $this->config['group_index_name'];
 		$arr['config']['house_village_group_name']   =   $this->config['house_village_group_name']; // 社区团购别名
-		
+
 		$arr['config']['user_is_real_name']   =   $this->config['user_is_real_name'] ? true : false;	//是否开启实名认证和车主认证
 		$arr['config']['user_auth_notneed_img']   =   $this->config['user_auth_notneed_img'] ?? '0';
-		
+
 		//是否开启多语言
 		$arr['config']['open_multilingual']   =   $this->config['open_multilingual'] ? $this->config['open_multilingual'] : '0';
 		$arr['config']['lang_config'] = [
@@ -115,32 +115,32 @@ class ConfigAction  extends BaseAction{
 				$_SERVER['HTTP_ACCEPT_LANGUAGE'] = $_POST['app_language'];
 			}
 			$arr['config']['lang_config'] = D('Lang')->lang_list();//语言配置
-			
+
 			C('config.system_lang',$arr['config']['lang_config']['now_lang']);
-			
+
 			if($_POST['special_lang']){
 				$lang = new lang();
 				$arr['config']['special_lang_list'] = $lang->get_special_lang($_POST['special_lang']);
 			}
 		}
-		
+
 		//是否支持国际手机
 		$arr['config']['international_phone'] = $this->config['international_phone'] ? true : false;
-		
+
 		//列表页面是否展示配送费
 		$arr['config']['shop_show_delivermoney'] = $this->config['shop_show_delivermoney'] ? true : false;
-		
+
 		//地图类型
 		$arr['config']['map_config'] = $this->config['map_config'] ? $this->config['map_config'] : 'baidu';
 		$arr['config']['baidu_map_ak'] = $this->config['baidu_map_ak'] ? $this->config['baidu_map_ak'] : '';
 		$arr['config']['google_map_ak'] = $this->config['google_map_ak'] ? $this->config['google_map_ak'] : '';
 		$arr['config']['google_map_position'] = $this->config['google_map_position'] ? true : false;	// true为谷歌地图不需要位置，而是需要坐标
 		$arr['config']['country_code'] = $this->config['country_code'] ? $this->config['country_code'] : '';
-		
+
 		//货币符号，单位
 		$arr['config']['Currency_txt'] = L_($this->config['Currency_txt']);
 		$arr['config']['Currency_symbol'] = $this->config['Currency_symbol'];
-		
+
 		//平台配送别名
 		$arr['config']['deliver_name'] = $this->config['deliver_name'] ? $this->config['deliver_name'] : L_('平台配送');
 
@@ -148,7 +148,7 @@ class ConfigAction  extends BaseAction{
 		//社区配置项
 		$arr['config']['house_name'] = isset($this->config['house_name']) && $this->config['house_name'] ? $this->config['house_name'] : L_('小区');
 		$arr['config']['house_market_name'] = isset($this->config['house_market_name']) && $this->config['house_market_name'] ? $this->config['house_market_name'] : L_('社区超市');
-		
+
 		$arr['config']['wxapp_paotui_appid'] = isset($this->config['pay_wxapp_paotui_appid']) && $this->config['pay_wxapp_paotui_appid'] ? $this->config['pay_wxapp_paotui_appid'] : '';
 		//是否开启小区列表图片显示模式
 		$arr['config']['open_house_logo_show'] = isset($this->config['open_house_logo_show']) && $this->config['open_house_logo_show'] ? $this->config['open_house_logo_show'] : 0;
@@ -171,7 +171,7 @@ class ConfigAction  extends BaseAction{
 
         $arr['config']['village_group_start_buy_price'] = $this->config['village_group_start_price'];
         $arr['config']['village_group_express_open'] = $this->config['village_group_express_open'];
-		
+
         //分润判断
         $arr['config']['open_score_fenrun']    =   isset($this->config['open_score_fenrun'])?$this->config['open_score_fenrun']:'';
         $arr['config']['fenrun_btn_location']    =   isset($this->config['fenrun_btn_location'])?$this->config['fenrun_btn_location']:'';
@@ -181,7 +181,7 @@ class ConfigAction  extends BaseAction{
         $arr['config']['open_wxapp_manage']    =   $this->config['open_wxapp_manage'];
         $arr['config']['open_school'] = $this->config['open_school'] ? : 0;
 
-		
+
 		$arr['config']['open_address_pca']    =   intval($this->config['open_address_pca']);
         $pack_id = 0;
         $pack_info = [];
@@ -227,10 +227,10 @@ class ConfigAction  extends BaseAction{
 			$arr['pay_share']['pay_weixinapp_appid']    =   $pay_weixinapp_appid;
 			$arr['pay_share']['pay_weixinapp_mchid']    =   isset($this->config['pay_weixinapp_mchid'])?$this->config['pay_weixinapp_mchid']:'';
         }
-		
+
 		$arr['wap_around_show_type']  = intval($this->config['wap_around_show_type']);
         $arr['config']['house_position']    =   isset($this->config['house_position'])?$this->config['house_position']:1;
-		
+
 		if($_POST['Device-Id'] != 'wxapp'){
             if(isset($_POST['app_package_name']) && trim($_POST['app_package_name'])) {
                 $appConfig = D('Appapi_app_config')->get('',$pack_id);
@@ -248,7 +248,7 @@ class ConfigAction  extends BaseAction{
                     }
 				}
 			}
-			
+
 			$ios_app_list =  M('App_other')->select();
 			$arr['ios_app_list'] = $ios_app_list ? $ios_app_list : array();
 
@@ -261,11 +261,11 @@ class ConfigAction  extends BaseAction{
 					'url' => 'https://beian.miit.gov.cn'
 				];
 			}
-			
+
 			// 隐私政策
 			$arr['privacy_policy_md5'] = $appConfig['privacy_policy'] ? md5($appConfig['privacy_policy']) : '';
 			$arr['privacy_policy_url'] = $appConfig['privacy_policy'] ? $this->config['site_url'].'/wap.php?c=Login&a=privacy_policy&pack_id='.$pack_id : '';
-			
+
 			// 注册协议
 			if($_POST['app_type'] == 1 || $_POST['app_type'] == 2){
 				//app端
@@ -277,7 +277,7 @@ class ConfigAction  extends BaseAction{
 				$arr['register_agreement_url'] = $this->config['site_url'].'/wap.php?c=Login&a=register_agreement';
 			}
 		}
-		
+
         if(empty($arr)){
             $this->returnCode('20000002');
         }else if(empty($arr['appConfig'])){
@@ -295,7 +295,7 @@ class ConfigAction  extends BaseAction{
 			'house_open'	=>	$this->config['house_open'],
 			'show_open_door_btn'=>	$this->config['show_open_door_btn'],
         );
-		
+
 		if($_POST['Device-Id'] != 'wxapp'){
 			$arr['config']['pay_alipay_app_open'] = $this->config['pay_alipay_app_open'];
 			$arr['config']['pay_alipay_app_pid'] =  isset($this->config['pay_alipay_app_pid']) ? $this->config['pay_alipay_app_pid']: '';
@@ -312,17 +312,17 @@ class ConfigAction  extends BaseAction{
             $arr['config']['pay_alipay_app_private_key'] =  isset($this->config['pay_alipay_app_private_key_android']) ? $this->config['pay_alipay_app_private_key_android']: '';
         }
         $arr['config']['pay_alipay_app_public_key'] =  isset($this->config['pay_alipay_app_public_key']) ? $this->config['pay_alipay_app_public_key']: '';
-		
-		
+
+
 		//平台小程序参数
 		$arr['config']['pay_wxapp_appid']    =   isset($this->config['pay_wxapp_appid'])?$this->config['pay_wxapp_appid'] : '';
 		$arr['config']['shop_wxapp_share_img'] = isset($this->config['shop_wxapp_share_img'])?$this->config['shop_wxapp_share_img'] : '';
 		$arr['config']['shop_wxapp_share_title'] = isset($this->config['shop_wxapp_share_title'])?$this->config['shop_wxapp_share_title'] : '';
 		$arr['config']['wechat_name'] = $this->config['wechat_name'] ? : '';
-		
+
 		// 定制-发现功能
         $arr['config']['find_msg']  =   ($this->config['find_msg'] && $this->config['find_msg']>0) ? $this->config['find_msg'] : 0;
-		
+
 		$menu_category = M('Home_menu_category')->field('cat_id')->where(array('cat_key'=>'app_footer'))->find();
         if($menu_category){
             $footer_menu_list = M(_view('Home_menu'))->where(array('status'=>'1','cat_id'=>$menu_category['cat_id']))->order('`sort` DESC,`id` ASC')->limit(5)->select();
@@ -354,7 +354,7 @@ class ConfigAction  extends BaseAction{
 				,array('key'=>'c=Mall&a=status')
 				,array('key'=>'c=Village_group&a=orderDetail')
 			);
-			
+
 			//APP全屏广告
 			$app_fullscreen_where['status'] = 1;
             $app_fullscreen_now_area = 0;
@@ -391,10 +391,10 @@ class ConfigAction  extends BaseAction{
 					$v['url'] = html_entity_decode($v['url']);
 				}
 			}
-			
+
 			$arr['app_fullscreen'] = $app_fullscreen_adver_list ? $app_fullscreen_adver_list[0] : (Object)array();
 		}
-		
+
 		$arr['pay_url_check_arr'] = array(
 			'c=Shop&a=status',
 			'packapp/my/shop_order.html',
@@ -403,9 +403,8 @@ class ConfigAction  extends BaseAction{
         if ($pack_info) {
             $appType = $pack_info['type'];
         }
-
+        $village_id = I('village_id');
         if($this->wxapp_type == 'village' || $this->config['system_type'] == 'village' || ($appType && 2==$appType)){
-            $village_id = I('village_id');
 			$house_village_footer_menu = M('House_village_footer_menu')->where(array('village_id'=>$village_id,'status'=>1))->limit(5)->order('sort desc')->select();
 			$house_village_footer = [];
 			if($house_village_footer_menu){
@@ -452,7 +451,7 @@ class ConfigAction  extends BaseAction{
 				}
 				$arr['footer_menu_list'] = array_values($footer_menu_list);
 			}
-			
+
 			// if($_POST['app_type'] == '2'){
 			// 	$arr['footer_menu_list'] = [$arr['footer_menu_list'][0]];
 			// }
@@ -579,8 +578,22 @@ class ConfigAction  extends BaseAction{
 			$arr['footer_menu_txtactivecolor']  =  preg_match("/^rgb/", $this->config['app_footer_txtactivecolor']) ? RGBToHex($this->config['app_footer_txtactivecolor']) : $this->config['app_footer_txtactivecolor'];
 			$arr['footer_menu_txtcolor']  =  preg_match("/^rgb/", $this->config['app_footer_txtcolor']) ? RGBToHex($this->config['app_footer_txtcolor']) : $this->config['app_footer_txtcolor'];
 		}
+        $arr['config']['e_invoice_type']='';
+		if($village_id>0){
+            $e_config=M('House_e_config')->where(array('village_id'=>$village_id))->find();
+            if($e_config['is_open']==1 || $e_config['is_tui']==1){
+                $arr['config']['e_invoice_type']='szepiao_old';
+            }
+            $village_info = M('House_village_info')->where(array('village_id'=>$village_id))->find();
+            $szepiao_cfg_info='';
+            if($village_info && isset($village_info['szepiao_cfg_info']) && $village_info['szepiao_cfg_info']){
+                $szepiao_cfg_info=$village_info['szepiao_cfg_info'] ? json_decode($village_info['szepiao_cfg_info'],true):'';
+            }
+            if($szepiao_cfg_info && isset($szepiao_cfg_info['szepiao_appid']) && $szepiao_cfg_info['szepiao_appid'] && $szepiao_cfg_info['szepiao_appsecret'] && $szepiao_cfg_info['szepiao_tax_no']){
+                $arr['config']['e_invoice_type']='szepiao_new';
+            }
 
-		
+        }
 		$head_adver = D('Adver')->get_adver_by_key('app_index_top',1);
         $content_type = $this->config['guess_content_type'];
 		$arr['is_app_adver'] = $head_adver ? true : false;
@@ -596,13 +609,13 @@ class ConfigAction  extends BaseAction{
 			if(!$arr['wxapp_domain_list']){
 				$wxapp_domain_list = M('Wxapp_other_web')->field('domain')->select();
 				foreach($wxapp_domain_list as $value){
-					$arr['wxapp_domain_list'][] = $value['domain']; 
+					$arr['wxapp_domain_list'][] = $value['domain'];
 				}
 				S('wxapp_domain_list',$arr['wxapp_domain_list'],1800);
         	}
 		}
         $arr['is_open_pay_for_others'] = $this->config['is_open_pay_for_others'] ? $this->config['is_open_pay_for_others']:0;
-		
+
 		//顶象验证码安全的appid
 		$arr['dingxiang_captcha_appid'] = $this->config['dingxiang_captcha_appid'] ? $this->config['dingxiang_captcha_appid'] : '';
 		$arr['qcloud_captcha_appid'] = $this->config['qcloud_captcha_appid'] ? $this->config['qcloud_captcha_appid'] : '';
@@ -610,7 +623,7 @@ class ConfigAction  extends BaseAction{
 
         //增加是否hark系统返回
         $arr['is_hark_system'] = $this->config['is_hark_system'] == 1 ? true : false;
-		
+
 		//是否支持手机号一键登录
 		$arr['mobile_code_login'] = $this->config['mobile_code_login'] && $this->config['mobile_code_private_key'] ? true : false;
 
@@ -621,17 +634,17 @@ class ConfigAction  extends BaseAction{
             $arr['config']['system_type'] = $this->config['system_type'] ? : 'plat';
         }
 
-		
+
 		//小程序是否只支持一键登录
 		$arr['config']['program_mini_regtype'] = $this->config['program_mini_regtype'] ? : 1;
 //		以上面判断为准 单独为APP做系统类型返回
 //		$arr['config']['system_type'] = $this->config['system_type'] ? : 'plat';
 		//是否使用了https
 		$arr['config']['use_https'] = $this->config['use_https'] ? true : false;
-		
+
 		//外卖店铺列表展示商家注册入口
 		$arr['config']['shop_show_merreg'] = $this->config['shop_show_merreg'] ? true : false;
-		
+
 		//是否展示店铺的销售数
 		$arr['config']['merchant_not_show_sale_num'] = (!isset($this->config['merchant_show_sale_num']) || $this->config['merchant_show_sale_num']) ? false : true;
 
@@ -663,7 +676,7 @@ class ConfigAction  extends BaseAction{
 		$arr['config']['life_tools_sports_alias_name'] = C('config.life_tools_sports_alias_name') ?: 0;
 
         $arr['config']['shop_goods_search_style'] = C('config.shop_goods_search_style') ?: 2;// 1 老版  2新版
-        
+
         //定制-深圳市优你家新版商城用户下单地址与展示区域进行匹配，如非展示区域勾选区域，提示用户“超出可服务范围”，并无法下单。
         $arr['config']['open_mall_order_area'] = C('config.open_mall_order_area') ?: 0;
 
@@ -672,7 +685,7 @@ class ConfigAction  extends BaseAction{
 
 		//首页改版
 		$arr['config']['unee_home_index_h5'] = C('customization.unee_home_index_h5') ?: 0;
-        
+
         //人才系统弹窗配置
         $arr['popup'] = [
             'title' => $this->config['personnel_popup_title']?:'',
@@ -761,7 +774,7 @@ class ConfigAction  extends BaseAction{
 		//平台首页弹窗隐私政策、首页获取定位
 		$arr['index_show_privacy_policy'] = is_null(C('config.index_show_privacy_policy')) ? 1 : intval(C('config.index_show_privacy_policy'));
 		$arr['index_get_user_location'] = is_null(C('config.index_get_user_location')) ? 1 : intval(C('config.index_get_user_location'));
-        
+
         $arr['config']['set_house_alias'] = C('customization.set_house_alias')==1 ? 1 : 0;
         $village_id = $village_id ?? 0;
         $arr['config']['house_name'] = D('House_village')->getHouseAlias('house_name',$village_id)?:L_('小区');
@@ -783,7 +796,7 @@ class ConfigAction  extends BaseAction{
                 ],
             ];
         }
-        
+
         //商城为你推荐别名
         $arr['config']['mall_recommend_alias']    =   $this->config['mall_recommend_alias']?:'为你推荐';
         //下单页是否使用改版后的
@@ -791,10 +804,10 @@ class ConfigAction  extends BaseAction{
         //团购活动推荐类型
         $arr['config']['group_activity_recommendations'] = C('config.group_activity_recommendations') ?: 0;
         $arr['config']['internal_membership_card'] = intval(C('customization.internal_membership_card'));//一卡通定制
-        
+
         //预约导航位置
         $arr['config']['appoint_show_tab'] = $this->config['appoint_show_tab'] ?: 0;
-        
+
         //直播间讲解商品样式参数
         $live_bottom_icon = $this->config['live_bottom_icon'];
         if($live_bottom_icon){
@@ -817,7 +830,7 @@ class ConfigAction  extends BaseAction{
 		$arr['h5_url_matches'] = [
 			'www.zhihuilantian.com/customh5/'
 		];
-        
+
 		$arr['config']['tianditu_web_key'] = C('config.tianditu_web_key')?C('config.tianditu_web_key'):'';
         $arr['default_street_id']=0;
         $arr['default_street_name']=0;
@@ -829,15 +842,26 @@ class ConfigAction  extends BaseAction{
         }
 		$arr['config']['shop_top_notice'] = C('config.shop_top_notice');
 
-		//商超系统
-		$shoppingMall = M('Shopping_mall')->where(['status' => 1])->getField('id');
-		if ($shoppingMall) {
-			//$arr['config']['mall_id'] = $shoppingMall;
+		//商场
+		if (in_array(C('config.single_system_type'), ['shopping_mall', 'member'])) {
+			$shoppingMall = M('Shopping_mall')->where(['status' => 1])->getField('id');
+			$arr['config']['mall_id'] = $shoppingMall ?: 0;
 		}
+	    $arr['config']['social_comment_alias_name'] = C('config.social_comment_alias_name');
 		$arr['config']['building_domain'] = C('config.building_domain');
-        $this->returnCode(0,$arr);
+        $village_footer_nav_show= C('config.village_footer_nav_show');
+        $arr['config']['village_footer_nav_show'] =$village_footer_nav_show ? 1:0;
+
+		//商城顶部是否跟着主题色变化
+		$arr['config']['mall_follow_theme'] = C('config.mall_follow_theme') ? true : false;
+		$arr['config']['mall_my_center_background'] = C('config.my_center_background') ? replace_file_domain(C('config.my_center_background')) : C('config.site_url') . '/static/wxapp/minebanner.png';
+		$arr['config']['mall_order_detail_header_background'] = C('config.mall_order_detail_header_background') ? replace_file_domain(C('config.mall_order_detail_header_background')) : './static/orderstate.png';
+
+		//网站缩略名
+		$arr['config']['site_short_name'] = C('config.site_short_name') ? C('config.site_short_name') : C('config.site_name');
+		$this->returnCode(0, $arr);
     }
-	
+
     # 景区配置
     public function scenic_index(){
 		$config    =   $this->config;
@@ -855,7 +879,7 @@ class ConfigAction  extends BaseAction{
 	public function wx_config(){
 		$share = new WechatShare($this->config, '');
 		$arr = $share->get_wx_config();
-		
+
 		if($_POST['work'] == 'storestaff'){
 			switch($_POST['page']){
 				case 'index':
@@ -938,27 +962,27 @@ class ConfigAction  extends BaseAction{
 				}
 			}
         }
-		
+
 		if($arr['share'] && empty($arr['share']['image'])){
 			$arr['share']['image'] = $this->config['wechat_share_img'] ? $this->config['wechat_share_img'] : $this->config['site_url'].'/packapp/'.$_POST['work'].'/logo.png';
 		}
-		
+
 		$this->returnCode(0, $arr);
 	}
-	
+
 	public function log_report(){
 		$filename = $_POST['file'] ? $_POST['file'] : 'file_log';
 		fdump_api(['用户ID：'.$this->_uid, $_POST, $_SERVER['HTTP_REFERER']] , $filename, true);
 		$this->returnCode(0, array());
 	}
-	
+
 	public function wxapp_error_report(){
 		fdump(date('Y-m-d H:i:s'),'api/log/'.date('Ymd').'/wxapp_error_log',true);
 		fdump(intval($this->_uid),'api/log/'.date('Ymd').'/wxapp_error_log',true);
 		fdump($_POST,'api/log/'.date('Ymd').'/wxapp_error_log',true);
 		fdump($_SERVER['HTTP_REFERER'],'api/log/'.date('Ymd').'/wxapp_error_log',true);
 		fdump('======================================','api/log/'.date('Ymd').'/wxapp_error_log',true);
-		
+
 		$this->returnCode(0, array());
 	}
 
@@ -1000,16 +1024,16 @@ class ConfigAction  extends BaseAction{
 		$data = array();
 		//公共参数
 			$data['add_time'] = time();
-		
+
 		//手机信息
 			$data['phone_plat'] = $_POST['systemInfo']['platform'] == 'android' ? 2 : 1;
 			$data['phone_brand'] = strtolower($_POST['systemInfo']['brand']);
-			
+
 			//手机号版本只取前两位
 			$phone_version = trim(str_replace(array('ios','android'),'',strtolower($_POST['systemInfo']['system'])));
 			$phone_version_arr = explode('.',$phone_version);
 			$data['phone_version'] = $phone_version_arr[0] . '.' . ($phone_version_arr[1] ? $phone_version_arr[0] : '0');
-			
+
 		//未搜索到门禁，不知道用户情况
 		if($_POST['file'] == 'wxapp_notfounddoor_error_log'){
 			//如果用户属于一个小区，则归为该小区
@@ -1021,7 +1045,7 @@ class ConfigAction  extends BaseAction{
 			$data['uid'] = $this->_uid;
 			$data['add_time'] = time();
 			$data['open_status'] = '1';
-			
+
 			//蓝牙搜索到的个数，部分安卓手机需要开定位才能使用蓝牙，作为部分依据查看蓝牙是否真的可用
 			foreach($_POST['msg']['devicesArr'] as $key=>$value){
 				if(!empty($value)){
@@ -1044,12 +1068,12 @@ class ConfigAction  extends BaseAction{
 		}else if($_POST['file'] == 'wxapp_connetion_error_log' || $_POST['file'] == 'wxapp_startDiscoveryFail_error_log' || $_POST['file'] == 'wxapp_notifyBLE_log' || $_POST['file'] == 'wxapp_getBLEDeviceCharacteristics_error_log' || $_POST['file'] == 'wxapp_getServices_error_log'){  //连接不上蓝牙，
 			//通过门禁ID进行查询
 			$door_id = intval($_POST['msg']['door_id']);
-			
+
 			$now_door = M('House_village_door')->where(array('door_id'=>$door_id))->find();
 			$data['village_id'] = $now_door['village_id'];
 			$data['door_device_id'] = $now_door['door_device_id'];
 			$data['floor_id'] = $now_door['floor_id'];
-			$data['uid'] = $this->_uid;	
+			$data['uid'] = $this->_uid;
 			$data['open_status'] = $_POST['msg']['has_reconnect'] ? '3' : '2';
 			$data['param'] = $_POST['msg']['errorRes'] ? serialize($_POST['msg']['errorRes']) : '';
 			$data['location'] = $_POST['msg']['userLocation'] ? serialize($_POST['msg']['userLocation']) : '';
@@ -1058,17 +1082,17 @@ class ConfigAction  extends BaseAction{
 		}else if($_POST['file'] == 'wxapp_door_log' || $_POST['file'] == 'wxapp_openSuccess_log'){  //正常连接蓝牙
 			//通过门禁ID进行查询
 			$door_id = intval($_POST['msg']['door_id']);
-			
+
 			$now_door = M('House_village_door')->where(array('door_id'=>$door_id))->find();
-			
+
 			$data['village_id'] = $now_door['village_id'];
 			$data['door_device_id'] = $now_door['door_device_id'];
 			$data['floor_id'] = $now_door['floor_id'];
-			$data['uid'] = $this->_uid;	
+			$data['uid'] = $this->_uid;
 			$data['open_status'] = '0';
             $data['searched_bluetooth'] = count($_POST['msg']['devicesArr']);
             $data['param'] = $data['searched_bluetooth'] ? serialize($_POST['msg']['devicesArr']) : '';
-			
+
 			//去重
 			$condition['add_time'] 		 = $data['add_time'];
 			$condition['village_id']	 = $data['village_id'];
@@ -1079,24 +1103,24 @@ class ConfigAction  extends BaseAction{
 				$data['location'] = $_POST['msg']['userLocation'] ? serialize($_POST['msg']['userLocation']) : '';
 				M('House_village_open_door')->data($data)->add();
                 self::userLogAdds($data);
-				
+
 				//修改门禁最后开门时间
 				M('House_village_door')->where(array('door_device_id'=>$data['door_device_id']))->data(array('last_open_time'=>$data['add_time']))->save();
 			}
 		}
-		
+
 		//未连接上门禁，
 		$fdumpname = $_POST['file'] ? $_POST['file'] : 'wxapp_door_log';
 		$fdumpfile = 'api/door_log/'.date('Ymd').'/'.$fdumpname;
 
 		fdump(['蓝牙开门信息'.__LINE__,intval($this->_uid),$_POST,$_SERVER['HTTP_REFERER']],$fdumpfile,1);
-		
+
 		$this->returnCode(0, array());
 	}
 
 
 	//通过城市名或经纬度获取城市信息
-	public function getLocationCity(){ 
+	public function getLocationCity(){
 
 		$lat = isset($_POST['lat'])?floatval($_POST['lat']):0;
         $lng = isset($_POST['lng'])?floatval($_POST['lng']):0;
@@ -1117,7 +1141,7 @@ class ConfigAction  extends BaseAction{
 		}else{
 			$this->returnCodeOk(array('area_id'=>$city['now_area_id'] ? $city['now_area_id'] : $city['area_id'],'area_name'=>$city['now_area_name'] ? $city['now_area_name'] : $city['area_name'],'top_area_id'=>$city['area_id'],'top_area_name'=>$city['area_name']));
 		}
-		
+
 	}
 
 	public function geocoder($lat, $lng){
@@ -1131,11 +1155,23 @@ class ConfigAction  extends BaseAction{
 				if($result){
 					$result = json_decode($result,true);
 					fdump($result, 'result_baidu');
-					$arr = array(
-						'city' => $result['result']['addressComponent']['city'],
-						'province' => $result['result']['addressComponent']['province'],
-						'district' => $result['result']['addressComponent']['district'],
-					);
+					if(empty($result['result']) && C('config.tianditu_key')){
+                        //百度地图没解析到，如果配置了天地图，那么按照天地图解析
+                        list($wgs84_lng, $wgs84_lat) = Coordinate::bd09ToWgs84($lng, $lat);
+                        $result = Tianditu::reverseGeocoder($wgs84_lng, $wgs84_lat, C('config.tianditu_key'));
+						$arr = array(
+							'city' => $result['result']['addressComponent']['city']?:$result['result']['addressComponent']['province'],
+							'province' => $result['result']['addressComponent']['province'],
+							'district' => $result['result']['addressComponent']['county']?:$result['result']['addressComponent']['town'],
+						);
+                    }else{
+						$arr = array(
+							'city' => $result['result']['addressComponent']['city'],
+							'province' => $result['result']['addressComponent']['province'],
+							'district' => $result['result']['addressComponent']['district'],
+						);
+					}
+
 					return $arr;
 				}else{
 					return array();
@@ -1193,7 +1229,7 @@ class ConfigAction  extends BaseAction{
                 $where_area['area_pid'] = $oCity['area_id'];
 				$where_area['area_name'] = [['eq', $area_name],['eq',  $maybe_areaname], 'OR'];
                 $now_area = D('Area')->where($where_area)->find();
-                
+
                 if(empty($now_area)){
                     import('@.ORG.words');
                     $words_class = new words();
@@ -1205,7 +1241,7 @@ class ConfigAction  extends BaseAction{
                         $now_area = $data_area;
                     }
                 }
-                
+
                 if($now_area['is_show_change']){
 					$oCity['now_area_id'] = $now_area['area_id'];
 					$oCity['now_area_name'] = $now_area['area_name'];
@@ -1213,7 +1249,7 @@ class ConfigAction  extends BaseAction{
 					$oCity['now_area_id'] = $oCity['area_id'];
 					$oCity['now_area_name'] = $oCity['area_name'];
 				}
-				
+
             }
 
             // 通过经纬度获取该区县下距离最近的商场信息
@@ -1274,7 +1310,7 @@ class ConfigAction  extends BaseAction{
 			}else{
 				$data = $db->where($where)->order('sort desc,id asc')->select();
 			}
-			
+
 			$national_list = array();
 			foreach($data as $v){
 				$national_list[] = array(

@@ -9,22 +9,22 @@
 namespace app\community\controller\manage_api\v1;
 
 //use app\BaseController;
-use app\community\model\db\HouseVillage;
-use app\community\model\service\CommunityLoginService;
-use customization\customization;
-use think\facade\Request;
-use app\community\model\service\ManageAppLoginService;
-use app\community\model\service\HouseVillageService;
-use app\community\model\service\AreaStreetService;
-use app\community\model\service\ConfigService;
-use app\community\model\service\HousePropertyService;
-use app\community\model\service\OrganizationStreetService;
-use app\community\model\service\PropertyAdminService;
-
+use app\common\model\db\Plugin;
+use app\common\model\service\config\ConfigCustomizationService;
 use app\community\controller\manage_api\BaseController;
-use app\community\model\service\PackageOrderService;
-use app\community\model\service\HouseNewPorpertyService;
+use app\community\model\db\HouseVillage;
+use app\community\model\service\AreaStreetService;
+use app\community\model\service\CommunityLoginService;
 use app\community\model\service\HouseAppJpushInfoService;
+use app\community\model\service\HouseNewPorpertyService;
+use app\community\model\service\HousePropertyService;
+use app\community\model\service\HouseVillageService;
+use app\community\model\service\ManageAppLoginService;
+use app\community\model\service\OrganizationStreetService;
+use app\community\model\service\PackageOrderService;
+use app\community\model\service\PropertyAdminService;
+use app\social_activity\model\service\SocialActivityAdminService;
+use think\facade\Request;
 use token\Token;
 
 class LoginController extends BaseController{
@@ -65,6 +65,12 @@ class LoginController extends BaseController{
         } else {
             $login_role = $service_login->login_role();
         }
+	    $plugin = Plugin::where('plugin_label','social_activity')->where('status',1)->find();
+		if($plugin) {
+			$login_role[] = [
+				'type' => 'social_activity', 'name' => '社群活动管理员'
+			];
+		}
 
         $arr = [
             'login_role' => $login_role,
@@ -124,9 +130,13 @@ class LoginController extends BaseController{
             }
         }
         $arr['icp_url']='https://beian.miit.gov.cn/#/Integrated/index';
-        
+
         $community_jpush_appkey=cfg('community_jpush_appkey');
         $arr['community_jpush_appkey']=$community_jpush_appkey ? trim($community_jpush_appkey):'';
+        $configCustomizationService= new ConfigCustomizationService();
+        $wsxdsj_net_customized=$configCustomizationService->getWSXCustomizedOpen();
+        $is_offline_smart_qrcode=$wsxdsj_net_customized ? 1:0;
+        $arr['is_offline_smart_qrcode']=$is_offline_smart_qrcode;
         return api_output(0,$arr);
     }
 
@@ -142,14 +152,11 @@ class LoginController extends BaseController{
      *  'Device-Id' => '设备号'  建议前端统一请求接口处理
      *  'version_code' => '1001', 版本号  建议前端统一请求接口处理
      * )
-     * @author: wanziyang
+     * @return \think\response\Json
+     *@author: wanziyang
      * @date_time: 2020/4/23 15:22
-     * @return \json
      */
     public function check($cflag='') {
-
-//        $token = Token::createToken(10086,4);
-
         // 初始化 社区管理App 业务层
         $service_login           = new ManageAppLoginService();
         //  初始化 社区 业务层
@@ -462,7 +469,7 @@ class LoginController extends BaseController{
                         $config['floor_name'] = $villageConfigData['floor_name'] ?: $config['floor_name'];
                         $config['room_name'] = $villageConfigData['room_name'] ?: $config['room_name'];
                     }
-                    
+
                 }
                 $account_cancellation_tpis='确定要注销当前账号？注销后当前账号关联的小区物业管理人员身份也会注销不可恢复。';
                 $arr = array(
@@ -502,6 +509,29 @@ class LoginController extends BaseController{
         $pwd = $this->request->param('pwd','','strval');
         $device_id = $this->request->param('Device-Id', '', 'trim');
         $village_id = $this->request->param('village_id', '', 'intval');
+	    if($login_role == 'social_activity') {
+		    $adminService = new SocialActivityAdminService();
+		    try {
+			    $data = $adminService->login([
+				    'account' => $login_account,
+				    'password' => $pwd,
+			    ]);
+			    $loginData = [
+					'config' => [],
+					'role_list' => [],
+				    'login_role' => 'social_activity',
+				    'ticket' => $data['ticket'],
+				    'user' => [
+						'avatar' => cfg('site_url').'/static/images/user_avatar.jpg',
+						'login_name' => $data['realname'],
+					    'role_name' => $data['role_name'],
+				    ]
+			    ];
+		    } catch (\Exception $e) {
+			    return api_output_error(1003, $e->getMessage());
+		    }
+		    return api_output(0, $loginData, "登录成功");
+	    }
         // 获取的密码md5
         $pwd = md5($pwd);
         $res=$service_community_login->login($login_account,$pwd,$village_id,$login_role,$takeEffectTimeJudge,$ip,$device_id);
@@ -1254,7 +1284,7 @@ class LoginController extends BaseController{
         $service_community_login =new CommunityLoginService();
         $uid        = $this->request->log_uid;
         $login_role = $this->request->log_extends;
-        
+
         $loginTicket = $this->request->param('loginTicket');
         if ($loginTicket) {
             $login_arr = $service_community_login->getLoginSignInfo($loginTicket);
@@ -1329,7 +1359,7 @@ class LoginController extends BaseController{
                 if(isset($house_property['wid']) && ($house_property['wid']>0)){
                     $saveWorkerArr=array('status'=>4,'openid'=>'','is_del'=>1,'note'=>'客户在'.$cancel_date.'注销了账号','remarks'=>'客户在'.$cancel_date.'注销了账号');
                     $retw=$service_house_village->saveHouseWorker($house_property['wid'],$saveWorkerArr,'destroy');
-                    
+
                 }
                 return api_output(0,$retArr);
 
@@ -1374,7 +1404,7 @@ class LoginController extends BaseController{
             }
         }
         return api_output(1002,[],'未登陆！');
-        
+
     }
     public function save_jpush_registration_info(){
         return $this->check('jpush_registration');

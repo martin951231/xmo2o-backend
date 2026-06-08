@@ -77,6 +77,7 @@ class IndexAction extends BaseAction{
         $limit_creator_set = I('limit_creator_set','1');
         // 投票排序值 数字越大越靠前
         $vote_sort = I('vote_sort','0');
+        $house_limit_once = I('house_limit_once','0');
 
         // 关于来源处理
         $returnArr = build_redirect_info();
@@ -110,6 +111,9 @@ class IndexAction extends BaseAction{
             'from_name' => $from_name,
             'add_time' => $now_time,
         );
+        if ($this->hasPluginVoteField('house_limit_once')) {
+            $vote_data['house_limit_once'] = intval($house_limit_once) == 1 ? 1 : 0;
+        }
         $vote_id = M('Plugin_vote')->data($vote_data)->add();
         if (!$vote_id) {
             $Model->rollback();
@@ -342,6 +346,7 @@ class IndexAction extends BaseAction{
         $limit_creator_set = I('limit_creator_set','-1');
         // 投票排序值 数字越大越靠前
         $vote_sort = I('vote_sort','-1');
+        $house_limit_once = I('house_limit_once','-1');
 
 
         //实例化M()方法
@@ -390,6 +395,9 @@ class IndexAction extends BaseAction{
         }
         if ($vote_sort>=0 && $vote_sort!=$vote_info['vote_sort']) {
             $vote_data['vote_sort'] = $vote_sort;
+        }
+        if ($this->hasPluginVoteField('house_limit_once') && $house_limit_once>=0 && $house_limit_once!=$vote_info['house_limit_once']) {
+            $vote_data['house_limit_once'] = intval($house_limit_once) == 1 ? 1 : 0;
         }
         $vote_data['last_time'] = $now_time;
 
@@ -834,6 +842,15 @@ class IndexAction extends BaseAction{
     public function test() {
         $info = D('Plugin_vote')->statistical_voting(6);
         dump($info);
+    }
+
+    private function hasPluginVoteField($field)
+    {
+        static $fields = null;
+        if ($fields === null) {
+            $fields = M('Plugin_vote')->getDbFields();
+        }
+        return $fields && in_array($field, $fields);
     }
 
 }

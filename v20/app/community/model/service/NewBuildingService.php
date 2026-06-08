@@ -2441,7 +2441,7 @@ class NewBuildingService
                         $v['fees_type'] = empty($v['fees_type']) ? '-' : (($v['fees_type'] == 1) ? '固定费用' : '单价计量单位');
                     }
                     if(isset($v['bill_create_set'])){
-                        $v['bill_create_set'] = empty($v['bill_create_set']) ? '-' : (($v['bill_create_set'] == 1) ? '按日生成' : (($v['bill_create_set'] == 2) ? '按月生成' : '按年生成'));
+                        $v['bill_create_set'] = empty($v['bill_create_set']) ? '-' : (($v['bill_create_set'] == 1) ? '按日生成' : (($v['bill_create_set'] == 2) ? '按月生成' : (($v['bill_create_set'] == 3) ? '按年生成' : '自定义收费周期')));
                     }
                     if(isset($v['bill_arrears_set'])){
                         $v['bill_arrears_set'] = empty($v['bill_arrears_set']) ? '-' : (($v['bill_arrears_set'] == 1) ? '预生成' : '后生成');

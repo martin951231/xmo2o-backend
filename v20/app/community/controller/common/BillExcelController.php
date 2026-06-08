@@ -16,6 +16,9 @@ use app\community\controller\CommunityBaseController;
 use app\community\model\service\Excel\BillExcelService;
 use app\community\model\service\HouseNewChargeProjectService;
 use app\community\model\service\ImportExcelService;
+use app\community\model\db\HouseVillageUserBind;
+use app\community\model\service\HouseWorkerService;
+use app\command\BillExcelImport;
 use app\traits\CacheTypeTraits;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -54,7 +57,32 @@ class BillExcelController extends CommunityBaseController
         $where[] = ['p.village_id', '=', $village_id];
         $where[] = ['p.subject_id', '=', $subject_id];
         $where[] = ['p.status', '=', 1];
-        $where[] = ['p.type', '=', 1];// 仅支持一次性费用
+        $where[] = ['p.type', '=', 1];// 注意只支持一次性费用
+        try {
+            $list = $HouseNewChargeProjectService->getProjectList($where, 'p.id,p.type,p.name');
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+        return api_output(0, $list);
+    }
+
+    /**
+     * 导入周期性账单前选择对应周期性项目.
+     */
+    public function getCycleChargeProject()
+    {
+        $village_id = $this->adminUser['village_id'];
+        $subject_id = $this->request->post('subject_id');
+        if (empty($subject_id)) {
+            return api_output_error(1003, '请选择科目');
+        }
+
+        $HouseNewChargeProjectService = new HouseNewChargeProjectService();
+        $where = [];
+        $where[] = ['p.village_id', '=', $village_id];
+        $where[] = ['p.subject_id', '=', $subject_id];
+        $where[] = ['p.status', '=', 1];
+        $where[] = ['p.type', '=', 2];// 周期性账单导入仅支持周期性费用
         try {
             $list = $HouseNewChargeProjectService->getProjectList($where, 'p.id,p.type,p.name');
         } catch (\Exception $e) {
@@ -80,6 +108,76 @@ class BillExcelController extends CommunityBaseController
             return api_output_error(-1, $e->getMessage());
         }
         return api_output(0,$result);
+    }
+
+    // 获取周期性账单导入模板
+    public function getCycleImportTemplateUrl(){
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        try{
+            $param=array(
+                'village_id'=>$village_id,
+                'opttype'=>ImportExcelService::UPLOAD_CYCLE_BILL_EXCEL,
+                'subject_id'=>$this->request->param('subject_id', 0, 'intval'),
+                'charge_project_id'=>$this->request->param('charge_project_id', 0, 'intval'),
+            );
+            $result = (new BillExcelService())->getCycleImportTemplateUrl($param);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        return api_output(0,$result);
+    }
+
+    public function getCyclePayImportTemplateUrl(){
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        $subject_id = $this->request->param('subject_id', 0, 'intval');
+        $charge_project_id = $this->request->param('charge_project_id', 0, 'intval');
+        if (empty($subject_id) || empty($charge_project_id)){
+            return api_output(1001, [], '请选择收费科目和收费项目！');
+        }
+        try{
+            $param=array(
+                'village_id'=>$village_id,
+                'opttype'=>ImportExcelService::UPLOAD_CYCLE_BILL_PAY_EXCEL,
+                'subject_id'=>$subject_id,
+                'charge_project_id'=>$charge_project_id,
+            );
+            $result = (new BillExcelService())->getCyclePayImportTemplateUrl($param);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        return api_output(0,$result);
+    }
+
+    public function getCyclePayUserList(){
+        $village_id = $this->adminUser['village_id'];
+        $room_id = $this->request->param('room_id', 0, 'intval');
+        if (empty($village_id) || empty($room_id)){
+            return api_output(0, []);
+        }
+        $where = [
+            ['village_id', '=', $village_id],
+            ['vacancy_id', '=', $room_id],
+            ['status', '=', 1],
+            ['type', 'in', [0, 1, 2, 3]],
+        ];
+        $list = (new HouseVillageUserBind())->getList($where, 'pigcms_id,uid,name,phone,type', 'type ASC,pigcms_id DESC');
+        return api_output(0, $list ? $list->toArray() : []);
+    }
+
+    public function getCyclePayCashierList(){
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(0, []);
+        }
+        $whereArr = array(['village_id', '=', $village_id], ['is_del', '=', 0], ['xtype','=',2], ['relation_id','>',0], ['status', 'in', array(0, 1)]);
+        $list = (new HouseWorkerService())->getAllWorkerList($whereArr, 'relation_id as opt_id,phone,name');
+        return api_output(0, $list ? $list->toArray() : []);
     }
     
     public function billUploadFile()
@@ -129,6 +227,28 @@ class BillExcelController extends CommunityBaseController
                 'inputFileName'=>app()->getRootPath().'..'.$excelPath,
             );
             $result = (new ImportExcelService())->readImportFile($type,$param);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        return api_output(0,$result);
+    }
+
+    // 周期性账单上传文件解析
+    public function cycleImportForExcel(){
+        $village_id = $this->adminUser['village_id'];
+        $excelPath = $this->request->param('inputFileName','','trim');
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        if (empty($excelPath)){
+            return api_output(1001,[],'请上传文件');
+        }
+        try{
+            $param=array(
+                'village_id'=>$village_id,
+                'inputFileName'=>app()->getRootPath().'..'.$excelPath,
+            );
+            $result = (new ImportExcelService())->readCycleBillImportFile($param);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }
@@ -185,6 +305,102 @@ class BillExcelController extends CommunityBaseController
             return api_output_error(-1, $e->getMessage());
         }
         return api_output(0,$result);
+    }
+
+    // 开始导入周期性账单
+    public function startCycleImport()
+    {
+        $type      = ImportExcelService::UPLOAD_CYCLE_BILL_EXCEL;
+        $subjectId = $this->request->param('subjectId', 0,'intval');
+        $projectId = $this->request->param('charge_project_id', 0,'intval');
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        if (empty($subjectId) || empty($projectId)){
+            return api_output(1001, [], '请选择收费项目！');
+        }
+
+        $inputFileName          = $this->request->post('inputFileName','');
+        $worksheetName          = $this->request->post('worksheetName','');
+        $selectWorkSheetIndex   = $this->request->post('selectWorkSheetIndex',0);
+
+        $nowVillageInfo    = [
+            'village_id'        => $village_id,
+            'village_name'      => $this->adminUser['village_name'],
+            'village_address'   => $this->adminUser['village_address'],
+            'account'           => $this->adminUser['account'],
+            'property_id'       => $this->adminUser['property_id'],
+            'property_phone'    => $this->adminUser['property_phone'],
+            'adminName'         => $this->adminUser['adminName'],
+            'user_name'         => $this->adminUser['user_name'],
+            'adminId'           => $this->adminUser['adminId'],
+            'loginType'         => $this->adminUser['loginType'],
+        ];
+
+        try{
+            $param=array(
+                'type'                  => $type,
+                'subjectId'             => $subjectId,
+                'projectId'             => $projectId,
+                'inputFileName'         => $inputFileName,
+                'worksheetName'         => $worksheetName,
+                'selectWorkSheetIndex'  => $selectWorkSheetIndex,
+                'nowVillageInfo'        => $nowVillageInfo,
+            );
+            $result=(new BillExcelImport())->executeCycleBillExcel($param);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        $msg = isset($result['errorTotal']) && intval($result['errorTotal']) > 0 ? '导入完成，存在失败数据' : '导入成功';
+        return api_output(0,$result,$msg);
+    }
+
+    public function startCyclePayImport()
+    {
+        $type      = ImportExcelService::UPLOAD_CYCLE_BILL_PAY_EXCEL;
+        $subjectId = $this->request->param('subjectId', 0,'intval');
+        $projectId = $this->request->param('charge_project_id', 0,'intval');
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        if (empty($subjectId) || empty($projectId)){
+            return api_output(1001, [], '请选择收费项目！');
+        }
+        $inputFileName          = $this->request->post('inputFileName','');
+        $worksheetName          = $this->request->post('worksheetName','');
+        $selectWorkSheetIndex   = $this->request->post('selectWorkSheetIndex',0);
+
+        $nowVillageInfo    = [
+            'village_id'        => $village_id,
+            'village_name'      => $this->adminUser['village_name'],
+            'village_address'   => $this->adminUser['village_address'],
+            'account'           => $this->adminUser['account'],
+            'property_id'       => $this->adminUser['property_id'],
+            'property_phone'    => $this->adminUser['property_phone'],
+            'adminName'         => $this->adminUser['adminName'],
+            'user_name'         => $this->adminUser['user_name'],
+            'adminId'           => $this->adminUser['adminId'],
+            'loginType'         => $this->adminUser['loginType'],
+        ];
+
+        try{
+            $param=array(
+                'type'                  => $type,
+                'subjectId'             => $subjectId,
+                'projectId'             => $projectId,
+                'inputFileName'         => $inputFileName,
+                'worksheetName'         => $worksheetName,
+                'selectWorkSheetIndex'  => $selectWorkSheetIndex,
+                'nowVillageInfo'        => $nowVillageInfo,
+            );
+            $result=(new BillExcelImport())->executeCycleBillPayExcel($param);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        $msg = isset($result['errorTotal']) && intval($result['errorTotal']) > 0 ? '导入完成，存在失败数据' : '导入成功';
+        return api_output(0,$result,$msg);
     }
 
 

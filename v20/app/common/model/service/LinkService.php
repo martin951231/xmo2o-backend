@@ -172,7 +172,7 @@ class LinkService
 				if(cfg('delete_foodshop_v1') && $value['label'] == 'newFoodshopBusiness'){
 					$catArr[$key]['txt'] = cfg('meal_alias_name');
 				}
-				
+
 				//删除老商城
 				if(cfg('delete_mall_v1') && $value['label'] == 'mallBusiness'){
 					unset($catArr[$key]);
@@ -203,7 +203,15 @@ class LinkService
                 ];
             }
 
-			$catArr = array_values($catArr);
+            //社群活动分类
+            $social_activity_plugin = (new \app\common\model\db\Plugin())->where(['status' => 1, 'show' => 1, 'plugin_label' => 'social_activity'])->find();
+			if($social_activity_plugin){
+                $catArr[] = [
+                    'label' => 'socialActivity',
+                    'txt' => $social_activity_plugin['plugin_name']
+                ];
+            }
+            $catArr = array_values($catArr);
         }
         return $catArr;
     }
@@ -300,7 +308,7 @@ class LinkService
 
         //判断$label方法是否存在
         if (!method_exists($this, $label)) {
-            throw new \think\Exception('未找到该分类');
+            throw new \think\Exception('未找到该分类('.$label.')');
         }
         $res = $this->$label($systemUser, $keyword, $page, $pageSize, $source, $source_id, $store_id);
 
@@ -383,14 +391,26 @@ class LinkService
 
     private function getcommonPages()
     {
+        $platIndex =  cfg('site_url') . '/wap.php?g=Wap&c=Home&a=index&no_house=1';
+        $platImage = cfg('site_url') . '/v20/public/static/common/link/ptsy.png';
+        $myIndex =  get_base_url('pages/plat_menu/my');
+        $myImage = cfg('site_url') . '/v20/public/static/common/link/ptgrzx.png';
+
+        if(in_array(cfg('single_system_type'),['shopping_mall'])){
+            $platIndex = get_base_url('pages/shoppingMall/index');
+            $platImage = cfg('site_url') . '/v20/public/static/common/link/mall_index.png';
+            $myIndex = get_base_url('pages/shoppingMall/my');
+            $myImage = cfg('site_url') . '/v20/public/static/common/link/mall_my.png';
+        }
+
         $arr = [
             'style' => 'btn',
             'btn_list' => [
-                ['icon' => 'iconshouye1', 'image' => cfg('site_url') . '/v20/public/static/common/link/ptsy.png', 'txt' => '平台首页', 'url' => cfg('site_url') . '/wap.php?g=Wap&c=Home&a=index&no_house=1'],
+                ['icon' => 'iconshouye1', 'image' => $platImage, 'txt' => '平台首页', 'url' => $platIndex],
                 ['icon' => 'icondingdan', 'image' => cfg('site_url') . '/v20/public/static/common/link/ptgrdd.png', 'txt' => '平台个人订单', 'url' => get_base_url('pages/my/my_order') ],
                 ['icon' => 'iconlingquanzhongxin', 'image' => cfg('site_url') . '/v20/public/static/common/link/wdyhq.png', 'txt' => '我的优惠券', 'url' => get_base_url('pages/coupon/myCoupon')],
                 ['icon' => 'iconrili', 'image' => cfg('site_url') . '/v20/public/static/common/link/lqzx.png', 'txt' => '领券中心', 'url' => get_base_url('pages/coupon/index')],
-                ['icon' => 'iconiconfront-', 'image' => cfg('site_url') . '/v20/public/static/common/link/ptgrzx.png', 'txt' => '平台个人中心', 'url' => get_base_url('pages/plat_menu/my')],
+                ['icon' => 'iconiconfront-', 'image' => $myImage, 'txt' => '平台个人中心', 'url' => $myIndex],
                 ['icon' => 'iconqiandao', 'image' => cfg('site_url') . '/v20/public/static/common/link/qdzx.png', 'txt' => '签到中心', 'url' => cfg('site_url') . '/wap.php?g=Wap&c=My&a=sign'],
                 ['icon' => 'iconhuiyuan', 'image' => cfg('site_url') . '/v20/public/static/common/link/ptyhhyk.png', 'txt' => '平台优惠会员卡', 'url' => get_base_url('pages/membership/platMembership')],
 //                ['icon' => 'iconqiandao', 'image' => cfg('site_url') . '/v20/public/static/common/link/zhaopin.png', 'txt' => '求职首页', 'url' => cfg('site_url') . '/packapp/project_employment/pages/index/index'],
@@ -1225,15 +1245,15 @@ class LinkService
             'list' => [
                 'left' => [
                     [
-                        'txt' => $alias . '首页', 
+                        'txt' => $alias . '首页',
                         'label' => 'xbcysy'
-                    ], 
+                    ],
                     [
-                        'txt' => '分类页面', 
+                        'txt' => '分类页面',
                         'label' => 'xbcyflym'
-                    ], 
+                    ],
                     [
-                        'txt' => $alias . '订单', 
+                        'txt' => $alias . '订单',
                         'label' => 'xbcydd'
                     ]
                 ]
@@ -1870,6 +1890,11 @@ class LinkService
                     //['txt' => '景区', 'label' => 'scenic']
                 ]
             ]];
+        if(cfg('single_system_type') == 'shopping_mall'){
+            $arr['list']['left'][] = ['txt' => '商场工具', 'label' => 'shoppingMallTools'];
+        }elseif(cfg('single_system_type') == 'member'){
+            $arr['list']['left'][] = ['txt' => '会员工具', 'label' => 'shoppingMallTools'];
+        }
         return $arr;
     }
 
@@ -1991,7 +2016,7 @@ class LinkService
                 'url' => get_base_url('/pages/lifeTools/scenic/ticketBook?type=scenic&showTabs=false'),
                 'txt' => '景区列表',
             ],
-           
+
         ];
         $arr = [
             'add_link' => '',//为空时不显示跳转按钮
@@ -2059,7 +2084,7 @@ class LinkService
         }
         return $arr;
     }
-    
+
     // 景区
     private function scenic(){
         $linkArr = [
@@ -3681,8 +3706,8 @@ class LinkService
         return $items;
     }
 
-    
-    
+
+
      private function xbtgfllj()
     {
         $arr = [
@@ -4500,6 +4525,225 @@ class LinkService
                     ['txt' => '预览链接', 'label' => 'yllj']
                 ],
                 'body' => $items
+            ]
+        ];
+        return $arr;
+    }
+
+    //社群活动分类
+    private function socialActivity()
+    {
+        $arr = [
+            'style' => 'list',
+            'list' => [
+                'left' => [['txt' => '社群活动首页', 'label' => 'socialActivityHome'], ['txt' => '社群活动分类', 'label' => 'socialActivityLists']]
+            ]
+        ];
+        return $arr;
+    }
+
+    private function socialActivityHome(){
+        $arr = [
+            'add_link' => '',//为空时不显示跳转按钮
+            'show_search' => false,//为空不展示搜索按钮
+            'page_bar' => false,//是否有分页
+            'type' => 'list',//列表=list  多级分类=cat
+            'list' => [
+                'head' => [['txt' => '选择页面', 'label' => 'xzym'], ['txt' => '页面名称', 'label' => 'ymmc'], ['txt' => '预览链接', 'label' => 'yllj']],
+                'body' => [
+                    [
+                        'cat_id' => 1,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/socialActivity/index'),
+                        'xzym' => [
+                            'txt' => 1,
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'ymmc' => [
+                            'txt' => '社群活动首页',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/socialActivity/index'),
+                            'image' => ''
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        return $arr;
+    }
+
+    private function socialActivityLists($systemUser, $keyword, $page, $pageSize, $source, $source_id)
+    {
+        $where = [['status', '=', 1]];
+        if ($keyword) {
+            $where[] = ['name', 'like', '%' . $keyword . '%'];
+        }
+        $lists = (new \app\social_activity\model\db\SocialActivityCategory())->where($where)
+            ->append(['status_text'])
+            ->order('id desc')
+            ->paginate($pageSize)
+            ->toArray();
+        $items = ['list' => [], 'count' => $lists['total']];
+        foreach ($lists['data'] as $val) {
+            $url = get_base_url('pages/socialActivity/search?category_id=' . $val['id']);
+            $item = [
+                'cat_id' => $val['id'],
+                'cat_fid' => 0,
+                'url' => $url,
+                'title' => [
+                    'txt' => $val['name'],
+                    'url' => '',
+                    'image' => '',
+                ],
+                'yllj' => [
+                    'txt' => '预览链接',
+                    'url' => $url,
+                    'image' => '',
+                ]
+            ];
+            $items['list'][] = $item;
+        }
+
+        $arr = [
+            'add_link' => '', //为空时不显示跳转按钮
+            'show_search' => true, //为空不展示搜索按钮
+            'page_bar' => true, //是否有分页
+            'type' => 'list', //列表=list  多级分类=cat
+            'list' => [
+                'head' => [
+                    ['txt' => '活动分类', 'label' => 'title'],
+                    ['txt' => '预览链接', 'label' => 'yllj']
+                ],
+                'body' => $items
+            ]
+        ];
+        return $arr;
+    }
+
+    private function shoppingMallTools()
+    {
+        $arr = [
+            'add_link' => '', //为空时不显示跳转按钮
+            'show_search' => false, //为空不展示搜索按钮
+            'page_bar' => false, //是否有分页
+            'type' => 'list', //列表=list  多级分类=cat
+            'list' => [
+                'head' => [['txt' => '页面名称', 'label' => 'ymmc'], ['txt' => '预览链接', 'label' => 'yllj']],
+                'body' => [
+                     [
+                        'cat_id' => 1,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/index'),
+                        'ymmc' => [
+                            'txt' => '首页',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/index'),
+                            'image' => ''
+                        ]
+                    ],
+                    [
+                        'cat_id' => 2,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/order'),
+                        'ymmc' => [
+                            'txt' => '拍照积分列表',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/order'),
+                            'image' => ''
+                        ]
+                    ],
+                    [
+                        'cat_id' => 3,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/activity/list'),
+                        'ymmc' => [
+                            'txt' => '商场活动列表',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/activity/list'),
+                            'image' => ''
+                        ]
+
+                    ],
+                    [
+                        'cat_id' => 4,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/parking/parkPayment'),
+                        'ymmc' => [
+                            'txt' => '停车缴费',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/parking/parkPayment'),
+                            'image' => ''
+                        ]
+
+                    ],
+                    [
+                        'cat_id' => 5,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/parking/myCar'),
+                        'ymmc' => [
+                            'txt' => '我的车辆',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/parking/myCar'),
+                            'image' => ''
+                        ]
+
+                    ],
+                    [
+                        'cat_id' => 6,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/guide'),
+                        'ymmc' => [
+                            'txt' => '商场导购',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/guide'),
+                            'image' => ''
+                        ],
+                    ],
+                    [
+                        'cat_id' => 7,
+                        'cat_fid' => 0,
+                        'url' => get_base_url('pages/shoppingMall/connectWiFi'),
+                        'ymmc' => [
+                            'txt' => 'WIFI列表',
+                            'url' => '',
+                            'image' => ''
+                        ],
+                        'yllj' => [
+                            'txt' => '预览链接',
+                            'url' => get_base_url('pages/shoppingMall/connectWiFi'),
+                            'image' => ''
+                        ],
+                    ]
+                ]
             ]
         ];
         return $arr;

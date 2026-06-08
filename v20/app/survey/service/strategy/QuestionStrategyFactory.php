@@ -4,6 +4,7 @@ namespace app\survey\service\strategy;
 
 use app\survey\service\question\AreaAddressQuestion;
 use app\survey\service\question\CheckboxQuestion;
+use app\survey\service\question\FileQuestion;
 use app\survey\service\question\ImageUploadQuestion;
 use app\survey\service\question\PhoneQuestion;
 use app\survey\service\question\RadioQuestion;
@@ -26,6 +27,7 @@ class QuestionStrategyFactory
 		'phone' => PhoneQuestion::class,
 		'sex' => SexQuestion::class,
 		'areaAddress' => AreaAddressQuestion::class,
+		'file' => FileQuestion::class,
 	];
 
 	/**
@@ -41,7 +43,7 @@ class QuestionStrategyFactory
 		if (!class_exists($className)) {
 			throw new Exception("问题类不存在: {$className}");
 		}
-		
+
 		return new $className();
 	}
 }

@@ -18,6 +18,7 @@ use app\community\model\db\HouseNewChargeRule;
 use app\community\model\db\HouseNewDepositFrozenLog;
 use app\community\model\db\HouseNewDepositLog;
 use app\community\model\db\HouseNewChargePrepaid;
+use app\community\model\db\HouseNewOfflinePay;
 use app\community\model\db\HouseNewPayOrder;
 use app\community\model\db\HouseNewPayOrderSummary;
 use app\community\model\db\HouseNewPileUserMoney;
@@ -92,6 +93,195 @@ class NewPayService
 {
     use HouseVillageAfterPayTraits;
     use customization;
+
+    /**
+     * Build normalized offline mix payment details.
+     *
+     * money_type: 1 cash/real payment, 2 non-cash deduction configured by user.
+     */
+    private function buildOfflineMixPayInfo($extra_data = array(), $offline_pay_type = '')
+    {
+        $items = array();
+        if (isset($extra_data['offline_pay_type_mix']) && is_array($extra_data['offline_pay_type_mix'])) {
+            $items = $extra_data['offline_pay_type_mix'];
+        }
+        if (empty($items)) {
+            return array('list' => array(), 'cash_money' => 0, 'discount_money' => 0, 'total_money' => 0);
+        }
+
+        $ids = array();
+        foreach ($items as $item) {
+            $id = isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : (isset($item['id']) ? intval($item['id']) : 0);
+            if ($id > 0) {
+                $ids[] = $id;
+            }
+        }
+        if (!empty($offline_pay_type)) {
+            foreach (explode(',', strval($offline_pay_type)) as $id) {
+                $id = intval($id);
+                if ($id > 0) {
+                    $ids[] = $id;
+                }
+            }
+        }
+        $ids = array_unique($ids);
+
+        $payConfig = array();
+        if (!empty($ids)) {
+            $payList = (new HouseNewOfflinePay())->getList(array(array('id', 'in', $ids)), 'id,name,money_type');
+            if ($payList && !$payList->isEmpty()) {
+                foreach ($payList->toArray() as $pay) {
+                    $payConfig[$pay['id']] = $pay;
+                }
+            }
+        }
+
+        $list = array();
+        $cashMoney = 0;
+        $discountMoney = 0;
+        $totalMoney = 0;
+        foreach ($items as $item) {
+            $id = isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : (isset($item['id']) ? intval($item['id']) : 0);
+            $money = isset($item['paymoney']) ? $item['paymoney'] : (isset($item['money']) ? $item['money'] : 0);
+            $money = round(floatval($money), 2);
+            if ($id < 1 || $money <= 0) {
+                continue;
+            }
+            $name = isset($item['offlinepay_name']) ? trim($item['offlinepay_name']) : '';
+            if ($name === '' && isset($payConfig[$id]['name'])) {
+                $name = $payConfig[$id]['name'];
+            }
+            if (isset($payConfig[$id]['money_type'])) {
+                $moneyType = intval($payConfig[$id]['money_type']);
+            } elseif (isset($item['money_type'])) {
+                $moneyType = intval($item['money_type']);
+            } else {
+                $moneyType = (strpos($name, "\xE7\x8E\xB0\xE9\x87\x91") !== false || stripos($name, 'cash') !== false) ? 1 : 2;
+            }
+            $moneyType = $moneyType == 2 ? 2 : 1;
+            $row = array(
+                'offlinepay_id' => $id,
+                'offlinepay_name' => $name,
+                'paymoney' => sprintf('%.2f', $money),
+                'money_type' => $moneyType,
+            );
+            $list[] = $row;
+            $totalMoney = round($totalMoney + $money, 2);
+            if ($moneyType == 2) {
+                $discountMoney = round($discountMoney + $money, 2);
+            } else {
+                $cashMoney = round($cashMoney + $money, 2);
+            }
+        }
+
+        return array(
+            'list' => $list,
+            'cash_money' => $cashMoney,
+            'discount_money' => $discountMoney,
+            'total_money' => $totalMoney,
+        );
+    }
+
+    /**
+     * Allocate discount payment items to child orders in order.
+     */
+    private function allocateOfflineMixDiscount($order_list = array(), $pay_detail = '')
+    {
+        $detail = is_array($pay_detail) ? $pay_detail : json_decode($pay_detail, true);
+        if (empty($detail) || empty($detail['list']) || !is_array($detail['list'])) {
+            return array();
+        }
+
+        $discountItems = array();
+        foreach ($detail['list'] as $item) {
+            $moneyType = isset($item['money_type']) ? intval($item['money_type']) : 1;
+            $money = isset($item['paymoney']) ? round(floatval($item['paymoney']), 2) : 0;
+            if ($moneyType == 2 && $money > 0) {
+                $discountItems[] = array(
+                    'offlinepay_id' => isset($item['offlinepay_id']) ? intval($item['offlinepay_id']) : 0,
+                    'offlinepay_name' => isset($item['offlinepay_name']) ? $item['offlinepay_name'] : '',
+                    'paymoney' => $money,
+                    'money_type' => 2,
+                );
+            }
+        }
+        if (empty($discountItems)) {
+            return array();
+        }
+
+        $allocation = array();
+        $discountIndex = 0;
+        $discountRemain = $discountItems[$discountIndex]['paymoney'];
+        foreach ($order_list as $order) {
+            $orderId = isset($order['order_id']) ? intval($order['order_id']) : 0;
+            if ($orderId < 1) {
+                continue;
+            }
+            $orderMoney = round(floatval($order['modify_money']) + floatval($order['late_payment_money']), 2);
+            $orderRemain = $orderMoney;
+            $orderDiscount = 0;
+            $orderDetail = array();
+            while ($orderRemain > 0 && isset($discountItems[$discountIndex])) {
+                $used = min($orderRemain, $discountRemain);
+                $used = round($used, 2);
+                if ($used <= 0) {
+                    break;
+                }
+                $orderRemain = round($orderRemain - $used, 2);
+                $discountRemain = round($discountRemain - $used, 2);
+                $orderDiscount = round($orderDiscount + $used, 2);
+
+                $item = $discountItems[$discountIndex];
+                $item['order_id'] = $orderId;
+                $item['paymoney'] = sprintf('%.2f', $used);
+                $orderDetail[] = $item;
+
+                if ($discountRemain <= 0) {
+                    $discountIndex++;
+                    if (isset($discountItems[$discountIndex])) {
+                        $discountRemain = $discountItems[$discountIndex]['paymoney'];
+                    }
+                }
+            }
+            if ($orderDiscount > 0) {
+                $allocation[$orderId] = array(
+                    'discount_money' => $orderDiscount,
+                    'discount_detail' => $orderDetail,
+                );
+            }
+            if (!isset($discountItems[$discountIndex])) {
+                break;
+            }
+        }
+
+        return $allocation;
+    }
+
+    private function applyOfflineMixDiscountToSummaryOrders($summary_id = 0, $pay_detail = '')
+    {
+        if ($summary_id < 1 || empty($pay_detail)) {
+            return array();
+        }
+        $dbHouseNewPayOrder = new HouseNewPayOrder();
+        $orderList = $dbHouseNewPayOrder->getList(array('o.summary_id' => $summary_id), 'o.order_id,o.modify_money,o.late_payment_money', 0, 0, 'o.order_id ASC');
+        if (empty($orderList) || $orderList->isEmpty()) {
+            return array();
+        }
+        $orderList = $orderList->toArray();
+        $allocation = $this->allocateOfflineMixDiscount($orderList, $pay_detail);
+        foreach ($orderList as $order) {
+            $orderId = intval($order['order_id']);
+            $orderMoney = round(floatval($order['modify_money']) + floatval($order['late_payment_money']), 2);
+            $discountMoney = isset($allocation[$orderId]['discount_money']) ? round(floatval($allocation[$orderId]['discount_money']), 2) : 0;
+            $saveData = array(
+                'pay_money' => max(round($orderMoney - $discountMoney, 2), 0),
+                'discount_money' => $discountMoney,
+                'discount_detail' => $discountMoney > 0 ? json_encode($allocation[$orderId]['discount_detail'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '',
+            );
+            $dbHouseNewPayOrder->saveOne(array('order_id' => $orderId), $saveData);
+        }
+        return $allocation;
+    }
     /**
      * 收银台生成支付账单
      * @author lijie
@@ -395,6 +585,10 @@ class NewPayService
         }
         $db_house_property_digit_service = new HousePropertyDigitService();
         $digit_info =$db_house_property_digit_service->get_one_digit(['property_id'=>$village_info['property_id']]);
+        $offlineMixPayInfo = array('list' => array(), 'cash_money' => 0, 'discount_money' => 0, 'total_money' => 0);
+        if ($pay_type == 22) {
+            $offlineMixPayInfo = $this->buildOfflineMixPayInfo($extra_data, $offline_pay_type);
+        }
         if (isset($param['deposit_money'])){
             $deposit_money=$param['deposit_money'];
         }else{
@@ -609,9 +803,27 @@ class NewPayService
         }
         $total_money = formatNumber($total_money,2,1);
         $pay_money = formatNumber($pay_money,2,1);
+        if ($pay_type == 22 && !empty($offlineMixPayInfo['list'])) {
+            if (abs(floatval($offlineMixPayInfo['total_money']) - floatval($pay_money)) > 0.01) {
+                throw new \think\Exception("组合支付金额合计必须等于待支付金额！");
+            }
+            if (floatval($offlineMixPayInfo['discount_money']) > floatval($pay_money)) {
+                throw new \think\Exception("组合支付抵扣金额不能大于待支付金额！");
+            }
+            $pay_money = formatNumber($offlineMixPayInfo['cash_money'], 2, 1);
+        }
         
         $whereOrderSummary = ['summary_id' => $summary_id];
-        $updateOrderSummary = ['deposit_money' => $param['deposit_money'], 'total_money' => $total_money, 'pay_money' => $pay_money, 'pay_amount_points' => $pay_money * 100];
+        $updateOrderSummary = ['deposit_money' => $param['deposit_money'], 'total_money' => $total_money, 'pay_money' => $pay_money];
+        if ($pay_type == 2 || $pay_type == 22) {
+            $updateOrderSummary['pay_amount_points'] = 0;
+        } else {
+            $updateOrderSummary['pay_amount_points'] = $pay_money * 100;
+        }
+        if ($pay_type == 22 && !empty($offlineMixPayInfo['list'])) {
+            $updateOrderSummary['discount_money'] = $offlineMixPayInfo['discount_money'];
+            $updateOrderSummary['pay_detail'] = json_encode($offlineMixPayInfo, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
         if (!empty($summaryExtraDataOrders)) {
             $summaryExtraDataOrders = array_unique($summaryExtraDataOrders);
             $summaryExtraData = ['newPayOrderId' => $summaryExtraDataOrders];
@@ -625,6 +837,9 @@ class NewPayService
             }
         }
         $service_house_new_cashier->saveOrderSummary($whereOrderSummary, $updateOrderSummary);
+        if ($pay_type == 22 && !empty($updateOrderSummary['pay_detail'])) {
+            $this->applyOfflineMixDiscountToSummaryOrders($summary_id, $updateOrderSummary['pay_detail']);
+        }
         if( isset($param['ticket_number']) && !empty($param['ticket_number'])){
            $orderTicketNumberSave=array('summary_id'=>$summary_id,'update_time'=>time(),'ticket_status'=>1);
            if(!empty($summaryExtraDataOrders)){
@@ -1526,6 +1741,10 @@ class NewPayService
             $is_old_park_position=true;
         }
         $order_list=$order_list->toArray();
+        $offlineMixDiscountAllocation = array();
+        if (isset($summary_order_info['pay_type']) && intval($summary_order_info['pay_type']) == 22 && !empty($summary_order_info['pay_detail'])) {
+            $offlineMixDiscountAllocation = $this->allocateOfflineMixDiscount($order_list, $summary_order_info['pay_detail']);
+        }
         $messageDatas=array();
         $messageDatas['property_id']=$summary_order_info['property_id'];
         $messageDatas['pay_money']=round($summary_order_info['pay_money'],2);
@@ -1639,6 +1858,19 @@ class NewPayService
                 $ticket_number=$v['ticket_number'];
             }
             $tmpUpdateData['pay_money'] = $v['modify_money'] + $v['late_payment_money'];
+            if (!empty($offlineMixDiscountAllocation) && isset($offlineMixDiscountAllocation[$v['order_id']])) {
+                $mixDiscount = $offlineMixDiscountAllocation[$v['order_id']];
+                $discountMoney = isset($mixDiscount['discount_money']) ? round(floatval($mixDiscount['discount_money']), 2) : 0;
+                $tmpUpdateData['discount_money'] = $discountMoney;
+                $tmpUpdateData['discount_detail'] = json_encode($mixDiscount['discount_detail'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $tmpUpdateData['pay_money'] = round($tmpUpdateData['pay_money'] - $discountMoney, 2);
+                if ($tmpUpdateData['pay_money'] < 0) {
+                    $tmpUpdateData['pay_money'] = 0;
+                }
+            } elseif (isset($summary_order_info['pay_type']) && intval($summary_order_info['pay_type']) == 22) {
+                $tmpUpdateData['discount_money'] = 0;
+                $tmpUpdateData['discount_detail'] = '';
+            }
             if (!empty($other_data) && isset($other_data['divide_order_id']) && ($other_data['divide_order_id'] == $v['order_id']) && ($other_data['divide_order_id_pay_money'] > 0)) {
                 $old_pay_money= round($tmpUpdateData['pay_money'], 2);
                 $pay_money_tmp = $tmpUpdateData['pay_money'] - $other_data['divide_order_id_pay_money']; //算出这个单子已支付的钱

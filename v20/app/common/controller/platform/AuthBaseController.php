@@ -8,6 +8,7 @@ namespace app\common\controller\platform;
 use app\common\controller\CommonBaseController;
 use app\common\model\service\admin_user\AdminUserService as AdminUserService;
 use app\http\exceptions\ParametersException;
+use app\social_activity\model\db\SocialActivityAdmin;
 use think\helper\Str;
 
 class AuthBaseController extends CommonBaseController
@@ -33,9 +34,13 @@ class AuthBaseController extends CommonBaseController
 		$this->checkLogin();
 
 		$userId = intval($this->request->log_uid);
-		// 获得用户信息
-		$userService = new AdminUserService();
-		$user = $userService->getUserRole($userId);
+		if ($this->request->log_extends == 'admin') {
+			// 获得用户信息
+			$userService = new AdminUserService();
+			$user = $userService->getUserRole($userId);
+		} elseif ($this->request->log_extends == 'social_activity_admin') {
+			$user = SocialActivityAdmin::where('id', $userId)->find();
+		}
 
 		// 用户id
 		$this->_uid = $userId;

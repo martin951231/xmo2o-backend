@@ -15,6 +15,8 @@ class SurveyForm extends Model
 	const STATUS_ENABLE = 1;//已启用
 	const STATUS_DRAFT = 2;//草稿
 	const STATUS_DISABLE = 3;//已禁用
+	const TYPE_SURVEY = 'survey';//问卷
+	const TYPE_SIGNUP = 'signup';//投票
 
 	/**
 	 * 关联问题表
@@ -43,7 +45,7 @@ class SurveyForm extends Model
 		];
 		return $status[$data['status']] ?? '未知';
 	}
-	
+
 	public function getThemeConfigAttr($value): ?array
 	{
 		if($value) {
@@ -59,7 +61,7 @@ class SurveyForm extends Model
 	{
 		return $value ? json_encode($value, JSON_UNESCAPED_UNICODE) : '';
 	}
-	
+
 	public function searchTitleAttr($query, $value)
 	{
 		$value && $query->where('title', 'like', "%{$value}%");
@@ -68,5 +70,10 @@ class SurveyForm extends Model
 	public function searchStatusAttr($query, $value)
 	{
 		$value && $query->where('status', $value);
+	}
+
+	public function searchTypeAttr($query, $value)
+	{
+		$value && $query->where('type', $value);
 	}
 }

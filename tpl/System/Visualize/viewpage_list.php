@@ -89,7 +89,7 @@
                                         <div class="group-content">尺寸:715*278。</div>
                                     </div>
                                     </if>
-                                    
+
                                   <if condition="$yuanJino2oCustomized">
                                         <div class="form-group">
                                             <div class="group-title">
@@ -313,6 +313,16 @@
                                 </if>
 
                                 </div>
+                                <div class="form-group">
+                                    <div class="group-title">
+                                        <span class="name">社群活动位</span>
+                                        <div class="div_right">
+                                            <span class="switch-<if condition="$config['social_events_slot_show'] eq '1'">on<else/>off</if>" id="social_events_slot_show" style="right: 100px;"></span>
+                                            <button type="button" class="btn visualize_assign" style="height: 28px;" data-id="41">分配权限</button>
+                                        </div>
+                                    </div>
+                                    <div class="group-content">可以设置社群活动位是否展示</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -425,6 +435,10 @@
         font-size: 14px;
         border-radius: 2px;
 
+    }
+    #social_events_slot_show .slider {
+        width: 30px !important;
+        height: 30px !important;
     }
 </style>
 <!-- swiper -->
@@ -942,7 +956,26 @@
     })
 
 
+    // 初始化开关组件
+    $(function() {
+        switchEvent("#social_events_slot_show",function(){
+				console.log('开了');
+				change_social_events_slot_show(1);
+			},function(){
+				console.log('关了');
+				change_social_events_slot_show(0);
+			});
 
+        function change_social_events_slot_show(value){
+            $.post("{pigcms{:U('change_social_events_slot_show')}",{value:value},function(result){
+                if(result.status != 1){
+                    layer.alert('切换失败',{
+                        offset: ($('body').height() - 150) / 2
+                    });
+                }
+            });
+        }
+    });
 
 </script>
 

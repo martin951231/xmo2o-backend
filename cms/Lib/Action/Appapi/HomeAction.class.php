@@ -1,7 +1,7 @@
 <?php
 class HomeAction  extends BaseAction{
 	public function index_version_two(){
-        
+
         $isLouyuConn = I('isLouyuConn','');
         if ($isLouyuConn){
             $return_arr['index_guess_like_arr']  = D('Config_data')->get_index_guess_like();
@@ -9,17 +9,17 @@ class HomeAction  extends BaseAction{
             $return_arr['wxapp_username'] = C('config.pay_wxapp_username');
             $this->returnCodeOk($return_arr);
         }
-        
+
         $app_type   =   I('app_type');
 		//模板类型
 		$return_arr['mobile_index_tpl'] = $this->config['mobile_index_tpl'];
-		
+
 		//导航栏“更多”图标按钮导航列表
 		$return_arr['plat_index_more_slider'] = D('Slider')->get_slider_by_key('plat_index_more',5);
-		
+
 		//《标准版模板》四个大按钮导航
 		$return_arr['app_index_top_btn_slider'] = D('Slider')->get_slider_by_key('app_index_top_btn',4);
-		
+
 		//《标准版模板》轮播图
 		$return_arr['app_index_top_adver_small'] = D('Adver')->get_adver_by_key('wap_index_top',5);
 		foreach($return_arr['app_index_top_adver_small'] as $key=>$value){
@@ -95,7 +95,7 @@ class HomeAction  extends BaseAction{
 			}
 			//压缩图片
 			$v['pic'] = thumb_img($v['pic'], 200, 200);
-			$return_arr['slider'][]  =   $v; 
+			$return_arr['slider'][]  =   $v;
         }
 
 		// 小程序跳转到别的小程序
@@ -116,7 +116,7 @@ class HomeAction  extends BaseAction{
 		}elseif (C('config.app_index_center_four_show_type')==2){
             $return_arr['app_index_center_four_adver'] = D('Adver')->get_adver_by_key('app_index_center_nine_grid',9);
         }
-		
+
 		//中间栏轮播广告图
 		$return_arr['app_index_center_adver'] = D('Adver')->get_adver_by_key('app_index_center_adver',5);
 
@@ -126,7 +126,7 @@ class HomeAction  extends BaseAction{
 			$return_arr['app_index_center_four_adver'] = D('Adver')->replace_url_to_wxapp_page($return_arr['app_index_center_four_adver']);
 			$return_arr['app_index_center_adver'] = D('Adver')->replace_url_to_wxapp_page($return_arr['app_index_center_adver']);
 		}
-		
+
 
 		// app跳转到别的app
 		if ($this->DEVICE_ID != 'wxapp') {
@@ -138,7 +138,7 @@ class HomeAction  extends BaseAction{
 			$return_arr['app_index_center_four_adver'] = D('Adver')->replace_url_to_app_page($return_arr['app_index_center_four_adver'], $app_type);
 			$return_arr['app_index_center_adver'] = D('Adver')->replace_url_to_app_page($return_arr['app_index_center_adver'], $app_type);
 		}
-		
+
 
 		//平台滚动播报信息
 		if($this->config['show_scroll_msg']){
@@ -152,8 +152,8 @@ class HomeAction  extends BaseAction{
 		$entrance['img'] = empty($entrance['img']) ? '' : replace_file_domain($entrance['img']);
 		$entrance['url'] = htmlspecialchars_decode($entrance['url']);
 		$return_arr['entrance'] = replace_domain($entrance);
-		
-		
+
+
 		//展示 平台快报
 		$return_arr['mobile_index_plat_news'] = $this->config['mobile_index_plat_news'] ? true : false;
 		// 快报
@@ -172,9 +172,9 @@ class HomeAction  extends BaseAction{
                 $return_arr['mobile_index_plat_news'] = false;
             }
 		}
-		
+
 		$now_city_id = $this->config['now_city'];
-		
+
 		//超值抢购
 		$plat_buy_active_info_key = 'plat_buy_active/info_'.$now_city_id;
 		$return_arr['plat_buy_active_info'] = S($plat_buy_active_info_key);
@@ -206,7 +206,7 @@ class HomeAction  extends BaseAction{
 				// 查询通用的
 				$now_activity = D('Plat_buy_active_group')->where(array('begin_time'=>array('lt',$_SERVER['REQUEST_TIME']),'end_time'=>array('gt',$_SERVER['REQUEST_TIME']),'status'=>'1','city_id'=>0))->order('`pigcms_id` ASC')->find();
 			}
-			if($now_activity){			
+			if($now_activity){
 				$database_plat_buy_active = D('Plat_buy_active');
 
 				// 显示数量
@@ -266,7 +266,7 @@ class HomeAction  extends BaseAction{
 						$tmp_pic_arr = explode(';',$active_value['active_img']);
 						$active_img = $group_image_class->get_image_by_path($tmp_pic_arr[0],'s');
 					}
-					
+
 					if($active_value['active_type'] == 'mall'){
 						$active_value['active_link'] = $this->config['site_url'].'/wap.php?c=Mall&a=detail&goods_id='.$active_value['other_id'];
 					} else if ($active_value['active_type'] == 'new_mall' || $active_value['active_type'] == 'newmall') {
@@ -282,7 +282,7 @@ class HomeAction  extends BaseAction{
 					}else if($active_value['active_type'] == 'newmall'){
                         $active_value['active_link'] =get_base_url('pages/shopmall_third/commodity_details?goods_id=' . $active_value['other_id']);
                     }
-					
+
                     $active_value['active_img'] = replace_file_domain($active_img);
                     isset($active_value['active_price']) && $active_value['active_price'] = getFormatNumber($active_value['active_price']);
                     isset($active_value['old_price']) && $active_value['old_price'] = getFormatNumber($active_value['old_price']);
@@ -304,7 +304,7 @@ class HomeAction  extends BaseAction{
 		}else{
 			$return_arr['plat_buy_active_info']['end_time'] = $return_arr['plat_buy_active_info']['end_time_old'] - time();
 		}
-		
+
 		//五图广告位
 		$plat_five_adver_info_key = 'plat_five_adver/info_'.$now_city_id;
 		$return_arr['plat_five_adver_info'] = [];// S($plat_five_adver_info_key);
@@ -351,7 +351,7 @@ class HomeAction  extends BaseAction{
 					if (count($return_arr['plat_five_adver_info'])>=30 && empty($return_arr['plat_five_adver_info'][$active_value['group_id']])) {
 						continue;
 					}
-					
+
 					$active_value['group_pic'] = file_domain().'/upload/system/'.$active_value['group_pic'];
 					$active_value['active_desc'] = htmlspecialchars_decode($active_value['active_desc']);
 					if($active_value['group_from'] == '0'){
@@ -366,7 +366,7 @@ class HomeAction  extends BaseAction{
 							$tmp_pic_arr = explode(';',$active_value['active_img']);
 							$active_img = $group_image_class->get_image_by_path($tmp_pic_arr[0],'s');
 						}
-						
+
 						if($active_value['active_type'] == 'mall'){
 							$active_value['active_link'] = $this->config['site_url'].'/wap.php?c=Mall&a=detail&goods_id='.$active_value['other_id'];
 						} else if ($active_value['active_type'] == 'new_mall') {
@@ -378,14 +378,14 @@ class HomeAction  extends BaseAction{
 						}else if($active_value['active_type'] == 'group'){
 							$active_value['active_link'] = $this->config['site_url'].'/wap.php?c=Group&a=detail&group_id='.$active_value['other_id'];
 						}
-						
+
 						$active_value['active_img'] = replace_file_domain($active_img);
 					}else{
 						$active_value['active_img'] = file_domain().'/upload/system/'.$active_value['active_img'];
 						$active_value['active_link'] = htmlspecialchars_decode($active_value['active_link']);
 					}
-					
-					
+
+
 					if(empty($return_arr['plat_five_adver_info'][$active_value['group_id']])){
 						$tmp_value =  array(
 							'group_id' => $active_value['group_id'],
@@ -402,9 +402,9 @@ class HomeAction  extends BaseAction{
 							continue;
 						}
 					}
-					
+
 					unset($active_value['group_from'],$active_value['group_name'],$active_value['group_pic'],$active_value['group_link'],$active_value['group_pic_link'],$active_value['active_info'],$active_value['hits'],$active_value['add_time'],$active_value['sort'],$active_value['status'],$active_value['lng'],$active_value['lat']);
-					
+
 					if(count($return_arr['plat_five_adver_info'][$active_value['group_id']]['adver_list']) < 4){
 						$return_arr['plat_five_adver_info'][$active_value['group_id']]['adver_list'][] = $active_value;
 					}
@@ -413,13 +413,13 @@ class HomeAction  extends BaseAction{
 			}else{
 				$plat_five_adver_list = array();
 			}
-			
+
 			S($plat_five_adver_info_key,$return_arr['plat_five_adver_info'],3600);
 		}
 		if ($this->DEVICE_ID == 'wxapp'){
 			$return_arr['plat_five_adver_info'] = replace_domain($return_arr['plat_five_adver_info']);
 		}
-		
+
 		//分类信息分类
 		$return_arr['zcategorys'] = [];
         if($this->config['wap_home_show_classify']){
@@ -435,13 +435,13 @@ class HomeAction  extends BaseAction{
                     }
                 }
 				$return_arr['zcategorys']  =   array_values($Zcategorys);
-				
+
 				$return_arr['classify_name'] = $this->config['classify_name'];		//分类信息别名
 				$return_arr['classify_name_desc'] = $this->config['classify_name_desc'];		//分类信息描述
 				$return_arr['classify_url'] = $this->config['site_url'] . '/wap.php?c=Classifynew&a=index';		//分类信息链接
             }
         }
-		
+
 		//猜你喜欢
 		$config_data = D('Config_data')->get_config_data();
 		$return_arr['index_guess_like_title'] = $config_data['index_guess_like_title'] ?  L_($config_data['index_guess_like_title']) : L_('猜你喜欢');
@@ -458,7 +458,7 @@ class HomeAction  extends BaseAction{
 
 			];
 		}
-		
+
 		//猜你喜欢 发现好菜分类列表
 		/**
 		$where = [];
@@ -481,12 +481,12 @@ class HomeAction  extends BaseAction{
 		cookie('visit_village_id',0);
 
 
-        
+
         //查询语音助手配置
         $return_arr['voice_asr_identify'] = D('Voice_robot_hotword')->getSetInfo();
-        
-        
-		
+
+
+
         if(C('customization.life_tools')){
             $return_arr['recommend_hot_list']=$this->recommend_hot_list();
         }
@@ -520,17 +520,17 @@ class HomeAction  extends BaseAction{
         ];
         $return_arr = array_merge($return_arr,$indexConfig);
         //---------------------------------------------------------------------------
-        
+
 		$this->returnCodeOk($return_arr);
 	}
-		
+
 	// 猜你喜欢 推荐
 	public function plat_recommend(){
 		$config_data = D('Config_data')->get_index_guess_like();
 		if(!$config_data){
 			$this->returnCodeOk(['count'=>0, 'page'=>'1', 'list'=>[]]);
 		}
-		
+
 		$page = max(1,intval($_POST['page']));
         $lat = isset($_POST['lat']) ? floatval($_POST['lat']) : 0;
         $lng = isset($_POST['lng']) ? floatval($_POST['lng']) : 0;
@@ -724,7 +724,7 @@ class HomeAction  extends BaseAction{
         }else {
             $now_activity = D('Plat_buy_active_group')->where(array('begin_time'=>array('lt',$_SERVER['REQUEST_TIME']),'end_time'=>array('gt',$_SERVER['REQUEST_TIME']),'status'=>'1','city_id'=>$now_city_id))->order('`pigcms_id` ASC')->find();
         }
-		
+
 		if(empty($now_activity)){
 			$now_activity = D('Plat_buy_active_group')->where(array('begin_time'=>array('lt',$_SERVER['REQUEST_TIME']),'end_time'=>array('gt',$_SERVER['REQUEST_TIME']),'status'=>'1','city_id'=>0))->order('`pigcms_id` ASC')->find();
 		}
@@ -799,16 +799,16 @@ class HomeAction  extends BaseAction{
 
                 isset($active_value['active_price']) && $active_value['active_price'] = getFormatNumber($active_value['active_price']);
                 isset($active_value['old_price']) && $active_value['old_price'] = getFormatNumber($active_value['old_price']);
-				
+
 				$return_arr['active_list'][] = $active_value;
 			}
-			
+
 			$this->returnCodeOk($return_arr);
 		}else{
 			$this->returnCodeError('暂时没有可参与的活动');
 		}
 	}
-	
+
 	//平台活动上报点击数
 	public function plat_buy_active_up(){
 		if($_POST['id']){
@@ -817,15 +817,15 @@ class HomeAction  extends BaseAction{
 		}
 		$this->returnCodeOk(array());
 	}
-	
-	
+
+
     public function index(){
         $app_type   =   I('app_type');
         $user_long_lat  =   $this->user_long_lat;
-		
+
         $arr['new_group_list']    =   array();
         $arr['user_long_lat']    =   !empty($user_long_lat)?$user_long_lat:null;
-		
+
         //顶部广告 小程序读WAP端
 		if($_POST['Device-Id'] != 'wxapp'){
 			$head_adver = D('Adver')->get_adver_by_key('app_index_top',5);
@@ -847,13 +847,13 @@ class HomeAction  extends BaseAction{
 			if ($this->DEVICE_ID != 'wxapp') {
 				$head_adver = D('Adver')->replace_url_to_app_page($head_adver, $app_type);
 			}
-            
+
 
 			$arr['head_adver'] = $head_adver;
 		}else{
 			$arr['head_adver'] = array();
 		}
-		
+
 		//首页附近模块
 		if($this->config['wap_around_show_type']){
 			$_condition['city_id'] = array('in', array(0, C("config.now_city")));
@@ -883,7 +883,7 @@ class HomeAction  extends BaseAction{
 		$entrance['img'] = empty($entrance['img']) ? '' : replace_file_domain($entrance['img']);
 		$entrance['url'] = htmlspecialchars_decode($entrance['url']);
 		$arr['entrance'] = $entrance;
-		
+
         //我的社区
         if($this->config['house_open'] == 1){
             $house_alias_name = isset($this->config['house_name']) && $this->config['house_name'] ? $this->config['house_name'] : L_('社区');
@@ -905,7 +905,7 @@ class HomeAction  extends BaseAction{
                 $wap_index_slider[$tmp_i][] = $value;
             }
         }
-		
+
         foreach($wap_index_slider as $v){
             foreach($v as $vv){
                 $vv['url']  =   htmlspecialchars_decode($vv['url']);
@@ -918,7 +918,7 @@ class HomeAction  extends BaseAction{
                     }
                     unset($vv['wxapp_id'],$vv['wxapp_page']);
                 }
-                $arr['slider'][]  =   $vv; 
+                $arr['slider'][]  =   $vv;
             }
         }
 
@@ -930,10 +930,10 @@ class HomeAction  extends BaseAction{
         if(empty($arr['slider'])){
             $arr['slider']  =   array();
         }
-       
+
 		// 快报
         $news_info = M('')->field('`n`.`id`,`n`.`title`,`c`.`name`')->table(array(C('DB_PREFIX').'system_news'=>'n',C('DB_PREFIX').'system_news_category'=>'c'))->where("`n`.`status`='1' AND `c`.`id`=`n`.`category_id` AND `c`.`status`='1' AND `n`.`city_id` in (0,".$this->config['now_city'].")")->order('`n`.`sort` DESC,`n`.`id` DESC')->limit(8)->select();
-		
+
         $news_count = count($news_info);
 
 		if($news_count){
@@ -1007,7 +1007,7 @@ class HomeAction  extends BaseAction{
                 }
             }
         }
-        
+
         //请求红包
         $arr['redpack'] = false;
         if($this->_uid){
@@ -1061,9 +1061,9 @@ class HomeAction  extends BaseAction{
         }else{
             $arr['zcategorys']  =   array_values($Zcategorys);
         }
-        
+
         $arr['location_mode'] = $this->config['location_mode'] ? $this->config['location_mode'] : 0; // 0-定位到城市区县，1-定位到商场
-        
+
 		$this->save_user_city();
 
         $this->returnCode(0,$arr);
@@ -1272,7 +1272,7 @@ class HomeAction  extends BaseAction{
 		if($now_city){
 			$this->returnCode(0,array('city_id'=>$now_city['area_id'],'city_name'=>$now_city['area_name']));
 		}
-		
+
 		$full_city_name = trim($city_name);
         $long = strlen($city_name);
         if ($long >= 7) {
@@ -1304,7 +1304,7 @@ class HomeAction  extends BaseAction{
         $now_city = M('Area')->where($now_city_where)->find();
 
         S('get_city_id_by_name' . $old_city_name, $now_city);
-        
+
         $this->returnCode(0,array('city_id'=>$now_city['area_id'],'city_name'=>$now_city['area_name']));
     }
 
@@ -1316,7 +1316,7 @@ class HomeAction  extends BaseAction{
             $now_user = D('User')->get_user($now_user_openid, 'wxapp_openid');
             $spread_user = D('User')->get_user($spread_openid, 'wxapp_openid');
             //小程序授权已经创建用户
-            
+
             if ($this->config['open_user_spread'] && $spread_openid && $now_user_openid && $now_user_openid != $spread_openid && ($now_user['openid'] == '' || !M('Merchant_spread')->where(array('openid' => $now_user['openid'], 'mer_id' => array('gt', 0)))->find())) {
                 if (!empty($spread_user)) {
                     if (empty($now_user['openid']) || $this->config['user_spread_replace']) {
@@ -1389,7 +1389,7 @@ class HomeAction  extends BaseAction{
             $where[] = ['coupon_type' => $couponType];
         }
         $setting = M('System_send_coupon_activity_setting')->where($where)->select();
-       
+
         $merMod = D('Card_new_coupon');
         $sysMod = D('System_coupon');
         $logMod = M('System_send_coupon_activity_log');
@@ -1566,5 +1566,555 @@ class HomeAction  extends BaseAction{
         $objExcel->runTask();exit();
     }
 
+    public function dealshopoffline(){
+        dd(11);
+        /*$mer_id = 6;
+        $refund_sql = "SELECT order_id FROM `pigcms_merchant_money_list` WHERE `mer_id` = ".$mer_id." AND `use_time` >= '1743436800' AND `type` <> 'withdraw' and income=2";
+        $refund_list = D()->query($refund_sql);
+        $rela_refund_sql = "SELECT l.order_id FROM `pigcms_shop_order` as o INNER JOIN `pigcms_merchant_money_list` as l ON o.order_id = l.order_id  WHERE o.mer_id = ".$mer_id." AND o.use_time >= '1743436800' AND l.type <> 'withdraw' and l.income=2";
+        $rela_refund_sql1 = "SELECT l.order_id as total_money FROM `pigcms_shop_order` as o INNER JOIN `pigcms_merchant_money_list` as l ON o.real_orderid = l.order_id  WHERE o.mer_id = ".$mer_id." AND o.use_time >= '1743436800' AND l.type <> 'withdraw' and l.income=2";
+        $rela_refund = D()->query($rela_refund_sql);
+        $rela_refund1 = D()->query($rela_refund_sql1);
+        $refund_orderids = array_merge(array_column($rela_refund,'order_id'),array_column($rela_refund1,'order_id'));
+        $refund_total = array_column($refund_list,'order_id');
+        $diff_order = [];
+        //dd($refund_orderids,$refund_total);
+        foreach ($refund_total as $item){
+            if(!in_array($item,$refund_orderids)){
+                $diff_order[] = $item;
+            }
+        }*/
+        //dd($diff_order);
+        //dd(111);
+        /*$income_sql = "SELECT sum(money) as total_money FROM `pigcms_merchant_money_list` WHERE `mer_id` = 6 AND `use_time` >= '1743436800' AND `type` <> 'withdraw' and income=1";
+        $income = D()->query($income_sql);*/
+        $rela_income_sql = "SELECT o.order_id,o.real_orderid,o.payment_money,l.money,o.merchant_balance FROM `pigcms_shop_order` as o INNER JOIN `pigcms_merchant_money_list` as l ON o.order_id = l.order_id  WHERE o.mer_id = 6 AND o.use_time >= '1743436800' AND l.type <> 'withdraw' and l.income=2 and o.payment_money>0";
+        $rela_income = D()->query($rela_income_sql);
+        $rela_income_sql_real = "SELECT o.order_id,o.real_orderid,o.payment_money,l.money,o.merchant_balance FROM `pigcms_shop_order` as o INNER JOIN `pigcms_merchant_money_list` as l ON o.real_orderid = l.order_id  WHERE o.mer_id = 6 AND o.use_time >= '1743436800' AND l.type <> 'withdraw' and l.income=2 and o.payment_money>0";
+        $rela_income_real = D()->query($rela_income_sql_real);
+        dd($rela_income,$rela_income_real);
+        $rela_income_sql1 = "SELECT o.order_id FROM `pigcms_shop_order` as o INNER JOIN `pigcms_merchant_money_list` as l ON l.order_id = o.order_id  WHERE o.mer_id = 6 AND l.use_time >= '1743436800' AND l.type <> 'withdraw' and l.income=1";
+        $rela_income1 = D()->query($rela_income_sql1);
+        /*$refund_sql = "SELECT sum(money) as total_money FROM `pigcms_merchant_money_list` WHERE `mer_id` = 6 AND `use_time` >= '1743436800' AND `type` <> 'withdraw' and income=2";
+        $refund = D()->query($refund_sql);*/
+        $rela_income_order_ids = array_column($rela_income,'order_id');
+        $rela_income_order_ids_1 = array_column($rela_income1,'order_id');
+        $diff_order = [];
+        foreach ($rela_income_order_ids_1 as $item){
+            if(!in_array($item,$rela_income_order_ids)){
+                $diff_order[] = $item;
+            }
+        }
+        dd($diff_order);
+        dd($income,$rela_income,$rela_income1,$refund);
+        $refund_mopney = D('Shop_order')->join('as o inner join pigcms_merchant_money_list as l on (o.order_id = l.order_id or o.real_orderid = l.order_id)')
+            ->field('sum(l.money) as total_money')
+            ->where(['o.mer_id'=>6,'l.type'=>['in',['shop','shop_offline']],'l.income'=>2,'o.use_time'=>['lgt',1743436800]])
+            ->select();
+        dd($income,$refund_mopney);
+        /*$sql = "SELECT  o.*,uu.nickname AS register_name,uu.phone AS register_phone, (SELECT m.name FROM pigcms_merchant AS m WHERE o.mer_id=m.mer_id) AS merchant_name,d.name as good_name,d.price as good_price ,d.spec,d.unit,d.cost_price, d.num as good_num,(SELECT s.name FROM pigcms_merchant_store AS s WHERE s.store_id=o.store_id) AS store_name , (SELECT mm.money FROM pigcms_merchant_money_list AS mm WHERE mm.order_id = o.real_orderid AND mm.type = 'shop' LIMIT 1) AS income_money,u.identity,u.department,u.name user_card_name,u.card_number,u.lable_ids  FROM pigcms_shop_order AS o INNER JOIN pigcms_shop_order_detail AS d ON `d`.`order_id`=`o`.`order_id`
+		LEFT JOIN pigcms_employee_card_user AS u ON o.uid = u.uid AND o.mer_id = u.mer_id LEFT JOIN pigcms_user uu ON uu.uid=o.uid
+		 WHERE `o`.`platform`=0 AND o.is_del=0 AND o.store_id = 191 AND (o.pay_time BETWEEN 1743436800 AND 1747497599) and o.order_from!=1 ORDER BY o.order_id DESC";
+        $result_list = D()->query($sql);
+        $csv_data_pay_time = $this->dealData($result_list);*/
+        $sql1 = "SELECT  o.*,uu.nickname AS register_name,uu.phone AS register_phone, (SELECT m.name FROM pigcms_merchant AS m WHERE o.mer_id=m.mer_id) AS merchant_name,d.name as good_name,d.price as good_price ,d.spec,d.unit,d.cost_price, d.num as good_num,(SELECT s.name FROM pigcms_merchant_store AS s WHERE s.store_id=o.store_id) AS store_name , (SELECT mm.money FROM pigcms_merchant_money_list AS mm WHERE mm.order_id = o.real_orderid AND mm.type = 'shop' LIMIT 1) AS income_money,u.identity,u.department,u.name user_card_name,u.card_number,u.lable_ids  FROM pigcms_shop_order AS o INNER JOIN pigcms_shop_order_detail AS d ON `d`.`order_id`=`o`.`order_id`
+		LEFT JOIN pigcms_employee_card_user AS u ON o.uid = u.uid AND o.mer_id = u.mer_id LEFT JOIN pigcms_user uu ON uu.uid=o.uid
+		 WHERE `o`.`platform`=0 AND o.is_del=0 AND o.store_id = 191 AND (o.use_time BETWEEN 1743436800 AND 1747497599) and o.order_from!=1 ORDER BY o.order_id DESC";
+        $result_list_use = D()->query($sql1);
+        $csv_data_use_time = $this->dealData($result_list_use);
+        $no_bill = [];
+        $no_bill_money = 0;
+        $wft_money = 0;
+        foreach ($csv_data_use_time as $item){
+            if($item[21]&&$item[21]>0) {
+                $mer_money_list = D('Merchant_money_list')->where(['in_come' => 1, 'type' => ['in', ['shop_offline', 'shop']], 'order_id' => ['in', [$item[0], $item[59]]]])->find();
+                if (!$mer_money_list) {
+                    $no_bill[] = $item;
+                    $no_bill_money += $item[21];
+                }
+                if(strpos($item[32], 'wft') !== false){
+                    $wft_money += $item[21];
+                }
+            }
+        }
+        dd($wft_money,$no_bill_money,$no_bill);
+        $payment_money_pay = 0;
+        $pay_order_no = [];
+        foreach ($csv_data_pay_time as $item){
+            if($item[21]&&$item[21]>0){
+                $payment_money_pay += $item[21];
+                $pay_order_no[] = $item[0];
+            }
+        }
+        $payment_money_use = 0;
+        $use_order_no = [];
+        foreach ($csv_data_use_time as $item){
+            if($item[21]&&$item[21]>0){
+                $payment_money_use += $item[21];
+                $use_order_no[] = $item[0];
+            }
+        }
+        $diff_arr = array_diff($pay_order_no,$use_order_no);
+        dd($diff_arr,$payment_money_pay,$payment_money_use);
+        dd(1);
+        $money_list = D('Merchant_money_list')->join(' as ml INNER JOIN pigcms_shop_order as o on o.order_id  = ml.order_id')
+            ->field('ml.*,o.merchant_balance,o.real_orderid')
+            ->where([
+                'ml.type'=>'shop_offline',
+                'ml.use_time'=>['between', [1743436800,1746580821]],
+                'ml.income'=>1,
+                'ml.money'=>['gt',0],
+                'o.merchant_balance'=>['gt',0]
+            ])->order('ml.id asc')->select();
+        $arr = [];
+        foreach ($money_list as $key=>$item){
+            $refund = D('Merchant_money_list')->where(['type'=>'shop_offline','income'=>2,'order_id'=>['in',[$item['order_id'],$item['real_orderid']]]])->find();
+            if(!$refund){
+                $merchant = D('Merchant')->where(['mer_id'=>$item['mer_id']])->find();
+                if($merchant&&$merchant['card_recharge_settlement_merchant']){
+                    $arr[] = $item;
+                    D()->startTrans();
+                    try {
+                        $use_desc = '开启商家会员卡结算给商家，扣除商家会员卡支付多结算给商家金额（'.$item['money'].'）,平台抽成比例：'.$item['percent'].'%';
+                        $now_mer_money = round(($merchant['money'] - $item['money']),2);
+                        $data = array (
+                            'mer_id' => $item['mer_id'],
+                            'income' => 2,
+                            'order_id' => $item['order_id'],
+                            'store_id' => $item['store_id'],
+                            'percent' => $item['percent'],
+                            'system_take' => 0,
+                            'use_time' => time(),
+                            'type' => 'shop_offline',
+                            'desc' => $use_desc,
+                            'money' => $item['money'],
+                            'now_mer_money' => $now_mer_money,
+                        );
+                        D('Merchant')->where(['mer_id'=>$item['mer_id']])->save(['money'=>$now_mer_money]);
+                        D('Merchant_money_list')->add($data);
+                        D()->commit();
+                    }catch (\Exception $e){
+                        D()->rollback();
+                        fdump_api([$item,$e->getMessage()],'merchant_money_refund_error',1);
+                        dd([$item,$e->getMessage()]);
+                    }
+                }
+            }
+        }
+        dd(count($arr));
+    }
+
+    private function dealData($result_list){
+        //获取用户信息
+        $uids = array_unique(array_column($result_list, 'uid'));
+        if ($uids) {
+            $users = D('User')->where(['uid' => ['IN', $uids]])->getField('uid,nickname,phone');
+        } else {
+            $users = [];
+        }
+
+        $m_area = M('Area');
+        $m_shop_order_detail = M('Shop_order_detail');
+        $m_merchant_store_shop = M("Merchant_store_shop");
+        $m_merchant_store = M("Merchant_store");
+        $m_shop_goods = M('shop_goods');
+        $d_shop_discount = D('Shop_discount');
+        $m_merchant_money_list = M('Merchant_money_list');
+
+        // 分类表单填写项
+        $category_name = array();
+        $category_list = M(_view('Shop_category'))->field(true)->where(array('status'=>1))->select();
+        foreach ($category_list as $key => $value) {
+            $value['cue_field'] = unserialize($value['cue_field']);
+            foreach ($value['cue_field'] as $_cue_field) {
+                $category_name[] = $_cue_field['name'];
+            }
+        }
+        if ($category_name) {
+            $category_name_format = array_unique($category_name);
+            foreach ($category_name_format as $key => $value) {
+                $category_name_format[$key] = array('20',$value);
+            }
+
+        }
+        //员工卡标签
+        $cardCondition = [];
+        $cardCondition['mer_id'] = 181;
+        $cardLable = M('Employee_card_lable')->where($cardCondition)->getField('id,name', true);
+        if (!empty($result_list)) {
+            $tmp_id = 0;
+            foreach ($result_list as $orderKey => $value) {
+                //处理员工卡标签
+                $lableStr = '';
+                if($cardLable && count($cardLable)){
+                    $tempLable = explode(',', $value['lable_ids']);
+                    foreach($tempLable as $vv){
+                        $lableStr .= isset($cardLable[$vv]) ? ($cardLable[$vv] . ' ') : '';
+                    }
+                    $lableStr = rtrim($lableStr, ' ');
+                }
+                $goodsStr = '';//同一订单商品描述
+                $good_num = 0;//称重商品计算数量
+                $isGoods = 0; //是否是商品 0不是 1是
+                if ($tmp_id == $value['real_orderid']) {
+                    $good_num = $value['good_num'];
+                    //称重商品计算数量
+                    if($value['sell_type'] == 2 && $value['code_weight']){
+                        $good_num = $value['code_weight'] / 500;
+                        if(!$good_num){
+                            $good_num = 1;
+                        }
+                    }
+                    $goodsStr = "此为订单组合商品";
+                    $isGoods = 1;//是否是商品 0不是 1是
+                }
+
+                $circle_info = '';
+                $circle_id = $m_merchant_store->where(array('store_id' => $value['store_id']))->getField('circle_id');
+                if ($circle_id) {
+                    // 获取对应商圈信息
+                    $condition_area = array(
+                        'area_id' => $circle_id
+                    );
+                    $circle_arr = $m_area->where($condition_area)->field('area_pid, area_name, area_ip_desc')->find();
+                    if (!$circle_arr['area_ip_desc']) {
+                        if ($circle_arr['area_pid']) {
+                            $condition_pid_area = array(
+                                'area_id' => $circle_arr['area_pid']
+                            );
+                            $circle_msg = $m_area->where($condition_pid_area)->getField('area_name');
+                            $circle_info = $circle_msg . $circle_arr['area_name'];
+                        } else {
+                            $circle_info = $circle_arr['area_name'];
+                        }
+                    } else {
+                        $circle_info = $circle_arr['area_ip_desc'];
+                    }
+                }
+
+
+                $m_where = [
+                    'type' => ['IN', ['mall', 'shop', 'shop_offline']],
+                    '_string' => sprintf("(order_id='%s' OR order_id='%s')", $value['real_orderid'], $value['order_id'])
+                ];
+                $mer_settle_record  = $m_merchant_money_list->where(array_merge($m_where,['income'=>1]))->field('system_take,money')->order('id ASC')->find();
+                $mer_refund_settle_record = $m_merchant_money_list->where(array_merge($m_where,['income'=>2]))->field('system_take,money')->order('id ASC')->find();
+                $system_take = $value['income_money'] = 0;
+                if ($mer_settle_record) {
+                    if (!empty($mer_refund_settle_record)) {
+                        $system_take = getFormatNumber($mer_settle_record['system_take'] - $mer_refund_settle_record['system_take']);
+                        $value['income_money'] = getFormatNumber($mer_settle_record['money'] - $mer_refund_settle_record['money']);
+                    } else {
+                        $system_take = getFormatNumber($mer_settle_record['system_take']);
+                        $value['income_money'] = getFormatNumber($mer_settle_record['money']);
+                    }
+                }
+
+                // 骑士应交账金额 $value['price']   货到付款  即  $value['pay_type'] == 'offline' 时候
+
+                // 满减优惠 （平台出补贴） 和 满减优惠 （商家补贴）
+                $shop_detail = $m_shop_order_detail->where(array('order_id' => $value['order_id']))->field(true)->select();
+                // 满减优惠 （平台出补贴）
+                $plat_full_money = 0;
+                // 满减优惠 （商家补贴）
+                $merchant_full_money = 0;
+                // 商家承担配送费补贴金额
+                $merchant_express_money = 0;
+                // 平台承担配送费补贴金额
+                $plat_express_money = 0;
+                // 店铺满减金额
+                $merchant_reduce_money = 0;
+                //店铺首单满减金额
+                $merchant_reduce_money_first = 0;
+
+                if ($value['discount_detail'] && @unserialize($value['discount_detail'])) {
+                    $details = unserialize($value['discount_detail']);
+                    foreach ($details as $_discount) {
+                        if ($_discount['discount_type'] == 1 || $_discount['discount_type'] == 2) { // 平台首单满减,平台满减
+                            $plat_full_money += $_discount['plat_money'];
+                            $merchant_full_money += $_discount['merchant_money'];
+                        }
+                        if ($_discount['discount_type'] == 5) { // 平台配送订单满减
+                            $plat_express_money += $_discount['plat_money'];
+                            $merchant_express_money += $_discount['merchant_money'];
+                        }
+                        if ($_discount['discount_type'] == 3) { // 商家首单满减
+                            $merchant_reduce_money_first += $_discount['minus'];
+                        }
+                        if ($_discount['discount_type'] == 4) { // 商家满减
+                            $merchant_reduce_money += $_discount['minus'];
+                        }
+                    }
+                }
+
+                // 平台券金额（平台出补贴） $value['coupon_price']
+                // 商家券金额（商家出补贴） $value['card_price']
+
+                // 限时优惠金额
+                $limit_money = 0;
+                $leveloff_money = 0;
+                $store_discount_money = 0; // 店铺折扣金额
+                $cat_discount_money = 0; // 分类折扣金额
+                // 计算优惠 等级优惠
+                if ($shop_detail) {
+                    foreach ($shop_detail as $k => $v) {
+                        if ($v && $v['price'] <= $v['old_price']) {
+                            $limit_money += round((intval($v['num']) * floatval(($v['old_price'] - $v['price']))), 2);
+                        }
+                        $total_price = floatval($v['price'] * $v['num']);
+                        if ($v['discount_type'] == 1) {
+                            $store_discount_money += round(($total_price - floatval($v['discount_price']*$v['num'])), 2);
+                        } elseif ($v['discount_type'] == 2) {
+                            $cat_discount_money += round(($total_price - floatval($v['discount_price']*$v['num'])), 2);
+                        } elseif ($v['discount_type'] == 3) {
+                            $leveloff_money += round(($total_price - floatval($v['discount_price']*$v['num'])), 2);
+                        } elseif ($v['discount_type'] == 4) {
+                            // 先计算店铺折扣
+                            $discount_arr = explode(',', $v['discount_rate']);
+                            $first_discount_money = $total_price - ($total_price * $discount_arr[0] * 0.01);
+                            if ($first_discount_money > 0) {
+                                $store_discount_money += round($first_discount_money, 2);
+                            }
+                            // 再计算vip折扣
+                            $second_price = $total_price * $discount_arr[0] * 0.01; // 第二次打折的总价钱
+                            $second_discount_money = $second_price - ($second_price * $discount_arr[1] * 0.01);
+                            if ($second_discount_money > 0) {
+                                $leveloff_money += round($second_discount_money, 2);
+                            }
+                        } elseif ($v['discount_type'] == 5) {
+                            // 先计算分类折扣
+                            $discount_arr = explode(',', $v['discount_rate']);
+                            $first_discount_money = $total_price - floatval($total_price * $discount_arr[0] * 0.01);
+                            if ($first_discount_money > 0) {
+                                $cat_discount_money += round($first_discount_money, 2);
+                            }
+                            // 再计算vip折扣
+                            $second_price = $total_price * $discount_arr[1] * 0.01; // 第二次打折的总价钱
+                            $second_discount_money = $second_price - floatval($second_price * $discount_arr[1] * 0.01);
+                            if ($second_discount_money > 0) {
+                                $leveloff_money += round($second_discount_money, 2);
+                            }
+                        }
+                    }
+                }
+                // 实付总价
+                $real_total_price = $value['price'] - $value['coupon_price'] - $value['card_price'];
+                $real_total_price = sprintf("%.2f", $real_total_price);
+                // 原平台配送费
+                $deliver_fee = floatval($value['freight_charge']) + $merchant_express_money + $plat_express_money;
+                $deliver_fee = sprintf("%.2f", $deliver_fee);
+
+                $total_online_temp = $value['card_price'] + $value['merchant_balance'] + $value['balance_pay'] + $value['payment_money'] + $value['score_deducte'] + $value['coupon_price'] + $value['card_give_money'];
+                $total_online_temp = $total_online_temp > $value['price'] ? $value['price'] : $total_online_temp;
+
+
+                $cardUserData = M('Card_userlist')->field(true)->where(['uid' => $value['uid']])->find() ?? [];//会员卡数据
+
+                // 会员卡折扣金额
+                if($value['card_discount']){
+                    $card_discount_money = getFormatNumber(($value['price']-$value['freight_charge']) * (10-$value['card_discount'])/10);
+                }
+
+                $address_info = D('User_adress')->where(array('adress_id' => $value['address_id']))->find();
+                if(!empty($address_info)){
+                    $pro_name=$this->getAreaName($address_info['province']);
+                    $city_name=$this->getAreaName($address_info['city']);
+                    $area_name=$this->getAreaName($address_info['area']);
+                    $value['address']=$pro_name.$city_name.$area_name.' '.$value['address'];
+                }
+
+                $csv_data[$orderKey] = [
+                    $value['real_orderid']."\n".$goodsStr,
+                    $value['orderid'] ? 'shop_' . $value['orderid']."\n" : ' ',// 流水号
+                    $value['good_name'],
+                    $value['cost_price'],
+                    $value['good_price'],
+                    $value['unit'],
+                    $value['spec'],
+                    $good_num ?: $value['good_num'],
+                    $value['merchant_name'],
+                    $value['store_name'],
+                    $value['username'],
+                    $value['userphone'],
+                    !empty($cardUserData['gid']) ? M('Card_group')->where(['id' => $cardUserData['gid']])->getField('name') : '无',
+                    !empty($cardUserData['name']) ? $cardUserData['name'] : '无',
+                    $value['address'],
+                    /*$value['identity'],
+                    $value['department'],
+                    $value['user_card_name'], //姓名
+                    $value['card_number'],
+                    $lableStr,*/
+                    $value['register_name'],
+                    $value['register_phone'],
+                    $isGoods ? 0 : getFormatNumber($value['total_price']),
+                    $isGoods ? 0 : getFormatNumber($value['balance_reduce']),
+                    $isGoods ? 0 : getFormatNumber($value['merchant_reduce']),
+                    $isGoods ? 0 : getFormatNumber($value['price']),
+                    $isGoods ? 0 : getFormatNumber($value['payment_money']),
+                    $isGoods ? 0 : getFormatNumber($value['merchant_balance']),
+                    $isGoods ? 0 : getFormatNumber($value['balance_pay']),
+                    $isGoods ? 0 : getFormatNumber($value['membership_card_price']),
+                    $isGoods ? 0 : getFormatNumber($value['score_deducte']),
+                ];
+
+                if ($value['is_pick_in_store'] == 0) {
+                    $csv_data[$orderKey][] = $isGoods ? 0 : $deliver_fee;
+                    $csv_data[$orderKey][] = $isGoods ? 0 : getFormatNumber($value['freight_charge']);
+                } elseif ($value['is_pick_in_store'] == 1) {
+                    $csv_data[$orderKey][] = 0;
+                    $csv_data[$orderKey][] = $isGoods ? 0 : getFormatNumber($value['freight_charge']);
+                } else {
+                    $csv_data[$orderKey][] = 0;
+                    $csv_data[$orderKey][] = 0;
+                }
+                $csv_data[$orderKey][] = $isGoods ? 0 : getFormatNumber($merchant_express_money);
+
+                $csv_data[$orderKey][] = $value['pay_time'] ? date('Y-m-d H:i:s', $value['pay_time']) : '';
+                $csv_data[$orderKey][] = $value['use_time'] ? date('Y-m-d H:i:s', $value['use_time']) : '';
+                $csv_data[$orderKey][] = D('Shop_order')->status_list[$value['status']];
+                $payTxt = D('Pay')->get_pay_name($value['pay_type'], $value['is_mobile_pay'], $value['paid'],$value['order_id'],[],'shop');
+                if($value['from_plat']==3){
+                    $payTxt.='(扫用户码)';
+                }
+                $csv_data[$orderKey][] = $payTxt;
+                $csv_data[$orderKey][] = $value['third_id']."\t";
+                $csv_data[$orderKey][] = $circle_info;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $system_take;
+
+
+                if ($value['pay_type'] == 'offline') {
+                    $csv_data[$orderKey][] = $isGoods ? 0 : $value['price'];
+                } else {
+                    $csv_data[$orderKey][] = '';
+                }
+
+                $csv_data[$orderKey][] = $isGoods ? 0 : $plat_full_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $merchant_full_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $value['coupon_price'];
+                $csv_data[$orderKey][] = $isGoods ? 0 : $value['card_price'];
+                $csv_data[$orderKey][] = $isGoods ? 0 : $plat_express_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $merchant_express_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $store_discount_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $cat_discount_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $limit_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $leveloff_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $merchant_reduce_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $merchant_reduce_money_first;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $value['card_discount'];
+                $csv_data[$orderKey][] = $isGoods ? 0 : $card_discount_money;
+                $csv_data[$orderKey][] = $isGoods ? 0 : $value['income_money'];
+                $csv_data[$orderKey][] = $value['expect_use_time'] && $value['order_from']!=6 ? date('Y-m-d H:i:s', $value['expect_use_time']) : L_('无');
+                $csv_data[$orderKey][] = $value['fetch_number'] ? $value['fetch_number'] : '';
+                // 取餐方式
+                if ($value['is_pick_in_store'] == 2) {
+                    $csv_data[$orderKey][] = L_('自提');
+                } else {
+                    $csv_data[$orderKey][] = L_('配送');
+                }
+
+                //注册姓名
+                $csv_data[$orderKey][] = $users[$value['uid']]['nickname'] ?? '';
+                //注册电话
+                $csv_data[$orderKey][] = $users[$value['uid']]['phone'] ?? '';
+
+                // 备注
+                $csv_data[$orderKey][] = $value['desc'];
+                $csv_data[$orderKey][] = $value['packing_charge'];//打包费
+                // 自定义填写项
+                $cue_field_arr =  $value['cue_field'] ? unserialize($value['cue_field']) : array();
+                $cue_field_format = array();
+                $cue_field_title = array();
+                foreach ($cue_field_arr as $_cue_field) {
+                    $cue_field_format[$_cue_field['title']] = $_cue_field['txt'];
+                    $cue_field_title[] = $_cue_field['title'];
+                }
+                foreach ($category_name_format as $_cat_name) {
+                    if (in_array($_cat_name[1],$cue_field_title)) {
+                        /*店员打印出现身份证不全解决办法*/
+                        $csv_data[$orderKey][] = "\t".$cue_field_format[$_cat_name[1]];
+                    }else{
+                        $csv_data[$orderKey][] = '';
+                    }
+                }
+                if(C('config.site_url')<> C('config.export_orderid_except_site')){//该客户不需要合并同一订单显示
+                    $tmp_id = $value['real_orderid'];
+                }
+                $csv_data[$orderKey][] = $value['order_id'];
+            }
+        }
+        return $csv_data;
+    }
+
+    public function add_merchant_money(){
+        //退款多扣商家余额钱退回
+        /*$mer_money_list = D('Merchant_money_list')->where(['order_id'=>['in',['25051307510590744148']]])->select();
+        foreach ($mer_money_list as $item){
+            $merchant = D('Merchant')->where(['mer_id'=>$item['mer_id']])->find();
+            if($merchant&&$merchant['card_recharge_settlement_merchant']) {
+                D()->startTrans();
+                try {
+                    $use_desc = '商家会员卡结算给商家，商家会员卡支付多扣商家余额退还';
+                    $now_mer_money = round(($merchant['money'] + $item['money']), 2);
+                    $data = array(
+                        'mer_id' => $item['mer_id'],
+                        'income' => 1,
+                        'order_id' => $item['order_id'],
+                        'store_id' => $item['store_id'],
+                        'percent' => $item['percent'],
+                        'system_take' => 0,
+                        'use_time' => time(),
+                        'type' => 'shop_offline',
+                        'desc' => $use_desc,
+                        'money' => $item['money'],
+                        'now_mer_money' => $now_mer_money,
+                    );
+                    D('Merchant')->where(['mer_id' => $item['mer_id']])->save(['money' => $now_mer_money]);
+                    D('Merchant_money_list')->add($data);
+                    D()->commit();
+                } catch (\Exception $e) {
+                    D()->rollback();
+                    fdump_api([$item, $e->getMessage()], 'merchant_money_refund_error', 1);
+                    dd([$item, $e->getMessage()]);
+                }
+            }
+        }*/
+        dd(11);
+        //处理在线和商家余额组合支付手动多扣商家钱退还给商家
+        $mer_id = 6;
+        $list = D('Shop_order')->join(' as o inner join pigcms_merchant_money_list as l on o.order_id = l.order_id and o.merchant_balance != l.money')
+            ->field('l.*,o.order_id,o.real_orderid,o.payment_money,o.merchant_balance')
+            ->where(['o.mer_id'=>$mer_id,'l.income'=>2,'o.merchant_balance'=>['gt',0],'o.payment_money'=>['gt',0]])->select();
+        foreach ($list as $item){
+            $merchant = D('Merchant')->where(['mer_id'=>$item['mer_id']])->find();
+            if($merchant&&$merchant['card_recharge_settlement_merchant']) {
+                D()->startTrans();
+                try {
+                    $use_desc = '商家会员卡结算给商家，商家会员卡和在线组合支付多扣除商家余额增加给商家在线支付金额（在线支付金额' . $item['payment_money'] . ',商家会员卡支付金额'.$item['merchant_balance'].'）,平台抽成比例：' . $item['percent'] . '%';
+                    $now_mer_money = round(($merchant['money'] + $item['payment_money']), 2);
+                    $data = array(
+                        'mer_id' => $item['mer_id'],
+                        'income' => 1,
+                        'order_id' => $item['order_id'],
+                        'store_id' => $item['store_id'],
+                        'percent' => $item['percent'],
+                        'system_take' => 0,
+                        'use_time' => time(),
+                        'type' => 'shop_offline',
+                        'desc' => $use_desc,
+                        'money' => $item['payment_money'],
+                        'now_mer_money' => $now_mer_money,
+                    );
+                    D('Merchant')->where(['mer_id' => $item['mer_id']])->save(['money' => $now_mer_money]);
+                    D('Merchant_money_list')->add($data);
+                    D()->commit();
+                } catch (\Exception $e) {
+                    D()->rollback();
+                    fdump_api([$item, $e->getMessage()], 'merchant_money_refund_error', 1);
+                    dd([$item, $e->getMessage()]);
+                }
+            }
+        }
+        dd($list);
+    }
 }
 ?>
