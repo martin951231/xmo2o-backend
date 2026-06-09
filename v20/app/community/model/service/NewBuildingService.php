@@ -1834,6 +1834,8 @@ class NewBuildingService
             'room_number'=>$vacancy_info['room_number'],
             'contract_time_start'=>$vacancy_info['contract_time_start']>31420800 ? date('Y-m-d',$vacancy_info['contract_time_start']):'',
             'contract_time_end'=>$vacancy_info['contract_time_end']>31420800 ? date('Y-m-d',$vacancy_info['contract_time_end']):'',
+            'property_service_start_time'=>isset($vacancy_info['property_service_start_time']) && $vacancy_info['property_service_start_time']>31420800 ? date('Y-m-d',$vacancy_info['property_service_start_time']):'',
+            'property_service_end_time'=>isset($vacancy_info['property_service_end_time']) && $vacancy_info['property_service_end_time']>31420800 ? date('Y-m-d',$vacancy_info['property_service_end_time']):'',
             'village_contract_time_start'=>$village_contract_time_start,
             'village_contract_time_end'=>$village_contract_time_end,
             'house_type'=>$vacancy_info['house_type'],
@@ -1851,11 +1853,15 @@ class NewBuildingService
             'billable_area_judge'=>$jz_wsxdsj_net_customized_open ? 0 : 0,
             'water_balance'=>'',
             'house_in_time'=>'',
+            'delivery_time'=>'',
             'lease_time_start'=>'',
             'lease_time_end'=>'',
         ];
         if(isset($vacancy_info['house_in_time'])){
             $data['room_info']['house_in_time']=$vacancy_info['house_in_time']>100 ? date('Y-m-d',$vacancy_info['house_in_time']):'';
+        }
+        if(isset($vacancy_info['delivery_time'])){
+            $data['room_info']['delivery_time']=$vacancy_info['delivery_time']>100 ? date('Y-m-d',$vacancy_info['delivery_time']):'';
         }
         if(isset($vacancy_info['water_balance'])){
             $data['room_info']['water_balance']=$vacancy_info['water_balance']>0 ? $vacancy_info['water_balance']:'';
@@ -2284,6 +2290,15 @@ class NewBuildingService
             'heating_size'=>$param['heating_size'],
             'billable_size'=>$param['billable_size'],
         ];
+        if (isset($param['property_service_start_time'])) {
+            $room_data['property_service_start_time'] = $param['property_service_start_time'];
+        }
+        if (isset($param['property_service_end_time'])) {
+            $room_data['property_service_end_time'] = $param['property_service_end_time'];
+        }
+        if (isset($param['delivery_time'])) {
+            $room_data['delivery_time'] = $param['delivery_time'];
+        }
         if (isset($param['room']) && !empty($param['room'])) {
             $room_data['room'] = $param['room'];
         }

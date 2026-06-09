@@ -30,6 +30,7 @@
     use app\community\model\service\HouseWorkerService;
 	use app\community\model\service\KefuService;
     use app\community\model\service\NewBuildingService;
+    use app\community\model\service\ApprovalFlowService;
     use app\community\model\service\PropertyFrameworkService;
 	use app\traits\CacheTypeTraits;
     use app\traits\CommonLogTraits;
@@ -43,6 +44,7 @@
     use app\community\model\service\Device\HikInfoVisionICommunityService;
 	use think\facade\Cache;
 	use think\facade\Config;
+    use think\facade\Db;
 	class BuildingController extends CommunityBaseController
 	{
 		use HouseTraits,ImportExcelTraits,CacheTypeTraits;
@@ -1876,6 +1878,9 @@
             $room_number = $this->request->param('room_number','','trim');
             $contract_time_start = $this->request->param('contract_time_start','','trim');
             $contract_time_end = $this->request->param('contract_time_end','','trim');
+            $property_service_start_time = $this->request->param('property_service_start_time','','trim');
+            $property_service_end_time = $this->request->param('property_service_end_time','','trim');
+            $delivery_time = $this->request->param('delivery_time','','trim');
             $house_type = $this->request->param('house_type',0,'int');
             $user_status = $this->request->param('user_status',0,'int');
             $sell_status = $this->request->param('sell_status',0,'int');
@@ -1917,6 +1922,12 @@
             $contract_time_start=$contract_time_start>31420800 ? $contract_time_start:0;
             $contract_time_end=$contract_time_end ? strtotime($contract_time_end.' 23:59:59'):0;
             $contract_time_end=$contract_time_end>31420800 ? $contract_time_end:0;
+            $property_service_start_time=$property_service_start_time ? strtotime($property_service_start_time.' 00:00:00'):0;
+            $property_service_start_time=$property_service_start_time>31420800 ? $property_service_start_time:0;
+            $property_service_end_time=$property_service_end_time ? strtotime($property_service_end_time.' 23:59:59'):0;
+            $property_service_end_time=$property_service_end_time>31420800 ? $property_service_end_time:0;
+            $delivery_time=$delivery_time ? strtotime($delivery_time.' 00:00:00'):0;
+            $delivery_time=$delivery_time>31420800 ? $delivery_time:0;
             $lease_time_start=$lease_time_start ? strtotime($lease_time_start):'';
             $lease_time_end=$lease_time_end ? strtotime($lease_time_end):'';
             $param=[
@@ -1950,7 +1961,15 @@
                 'lease_time_end'=>$lease_time_end ? $lease_time_end:'',
                 'room_number'=>$room_number ? $room_number:'',
                 'yumenlao_special_meter'=>$yumenlao_special_meter,
+                'property_service_start_time'=>$property_service_start_time,
+                'property_service_end_time'=>$property_service_end_time,
+                'delivery_time'=>$delivery_time,
             ];
+            try {
+                $this->handleRoomTimeChangeApproval($village_id, $vacancy_id, $param);
+            } catch (\Exception $e) {
+                return api_output_error(-1, $e->getMessage());
+            }
             $app_key = cfg('hik_info_vision_i_community_app_key');
             $app_secret = cfg('hik_info_vision_i_community_app_secret');
             $is_hik_info_vision_i_community=0;
@@ -1996,6 +2015,208 @@
                 return api_output_error(-1, $e->getMessage());
             }
             return api_output(0,$list);
+        }
+
+        private function handleRoomTimeChangeApproval($village_id, $vacancy_id, &$param)
+        {
+            $newBuildingService = new NewBuildingService();
+            $oldInfo = $newBuildingService->getHouseVillageUserVacancyFindMethod([
+                ['pigcms_id' ,'=', $vacancy_id],
+                ['village_id' ,'=', $village_id]
+            ], 'pigcms_id,usernum,property_service_start_time,property_service_end_time,delivery_time');
+            if (!$oldInfo || empty($oldInfo['pigcms_id'])) {
+                throw new \Exception('房间不存在');
+            }
+
+            $propertyStart = intval($param['property_service_start_time']);
+            $propertyEnd = intval($param['property_service_end_time']);
+            $deliveryTime = intval($param['delivery_time']);
+            $oldPropertyStart = intval($oldInfo['property_service_start_time'] ?? 0);
+            $oldPropertyEnd = intval($oldInfo['property_service_end_time'] ?? 0);
+            $oldDeliveryTime = intval($oldInfo['delivery_time'] ?? 0);
+            $propertyChanged = $propertyStart !== $oldPropertyStart || $propertyEnd !== $oldPropertyEnd;
+            $deliveryChanged = $deliveryTime !== $oldDeliveryTime;
+            if (!$propertyChanged && !$deliveryChanged) {
+                return;
+            }
+
+            $approvalFlowService = new ApprovalFlowService();
+            if ($propertyChanged && !$approvalFlowService->hasActiveFlow($this->adminUser, ApprovalFlowService::BUSINESS_SERVICE_TIME)) {
+                throw new \Exception('当前没有创建审批流程，请联系管理员创建');
+            }
+            if ($deliveryChanged && !$approvalFlowService->hasActiveFlow($this->adminUser, ApprovalFlowService::BUSINESS_DELIVERY_TIME)) {
+                throw new \Exception('当前没有创建审批流程，请联系管理员创建');
+            }
+
+            $reason = $this->request->param('apply_reason', '房间时间变更', 'trim');
+            if ($propertyChanged) {
+                $approvalFlowService->createInstance($this->adminUser, [
+                    'business_type' => ApprovalFlowService::BUSINESS_SERVICE_TIME,
+                    'business_id' => $vacancy_id,
+                    'title' => '调整物业服务时间',
+                    'apply_remark' => $reason,
+                    'apply_reason' => $reason,
+                    'change_data' => [
+                        'room_id' => $vacancy_id,
+                        'property_service_start_time' => $propertyStart ? date('Y-m-d', $propertyStart) : '',
+                        'property_service_end_time' => $propertyEnd ? date('Y-m-d', $propertyEnd) : '',
+                        'old_property_service_start_time' => $oldPropertyStart > 0 ? date('Y-m-d', $oldPropertyStart) : '',
+                        'old_property_service_end_time' => $oldPropertyEnd > 0 ? date('Y-m-d', $oldPropertyEnd) : '',
+                    ],
+                ]);
+                $param['property_service_start_time'] = $oldPropertyStart;
+                $param['property_service_end_time'] = $oldPropertyEnd;
+            }
+            if ($deliveryChanged) {
+                $approvalFlowService->createInstance($this->adminUser, [
+                    'business_type' => ApprovalFlowService::BUSINESS_DELIVERY_TIME,
+                    'business_id' => $vacancy_id,
+                    'title' => '调整交房时间',
+                    'apply_remark' => $reason,
+                    'apply_reason' => $reason,
+                    'change_data' => [
+                        'room_id' => $vacancy_id,
+                        'delivery_time' => $deliveryTime ? date('Y-m-d', $deliveryTime) : '',
+                        'old_delivery_time' => $oldDeliveryTime > 0 ? date('Y-m-d', $oldDeliveryTime) : '',
+                    ],
+                ]);
+                $param['delivery_time'] = $oldDeliveryTime;
+            }
+        }
+
+        public function applyRoomTimeChange()
+        {
+            $roomIds = [$this->request->param('room_id', 0, 'intval')];
+            return $this->batchApplyRoomTimeChange($roomIds);
+        }
+
+        public function batchApplyRoomTimeChange($roomIds = [])
+        {
+            $village_id = $this->adminUser['village_id'];
+            $roomIds = $roomIds ?: $this->request->param('room_ids', []);
+            $useScope = $this->request->param('use_scope', 0, 'intval');
+            $singleId = $this->request->param('single_id', 0, 'intval');
+            $floorId = $this->request->param('floor_id', 0, 'intval');
+            $layerId = $this->request->param('layer_id', 0, 'intval');
+            $vacancyId = $this->request->param('vacancy_id', 0, 'intval');
+            $scopeType = '';
+            $scopeName = '';
+            $propertyServiceStartTime = $this->request->has('property_service_start_time') ? $this->request->param('property_service_start_time', '', 'trim') : null;
+            $propertyServiceEndTime = $this->request->has('property_service_end_time') ? $this->request->param('property_service_end_time', '', 'trim') : null;
+            $deliveryTime = $this->request->has('delivery_time') ? $this->request->param('delivery_time', '', 'trim') : null;
+            $applyReason = $this->request->param('apply_reason', '', 'trim');
+            if (!$village_id) {
+                return api_output(1002, [], '请先登录到小区后再操作！');
+            }
+            if ($useScope > 0) {
+                $where = [
+                    ['village_id', '=', $village_id],
+                    ['is_del', '=', 0],
+                    ['is_public_rental', '=', 0],
+                ];
+                if ($vacancyId > 0) {
+                    $where[] = ['pigcms_id', '=', $vacancyId];
+                    $scopeType = 'room';
+                } elseif ($layerId > 0) {
+                    $where[] = ['layer_id', '=', $layerId];
+                    $scopeType = 'layer';
+                } elseif ($floorId > 0) {
+                    $where[] = ['floor_id', '=', $floorId];
+                    $scopeType = 'floor';
+                } elseif ($singleId > 0) {
+                    $where[] = ['single_id', '=', $singleId];
+                    $scopeType = 'single';
+                } else {
+                    return api_output(1001, [], '请选择楼栋、单元、楼层或房间范围');
+                }
+                $roomIds = Db::name('house_village_user_vacancy')->where($where)->column('pigcms_id');
+                $scopeName = $this->getRoomTimeChangeScopeName($village_id, $singleId, $floorId, $layerId, $vacancyId);
+            }
+            if (!$roomIds || !is_array($roomIds)) {
+                return api_output(1001, [], '请选择要修改的房间');
+            }
+            $roomIds = array_values(array_unique(array_filter(array_map('intval', $roomIds))));
+            if (!$roomIds) {
+                return api_output(1001, [], '请选择要修改的房间');
+            }
+            $hasPropertyStartTime = $propertyServiceStartTime !== null && $propertyServiceStartTime !== '';
+            $hasPropertyEndTime = $propertyServiceEndTime !== null && $propertyServiceEndTime !== '';
+            $hasPropertyTime = $hasPropertyStartTime || $hasPropertyEndTime;
+            $hasDeliveryTime = $deliveryTime !== null && $deliveryTime !== '';
+            if (!$hasPropertyTime && !$hasDeliveryTime) {
+                return api_output(1001, [], '请选择物业服务时间或交房时间');
+            }
+            try {
+                $approvalFlowService = new ApprovalFlowService();
+                if ($hasPropertyTime && !$approvalFlowService->hasActiveFlow($this->adminUser, ApprovalFlowService::BUSINESS_SERVICE_TIME)) {
+                    throw new \Exception('当前没有创建审批流程，请联系管理员创建');
+                }
+                if ($hasDeliveryTime && !$approvalFlowService->hasActiveFlow($this->adminUser, ApprovalFlowService::BUSINESS_DELIVERY_TIME)) {
+                    throw new \Exception('当前没有创建审批流程，请联系管理员创建');
+                }
+                $startDate = $hasPropertyStartTime ? date('Y-m-d', strtotime($propertyServiceStartTime)) : '';
+                $endDate = $hasPropertyEndTime ? date('Y-m-d', strtotime($propertyServiceEndTime)) : '';
+                $deliveryDate = $hasDeliveryTime ? date('Y-m-d', strtotime($deliveryTime)) : '';
+                $changeData = [
+                    'batch_change' => 1,
+                    'change_mode' => $useScope > 0 ? 'scope' : 'manual',
+                    'room_count' => count($roomIds),
+                ];
+                if ($useScope > 0) {
+                    $changeData['scope_type'] = $scopeType;
+                    $changeData['scope_name'] = $scopeName;
+                    $changeData['single_id'] = $singleId;
+                    $changeData['floor_id'] = $floorId;
+                    $changeData['layer_id'] = $layerId;
+                    $changeData['vacancy_id'] = $vacancyId;
+                } else {
+                    $changeData['room_ids'] = $roomIds;
+                }
+                if ($hasPropertyStartTime) {
+                    $changeData['property_service_start_time'] = $startDate;
+                }
+                if ($hasPropertyEndTime) {
+                    $changeData['property_service_end_time'] = $endDate;
+                }
+                if ($hasDeliveryTime) {
+                    $changeData['delivery_time'] = $deliveryDate;
+                }
+                if ($applyReason !== '') {
+                    $changeData['apply_reason'] = $applyReason;
+                }
+                $businessType = $hasPropertyTime ? ApprovalFlowService::BUSINESS_SERVICE_TIME : ApprovalFlowService::BUSINESS_DELIVERY_TIME;
+                $title = $hasPropertyTime && $hasDeliveryTime ? '批量调整物业服务/交房时间' : ($hasPropertyTime ? '批量调整物业服务时间' : '批量调整交房时间');
+                $approvalFlowService->createInstance($this->adminUser, [
+                    'business_type' => $businessType,
+                    'business_id' => $useScope > 0 ? 0 : intval($roomIds[0]),
+                    'title' => $title,
+                    'apply_remark' => $applyReason,
+                    'apply_reason' => $applyReason,
+                    'change_data' => $changeData,
+                ]);
+                return api_output(0, ['count' => 1, 'msg' => '申请已提交，请等待审批']);
+            } catch (\Exception $e) {
+                return api_output_error(-1, $e->getMessage());
+            }
+        }
+
+        private function getRoomTimeChangeScopeName($villageId, $singleId = 0, $floorId = 0, $layerId = 0, $vacancyId = 0)
+        {
+            $singleName = $singleId > 0 ? Db::name('house_village_single')->where([['id', '=', $singleId], ['village_id', '=', $villageId]])->value('single_name') : '';
+            $floorName = $floorId > 0 ? Db::name('house_village_floor')->where([['floor_id', '=', $floorId], ['village_id', '=', $villageId]])->value('floor_name') : '';
+            $layerName = $layerId > 0 ? Db::name('house_village_layer')->where([['id', '=', $layerId], ['village_id', '=', $villageId]])->value('layer_name') : '';
+            if ($vacancyId > 0) {
+                $room = Db::name('house_village_user_vacancy')->where([['pigcms_id', '=', $vacancyId], ['village_id', '=', $villageId]])->field('room,usernum,property_number')->find();
+                $roomName = $room['room'] ?? ($room['usernum'] ?? ($room['property_number'] ?? ''));
+                return implode('', array_filter([$singleName, $floorName, $layerName, $roomName]));
+            }
+            if ($layerId > 0) {
+                return implode('', array_filter([$singleName, $floorName, $layerName]));
+            }
+            if ($floorId > 0) {
+                return implode('', array_filter([$singleName, $floorName]));
+            }
+            return $singleName;
         }
 
         /**
