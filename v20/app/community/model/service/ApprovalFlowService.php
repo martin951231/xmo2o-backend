@@ -814,7 +814,17 @@ class ApprovalFlowService
             if (!$save) {
                 throw new \Exception('缺少服务时间变更内容，无法生效业务');
             }
+            $affectedRoomIds = Db::name('house_village_user_vacancy')->where($where)->column('pigcms_id');
             Db::name('house_village_user_vacancy')->where($where)->update($save);
+            if ($affectedRoomIds && (isset($save['property_service_start_time']) || isset($save['property_service_end_time']) || isset($save['delivery_time']))) {
+                $billService = new HouseNewManualBillService();
+                foreach ($affectedRoomIds as $affectedRoomId) {
+                    try {
+                        $billService->syncRoomVacancyFeeBill(['village_id' => intval($instance['village_id'])], ['room_id' => intval($affectedRoomId)]);
+                    } catch (\Throwable $e) {
+                    }
+                }
+            }
             return;
         }
         if ($instance['business_type'] === self::BUSINESS_BILL_AMOUNT) {

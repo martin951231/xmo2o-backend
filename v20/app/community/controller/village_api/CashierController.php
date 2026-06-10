@@ -19,6 +19,7 @@ use app\community\model\service\HouseNewChargeService;
 use app\community\model\service\HouseNewPorpertyService;
 use app\community\model\service\HouseVillageUserBindService;
 use app\community\model\service\HouseNewCashierService;
+use app\community\model\service\HouseNewManualBillService;
 use app\community\model\service\HouseVillageService;
 use app\community\model\service\HouseVillageSingleService;
 use app\community\model\service\HouseVillageParkingService;
@@ -3168,6 +3169,7 @@ class CashierController extends CommunityBaseController
         $pay_type = $this->request->post('pay_type',0);
         $offline_pay_type = $this->request->post('offline_pay_type','');
         $order_list = $this->request->post('order_list',[]);
+        $new_deposit_money = round(floatval($this->request->post('new_deposit_money',0)), 4);
         $auth_code = $this->request->post('auth_code','');
         $remark = $this->request->post('remark','');
         $offline_pay_type_mix = $this->request->post('offline_pay_type_mix','');  //混合下线支付
@@ -3218,13 +3220,175 @@ class CashierController extends CommunityBaseController
             }
         }
         $service_new_pay = new NewPayService();
+        $deposit_freeze_id = 0;
         try{
+            if ($new_deposit_money > 0) {
+                if (!in_array(intval($pay_type), [2, 22, 42], true)) {
+                    return api_output_error(1001,'当前收款方式暂不支持押金抵扣');
+                }
+                $deposit_room_id = 0;
+                foreach ($order_list as $order_item) {
+                    if (is_array($order_item) && !empty($order_item['room_id'])) {
+                        $deposit_room_id = intval($order_item['room_id']);
+                        break;
+                    }
+                }
+                $deposit_freeze = (new HouseNewManualBillService())->freezeDepositForPay($this->adminUser, [
+                    'room_id' => $deposit_room_id,
+                    'order_list' => $order_list,
+                    'freeze_money' => $new_deposit_money,
+                ]);
+                $deposit_freeze_id = intval($deposit_freeze['id'] ?? 0);
+                $param['new_deposit_money'] = $new_deposit_money;
+                $param['new_deposit_freeze_id'] = $deposit_freeze_id;
+                $param['pay_money'] = max(round(floatval($param['pay_money']) - $new_deposit_money, 4), 0);
+                if (floatval($param['fact_pay_money']) > 0) {
+                    $param['fact_pay_money'] = max(round(floatval($param['fact_pay_money']) - $new_deposit_money, 4), 0);
+                }
+                if (floatval($param['offline_pay_money']) > 0) {
+                    $param['offline_pay_money'] = max(round(floatval($param['offline_pay_money']) - $new_deposit_money, 4), 0);
+                }
+                if (floatval($param['online_pay_money']) > 0) {
+                    $param['online_pay_money'] = max(round(floatval($param['online_pay_money']) - $new_deposit_money, 4), 0);
+                }
+                $extra_data['new_deposit_freeze_id'] = $deposit_freeze_id;
+                $extra_data['new_deposit_money'] = $new_deposit_money;
+            }
             $param['from'] = 1;
             $data = $service_new_pay->goPay($order_list,$village_id,$pay_type,$offline_pay_type,$auth_code,$remark,$extra_data,$role_id,$param);
+            if ($deposit_freeze_id > 0) {
+                (new HouseNewManualBillService())->depositConfirm($this->adminUser, ['id' => $deposit_freeze_id]);
+            }
         }catch (\Exception $e){
+            if ($deposit_freeze_id > 0) {
+                try {
+                    (new HouseNewManualBillService())->depositRelease($this->adminUser, ['id' => $deposit_freeze_id]);
+                } catch (\Throwable $throwable) {
+                }
+            }
             return api_output_error(-1, $e->getMessage());
         }
         return api_output(0,$data);
+    }
+
+    public function manualBillMeta()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->getCreateBillMeta($this->adminUser, $this->request->param());
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function manualBillCalc()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->calcCreateBillMoney($this->adminUser, $this->request->param());
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function manualBillCreate()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->createManualBill($this->adminUser, $this->request->param());
+            return api_output(0, $data, $data['msg'] ?? '账单已生成');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function vacancyFeeConfig()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->getVacancyFeeConfig($this->adminUser);
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function vacancyFeeConfigSave()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->saveVacancyFeeConfig($this->adminUser, $this->request->param());
+            return api_output(0, $data, '保存成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function syncVacancyFeeBill()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->syncRoomVacancyFeeBill($this->adminUser, $this->request->param());
+            return api_output(0, $data, $data['msg'] ?? '操作成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function thirdPartyCompanyList()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->thirdPartyCompanyList($this->adminUser, $this->request->param());
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function thirdPartyCompanySave()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->thirdPartyCompanySave($this->adminUser, $this->request->param());
+            return api_output(0, $data, '保存成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositAvailable()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->depositAvailable($this->adminUser, $this->request->param());
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositFreeze()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->depositFreeze($this->adminUser, $this->request->param());
+            return api_output(0, $data, '冻结成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositConfirm()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->depositConfirm($this->adminUser, $this->request->param());
+            return api_output(0, $data, '抵扣成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositRelease()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->depositRelease($this->adminUser, $this->request->param());
+            return api_output(0, $data, '释放成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
     }
 
     /**
