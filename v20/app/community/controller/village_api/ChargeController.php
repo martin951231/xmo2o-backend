@@ -417,6 +417,9 @@ class ChargeController extends CommunityBaseController{
         set_time_limit(0);
         $post = $this->request->param('post');
         if(empty($post)) return api_output(1001,[],'缺少必要参数！');
+        if (intval($post['bill_create_set'] ?? 0) !== 2) {
+            return api_output_error(1001,'只允许创建按月生成的收费标准');
+        }
         $post['village_id']=$this->adminUser['village_id'];
         $HouseNewChargeRuleService = new HouseNewChargeRuleService();
         try{

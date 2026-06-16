@@ -7,6 +7,7 @@ use think\facade\Db;
 class HouseNewManualBillService
 {
     const ORDER_TYPE_VACANCY_FEE = 'vacancy_fee';
+    const LEGACY_VILLAGE_IDS = [3, 8, 10, 11, 12, 13, 14, 16];
 
     public function getCreateBillMeta($adminUser, $params)
     {
@@ -17,13 +18,42 @@ class HouseNewManualBillService
             $roomInfo['delivery_date'] = !empty($roomInfo['delivery_time']) ? date('Y-m-d', intval($roomInfo['delivery_time'])) : '';
             $roomInfo['property_service_start_date'] = !empty($roomInfo['property_service_start_time']) ? date('Y-m-d', intval($roomInfo['property_service_start_time'])) : '';
             $roomInfo['property_service_end_date'] = !empty($roomInfo['property_service_end_time']) ? date('Y-m-d', intval($roomInfo['property_service_end_time'])) : '';
+            $defaultDates = $this->getDefaultBillDates($villageId, $roomInfo);
+            $roomInfo['default_bill_start_date'] = $defaultDates['start_date'];
+            $roomInfo['default_bill_end_date'] = $defaultDates['end_date'];
         }
         return [
             'room_info' => $roomInfo,
             'project_list' => $this->getProjectList($villageId),
-            'third_company_list' => $this->thirdPartyCompanyList($adminUser, ['status' => 1])['list'],
             'vacancy_fee_config' => $this->getVacancyFeeConfig($adminUser),
         ];
+    }
+
+    public function getMonthlyRuleList($adminUser, $params)
+    {
+        $villageId = $this->getVillageId($adminUser);
+        $projectId = intval($params['charge_project_id'] ?? 0);
+        if ($projectId <= 0) {
+            throw new \Exception('请选择收费项目');
+        }
+        return Db::name('house_new_charge_rule')->alias('r')
+            ->leftJoin('house_new_charge_project p', 'p.id = r.charge_project_id')
+            ->where([
+                ['r.charge_project_id', '=', $projectId],
+                ['r.status', '=', 1],
+                ['r.bill_create_set', '=', 2],
+                ['p.village_id', '=', $villageId],
+            ])->field('r.id,r.charge_name,r.charge_price,r.bill_create_set,r.charge_valid_time')
+            ->order('r.id DESC')->select()->toArray();
+    }
+
+    public function getManualBillRuleInfo($adminUser, $params)
+    {
+        $villageId = $this->getVillageId($adminUser);
+        $roomInfo = $this->getRoomInfo($villageId, intval($params['room_id'] ?? 0));
+        $ruleInfo = $this->getRuleInfo($villageId, intval($params['project_id'] ?? 0), intval($params['rule_id'] ?? 0));
+        $this->assertMonthlyRule($ruleInfo);
+        return $this->formatManualRuleInfo($roomInfo, $ruleInfo);
     }
 
     public function calcCreateBillMoney($adminUser, $params)
@@ -37,14 +67,13 @@ class HouseNewManualBillService
         if ($generateMode !== 'day') {
             throw new \Exception('当前仅支持按天生成账单');
         }
-        $unitPrice = $this->money4($params['unit_price'] ?? 0);
-        $area = isset($params['area']) && $params['area'] !== '' ? $this->money4($params['area']) : $this->money4($roomInfo['housesize'] ?? 0);
+        $ruleInfo = $this->getRuleInfo($villageId, intval($params['project_id'] ?? 0), intval($params['rule_id'] ?? 0));
+        $this->assertMonthlyRule($ruleInfo);
+        $unitPrice = $this->money4($ruleInfo['charge_price'] ?? 0);
+        $area = $this->money4($roomInfo['housesize'] ?? 0);
         [$startDate, $endDate] = $this->normalizeBillDates($roomInfo, $startDate, $endDate);
-        $totalMoney = $this->calcDailyMoney($unitPrice, $area, $startDate, $endDate);
-        $thirdMoney = $this->money4($params['third_party_money'] ?? 0);
-        if ($thirdMoney < 0 || $thirdMoney > $totalMoney) {
-            throw new \Exception('第三方承担金额不能大于账单总金额');
-        }
+        $preciseMoney = $this->calcDailyMoney($unitPrice, $area, $startDate, $endDate);
+        $totalMoney = round($preciseMoney, 1);
         return [
             'days' => $this->daysInclusive($startDate, $endDate),
             'service_start_time' => $startDate,
@@ -52,8 +81,9 @@ class HouseNewManualBillService
             'area' => $area,
             'unit_price' => $unitPrice,
             'total_money' => $totalMoney,
-            'third_party_money' => $thirdMoney,
-            'owner_pay_money' => $this->money4($totalMoney - $thirdMoney),
+            'precise_money' => $preciseMoney,
+            'owner_pay_money' => $totalMoney,
+            'rule_info' => $this->formatManualRuleInfo($roomInfo, $ruleInfo),
         ];
     }
 
@@ -65,72 +95,148 @@ class HouseNewManualBillService
         $ruleId = intval($params['rule_id'] ?? 0);
         $roomInfo = $this->getRoomInfo($villageId, $roomId);
         $ruleInfo = $this->getRuleInfo($villageId, $projectId, $ruleId);
+        $this->assertMonthlyRule($ruleInfo);
         $calc = $this->calcCreateBillMoney($adminUser, $params);
         $allowDepositDeduct = isset($params['allow_deposit_deduct']) ? intval($params['allow_deposit_deduct']) : 1;
-        $thirdCompanyId = intval($params['third_party_company_id'] ?? 0);
-        $thirdMoney = $this->money4($params['third_party_money'] ?? 0);
-        $thirdCompany = [];
-        if ($thirdMoney > 0) {
-            if ($thirdCompanyId <= 0) {
-                throw new \Exception('请选择第三方承担公司');
-            }
-            $thirdCompany = Db::name('house_new_bill_third_party_company')->where([
-                ['id', '=', $thirdCompanyId],
-                ['village_id', '=', $villageId],
-                ['is_del', '=', 0],
-                ['status', '=', 1],
-            ])->find();
-            if (!$thirdCompany) {
-                throw new \Exception('第三方承担公司不存在或已禁用');
-            }
-        }
-        $ownerPayMoney = $calc['owner_pay_money'];
+        $mergeBill = isset($params['merge_bill']) ? intval($params['merge_bill']) : 1;
+        $ownerPayMoney = $calc['total_money'];
         if ($ownerPayMoney < 0) {
             throw new \Exception('业主应付金额不能小于0');
         }
-        $now = time();
-        $orderData = $this->buildBaseOrderData($adminUser, $roomInfo, $ruleInfo, [
-            'project_id' => $projectId,
-            'rule_id' => $ruleId,
-            'total_money' => $ownerPayMoney,
-            'service_start_time' => strtotime($calc['service_start_time'] . ' 00:00:00'),
-            'service_end_time' => strtotime($calc['service_end_time'] . ' 23:59:59'),
-            'unit_price' => $calc['unit_price'],
-            'number' => $calc['area'],
-            'allow_deposit_deduct' => $allowDepositDeduct,
-            'source_type' => 'manual_new_bill',
-            'extra_data' => [
-                'bill_days' => $calc['days'],
-                'calc_total_money' => $calc['total_money'],
-                'third_party_money' => $thirdMoney,
-                'remark' => trim($params['remark'] ?? ''),
-            ],
-        ]);
+        $segments = $mergeBill === 1
+            ? [['start_date' => $calc['service_start_time'], 'end_date' => $calc['service_end_time'], 'money' => $ownerPayMoney]]
+            : $this->buildMonthlyBillSegments($calc['unit_price'], $calc['area'], $calc['service_start_time'], $calc['service_end_time']);
+        $orderIds = [];
         Db::startTrans();
         try {
-            $orderId = Db::name('house_new_pay_order')->insertGetId($orderData);
-            if ($thirdMoney > 0) {
-                Db::name('house_new_bill_third_party_split')->insert([
-                    'village_id' => $villageId,
-                    'property_id' => intval($orderData['property_id'] ?? 0),
-                    'order_id' => $orderId,
-                    'company_id' => $thirdCompanyId,
-                    'company_name' => $thirdCompany['company_name'],
-                    'total_money' => $calc['total_money'],
-                    'third_party_money' => $thirdMoney,
-                    'owner_pay_money' => $ownerPayMoney,
-                    'status' => 0,
-                    'remark' => trim($params['third_party_remark'] ?? ''),
-                    'add_time' => $now,
-                    'update_time' => $now,
+            $this->assertNoOverlappingBill(
+                $villageId,
+                $roomId,
+                $projectId,
+                strtotime($calc['service_start_time'] . ' 00:00:00'),
+                strtotime($calc['service_end_time'] . ' 23:59:59')
+            );
+            foreach ($segments as $segment) {
+                $segmentDays = $this->daysInclusive($segment['start_date'], $segment['end_date']);
+                $orderData = $this->buildBaseOrderData($adminUser, $roomInfo, $ruleInfo, [
+                    'project_id' => $projectId,
+                    'rule_id' => $ruleId,
+                    'total_money' => $segment['money'],
+                    'service_start_time' => strtotime($segment['start_date'] . ' 00:00:00'),
+                    'service_end_time' => strtotime($segment['end_date'] . ' 23:59:59'),
+                    'unit_price' => $calc['unit_price'],
+                    'number' => $calc['area'],
+                    'allow_deposit_deduct' => $allowDepositDeduct,
+                    'source_type' => 'manual_new_bill',
+                    'extra_data' => [
+                        'merge_bill' => $mergeBill,
+                        'bill_days' => $segmentDays,
+                        'calc_total_money' => $segment['money'],
+                        'remark' => trim($params['remark'] ?? ''),
+                    ],
                 ]);
+                $orderIds[] = Db::name('house_new_pay_order')->insertGetId($orderData);
             }
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
             throw $e;
         }
-        return ['order_id' => $orderId, 'msg' => '账单已生成'];
+        return [
+            'order_id' => $orderIds[0] ?? 0,
+            'order_ids' => $orderIds,
+            'order_count' => count($orderIds),
+            'msg' => $mergeBill === 1 ? '账单已生成' : '已按月生成' . count($orderIds) . '笔账单',
+        ];
+    }
+
+    public function splitThirdPartyBill($adminUser, $params)
+    {
+        $villageId = $this->getVillageId($adminUser);
+        $orderId = intval($params['order_id'] ?? 0);
+        $companyName = trim($params['company_name'] ?? '');
+        $startDate = trim($params['service_start_time'] ?? '');
+        $endDate = trim($params['service_end_time'] ?? '');
+        $splitMoney = round(floatval($params['split_money'] ?? 0), 1);
+        if ($orderId <= 0 || $companyName === '' || !$startDate || !$endDate || $splitMoney <= 0) {
+            throw new \Exception('请完整填写第三方拆分信息');
+        }
+        Db::startTrans();
+        try {
+            $order = Db::name('house_new_pay_order')->where([
+                ['order_id', '=', $orderId],
+                ['village_id', '=', $villageId],
+                ['source_type', '=', 'manual_new_bill'],
+                ['is_paid', '=', 2],
+                ['is_discard', '=', 1],
+            ])->lock(true)->find();
+            if (!$order) {
+                throw new \Exception('当前账单不存在、已支付或不允许拆分');
+            }
+            $orderStart = strtotime(date('Y-m-d 00:00:00', intval($order['service_start_time'])));
+            $orderEnd = strtotime(date('Y-m-d 23:59:59', intval($order['service_end_time'])));
+            $splitStart = strtotime($startDate . ' 00:00:00');
+            $splitEnd = strtotime($endDate . ' 23:59:59');
+            if (!$splitStart || !$splitEnd || $splitEnd < $splitStart || $splitStart < $orderStart || $splitEnd > $orderEnd) {
+                throw new \Exception('承担时间必须在主账单计费时间范围内');
+            }
+            $parentMoney = round(floatval($order['modify_money'] ?? $order['total_money']), 1);
+            if ($splitMoney > $parentMoney) {
+                throw new \Exception('第三方承担费用不能大于主账单剩余金额');
+            }
+            $remainMoney = round($parentMoney - $splitMoney, 1);
+            Db::name('house_new_pay_order')->where('order_id', $orderId)->update([
+                'total_money' => $remainMoney,
+                'modify_money' => $remainMoney,
+                'update_time' => time(),
+            ]);
+            $child = $order;
+            unset($child['order_id']);
+            $child['order_no'] = '';
+            $child['order_name'] = ($order['order_name'] ?? '账单') . '-第三方承担';
+            $child['room_id'] = 0;
+            $child['pigcms_id'] = 0;
+            $child['position_id'] = 0;
+            $child['name'] = $companyName;
+            $child['phone'] = '';
+            $child['total_money'] = $splitMoney;
+            $child['modify_money'] = $splitMoney;
+            $child['pay_money'] = 0;
+            $child['service_start_time'] = $splitStart;
+            $child['service_end_time'] = $splitEnd;
+            $child['allow_deposit_deduct'] = 0;
+            $child['source_type'] = 'third_party_split';
+            $child['primitive_order_id'] = $orderId;
+            $child['add_time'] = time();
+            $child['update_time'] = time();
+            $child['extra_data'] = json_encode([
+                'parent_order_id' => $orderId,
+                'company_name' => $companyName,
+            ], JSON_UNESCAPED_UNICODE);
+            $childOrderId = Db::name('house_new_pay_order')->insertGetId($child);
+            Db::name('house_new_bill_third_party_split')->insert([
+                'village_id' => $villageId,
+                'property_id' => intval($order['property_id'] ?? 0),
+                'order_id' => $orderId,
+                'child_order_id' => $childOrderId,
+                'company_id' => 0,
+                'company_name' => $companyName,
+                'service_start_time' => $splitStart,
+                'service_end_time' => $splitEnd,
+                'total_money' => $parentMoney,
+                'third_party_money' => $splitMoney,
+                'owner_pay_money' => $remainMoney,
+                'status' => 0,
+                'remark' => trim($params['remark'] ?? ''),
+                'add_time' => time(),
+                'update_time' => time(),
+            ]);
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw $e;
+        }
+        return ['order_id' => $orderId, 'child_order_id' => $childOrderId, 'msg' => '账单拆分成功'];
     }
 
     public function getVacancyFeeConfig($adminUser)
@@ -193,6 +299,9 @@ class HouseNewManualBillService
     public function syncRoomVacancyFeeBill($adminUser, $params)
     {
         $villageId = $this->getVillageId($adminUser);
+        if ($this->isLegacyVillage($villageId)) {
+            return ['order_id' => 0, 'msg' => '老项目不生成空置费'];
+        }
         $roomId = intval($params['room_id'] ?? 0);
         $roomInfo = $this->getRoomInfo($villageId, $roomId);
         $config = $this->getVacancyFeeConfig($adminUser);
@@ -546,6 +655,35 @@ class HouseNewManualBillService
         return $info;
     }
 
+    private function assertMonthlyRule($ruleInfo)
+    {
+        if (intval($ruleInfo['bill_create_set'] ?? 0) !== 2) {
+            throw new \Exception('新增账单只允许使用按月生成的收费标准');
+        }
+    }
+
+    private function formatManualRuleInfo($roomInfo, $ruleInfo)
+    {
+        $feesTypeMap = [0 => '自定义金额', 1 => '单价计量单位', 2 => '单价乘面积'];
+        $unitMap = [1 => '房屋面积', 2 => '固定单位', 3 => '车位面积', 4 => '供暖面积', 5 => '计费面积'];
+        $billTypeMap = [1 => '后付费', 2 => '预生成'];
+        return [
+            'charge_name' => $ruleInfo['charge_name'] ?? '',
+            'not_house_rate' => $this->money1($ruleInfo['not_house_rate'] ?? 100) . '%',
+            'charge_valid_time' => !empty($ruleInfo['charge_valid_time']) ? date('Y-m-d', intval($ruleInfo['charge_valid_time'])) : '长期有效',
+            'fees_type_text' => $feesTypeMap[intval($ruleInfo['fees_type'] ?? 1)] ?? '单价计量单位',
+            'unit_gage_text' => $unitMap[intval($ruleInfo['unit_gage_type'] ?? 1)] ?? '',
+            'charge_price' => $this->money1($ruleInfo['charge_price'] ?? 0),
+            'cyclicity_text' => intval($ruleInfo['cyclicity_set'] ?? 0) > 0 ? intval($ruleInfo['cyclicity_set']) . '个月' : '无限期',
+            'bill_create_set_text' => '按月生成',
+            'bill_type_text' => $billTypeMap[intval($ruleInfo['bill_type'] ?? 2)] ?? '预生成',
+            'create_mode_text' => '手动生成',
+            'is_prepaid_text' => intval($ruleInfo['is_prepaid'] ?? 2) === 1 ? '支持' : '不支持',
+            'area' => $this->money1($roomInfo['housesize'] ?? 0),
+            'monthly_unit_price' => $this->money1($ruleInfo['charge_price'] ?? 0),
+        ];
+    }
+
     private function getRoomInfo($villageId, $roomId)
     {
         if ($roomId <= 0) {
@@ -575,13 +713,15 @@ class HouseNewManualBillService
         if (!$start || !$end || $end < $start) {
             throw new \Exception('账单时间不正确');
         }
-        $deliveryTime = intval($roomInfo['delivery_time'] ?? 0);
-        if ($deliveryTime <= 0) {
-            throw new \Exception('当前房间未填写交房时间');
-        }
-        $deliveryDay = strtotime(date('Y-m-d 00:00:00', $deliveryTime));
-        if ($start < $deliveryDay) {
-            throw new \Exception('账单开始日期不得早于交房日期');
+        if (!$this->isLegacyVillage(intval($roomInfo['village_id'] ?? 0))) {
+            $deliveryTime = intval($roomInfo['delivery_time'] ?? 0);
+            if ($deliveryTime <= 0) {
+                throw new \Exception('当前房间未填写交房时间');
+            }
+            $deliveryDay = strtotime(date('Y-m-d 00:00:00', $deliveryTime));
+            if ($start < $deliveryDay) {
+                throw new \Exception('账单开始日期不得早于交房日期');
+            }
         }
         $serviceStartTime = intval($roomInfo['property_service_start_time'] ?? 0);
         if ($serviceStartTime > 0) {
@@ -600,6 +740,43 @@ class HouseNewManualBillService
         return [$startDate, $endDate];
     }
 
+    private function getDefaultBillDates($villageId, $roomInfo)
+    {
+        $serviceStart = intval($roomInfo['property_service_start_time'] ?? 0);
+        if ($serviceStart <= 0) {
+            return ['start_date' => '', 'end_date' => ''];
+        }
+        $serviceStartDay = strtotime(date('Y-m-d 00:00:00', $serviceStart));
+        $serviceEnd = intval($roomInfo['property_service_end_time'] ?? 0);
+        $serviceEndDay = $serviceEnd > 0 ? strtotime(date('Y-m-d 23:59:59', $serviceEnd)) : 0;
+        $latestEnd = Db::name('house_new_pay_order')->where([
+            ['village_id', '=', $villageId],
+            ['room_id', '=', intval($roomInfo['pigcms_id'])],
+            ['is_paid', 'in', [1, 2]],
+            ['is_discard', '=', 1],
+            ['is_refund', '=', 1],
+            ['service_end_time', '>', 0],
+        ])->max('service_end_time');
+        $start = $serviceStartDay;
+        if ($latestEnd && intval($latestEnd) > 0) {
+            $start = strtotime('+1 day', strtotime(date('Y-m-d 00:00:00', intval($latestEnd))));
+            if ($start < $serviceStartDay) {
+                $start = $serviceStartDay;
+            }
+        }
+        if ($serviceEndDay > 0 && $start > $serviceEndDay) {
+            return ['start_date' => '', 'end_date' => ''];
+        }
+        $end = strtotime('-1 day', strtotime('+1 year', $start));
+        if ($serviceEndDay > 0 && $end > $serviceEndDay) {
+            $end = $serviceEndDay;
+        }
+        return [
+            'start_date' => date('Y-m-d', $start),
+            'end_date' => date('Y-m-d', $end),
+        ];
+    }
+
     private function calcDailyMoney($unitPrice, $area, $startDate, $endDate)
     {
         $start = strtotime($startDate . ' 00:00:00');
@@ -616,6 +793,47 @@ class HouseNewManualBillService
             $cursor = strtotime('+1 day', $segEnd);
         }
         return $this->money4($total);
+    }
+
+    private function buildMonthlyBillSegments($unitPrice, $area, $startDate, $endDate)
+    {
+        $segments = [];
+        $cursor = strtotime($startDate . ' 00:00:00');
+        $end = strtotime($endDate . ' 00:00:00');
+        while ($cursor <= $end) {
+            $monthEnd = strtotime(date('Y-m-t 00:00:00', $cursor));
+            $segmentEnd = min($monthEnd, $end);
+            $segmentStartDate = date('Y-m-d', $cursor);
+            $segmentEndDate = date('Y-m-d', $segmentEnd);
+            $preciseMoney = $this->calcDailyMoney($unitPrice, $area, $segmentStartDate, $segmentEndDate);
+            $segments[] = [
+                'start_date' => $segmentStartDate,
+                'end_date' => $segmentEndDate,
+                'precise_money' => $preciseMoney,
+                'money' => round($preciseMoney, 1),
+            ];
+            $cursor = strtotime('+1 day', $segmentEnd);
+        }
+        return $segments;
+    }
+
+    private function assertNoOverlappingBill($villageId, $roomId, $projectId, $startTime, $endTime)
+    {
+        $overlap = Db::name('house_new_pay_order')->where([
+            ['village_id', '=', $villageId],
+            ['room_id', '=', $roomId],
+            ['project_id', '=', $projectId],
+            ['is_paid', 'in', [1, 2]],
+            ['is_discard', '=', 1],
+            ['is_refund', '=', 1],
+            ['service_start_time', '<=', $endTime],
+            ['service_end_time', '>=', $startTime],
+        ])->field('order_id,service_start_time,service_end_time')->lock(true)->find();
+        if ($overlap) {
+            $existingStart = date('Y-m-d', intval($overlap['service_start_time']));
+            $existingEnd = date('Y-m-d', intval($overlap['service_end_time']));
+            throw new \Exception('当前收费项目在' . $existingStart . '至' . $existingEnd . '已存在应缴或已缴账单，不能重复创建');
+        }
     }
 
     private function calcVacancyMoney($roomInfo, $config, $startDate, $endDate)
@@ -649,6 +867,11 @@ class HouseNewManualBillService
             throw new \Exception('请先登录到小区后台');
         }
         return $villageId;
+    }
+
+    private function isLegacyVillage($villageId)
+    {
+        return in_array(intval($villageId), self::LEGACY_VILLAGE_IDS, true);
     }
 
     private function getPropertyId($villageId, $adminUser = [])
@@ -741,5 +964,10 @@ class HouseNewManualBillService
     private function money4($money)
     {
         return round(floatval($money), 4);
+    }
+
+    private function money1($money)
+    {
+        return number_format(round(floatval($money), 1), 1, '.', '');
     }
 }

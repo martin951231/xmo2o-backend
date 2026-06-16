@@ -3291,11 +3291,39 @@ class CashierController extends CommunityBaseController
         }
     }
 
+    public function manualBillRuleList()
+    {
+        try {
+            return api_output(0, (new HouseNewManualBillService())->getMonthlyRuleList($this->adminUser, $this->request->param()));
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function manualBillRuleInfo()
+    {
+        try {
+            return api_output(0, (new HouseNewManualBillService())->getManualBillRuleInfo($this->adminUser, $this->request->param()));
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
     public function manualBillCreate()
     {
         try {
             $data = (new HouseNewManualBillService())->createManualBill($this->adminUser, $this->request->param());
             return api_output(0, $data, $data['msg'] ?? '账单已生成');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function manualBillSplit()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->splitThirdPartyBill($this->adminUser, $this->request->param());
+            return api_output(0, $data, $data['msg'] ?? '账单拆分成功');
         } catch (\Exception $e) {
             return api_output_error(-1, $e->getMessage());
         }
