@@ -15,7 +15,7 @@ class SocialActivityCategoryService
     {
         $field = 'id, name, create_time, creator, update_time, modifier';
         $where = [];
-
+        
         $list = (new SocialActivityCategory())
             ->where($where)
             ->field($field)
@@ -35,12 +35,12 @@ class SocialActivityCategoryService
         if (empty($param['id'])) {
             throw new \Exception('分类ID不能为空');
         }
-
+        
         $info = (new SocialActivityCategory())->getCategoryById($param['id']);
         if (!$info || $info->isEmpty()) {
             throw new \Exception('分类不存在或已被删除');
         }
-
+        
         return $info->toArray();
     }
 
@@ -54,16 +54,16 @@ class SocialActivityCategoryService
         if (empty($data['name'])) {
             throw new \Exception('分类名称不能为空');
         }
-
+        
         // 检查名称是否重复
         $where = [
             ['name', '=', $data['name']],
         ];
-
+        
         if (!empty($data['id'])) {
             $where[] = ['id', '<>', $data['id']];
         }
-
+        
         $count = (new SocialActivityCategory())->where($where)->count();
         if ($count > 0) {
             throw new \Exception('分类名称已存在');
@@ -79,13 +79,13 @@ class SocialActivityCategoryService
     public function saveCategory($data, $id = 0)
     {
         $this->validateCategoryData($data);
-
+        
         $saveData = [
             'name' => $data['name'],
             'modifier' => $data['modifier'] ?? '',
             'modifier_uid' => $data['modifier_uid'] ?? 0,
         ];
-
+        
         if ($id > 0) {
             // 编辑
             (new SocialActivityCategory())->updateCategory($id, $saveData);
@@ -107,12 +107,12 @@ class SocialActivityCategoryService
         if (empty($param['id'])) {
             throw new \Exception('分类ID不能为空');
         }
-
+        
         $info = (new SocialActivityCategory())->getCategoryById($param['id']);
         if (!$info || $info->isEmpty()) {
             throw new \Exception('分类不存在或已被删除');
         }
-
+        
         (new SocialActivityCategory())->deleteCategory($param['id']);
     }
 }

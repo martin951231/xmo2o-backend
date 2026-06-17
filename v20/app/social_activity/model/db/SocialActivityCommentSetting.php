@@ -10,14 +10,14 @@ class SocialActivityCommentSetting extends Model
     public function getSettings()
     {
         $config = \think\facade\Db::name('config');
-
+        
         $settings = [
             'comment_alias' => '',
             'share_audit' => 1,
         ];
-
+        
         $configList = $config->where('name', 'in', ['social_comment_alias_name', 'social_comment_check', 'social_comment_filer_word'])->select();
-
+        
         foreach ($configList as $item) {
             switch ($item['name']) {
                 case 'social_comment_alias_name':
@@ -28,10 +28,10 @@ class SocialActivityCommentSetting extends Model
                     break;
             }
         }
-
+        
         return $settings;
     }
-
+    
     public function saveSettings($data)
     {
         $configData = [
@@ -46,7 +46,7 @@ class SocialActivityCommentSetting extends Model
                 Config::create($item);
             }
         }
-
+        
         return true;
     }
 }

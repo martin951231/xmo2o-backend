@@ -18,7 +18,7 @@ class SocialActivityWithdrawService
     {
         $is_export = $param['is_export'] ?? 0;
         $where = [];
-
+        
         // 时间范围搜索
         if (!empty($param['start_time'])) {
             $where[] = ['create_time', '>=', $param['start_time']];
@@ -26,15 +26,15 @@ class SocialActivityWithdrawService
         if (!empty($param['end_time'])) {
             $where[] = ['create_time', '<=', $param['end_time'] . ' 23:59:59'];
         }
-
+        
         // 审核状态
         if (isset($param['audit_status']) && $param['audit_status'] >= 0) {
             $where[] = ['audit_status', '=', $param['audit_status']];
         }
-
+        
         $page = $param['page'] ?? 1;
         $pageSize = $param['page_size'] ?? 10;
-
+        
         $model = new SocialActivityWithdraw();
         $query = $model->where($where)
             ->append(['status_text'])
@@ -56,10 +56,10 @@ class SocialActivityWithdrawService
         } else {
             $list = $query->paginate($pageSize)->toArray();
         }
-
+        
         return $list;
     }
-
+    
     /**
      * 提现审核
      * @param array $param
@@ -71,25 +71,25 @@ class SocialActivityWithdrawService
         if (empty($param['id'])) {
             throw new ValidateException('提现记录ID不能为空');
         }
-
+        
         if (!isset($param['audit_status']) || !in_array($param['audit_status'], [10, 20])) {
             throw new ValidateException('审核状态无效');
         }
-
+        
         if($param['audit_status'] != 10 && empty($param['audit_remark'])){
             throw new ValidateException('审核备注不能为空！');
         }
-
+        
         $model = new SocialActivityWithdraw();
         $withdraw = $model->where(['id'=>$param['id']])->findOrEmpty()->toArray();
         if (!$withdraw) {
             throw new ValidateException('提现记录不存在');
         }
-
+        
         if ($withdraw['audit_status'] != 0) {
             throw new ValidateException('该提现记录已审核');
         }
-
+        
         $data = [
             'audit_status' => $param['audit_status'],
             'audit_time' => date('Y-m-d H:i:s'),

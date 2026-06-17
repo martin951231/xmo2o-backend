@@ -17,8 +17,8 @@ class SocialActivityIndexService
         $activity_statistics = (new SocialActivity())->field('status,count(*) as total')->group('status')->column('status,count(*) as total', 'status');
         $total = $activity_statistics ? array_sum(array_column($activity_statistics, 'total')) : 0;
         $pending = !empty($activity_statistics[SocialActivity::STATUS_0]) ? $activity_statistics[SocialActivity::STATUS_0]['total'] : 0;
-        $published = !empty($activity_statistics[SocialActivity::STATUS_10]) ? $activity_statistics[SocialActivity::STATUS_10]['total'] : 0;
-        $ended = (new SocialActivity())->where([['end_time', '<', date('Y-m-d H:i:s')]])->count();
+        $published = (new SocialActivity())->where([['is_audit', '=', SocialActivity::STATUS_10]])->count(); //已发布活动包含已取消的活动
+        $ended = (new SocialActivity())->where([['end_time', '<', date('Y-m-d 23:59:59', strtotime('-1 day'))], ['is_audit', '=', SocialActivity::STATUS_10],['status', '<>', SocialActivity::STATUS_30]])->count();
 
         //统计报名和签到数
         $order_statistics = (new SocialActivityOrder())->field('is_sign,count(*) as total')->where([

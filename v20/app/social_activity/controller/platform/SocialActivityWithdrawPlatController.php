@@ -21,7 +21,7 @@ class SocialActivityWithdrawPlatController extends \app\common\controller\platfo
             'page' => $this->request->param('page', 1, 'trim,intval'),
             'page_size' => $this->request->param('page_size', 10, 'trim,intval')
         ];
-
+        
         try {
             $service = new SocialActivityWithdrawService();
             $result = $service->getWithdrawList($param);
@@ -30,7 +30,7 @@ class SocialActivityWithdrawPlatController extends \app\common\controller\platfo
             return api_output_error(1003, $e->getMessage());
         }
     }
-
+    
     /**
      * 提现审核
      * @return \think\response\Json
@@ -43,7 +43,7 @@ class SocialActivityWithdrawPlatController extends \app\common\controller\platfo
             'audit_remark' => $this->request->param('audit_remark', '', 'trim,string'),
             'systemUser' => $this->systemUser,
         ];
-
+        
         try {
             $service = new SocialActivityWithdrawService();
             $result = $service->auditWithdraw($param);

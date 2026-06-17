@@ -35,6 +35,8 @@ class VisualizeAction extends BaseAction{
 
     //todo 首页
     public function viewpage_list(){
+        $social_activity = D('Plugin')->where(['name' => 'social_activity'])->find();
+        $this->assign('open_social_activity', $social_activity ? 1 : 0);
         $this->display();
     }
 

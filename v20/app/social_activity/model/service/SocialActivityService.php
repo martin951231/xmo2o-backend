@@ -15,7 +15,6 @@ use app\social_activity\model\db\SocialActivityComment;
 use app\social_activity\model\db\SocialActivityOrder;
 use app\social_activity\model\db\SocialActivityPointRule;
 use app\social_activity\model\db\SocialActivitySession;
-use app\social_activity\model\db\SocialActivitySessionRelation;
 use app\social_activity\model\db\SocialActivitySessionTicket;
 use app\social_activity\model\db\SocialActivityViews;
 use app\survey\model\SurveyForm;
@@ -74,7 +73,7 @@ class SocialActivityService
 	            $date = date('Y-m-d 23:59:59', strtotime('-1 day'));
                 $where[] = ['a.end_time', '<', $date];
 	            $where[] = ['a.status', '<>', SocialActivity::STATUS_30];
-                $where[] = ['a.status', '<>', SocialActivity::STATUS_30];
+                $where[] = ['a.is_audit', '=', SocialActivity::STATUS_10];
             } elseif ($activity_status == 4) { // 已取消
                 $where[] = ['a.status', '=', SocialActivity::STATUS_30];
             }
@@ -205,6 +204,12 @@ class SocialActivityService
             if ($session['start_time'] >= $session['end_time']) {
                 throw new \Exception('场次' . ($key + 1) . '开始时间必须早于结束时间');
             }
+            if(strtotime($data['start_time']) > strtotime($session['start_time'])){
+                throw new \Exception('场次' . ($key + 1) . '开始时间必须晚于活动开始时间');
+            }
+            if(strtotime($data['end_time'].' 23:59:59') < strtotime($session['end_time'])){
+                throw new \Exception('场次' . ($key + 1) . '结束时间必须晚于活动结束时间');
+            }
             if ($session['age_range'] == 1) {
                 if (!$session['age_max']) {
                     throw new \Exception('场次' . ($key + 1) . '最大年龄不能为空');
@@ -239,7 +244,7 @@ class SocialActivityService
                 if (!$ticket['name']) {
                     throw new \Exception('场次' . ($key + 1) . '门票名称不能为空');
                 }
-                if (!$ticket['price'] || $ticket['price'] < 0) {
+                if ($ticket['price'] < 0) {
                     throw new \Exception('场次' . ($key + 1) . '门票价格不能小于0');
                 }
                 if (!$ticket['num'] || $ticket['num'] <= 0) {
@@ -253,8 +258,8 @@ class SocialActivityService
             if (strtotime($session['ticket_start_time']) >= strtotime($session['ticket_end_time'])) {
                 throw new \Exception('场次' . ($key + 1) . '购票开始时间必须早于结束时间');
             }
-            if (strtotime($session['ticket_end_time']) > strtotime($data['end_time'] . ' ' . $session['end_time'])) {
-                throw new \Exception('场次' . ($key + 1) . '购票结束时间不能晚于活动结束时间');
+            if (strtotime($session['ticket_end_time']) > strtotime($session['end_time'])) {
+                throw new \Exception('场次' . ($key + 1) . '购票结束时间不能晚于场次结束时间');
             }
             $save_session[] = [
                 'id' => $session['id'] ?? 0,
@@ -337,7 +342,6 @@ class SocialActivityService
             $session_days = ceil($session_days / (24 * 60 * 60));
             //添加场次
             (new SocialActivitySessionTicket())->where(['activity_id' => $id])->delete();
-            (new SocialActivitySessionRelation())->where(['activity_id' => $id])->delete();
             foreach ($save_session as $session_item) {
                 $tickets = $session_item['tickets'] ?? [];
                 $session_id = 0;
@@ -369,25 +373,6 @@ class SocialActivityService
                         $ticket['activity_id'] = $id;
                     }
                     (new SocialActivitySessionTicket())->saveAll($tickets);
-                }
-                //添加每天场次
-                $relation = [];
-                $aa = [];
-                for ($i = 0; $i <= $session_days; $i++) {
-                    $now_date = date('Y-m-d', strtotime("{$saveData['start_time']} +{$i} day"));
-                    $aa[] = $now_date;
-                    if ($now_date <= $saveData['end_time']) {
-                        $relation[] = [
-                            'activity_id' => $id,
-                            'session_id' => $session_id,
-                            'start_time' => $now_date . ' ' . $session_item['start_time'],
-                            'end_time' => $now_date . ' ' . $session_item['end_time'],
-                            'ticket_date' => $now_date,
-                        ];
-                    }
-                }
-                if ($relation) {
-                    (new SocialActivitySessionRelation())->saveAll($relation);
                 }
             }
             Db::commit();
@@ -434,6 +419,9 @@ class SocialActivityService
                 $session['location_name'] = (new HouseVenueActivity())->where(['status' => 1, 'is_del' => 0, 'id' => $session['location_id']])->value('title');
             }
             $session['ticket_time_range'] = [$session['ticket_start_time'], $session['ticket_end_time']];
+            $session['start_time'] = date('Y-m-d H:i', strtotime($session['start_time']));
+            $session['end_time'] = date('Y-m-d H:i', strtotime($session['end_time']));
+            $session['time_range'] = [$session['start_time'], $session['end_time']];
             $session['location_id'] = (int)$session['location_id'];
             $session['village_id'] = $session['village_id'] ? array_map('intval', array_filter(explode(',', $session['village_id']), 'is_numeric')) : [];
             $session['tickets'] = $session_tickets[$session['id']] ?? [];
@@ -458,6 +446,7 @@ class SocialActivityService
         //规则
         $res['rule_name'] = (new SocialActivityPointRule())->where(['id' => $res['rule_id'], 'status' => 1])->value('name');
         $res['video'] = $res['video'] ? [replace_file_domain($res['video'])] : [];
+        $res['content'] = $res['content'] ? replace_file_domain_content($res['content']) : '';
         return $res;
     }
 
@@ -576,6 +565,10 @@ class SocialActivityService
     {
         $id = $params['id'];
         $editUser = $params['editUser'];
+        $reason = $params['reason'] ?? '';
+        if (!$reason) {
+            throw new \Exception('取消原因不能为空');
+        }
 
         // 获取活动信息
         $activity = (new SocialActivity())->where(['id' => $id])->findOrEmpty()->toArray();
@@ -599,6 +592,7 @@ class SocialActivityService
             'update_time' => $date,
             'modifier_uid' => $editUser['id'],
             'modifier' => $editUser['realname'],
+            'cancel_reason' => $reason,
         ];
 
         Db::startTrans();
@@ -638,63 +632,54 @@ class SocialActivityService
         }
 
         $where = [
-            ['r.activity_id', '=', $activity_id],
+            ['s.activity_id', '=', $activity_id],
         ];
         if ($name) {
             $where[] = ['s.name', 'like', "%{$name}%"];
         }
 
-        $field = 'r.id, r.session_id, r.start_time, r.end_time, r.ticket_date, s.name';
+        $field = 's.*';
 
-        $list = (new SocialActivitySessionRelation())->alias('r')
+        $list = (new socialActivitySession())->alias('s')
             ->field($field)
-            ->join('social_activity_session s', 'r.session_id = s.id')
             ->where($where)
-            ->order('r.start_time asc,s.id desc')
+            ->order('s.id asc')
             ->paginate($pageSize)->toArray();
 
-        $session_ids = array_column($list['data'], 'session_id');
-        $relation_ids = array_column($list['data'], 'id');
+        $session_ids = array_column($list['data'], 'id');
 
         //统计总数
         $ticket_num = [];
         if ($session_ids) {
-            $tickets = (new SocialActivitySessionTicket())->where([['session_id', 'in', $session_ids]])->select()->toArray();
-            foreach ($tickets as $ticket) {
-                $ticket_num[$ticket['session_id']] = ($ticket_num[$ticket['session_id']] ?? 0) + $ticket['num'];
-            }
+            $tickets = (new SocialActivitySessionTicket())->field('session_id, SUM(num) as total')->where([['session_id', 'in', $session_ids]])->group('session_id')->select()->toArray();
+            $ticket_num = array_column($tickets, 'total', 'session_id');
         }
 
         $order_status = [
             ['session_id', 'in', $session_ids],
-            ['session_relation_id', 'in', $relation_ids],
             ['status', '=', SocialActivityOrder::STATUS_10],
             ['paid', '=', 1],
         ];
         //统计报名人数
         $order_num = [];
         if ($session_ids) {
-            $orders = (new SocialActivityOrder())->where($order_status)->select()->toArray();
-            foreach ($orders as $order) {
-                $order_num[$order['session_relation_id']] = ($order_num[$order['session_relation_id']] ?? 0) + 1;
-            }
+            $orders = (new SocialActivityOrder())->field('count(*) as total, session_id')->where($order_status)->group('session_id')->select()->toArray();
+            $order_num = array_column($orders, 'total', 'session_id');
         }
 
         //统计签到人数
         $check_in_num = [];
         if ($session_ids) {
             $order_status[] = ['is_sign', '=', 1];
-            $check_ins = (new SocialActivityOrder())->where($order_status)->select()->toArray();
-            foreach ($check_ins as $check_in) {
-                $check_in_num[$check_in['session_relation_id']] = ($check_in_num[$check_in['session_relation_id']] ?? 0) + 1;
-            }
+            $check_ins = (new SocialActivityOrder())->field('count(*) as total, session_id')->where($order_status)->group('session_id')->select()->toArray();
+            $check_in_num = array_column($check_ins, 'total', 'session_id');
         }
 
         foreach ($list['data'] as &$item) {
-            $item['total_num'] = $ticket_num[$item['session_id']] ?? 0;
+            $item['total_num'] = $ticket_num[$item['id']] ?? 0;
             $item['sign_up_num'] = $order_num[$item['id']] ?? 0;
             $item['check_in_num'] = $check_in_num[$item['id']] ?? 0;
-            $item['time_range'] = $item['ticket_date'] . ' ' . date('H:i', strtotime($item['start_time'])) . '-' . date('H:i', strtotime($item['end_time']));
+            $item['time_range'] = date('Y-m-d H:i', strtotime($item['start_time'])) . ' ~ ' . date('Y-m-d H:i', strtotime($item['end_time']));
 
             $now = date('Y-m-d H:i:s');
             if ($item['start_time'] > $now) {
@@ -724,10 +709,6 @@ class SocialActivityService
         $session_id = $params['session_id'];
         $start_date = $params['start_date'];
         $end_date = $params['end_date'];
-        $id = $params['id'];
-        if (!$id) {
-            throw new \Exception('关联ID不能为空');
-        }
         $check_in_status = $params['check_in_status'];
         $is_export = $params['is_export'] ?? 0;
         if (!$session_id) {
@@ -741,7 +722,6 @@ class SocialActivityService
             ['o.session_id', '=', $session_id],
             ['o.status', '<>', SocialActivityOrder::STATUS_20],
             ['o.paid', '=', 1],
-            ['o.session_relation_id', '=', $id],
         ];
 
         if ($start_date) {
@@ -755,11 +735,10 @@ class SocialActivityService
         }
 
         $query = (new SocialActivityOrder())->alias('o')
-            ->field('o.*, u.nickname, u.avatar, hv.village_name,hv.village_address')
+            ->field('o.*, u.nickname, u.avatar, u.phone')
             ->join('user u', 'o.uid = u.uid')
-            ->join('house_village_user_bind hvub', 'u.uid = hvub.uid and hvub.village_id = o.buy_village_id', 'left')
-            ->join('house_village hv', 'o.buy_village_id = hv.village_id', 'left')
             ->where($where)
+            ->append(['source_text'])
             ->order('o.create_time desc')
             ->group('o.id,o.buy_village_id');
         //统计
@@ -776,9 +755,6 @@ class SocialActivityService
             $data = $query->select()->toArray();
         }
         foreach ($data as &$item) {
-            if ($item['village_name']) {
-                $item['source'] = $item['village_name'] . $item['village_address'];
-            }
             $item['sign_text'] = $item['is_sign'] == 1 ? '已签到' : '未签到';
 			$item['avatar'] = $item['avatar'] ? replace_file_domain($item['avatar']) : '';
         }
@@ -843,29 +819,29 @@ class SocialActivityService
         if (!$orderId) {
             throw new \Exception('订单ID不能为空');
         }
-
+        
         $order = (new SocialActivityOrder())->where(['id' => $orderId])->findOrEmpty();
         if ($order->isEmpty()) {
             throw new \Exception('订单不存在');
         }
-
+        
         if ($order['status'] != SocialActivityOrder::STATUS_10) {
             throw new \Exception('订单未支付，无法签到');
         }
-
+        
         if ($order['is_sign'] == 1) {
             throw new \Exception('订单已签到，请勿重复签到');
         }
-
+        
         $result = (new SocialActivityOrder())->where(['id' => $orderId])->save([
             'is_sign' => 1,
             'sign_time' => date('Y-m-d H:i:s'),
         ]);
-
+        
         if ($result === false) {
             throw new \Exception('签到失败');
         }
-
+        
         return ['msg' => '签到成功'];
     }
 
@@ -883,7 +859,7 @@ class SocialActivityService
         $activity_status = $params['activity_status'];
         $recommend = $params['recommend'];
         $date = $params['date'];
-
+	    
         $where = [];
         $where[] = ['a.status', '=', SocialActivity::STATUS_10];
 
@@ -900,7 +876,7 @@ class SocialActivityService
             $where[] = ['a.start_time', '<=', $date];
             $where[] = ['a.end_time', '>=', $date];
         }
-
+	    
         if ($activity_status) {
             $currentDate = date('Y-m-d');
             if ($activity_status == 1) {
@@ -919,7 +895,7 @@ class SocialActivityService
             ->join('social_activity_category c', 'a.category_id = c.id')
             ->where($where)
             ->field($field)
-            ->order('a.recommend DESC, a.id DESC')
+            ->order('a.recommend DESC, a.update_time DESC, a.id DESC')
             ->paginate([
                 'list_rows' => $pageSize,
                 'page' => $page,
@@ -956,8 +932,14 @@ class SocialActivityService
             throw new \Exception('活动ID不能为空');
         }
 
+        $where = [
+            'id' => $id
+        ];
+        if((int)$orderId == 0){
+            $where['status'] = SocialActivity::STATUS_10;
+        }
         $activity = (new SocialActivity())
-            ->where(['id' => $id, 'status' => SocialActivity::STATUS_10])
+            ->where($where)
             ->findOrEmpty();
 
         if ($activity->isEmpty()) {
@@ -968,7 +950,11 @@ class SocialActivityService
         $res['poster'] = $res['poster'] ? replace_file_domain($res['poster']) : '';
         $res['position_poster'] = $res['position_poster'] ? replace_file_domain($res['position_poster']) : '';
         $res['activity_status'] = $this->getActivityStatus($res['start_time'], $res['end_time']);
+        if($res['status'] == SocialActivity::STATUS_30){
+            $res['activity_status'] = 4;
+        }
         $res['activity_status_text'] = $this->getActivityStatusText($res['activity_status']);
+        
 	    $res['min_ticket_price'] = min((new SocialActivitySessionTicket())
 		    ->where(['activity_id' => $id])
 		    ->column('price')) ?? 0;
@@ -989,10 +975,8 @@ class SocialActivityService
             $ticket['order_count'] = 0;
             if ($session_date) {
 				$ticket['order_count'] = SocialActivityOrder::alias('o')
-					->join('social_activity_session_relation r', 'o.session_relation_id = r.id')
 					->where([
-						'r.session_id' => $ticket['session_id'],
-                        'r.ticket_date' => $session_date,
+						'o.session_id' => $ticket['session_id'],
                         'o.paid' => 1,
                         'o.status' => SocialActivityOrder::STATUS_10,
                     ])
@@ -1023,17 +1007,18 @@ class SocialActivityService
 	        }
             $villageNames = (new HouseVillage())->where([['village_id', 'in', $session['village_id']], ['status', '=', 1]])->column('village_name');
             $session['village_name'] = $villageNames;
-	        $session['start_time'] = mb_substr($session['start_time'], 0, 5);
-	        $session['end_time'] = mb_substr($session['end_time'], 0, 5);
+	        $session['start_time'] = date('Y-m-d H:i',strtotime($session['start_time']));
+	        $session['end_time'] = date('Y-m-d H:i',strtotime($session['end_time']));
 	        $session['ticket_start_time'] = date('Y-m-d H:i', strtotime($session['ticket_start_time']));
 	        $session['ticket_end_time'] = date('Y-m-d H:i', strtotime($session['ticket_end_time']));
         }
 
         $res['sessions'] = $sessions;
         $res['order_info'] = [];
+        $res['can_refund'] = 0; //0-不能取消订单，1-可以取消订单
         if ($orderId > 0) {
             $res['order_info'] = (new SocialActivityOrder())->where(['id' => $orderId])->findOrEmpty();
-	        $res['order_info']['can_use_time'] = date('Y-m-d H:i', strtotime($res['order_info']['ticket_start_time'])).'-'.date('H:i', strtotime($res['order_info']['ticket_end_time']));
+	        $res['order_info']['can_use_time'] = date('Y-m-d H:i', strtotime($res['order_info']['ticket_start_time'])).' ~ '.date('Y-m-d H:i', strtotime($res['order_info']['ticket_end_time']));
 	        $res['order_info']['order_type'] = 'social_activity';
 	        if ($res['order_info']['session_id']) {
 				$orderSession = SocialActivitySession::where(['id' => $res['order_info']['session_id']])->findOrEmpty();
@@ -1042,6 +1027,9 @@ class SocialActivityService
 				}
 		        $res['order_info']['location'] = $orderSession['location'];
 		    }
+	        if($res['order_info'] && $res['order_info']['status'] == SocialActivityOrder::STATUS_10 && $res['order_info']['ticket_start_time'] > date('Y-m-d H:i:s')){
+                $res['can_refund'] = 1;
+            }
         }
 
         $res['is_success_sign'] = 0;
@@ -1052,7 +1040,6 @@ class SocialActivityService
                 ['is_sign', '=', 0],
                 ['activity_id', '=', $id],
                 ['session_id', '=', $sign_session_id],
-                ['ticket_date', '=', date('Y-m-d')],
                 ['paid', '=', 1],
                 ['status', '=', SocialActivityOrder::STATUS_10],
             ];
@@ -1060,7 +1047,8 @@ class SocialActivityService
             if ($sign_num > 0) {
                 $res['is_success_sign'] = 1;
                 $res['success_sign_msg'] = '恭喜签到成功';
-                (new SocialActivityOrder())->where($where)->update(['is_sign' => 1, 'update_time' => date('Y-m-d H:i:s')]);
+                $sign_date = date('Y-m-d H:i:s');
+                (new SocialActivityOrder())->where($where)->update(['is_sign' => 1, 'sign_time' => $sign_date, 'update_time' => $sign_date]);
             }
         }
 		$this->addViews($id, $uid);
@@ -1112,6 +1100,7 @@ class SocialActivityService
             1 => '待开始',
             2 => '进行中',
             3 => '已结束',
+            4 => '已取消',
         ];
         return $statusMap[$status] ?? '未知';
     }
@@ -1126,6 +1115,7 @@ class SocialActivityService
             'top_bg_pic' => (new DecorationService())->getTopBgPic(),
 			'social_activity_slider_row' => cfg('social_activity_slider_row'),
 			'social_activity_slider_num' => cfg('social_activity_slider_num'),
+			'social_activity_main_color' => cfg('social_activity_main_color'),
             'nav_list' => $this->getHomeNavList(),
             'hot_activities' => cfg('social_activity_hot_open') ? $this->getHotActivities() : [],
             'comments' => cfg('social_activity_show_previous') ? $this->getHomeComments() : [],
@@ -1193,7 +1183,7 @@ class SocialActivityService
                 ['a.recommend', '=', 1],
             ])
             ->field($field)
-            ->order('a.id DESC')
+            ->order('a.update_time desc, a.id DESC')
             ->limit(4)
             ->select()
             ->toArray();

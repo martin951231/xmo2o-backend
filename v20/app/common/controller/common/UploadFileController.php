@@ -100,6 +100,8 @@ class UploadFileController extends BaseController
         $upload_dir = $this->request->param('upload_dir');
         if ($upload_dir == '/work_order/video') {
             $params = ['fileSize' => 1024 * 1024 * 20];
+        } elseif($upload_dir == '/social/activity/video') {
+            $params = ['fileSize' => 1024 * 1024 * 50];
         } else {
             $params = ['fileSize' => 1024 * 1024 * 10];
         }

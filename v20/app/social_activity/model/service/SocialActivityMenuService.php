@@ -228,7 +228,7 @@ class SocialActivityMenuService
         if (empty($role_id)) {
             throw_exception('管理员未分配角色！');
         }
-
+		
         $roleInfo = (new SocialActivityRole())->getRoleById($role_id);
         if (!$roleInfo || $roleInfo->isEmpty()) {
             throw_exception('角色不存在！');
@@ -389,11 +389,15 @@ class SocialActivityMenuService
     private function buildTreeWithPermissions($list, $permGroup, $pid = 0)
     {
         $tree = [];
-        foreach ($list as $item) {
+        foreach ($list as &$item) {
+            $item['redirect'] = '';
             if ($item['pid'] == $pid) {
                 $children = $this->buildTreeWithPermissions($list, $permGroup, $item['id']);
                 if ($children) {
                     $item['children'] = $children;
+                    if($pid == 0 && $item['type'] == 1){
+                        $item['redirect'] = $children[0]['path'];
+                    }
                 }
                 // 附加权限按钮
                 $item['permissions'] = $permGroup[$item['id']] ?? [];
