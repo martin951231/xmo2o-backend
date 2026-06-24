@@ -28,4 +28,8 @@ class SocialActivityOrder extends Model
         ];
         return $arr[$data['source']] ?? '';
     }
+    
+    public function getStatusTextAttr($value, $data){
+        return self::STATUS_MAP[$data['status']] ?? '';
+    }
 }

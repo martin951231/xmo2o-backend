@@ -55,6 +55,12 @@ class SocialActivityOrderService
         if (!empty($params['end_time'])) {
             $where[] = ['o.pay_time', '<=', $params['end_time']];
         }
+        if(!empty($params['order_sn'])){
+            $where[] = ['o.order_sn', '=', $params['order_sn']];
+        }
+        if(isset($params['order_status']) && $params['order_status'] >= 0){
+            $where[] = ['o.status', '=', $params['order_status']];
+        }
 
         $field = 'o.*, u.nickname, c.name as now_category_name';
 
@@ -63,6 +69,7 @@ class SocialActivityOrderService
             ->join('user u', 'o.uid = u.uid')
             ->join('social_activity_category c', 'o.activity_id = c.id', 'left')
             ->where($where)
+            ->append(['status_text'])
             ->order('o.create_time desc');
         if ($isExport == 1) {
             $data = $query->select()->toArray();
@@ -79,6 +86,9 @@ class SocialActivityOrderService
             } else {
                 $item['activity_status_text'] = '进行中';
             }
+            if($item['pay_time'] == '0000-00-00 00:00:00'){
+                $item['pay_time'] = '';
+            }
         }
         if ($isExport == 1) {
             $title = '活动订单导出列表';
@@ -92,6 +102,7 @@ class SocialActivityOrderService
                 ['amount', '金额'],
                 ['pay_time', '支付时间'],
                 ['activity_status_text', '状态'],
+                ['activity_status_text', '订单状态'],
             ];
             $fileName = '活动订单列表_' . date('YmdHis');
             $exportResult = export_excel($title, $xlsCell, $data, $fileName);
@@ -103,6 +114,16 @@ class SocialActivityOrderService
             ->field('id,name')
             ->where(['status' => 1])->order('sort desc,id asc')->select()->toArray();
         $list['category'] = $category ?: [];
+        //订单状态
+        $status_text = SocialActivityOrder::STATUS_MAP;
+        $list['order_status_arr'] = [];
+        //活动状态
+        foreach ($status_text as $key=>$val){
+            $list['order_status_arr'][] = [
+                'id' => $key,
+                'name' => $val,
+            ];
+        }
         // 计算可提现金额
         $withdrawableAmount = $this->getWithdrawableAmount();
         $list['withdrawable_amount'] = $withdrawableAmount;
@@ -281,10 +302,11 @@ class SocialActivityOrderService
         $session_id = $params['session_id'] ?? 0;
         $uid = $params['uid'] ?? 0;
         $ticket_id = $params['ticket_id'] ?? 0;
-        $village_id = $params['village_id'] ?? 0;
+        $village_id = $params['village_id'] ?? 0; //小区id
         $buy_num = $params['buy_num'] ?? 1;
         $user_info = $params['user_info'] ?? [];
         $is_save = $params['is_save'] ?? 0;
+        $pigcms_id = $params['pigcms_id'] ?? 0; //用户绑定小区关联表id
         if (!$village_id) {
             throw new \Exception('小区参数错误');
         }
@@ -329,15 +351,36 @@ class SocialActivityOrderService
             if(empty($user_info['id_number'])){
                 throw new \Exception('报名人身份证号必填');
             }
+            $id_number = trim($user_info['id_number']);
+            if (!preg_match('/^\d{17}[\dXx]$/', $id_number)) {
+                throw new \Exception('报名人身份证号格式不正确');
+            }
             if(empty($user_info['user_source'])){
                 throw new \Exception('报名人来源必填');
+            }
+            $id_sex = ((int)substr($id_number, 16, 1) % 2) ? 1 : 2;
+            if ($session['gender'] != 1) {
+                if ($session['gender'] == 2 && $id_sex != 1) {
+                    throw new \Exception('仅限男生');
+                }
+                if ($session['gender'] == 3 && $id_sex != 2) {
+                    throw new \Exception('仅限女生');
+                }
             }
         }else{
             $user_info['user_name'] = '';
             $user_info['id_number'] = '';
             $user_info['user_source'] = '非业主';
             //查询是否为小区业主
-            $user_bind = (new HouseVillageUserBind())->where(['uid' => $uid, 'village_id' => $village_id, 'status' => 1])->findOrEmpty()->toArray();
+            $village_house_where = [
+                'uid' => $uid,
+                'village_id' => $village_id,
+                'status' => 1,
+            ];
+            if($pigcms_id){
+                $village_house_where['pigcms_id'] = $pigcms_id;
+            }
+            $user_bind = (new HouseVillageUserBind())->where($village_house_where)->findOrEmpty()->toArray();
             if($user_bind){
                 $user_info['user_name'] = $user_bind['name'] ?: '';
                 $user_info['id_number'] = $user_bind['id_card'] ?: '';
@@ -352,6 +395,28 @@ class SocialActivityOrderService
         if (!$ticket) {
             throw new \Exception('票种不存在/已被删除');
         }
+        if($buy_num < 1){
+            throw new \Exception('购买数量不能少于1个');
+        }
+        if ($buy_num > 1) {
+            throw new \Exception('一个场次一个票种只能购买一张');
+        }
+        $user_order = (new SocialActivityOrder())->where([
+            'uid' => $uid,
+            'activity_id' => $activity_id,
+            'session_id' => $session_id,
+            'ticket_id' => $ticket_id,
+        ])->where('status', 'in', [SocialActivityOrder::STATUS_0, SocialActivityOrder::STATUS_10])
+            ->order('id desc')
+            ->findOrEmpty()
+            ->toArray();
+        if ($user_order) {
+            if ($user_order['paid'] == 1) {
+                throw new \Exception('您已购买过该场次');
+            } elseif ($user_order['paid'] == 0) {
+                throw new \Exception('您有该场次订单待支付，请先完成支付');
+            }
+        }
         //查询场次关联日期是否存在
         if ($buy_num > $ticket['num']) {
             throw new \Exception('购买数量不能超过库存数量');
@@ -365,14 +430,6 @@ class SocialActivityOrderService
             }
             if ($session['identity'] == 3 && $house_village) {
                 throw new \Exception('仅限非业主用户');
-            }
-        }
-        if ($session['gender'] != 1) {
-            if ($session['gender'] == 2 && $user['sex'] != 1) {
-                throw new \Exception('仅限男生');
-            }
-            if ($session['gender'] == 3 && $user['sex'] != 2) {
-                throw new \Exception('仅限女生');
             }
         }
         if ($session['age_max'] > 0) {
