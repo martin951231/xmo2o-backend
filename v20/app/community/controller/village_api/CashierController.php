@@ -19,6 +19,7 @@ use app\community\model\service\HouseNewChargeService;
 use app\community\model\service\HouseNewPorpertyService;
 use app\community\model\service\HouseVillageUserBindService;
 use app\community\model\service\HouseNewCashierService;
+use app\community\model\service\HouseNewDepositService;
 use app\community\model\service\HouseNewManualBillService;
 use app\community\model\service\HouseVillageService;
 use app\community\model\service\HouseVillageSingleService;
@@ -3259,6 +3260,7 @@ class CashierController extends CommunityBaseController
             if ($deposit_freeze_id > 0) {
                 (new HouseNewManualBillService())->depositConfirm($this->adminUser, ['id' => $deposit_freeze_id]);
             }
+            (new HouseNewDepositService())->syncPaidDepositBills($this->adminUser, $order_list);
         }catch (\Exception $e){
             if ($deposit_freeze_id > 0) {
                 try {
@@ -3419,6 +3421,66 @@ class CashierController extends CommunityBaseController
         }
     }
 
+    public function depositCategoryList()
+    {
+        try {
+            $data = (new HouseNewDepositService())->categoryList($this->adminUser, $this->request->param());
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositCategoryOptions()
+    {
+        try {
+            $data = (new HouseNewDepositService())->categoryOptions($this->adminUser);
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositCategorySave()
+    {
+        try {
+            $data = (new HouseNewDepositService())->saveCategory($this->adminUser, $this->request->param());
+            return api_output(0, $data, '保存成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositCategoryStatus()
+    {
+        try {
+            $data = (new HouseNewDepositService())->changeCategoryStatus($this->adminUser, $this->request->param());
+            return api_output(0, $data, '操作成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositCategoryDelete()
+    {
+        try {
+            $data = (new HouseNewDepositService())->deleteCategory($this->adminUser, $this->request->param());
+            return api_output(0, $data, '删除成功');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function depositBillCreate()
+    {
+        try {
+            $data = (new HouseNewDepositService())->createDepositBill($this->adminUser, $this->request->param());
+            return api_output(0, $data, '押金账单已生成');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
     /**
      * 查询订单支付状态
      * @author lijie
@@ -3452,6 +3514,7 @@ class CashierController extends CommunityBaseController
             }
             $other_data=array('pay_type_from'=>'scan_pay','pay_order_info_id'=>$pay_order_info_id);
             $res = $service_new_pay->offlineAfterPay($summary_id,1,$pay_order_info_id,$other_data);
+            (new HouseNewDepositService())->syncPaidDepositBillsBySummary($this->adminUser, $summary_id);
             $data =  ['status'=>1];
         }elseif ($res['status'] == 2){
             $data = ['status'=>2];
@@ -3477,6 +3540,7 @@ class CashierController extends CommunityBaseController
             return api_output_error(1001,'缺少必传参数');
         $service_new_pay = new NewPayService();
         $res = $service_new_pay->offlineAfterPay($summary_id);
+        (new HouseNewDepositService())->syncPaidDepositBillsBySummary($this->adminUser, $summary_id);
         return true;
     }
 
@@ -3534,6 +3598,7 @@ class CashierController extends CommunityBaseController
         }
         try{
             $houseNewCashierService = new HouseNewCashierService();
+            (new HouseNewDepositService())->validateDepositBillRefund($this->adminUser, $order_id, $refund_money);
             $extra=array('login_role'=>$this->login_role,'wid'=>0,'apply_uid'=>$this->_uid,'apply_name'=>'','apply_phone'=>'');
             if(isset($this->adminUser['wid']) && ($this->adminUser['wid']>0)){
                 $extra['wid']=$this->adminUser['wid'];
@@ -3542,6 +3607,7 @@ class CashierController extends CommunityBaseController
                 $extra['apply_name']=$this->adminUser['user_name'];
             }
             $data = $houseNewCashierService->addRefundInfo($role_id,$order_id,$refund_type,$refund_money,$refund_reason,$extra);
+            (new HouseNewDepositService())->applyDepositBillRefund($this->adminUser, $order_id, $refund_money);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }

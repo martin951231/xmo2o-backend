@@ -251,6 +251,10 @@ class HouseNewCashierService
         if ($scoreDeducte > 0) {
             $detail[] = array('order_id' => $orderId, 'offlinepay_id' => 0, 'title' => '积分抵扣', 'val' => sprintf('%.2f', $scoreDeducte), 'money_type' => 2);
         }
+        $newDepositMoney = $this->getNewDepositDeductMoney($order_info, $summary_info);
+        if ($newDepositMoney > 0) {
+            $detail[] = array('order_id' => $orderId, 'offlinepay_id' => 0, 'title' => '押金抵扣', 'val' => sprintf('%.2f', $newDepositMoney), 'money_type' => 2);
+        }
 
         if (!empty($detail)) {
             return $detail;
@@ -336,6 +340,35 @@ class HouseNewCashierService
             'discount_money' => $discountMoney,
             'total_money' => $totalMoney,
         );
+    }
+
+    private function getNewDepositDeductMoney($order_info = array(), $summary_info = array())
+    {
+        if (!is_array($order_info) && method_exists($order_info, 'toArray')) {
+            $order_info = $order_info->toArray();
+        }
+        if (!is_array($summary_info) && method_exists($summary_info, 'toArray')) {
+            $summary_info = $summary_info->toArray();
+        }
+        foreach (array($order_info, $summary_info) as $info) {
+            if (empty($info['extra_data'])) {
+                continue;
+            }
+            $extra = is_array($info['extra_data']) ? $info['extra_data'] : json_decode($info['extra_data'], true);
+            if (is_array($extra) && isset($extra['new_deposit_money']) && floatval($extra['new_deposit_money']) > 0) {
+                return round(floatval($extra['new_deposit_money']), 2);
+            }
+        }
+        $totalMoney = isset($summary_info['total_money']) ? round(floatval($summary_info['total_money']), 2) : 0;
+        $cashMoney = isset($summary_info['pay_money']) ? round(floatval($summary_info['pay_money']), 2) : 0;
+        $oldDepositMoney = isset($summary_info['deposit_money']) ? round(floatval($summary_info['deposit_money']), 2) : 0;
+        $discountMoney = isset($summary_info['discount_money']) ? round(floatval($summary_info['discount_money']), 2) : 0;
+        $systemBalance = isset($summary_info['system_balance']) ? round(floatval($summary_info['system_balance']), 2) : 0;
+        $villageBalance = isset($summary_info['village_balance']) ? round(floatval($summary_info['village_balance']), 2) : 0;
+        $scoreDeducte = isset($summary_info['score_deducte']) ? round(floatval($summary_info['score_deducte']), 2) : 0;
+        $onlineMoney = isset($summary_info['pay_amount_points']) ? round(floatval($summary_info['pay_amount_points']) / 100, 2) : 0;
+        $money = round($totalMoney - $cashMoney - $oldDepositMoney - $discountMoney - $systemBalance - $villageBalance - $scoreDeducte - $onlineMoney, 2);
+        return $money > 0.01 ? $money : 0;
     }
 
     private function fillOldMixPayOrderDetail($order_info = array(), $summary_info = array())
@@ -4728,6 +4761,7 @@ class HouseNewCashierService
             if($subject_charge_type){
                 $data['subject_charge_name'] = $houseNewChargeService->getType($subject_charge_type);
             }
+            $summary_info = array();
             if (!empty($data['summary_id'])){
                 $summary_info= $db_house_new_pay_order_summary->getOne(['summary_id' => $data['summary_id']]);
                 if (!empty($summary_info)){
@@ -4736,6 +4770,7 @@ class HouseNewCashierService
                     $data['remark']=$summary_info['remark'];
                 }
             }
+            $new_deposit_money = $this->getNewDepositDeductMoney($data, $summary_info);
             $data['pay_type_way']= intval($data['pay_type']);
             if (isset($summary_info['pay_type']) && !empty($summary_info['pay_type'])) {
                 if ($data['pay_type'] == 2 || $data['pay_type'] == 22) {
@@ -4900,7 +4935,7 @@ class HouseNewCashierService
             $data['numbers'] = !empty($number) ? $number:'--';
             if(1||empty($digit_info)){
                 $data['total_money']= formatNumber($data['total_money'],2,1).'元';
-                $data['deposit_money']= formatNumber($data['deposit_money'],2,1).'元';
+                $data['deposit_money']= formatNumber(floatval($data['deposit_money']) + $new_deposit_money,2,1).'元';
                 if (empty($data['modify_reason'])){
                     $data['modify_money']='无';
                     $data['modify_reason']='无';
@@ -4928,7 +4963,7 @@ class HouseNewCashierService
                 //没有意义 这里处理的
                 if($data['order_type'] == 'water' || $data['order_type'] == 'electric' || $data['order_type'] == 'gas'){
                     $data['total_money']= formatNumber($data['total_money'],$digit_info['meter_digit'],$digit_info['type']).'元';
-                    $data['deposit_money']= formatNumber($data['deposit_money'],$digit_info['meter_digit'],$digit_info['type']).'元';
+                    $data['deposit_money']= formatNumber(floatval($data['deposit_money']) + $new_deposit_money,$digit_info['meter_digit'],$digit_info['type']).'元';
                     if (empty($data['modify_reason'])){
                         $data['modify_money']='无';
                         $data['modify_reason']='无';
@@ -4949,7 +4984,7 @@ class HouseNewCashierService
                     $data['pay_money_real']=formatNumber($data['pay_money_real'],$digit_info['meter_digit'],$digit_info['type']).'元';
 
                 }else{
-                    $data['deposit_money']= formatNumber($data['deposit_money'],$digit_info['other_digit'],$digit_info['type']).'元';
+                    $data['deposit_money']= formatNumber(floatval($data['deposit_money']) + $new_deposit_money,$digit_info['other_digit'],$digit_info['type']).'元';
                     $data['total_money']= formatNumber($data['total_money'],$digit_info['other_digit'],$digit_info['type']).'元';
                     if (empty($data['modify_reason'])){
                         $data['modify_money']='无';

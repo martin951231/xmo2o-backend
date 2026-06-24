@@ -801,6 +801,15 @@ class NewPayService
         }else{
             $param['deposit_money']=0;
         }
+        $newDepositMoney = 0;
+        if (!empty($param) && isset($param['new_deposit_money']) && floatval($param['new_deposit_money']) > 0) {
+            $newDepositMoney = round(floatval($param['new_deposit_money']), 2);
+            if ($pay_money > $newDepositMoney) {
+                $pay_money = $pay_money - $newDepositMoney;
+            } else {
+                $pay_money = 0;
+            }
+        }
         $total_money = formatNumber($total_money,2,1);
         $pay_money = formatNumber($pay_money,2,1);
         if ($pay_type == 22 && !empty($offlineMixPayInfo['list'])) {
@@ -824,9 +833,15 @@ class NewPayService
             $updateOrderSummary['discount_money'] = $offlineMixPayInfo['discount_money'];
             $updateOrderSummary['pay_detail'] = json_encode($offlineMixPayInfo, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
-        if (!empty($summaryExtraDataOrders)) {
+        if (!empty($summaryExtraDataOrders) || $newDepositMoney > 0) {
             $summaryExtraDataOrders = array_unique($summaryExtraDataOrders);
-            $summaryExtraData = ['newPayOrderId' => $summaryExtraDataOrders];
+            $summaryExtraData = [];
+            if (!empty($summaryExtraDataOrders)) {
+                $summaryExtraData['newPayOrderId'] = $summaryExtraDataOrders;
+            }
+            if ($newDepositMoney > 0) {
+                $summaryExtraData['new_deposit_money'] = $newDepositMoney;
+            }
             $updateOrderSummary['extra_data'] = json_encode($summaryExtraData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }
         if($oder_pay_type==9 && isset($param['offline_pay_money']) && $param['offline_pay_money']>0){
