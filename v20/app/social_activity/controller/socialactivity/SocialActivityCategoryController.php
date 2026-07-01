@@ -14,7 +14,7 @@ class SocialActivityCategoryController extends BaseController
     {
         $param['page'] = $this->request->param('page', 1, 'int');
         $param['pageSize'] = $this->request->param('pageSize', 10, 'int');
-
+        
         $categoryService = new SocialActivityCategoryService();
         try {
             $data = $categoryService->getCategoryList($param);
@@ -31,7 +31,7 @@ class SocialActivityCategoryController extends BaseController
     public function getCategoryDetail()
     {
         $param['id'] = $this->request->param('id', 0, 'int');
-
+        
         $categoryService = new SocialActivityCategoryService();
         try {
             $data = $categoryService->getCategoryDetail($param);
@@ -53,7 +53,7 @@ class SocialActivityCategoryController extends BaseController
         $param['modifier'] = $this->socialUser['realname'] ?: $this->socialUser['account'];
         $param['creator_uid'] = $this->socialUser['id'];
         $param['modifier_uid'] = $this->socialUser['id'];
-
+        
         $categoryService = new SocialActivityCategoryService();
         try {
             $categoryService->saveCategory($param, $param['id']);
@@ -71,7 +71,7 @@ class SocialActivityCategoryController extends BaseController
     public function deleteCategory()
     {
         $param['id'] = $this->request->param('id', 0, 'int');
-
+        
         $categoryService = new SocialActivityCategoryService();
         try {
             $categoryService->deleteCategory($param);

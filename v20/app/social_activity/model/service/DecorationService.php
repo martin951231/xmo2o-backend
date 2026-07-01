@@ -17,7 +17,10 @@ class DecorationService
         $url = get_base_url('pages/socialActivity/index');
 
         $social_info = (new Config())->where([
-            ['name', 'in', ['social_activity_slider_num', 'social_activity_slider_row', 'social_activity_hot_open', 'social_activity_show_previous', 'social_activity_footer_font_color', 'social_activity_footer_select_font_color', 'social_activity_footer_bg_color']],
+            ['name', 'in', ['social_activity_slider_num', 'social_activity_slider_row', 'social_activity_hot_open', 
+	            'social_activity_show_previous', 'social_activity_footer_font_color',  'social_activity_main_color',
+	            'social_activity_footer_select_font_color', 'social_activity_footer_bg_color',
+            ]],
         ])->column('value', 'name');
         return [
             'url' => $url,
@@ -28,6 +31,7 @@ class DecorationService
             'social_activity_footer_font_color' => $social_info['social_activity_footer_font_color'] ?? '',
             'social_activity_footer_select_font_color' => $social_info['social_activity_footer_select_font_color'] ?? '',
             'social_activity_footer_bg_color' => $social_info['social_activity_footer_bg_color'] ?? '',
+            'social_activity_main_color' => $social_info['social_activity_main_color'] ?? '',
         ];
     }
 

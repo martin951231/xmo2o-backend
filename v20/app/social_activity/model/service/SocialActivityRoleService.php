@@ -76,7 +76,7 @@ class SocialActivityRoleService
             if ($id == 1) {
                 throw_exception('超级管理员角色不可编辑！');
             }
-
+            
             $info = (new SocialActivityRole())->getRoleById($id);
             if (!$info || $info->isEmpty()) {
                 throw_exception('编辑对象不存在！');

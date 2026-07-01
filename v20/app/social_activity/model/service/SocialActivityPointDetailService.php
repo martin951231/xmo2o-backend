@@ -19,25 +19,25 @@ class SocialActivityPointDetailService
     {
         $field = 's.id,s.uid,s.type,s.score,s.time, s.desc,s.score_type,s.order_id,s.order_type,s.house_type,
         s.village_id,u.nickname,u.phone';
-
+        
         $where = [];
         $where[] = ['s.order_type', 'IN', ['social_activity_order','social_activity_comment']];
-
+        
         // 姓名搜索
         if (!empty($param['name'])) {
             $where[] = ['u.nickname', 'like', '%' . $param['name'] . '%'];
         }
-
+        
         // 手机号搜索
         if (!empty($param['phone'])) {
             $where[] = ['u.phone', 'like', '%' . $param['phone'] . '%'];
         }
-
+        
         // 活动名称搜索
         if (!empty($param['activity_name'])) {
             $where[] = ['s.desc', 'like', '%' . $param['activity_name'] . '%'];
         }
-
+        
         // 获得时间范围搜索
         if (!empty($param['start_time'])) {
             $where[] = ['s.time', '>=', strtotime($param['start_time'])];
@@ -45,7 +45,7 @@ class SocialActivityPointDetailService
         if (!empty($param['end_time'])) {
             $where[] = ['s.time', '<=', strtotime($param['end_time'] . ' 23:59:59')];
         }
-
+        
         $paginate = UserScoreList::alias('s')
             ->join('user u', 's.uid = u.uid')
             ->where($where)
@@ -57,7 +57,7 @@ class SocialActivityPointDetailService
             ]);
 
         $list = $paginate ? $paginate->items() : [];
-
+        
         foreach ($list as &$item) {
 			switch ($item['order_type']) {
 				case 'social_activity_order':
@@ -81,10 +81,7 @@ class SocialActivityPointDetailService
             $item['score_text'] = $item['type'] == 1 ? '+' . $item['score'] : '-' . $item['score'];
             $item['score_color'] = $item['type'] == 1 ? 'green' : 'red';
             $item['create_time'] = !empty($item['time']) ? date('Y-m-d H:i:s', $item['time']) : '';
-			$item['village_name'] = '无小区';
-			if($item['village_id']) {
-				$item['village_name'] = HouseVillage::where('village_id', $item['village_id'])->value('village_name');
-			}
+		$item['village_name'] = SocialActivityOrder::where('id', $item['order_id'])->value('user_source');
         }
 
         return $paginate;

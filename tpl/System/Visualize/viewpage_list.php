@@ -312,16 +312,18 @@
                                     </div>
                                 </if>
 
-                                </div>
-                                <div class="form-group">
-                                    <div class="group-title">
-                                        <span class="name">社群活动位</span>
-                                        <div class="div_right">
-                                            <span class="switch-<if condition="$config['social_events_slot_show'] eq '1'">on<else/>off</if>" id="social_events_slot_show" style="right: 100px;"></span>
-                                            <button type="button" class="btn visualize_assign" style="height: 28px;" data-id="41">分配权限</button>
+                                <if condition="$open_social_activity eq 1">
+                                    <div class="form-group">
+                                        <div class="group-title">
+                                            <span class="name">社群活动位</span>
+                                            <div class="div_right">
+                                                <span class="switch-<if condition="$config['social_events_slot_show'] eq '1'">on<else/>off</if>" id="social_events_slot_show" style="right: 100px;"></span>
+                                                <button type="button" class="btn visualize_assign" style="height: 28px;" data-id="41">分配权限</button>
+                                            </div>
                                         </div>
+                                        <div class="group-content">可以设置社群活动位是否展示</div>
                                     </div>
-                                    <div class="group-content">可以设置社群活动位是否展示</div>
+                                </if>
                                 </div>
                             </div>
                         </div>

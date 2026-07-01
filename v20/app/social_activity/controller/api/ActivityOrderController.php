@@ -26,12 +26,33 @@ class ActivityOrderController extends ApiBaseController
             'is_save' => input('is_save', 0, 'trim,intval'),
             'form_question' => input('form_question', []),
             'spend_time' => input('spend_time', 0, 'trim,intval'),
+            'user_info' => input('user_info', []),
+            'pigcms_id' => input('pigcms_id', 0, 'trim,intval'),
         ];
         try {
             $res = (new SocialActivityOrderService())->saveOrder($params);
             return api_output(0, $res);
         } catch (\Exception $e) {
-            return api_output_error(1003, $e->getMessage());
+            return api_output_error($e->getCode() ?: 1003, $e->getMessage());
+        }
+    }
+
+    /**
+     * 用户取主动消订单
+     * @return \think\response\Json
+     */
+    public function refundOrder(){
+        $params = [
+            'order_id' => input('order_id', 0, 'trim,intval'),
+            'is_cancel_activity' => 0,
+            'refund_msg' => '用户取主动消订单',
+            'uid' => $this->uid,
+        ];
+        try {
+            $res = (new SocialActivityOrderService())->refundOrder($params);
+            return api_output(0, $res);
+        } catch (\Exception $e) {
+            return api_output_error($e->getCode() ?: 1003, $e->getMessage());
         }
     }
 }

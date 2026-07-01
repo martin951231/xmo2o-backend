@@ -28,7 +28,7 @@ class DecorationController extends AuthBaseController
             $params = [
                 'cat_key' => $this->request->param('cat_key', '', 'trim,string'),
             ];
-
+            
             $res = (new DecorationService())->getAdverList($params);
             return api_output(0, $res, 'success');
         } catch (\Exception $e) {
@@ -43,7 +43,7 @@ class DecorationController extends AuthBaseController
     {
         try {
             $id = $this->request->param('id', 0, 'trim,intval');
-
+            
             $res = (new DecorationService())->getAdverDetail($id);
             return api_output(0, $res, 'success');
         } catch (\Exception $e) {
@@ -67,7 +67,7 @@ class DecorationController extends AuthBaseController
                 'status' => $this->request->param('status', 0, 'trim,intval'),
                 'id' => $this->request->param('id', 0, 'trim,intval'),
             ];
-
+            
             $res = (new DecorationService())->saveAdver($data);
             return api_output(0, ['adver_id' => $res], '保存成功');
         } catch (\Exception $e) {
@@ -82,7 +82,7 @@ class DecorationController extends AuthBaseController
     {
         try {
             $id = $this->request->param('id', 0, 'trim,intval');
-
+            
             (new DecorationService())->deleteAdver($id);
             return api_output(0, [], '删除成功');
         } catch (\Exception $e) {

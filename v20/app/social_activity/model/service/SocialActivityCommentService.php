@@ -54,24 +54,24 @@ class SocialActivityCommentService
         if (!$param['id']) {
             throw_exception('评论ID不能为空！');
         }
-
+        
         $info = (new SocialActivityComment())->getCommentById($param['id']);
         if (!$info || $info->isEmpty()) {
             throw_exception('评论不存在！');
         }
-
+        
         $status = intval($param['audit_status']) == 1 ? SocialActivityComment::STATUS_10 : SocialActivityComment::STATUS_20;
-
+        
         $data = [
             'audit_status' => $status,
         ];
-
+        
         if (!empty($param['audit_remark'])) {
             $data['audit_remark'] = $param['audit_remark'];
         }
-
+        
         $result = (new SocialActivityComment())->where(['id' => $param['id']])->save($data);
-
+        
         if ($result === false) {
             throw_exception('审核失败！');
         }
@@ -89,22 +89,22 @@ class SocialActivityCommentService
      */
     public function batchAuditComment($params)
     {
-        if (empty($params['ids']) || !is_array($params['ids'])) {
+        if (empty($params['ids']) || !is_array($params['ids'])) {   
             throw_exception('请选择要审核的评论！');
         }
-
+        
         $status = intval($params['audit_status']) == 1 ? SocialActivityComment::STATUS_10 : SocialActivityComment::STATUS_20;
-
+        
         $data = ['audit_status' => $status];
-
+        
         if (!empty($params['audit_remark'])) {
             $data['audit_remark'] = $params['audit_remark'];
         }
-
+        
         $result = (new SocialActivityComment())
             ->where('id', 'in', $params['ids'])
             ->save($data);
-
+        
         if ($result === false) {
             throw_exception('批量审核失败！');
         }
@@ -130,20 +130,20 @@ class SocialActivityCommentService
         if (!$param['id']) {
             throw_exception('评论ID不能为空！');
         }
-
+        
         $info = (new SocialActivityComment())->where(['id' => $param['id']])->find();
         if (!$info || $info->isEmpty()) {
             throw_exception('评论不存在！');
         }
-
+        
         $result = (new SocialActivityComment())->where(['id' => $param['id']])->save([
             'is_hot' => 1,
         ]);
-
+        
         if ($result === false) {
             throw_exception('操作失败！');
         }
-
+        
         return true;
     }
 
@@ -157,20 +157,20 @@ class SocialActivityCommentService
         if (!$param['id']) {
             throw_exception('评论ID不能为空！');
         }
-
+        
         $info = (new SocialActivityComment())->where(['id' => $param['id']])->find();
         if (!$info || $info->isEmpty()) {
             throw_exception('评论不存在！');
         }
-
+        
         $result = (new SocialActivityComment())->where(['id' => $param['id']])->save([
             'is_hot' => 0,
         ]);
-
+        
         if ($result === false) {
             throw_exception('操作失败！');
         }
-
+        
         return true;
     }
 
@@ -229,10 +229,14 @@ class SocialActivityCommentService
         if ($activity_id) {
             $where[] = ['c.activity_id', '=', $activity_id];
         }
+        if (isset($params['from']) && $params['from'] == 'system') {
+            $where[] = ['c.parent_id', '=', 0];
+        }
+
         if ($uid) {
             $where[] = ['c.uid', '=', $uid];
         }
-
+        
 	    if(isset($params['user'])) {//用户端
 		    $where[] = ['c.audit_status', '=', SocialActivityComment::STATUS_10];
 			$where[] = ['c.parent_id', '=', 0];
@@ -291,7 +295,7 @@ class SocialActivityCommentService
             $item['activity_poster'] = $item['activity_poster'] ? replace_file_domain($item['activity_poster']) : '';
             $item['liked'] = in_array($item['id'], $likedCommentIds);
             $item['reply_count'] = (new SocialActivityComment())->where(['parent_id' => $item['id'], 'audit_status' => SocialActivityComment::STATUS_10])->count();
-
+          
             if (!empty($item['location_id'])) {
                 $item['location'] = $this->getLocationText($item['location_id']);
             }
@@ -413,7 +417,9 @@ class SocialActivityCommentService
 
         $commentSetting = (new SocialActivityCommentSetting())->getSettings();
         $audit_status = !empty($commentSetting['share_audit']) ? SocialActivityComment::STATUS_0 : SocialActivityComment::STATUS_10;
-
+        if ($parent_id > 0) {
+            $audit_status = SocialActivityComment::STATUS_10;
+        }
         $data = [
             'activity_id' => $activity_id,
             'session_id' => $session_id,
@@ -443,7 +449,7 @@ class SocialActivityCommentService
             'audit_status_text' => $audit_status == SocialActivityComment::STATUS_10 ? '发布成功' : '评论已提交，等待审核',
         ];
     }
-
+	
 	public function addCommentScore($activity_id, $uid, $comment_id)
 	{
 		$activity = SocialActivity::where(['id' => $activity_id])->find();

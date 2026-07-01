@@ -142,6 +142,7 @@ class SocialActivityController extends AuthBaseController
     {
         $params = [
             'id' => $this->request->param('id', 0, 'trim,intval'),
+            'reason' => $this->request->param('reason', '', 'trim,string'),
             'editUser' => $this->socialUser,
         ];
         try {
@@ -185,7 +186,6 @@ class SocialActivityController extends AuthBaseController
             'end_date' => input('end_date', '', 'trim,string'),
             'check_in_status' => input('check_in_status', -1, 'trim,intval'),
             'is_export' => input('is_export', 0, 'trim,intval'),
-            'id' => input('id', 0, 'trim,intval'),
         ];
         try {
             $res = (new SocialActivityService())->getSignUpList($params);

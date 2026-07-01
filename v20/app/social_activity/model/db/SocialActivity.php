@@ -12,7 +12,7 @@ class SocialActivity extends Model
     const STATUS_10 = 10;
     const STATUS_20 = 20;
     const STATUS_30 = 30;
-
+    
     const STATUS_MAP = [
         self::STATUS_0 => '待审核',
         self::STATUS_10 => '已通过',
@@ -45,9 +45,11 @@ class SocialActivity extends Model
         if($data){
             if($data['status'] == self::STATUS_30){
                 $status_text = '已取消';
+            }elseif($data['status'] != self::STATUS_10){
+                $status_text = '';
             }elseif(strtotime($data['start_time']) > time()){
                 $status_text = '待开始';
-            }elseif(strtotime($data['end_time']) >= time()){
+            }elseif(strtotime($data['end_time'] . ' 23:59:59') >= time()){
                 $status_text = '进行中';
             }else{
                 $status_text = '已结束';

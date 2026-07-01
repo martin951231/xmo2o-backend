@@ -33,7 +33,7 @@ class SocialActivityCommentController extends BaseController
         $param['comment_alias'] = $this->request->param('comment_alias', '', 'trim');
         $param['share_audit'] = $this->request->param('share_audit', 1, 'int');
         $param = $this->validateParameter($param, 'saveSettings');
-
+        
         $commentService = new SocialActivityCommentService();
         try {
             $commentService->saveSettings($param);
@@ -56,7 +56,7 @@ class SocialActivityCommentController extends BaseController
         $param['audit_status'] = $this->request->param('status', 0, 'int');
         $param['start_time'] = $this->request->param('start_time', '', 'trim');
         $param['end_time'] = $this->request->param('end_time', '', 'trim');
-
+        $param['from'] = 'system';
         $commentService = new SocialActivityCommentService();
         try {
             $data = $commentService->getCommentList($param);
@@ -78,7 +78,7 @@ class SocialActivityCommentController extends BaseController
         $param['id'] = $this->request->param('id', 0, 'int');
         $param['audit_status'] = $this->request->param('audit_status', 1, 'int');
         $param = $this->validateParameter($param, 'audit');
-
+        
         $commentService = new SocialActivityCommentService();
         try {
             $commentService->auditComment($param);
@@ -97,7 +97,7 @@ class SocialActivityCommentController extends BaseController
         $param['ids'] = $this->request->param('ids', []);
         $param['audit_status'] = $this->request->param('audit_status', 1, 'int');
         $param = $this->validateParameter($param, 'batchAudit');
-
+        
         $commentService = new SocialActivityCommentService();
         try {
             $commentService->batchAuditComment($param);
@@ -115,7 +115,7 @@ class SocialActivityCommentController extends BaseController
     {
         $param['id'] = $this->request->param('id', 0, 'int');
         $param = $this->validateParameter($param, 'select');
-
+        
         $commentService = new SocialActivityCommentService();
         try {
             $commentService->selectComment($param);
@@ -133,7 +133,7 @@ class SocialActivityCommentController extends BaseController
     {
         $param['id'] = $this->request->param('id', 0, 'int');
         $param = $this->validateParameter($param, 'cancelSelect');
-
+        
         $commentService = new SocialActivityCommentService();
         try {
             $commentService->cancelSelectComment($param);

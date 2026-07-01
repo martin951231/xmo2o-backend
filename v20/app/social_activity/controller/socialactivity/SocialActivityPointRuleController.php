@@ -120,7 +120,7 @@ class SocialActivityPointRuleController extends BaseController
         $param['activity_name'] = $this->request->param('activity_name', '', 'trim');
         $param['start_time'] = $this->request->param('start_time', '', 'trim');
         $param['end_time'] = $this->request->param('end_time', '', 'trim');
-
+                
         $pointDetailService = new SocialActivityPointDetailService();
         try {
             $data = $pointDetailService->getPointDetailList($param);

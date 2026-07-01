@@ -18,19 +18,19 @@ class SocialActivityAdminService
      */
     public function getAdminList($param)
     {
-        $field = 'id,account,realname,phone,role_id,village_id,money,status,last_login_ip,last_login_time,create_time,update_time';
-
+        $field = 'id,account,realname,phone,role_id,village_id,status,last_login_ip,last_login_time,create_time,update_time';
+        
         $searchParams = [
             'account' => $param['account'] ?? '',
             'realname' => $param['realname'] ?? '',
             'phone' => $param['phone'] ?? '',
             'status' => isset($param['status']) && $param['status'] !== '' ? $param['status'] : null,
         ];
-
+        
         if (isset($param['role_id']) && $param['role_id'] > 0) {
             $searchParams['role_id'] = $param['role_id'];
         }
-
+        
         $paginate = (new SocialActivityAdmin())
             ->with(['role' => function ($query) {
                 $query->field('id,name');
@@ -93,7 +93,7 @@ class SocialActivityAdminService
     public function login($param)
     {
 		if(!empty($param['super_admin'])) {
-			$admin = SocialActivityAdmin::where('phone', 'admin')->find();
+			$admin = SocialActivityAdmin::where('account', 'admin')->find();
 		} else {
 			$account = trim($param['account']);
 			$password = trim($param['password']);
@@ -129,7 +129,7 @@ class SocialActivityAdminService
 
         $roleInfo = (new SocialActivityRole())->getRoleById($admin['role_id']);
         $roleName = $roleInfo ? $roleInfo['name'] : '';
-
+        
         return [
             'ticket' => $ticket,
             'admin_id' => $admin['id'],
@@ -288,7 +288,7 @@ class SocialActivityAdminService
         }
         return true;
     }
-
+    
     public function formatUserData($params){
         $uid = $params['uid'];
         if (!$uid) {
@@ -304,13 +304,8 @@ class SocialActivityAdminService
             throw_exception('账号已被禁用，请联系管理员！');
         }
 
-        $ticket = Token::createToken($admin['id'], 'social_activity_admin');
-        if (empty($ticket)) {
-            throw_exception('登录失败，请重试！');
-        }
-
         (new SocialActivityAdmin())->where(['id' => $admin['id']])->save([
-            'last_login_time' => time(),
+            'last_login_time' => date('Y-m-d H:i:s'),
             'last_login_ip' => request()->ip(),
         ]);
 
