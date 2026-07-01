@@ -81,10 +81,7 @@ class SocialActivityPointDetailService
             $item['score_text'] = $item['type'] == 1 ? '+' . $item['score'] : '-' . $item['score'];
             $item['score_color'] = $item['type'] == 1 ? 'green' : 'red';
             $item['create_time'] = !empty($item['time']) ? date('Y-m-d H:i:s', $item['time']) : '';
-			$item['village_name'] = '无小区';
-			if($item['village_id']) {
-				$item['village_name'] = HouseVillage::where('village_id', $item['village_id'])->value('village_name');
-			}
+		$item['village_name'] = SocialActivityOrder::where('id', $item['order_id'])->value('user_source');
         }
 
         return $paginate;

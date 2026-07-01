@@ -37,6 +37,8 @@ class ActivityController extends ApiBaseController
             'activity_status' => input('activity_status', 0, 'trim,intval'),
             'recommend' => input('recommend', '', 'trim'),
             'date' => input('date', '', 'trim'),
+            'start_date' => input('start_date', '', 'trim'),
+            'end_date' => input('end_date', '', 'trim'),
         ];
 
         $activityService = new SocialActivityService();

@@ -305,7 +305,7 @@ class SocialActivityService
                 if (!$info) {
                     throw new \Exception('活动不存在/已被删除');
                 }
-                if ($info['start_time'] <= date('Y-m-d H:i:s')) {
+                if ($info['status'] == SocialActivity::STATUS_10 && $info['start_time'] <= date('Y-m-d H:i:s')) {
                     throw new \Exception('活动已开始，无法修改');
                 }
                 //查询活动是否已有人报名
@@ -859,6 +859,8 @@ class SocialActivityService
         $activity_status = $params['activity_status'];
         $recommend = $params['recommend'];
         $date = $params['date'];
+        $start_date = $params['start_date'] ?? '';
+        $end_date = $params['end_date'] ?? '';
 	    
         $where = [];
         $where[] = ['a.status', '=', SocialActivity::STATUS_10];
@@ -872,7 +874,10 @@ class SocialActivityService
         if ($recommend !== '') {
             $where[] = ['a.recommend', '=', $recommend];
         }
-        if ($date) {
+        if ($start_date && $end_date) {
+            $where[] = ['a.start_time', '<=', $end_date . ' 23:59:59'];
+            $where[] = ['a.end_time', '>=', $start_date];
+        } elseif ($date) {
             $where[] = ['a.start_time', '<=', $date];
             $where[] = ['a.end_time', '>=', $date];
         }
@@ -910,6 +915,7 @@ class SocialActivityService
                 ->where(['activity_id' => $item['id']])
                 ->column('price')) ?? 0;
             $item['signup_count'] = $this->activitySignupCount($item['id']);
+            $this->setActivityDisplayTime($item);
         }
 
         return $list;
@@ -972,16 +978,13 @@ class SocialActivityService
         $sessionTickets = [];
         foreach ($tickets as $ticket) {
             $ticket['point'] = (bool)$ticket['point'];
-            $ticket['order_count'] = 0;
-            if ($session_date) {
-				$ticket['order_count'] = SocialActivityOrder::alias('o')
-					->where([
-						'o.session_id' => $ticket['session_id'],
-                        'o.paid' => 1,
-                        'o.status' => SocialActivityOrder::STATUS_10,
-                    ])
-                    ->count();
-			}
+            $ticket['order_count'] = SocialActivityOrder::alias('o')
+				->where([
+					'o.session_id' => $ticket['session_id'],
+                    'o.paid' => 1,
+                    'o.status' => SocialActivityOrder::STATUS_10,
+                ])
+                ->count();
 	        $sessionTickets[$ticket['session_id']] = $sessionTickets[$ticket['session_id']] ?? [];
 	        $sessionTickets[$ticket['session_id']][] = $ticket;
         }
@@ -1014,6 +1017,7 @@ class SocialActivityService
         }
 
         $res['sessions'] = $sessions;
+        $this->setActivityDisplayTime($res, $sessions);
         $res['order_info'] = [];
         $res['can_refund'] = 0; //0-不能取消订单，1-可以取消订单
         if ($orderId > 0) {
@@ -1070,6 +1074,40 @@ class SocialActivityService
             ]);
         }
 		return $view;
+    }
+    /**
+     * 设置活动列表展示时间：同一天单场活动展示场次起止时间，多场或跨天保留原活动时间逻辑。
+     * @param array $activity
+     * @param array|null $sessions
+     * @return void
+     */
+    private function setActivityDisplayTime(&$activity, $sessions = null)
+    {
+        $activity['activity_time'] = $activity['activity_time'] ?? '';
+        $activity['single_session_start_time'] = $activity['single_session_start_time'] ?? '';
+
+        if (empty($activity['id'])) {
+            return;
+        }
+
+        if ($sessions === null) {
+            $sessions = (new SocialActivitySession())
+                ->where(['activity_id' => $activity['id']])
+                ->field('id,start_time,end_time')
+                ->order('id ASC')
+                ->select()
+                ->toArray();
+        }
+
+        if (count($sessions) == 1 && !empty($sessions[0]['start_time']) && !empty($sessions[0]['end_time'])) {
+            $startTimestamp = strtotime($sessions[0]['start_time']);
+            $endTimestamp = strtotime($sessions[0]['end_time']);
+            if (date('Y-m-d', $startTimestamp) == date('Y-m-d', $endTimestamp)) {
+                $activity['single_session_start_time'] = date('Y-m-d H:i', $startTimestamp);
+                $activity['single_session_end_time'] = date('Y-m-d H:i', $endTimestamp);
+                $activity['activity_time'] = date('Y-m-d H:i', $startTimestamp) . ' - ' . date('H:i', $endTimestamp);
+            }
+        }
     }
     /**
      * 获取活动状态
@@ -1193,6 +1231,7 @@ class SocialActivityService
             $item['activity_status'] = $this->getActivityStatus($item['start_time'], $item['end_time']);
             $item['activity_status_text'] = $this->getActivityStatusText($item['activity_status']);
             $item['signup_count'] = $this->activitySignupCount($item['id']);
+            $this->setActivityDisplayTime($item);
         }
 
         return $list;
@@ -1216,6 +1255,7 @@ class SocialActivityService
             ->join('social_activity_session s', 'c.session_id = s.id')
             ->join('user u', 'c.uid = u.uid')
             ->where([['c.audit_status', '=', SocialActivityComment::STATUS_10]])
+	    ->where(['c.is_hot' => 1])
             ->field($field)
             ->order('c.id DESC')
             ->limit(4)

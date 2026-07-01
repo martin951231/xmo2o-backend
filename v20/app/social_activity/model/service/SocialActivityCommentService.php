@@ -229,6 +229,10 @@ class SocialActivityCommentService
         if ($activity_id) {
             $where[] = ['c.activity_id', '=', $activity_id];
         }
+        if (isset($params['from']) && $params['from'] == 'system') {
+            $where[] = ['c.parent_id', '=', 0];
+        }
+
         if ($uid) {
             $where[] = ['c.uid', '=', $uid];
         }
@@ -413,7 +417,9 @@ class SocialActivityCommentService
 
         $commentSetting = (new SocialActivityCommentSetting())->getSettings();
         $audit_status = !empty($commentSetting['share_audit']) ? SocialActivityComment::STATUS_0 : SocialActivityComment::STATUS_10;
-
+        if ($parent_id > 0) {
+            $audit_status = SocialActivityComment::STATUS_10;
+        }
         $data = [
             'activity_id' => $activity_id,
             'session_id' => $session_id,

@@ -27,6 +27,7 @@ class ActivityOrderController extends ApiBaseController
             'form_question' => input('form_question', []),
             'spend_time' => input('spend_time', 0, 'trim,intval'),
             'user_info' => input('user_info', []),
+            'pigcms_id' => input('pigcms_id', 0, 'trim,intval'),
         ];
         try {
             $res = (new SocialActivityOrderService())->saveOrder($params);

@@ -56,7 +56,7 @@ class SocialActivityCommentController extends BaseController
         $param['audit_status'] = $this->request->param('status', 0, 'int');
         $param['start_time'] = $this->request->param('start_time', '', 'trim');
         $param['end_time'] = $this->request->param('end_time', '', 'trim');
-        
+        $param['from'] = 'system';
         $commentService = new SocialActivityCommentService();
         try {
             $data = $commentService->getCommentList($param);

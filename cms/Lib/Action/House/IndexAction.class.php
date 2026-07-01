@@ -4022,7 +4022,12 @@ class IndexAction extends BaseAction{
                 $selected_field_list[] = $field;
             }
         }
-        $attachment_selected = in_array('__attachment__', $selected_keys, true) && !empty($field_data['attachment_fields']);
+        $selected_attachment_list = [];
+        foreach ($field_data['attachment_fields'] as $field) {
+            if (in_array($field['key'], $selected_keys, true)) {
+                $selected_attachment_list[] = $field;
+            }
+        }
         $room_ids = D('House_village_user_vacancy')->where(array('is_del'=>0,'village_id'=>$village_id))->getField('pigcms_id', true);
         $room_ids = $room_ids ? array_values(array_unique(array_map('intval', $room_ids))) : [];
         $room_count = count($room_ids);
@@ -4036,8 +4041,8 @@ class IndexAction extends BaseAction{
         $stats = [];
         foreach ($type_map as $type_key => $type_config) {
             $field_count = count($selected_field_list);
-            if ($type_config['attachment'] && $attachment_selected) {
-                $field_count += count($field_data['attachment_fields']);
+            if ($type_config['attachment']) {
+                $field_count += count($selected_attachment_list);
             }
             $current_people_count = isset($people_count[$type_key]) ? $people_count[$type_key] : 0;
             $denominator = $field_count * $current_people_count;
@@ -4045,7 +4050,7 @@ class IndexAction extends BaseAction{
                 $bind_group,
                 $type_config['types'],
                 $selected_field_list,
-                ($type_config['attachment'] && $attachment_selected) ? $field_data['attachment_fields'] : []
+                $type_config['attachment'] ? $selected_attachment_list : []
             ) : 0;
             $stats[$type_key] = [
                 'title' => $type_config['title'],
@@ -4121,6 +4126,13 @@ class IndexAction extends BaseAction{
         }, $selected), function ($key) {
             return $key !== '';
         })));
+        $attachment_keys = [];
+        foreach ($field_data['attachment_fields'] as $field) {
+            $attachment_keys[] = $field['key'];
+        }
+        if (in_array('__attachment__', $selected, true)) {
+            $selected = array_values(array_unique(array_merge(array_diff($selected, ['__attachment__']), $attachment_keys)));
+        }
         if (isset($_GET['profile_filter_submitted'])) {
             return $selected;
         }
@@ -4131,8 +4143,8 @@ class IndexAction extends BaseAction{
         foreach ($field_data['profile_fields'] as $field) {
             $default[] = $field['key'];
         }
-        if (!empty($field_data['attachment_fields'])) {
-            $default[] = '__attachment__';
+        foreach ($field_data['attachment_fields'] as $field) {
+            $default[] = $field['key'];
         }
         return $default;
     }
@@ -4147,11 +4159,12 @@ class IndexAction extends BaseAction{
                 'checked' => in_array($field['key'], $selected_keys, true) ? 1 : 0,
             ];
         }
-        if (!empty($field_data['attachment_fields'])) {
+        foreach ($field_data['attachment_fields'] as $field) {
             $fields[] = [
-                'key' => '__attachment__',
-                'title' => '附件',
-                'checked' => in_array('__attachment__', $selected_keys, true) ? 1 : 0,
+                'key' => $field['key'],
+                'title' => $field['title'],
+                'checked' => in_array($field['key'], $selected_keys, true) ? 1 : 0,
+                'is_attachment' => 1,
             ];
         }
         return $fields;
