@@ -33,6 +33,7 @@ use app\community\model\service\RepairCateService;
 use DateTime;
 use pinyin\Pinyin;
 use think\facade\Cache;
+use think\facade\Db;
 use function app\community\controller\village_api\log_write;
 
 class PropertyStatisticalController extends CommunityBaseController
@@ -339,7 +340,6 @@ class PropertyStatisticalController extends CommunityBaseController
 
         [$startDate, $endDate] = $this->completeDateRange($_GET['startDate'] ?? '', $_GET['endDate'] ?? '', 12);
         $service_house_village = new HouseVillageService();
-        $houseVillageInfoService = new HouseVillageInfo();
         $village_list = $service_house_village->getList(['property_id'=>$propertyId],'village_id')->toArray();
 
         if(empty($village_list)){
@@ -349,30 +349,46 @@ class PropertyStatisticalController extends CommunityBaseController
         foreach ($village_list as $v){
             $village_arr[] = $v['village_id'];
         }
-        $where[] = ['o.village_id','in',$village_arr];
-        $where[] = ['o.order_type','=',0];
-        $where[] = ['o.add_time','between',[strtotime($startDate),strtotime($endDate)]];
-        //获取工单
-        $db_house_new_repair_works_order = new HouseNewRepairWorksOrder();
-        $workOrderList = $db_house_new_repair_works_order->getAllList($where)->toArray();
-        if( !empty($workOrderList) ){
-            foreach( $workOrderList as $k => &$v ){
-                $v['add_time_text'] = date('Y-m-d', $v['add_time']);
+        // 只读取月份计数，不加载工单和快递明细，也不创建逐条模型对象。
+        $finalWorkOrderList = $this->countDataByMonth([], $startDate, $endDate);
+        $finalExpressList = $finalWorkOrderList;
+        $startTime = strtotime($startDate . ' 00:00:00');
+        $endTimeExclusive = strtotime($endDate . ' +1 day');
+
+        // 工单存储 Unix 时间戳，使用 PHP 的月份边界，避免数据库会话时区影响分组。
+        $monthCases = [];
+        foreach ($finalWorkOrderList as $month => $count) {
+            $monthStart = strtotime($month . '-01 00:00:00');
+            $monthEnd = strtotime('+1 month', $monthStart);
+            $monthCases[] = "WHEN add_time >= {$monthStart} AND add_time < {$monthEnd} THEN '{$month}'";
+        }
+        $workOrderCounts = Db::name('house_new_repair_works_order')
+            ->where('village_id', 'in', $village_arr)
+            ->where('order_type', '=', 0)
+            ->where('add_time', '>=', $startTime)
+            ->where('add_time', '<', $endTimeExclusive)
+            ->fieldRaw('CASE ' . implode(' ', $monthCases) . ' END AS stat_month, COUNT(*) AS total')
+            ->group('stat_month')
+            ->select();
+        foreach ($workOrderCounts as $row) {
+            if (isset($finalWorkOrderList[$row['stat_month']])) {
+                $finalWorkOrderList[$row['stat_month']] = (int)$row['total'];
             }
         }
-        unset($v);
-        $finalWorkOrderList = $this->countDataByMonth($workOrderList, $startDate, $endDate);
-        //获取快递代取
-        $db_express_application = new ExpressApplication();
-        $express_where[] = ['p.village_id' , 'in' , $village_arr];
-        $expressList = $db_express_application->getList($express_where,'p.*',false,false,false)->toArray();
-        if( !empty($expressList) ){
-            foreach( $expressList as $k => &$v ){
-                $v['add_time_text'] = date('Y-m-d', strtotime($v['create_time']));
+
+        // 快递按日期时间字符串存储；结束边界取次日零点，包含结束日全天。
+        $expressCounts = Db::name('express_application')
+            ->where('village_id', 'in', $village_arr)
+            ->where('create_time', '>=', date('Y-m-d H:i:s', $startTime))
+            ->where('create_time', '<', date('Y-m-d H:i:s', $endTimeExclusive))
+            ->fieldRaw("DATE_FORMAT(create_time, '%Y-%m') AS stat_month, COUNT(*) AS total")
+            ->group('stat_month')
+            ->select();
+        foreach ($expressCounts as $row) {
+            if (isset($finalExpressList[$row['stat_month']])) {
+                $finalExpressList[$row['stat_month']] = (int)$row['total'];
             }
         }
-        unset($v);
-        $finalExpressList = $this->countDataByMonth($expressList, $startDate, $endDate);
         $finalList['data'] = [
             'xAxis' => array_keys( $finalExpressList ),
             'series' => [
@@ -791,25 +807,8 @@ class PropertyStatisticalController extends CommunityBaseController
                 continue;
             }
 
-            // 该小区已缴账单
-            $orderWhere = [
-                'village_id' => $villageId,
-                // 'start_time' => $firstDayOfYear,
-                // 'end_time'   => $lastDayOfYear,
-            ];
-            $payableOrderList = $this->payableOrderList($orderWhere);
-
-            /**
-             * 关键优化 1：
-             * 账单只遍历一次，按 project_name 聚合
-             * 避免每个 project 再对整份 payableOrderList 执行 array_filter
-             */
-            /**
-             * 按照statistical的getChargeStatusData逻辑重新聚合已缴数据
-             * 1. 计算每条缴费账单对应的月份数，如果不足1个月算1个月
-             * 2. 统计时间区间$firstDayOfYear, $lastDayOfYear内的缴费金额, 并聚合到paid_amound
-             * 3. 求和所有数据的总缴费金额(用于其他需求)
-             */
+            // 分批读取已缴账单，按原有服务期和逐单舍入口径累计。
+            $payableOrderList = $this->iterateRevenueOrders($villageId);
 
             $payableMap = [];
 
@@ -825,15 +824,7 @@ class PropertyStatisticalController extends CommunityBaseController
                 if (!isset($payableMap[$projectName])) {
                     $payableMap[$projectName] = [
                         'paid_amound' => 0,
-                        'room_ids'    => [],
-                        '_total_pay_money' => 0, // 总缴费金额（不一定用得到）
                     ];
-                }
-
-                // 存房间号，O(1)哈希
-                $roomId = $row['room_id'] ?? 0;
-                if (!empty($roomId)) {
-                    $payableMap[$projectName]['room_ids'][$roomId] = 1;
                 }
 
                 // 1. 计算单条账单的缴费月数
@@ -873,9 +864,6 @@ class PropertyStatisticalController extends CommunityBaseController
                 $payMoney = isset($row['pay_money']) && $row['pay_money'] > 0 ? floatval($row['pay_money']) : 0;
                 $monthlyAmount = $months > 0 ? ($payMoney / $months) : $payMoney;
 
-                // 3. 聚合总缴费金额
-                $payableMap[$projectName]['_total_pay_money'] += $payMoney;
-
                 // 2. 在区间内才累加
                 if (!empty($firstDayOfYear) && !empty($lastDayOfYear)) {
                     if (!$dateStart || !$dateEnd) {
@@ -910,6 +898,7 @@ class PropertyStatisticalController extends CommunityBaseController
             $totalAmound = 0.00;
             $totalPaidAmound = 0.00;
             $totalRemainingPaidAmound = 0.00;
+            $roomStats = $this->getRevenueRoomStats($villageId, array_column($projectList, 'rule_id'));
 
             foreach ($projectList as &$item) {
                 $item['amound'] = 0;
@@ -932,24 +921,9 @@ class PropertyStatisticalController extends CommunityBaseController
                     $item['paid_amound'] = round((float)$payableMap[$projectName]['paid_amound'], 2);
                 }
 
-                /**
-                 * 关键优化 2：
-                 * standardBindList 内部做静态缓存
-                 */
-                $currentProjectWhere = [
-                    'village_id' => $villageId,
-                    'rule_id'    => $ruleId,
-                    'bind_type'  => 1,
-                    // 'start_time' => $firstDayOfYear,
-                    // 'end_time'   => $lastDayOfYear,
-                ];
-
-                $currentRoomResult = $this->standardBindList($currentProjectWhere);
-                $currentRoomList = !empty($currentRoomResult['list']) && is_array($currentRoomResult['list'])
-                    ? $currentRoomResult['list']
-                    : [];
-
-                $currentProjectRoomNum = count($currentRoomList);
+                // 使用按标准聚合的绑定数量和面积，避免逐项目加载房间明细。
+                $currentRoomStats = $roomStats[$ruleId] ?? [];
+                $currentProjectRoomNum = (int)($currentRoomStats['room_count'] ?? 0);
                 $item['account_num'] = $currentProjectRoomNum;
 
                 if ($currentProjectRoomNum <= 0) {
@@ -1006,14 +980,10 @@ class PropertyStatisticalController extends CommunityBaseController
                     // 单位计价
                     if ((int)($item['unit_gage_type'] ?? 0) === 2) {
                         // 车位面积
-                        $roomArea = array_sum(array_map(function ($row) {
-                            return (float)($row['position_area'] ?? 0);
-                        }, $currentRoomList));
+                        $roomArea = (float)($currentRoomStats['position_area'] ?? 0);
                     } else {
                         // 房屋面积
-                        $roomArea = array_sum(array_map(function ($row) {
-                            return (float)($row['housesize'] ?? 0);
-                        }, $currentRoomList));
+                        $roomArea = (float)($currentRoomStats['housesize'] ?? 0);
                     }
 
                     $item['amound'] = round($roomArea * $chargePrice, 2);
@@ -1069,6 +1039,93 @@ class PropertyStatisticalController extends CommunityBaseController
             ]
         ]);
     }
+    /**
+     * 营收只需项目、金额和服务日期，按主键分批读取，避免收银列表的逐单补查和日志开销。
+     */
+    private function iterateRevenueOrders($villageId): \Generator
+    {
+        $hasSummary = Db::name('house_new_pay_order_summary')
+            ->where('village_id', $villageId)->where('is_paid', 1)->value('summary_id');
+        $lastId = 0;
+        $maxId = (int)Db::name('house_new_pay_order')->where('village_id', $villageId)->max('order_id');
+        $parkingService = new \app\community\model\service\HouseNewParkingService();
+        do {
+            $query = Db::name('house_new_pay_order')->alias('o')
+                ->leftJoin('house_new_charge_project p', 'p.id = o.project_id')
+                ->where('o.village_id', $villageId)->where('o.is_discard', 1)->where('o.is_paid', 1)
+                ->where('o.order_type', '<>', 'non_motor_vehicle')
+                ->where('o.order_id', '>', $lastId)->where('o.order_id', '<=', $maxId);
+            // 保留原收银查询的筛选：存在已缴汇总单时，仅统计属于这些汇总单的账单。
+            if ($hasSummary) {
+                $query->where('o.summary_id', 'in', function ($subQuery) use ($villageId) {
+                    $subQuery->name('house_new_pay_order_summary')->field('summary_id')
+                        ->where('village_id', $villageId)->where('is_paid', 1);
+                });
+            }
+            $rows = $query->field('o.order_id,o.order_type,o.car_number,o.car_type,p.name AS project_name,o.pay_money,o.service_start_time,o.service_end_time')
+                ->order('o.order_id ASC')->limit(500)->select()->toArray();
+            $depositIds = [];
+            foreach ($rows as $row) {
+                if ($row['order_type'] === 'deposit_bill') {
+                    $depositIds[] = $row['order_id'];
+                }
+            }
+            $depositNames = [];
+            if ($depositIds) {
+                $deposits = Db::name('house_new_bill_deposit_order')->alias('d')
+                    ->leftJoin('house_new_deposit_category c', 'c.id = d.category_id')
+                    ->where('d.order_id', 'in', $depositIds)
+                    ->field('d.order_id,d.category_name,c.cate_name')->select();
+                foreach ($deposits as $deposit) {
+                    $depositNames[$deposit['order_id']] = $deposit['category_name'] ?: ($deposit['cate_name'] ?? '');
+                }
+            }
+            foreach ($rows as $row) {
+                $lastId = (int)$row['order_id'];
+                if ($row['order_type'] === 'deposit_bill'
+                    && (!array_key_exists($lastId, $depositNames) || $depositNames[$lastId] !== '')) {
+                    $row['project_name'] = '押金账单';
+                }
+                // 原接口按收银列表加工后的项目名匹配，保持车牌项目名称的口径。
+                if (!empty($row['car_number'])) {
+                    $carType = $parkingService->getCarType($row['car_type']);
+                    $carName = $row['car_number'] . ($carType ? '（' . $carType . '）' : '');
+                    $row['project_name'] = empty($row['project_name']) ? $carName : '[' . $carName . ']';
+                }
+                $row['pay_money'] = formatNumber(round((float)$row['pay_money'], 2), 2, 1);
+                // 与原收银列表一致：缺失日期为 --，这里不另行改变服务期分摊口径。
+                foreach (['service_start_time', 'service_end_time'] as $field) {
+                    $row[$field] = $row[$field] > 1 ? date('Y-m-d', $row[$field]) : '--';
+                }
+                yield $row;
+            }
+        } while (count($rows) === 500);
+    }
+
+    /** 按收费标准一次汇总绑定数量和面积，不加载完整房间列表。 */
+    private function getRevenueRoomStats($villageId, array $ruleIds): array
+    {
+        $ruleIds = array_values(array_unique(array_filter($ruleIds)));
+        if (!$ruleIds) {
+            return [];
+        }
+        $rows = Db::name('house_new_charge_standard_bind')->alias('b')
+            ->join('house_new_charge_rule r', 'r.id = b.rule_id')
+            ->join('house_new_charge_number n', 'n.id = r.subject_id')
+            ->leftJoin('house_village_parking_garage pg', 'b.garage_id = pg.garage_id')
+            ->leftJoin('house_village_user_vacancy vv', 'vv.pigcms_id = b.vacancy_id')
+            ->leftJoin('house_village_parking_position pp', 'pp.position_id = b.position_id')
+            ->where('b.village_id', $villageId)->where('b.rule_id', 'in', $ruleIds)
+            ->where('b.bind_type', 1)->where('b.is_del', 1)
+            ->fieldRaw('b.rule_id, COUNT(*) AS room_count, SUM(vv.housesize) AS housesize, SUM(pp.position_area) AS position_area')
+            ->group('b.rule_id')->select();
+        $result = [];
+        foreach ($rows as $row) {
+            $result[$row['rule_id']] = $row;
+        }
+        return $result;
+    }
+
     /**
      * 获取所有已缴账单
      * @author lijie
@@ -1472,20 +1529,20 @@ class PropertyStatisticalController extends CommunityBaseController
             $startDate = date('Y-m-d', strtotime($endDate.'-1 month'));
         }
 
-        $qrcodeCateDb = new WisdomQrcodeCate();
         $where[] = ['village_id', '=', $villageId];
-        $cateList = $qrcodeCateDb->where($where)->select()->toArray();
+        $cateList = Db::name('wisdom_qrcode_cate')->where($where)->select()->toArray();
+        $logCateMap = $this->getInspectionLogMap(array_column($cateList, 'id'), $villageId, $startDate, $endDate);
 
         //获取项目巡检完成率
-        $inspectionCompletedRate = $this->getInspectionCompletedRate($cateList, $villageId,$startDate,$endDate);
+        $inspectionCompletedRate = $this->getInspectionCompletedRate($cateList, $villageId,$startDate,$endDate, $logCateMap);
         $list = $this->mergeArrByIntersectId( $cateList, $inspectionCompletedRate );
 
         //获取项目巡检异常情况以及点位异常次数
-        $abnormalAmount = $this->getAbnormalAmount($cateList, $villageId,$startDate,$endDate);
+        $abnormalAmount = $this->getAbnormalAmount($cateList, $villageId,$startDate,$endDate, $logCateMap);
         $list = $this->mergeArrByIntersectId( $list, $abnormalAmount );
 
         //获取覆盖率
-        $overrideRate = $this->getOverrideRate($cateList, $villageId,$startDate,$endDate);
+        $overrideRate = $this->getOverrideRate($cateList, $villageId,$startDate,$endDate, $logCateMap);
         $list = $this->mergeArrByIntersectId( $list, $overrideRate );
 
         $chart_data = [];
@@ -1496,6 +1553,8 @@ class PropertyStatisticalController extends CommunityBaseController
             'abnormal_amount' => 0,
             'abnormal_repeat_amount' => 0,
             'override_rate' => 0,
+            'should_be_inspection_amount' => 0,
+            'actual_inspection_amount' => 0,
         ];
         foreach ($list as &$v) {
             $chart_data[] = [
@@ -1529,11 +1588,8 @@ class PropertyStatisticalController extends CommunityBaseController
     }
 
 
-    public function getInspectionCompletedRate($cateList, $villageId, $startDate, $endDate)
+    public function getInspectionCompletedRate($cateList, $villageId, $startDate, $endDate, $logCateMap = null)
     {
-        $qrcodeDb = new WisdomQrcode();
-        $qrcodeRecordLogDb = new WisdomQrcodeRecordLog();
-
         $headerMap = [
             1 => 'day',
             2 => 'week',
@@ -1547,26 +1603,15 @@ class PropertyStatisticalController extends CommunityBaseController
         $cateIds = array_column($cateList, 'id');
 
         // 1. 一次性查所有分类下的二维码
-        $allQrcodeList = $qrcodeDb->where('cate_id', 'in', $cateIds)->select()->toArray();
+        $allQrcodeList = Db::name('wisdom_qrcode')->where('cate_id', 'in', $cateIds)->field('id,cate_id')->select();
         $qrcodeMap = [];
         foreach ($allQrcodeList as $item) {
             $qrcodeMap[$item['cate_id']][] = $item;
         }
 
-        // 2. 一次性查时间范围内全部巡检记录
-        $globalStartTime = strtotime($startDate . ' 00:00:00');
-        $globalEndTime = strtotime($endDate . ' 23:59:59');
-
-        $allLogList = $qrcodeRecordLogDb->where([
-            ['village_id', '=', $villageId],
-            ['cate_id', 'in', $cateIds],
-            ['add_time', 'between', [$globalStartTime, $globalEndTime]]
-        ])->select()->toArray();
-
-        // 3. 按 cate_id 分组
-        $logCateMap = [];
-        foreach ($allLogList as $log) {
-            $logCateMap[$log['cate_id']][] = $log;
+        // 三项统计共用精简记录，单独调用此方法时才加载。
+        if ($logCateMap === null) {
+            $logCateMap = $this->getInspectionLogMap($cateIds, $villageId, $startDate, $endDate);
         }
 
         foreach ($cateList as &$cate) {
@@ -1691,8 +1736,58 @@ class PropertyStatisticalController extends CommunityBaseController
         return $cateList;
     }
 
+    /** 分批读取必要字段，按分类和时间建立索引，供三项巡检统计复用。 */
+    private function getInspectionLogMap(array $cateIds, $villageId, $startDate, $endDate): array
+    {
+        if (!$cateIds) {
+            return [];
+        }
+        $map = [];
+        Db::name('wisdom_qrcode_record_log')
+            ->where('village_id', $villageId)->where('cate_id', 'in', $cateIds)
+            ->where('add_time', '>=', strtotime($startDate . ' 00:00:00'))
+            ->where('add_time', '<', strtotime($endDate . ' +1 day'))
+            ->field('id,cate_id,qrcode_id,village_id,add_time,is_abnormal')
+            ->chunk(1000, function ($rows) use (&$map) {
+                foreach ($rows as $row) {
+                    unset($row['id']);
+                    $map[$row['cate_id']][] = $row;
+                }
+            }, 'id');
+        foreach ($map as &$logs) {
+            usort($logs, function ($a, $b) {
+                return (int)$a['add_time'] <=> (int)$b['add_time'];
+            });
+        }
+        unset($logs);
+        return $map;
+    }
+
+    /** 与原去重方法相同：同分类、点位、小区、日期，最多计 record_time 的时段数。 */
+    private function countInspectionCoverage(array $cate, array $logs): int
+    {
+        if ((int)($cate['id'] ?? 0) <= 0) {
+            return 0;
+        }
+        $times = array_values(array_filter(array_map('trim', explode(',', trim((string)($cate['record_time'] ?? ''))))));
+        $maxPerDay = count($times) ?: 1;
+        $groups = [];
+        $count = 0;
+        foreach ($logs as $log) {
+            if ((int)($log['cate_id'] ?? 0) !== (int)$cate['id'] || (int)$log['add_time'] <= 0) {
+                continue;
+            }
+            $key = ($log['qrcode_id'] ?? '') . '_' . ($log['village_id'] ?? '') . '_' . date('Y-m-d', $log['add_time']);
+            if (($groups[$key] ?? 0) < $maxPerDay) {
+                $groups[$key] = ($groups[$key] ?? 0) + 1;
+                $count++;
+            }
+        }
+        return $count;
+    }
+
     /**
-     * 从内存中过滤某个时间范围内的日志
+     * 从已排序记录中获取某个时间范围内的日志
      */
     private function filterLogsByTimeRange($logList, $startTime, $endTime)
     {
@@ -1700,67 +1795,80 @@ class PropertyStatisticalController extends CommunityBaseController
             return [];
         }
 
-        return array_values(array_filter($logList, function ($item) use ($startTime, $endTime) {
-            $addTime = $item['add_time'] ?? 0;
-            return $addTime >= $startTime && $addTime <= $endTime;
-        }));
+        // 记录已按时间排序，二分定位，避免每个巡检周期扫描全年记录。
+        $left = 0;
+        $right = count($logList);
+        while ($left < $right) {
+            $middle = intdiv($left + $right, 2);
+            if ($logList[$middle]['add_time'] < $startTime) {
+                $left = $middle + 1;
+            } else {
+                $right = $middle;
+            }
+        }
+        $result = [];
+        $count = count($logList);
+        for ($i = $left; $i < $count && $logList[$i]['add_time'] <= $endTime; $i++) {
+            $result[] = $logList[$i];
+        }
+        return $result;
     }
 
-    function getAbnormalAmount($cateList, $villageId, $startDate, $endDate)
+    function getAbnormalAmount($cateList, $villageId, $startDate, $endDate, $logCateMap = null)
     {
-        $qrcodeRecordLogDb = new WisdomQrcodeRecordLog();
+        if ($logCateMap === null) {
+            $logCateMap = $this->getInspectionLogMap(array_column($cateList, 'id'), $villageId, $startDate, $endDate);
+        }
         foreach ($cateList as $cateK => &$cateV) {
-            $log_where = [];
-            $log_where[] = ['cate_id', '=', $cateV['id']];
-            $log_where[] = ['village_id', '=', $villageId];
-            $log_where[] = ['is_abnormal', '=', '1'];
-            $startTime = strtotime($startDate . ' 00:00:00');
-            $endTime = strtotime($endDate . ' 23:59:59');
-            $log_where[] = ['add_time', 'between', [$startTime, $endTime]];
-            $abnormal_list = $qrcodeRecordLogDb->where($log_where)->select()->toArray();
-            $cateV['abnormal_amount'] = count( $abnormal_list );
-            $cateV['abnormal_repeat_amount'] = $this->countRepeatQrcodeId($abnormal_list);
+            $cateV['abnormal_amount'] = 0;
+            $qrcodeCounts = [];
+            foreach ($logCateMap[$cateV['id']] ?? [] as $log) {
+                if ($log['is_abnormal'] != 1) {
+                    continue;
+                }
+                $cateV['abnormal_amount']++;
+                if (is_numeric($log['qrcode_id']) && $log['qrcode_id'] > 0) {
+                    $id = (int)$log['qrcode_id'];
+                    $qrcodeCounts[$id] = ($qrcodeCounts[$id] ?? 0) + 1;
+                }
+            }
+            $cateV['abnormal_repeat_amount'] = count(array_filter($qrcodeCounts, function ($count) {
+                return $count >= 2;
+            }));
         }
         unset($cateV);
         return $cateList;
     }
 
-    function getOverrideRate($cateList, $villageId,$startDate,$endDate)
+    function getOverrideRate($cateList, $villageId,$startDate,$endDate, $logCateMap = null)
     {
-        $qrcodeRecordLogDb = new WisdomQrcodeRecordLog();
+        if ($logCateMap === null) {
+            $logCateMap = $this->getInspectionLogMap(array_column($cateList, 'id'), $villageId, $startDate, $endDate);
+        }
         foreach ($cateList as $cateK => &$cateV) {
-            $log_where = [];
-            $log_where[] = ['village_id', '=', $villageId];
-            $startTime = strtotime($startDate . ' 00:00:00');
-            $endTime = strtotime($endDate . ' 23:59:59');
-            $log_where[] = ['add_time', 'between', [$startTime, $endTime]];
-            $inspection_list = $qrcodeRecordLogDb->where($log_where)->select()->toArray();
+            $inspection_list = $logCateMap[$cateV['id']] ?? [];
             $should_be_inspection = json_decode(htmlspecialchars_decode($cateV['bind_qrcode'] ?? '[]'), true);
-            $should_be_inspection_qrcode = count( $should_be_inspection );
+            $should_be_inspection_qrcode = is_array($should_be_inspection) ? count($should_be_inspection) : 0;
 
             //计算总应巡检
             if( $cateV['record_type'] == 1){
                 $diff =  abs(strtotime($endDate) - strtotime($startDate)) / 86400;
                 $diff = $diff ? $diff + 1 : 1;
-                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 1);
             }else if( $cateV['record_type'] == 2){
                 $should_be_inspection_current_week = explode( ',',$cateV['record_time'] );
                 $should_be_inspection_total = count( $this->findDatesByWeekdays([$startDate,$endDate],$should_be_inspection_current_week) );
                 $diff = $should_be_inspection_total ? $should_be_inspection_total : 1;
-                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 2);
             }else if( $cateV['record_type'] == 3){
                 $should_be_inspection_current_month = explode( ',',$cateV['record_time'] );
                 $should_be_inspection_total = count( $this->findDatesByDayNums([$startDate,$endDate],$should_be_inspection_current_month) );
                 $diff = $should_be_inspection_total ? $should_be_inspection_total : 1;
-                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 3);
             }else{
                 $diff = 1;
-                $inspection_list = $this->uniqueRecordByCatePeriodQrcodeVillage($cateV, $inspection_list, 1);
             }
 
             $frequency = $cateV['record_time'] ? count(explode( ',',$cateV['record_time'] )) : 1 ;
             $should_be_inspection_amount = $diff * $should_be_inspection_qrcode * $frequency;
-            $actual_inspection_amount = $inspection_list['data'] ? count( $inspection_list['data'] ) : 0;
+            $actual_inspection_amount = $this->countInspectionCoverage($cateV, $inspection_list);
             $cateV['should_be_inspection_amount'] = $should_be_inspection_amount;
             $cateV['actual_inspection_amount'] = $actual_inspection_amount;
             if( $should_be_inspection_amount == 0 || $actual_inspection_amount == 0){
