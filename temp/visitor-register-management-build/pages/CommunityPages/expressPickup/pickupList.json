@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "快递代取",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "da-dropdown-vue2": "/components/da-dropdown-vue2/index"
+  }
+}

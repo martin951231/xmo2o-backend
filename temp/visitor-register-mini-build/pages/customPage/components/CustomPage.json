@@ -1,0 +1,27 @@
+{
+  "component": true,
+  "usingComponents": {
+    "enter-store": "/pages/customPage/components/customPageComponents/EnterStore",
+    "goods-search": "/pages/customPage/components/customPageComponents/GoodsSearch",
+    "coupon": "/pages/customPage/components/customPageComponents/Coupon",
+    "magic-square": "/pages/customPage/components/customPageComponents/MagicSquare",
+    "marketing-activities": "/pages/customPage/components/customPageComponents/MarketingActivities",
+    "mall-activities": "/pages/customPage/components/customPageComponents/MallActivities",
+    "shop-modules": "/pages/customPage/components/customPageComponents/ShopModules",
+    "mall-goods": "/pages/customPage/components/customPageComponents/MallGoods",
+    "title-text": "/pages/customPage/components/customPageComponents/TitleText",
+    "rich-text": "/pages/customPage/components/customPageComponents/RichText",
+    "help-line": "/pages/customPage/components/customPageComponents/HelpLine",
+    "help-blank": "/pages/customPage/components/customPageComponents/HelpBlank",
+    "text-nav": "/pages/customPage/components/customPageComponents/TextNav",
+    "img-adver": "/pages/customPage/components/customPageComponents/ImgAdver",
+    "pic-nav": "/pages/customPage/components/customPageComponents/PicNav",
+    "cus-video": "/pages/customPage/components/customPageComponents/CusVideo",
+    "online-service": "/pages/customPage/components/customPageComponents/OnlineService",
+    "notice-cus": "/pages/customPage/components/customPageComponents/NoticeCus",
+    "contact-store": "/pages/customPage/components/customPageComponents/ContactStore",
+    "store-map": "/pages/customPage/components/customPageComponents/StoreMap",
+    "store-header": "/pages/customPage/components/customPageComponents/StoreHeader",
+    "appoint-goods": "/pages/customPage/components/customPageComponents/AppointGoods"
+  }
+}

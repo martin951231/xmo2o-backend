@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "信息填写",
+  "usingComponents": {
+    "w-picker": "/pages/village_my/component/w-picker/w-picker"
+  }
+}

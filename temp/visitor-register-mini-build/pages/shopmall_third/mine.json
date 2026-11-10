@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "个人中心",
+  "navigationBarTextStyle": "black",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "selftabbar": "/pages/shopmall_third/components/self_tabbar",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "waterfall": "/pages/shopmall_third/components/newfall",
+    "tophalf": "/pages/shopmall_third/components/tophalf",
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar"
+  }
+}

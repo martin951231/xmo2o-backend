@@ -1,0 +1,1 @@
+<view class="no_vehicle data-v-fd91f20e"><view class="none_icon data-v-fd91f20e"><image src="../static/images/none_car.png" mode="widthFix" class="data-v-fd91f20e"></image></view><view class="none_desc data-v-fd91f20e">您还未绑定车辆，暂不可查询和充值</view><view data-event-opts="{{[['tap',[['goToBind',['$event']]]]]}}" class="bind_btn data-v-fd91f20e" bindtap="__e">去绑定车辆</view></view>

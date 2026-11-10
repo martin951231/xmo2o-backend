@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "添加入场记录",
+  "usingComponents": {
+    "u-cell-group": "/uview-ui/components/u-cell-group/u-cell-group",
+    "u-cell-item": "/uview-ui/components/u-cell-item/u-cell-item",
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "upload-img": "/components/uploadImg/uploadImg"
+  }
+}

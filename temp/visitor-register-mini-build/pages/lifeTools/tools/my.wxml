@@ -1,0 +1,1 @@
+<view class="page-wrapper data-v-5ecefda0"><my-index class="pages-bottom data-v-5ecefda0" vue-id="34cb6bbd-1" updateData="{{updateData}}" bind:__l="__l"></my-index><life-tools-tabbar vue-id="34cb6bbd-2" type="{{type}}" class="data-v-5ecefda0" bind:__l="__l"></life-tools-tabbar></view>

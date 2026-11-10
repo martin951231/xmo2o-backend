@@ -1,0 +1,287 @@
+
+#app .ant-layout-content[data-v-67a90271]{
+  background-color: #fff !important;
+}
+/* 整体容器 */
+.budget-category-container[data-v-67a90271] {
+  width: 100%;
+  padding: 20px;
+  background-color: #fff;
+  font-family: "Microsoft Yahei";
+}
+
+/* 页面头部 */
+.page-header[data-v-67a90271] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 20px;
+}
+.page-header h2[data-v-67a90271] {
+  margin: 0;
+  color: #333;
+}
+.btn-add[data-v-67a90271] {
+  padding: 8px 16px;
+  background: #1890ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-add[data-v-67a90271]:disabled {
+  background: #91d5ff;
+  cursor: not-allowed;
+}
+
+/* 表格样式 */
+.table-box[data-v-67a90271] {
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.category-table[data-v-67a90271] {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+.category-table thead[data-v-67a90271] {
+  background: #f5f5f5;
+}
+.category-table th[data-v-67a90271], .category-table td[data-v-67a90271] {
+  padding: 12px;
+  border-bottom: 1px solid #e6e6e6;
+}
+.status-tag[data-v-67a90271] {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.status-normal[data-v-67a90271] {
+  background: #f0f9eb;
+  color: #52c41a;
+}
+.status-disable[data-v-67a90271] {
+  background: #fff2e8;
+  color: #fa8c16;
+}
+.empty-tip[data-v-67a90271] {
+  color: #999;
+  padding: 30px 0;
+}
+.operate-btn[data-v-67a90271] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 8px;
+}
+.btn-edit[data-v-67a90271] {
+  padding: 4px 8px;
+  background: #1890ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-delete[data-v-67a90271] {
+  padding: 4px 8px;
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.btn-edit[data-v-67a90271]:disabled, .btn-delete[data-v-67a90271]:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* 分页样式 */
+.pagination-box[data-v-67a90271] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 20px;
+  color: #666;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 10px;
+}
+.page-info[data-v-67a90271] {
+  white-space: nowrap;
+}
+.page-btn-group[data-v-67a90271] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 4px;
+}
+.page-btn-group button[data-v-67a90271] {
+  padding: 4px 10px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  min-width: 36px;
+}
+.page-btn-group button.active[data-v-67a90271] {
+  background: #1890ff;
+  color: #fff;
+  border-color: #1890ff;
+}
+.page-btn-group button[data-v-67a90271]:disabled {
+  cursor: not-allowed;
+  color: #999;
+  background: #f5f5f5;
+}
+
+/* 弹窗样式 */
+.modal-mask[data-v-67a90271] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  z-index: 999;
+}
+.modal-content[data-v-67a90271] {
+  width: 500px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.modal-header[data-v-67a90271] {
+  padding: 16px;
+  border-bottom: 1px solid #e6e6e6;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.modal-header h3[data-v-67a90271] {
+  margin: 0;
+  color: #333;
+}
+.close-icon[data-v-67a90271] {
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+}
+.close-icon[data-v-67a90271]:hover {
+  color: #333;
+}
+.close-icon[data-v-67a90271]:disabled {
+  cursor: not-allowed;
+  color: #ccc;
+}
+.modal-body[data-v-67a90271] {
+  padding: 20px;
+}
+
+/* 表单样式 */
+.form-box[data-v-67a90271] {
+  width: 100%;
+}
+.form-item[data-v-67a90271] {
+  margin-bottom: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.form-label[data-v-67a90271] {
+  width: 100px;
+  text-align: right;
+  margin-right: 10px;
+  color: #333;
+}
+.form-input[data-v-67a90271], .form-select[data-v-67a90271] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding: 8px;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  outline: none;
+}
+.form-input[data-v-67a90271]:focus, .form-select[data-v-67a90271]:focus {
+  border-color: #1890ff;
+}
+.form-input[data-v-67a90271]:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+.radio-label[data-v-67a90271] {
+  margin-right: 20px;
+  cursor: pointer;
+}
+.radio-label input[data-v-67a90271]:disabled {
+  cursor: not-allowed;
+}
+.form-submit[data-v-67a90271] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+.btn-cancel[data-v-67a90271] {
+  padding: 8px 20px;
+  background: #fff;
+  color: #666;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-save[data-v-67a90271] {
+  padding: 8px 20px;
+  background: #1890ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-cancel[data-v-67a90271]:disabled, .btn-save[data-v-67a90271]:disabled {
+  background: #ccc;
+  color: #fff;
+  cursor: not-allowed;
+  border-color: #ccc;
+}
+

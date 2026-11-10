@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": " ",
+  "usingComponents": {
+    "group-coupon-gift": "/appComponent/indexPage/group-coupon-gift"
+  }
+}

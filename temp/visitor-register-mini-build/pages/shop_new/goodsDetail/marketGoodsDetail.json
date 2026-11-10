@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "商品详情",
+  "usingComponents": {
+    "fly-in-cart": "/pages/shop_new/component/flyInCart/flyInCart"
+  }
+}

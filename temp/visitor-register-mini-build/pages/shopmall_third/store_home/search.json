@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "商品搜索",
+  "usingComponents": {
+    "u-search": "/uview-ui/components/u-search/u-search",
+    "uni-load-more": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "sell-out-tag": "/pages/shopmall_third/components/sellOutTag"
+  }
+}

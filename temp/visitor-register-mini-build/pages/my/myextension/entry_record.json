@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "入驻记录",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore"
+  }
+}

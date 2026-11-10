@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "我的收藏",
+  "usingComponents": {
+    "store-item": "/pages/my/components/storeItem",
+    "uni-rate": "/appComponent/uni/uni-rate/uni-rate"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="page-wrapper data-v-09ae904b"><tabbar vue-id="6d2aef61-1" tabbar="{{tabbar}}" class="data-v-09ae904b" bind:__l="__l"></tabbar><my-index vue-id="6d2aef61-2" data-ref="myIndex" class="data-v-09ae904b vue-ref" bind:__l="__l"></my-index></view>

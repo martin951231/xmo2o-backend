@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "创建直播",
+  "navigationBarBackgroundColor": "#FE443A",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker"
+  }
+}

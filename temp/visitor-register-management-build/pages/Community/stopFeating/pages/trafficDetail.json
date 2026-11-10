@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "详情",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select"
+  }
+}

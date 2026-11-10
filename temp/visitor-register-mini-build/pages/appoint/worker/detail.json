@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "‎",
+  "navigationBarBackgroundColor": "#f4f4f4",
+  "navigationBarTextStyle": "white",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-parse": "/uview-ui/components/u-parse/u-parse",
+    "u-popup": "/uview-ui/components/u-popup/u-popup"
+  }
+}

@@ -1,0 +1,1 @@
+<view><userinfo class="vue-ref" vue-id="6b061fc0-1" options="{{userOptions}}" data-ref="userInfo" data-event-opts="{{[['^getUserscope',[['getUserInfo']]],['^toLogin',[['getUserInfo']]]]}}" bind:getUserscope="__e" bind:toLogin="__e" bind:__l="__l"></userinfo></view>

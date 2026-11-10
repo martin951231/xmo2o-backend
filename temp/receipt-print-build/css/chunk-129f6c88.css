@@ -1,0 +1,15 @@
+
+.editor {
+  width: 680px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 0;
+}
+.toolbar {
+  border: 1px solid #ccc;
+}
+.text {
+  border: 1px solid #ccc;
+  min-height: 200px;
+}
+

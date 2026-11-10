@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "我的评价",
+  "usingComponents": {
+    "uni-rate": "/appComponent/uni/uni-rate/uni-rate",
+    "tui-bottom-popup": "/pages/my/components/bottom-popup/bottom-popup",
+    "long-text-over": "/pages/my/components/longTextOver"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "module-item": "/pages/group/component/moduleItem"
+  }
+}

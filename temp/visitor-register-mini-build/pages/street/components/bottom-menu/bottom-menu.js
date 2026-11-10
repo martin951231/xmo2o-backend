@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/street/components/bottom-menu/bottom-menu"],{"0fbf":function(e,t,a){},4773:function(e,t,a){"use strict";var r=a("0fbf"),n=a.n(r);n.a},"63f4":function(e,t,a){"use strict";a.r(t);var r=a("c95b"),n=a("7eb9");for(var s in n)["default"].indexOf(s)<0&&function(e){a.d(t,e,(function(){return n[e]}))}(s);a("4773");var i,u=a("f0c5"),c=Object(u["a"])(n["default"],r["b"],r["c"],!1,null,null,null,!1,r["a"],i);t["default"]=c.exports},"7eb9":function(e,t,a){"use strict";a.r(t);var r=a("a9be"),n=a.n(r);for(var s in r)["default"].indexOf(s)<0&&function(e){a.d(t,e,(function(){return r[e]}))}(s);t["default"]=n.a},a9be:function(e,t,a){"use strict";(function(e,a){Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var r={data:function(){return{current_active:1}},props:{area_street_id:{type:String,default:""}},methods:{checkedActive:function(t){var r="",n=this;switch(t){case 1:r="/pages/street/street_index?area_street_id="+n.area_street_id;break;case 2:r="/pages/street/index/volunteersActivityList?area_street_id="+n.area_street_id;break;case 3:r="/pages/street/streetNews/streetNews?area_street_id="+n.area_street_id;break;case 4:r="/pages/village_menu/index";break;default:r="/pages/street/street_index";break}4==t?e.switchTab({url:"/pages/village_menu/index"}):a.navigateTo({url:r})}}};t.default=r}).call(this,a("bc2e")["default"],a("543d")["default"])},c95b:function(e,t,a){"use strict";var r;a.d(t,"b",(function(){return n})),a.d(t,"c",(function(){return s})),a.d(t,"a",(function(){return r}));var n=function(){var e=this,t=e.$createElement;e._self._c},s=[]}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/street/components/bottom-menu/bottom-menu-create-component',
+    {
+        'pages/street/components/bottom-menu/bottom-menu-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("63f4"))
+        })
+    },
+    [['pages/street/components/bottom-menu/bottom-menu-create-component']]
+]);

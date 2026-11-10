@@ -1,0 +1,25 @@
+{
+  "navigationBarTitleText": "店铺详情",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-notice-bar": "/uview-ui/components/u-notice-bar/u-notice-bar",
+    "count": "/pages/shop_new/component/count/count",
+    "shopcart": "/pages/shop_new/component/shopcart/shopcart",
+    "spec-mask": "/pages/shop_new/component/spec-mask/spec-mask",
+    "goods-item": "/pages/shop_new/component/goodsItem/goodsItem",
+    "info-tabs": "/appComponent/platcommon/tabs",
+    "contact-box": "/pages/shop_new/component/contactBox/contactBox",
+    "discount-calculator": "/pages/shop_new/component/discountCalculator/discountCalculator",
+    "shop-comments": "/pages/shop_new/component/shopDetailComponent/shopComments",
+    "shop-mer-info": "/pages/shop_new/component/shopDetailComponent/shopMerInfo",
+    "shop-subscribe-popup": "/pages/shop_new/component/shopDetailComponent/shopSubscribePopup",
+    "shop-discount": "/pages/shop_new/component/shopDetailComponent/shopDiscount",
+    "shop-close": "/pages/shop_new/component/shopDetailComponent/shopClose",
+    "shop-share": "/pages/shop_new/component/shopShare/shopShare",
+    "fly-in-cart": "/pages/shop_new/component/flyInCart/flyInCart",
+    "shop-slider": "/pages/shop_new/component/shopDetailComponent/shopSlider",
+    "shop-order-return-coupon": "/pages/shop_new/component/shopDetailComponent/shopOrderReturnCoupon"
+  }
+}

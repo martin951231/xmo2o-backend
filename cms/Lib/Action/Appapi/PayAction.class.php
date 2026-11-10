@@ -1,6 +1,43 @@
 <?php
 
 class PayAction extends BaseAction{
+	protected function isMerchantAllinpayWxappRequest(){
+		return I('app_type', '', 'trim') == 'packapp'
+            || $this->DEVICE_ID == 'wxapp'
+			|| I('Device-Id', '', 'trim') == 'wxapp'
+			|| I('app_type', '', 'trim') == 'wxapp';
+	}
+
+	protected function merchantAllinpayWxappEnabled($businessType, $storeId){
+		if(!$this->isMerchantAllinpayWxappRequest()){
+			return false;
+		}
+		import('@.ORG.pay.MerchantAllinpayWxapp');
+		return MerchantAllinpayWxapp::isEnabled($businessType, $storeId);
+	}
+
+	protected function replaceWechatWithMerchantAllinpay($payMethod, $businessType, $storeId, $allowH5Standalone = false){
+		if(!$this->merchantAllinpayWxappEnabled($businessType, $storeId)){
+			return $payMethod;
+		}
+		$result = array();
+		foreach($payMethod as $key => $value){
+			if($key == 'weixin'){
+				$result[MerchantAllinpayWxapp::PAY_TYPE] = array(
+					'name' => L_('通联支付'),
+					'config' => array(),
+				);
+			}else{
+				$result[$key] = $value;
+			}
+		}
+		// 普通浏览器/支付宝会提前过滤微信支付，但通联 H5 是独立收银台。
+		if ($allowH5Standalone && !isset($result[MerchantAllinpayWxapp::PAY_TYPE])) {
+			$result[MerchantAllinpayWxapp::PAY_TYPE] = array('name' => L_('通联支付'), 'config' => array());
+		}
+		return $result;
+	}
+
 	//支付接口
 	public function check(){
 		if($this->config['site_close'] == 3){
@@ -1258,6 +1295,16 @@ class PayAction extends BaseAction{
 		if($pay_method['yzfpay']){
 			$pay_method['yzfpay']['name'] = '翼支付';
 		}
+		// 店铺通联配置只能按订单实际所属店铺读取。前端传入的 store_id 仅用于
+		// 校验页面上下文，禁止通过篡改参数读取或使用其他店铺的支付配置。
+		$requestStoreId = intval(I('store_id'));
+		$orderStoreId = intval($now_order['order_info']['store_id']);
+		if($requestStoreId && $orderStoreId && $requestStoreId != $orderStoreId){
+			$this->returnCode('1001', array(), L_('订单店铺信息不一致，请刷新后重试'));
+		}
+		$merchantAllinpayPayMethodsBefore = array_keys((array)$pay_method);
+		$pay_method = $this->replaceWechatWithMerchantAllinpay($pay_method, $order_type, $order_info['store_id'], !$notOnline && I('app_type', '', 'trim') == 'packapp');
+		$merchantAllinpayPayMethodsAfter = array_keys((array)$pay_method);
 
 		$display_tips = $arr['order_info']['order_name'];
 		$isDouyinMini = ($_POST['app_type'] == 'dyapp');
@@ -1274,7 +1321,7 @@ class PayAction extends BaseAction{
                 }
 
 				if($this->DEVICE_ID == 'wxapp'){
-                    if (!in_array($k, ['weixin', 'merchantwarrior', 'offline', 'baodi_card', 'scrcu_cash', 'hqpay_wx', 'farmersbankpay']) && strpos($k,'xiantao') === false) {
+					if (!in_array($k, ['weixin', 'merchant_allinpay_wxapp', 'merchantwarrior', 'offline', 'baodi_card', 'scrcu_cash', 'hqpay_wx', 'farmersbankpay']) && strpos($k,'xiantao') === false) {
                         continue;
                     }
 				}
@@ -1345,12 +1392,46 @@ class PayAction extends BaseAction{
         if(empty($pay_method_array)){
 			$this->returnCode('1001',array(),L_('当前未开启任何支付方式，请联系系统管理员开启'));
 		}
-        $arr['pay_method'] = isset($pay_method_array) ? $pay_method_array : array();
+		$arr['pay_method'] = isset($pay_method_array) ? $pay_method_array : array();
+		if(in_array($order_type, array('appoint', 'balance-appoint'))){
+			import('@.ORG.pay.MerchantAllinpayWxapp');
+			$arr['merchant_allinpay_debug'] = array_merge(
+				MerchantAllinpayWxapp::getDiagnostic($order_type, $order_info['store_id']),
+				array(
+					'device_id' => (string)$this->DEVICE_ID,
+					'request_device_id' => (string)I('Device-Id', '', 'trim'),
+					'request_app_type' => (string)I('app_type', '', 'trim'),
+					'is_wxapp_request' => $this->isMerchantAllinpayWxappRequest() ? 1 : 0,
+					'pay_methods_before' => $merchantAllinpayPayMethodsBefore,
+					'pay_methods_after' => $merchantAllinpayPayMethodsAfter,
+				)
+			);
+		}
+		if($this->merchantAllinpayWxappEnabled($order_type, $order_info['store_id'])){
+			$merchantAllinpayAppointOrder = M('Appoint_order')->where(array(
+				'order_id' => intval($_GET['order_id']),
+			))->field('order_id,appoint_id,product_id,store_id,merchant_worker_id')->find();
+			$merchantAllinpayFailParams = array(
+				'appoint_id' => intval($merchantAllinpayAppointOrder['appoint_id']),
+				'cateid' => intval($merchantAllinpayAppointOrder['product_id']),
+				'is_autotrophic' => 0,
+				'store_id' => intval($merchantAllinpayAppointOrder['store_id']),
+				'worker_id' => intval($merchantAllinpayAppointOrder['merchant_worker_id']),
+			);
+			$arr['merchant_allinpay'] = array(
+				'enabled' => 1,
+				'appoint_id' => $merchantAllinpayFailParams['appoint_id'],
+				'product_id' => $merchantAllinpayFailParams['cateid'],
+				'store_id' => $merchantAllinpayFailParams['store_id'],
+				'worker_id' => $merchantAllinpayFailParams['worker_id'],
+				'fail_url' => '/pages/appoint/goods/submitOrder?' . http_build_query($merchantAllinpayFailParams),
+			);
+		}
 
         //微信代付只显示支付宝和微信
         if ($arr['only_pay'] == 1) {
             foreach ($arr['pay_method'] as $pk => $pv) {
-                if (!in_array($pv['type'], ['alipay', 'weixin'])) {
+                if (!in_array($pv['type'], ['alipay', 'weixin', 'merchant_allinpay_wxapp'])) {
                     unset($arr['pay_method'][$pk]);
                 }
             }
@@ -2405,7 +2486,15 @@ class PayAction extends BaseAction{
             }
         }
 
-        $order_info = $now_order['order_info'];
+		$order_info = $now_order['order_info'];
+		$requestStoreId = intval(I('store_id'));
+		$orderStoreId = intval($order_info['store_id']);
+		if($requestStoreId && $orderStoreId && $requestStoreId != $orderStoreId){
+			$this->returnCode('1001', array(), L_('订单店铺信息不一致，请刷新后重试'));
+		}
+		if($_POST['pay_type'] == 'merchant_allinpay_wxapp' && !$this->merchantAllinpayWxappEnabled($_POST['order_type'], $order_info['store_id'])){
+			$this->returnCode('1001', array(), L_('该店铺通联支付未开启或配置不完整'));
+		}
         if (in_array($_POST['order_type'], ['ticket', 'guide'])) {
             if ($_POST['order_type'] == 'ticket') {
                 $scenic_order = D('Scenic_order')->get_one_order(['order_id' => intval($_GET['order_id'])]);
@@ -2835,6 +2924,12 @@ class PayAction extends BaseAction{
 		}else{
 			$all_pay_method = D('Config')->get_pay_method();//获取所有支付方式
 		}
+		// 商家通联是预约业务的独立虚拟通道，不读取旧支付方式表的手续费配置。
+		if($_POST['pay_type'] == 'merchant_allinpay_wxapp'){
+			$all_pay_method[$_POST['pay_type']] = array(
+				'config' => array('service_charge_open' => 0, 'service_charge' => 0, 'rates' => 0),
+			);
+		}
 		
 		// 堂扫税率
 		if ($order_info['is_foodshop_new']&&$order_info['tax_rate_price']>0) {
@@ -2855,7 +2950,14 @@ class PayAction extends BaseAction{
 		$pay_money = round(($pay_money+$_service)*100)/100;//保留两位小数，四舍五入
 		$payment_money_date['payment_money'] = $pay_money;
 		$payment_money_date['order_type'] =  $_POST['order_type'];
-		$payment_money_date['pay_type'] =  $_POST['pay_type'];
+		// Payment_money_order.pay_type 为 varchar(20)，商家通联前端通道名有 23 位，
+		// 使用独立短标识入库，避免被 MySQL 截断后回调及查单无法匹配。
+		if($_POST['pay_type'] == 'merchant_allinpay_wxapp'){
+			import('@.ORG.pay.MerchantAllinpayWxapp');
+			$payment_money_date['pay_type'] = MerchantAllinpayWxapp::STORAGE_PAY_TYPE;
+		}else{
+			$payment_money_date['pay_type'] = $_POST['pay_type'];
+		}
 		$payment_money_date['order_id'] =  $_POST['order_id'];
 		$payment_money_date['orderid'] =  $orderid;
 		$payment_money_date['addtime'] = time();
@@ -2865,6 +2967,38 @@ class PayAction extends BaseAction{
         if (!$payment_money_order_id = M('Payment_money_order')->add($payment_money_date)) {
             fdump_sql([$_POST, $payment_money_date], 'payment_money_order_error');
         }
+
+		if($_POST['pay_type'] == 'merchant_allinpay_wxapp'){
+			if(!MerchantAllinpayWxapp::supportsBusiness($_POST['order_type']) || !$this->isMerchantAllinpayWxappRequest()){
+				$this->returnCode('1001', array(), L_('当前业务或终端不支持商家通联支付'));
+			}
+			if(!$payment_money_order_id){
+				$this->returnCode('20046008');
+			}
+			try{
+				import('@.ORG.pay.MerchantAllinpayWxapp');
+				$merchantAllinpayConfig = MerchantAllinpayWxapp::getConfig($order_info['store_id']);
+				$merchantAllinpay = new MerchantAllinpayWxapp($merchantAllinpayConfig);
+				$payResult = $merchantAllinpay->pay($orderid, $pay_money, $order_info['order_name'] ?: '预约服务订单支付', I('app_type', '', 'trim') == 'packapp');
+				$appointOrder = M('Appoint_order')->where(array('order_id' => $order_id))->field('appoint_id')->find();
+				M('Payment_money_order')->where(array('id' => $payment_money_order_id))->save(array(
+					'pay_config' => json_encode(array(
+						'channel' => MerchantAllinpayWxapp::PAY_TYPE,
+						'store_id' => intval($order_info['store_id']),
+						'mer_id' => intval($order_info['mer_id']),
+						'appid' => $merchantAllinpayConfig['appid'],
+						'cusid' => $merchantAllinpayConfig['cusid'],
+					)),
+				));
+				$payResult['orderid'] = $orderid;
+				$payResult['business_order_id'] = intval($order_id);
+				$payResult['appoint_id'] = intval($appointOrder['appoint_id']);
+				$this->returnCode(0, $payResult);
+			}catch(Exception $e){
+				fdump_sql(array('post' => $_POST, 'message' => $e->getMessage()), 'merchant_allinpay_pay_error');
+				$this->returnCode('1001', array(), $e->getMessage());
+			}
+		}
 	
 		//支付前,加上费率处理
         if($all_pay_method[$_POST['pay_type']]['config']['rates'] >0 && !$order_info['is_foodshop_new']){

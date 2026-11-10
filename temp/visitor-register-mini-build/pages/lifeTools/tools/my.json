@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "个人中心",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "my-index": "/pages/common/my_template",
+    "life-tools-tabbar": "/pages/common/lifeTools/tabbar"
+  }
+}

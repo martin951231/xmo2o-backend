@@ -1,0 +1,10 @@
+{
+  "component": true,
+  "usingComponents": {
+    "product-list": "/pages/live_and_video/live/viewer/product_list",
+    "share": "/pages/live_and_video/live/viewer/share",
+    "coupons-list": "/pages/live_and_video/live/viewer/couponsList",
+    "love": "/pages/live_and_video/live/viewer/love",
+    "send-msg": "/pages/live_and_video/components/sendMsg"
+  }
+}

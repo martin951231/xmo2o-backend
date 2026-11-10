@@ -1,0 +1,1 @@
+<block wx:if="{{keywordsSet&&tag==''}}"><text class="{{['lang-wrapper','data-v-0ebc52ec',(isRight?'lang-right':'')+' '+(isLeft?'lang-left':'')]}}">{{keywordsSet}}</text></block><block wx:else><block wx:if="{{keywordsSet}}"><cover-view class="{{['lang-wrapper','data-v-0ebc52ec',(isRight?'lang-right':'')+' '+(isLeft?'lang-left':'')]}}">{{keywordsSet}}</cover-view></block></block>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "查看历史登记记录",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-fab": "/pages/parkingLot/components/uni-fab"
+  }
+}

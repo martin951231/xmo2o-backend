@@ -8,6 +8,7 @@
 namespace app\pay\model\service\env;
 
 use app\community\model\service\HouseVillageService;
+use app\community\model\db\HouseVillagePayConfig;
 use app\pay\model\db\PayType;
 use app\pay\model\db\PayChannel;
 use app\pay\model\db\PayChannelParam;
@@ -17,6 +18,7 @@ use app\pay\model\service\channel\ScrcuService;
 use app\pay\model\service\channel\TianqueService;
 use app\pay\model\service\channel\ChinaumsService;
 use app\pay\model\service\channel\LakalaService;
+use app\social_activity\model\service\SocialActivityPayConfigService;
 use Exception;
 
 class EnvService{
@@ -258,6 +260,9 @@ class EnvService{
 	 */
 	public function getChannel($pay_type, $business=''){
 		if(empty($pay_type)) return [];
+        if (in_array($pay_type, ['allinpay_cashier', 'allinpay_wxapp', 'allinpay_wxapp_cashier', 'wxapp_cashier'])) {
+            $pay_type = 'allinpay';
+        }
 		if($business=='pile_user_charge_balance'){
             //不用物业小区的自有支付
             $this->wxapp_own_village_id=0;
@@ -278,6 +283,13 @@ class EnvService{
         }
 
 		$pay_channels = $channel_db->getList($where)->toArray();
+        if (empty($pay_channels) && $pay_type == 'allinpay') {
+            return [
+                'channel' => 'allinpay',
+                'is_own' => 0,
+                'config' => $this->getAllinpayConfig($business),
+            ];
+        }
 		if(empty($pay_channels)) return [];
 
 		$pay_channel = [];
@@ -538,6 +550,55 @@ class EnvService{
 			'config' => $config
 		];
 	}
+
+    private function getAllinpayConfig($business = '')
+    {
+        $villageConfig = [];
+        if ($this->village_id) {
+            if ($business === 'social_activity') {
+                $activityConfig = (new SocialActivityPayConfigService())->getEnabledConfig($this->village_id);
+                $villageConfig = [
+                    'allinpay_appid' => $activityConfig['app_id'],
+                    'allinpay_mchid' => $activityConfig['merchant_no'],
+                    'allinpay_private_key' => $activityConfig['private_key'],
+                    'allinpay_status' => $activityConfig['status'],
+                ];
+            } else {
+                $villageConfig = (new HouseVillagePayConfig())
+                    ->where([
+                        'village_id' => $this->village_id,
+                        'allinpay_status' => 1,
+                    ])
+                    ->field('allinpay_appid,allinpay_mchid,allinpay_private_key,allinpay_status')
+                    ->find();
+                $villageConfig = $villageConfig ? $villageConfig->toArray() : [];
+            }
+            if (empty($villageConfig)) {
+                throw new Exception('当前小区未配置支付账户, 请联系管理员');
+            }
+        }
+        $config = [
+            'cusid' => $villageConfig['allinpay_mchid'] ?? (cfg('allinpay_cusid') ?: cfg('pay_allinpay_cusid')),
+            'orgid' => cfg('allinpay_orgid') ?: cfg('pay_allinpay_orgid'),
+            'appid' => $villageConfig['allinpay_appid'] ?? (cfg('allinpay_appid') ?: cfg('pay_allinpay_appid')),
+            'private_key' => $villageConfig['allinpay_private_key'] ?? cfg('pay_allinpay_private_key'),
+            'signtype' => 'RSA',
+            'version' => cfg('allinpay_version') ?: cfg('pay_allinpay_version') ?: '12',
+            'notify_url' => cfg('allinpay_notify_url') ?: cfg('pay_allinpay_notify_url') ?: (string) url('allinpay_notify', [], false, true),
+            'validtime' => cfg('allinpay_validtime') ?: cfg('pay_allinpay_validtime') ?: '5',
+            'limit_pay' => cfg('allinpay_limit_pay') ?: cfg('pay_allinpay_limit_pay'),
+        ];
+        $miss = [];
+        foreach (['cusid', 'appid', 'private_key'] as $field) {
+            if (empty($config[$field])) {
+                $miss[] = $field;
+            }
+        }
+        if ($miss) {
+            throw new Exception('通联支付配置缺失：' . implode(',', $miss));
+        }
+        return $config;
+    }
 
 	public function judgeOpenTianquetech($business) {
         $judge = false;

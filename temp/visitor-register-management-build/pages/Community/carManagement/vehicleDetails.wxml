@@ -1,0 +1,1 @@
+<view class="container" style="height:100vh;"><view class="main-box"><block wx:for="{{listdata}}" wx:for-item="item" wx:for-index="index"><view class="list-item"><view class="title">{{item.name}}</view><view class="text">{{item.value}}</view></view></block></view></view>

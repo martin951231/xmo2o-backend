@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "绑定新手机号",
+  "usingComponents": {
+    "u-checkbox": "/uview-ui/components/u-checkbox/u-checkbox",
+    "privacy-agreement": "/pages/my/components/privacyAgreement"
+  }
+}

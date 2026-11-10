@@ -1,0 +1,14 @@
+
+.actions[data-v-08562ced], .filters[data-v-08562ced] { display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; gap: 10px; margin: 20px 0;
+}
+.filters > .ant-input[data-v-08562ced] { width: 180px;
+}
+.qr[data-v-08562ced] { width: 110px; cursor: pointer;
+}
+.preview[data-v-08562ced] { width: 100%;
+}
+.exit-link[data-v-08562ced] { margin-left: 12px;
+}
+.test-button[data-v-08562ced] { margin: 16px 0;
+}
+

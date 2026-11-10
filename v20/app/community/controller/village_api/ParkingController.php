@@ -381,6 +381,7 @@ class ParkingController extends CommunityBaseController{
         $data['position_area'] = $this->request->post('position_area','','trim');//车位面积
         $data['position_note'] = $this->request->post('position_note','','trim');//备注
         $data['pigcms_id'] = $this->request->post('pigcms_id','','trim');//是否开启智慧停车功能
+        $data['position_status'] = $this->request->post('position_status',0,'intval');//租售状态 1未售出 2已售出已交付 3已售出未交付 4销控已售 5销控未售
         $data['children_type'] = $this->request->post('children_type',0,'intval');//字母车位  1母车位 2子车位
         $data['opt_type'] = $this->request->post('opt_type',0,'intval'); //0无 1可租赁2可抢购
         if (empty($data['village_id'])){
@@ -391,6 +392,9 @@ class ParkingController extends CommunityBaseController{
         }
         if ($data['position_num']==='' || $data['position_num']===null){
             return api_output_error(1001, '车位号不能为空');
+        }
+        if (!in_array($data['position_status'], [1, 2, 3, 4, 5])){
+            return api_output_error(1001, '请选择租售状态');
         }
         if (strlen($data['position_num'])>30){
             return api_output_error(1001, '车位号不能超过30位');
@@ -424,6 +428,7 @@ class ParkingController extends CommunityBaseController{
         $data['position_area'] = $this->request->post('position_area','','trim');//车位面积
         $data['position_note'] = $this->request->post('position_note','','trim');//备注
         $data['pigcms_id'] = $this->request->post('pigcms_id','','trim');//是否开启智慧停车功能
+        $data['position_status'] = $this->request->post('position_status',0,'intval');//租售状态 1未售出 2已售出已交付 3已售出未交付 4销控已售 5销控未售
         $data['end_time'] = $this->request->post('end_time','','trim');//是否开启智慧停车功能
         $data['children_type'] = $this->request->post('children_type',0,'intval');//字母车位  1母车位 2子车位
         $data['opt_type'] = $this->request->post('opt_type',0,'intval'); //0无 1可租赁2可抢购
@@ -440,6 +445,9 @@ class ParkingController extends CommunityBaseController{
         }
         if ($data['position_num']==='' || $data['position_num']===null){
             return api_output_error(1001, '车位号不能为空');
+        }
+        if (!in_array($data['position_status'], [1, 2, 3, 4, 5])){
+            return api_output_error(1001, '请选择租售状态');
         }
         if (strlen($data['position_num'])>30){
             return api_output_error(1001, '车位号不能超过30位');

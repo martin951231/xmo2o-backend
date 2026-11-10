@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "活动报名",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

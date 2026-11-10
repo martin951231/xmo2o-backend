@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "我的一卡通",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image"
+  }
+}

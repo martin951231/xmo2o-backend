@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "员工卡",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-toast": "/uview-ui/components/u-toast/u-toast",
+    "user-agreement-modal": "/pages/lifeTools/pocket/components/userAgreementModal"
+  }
+}

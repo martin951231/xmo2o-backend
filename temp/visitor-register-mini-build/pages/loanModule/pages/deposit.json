@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "存款",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "nodata": "/pages/loanModule/components/nodata"
+  }
+}

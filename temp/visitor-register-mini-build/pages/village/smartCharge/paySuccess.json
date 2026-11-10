@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "支付成功页",
+  "usingComponents": {
+    "recommend-goods-popup": "/pages/plat_com/components/recommendGoodsPopup"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="da-dropdown-footer data-v-11d4e349"><view data-event-opts="{{[['tap',[['handleReset']]]]}}" class="da-dropdown-footer--reset data-v-11d4e349" bindtap="__e">{{resetText||'重置'}}</view><view data-event-opts="{{[['tap',[['handleConfirm']]]]}}" class="da-dropdown-footer--confirm data-v-11d4e349" bindtap="__e">{{''+(confirmText||'确定')+''}}</view></view>

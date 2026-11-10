@@ -1,0 +1,1 @@
+<block wx:if="{{content}}"><view class="data-v-21f84c2c"><view class="blank-height-content data-v-21f84c2c" style="{{'height:'+(content.blank_height*2+'rpx')+';'}}"></view></view></block>

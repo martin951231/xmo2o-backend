@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的帖子详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "uni-fab": "/pages/village_my/component/uni-fab/uni-fab"
+  }
+}

@@ -154,6 +154,23 @@ class BillExcelController extends CommunityBaseController
         return api_output(0,$result);
     }
 
+    // 获取车位管理费已缴账单导入模板
+    public function getParkingPayImportTemplateUrl(){
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        try{
+            $result = (new BillExcelService())->getParkingPayImportTemplateUrl([
+                'village_id' => $village_id,
+                'opttype' => ImportExcelService::UPLOAD_PARKING_BILL_PAY_EXCEL,
+            ]);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        return api_output(0,$result);
+    }
+
     public function getCyclePayUserList(){
         $village_id = $this->adminUser['village_id'];
         $room_id = $this->request->param('room_id', 0, 'intval');
@@ -396,6 +413,45 @@ class BillExcelController extends CommunityBaseController
                 'nowVillageInfo'        => $nowVillageInfo,
             );
             $result=(new BillExcelImport())->executeCycleBillPayExcel($param);
+        }catch (\Exception $e){
+            return api_output_error(-1, $e->getMessage());
+        }
+        $msg = isset($result['errorTotal']) && intval($result['errorTotal']) > 0 ? '导入完成，存在失败数据' : '导入成功';
+        return api_output(0,$result,$msg);
+    }
+
+    // 开始导入车位管理费已缴账单
+    public function startParkingPayImport()
+    {
+        $village_id = $this->adminUser['village_id'];
+        if (empty($village_id)){
+            return api_output(1002, [], '请先登录到小区后再操作！');
+        }
+        $inputFileName = $this->request->post('inputFileName','');
+        $worksheetName = $this->request->post('worksheetName','');
+        $selectWorkSheetIndex = $this->request->post('selectWorkSheetIndex',0);
+        $nowVillageInfo = [
+            'village_id' => $village_id,
+            'village_name' => $this->adminUser['village_name'],
+            'village_address' => $this->adminUser['village_address'],
+            'account' => $this->adminUser['account'],
+            'property_id' => $this->adminUser['property_id'],
+            'property_phone' => $this->adminUser['property_phone'],
+            'adminName' => $this->adminUser['adminName'],
+            'user_name' => $this->adminUser['user_name'],
+            'adminId' => $this->adminUser['adminId'],
+            'loginType' => $this->adminUser['loginType'],
+        ];
+        try{
+            $result = (new BillExcelImport())->executeCycleBillPayExcel([
+                'type' => ImportExcelService::UPLOAD_PARKING_BILL_PAY_EXCEL,
+                'subjectId' => 0,
+                'projectId' => 0,
+                'inputFileName' => $inputFileName,
+                'worksheetName' => $worksheetName,
+                'selectWorkSheetIndex' => $selectWorkSheetIndex,
+                'nowVillageInfo' => $nowVillageInfo,
+            ]);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }

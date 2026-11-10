@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "店铺主页",
+  "usingComponents": {
+    "store-item": "/pages/store/components/favoured-store-item"
+  }
+}

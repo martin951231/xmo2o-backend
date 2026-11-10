@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "count": "/pages/shop_new/component/count/count",
+    "goods-tip": "/pages/shop_new/component/goodsTip/goodsTip"
+  }
+}

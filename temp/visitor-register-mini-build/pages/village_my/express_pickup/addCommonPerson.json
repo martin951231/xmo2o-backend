@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加/修改常用取件人",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

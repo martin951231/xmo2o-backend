@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "img-cropper": "/pages/village_my/component/img-cropper/img-cropper"
+  }
+}

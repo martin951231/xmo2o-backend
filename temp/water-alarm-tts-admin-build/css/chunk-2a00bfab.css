@@ -1,0 +1,20 @@
+.message-suggestions-list-box[data-v-48ca92c8] {
+  margin: 30px 20px;
+  background-color: white;
+}
+.message-suggestions-list-box .search-box[data-v-48ca92c8] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .add-box[data-v-48ca92c8] {
+  padding: 20px 20px 0;
+}
+.message-suggestions-list-box .components-table-demo-nested[data-v-48ca92c8] {
+  padding: 20px;
+}
+.message-suggestions-list-box .modal_box_title[data-v-48ca92c8] {
+  color: #000;
+}
+.message-suggestions-list-box .modal_box_title span[data-v-48ca92c8] {
+  color: #F5242E !important;
+}
+

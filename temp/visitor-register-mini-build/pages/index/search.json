@@ -1,0 +1,15 @@
+{
+  "componentPlaceholder": {
+    "search-ranking": "view"
+  },
+  "navigationBarTitleText": "搜索",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "u-line": "/uview-ui/components/u-line/u-line",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "search-ranking": "/pages/plat_com/components/searchRanking/searchRanking"
+  }
+}

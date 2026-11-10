@@ -1,0 +1,1 @@
+<view class="order-map data-v-76627041"><map style="width:100%;" id="orderMap" longitude="{{centerAddress.lng}}" latitude="{{centerAddress.lat}}" markers="{{markers}}" class="data-v-76627041"></map></view>

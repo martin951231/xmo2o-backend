@@ -1,0 +1,119 @@
+
+.wrap[data-v-9947987e] {
+    padding: 0 26px 20px;
+    border-bottom: 1px solid #F2F4F6;
+}
+.title[data-v-9947987e] {
+    margin-bottom: 12px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #323233;
+}
+.desc[data-v-9947987e] {
+    font-size: 14px;
+    font-weight: 400;
+    color: #969799;
+    line-height: 22px;
+}
+.borderNone[data-v-9947987e] {
+    border: none;
+}
+
+
+.colorPickerLabel[data-v-05ccc678] {
+    width: 80px;
+    height: 30px;
+    border: 1px solid #666666;
+}
+.colorPickerLabel input[type='color'][data-v-05ccc678] {
+    opacity: 0;
+}
+.color-name[data-v-05ccc678] {
+    height: 30px;
+    min-width: 60px;
+    text-align: left;
+    margin-right: 20px;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+}
+.flex.ant-form-item[data-v-05ccc678] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.navHeader[data-v-05ccc678] {
+    width: 100%;
+    min-height: 48px;
+    margin-bottom: -1px;
+    padding: 0 24px;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+    font-size: 14px;
+    background: #f4f4f4;
+    border-bottom: 1px solid #e8e8e8;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+}
+.navHeaderTitle[data-v-05ccc678] {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.navHeaderExtra[data-v-05ccc678] {
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: normal;
+    font-size: 14px;
+}
+.navContent[data-v-05ccc678] {
+    width: 100%;
+    padding: 24px;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.imgWrap[data-v-05ccc678] {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+}
+.imgWrap img[data-v-05ccc678] {
+    width: 100%;
+    height: 100%;
+}
+.imgTips[data-v-05ccc678] {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    font-size: 12px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.4);
+}
+.addBtn[data-v-05ccc678] {
+    padding: 0 24px;
+}
+.index[data-v-05ccc678] .ant-form-item-label > label {
+    color: red;
+}
+.disabledCursor[data-v-05ccc678] {
+    cursor: not-allowed;
+}
+

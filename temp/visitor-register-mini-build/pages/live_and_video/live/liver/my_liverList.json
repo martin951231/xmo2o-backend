@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "我的直播",
+  "navigationBarBackgroundColor": "#FE443A",
+  "usingComponents": {
+    "share": "/pages/live_and_video/live/viewer/share",
+    "product-list-liver": "/pages/live_and_video/live/liver/productListLiver"
+  }
+}

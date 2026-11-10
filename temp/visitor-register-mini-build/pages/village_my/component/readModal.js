@@ -1,0 +1,10 @@
+require('../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/village_my/component/readModal"],{"0a0e":function(t,e,i){"use strict";(function(t){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var i={props:{protocol:{type:Object,default:function(){return{}}}},data:function(){return{isActive:!1}},methods:{chooseThis:function(){this.isActive=!this.isActive},confirm:function(){this.isActive?this.$emit("close","confirm"):t.showToast({title:"请先确定已阅读协议",icon:"none"})},cancel:function(){this.isActive?this.$emit("close","cancel"):t.showToast({title:"请先确定已阅读协议",icon:"none"})},goUrl:function(){t.navigateTo({url:"/pages/village_my/richText?id="+this.protocol.id+"&village_id="+this.protocol.village_id})},closeModal:function(){this.$emit("close","")}}};e.default=i}).call(this,i("543d")["default"])},"3efa":function(t,e,i){"use strict";i.r(e);var n=i("8740"),c=i("809e");for(var o in c)["default"].indexOf(o)<0&&function(t){i.d(e,t,(function(){return c[t]}))}(o);i("88e1");var a,u=i("f0c5"),l=Object(u["a"])(c["default"],n["b"],n["c"],!1,null,"d849523c",null,!1,n["a"],a);e["default"]=l.exports},"4932c":function(t,e,i){},"809e":function(t,e,i){"use strict";i.r(e);var n=i("0a0e"),c=i.n(n);for(var o in n)["default"].indexOf(o)<0&&function(t){i.d(e,t,(function(){return n[t]}))}(o);e["default"]=c.a},8740:function(t,e,i){"use strict";var n;i.d(e,"b",(function(){return c})),i.d(e,"c",(function(){return o})),i.d(e,"a",(function(){return n}));var c=function(){var t=this,e=t.$createElement,n=(t._self._c,t.isActive?i("d419"):null),c=t.isActive?null:i("a942");t.$mp.data=Object.assign({},{$root:{m0:n,m1:c}})},o=[]},"88e1":function(t,e,i){"use strict";var n=i("4932c"),c=i.n(n);c.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/village_my/component/readModal-create-component',
+    {
+        'pages/village_my/component/readModal-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("3efa"))
+        })
+    },
+    [['pages/village_my/component/readModal-create-component']]
+]);

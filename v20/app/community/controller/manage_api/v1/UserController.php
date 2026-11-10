@@ -1488,7 +1488,7 @@ class UserController extends BaseController{
                 $data_info['name'] = $name;
                 $data_info['phone'] = $phone;
                 $data_info['type'] = $type;
-                $data_info['status'] = 4;
+                $data_info['status'] = 3;
                 $data_info['housesize'] = $bind_data['housesize'];
                 $data_info['add_time'] = time();
                 $service_user->saveHouseRoom($where_room,$data_info);

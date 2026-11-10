@@ -55,6 +55,64 @@ class BillExcelService
         return $result;
     }
 
+    public function getCycleImportTemplateUrl($param) {
+        $subject_id = isset($param['subject_id']) ? intval($param['subject_id']) : 0;
+        $charge_project_id = isset($param['charge_project_id']) ? intval($param['charge_project_id']) : 0;
+        if (!$subject_id || !$charge_project_id) {
+            throw new \think\Exception('请先选择收费科目、收费项目');
+        }
+        $subjectInfo = (new HouseNewChargeNumber())->get_one(
+            ['id' => $subject_id, 'status' => 1],
+            'id,charge_number_name'
+        );
+        $projectInfo = (new HouseNewChargeProject())->getOne(
+            [
+                'id' => $charge_project_id,
+                'subject_id' => $subject_id,
+                'village_id' => $param['village_id'],
+                'type' => 2,
+                'status' => 1,
+            ],
+            'id,name,type'
+        );
+        if (!$subjectInfo || !$projectInfo) {
+            throw new \think\Exception('模板参数对应的数据不存在');
+        }
+        $excelTableTile = [
+            'A' => '楼栋名称',
+            'B' => '单元名称',
+            'C' => '楼层名称',
+            'D' => '房间号',
+            'E' => '收费标准名称',
+            'F' => '账单金额',
+            'G' => '备注',
+            'H' => '账单计费开始时间',
+            'I' => '账单计费结束时间',
+            'J' => '账单生成时间(可不填)',
+        ];
+        $data = [
+            [
+                'A' => '1',
+                'B' => '1',
+                'C' => '5',
+                'D' => '2',
+                'E' => '物业费标准',
+                'F' => '5380.25',
+                'G' => '周期性账单导入',
+                'H' => '2024-06-01',
+                'I' => '2024-06-30',
+                'J' => '',
+            ],
+        ];
+        return $this->saveCycleExcel($data, $excelTableTile, '周期性账单导入模板.xlsx', 'Xlsx', [
+            'subject_name' => $subjectInfo['charge_number_name'],
+            'project_name' => $projectInfo['name'],
+            'subject_id' => $subject_id,
+            'charge_project_id' => $charge_project_id,
+            'village_id' => $param['village_id'],
+        ]);
+    }
+
     public function getCyclePayImportTemplateUrl($param) {
         $subject_id = isset($param['subject_id']) ? intval($param['subject_id']) : 0;
         $charge_project_id = isset($param['charge_project_id']) ? intval($param['charge_project_id']) : 0;
@@ -88,6 +146,31 @@ class BillExcelService
             'subject_id' => $subject_id,
             'charge_project_id' => $charge_project_id,
             'village_id' => $param['village_id'],
+        ]);
+    }
+
+    public function getParkingPayImportTemplateUrl($param) {
+        $excelTableTile = [
+            'A' => '车库名称', 'B' => '车库ID', 'C' => '车位号', 'D' => '收费标准名称',
+            'E' => '账单金额', 'F' => '备注', 'G' => '账单计费开始时间', 'H' => '账单计费结束时间', 'I' => '账单生成时间(可不填)',
+            'J' => '缴费人姓名', 'K' => '缴费人手机号', 'L' => '缴费时间', 'M' => '开票状态',
+            'N' => '实际缴费金额', 'O' => '实际到账金额', 'P' => '押金抵扣', 'Q' => '积分抵扣金额', 'R' => '积分抵扣数量',
+            'S' => '支付方式', 'T' => '收款人',
+        ];
+        $data = [
+            [
+                'A' => '地下车库', 'B' => '1', 'C' => 'A001', 'D' => '月租车管理费标准',
+                'E' => '300.00', 'F' => '车位管理费已缴账单导入', 'G' => '2026-07-01', 'H' => '2026-07-31', 'I' => '',
+                'J' => '请填写缴费人姓名', 'K' => '请填写缴费人手机号', 'L' => '2026-07-31 10:30:00', 'M' => '未开票',
+                'N' => '300.00', 'O' => '300.00', 'P' => '0', 'Q' => '0', 'R' => '0',
+                'S' => '现金交易', 'T' => '请填写收款人姓名',
+            ],
+        ];
+        return $this->saveCycleExcel($data, $excelTableTile, '车位管理费已缴账单导入模板.xlsx', 'Xlsx', [
+            'subject_name' => '车位管理费',
+            'project_name' => '车位管理费',
+            'village_id' => $param['village_id'],
+            'is_parking_bill' => true,
         ]);
     }
 
@@ -149,7 +232,10 @@ class BillExcelService
         $worksheet->setTitle('周期账单导入');
         $worksheet->setCellValue('A1', '收费科目：'.($extra['subject_name'] ?? ''));
         $worksheet->setCellValue('A2', '收费项目：'.($extra['project_name'] ?? ''));
-        $worksheet->setCellValue('A3', '说明：导入时以当前选择的收费科目和收费项目为准；收费周期默认1，收费周期类型默认自定义收费周期。');
+        $description = !empty($extra['is_parking_bill'])
+            ? '说明：按车库ID和车位号定位车位，自动使用车位当前绑定的车位管理费项目；收费标准名称必须与当前绑定标准完全一致。'
+            : '说明：导入时以当前选择的收费科目和收费项目为准；收费周期默认1，收费周期类型默认自定义收费周期。';
+        $worksheet->setCellValue('A3', $description);
         foreach ($excelTableTile as $pCoordinate => $excelHead) {
             $worksheet->setCellValue($pCoordinate.'4', $excelHead);
         }
@@ -174,7 +260,9 @@ class BillExcelService
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
             ],
         ]);
-        $this->appendCycleRuleReferenceSheet($spreadsheet, $extra);
+        if (empty($extra['is_parking_bill'])) {
+            $this->appendCycleRuleReferenceSheet($spreadsheet, $extra);
+        }
         $spreadsheet->setActiveSheetIndex(0);
         $fileInfo = $this->phpSpreadsheet($file_name, $spreadsheet, $inputFileType);
         if (!$fileInfo) {

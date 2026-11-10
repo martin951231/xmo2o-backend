@@ -1,0 +1,22 @@
+.package-list[data-v-6d5954bd] {
+  padding: 10px;
+}
+.package-list .title-con .title[data-v-6d5954bd] {
+  color: #333333;
+  font-size: 28px;
+  font-weight: bold;
+}
+.package-list .title-con .desc[data-v-6d5954bd] {
+  color: #DD5A43;
+  font-size: 16px;
+  line-height: 40px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.package-list .oprate[data-v-6d5954bd] {
+  margin-top: 10px;
+}
+.package-list .content[data-v-6d5954bd] {
+  margin-top: 10px;
+}
+

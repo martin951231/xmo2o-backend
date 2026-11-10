@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "uni-fab": "/pages/village_my/component/uni-fab/uni-fab",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "w-picker": "/pages/village_my/component/w-picker/w-picker",
+    "lb-picker": "/pages/village_my/component/lb-picker/index",
+    "upload-img": "/pages/village_my/component/uploadImg/uploadImg"
+  }
+}

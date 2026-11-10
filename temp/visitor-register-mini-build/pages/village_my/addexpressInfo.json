@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加寄收件信息",
+  "usingComponents": {
+    "w-picker": "/pages/village_my/component/w-picker/w-picker"
+  }
+}

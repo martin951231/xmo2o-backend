@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "活动报名",
+  "usingComponents": {
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup"
+  }
+}

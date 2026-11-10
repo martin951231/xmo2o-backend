@@ -1,0 +1,117 @@
+
+.packages-room-buy-box {
+    padding: 15px;
+    background-color: white;
+    margin-top: 10px;
+}
+.buy-parent {
+  position: absolute;
+  white-space: nowrap;
+}
+.buy-box {
+  text-align: center;
+  margin-top: 5px;
+  /*border: 1px solid #eee;*/
+  height: 98%;
+  width: 98%;
+  font-weight: bold;
+  /*box-shadow: 0 0 3px 1px #eee;*/
+  white-space: nowrap;
+  position:relative;
+}
+.buy-divs{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 380px;
+  white-space: nowrap;/*文本不会换行，文本会在在同一行上继续*/
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  position:relative;
+  overflow: hidden;
+}
+.buy-box::-webkit-scrollbar{
+  display: none;
+}
+.buy-room-package h1,h2,h4{
+  font-weight:bold;
+}
+.buy-room-package {
+  color: #000;
+  max-height: calc(100% - 120px);
+  width: 200px;
+  min-width: 200px;
+  margin-right: 15px;
+  display: inline-block;/*行内块元素*/
+}
+.buy-room-title {
+    margin-bottom: 15px;
+}
+.buy-room-price {
+  font-size: 24px;
+  font-weight:bold;
+  margin-bottom: 15px;
+}
+.buy-room-num-tip {
+  font-weight:400;
+  color: #333;
+  margin-bottom: 15px;
+}
+.header-box {
+  font-weight:400;
+  color: #111;
+}
+.header-box img {
+    width: 23px;
+    height: 23px;
+    -webkit-box-shadow:-1px 0 1px #eee, /*左边阴影*/  
+             1px 0 1px #eee, /*右边阴影*/  
+             0 -1px 1px #eee, /*顶部阴影*/  
+             0 1px 1px #eee;
+            box-shadow:-1px 0 1px #eee, /*左边阴影*/  
+             1px 0 1px #eee, /*右边阴影*/  
+             0 -1px 1px #eee, /*顶部阴影*/  
+             0 1px 1px #eee; /*底边阴影*/
+}
+.choose_icon {
+  width: 40px;
+  height: 40px; 
+  font-size: 25px;
+  color: white;
+  padding: 15px 0 0 26px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.pay-info-box-order {
+    margin-top: 20px;
+}
+.pay-info-box-order .packages-end-time {
+    font-size: 16px;
+    color: red;
+}
+.total-money-info {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    padding: 10px;
+    text-align: right;
+}
+.total-money-info .money-tip {
+    font-size: 18px;
+    font-weight: 600;
+    color: red;
+}
+.pay-type-choose-box {
+  color: #000;
+  padding: 20px;
+  background-color: #f0f4fe;
+}
+.pay-type-choose-box .pay-type-tip {
+    margin-bottom: 10px;
+}
+.pay-btn {
+  padding: 20px;
+    text-align: right;
+}
+

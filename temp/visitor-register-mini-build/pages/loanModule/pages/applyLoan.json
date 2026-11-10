@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "申请贷款",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "nodata": "/pages/loanModule/components/nodata"
+  }
+}

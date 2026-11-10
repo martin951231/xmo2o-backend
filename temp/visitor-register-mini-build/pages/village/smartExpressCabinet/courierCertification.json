@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "快递员认证",
+  "usingComponents": {
+    "sunui-upimg": "/pages/village/smartExpressCabinet/components/sunui-upimg/sunui-upimg-basic"
+  }
+}

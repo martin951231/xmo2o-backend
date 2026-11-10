@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "提现确认",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-button": "/uview-ui/components/u-button/u-button"
+  }
+}

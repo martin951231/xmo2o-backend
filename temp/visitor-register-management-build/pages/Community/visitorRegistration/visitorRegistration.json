@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "访客登记",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control"
+  }
+}

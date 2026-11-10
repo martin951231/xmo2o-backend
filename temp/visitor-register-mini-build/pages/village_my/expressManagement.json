@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "快递管理",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "express-pickup-list": "/pages/village_my/express_pickup/expressPickupList",
+    "pickup-fab": "/pages/village_my/component/pickup-fab/pickup-fab",
+    "uni-segmented-control": "/appComponent/uni/uni-segmented-control/uni-segmented-control",
+    "da-dropdown-vue2": "/pages/village_my/component/da-dropdown-vue2/index"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "编辑业主",
+  "usingComponents": {
+    "evan-radio": "/pages/Community/component/evan-radio/evan-radio",
+    "evan-radio-group": "/pages/Community/component/evan-radio/evan-radio-group",
+    "uni-icons": "/appComponent/uni/uni-icons/uni-icons2",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "w-picker": "/pages/Community/component/w-picker/w-picker",
+    "lb-picker": "/appComponent/uni/lb-picker/index"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "订单详情",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "statebox": "/pages/shopmall_third/components/orderstate",
+    "ridership": "/pages/shopmall_third/components/ridership",
+    "shipstate": "/pages/shopmall_third/components/shippingstate",
+    "delivery-date": "/pages/shopmall_third/components/deliveryDate",
+    "more_info": "/pages/shopmall_third/components/more_info",
+    "ship-info-model": "/pages/shopmall_third/components/shipInfoModel",
+    "delivery-track-map": "/pages/shopmall_third/components/deliveryTrackMap"
+  }
+}

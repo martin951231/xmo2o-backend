@@ -1,0 +1,5 @@
+.floor-scroll.data-v-11102e78,
+.mall-icon.data-v-11102e78{position:fixed;left:34rpx;bottom:280rpx;width:auto;height:454rpx}.floor-scroll .item.data-v-11102e78,
+.mall-icon .item.data-v-11102e78{min-width:76rpx;max-width:152rpx;border-bottom:1rpx solid #e9e9e9}.floor-scroll .item.active.data-v-11102e78,
+.mall-icon .item.active.data-v-11102e78{color:#c69840}.floor-scroll .item.data-v-11102e78:last-child,
+.mall-icon .item.data-v-11102e78:last-child{border-bottom:none}.mall-icon.data-v-11102e78{right:34rpx;left:unset;height:544rpx}.area-map-wrap.data-v-11102e78{position:relative;background-position:0 0;background-size:100%;background-repeat:no-repeat}.area-map-wrap .markers-item.data-v-11102e78{position:absolute;display:flex;align-items:center;justify-content:center;transition:all .3ms;overflow:hidden}.area-map-wrap .markers-item .markers-item-text.data-v-11102e78{text-align:center;color:#333;font-weight:700;overflow:hidden;word-break:break-all;text-overflow:ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:var(--webkit-line-clamp);transition:all .3ms}

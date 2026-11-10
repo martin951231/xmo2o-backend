@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "申请停暖",
+  "usingComponents": {
+    "base-msg": "/pages/trafficBilling/components/baseMsg",
+    "document-msg": "/pages/trafficBilling/components/documentMsg"
+  }
+}

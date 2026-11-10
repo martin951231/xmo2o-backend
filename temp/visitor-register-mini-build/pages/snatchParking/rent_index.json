@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "首页",
+  "usingComponents": {
+    "u-checkbox": "/uview-ui/components/u-checkbox/u-checkbox",
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "agreement-modal": "/pages/snatchParking/components/agreementModal",
+    "agree-bottom": "/pages/snatchParking/components/agreeBottom",
+    "no-data": "/pages/snatchParking/components/noData"
+  }
+}

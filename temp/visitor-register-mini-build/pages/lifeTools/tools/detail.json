@@ -1,0 +1,28 @@
+{
+  "navigationBarTitleText": "详情",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "u-line": "/uview-ui/components/u-line/u-line",
+    "u-tag": "/uview-ui/components/u-tag/u-tag",
+    "u-notice-bar": "/uview-ui/components/u-notice-bar/u-notice-bar",
+    "u-read-more": "/uview-ui/components/u-read-more/u-read-more",
+    "u-parse": "/uview-ui/components/u-parse/u-parse",
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-back-top": "/uview-ui/components/u-back-top/u-back-top",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "course-item": "/pages/lifeTools/components/courseItem",
+    "commment-item": "/pages/lifeTools/components/commentList",
+    "coupon-item": "/pages/lifeTools/components/couponItem",
+    "stadium-item": "/pages/lifeTools/components/stadiumItem",
+    "scenic-ticket-book": "/pages/lifeTools/tools/components/scenicTicketBook",
+    "sport-ticket-book": "/pages/lifeTools/tools/components/sportTicketBook",
+    "hotel-item": "/pages/lifeTools/components/hotelItem",
+    "food-shop-item": "/pages/lifeTools/components/foodShopItem",
+    "reserve-item": "/pages/lifeTools/components/reserveItem"
+  }
+}

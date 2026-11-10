@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

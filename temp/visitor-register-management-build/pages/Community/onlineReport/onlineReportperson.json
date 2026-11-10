@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "在线报修去指派",
+  "usingComponents": {
+    "w-picker": "/appComponent/uni/w-picker/w-picker"
+  }
+}

@@ -275,57 +275,16 @@ class HouseListDatasExportOutService
                     if(isset($param['village_id'])){
                         $village_id=trim($param['village_id']);
                     }
-                    $order_type=1;
-                    $order_no='';
-                    if(isset($param['order_type'])){
-                        $order_type=intval($param['order_type']);
-                    }
-                    if(isset($param['order_no'])){
-                        $order_no=trim($param['order_no']);
-                    }
-                    $order_status=0;
-                    if(isset($param['order_status'])){
-                        $order_status=intval($param['order_status']);
-                    }
-                    $whereArr=array();
-                    $whereArr[]=array('village_id','=',$village_id);
-                    $whereArr[] = array('source_from','=','1');
-                    if($order_type==1 && !empty($order_no)){
-                        $whereArr[]=array('order_no','=',$order_no);
-                    }else if($order_type==2){
-                        $whereArr[]=array('pay_order_no','=',$order_no);
-                    }else if($order_type==3){
-                        $whereArr[]=array('third_transaction_no','=',$order_no);
-                    }
-                    if($order_status==1){
-                        $whereArr[]=array('refund_status','=',0);
-                    }elseif ($order_status==2){
-                        $whereArr[]=array('refund_status','=',1);
-                    }elseif ($order_status==3){
-                        $whereArr[]=array('refund_status','=',2);
-                    }
-                    if(isset($param['business_type']) && !empty($param['business_type'])){
-                        $whereArr[]=array('house_type','like','%'.$param['business_type'].'%');
-                        //$whereArr[] = array('house_type','find in set',$param['business_type']);
-                    }
-                    $date='';
-                    if(isset($param['date'])){
-                        $date=$param['date'];
-                    }
-                    if(!empty($date) && is_array($date)){
-                        if (!empty($date[0])) {
-                            $whereArr[] = ['pay_time', '>=', strtotime($date[0] . ' 00:00:00')];
-                        }
-                        if (!empty($date[1])) {
-                            $whereArr[] = ['pay_time', '<=', strtotime($date[1] . ' 23:59:59')];
-                        }
-                    }
                     $housePaidOrderRecordService = new HousePaidOrderRecordService();
+                    $whereArr = $housePaidOrderRecordService->getExportWhere($village_id, $param);
+                    $date = $param['date'] ?? [];
                     $fieldStr='*';
                     $exportArr = $housePaidOrderRecordService->getPaidOrderRecordList($village_id,$whereArr,$fieldStr, 0, 20,true);
                     $filename = date("YmdHis") . '-' .rand(1000000,9999999).'.xlsx' ;
-                    $tips='小区已支付订单流水导出';
-                    $this->saveExcel($exportArr['export_title'], $exportArr, $filename, $tips,'paidOrderRecord');
+                    $villageInfo = (new \app\community\model\db\HouseVillage())->getInfo(['village_id' => $village_id], 'village_name');
+                    $spreadsheet = $housePaidOrderRecordService->buildPaidRecordSpreadsheet($exportArr['lists'], $villageInfo['village_name'] ?? '', $date);
+                    // 此处只保存文件，直接执行时不能给 JSON 响应设置 Excel 下载头。
+                    \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx')->save(dirname(__DIR__, 4) . '/runtime/' . $filename);
                     $whereArr = array('export_id' => $export_id);
                     $saveArr=array('status'=>1,'file_name'=>$filename);
                     $exportLogDb->saveOneData($whereArr,$saveArr);

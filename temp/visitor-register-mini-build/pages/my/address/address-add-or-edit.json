@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "编辑收货地址",
+  "usingComponents": {
+    "w-picker": "/pages/my/components/w-picker/w-picker"
+  }
+}

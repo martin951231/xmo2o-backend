@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-parse": "/uview-ui/components/u-parse/u-parse",
+    "component-bg-image": "/pages/customPage/components/customPageComponents/ComponentBgImage"
+  }
+}

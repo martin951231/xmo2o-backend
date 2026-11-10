@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "任务详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-fab": "/pages/village_my/component/uni-fab/uni-fab"
+  }
+}

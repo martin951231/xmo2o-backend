@@ -1,0 +1,18 @@
+
+.file-list[data-v-49a1705a]{
+    margin-top: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    cursor: pointer;
+}
+.file-list[data-v-49a1705a]:hover{
+    background: #e6f7ff;
+}
+

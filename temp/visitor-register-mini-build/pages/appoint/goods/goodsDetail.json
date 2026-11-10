@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "‎",
+  "usingComponents": {
+    "u-parse": "/uview-ui/components/u-parse/u-parse",
+    "tui-actionsheet": "/pages/appoint/component/actionsheet/actionsheet"
+  }
+}

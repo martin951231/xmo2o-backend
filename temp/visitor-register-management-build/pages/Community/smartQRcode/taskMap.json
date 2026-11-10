@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "任务地图",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon"
+  }
+}

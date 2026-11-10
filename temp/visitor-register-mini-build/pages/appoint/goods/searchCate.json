@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "搜索分类列表",
+  "usingComponents": {
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "tui-icon": "/pages/appoint/component/icon/icon"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "componentPlaceholder": {
+    "internal-card-popup": "view"
+  },
+  "navigationBarTitleText": "支付中心",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-modal": "/uview-ui/components/u-modal/u-modal",
+    "internal-card-popup": "/pages/plat_com/components/internalCardPopup"
+  }
+}

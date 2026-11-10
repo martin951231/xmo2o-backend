@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "社群活动",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "activity-item": "/pages/socialActivity/components/ActivityItem"
+  }
+}

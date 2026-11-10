@@ -3498,6 +3498,69 @@ class MerchantAction extends BaseAction{
         exit();
     }
 
+	/**
+	 * 每个店铺独立维护的通联微信小程序支付配置。
+	 */
+	public function store_allinpay(){
+		$storeId = IS_POST ? intval($_POST['store_id']) : intval($_GET['store_id']);
+		$store = M('Merchant_store')->field('store_id,mer_id,name')->where(array('store_id' => $storeId))->find();
+		if(empty($store)){
+			$this->frame_error_tips('数据库中没有查询到该店铺的信息！');
+		}
+
+		$configModel = M('Merchant_store_allinpay_config');
+		if(IS_POST){
+			$status = isset($_POST['allinpay_status']) ? (string)$_POST['allinpay_status'] : '';
+			if(!in_array($status, array('0', '1'), true)){
+				$this->error('请选择通联支付开启状态');
+			}
+
+			$required = array(
+				'allinpay_appid' => 'AppID',
+				'allinpay_cusid' => '商户号',
+				'pay_allinpay_private_key' => '通联私钥',
+			);
+			$data = array(
+				'store_id' => $storeId,
+				'mer_id' => intval($store['mer_id']),
+				'allinpay_status' => intval($status),
+				'update_time' => $_SERVER['REQUEST_TIME'],
+			);
+			foreach($required as $field => $label){
+				$value = trim(stripslashes(htmlspecialchars_decode((string)$_POST[$field], ENT_QUOTES)));
+				if($value === ''){
+					$this->error('请填写通联支付' . $label);
+				}
+				$data[$field] = $value;
+			}
+
+			$current = $configModel->where(array('store_id' => $storeId))->find();
+			if($current){
+				$result = $configModel->where(array('store_id' => $storeId))->save($data);
+			}else{
+				$data['add_time'] = $_SERVER['REQUEST_TIME'];
+				$result = $configModel->add($data);
+			}
+			if($result === false){
+				$this->error('通联支付配置保存失败');
+			}
+			D('System_log')->add_log('编辑了店铺通联支付配置，店铺ID：' . $storeId, '店铺信息', $storeId);
+			$this->success('通联支付配置保存成功');
+		}
+
+		$config = $configModel->where(array('store_id' => $storeId))->find();
+		if(empty($config)){
+			$config = array('allinpay_status' => 0);
+		}
+		foreach(array('allinpay_appid', 'allinpay_cusid', 'pay_allinpay_private_key') as $field){
+			$config[$field] = htmlspecialchars((string)$config[$field], ENT_QUOTES, 'UTF-8');
+		}
+		$this->assign('store', $store);
+		$this->assign('allinpay', $config);
+		$this->assign('bg_color', '#F3F3F3');
+		$this->display();
+	}
+
 	public function juhepay(){
 
 

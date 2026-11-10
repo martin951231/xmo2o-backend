@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/appoint/component/informationItem/informationItem"],{"020d":function(t,e,n){"use strict";var a=n("c284"),i=n.n(a);i.a},5797:function(t,e,n){"use strict";var a;n.d(e,"b",(function(){return i})),n.d(e,"c",(function(){return r})),n.d(e,"a",(function(){return a}));var i=function(){var t=this,e=t.$createElement,n=(t._self._c,t.createTimeFormat()),a=t.L("X1次浏览",{X1:t.content.views});t.$mp.data=Object.assign({},{$root:{m0:n,m1:a}})},r=[]},"903f":function(t,e,n){"use strict";n.r(e);var a=n("5797"),i=n("d6a6a");for(var r in i)["default"].indexOf(r)<0&&function(t){n.d(e,t,(function(){return i[t]}))}(r);n("020d");var o,c=n("f0c5"),u=Object(c["a"])(i["default"],a["b"],a["c"],!1,null,"4ee2128b",null,!1,a["a"],o);e["default"]=u.exports},c284:function(t,e,n){},d6a6a:function(t,e,n){"use strict";n.r(e);var a=n("faeb"),i=n.n(a);for(var r in a)["default"].indexOf(r)<0&&function(t){n.d(e,t,(function(){return a[t]}))}(r);e["default"]=i.a},faeb:function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var a={props:{content:{type:Object,default:function(){return{}}},page:{type:String,default:""}},data:function(){return{}},methods:{goUrl:function(){"informationDetail"!=this.page&&this.common.parseUrl("/pages/appoint/information/detail?id=".concat(this.content.id))},createTimeFormat:function(){if(!this.content.create_time)return"";var t=this.content.create_time.replace(/-/g,"/"),e=new Date(t).getTime(),n=5184e5,a=(new Date).getTime();return a-e<n?this.$u.timeFrom(e):this.content.create_time}}};e.default=a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/appoint/component/informationItem/informationItem-create-component',
+    {
+        'pages/appoint/component/informationItem/informationItem-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("903f"))
+        })
+    },
+    [['pages/appoint/component/informationItem/informationItem-create-component']]
+]);

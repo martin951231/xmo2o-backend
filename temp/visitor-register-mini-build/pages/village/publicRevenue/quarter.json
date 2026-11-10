@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "收支明细",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "detail-row": "/pages/village/publicRevenue/components/detailRow",
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar"
+  }
+}

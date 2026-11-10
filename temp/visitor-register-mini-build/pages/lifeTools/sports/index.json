@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "体育健身",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-notice-bar": "/uview-ui/components/u-notice-bar/u-notice-bar",
+    "life-tools-tabbar": "/pages/common/lifeTools/tabbar",
+    "match-item": "/pages/lifeTools/components/matchItem",
+    "course-item": "/pages/lifeTools/components/courseItem",
+    "mall-item": "/pages/lifeTools/components/mallItem",
+    "stadium-item": "/pages/lifeTools/components/stadiumItem"
+  }
+}

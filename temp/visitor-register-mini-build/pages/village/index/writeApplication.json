@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "天使之眼",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker"
+  }
+}

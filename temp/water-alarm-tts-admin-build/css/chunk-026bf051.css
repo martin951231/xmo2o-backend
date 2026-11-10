@@ -1,0 +1,54 @@
+
+.container[data-v-27a62d51] {
+  padding-bottom: 50px;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.footer[data-v-27a62d51] {
+  padding: 0 30px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 50px;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-shadow: 0 -2px 4px -2px #cccccc;
+          box-shadow: 0 -2px 4px -2px #cccccc;
+  z-index: 2;
+}
+.container[data-v-27a62d51] .ant-tabs .ant-tabs-large-bar .ant-tabs-tab {
+  font-size: 14px;
+}
+.title[data-v-27a62d51] {
+  white-space: nowrap;
+  padding-right: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.dynamic-delete-button[data-v-27a62d51] {
+  cursor: pointer;
+  position: relative;
+  top: 4px;
+  font-size: 24px;
+  color: #999;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  margin-left: 5px;
+}
+.dynamic-delete-button[data-v-27a62d51]:hover {
+  color: #777;
+}
+.dynamic-delete-button[disabled][data-v-27a62d51] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.gray-tips[data-v-27a62d51] {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+}
+

@@ -1,0 +1,1 @@
+<view class="read_agree_ment"><u-parse vue-id="45892792-1" html="{{rich_text}}" bind:__l="__l"></u-parse></view>

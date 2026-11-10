@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "首页内容模板",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "favoured-store": "/pages/common/components/favoured-store",
+    "four-pic": "/pages/common/components/four-pic-adver",
+    "coupons-dialog": "/appComponent/platcommon/coupons-dialog",
+    "group-coupon-gift": "/appComponent/indexPage/group-coupon-gift",
+    "favoured-card": "/pages/common/components/favouredCard",
+    "we-app-ads": "/appComponent/platcommon/weAppAds",
+    "index-hotwords": "/pages/common/components/indexHotwords",
+    "speech-recognition": "/appComponent/platcommon/speechRecognize"
+  }
+}

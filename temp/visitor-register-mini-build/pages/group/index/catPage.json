@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "团购分类",
+  "usingComponents": {
+    "group-common-index": "/pages/group/component/groupCommonIndex",
+    "module-item": "/pages/group/component/moduleItem",
+    "list-item": "/pages/group/component/listItem",
+    "h-mfilter-dropdown": "/pages/group/component/HM-filterDropdown",
+    "group-goods-item": "/pages/group/component/groupGoodsItem"
+  }
+}

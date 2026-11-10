@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "团购",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "index-page": "/pages/group/index/index",
+    "find-page": "/pages/group/index/find",
+    "index-two": "/pages/group/index/indexTwo"
+  }
+}

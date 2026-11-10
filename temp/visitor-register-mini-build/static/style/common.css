@@ -1,0 +1,157 @@
+/* ============
+	flex
+ ===============*/
+.flex {
+	display: flex;
+}
+.align-center {
+	align-items: center;
+}
+.align-start {
+	align-items: flex-start;
+}
+.align-end {
+	align-items: flex-end;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.justify-center {
+	justify-content: center;
+}
+.flex-1 {
+	flex: 1;
+}
+.flex-row {
+	flex-direction: row;
+}
+.flex-column {
+	flex-direction: column;
+}
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.justify-around {
+	justify-content: space-around;
+}
+
+/* ============
+	margin
+ ===============*/
+ .mt-10 {
+	 margin-top: 10px;
+ }
+ .ml-10 {
+	 margin-left: 10px;
+ }
+ .mr-10 {
+	 margin-right: 10px;
+ }
+ .mr-5rpx {
+	 margin-right: 5rpx;
+ }
+ .ml-5rpx {
+ 	 margin-left: 5rpx;
+ }
+ 
+ /* ============
+ 	padding
+  ===============*/
+  .pb-10 {
+	  padding-bottom: 10px;
+  }
+  .pt-10 {
+	  padding-top: 10px;
+  }
+  .pb-10 {
+	  padding-bottom: 10px;
+  }
+ 
+ /* ============
+ 	font-size
+  ===============*/
+  .fs-12 {
+	  font-size: 12px;
+  }
+  .fs-14 {
+	  font-size: 14px;
+  }
+  
+  /* ============
+  	border
+   ===============*/
+  .bb-f1 {
+	  border-bottom: 1rpx solid #F1F1F1;
+  }
+
+ /* ============
+ 	text
+  ===============*/
+  .text-through{
+	  text-decoration: line-through;
+  }
+  .text-right {
+	  text-align: right;
+  }
+  .text-nowrap {
+	  white-space: nowrap;
+	  word-wrap: break-word;
+	  word-break: break-all;
+	  text-overflow: ellipsis;
+	  overflow: hidden;
+  }
+
+ /* ============
+ 	color
+  ===============*/
+  .color-33 {
+  	  color: #333333;
+  }
+  
+  .color-99{
+	  color: #999999;
+	  
+  }
+  
+  /* ============
+  	background
+   ===============*/
+  .bg-white {
+	  background-color: #FFFFFF;
+  }
+
+
+ /* ============
+  	自定义样式
+   ===============*/
+/* vip 的标签 */
+.vip-tag {
+	background-color: red;
+	font-size: 12px;
+	padding: 0 3px;
+	color: #FFFFFF;
+	border-radius: 10rpx;
+	line-height: 20px;
+	vertical-align: middle;
+	display: inline;
+}	
+
+/* 没有数据 */
+.no-data {
+	margin-top: 40px;
+	text-align: center;
+	font-size: 14px;
+	color: #999999;
+	line-height: 30px;
+	vertical-align: middle;
+}
+
+/* 分页加载踢死 */
+.load-tips {
+	margin-top: 10px;
+	text-align: center;
+	font-size: 12px;
+	color: #999999;
+	line-height: 24px;
+	vertical-align: middle;
+}

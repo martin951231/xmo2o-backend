@@ -1,0 +1,116 @@
+
+.font-red[data-v-59c51bf2] {
+    color: #ff3d0d;
+}
+.page-bar[data-v-59c51bf2] {
+    margin: 40px;
+}
+ul[data-v-59c51bf2],
+li[data-v-59c51bf2] {
+    margin: 0px;
+    padding: 0px;
+}
+li[data-v-59c51bf2] {
+    list-style: none;
+}
+.page-bar li:first-child > a[data-v-59c51bf2] {
+    margin-left: 0px;
+}
+.page-bar a[data-v-59c51bf2] {
+    border: 1px solid #ddd;
+    text-decoration: none;
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    cursor: pointer;
+}
+.page-bar a[data-v-59c51bf2]:hover {
+    background-color: #eee;
+}
+.page-bar a.banclick[data-v-59c51bf2] {
+    cursor: not-allowed;
+}
+.page-bar .active a[data-v-59c51bf2] {
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+.page-bar i[data-v-59c51bf2] {
+    font-style: normal;
+    color: #d44950;
+    margin: 0px 4px;
+    font-size: 12px;
+}
+
+
+.form-model-item-required[data-v-e468c1fe] .ant-form-item-label::before {
+    display: inline-block;
+    margin-right: 4px;
+    color: #f5222d;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: '*';
+}
+.page[data-v-e468c1fe] {
+    width: 100%;
+    min-height: 100%;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    background: #ffffff;
+}
+.page-header[data-v-e468c1fe] {
+    background-color: #eef0f3;
+    padding: 14px 16px;
+}
+.page-header.ant-page-header[data-v-e468c1fe] .ant-page-header-heading-title {
+    font-size: 18px !important;
+    color: #333333;
+}
+.ant-form[data-v-e468c1fe] .ant-input-number {
+    width: 70px;
+    margin: 0 6px;
+}
+.ant-form[data-v-e468c1fe] .ant-form-item label {
+    margin-right: 20px;
+}
+.ant-upload-select-picture-card i[data-v-e468c1fe] {
+    font-size: 20px;
+    color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text[data-v-e468c1fe] {
+    margin-top: 8px;
+    color: #999;
+}
+.clearfix[data-v-e468c1fe] .ant-upload-list {
+    margin-bottom: 0 !important;
+}
+.input-class[data-v-e468c1fe] {
+    width: calc(100% - 80px);
+}
+.ant-card[data-v-e468c1fe] .ant-card-body {
+    padding: 10px 24px;
+}
+.questionIcon[data-v-e468c1fe] {
+    width: 14px;
+    height: 14px;
+    border-radius: 14px;
+    background-color: #dddddd;
+    margin-left: 4px;
+}
+.singleSpecDel[data-v-e468c1fe] {
+    position: absolute;
+    right: 0;
+    margin-right: -50px;
+    color: red;
+}
+.spec-tab[data-v-e468c1fe] {
+    width: 90%;
+    min-height: 50px;
+    background-color: #f8f9fa;
+}
+

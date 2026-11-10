@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "no-vehicle": "/pages/parkingLot/components/noVehicle"
+  }
+}

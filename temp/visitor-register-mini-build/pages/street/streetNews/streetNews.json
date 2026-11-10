@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "新闻",
+  "usingComponents": {
+    "q-s-tabs": "/pages/street/components/QS-tabs/QS-tabs"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "智能设备管理",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "q-s-tabs": "/pages/houseMeter/components/QS-tabs/QS-tabs"
+  }
+}

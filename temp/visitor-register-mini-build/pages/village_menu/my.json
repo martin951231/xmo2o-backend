@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "villagecopyfooter": "/appComponent/villagePage/copy_footer"
+  }
+}

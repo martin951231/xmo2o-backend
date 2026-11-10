@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "街道新闻",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "q-s-tabs": "/pages/village/component/QS-tabs/QS-tabs"
+  }
+}

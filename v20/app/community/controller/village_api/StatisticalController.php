@@ -1987,361 +1987,31 @@ class StatisticalController extends CommunityBaseController
 
     public function getChargeStatusData()
     {
-        $villageId = $this->adminUser['village_id'] ?? 0;
-        $villageId = is_numeric($villageId) ? intval($villageId) : 0;
-
-        // 获取并规范化前端传入的起止日期，自动扩展到整月的头尾，并且做合理校验
-        $startDate = trim((string)$this->request->post('start_date'));
-        $endDate = trim((string)$this->request->post('end_date'));
-
-        // 校正为有效日期格式，否则置空
-        $startDate = (strtotime($startDate) !== false) ? date('Y-m-01', strtotime($startDate)) : '';
-        $endDate = (strtotime($endDate) !== false) ? date('Y-m-t', strtotime($endDate)) : '';
-
-        // 校验小区ID有效性
-        $villageId = intval($villageId);
+        $villageId = intval($this->adminUser['village_id'] ?? 0);
         if (!$villageId) {
             return api_output_error(1001, '必传参数【小区ID】缺失或无效');
         }
-
-        // 使用当前年份做兜底
-        $currentYear = date('Y');
-
-        // 优先使用前端传入的起止日期（传入就按传入内容换算，否则默认本年起止）
-        $firstDayOfYear = $startDate ? ($startDate . ' 00:00:00') : ($currentYear . '-01-01 00:00:00');
-        $lastDayOfYear = $endDate ? ($endDate . ' 23:59:59') : ($currentYear . '-12-31 23:59:59');
-       
-        $HouseNewChargeProjectService = new HouseNewChargeProjectService();
-        $param=[
-            'village_id'=>$villageId,
-            'project_type'=>'cycle',
-            'status'=>1,
-        ];
-        $projectList = $HouseNewChargeProjectService->getListALL($param);
-
-        if( empty($projectList) ){
-            return [];
+        $startInput = trim((string)$this->request->post('start_date'));
+        $endInput = trim((string)$this->request->post('end_date'));
+        $startTime = $startInput === '' ? strtotime(date('Y') . '-01-01') : strtotime($startInput);
+        $endTime = $endInput === '' ? strtotime(date('Y') . '-12-31') : strtotime($endInput);
+        if ($startTime === false || $endTime === false) {
+            return api_output_error(1001, '统计日期格式不正确');
         }
-
-        $order_where = [
-            'village_id'=>$villageId,
-            // 'start_time'=>$firstDayOfYear,
-            // 'end_time'=>$lastDayOfYear,
-        ];
-        $payableOrderList = $this->payableOrderList($order_where);
-//        //房屋面积
-//        $residenceRoomDataWhere=array(
-//            'village_id'=>$villageId,
-//            'house_type'=>1
-//        );
-//        $storeRoomDataWhere=array(
-//            'village_id'=>$villageId,
-//            'house_type'=>2
-//        );
-//        $residenceRoomDataList = (new NewBuildingService())->getRoomDataList($residenceRoomDataWhere);
-//        $storeRoomDataList = (new NewBuildingService())->getRoomDataList($storeRoomDataWhere);
-//
-//        $roomDataList = array_merge($residenceRoomDataList['list'], $storeRoomDataList['list']);
-//        $pigcms_ids = array_column($roomDataList, 'pigcms_id');
-//        $vacancy_where[] = ['pigcms_id','in', $pigcms_ids];
-//        $roomDateList = (new HouseVillageUserVacancy())->getList($vacancy_where);
-//        $residenceRoomArea = 0;
-//        $storeRoomArea = 0;
-//        if(!empty($roomDateList)){
-//            $roomDateList = $roomDateList->toArray();
-//            $residenceRoomList = $this->filterByPigcmsId($roomDateList,array_column($residenceRoomDataList['list'], 'pigcms_id'));
-//            $storeRoomList = $this->filterByPigcmsId($roomDateList,array_column($storeRoomDataList['list'], 'pigcms_id'));
-//            $residenceRoomArea = array_sum( array_column( $residenceRoomList , 'housesize') );
-//            $storeRoomArea = array_sum( array_column( $storeRoomList , 'housesize') );
-//        }
-
-        foreach ($projectList as &$item) {
-            $item['account_num'] = 0;//总户数
-            $item['paid_account_num'] = 0;//已缴户数
-            $item['remaining_paid_account_num'] = 0;//剩余应缴户数
-            $item['paid_account_rate'] = 0;//户数缴费率
-            $item['amound'] = 0;//应缴费总金额
-            $item['paid_amound'] = 0;//已缴费总金额
-            $item['remaining_paid_amound_num'] = 0;//剩余应缴金额
-            $item['paid_amound_rate'] = 0;//缴费率
-
-            //已缴户数
-            $origin_project_name_key = 'project_name';
-            $origin_project_name_value = $item['name'];
-            // 第一步：先按project_name筛选出匹配的数组
-            $matchedArr = array_filter($payableOrderList, function($item) use ($origin_project_name_key, $origin_project_name_value, $firstDayOfYear, $lastDayOfYear) {
-                // 必须有项目名并且匹配
-                if (!isset($item[$origin_project_name_key]) || $item[$origin_project_name_key] != $origin_project_name_value) {
-                    return false;
-                }
-
-                // 取service_start_time、service_end_time（格式可为 Y-m-d 或带时分秒，需要兼容）
-                $serviceStartTime = 0;
-                if (isset($item['service_start_time']) && $item['service_start_time']) {
-                    $serviceStartTime = strtotime(preg_match('/\d{2}:\d{2}:\d{2}$/', $item['service_start_time']) ? $item['service_start_time'] : $item['service_start_time'] . ' 00:00:00');
-                }
-                $serviceEndTime = 0;
-                if (isset($item['service_end_time']) && $item['service_end_time']) {
-                    $serviceEndTime = strtotime(preg_match('/\d{2}:\d{2}:\d{2}$/', $item['service_end_time']) ? $item['service_end_time'] : $item['service_end_time'] . ' 23:59:59');
-                }
-
-                // $firstDayOfYear, $lastDayOfYear本身已为完整时间格式
-                $filterStartTime = strtotime($firstDayOfYear); // 形如 2025-01-01 00:00:00
-                $filterEndTime = strtotime($lastDayOfYear);     // 形如 2025-09-30 23:59:59
-
-                // 时间区间有效
-                if ($serviceStartTime == 0 || $serviceEndTime == 0) {
-                    return false;
-                }
-
-                // 当前账单完全覆盖筛选区间或者有交集都应该保留
-                // 只要 $serviceEndTime >= $filterStartTime 并且 $serviceStartTime <= $filterEndTime 即重叠
-                // 即使账单大于区间，只要有交集就保留
-                return ($serviceEndTime >= $filterStartTime && $serviceStartTime <= $filterEndTime);
-            });
-
-            // 第二步：按room_id去重，每个room_id只保留第一条匹配的数据
-            $uniqueArr = [];
-            // 记录已经处理过的room_id，避免重复
-            $roomIdRecord = [];
-
-            foreach ($matchedArr as $value) {
-                // 先校验room_id字段是否存在且非空
-                if (isset($value['room_id']) && !empty($value['room_id'])) {
-                    $roomId = $value['room_id'];
-                    // 如果该room_id未记录过，则保留这条数据并标记已记录
-                    if (!in_array($roomId, $roomIdRecord)) {
-                        $roomIdRecord[] = $roomId;
-                        $uniqueArr[] = $value;
-                    }
-                } else {
-                    // 可选：如果没有room_id，是否保留？这里默认保留（也可以注释掉这行不保留）
-                    $uniqueArr[] = $value;
-                }
-            }
-
-            /*获取当前收费标准绑定用户数结束*/
-                $current_project_where = [
-                    'village_id'=>$villageId,
-                    'rule_id'=>$item['rule_id'],
-                    'bind_type'=>1,
-                ];
-                $currentRoomList = $this->standardBindList($current_project_where);
-                $currentRoomList = isset($currentRoomList['list']) && $currentRoomList['list'] > 0 ? $currentRoomList['list'] : [];
-                $currentProjectRoomNum = count($currentRoomList);
-            /*获取当前收费标准绑定用户数*/
-
-            $item['account_num'] = $currentProjectRoomNum;//总户数
-            if($currentProjectRoomNum<=0){
-                continue;
-            }
-            $item['paid_account_num'] = count($uniqueArr);//已缴户数
-            $item['remaining_paid_account_num'] = round( $currentProjectRoomNum - count($uniqueArr) ,0 );//剩余应缴户数
-            $item['paid_account_rate'] = $currentProjectRoomNum > 0? round( count($uniqueArr) / $currentProjectRoomNum ,2 ) * 100 : 0;//户数缴费率
-
-            // $firstDayOfYear, $lastDayOfYear
-
-            // 1. 计算每条缴费账单对应的月份数，如果不足1个月算1个月
-            $paidMonthlyAmountArr = [];
-            foreach ($matchedArr as $bill) {
-                // service_start_time, service_end_time可能为时间戳或字符串，需要兼容处理
-                $start = isset($bill['service_start_time']) && $bill['service_start_time'] ? $bill['service_start_time'] : 0;
-                $end = isset($bill['service_end_time']) && $bill['service_end_time'] ? $bill['service_end_time'] : 0;
-                if ($start && $end) {
-                    // 处理时间类型
-                    if (is_numeric($start)) {
-                        $startStr = date('Y-m-d', $start);
-                    } else {
-                        $startStr = date('Y-m-d', strtotime($start));
-                    }
-                    if (is_numeric($end)) {
-                        $endStr = date('Y-m-d', $end);
-                    } else {
-                        $endStr = date('Y-m-d', strtotime($end));
-                    }
-                    // 用DateTime计算月数
-                    $dateStart = new \DateTime($startStr);
-                    $dateEnd = new \DateTime($endStr);
-                    // 若结束时间小于开始时间，按1个月处理
-                    if ($dateEnd < $dateStart) {
-                        $months = 1;
-                    } else {
-                        $diff = $dateStart->diff($dateEnd);
-                        $months = ($diff->y * 12) + $diff->m;
-                        // 如果有天数，不满一个整月按一个月算（只要有多1天就加1）
-                        if ($diff->d > 0) {
-                            $months += 1;
-                        } else {
-                            // 如果diff->d==0，那刚好整月，但任何duration都要算至少1个月
-                            if ($months == 0) $months = 1;
-                        }
-                    }
-                } else {
-                    // 没有起止时间，按1个月处理
-                    $months = 1;
-                }
-
-                // 避免pay_money未定义
-                $payMoney = isset($bill['pay_money']) && $bill['pay_money'] > 0 ? $bill['pay_money'] : 0;
-                // 计算每月金额
-                $monthlyAmount = $months > 0 ? ($payMoney / $months) : $payMoney;
-                // 记录该账单的相关信息，方便后续月份分摊汇总
-                $paidMonthlyAmountArr[] = [
-                    'bill' => $bill,
-                    'months' => $months,
-                    'monthly_amount' => $monthlyAmount,
-                    'start' => isset($dateStart) ? clone $dateStart : null,
-                    'end' => isset($dateEnd) ? clone $dateEnd : null,
-                    'pay_money' => $payMoney
-                ];
-            }
-
-            // 2. 计算传入时间区间$firstDayOfYear, $lastDayOfYear内的缴费金额
-            $paidAmountInRange = 0;
-            if (!empty($firstDayOfYear) && !empty($lastDayOfYear)) {
-                $rangeStartObj = new \DateTime(date('Y-m-d', strtotime($firstDayOfYear)));
-                $rangeEndObj = new \DateTime(date('Y-m-d', strtotime($lastDayOfYear)));
-
-                foreach ($paidMonthlyAmountArr as $row) {
-                    $startObj = $row['start'];
-                    $endObj = $row['end'];
-                    $monthlyAmount = $row['monthly_amount'];
-                    $months = $row['months'];
-
-                    // 如果账单时间未知，则认为全部计入区间
-                    if (!$startObj || !$endObj) {
-                        $paidAmountInRange += $row['pay_money'];
-                        continue;
-                    }
-                    // 账单与查询区间无交集，跳过
-                    if ($endObj < $rangeStartObj || $startObj > $rangeEndObj) {
-                        continue;
-                    }
-                    // 交集部分：求出账单与区间重叠的月份数
-                    $intersectStart = $startObj > $rangeStartObj ? $startObj : clone $rangeStartObj;
-                    $intersectEnd = $endObj < $rangeEndObj ? $endObj : clone $rangeEndObj;
-
-                    $diff = $intersectStart->diff($intersectEnd);
-                    $interMonths = ($diff->y * 12) + $diff->m;
-                    if ($diff->d > 0) {
-                        $interMonths += 1;
-                    } else {
-                        if ($interMonths == 0) $interMonths = 1;
-                    }
-                    // 最大不超过该账单本身的月份数
-                    $realMonths = min($interMonths, $months);
-                    $amount = $realMonths * $monthlyAmount;
-
-                    // 防止超出pay_money本身
-                    if ($amount > $row['pay_money']) {
-                        $amount = $row['pay_money'];
-                    }
-                    $paidAmountInRange += $amount;
-                }
-            }
-
-            // 3. 求和所有数据的总缴费金额
-            $totalPaidAmount = array_sum(array_column($matchedArr, 'pay_money'));
-
-            // 可以将这些金额赋值到$item里，或用于后续显示
-            // $item['paid_amound_total'] = $totalPaidAmount;
-            // $item['paid_amound_in_range'] = round($paidAmountInRange, 2);
-
-            $item['paid_amound'] =  round($paidAmountInRange, 2);//已缴费总金额
-            $item['paid_amound_txt'] = $this->formatAmountToWan( $item['paid_amound'] ).'万元';//已缴费总金额
-
-            if( count( $matchedArr ) > 0 ) {
-                // 优化账单生成方式及单价计算逻辑
-                // bill_create_set: 1=按日, 2=按月, 3=按年, 默认按年
-
-                $billCreateSet = isset($item['bill_create_set']) ? intval($item['bill_create_set']) : 3;
-                $chargePriceRaw = isset($item['charge_price']) ? floatval($item['charge_price']) : 0;
-
-                // 确定周期类型和周期数
-                switch ($billCreateSet) {
-                    case 1:
-                        $unitCount = 365;
-                        $unitLabel = 'day';
-                        break;
-                    case 2:
-                        $unitCount = 1;
-                        $unitLabel = 'month';
-                        break;
-                    case 3:
-                    default:
-                        $unitCount = 12;
-                        $unitLabel = 'year';
-                        break;
-                }
-
-                $unitPrice = $chargePriceRaw / $unitCount;
-
-                // 获取区间时间戳
-                $startDate = strtotime($firstDayOfYear);
-                $endDate = strtotime($lastDayOfYear);
-
-                // 计算区间内包含多少周期份数（防止超出最大周期数，比如只统计一年内）
-                if ($unitLabel === 'day') {
-                    // 按天：包含首尾，天数不能超过365
-                    $diffDays = max(1, (int)floor(($endDate - $startDate) / (60 * 60 * 24)) + 1);
-                    $totalParts = min($diffDays, 365);
-                } else {
-                    // 按月、按年统一按月
-                    $startYear = (int)date('Y', $startDate);
-                    $startMonth = (int)date('m', $startDate);
-                    $endYear = (int)date('Y', $endDate);
-                    $endMonth = (int)date('m', $endDate);
-                    $diffMonths = ($endYear - $startYear) * 12 + ($endMonth - $startMonth) + 1;
-                    $totalParts = min(max(1, $diffMonths), 12);
-                }
-
-                // 计算该区间实际应收单价
-                $charge_price = round($totalParts * $unitPrice, 2);
-
-                if( $item['fees_type'] == 2){//单位计价
-                    if( $item['unit_gage_type'] == 2 ){//车位面积
-                        //车位面积
-                        $roomArea = array_sum( array_column( $currentRoomList ,'position_area') );
-                    }else{//其余的都默认为房屋面积
-                        $roomArea = array_sum( array_column( $currentRoomList ,'housesize') );
-                    }
-                    //应缴费总金额
-                    $item['amound'] = round( $roomArea * $charge_price , 2);
-                    $item['amound_txt'] = $this->formatAmountToWan( $item['amound'] ) . '万元';
-                }else {//默认固定费用
-                    //应缴费总金额
-                    $item['amound'] = round( $item['account_num'] * $charge_price , 2);
-                    $item['amound_txt'] = $item['amound'] . '万元';
-                }
-                $item['area'] = $roomArea;
-
-                //剩余应缴
-                $item['remaining_paid_amound_num'] = round( $item['amound'] - $item['paid_amound'] ,2);
-                $item['remaining_paid_amound_num_txt'] = $this->formatAmountToWan( $item['remaining_paid_amound_num'] ) . '万元';
-                //缴费率
-                $item['paid_amound_rate'] = $item['amound'] > 0? round( $item['paid_amound'] / $item['amound'] , 2) * 100 : 2;
-
-                $item['paid_amound_str'] = $this->formatAmountToWan( $item['paid_amound'] );
-                $item['remaining_paid_amound_num_str'] = $this->formatAmountToWan( $item['remaining_paid_amound_num'] );
-            }
+        $start = date('Y-m-01', $startTime);
+        $end = date('Y-m-t', $endTime);
+        if ($start > $end) {
+            return api_output_error(1001, '统计开始日期不能晚于结束日期');
         }
-        unset($item);
-        foreach ($projectList as $item) {
-            // 严格判断account_num不等于0（避免空值/字符串0的干扰）
-            if (isset($item['account_num']) && $item['account_num'] !== 0) {
-                $filteredData[] = $item;
-            }
+        try {
+            $rows = (new \app\community\model\service\ChargeStatusService())->getData($villageId, $start, $end);
+            $list = $this->buildPeriodicFeeTableData($rows);
+            $list['dateRange'] = ['start_date' => substr($start, 0, 7), 'end_date' => substr($end, 0, 7)];
+            return api_output(1000, $list);
+        } catch (\InvalidArgumentException $e) {
+            return api_output_error(1001, $e->getMessage());
         }
-
-        $list = $this->buildPeriodicFeeTableDataWithDefault($filteredData ?? []);
-
-        $list['dateRange'] = [
-            'start_date' => date('Y-m', strtotime($firstDayOfYear)),
-            'end_date' => date('Y-m', strtotime($lastDayOfYear)),
-        ];
-        return api_output(1000,$list);
     }
-
     function buildPeriodicFeeTableDataWithDefault(array $list = [])
     {
         $defaultTypes = [
@@ -2413,11 +2083,12 @@ class StatisticalController extends CommunityBaseController
 
             $tableData[] = [
                 'name' => $item['name'] ?? '',
-                'amount' => $this->formatWan($accountNum),
+                'amount' => $accountNum,
                 'paid_account_num' => $paidAccountNum,
                 'remaining_paid_account_num' => $remainAccountNum,
                 'paid_account_rate' => $this->formatPercent($paidAccountRate),
 
+                'amound' => $this->formatWan($amount),
                 'paid_amound' => $this->formatWan($paidAmount),
                 'remaining_paid_amound_num' => $this->formatWan($remainAmount),
                 'paid_amound_rate' => $this->formatPercent($paidAmountRate),
@@ -2458,13 +2129,13 @@ class StatisticalController extends CommunityBaseController
                 ],
                 [
                     [
-                        'label' => '收缴户数',
-                        'prop' => 'paid_account_num',
+                        'label' => '可收户数',
+                        'prop' => 'amount',
                         'width' => '15%',
                         'align' => 'center'
                     ],
                     [
-                        'label' => '剩余户数',
+                        'label' => '未缴户数',
                         'prop' => 'remaining_paid_account_num',
                         'width' => '15%',
                         'align' => 'center'
@@ -2476,13 +2147,13 @@ class StatisticalController extends CommunityBaseController
                         'align' => 'center'
                     ],
                     [
-                        'label' => '收缴金额',
-                        'prop' => 'paid_amound',
+                        'label' => '可收金额',
+                        'prop' => 'amound',
                         'width' => '15%',
                         'align' => 'center'
                     ],
                     [
-                        'label' => '剩余金额',
+                        'label' => '未缴金额',
                         'prop' => 'remaining_paid_amound_num',
                         'width' => '15%',
                         'align' => 'center'
@@ -2505,13 +2176,13 @@ class StatisticalController extends CommunityBaseController
                     'align' => 'center'
                 ],
                 [
-                    'label' => '收缴户数',
-                    'prop' => 'paid_account_num',
+                    'label' => '可收户数',
+                    'prop' => 'amount',
                     'width' => '15%',
                     'align' => 'center'
                 ],
                 [
-                    'label' => '剩余户数',
+                    'label' => '未缴户数',
                     'prop' => 'remaining_paid_account_num',
                     'width' => '15%',
                     'align' => 'center'
@@ -2523,13 +2194,13 @@ class StatisticalController extends CommunityBaseController
                     'align' => 'center'
                 ],
                 [
-                    'label' => '收缴金额',
-                    'prop' => 'paid_amound',
+                    'label' => '可收金额',
+                    'prop' => 'amound',
                     'width' => '15%',
                     'align' => 'center'
                 ],
                 [
-                    'label' => '剩余金额',
+                    'label' => '未缴金额',
                     'prop' => 'remaining_paid_amound_num',
                     'width' => '15%',
                     'align' => 'center'

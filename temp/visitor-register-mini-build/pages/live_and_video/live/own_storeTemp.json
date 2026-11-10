@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "product-temp": "/pages/live_and_video/live/productTempCom"
+  }
+}

@@ -386,8 +386,8 @@ class SocialActivityCommentService
         if (!$session_id) {
             throw new \Exception('场次ID不能为空');
         }
-        if (empty($content)) {
-            throw new \Exception('评论内容不能为空');
+        if (empty($content) && empty($images)) {
+            throw new \Exception('评论内容和图片不能同时为空');
         }
 
         $activity = (new SocialActivity())->where(['id' => $activity_id])->findOrEmpty();

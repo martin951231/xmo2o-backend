@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "h-mfilter-dropdown": "/pages/group/component/HM-filterDropdown"
+  }
+}

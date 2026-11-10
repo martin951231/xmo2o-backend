@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "店铺列表",
+  "usingComponents": {
+    "storepage": "/appComponent/storePage/storePage"
+  }
+}

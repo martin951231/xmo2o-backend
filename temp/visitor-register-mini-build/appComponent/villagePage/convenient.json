@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "villagecopyfooter": "/appComponent/villagePage/copy_footer"
+  }
+}

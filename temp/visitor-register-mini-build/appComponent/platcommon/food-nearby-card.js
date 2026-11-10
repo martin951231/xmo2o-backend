@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["appComponent/platcommon/food-nearby-card"],{"344f":function(n,e,t){"use strict";var o=t("f856"),u=t.n(o);u.a},6950:function(n,e,t){"use strict";t.r(e);var o=t("dadc"),u=t("a6179");for(var a in u)["default"].indexOf(a)<0&&function(n){t.d(e,n,(function(){return u[n]}))}(a);t("344f");var c,r=t("f0c5"),i=Object(r["a"])(u["default"],o["b"],o["c"],!1,null,"60031c76",null,!1,o["a"],c);e["default"]=i.exports},"91b9":function(n,e,t){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var o={name:"food-nearby",props:{food:{type:Object,default:function(){return{}}},page:{type:String,default:""}},data:function(){return{currency:"￥"}},mounted:function(){this.common.changeCurrency(this)},methods:{goUrl:function(){this.$emit("handleCardClick",this.food.url)}}};e.default=o},a6179:function(n,e,t){"use strict";t.r(e);var o=t("91b9"),u=t.n(o);for(var a in o)["default"].indexOf(a)<0&&function(n){t.d(e,n,(function(){return o[n]}))}(a);e["default"]=u.a},dadc:function(n,e,t){"use strict";t.d(e,"b",(function(){return u})),t.d(e,"c",(function(){return a})),t.d(e,"a",(function(){return o}));var o={uImage:function(){return t.e("uview-ui/components/u-image/u-image").then(t.bind(null,"c9e6"))}},u=function(){var n=this,e=n.$createElement,t=(n._self._c,"shopIndex"==n.page?n.L("起送"):null),o="shopIndex"==n.page?n.L("配送"):null,u="10"!=n.food.seckill_discount||n.food.vip_show?null:n.L("月售X1",{X1:n.food.sell_count}),a="shopIndex"!=n.page?n.L("起送"):null,c="shopIndex"!=n.page?n.L("配送"):null,r="shopIndex"!=n.page?n.L("分"):null;n.$mp.data=Object.assign({},{$root:{m0:t,m1:o,m2:u,m3:a,m4:c,m5:r}})},a=[]},f856:function(n,e,t){}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'appComponent/platcommon/food-nearby-card-create-component',
+    {
+        'appComponent/platcommon/food-nearby-card-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("6950"))
+        })
+    },
+    [['appComponent/platcommon/food-nearby-card-create-component']]
+]);

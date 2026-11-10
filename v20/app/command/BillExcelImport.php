@@ -13,6 +13,9 @@ use app\community\model\db\HouseVillageFloor;
 use app\community\model\db\HouseVillageLayer;
 use app\community\model\db\HouseVillageSingle;
 use app\community\model\db\HouseVillageUserVacancy;
+use app\community\model\db\HouseVillageBindPosition;
+use app\community\model\db\HouseVillageParkingGarage;
+use app\community\model\db\HouseVillageParkingPosition;
 use app\community\model\db\HouseWorker;
 use app\community\model\service\HouseNewCashierService;
 use app\community\model\service\HouseNewChargeRuleService;
@@ -61,7 +64,7 @@ class BillExcelImport extends Command
         $json   = $input->getArgument('json');
         $params = \json_decode($json[0],true);
         fdump_api(['接收参数=='.__LINE__,$json,$params],'import_excel/billExcelImportExecute',1);
-        if (isset($params['type']) && $params['type'] == 'cycleBillPayExcel') {
+        if (isset($params['type']) && in_array($params['type'], ['cycleBillPayExcel', 'parkingBillPayExcel'])) {
             return $this->executeCycleBillPayExcel($params);
         }
         if (isset($params['type']) && $params['type'] == 'cycleBillExcel') {
@@ -628,11 +631,7 @@ class BillExcelImport extends Command
                     $whereRepeatOrder[] = ['order_pay_type', '=', 'pc_excel_import'];
                     $whereRepeatOrder[] = ['service_start_time', '=', $payOrderData['service_start_time']];
                     $whereRepeatOrder[] = ['service_end_time', '=', $payOrderData['service_end_time']];
-                    if($params['type']=='billPayExcel'){
-                        $whereRepeatOrder[] = ['is_paid', '=', 1];
-                    }else{
-                        $whereRepeatOrder[] = ['is_paid', '=', 2];
-                    }
+                    $whereRepeatOrder['string'] = $this->paidEffectiveOrderRaw();
                     $start_time=$nowTime-300;
                     $end_time=$nowTime+10;
                     $whereRepeatOrder[] = ['update_time', '>', $start_time];
@@ -971,7 +970,7 @@ class BillExcelImport extends Command
                 ['service_start_time', '<=', $service_end_time],
                 ['service_end_time', '>=', $service_start_time],
             ];
-            $whereRepeatOrder['string'] = $this->activePayOrderRaw();
+            $whereRepeatOrder['string'] = $this->paidEffectiveOrderRaw();
             $orderInfo = $dbHouseNewPayOrder->get_one($whereRepeatOrder, 'order_id,service_start_time,service_end_time');
             if (isset($orderInfo['order_id']) && $orderInfo['order_id']) {
                 $this->appendBillExcelError($data, $nextIndex, '账单计费时间与已有账单重叠', $allErrorData, $errorTotal);
@@ -1064,6 +1063,7 @@ class BillExcelImport extends Command
     {
         set_time_limit(0);
         ini_set("memory_limit", "512M");
+        $isParkingBill = isset($params['type']) && $params['type'] == ImportExcelService::UPLOAD_PARKING_BILL_PAY_EXCEL;
         $ImportExcelService = new ImportExcelService();
         $NewBuildingService = new NewBuildingService();
         $begin_time = $ImportExcelService->getMillisecondMethod();
@@ -1072,8 +1072,8 @@ class BillExcelImport extends Command
         $selectWorkSheetIndex = $params['selectWorkSheetIndex'];
         $worksheetName        = $params['worksheetName'];
         $nowVillageInfo       = $params['nowVillageInfo'];
-        $subjectId            = intval($params['subjectId']);
-        $chargeProjectId      = intval($params['projectId']);
+        $subjectId            = isset($params['subjectId']) ? intval($params['subjectId']) : 0;
+        $chargeProjectId      = isset($params['projectId']) ? intval($params['projectId']) : 0;
         $village_id           = intval($nowVillageInfo['village_id']);
         $village_info         = (new HouseVillage())->getOne($village_id, 'property_id');
         $property_id          = isset($village_info['property_id']) ? intval($village_info['property_id']) : 0;
@@ -1091,15 +1091,17 @@ class BillExcelImport extends Command
             fdump_api(['$processCacheKey set fail'.__LINE__, $processCacheKey, $params, $e->getMessage()], 'import_excel/cycleBillPayExcelImportExecuteError', 1);
         }
 
-        $projectInfo = (new HouseNewChargeProject())->getOne([
-            ['id', '=', $chargeProjectId],
-            ['subject_id', '=', $subjectId],
-            ['village_id', '=', $village_id],
-            ['type', '=', 2],
-            ['status', '=', 1],
-        ], 'id,name,type');
-        if (!$projectInfo) {
-            throw new \think\Exception('请选择有效的周期性收费项目');
+        if (!$isParkingBill) {
+            $projectInfo = (new HouseNewChargeProject())->getOne([
+                ['id', '=', $chargeProjectId],
+                ['subject_id', '=', $subjectId],
+                ['village_id', '=', $village_id],
+                ['type', '=', 2],
+                ['status', '=', 1],
+            ], 'id,name,type');
+            if (!$projectInfo) {
+                throw new \think\Exception('请选择有效的周期性收费项目');
+            }
         }
 
         $inputFileName = root_path() . '/../' . $inputFileName;
@@ -1116,7 +1118,7 @@ class BillExcelImport extends Command
         $excelTitle = isset($sheetData[$titleRow]) ? $sheetData[$titleRow] : [];
         unset($sheetData[$titleRow]);
 
-        $nextIndex = 'V';
+        $nextIndex = $isParkingBill ? 'U' : 'V';
         $allErrorData = [];
         $successInsertTotal = 0;
         $errorTotal = 0;
@@ -1129,14 +1131,20 @@ class BillExcelImport extends Command
         $dbHouseVillageFloor = new HouseVillageFloor();
         $dbHouseVillageLayer = new HouseVillageLayer();
         $dbHouseVillageUserVacancy = new HouseVillageUserVacancy();
+        $dbHouseVillageParkingGarage = new HouseVillageParkingGarage();
+        $dbHouseVillageParkingPosition = new HouseVillageParkingPosition();
+        $dbHouseVillageBindPosition = new HouseVillageBindPosition();
         $dbHouseNewChargeRule = new HouseNewChargeRule();
         $dbHouseNewChargeStandardBind = new HouseNewChargeStandardBind();
         $dbHouseNewPayOrder = new HouseNewPayOrder();
         $dbHouseNewPayOrderSummary = new HouseNewPayOrderSummary();
         $service_house_new_charge = new HouseNewChargeService();
         $charge_type_arr = $service_house_new_charge->charge_type;
-        $chargeNumberInfo = (new HouseNewChargeNumber())->get_one(['id' => $subjectId], 'id,charge_type');
-        $charge_type = isset($chargeNumberInfo['charge_type']) && $chargeNumberInfo['charge_type'] ? $chargeNumberInfo['charge_type'] : '';
+        $charge_type = 'park_new';
+        if (!$isParkingBill) {
+            $chargeNumberInfo = (new HouseNewChargeNumber())->get_one(['id' => $subjectId], 'id,charge_type');
+            $charge_type = isset($chargeNumberInfo['charge_type']) && $chargeNumberInfo['charge_type'] ? $chargeNumberInfo['charge_type'] : '';
+        }
         $offlineArr = $ImportExcelService->getOfflinePayTypeList($property_id, 'name');
 
         foreach ($sheetData as $dk => $data) {
@@ -1150,42 +1158,72 @@ class BillExcelImport extends Command
                 'errorTotal'         => $errorTotal,
             ], 3600);
 
-            $single = $this->trimExcelValue($data, 'A');
-            $floor = $this->trimExcelValue($data, 'B');
-            $layer = $this->trimExcelValue($data, 'C');
-            $room = $this->trimExcelValue($data, 'D');
-            $charge_name = $this->trimExcelValue($data, 'E');
-            $bill_money = $this->trimExcelCellValue($sheet, 'F', $dk, $data);
-            $remark = $this->trimExcelValue($data, 'G');
-            $service_start_day = $this->trimExcelValue($data, 'H');
-            $service_end_day = $this->trimExcelValue($data, 'I');
-            $add_time_temp = $this->trimExcelValue($data, 'J');
-            $rowPayBindName = $this->trimExcelValue($data, 'K');
-            $rowPayBindPhone = $this->trimExcelValue($data, 'L');
-            $pay_time_temp = $this->trimExcelValue($data, 'M');
-            $invoice_status_str = $this->trimExcelValue($data, 'N');
-            $total_pay_money = $this->trimExcelCellValue($sheet, 'O', $dk, $data);
-            $actual_pay_money = $this->trimExcelCellValue($sheet, 'P', $dk, $data);
-            $deposit_money = $this->trimExcelCellValue($sheet, 'Q', $dk, $data);
-            $score_deducte = $this->trimExcelCellValue($sheet, 'R', $dk, $data);
-            $score_used_count = $this->trimExcelCellValue($sheet, 'S', $dk, $data);
-            $offline_pay_type_str = $this->trimExcelValue($data, 'T');
-            $rowCashierName = $this->trimExcelValue($data, 'U');
+            if ($isParkingBill) {
+                $garageName = $this->trimExcelValue($data, 'A');
+                $garageId = $this->trimExcelValue($data, 'B');
+                $positionNum = $this->trimExcelValue($data, 'C');
+                $charge_name = $this->trimExcelValue($data, 'D');
+                $bill_money = $this->trimExcelCellValue($sheet, 'E', $dk, $data);
+                $remark = $this->trimExcelValue($data, 'F');
+                $service_start_day = $this->trimExcelValue($data, 'G');
+                $service_end_day = $this->trimExcelValue($data, 'H');
+                $add_time_temp = $this->trimExcelValue($data, 'I');
+                $rowPayBindName = $this->trimExcelValue($data, 'J');
+                $rowPayBindPhone = $this->trimExcelValue($data, 'K');
+                $pay_time_temp = $this->trimExcelValue($data, 'L');
+                $invoice_status_str = $this->trimExcelValue($data, 'M');
+                $total_pay_money = $this->trimExcelCellValue($sheet, 'N', $dk, $data);
+                $actual_pay_money = $this->trimExcelCellValue($sheet, 'O', $dk, $data);
+                $deposit_money = $this->trimExcelCellValue($sheet, 'P', $dk, $data);
+                $score_deducte = $this->trimExcelCellValue($sheet, 'Q', $dk, $data);
+                $score_used_count = $this->trimExcelCellValue($sheet, 'R', $dk, $data);
+                $offline_pay_type_str = $this->trimExcelValue($data, 'S');
+                $rowCashierName = $this->trimExcelValue($data, 'T');
+            } else {
+                $single = $this->trimExcelValue($data, 'A');
+                $floor = $this->trimExcelValue($data, 'B');
+                $layer = $this->trimExcelValue($data, 'C');
+                $room = $this->trimExcelValue($data, 'D');
+                $charge_name = $this->trimExcelValue($data, 'E');
+                $bill_money = $this->trimExcelCellValue($sheet, 'F', $dk, $data);
+                $remark = $this->trimExcelValue($data, 'G');
+                $service_start_day = $this->trimExcelValue($data, 'H');
+                $service_end_day = $this->trimExcelValue($data, 'I');
+                $add_time_temp = $this->trimExcelValue($data, 'J');
+                $rowPayBindName = $this->trimExcelValue($data, 'K');
+                $rowPayBindPhone = $this->trimExcelValue($data, 'L');
+                $pay_time_temp = $this->trimExcelValue($data, 'M');
+                $invoice_status_str = $this->trimExcelValue($data, 'N');
+                $total_pay_money = $this->trimExcelCellValue($sheet, 'O', $dk, $data);
+                $actual_pay_money = $this->trimExcelCellValue($sheet, 'P', $dk, $data);
+                $deposit_money = $this->trimExcelCellValue($sheet, 'Q', $dk, $data);
+                $score_deducte = $this->trimExcelCellValue($sheet, 'R', $dk, $data);
+                $score_used_count = $this->trimExcelCellValue($sheet, 'S', $dk, $data);
+                $offline_pay_type_str = $this->trimExcelValue($data, 'T');
+                $rowCashierName = $this->trimExcelValue($data, 'U');
+            }
             $cycle = 1;
 
-            if (empty($single) && empty($floor) && empty($layer) && empty($room) && empty($charge_name)) {
+            if (($isParkingBill && empty($garageName) && empty($garageId) && empty($positionNum) && empty($charge_name))
+                || (!$isParkingBill && empty($single) && empty($floor) && empty($layer) && empty($room) && empty($charge_name))) {
                 continue;
             }
             $rowTrueNum++;
 
             $failReason = '';
-            if (!$single) {
+            if ($isParkingBill && !$garageName) {
+                $failReason = '缺少【车库名称】';
+            } elseif ($isParkingBill && (!$garageId || intval($garageId) < 1)) {
+                $failReason = '请正确填写【车库ID】';
+            } elseif ($isParkingBill && !$positionNum) {
+                $failReason = '缺少【车位号】';
+            } elseif (!$isParkingBill && !$single) {
                 $failReason = '缺少【楼栋名称】';
-            } elseif (!$floor) {
+            } elseif (!$isParkingBill && !$floor) {
                 $failReason = '缺少【单元名称】';
-            } elseif (!$layer) {
+            } elseif (!$isParkingBill && !$layer) {
                 $failReason = '缺少【楼层名称】';
-            } elseif (!$room) {
+            } elseif (!$isParkingBill && !$room) {
                 $failReason = '缺少【房间号】';
             } elseif (!$charge_name) {
                 $failReason = '缺少【收费标准名称】';
@@ -1242,23 +1280,65 @@ class BillExcelImport extends Command
                 continue;
             }
 
-            $roomInfo = $this->matchImportRoom($dbHouseVillageSingle, $dbHouseVillageFloor, $dbHouseVillageLayer, $dbHouseVillageUserVacancy, $village_id, $single, $floor, $layer, $room);
-            if (isset($roomInfo['error'])) {
-                $this->appendBillExcelError($data, $nextIndex, $roomInfo['error'], $allErrorData, $errorTotal);
-                continue;
+            $positionInfo = [];
+            if ($isParkingBill) {
+                $garageInfo = $dbHouseVillageParkingGarage->getOne([
+                    ['garage_id', '=', intval($garageId)],
+                    ['village_id', '=', $village_id],
+                    ['status', '=', 1],
+                ], 'garage_id,garage_num');
+                if ($garageInfo && !is_array($garageInfo)) {
+                    $garageInfo = $garageInfo->toArray();
+                }
+                if (!$garageInfo) {
+                    $this->appendBillExcelError($data, $nextIndex, '车库ID不存在或车库已停用', $allErrorData, $errorTotal);
+                    continue;
+                }
+                if (trim(strval($garageInfo['garage_num'])) !== $garageName) {
+                    $this->appendBillExcelError($data, $nextIndex, '车库名称与车库ID不匹配', $allErrorData, $errorTotal);
+                    continue;
+                }
+                $positionInfo = $dbHouseVillageParkingPosition->getFind([
+                    ['village_id', '=', $village_id],
+                    ['garage_id', '=', intval($garageId)],
+                    ['position_num', '=', $positionNum],
+                ], 'position_id,garage_id,position_num');
+                if ($positionInfo && !is_array($positionInfo)) {
+                    $positionInfo = $positionInfo->toArray();
+                }
+                if (!$positionInfo) {
+                    $this->appendBillExcelError($data, $nextIndex, '当前车库下不存在该车位号', $allErrorData, $errorTotal);
+                    continue;
+                }
+                $payerInfo = $dbHouseVillageBindPosition->getRoomUserBindByPosition([
+                    ['bp.position_id', '=', $positionInfo['position_id']],
+                    ['bp.village_id', '=', $village_id],
+                    ['ub.village_id', '=', $village_id],
+                    ['ub.name', '=', $rowPayBindName],
+                    ['ub.phone', '=', $rowPayBindPhone],
+                    ['ub.status', '=', 1],
+                    ['ub.vacancy_id', '>', 0],
+                ], 'ub.pigcms_id,ub.uid,ub.name,ub.phone,ub.vacancy_id,ub.type');
+            } else {
+                $roomInfo = $this->matchImportRoom($dbHouseVillageSingle, $dbHouseVillageFloor, $dbHouseVillageLayer, $dbHouseVillageUserVacancy, $village_id, $single, $floor, $layer, $room);
+                if (isset($roomInfo['error'])) {
+                    $this->appendBillExcelError($data, $nextIndex, $roomInfo['error'], $allErrorData, $errorTotal);
+                    continue;
+                }
+                $payerInfo = (new HouseVillageUserBind())->getOne([
+                    ['village_id', '=', $village_id],
+                    ['name', '=', $rowPayBindName],
+                    ['phone', '=', $rowPayBindPhone],
+                    ['vacancy_id', '=', $roomInfo['room_id']],
+                    ['status', '=', 1],
+                ], 'pigcms_id,uid,name,phone,vacancy_id,type');
             }
-            $payerInfo = (new HouseVillageUserBind())->getOne([
-                ['village_id', '=', $village_id],
-                ['name', '=', $rowPayBindName],
-                ['phone', '=', $rowPayBindPhone],
-                ['vacancy_id', '=', $roomInfo['room_id']],
-                ['status', '=', 1],
-            ], 'pigcms_id,uid,name,phone,vacancy_id,type');
             if ($payerInfo && !is_array($payerInfo)) {
                 $payerInfo = $payerInfo->toArray();
             }
             if (!$payerInfo) {
-                $this->appendBillExcelError($data, $nextIndex, '缴费人不存在', $allErrorData, $errorTotal);
+                $reason = $isParkingBill ? '缴费人未绑定当前车位或姓名、手机号不一致' : '缴费人不存在';
+                $this->appendBillExcelError($data, $nextIndex, $reason, $allErrorData, $errorTotal);
                 continue;
             }
             $cashierList = (new HouseWorker())->getGroupWork([
@@ -1276,44 +1356,100 @@ class BillExcelImport extends Command
                 $this->appendBillExcelError($data, $nextIndex, '收款人不存在', $allErrorData, $errorTotal);
                 continue;
             }
-            if (intval($payerInfo['vacancy_id']) != intval($roomInfo['room_id'])) {
+            if (!$isParkingBill && intval($payerInfo['vacancy_id']) != intval($roomInfo['room_id'])) {
                 $this->appendBillExcelError($data, $nextIndex, '缴费人不属于当前房间', $allErrorData, $errorTotal);
                 continue;
             }
             $rowCashierId = intval($cashierInfo['opt_id'] ?: $cashierInfo['wid']);
 
-            $ruleList = $dbHouseNewChargeRule->getList([
-                ['village_id', '=', $village_id],
-                ['subject_id', '=', $subjectId],
-                ['charge_project_id', '=', $chargeProjectId],
-                ['charge_name', '=', $charge_name],
-                ['status', '=', 1],
-            ], 'id,charge_name,bill_create_set,charge_price,unit_price', 'id desc');
-            if (!$ruleList || $ruleList->isEmpty()) {
-                $this->appendBillExcelError($data, $nextIndex, '收费标准不存在', $allErrorData, $errorTotal);
-                continue;
+            if ($isParkingBill) {
+                $parkingBindList = $dbHouseNewChargeStandardBind->getList([
+                    ['b.village_id', '=', $village_id],
+                    ['b.position_id', '=', $positionInfo['position_id']],
+                    ['b.bind_type', '=', 2],
+                    ['b.is_del', '=', 1],
+                    ['p.village_id', '=', $village_id],
+                    ['p.type', '=', 2],
+                    ['p.status', '=', 1],
+                    ['n.status', '=', 1],
+                    ['r.status', '=', 1],
+                    ['r.charge_valid_time', '<=', $nowTime],
+                ], 'b.id,b.rule_id,b.project_id,b.position_id,b.cycle,r.charge_name,r.charge_valid_time,p.subject_id,n.charge_type', 0, 6, 'r.charge_valid_time DESC,b.id DESC');
+                $currentParkingBinds = [];
+                if ($parkingBindList && !$parkingBindList->isEmpty()) {
+                    foreach ($parkingBindList->toArray() as $parkingBind) {
+                        if (!isset($currentParkingBinds[$parkingBind['project_id']])) {
+                            $currentParkingBinds[$parkingBind['project_id']] = $parkingBind;
+                        }
+                    }
+                }
+                if (!$currentParkingBinds) {
+                    $this->appendBillExcelError($data, $nextIndex, '当前车位未绑定有效的车位管理费收费标准', $allErrorData, $errorTotal);
+                    continue;
+                }
+                $matchedParkingBinds = [];
+                foreach ($currentParkingBinds as $parkingBind) {
+                    if (trim(strval($parkingBind['charge_name'])) === $charge_name) {
+                        $matchedParkingBinds[] = $parkingBind;
+                    }
+                }
+                if (!$matchedParkingBinds) {
+                    $currentRuleNames = array_values(array_unique(array_column($currentParkingBinds, 'charge_name')));
+                    $this->appendBillExcelError($data, $nextIndex, '收费标准名称与当前车位绑定的收费标准不一致，当前为【'.implode('、', $currentRuleNames).'】', $allErrorData, $errorTotal);
+                    continue;
+                }
+                if (count($matchedParkingBinds) > 1) {
+                    $this->appendBillExcelError($data, $nextIndex, '当前车位存在多个同名车位管理费收费标准，无法确定收费项目', $allErrorData, $errorTotal);
+                    continue;
+                }
+                $bindInfo = $matchedParkingBinds[0];
+                $ruleId = intval($bindInfo['rule_id']);
+                $chargeProjectId = intval($bindInfo['project_id']);
+                $subjectId = intval($bindInfo['subject_id']);
+                $charge_type = !empty($bindInfo['charge_type']) ? $bindInfo['charge_type'] : 'park_new';
+                $cycle = intval($bindInfo['cycle']) > 0 ? intval($bindInfo['cycle']) : 1;
+                $roomId = isset($payerInfo['vacancy_id']) ? intval($payerInfo['vacancy_id']) : 0;
+                $positionId = intval($positionInfo['position_id']);
+                $bindTargetField = 'position_id';
+                $bindTargetId = $positionId;
+            } else {
+                $ruleList = $dbHouseNewChargeRule->getList([
+                    ['village_id', '=', $village_id],
+                    ['subject_id', '=', $subjectId],
+                    ['charge_project_id', '=', $chargeProjectId],
+                    ['charge_name', '=', $charge_name],
+                    ['status', '=', 1],
+                ], 'id,charge_name,bill_create_set,charge_price,unit_price', 'id desc');
+                if (!$ruleList || $ruleList->isEmpty()) {
+                    $this->appendBillExcelError($data, $nextIndex, '收费标准不存在', $allErrorData, $errorTotal);
+                    continue;
+                }
+                $ruleIds = [];
+                foreach ($ruleList as $ruleItem) {
+                    $ruleIds[] = $ruleItem['id'];
+                }
+                $bindInfo = $dbHouseNewChargeStandardBind->getLists1([
+                    ['rule_id', 'in', $ruleIds],
+                    ['project_id', '=', $chargeProjectId],
+                    ['village_id', '=', $village_id],
+                    ['vacancy_id', '=', $roomInfo['room_id']],
+                    ['bind_type', '=', 1],
+                    ['cycle', '=', $cycle],
+                    ['is_del', '=', 1],
+                ], 'id,rule_id,cycle,project_id,vacancy_id', 'id desc', 0, 1);
+                if (!$bindInfo || $bindInfo->isEmpty()) {
+                    $this->appendBillExcelError($data, $nextIndex, '房间未绑定该收费标准', $allErrorData, $errorTotal);
+                    continue;
+                }
+                $bindInfo = $bindInfo->toArray();
+                $ruleId = intval($bindInfo[0]['rule_id']);
+                $roomId = intval($roomInfo['room_id']);
+                $positionId = 0;
+                $bindTargetField = 'room_id';
+                $bindTargetId = $roomId;
             }
-            $ruleIds = [];
-            foreach ($ruleList as $ruleItem) {
-                $ruleIds[] = $ruleItem['id'];
-            }
-            $bindInfo = $dbHouseNewChargeStandardBind->getLists1([
-                ['rule_id', 'in', $ruleIds],
-                ['project_id', '=', $chargeProjectId],
-                ['village_id', '=', $village_id],
-                ['vacancy_id', '=', $roomInfo['room_id']],
-                ['bind_type', '=', 1],
-                ['cycle', '=', $cycle],
-                ['is_del', '=', 1],
-            ], 'id,rule_id,cycle,project_id,vacancy_id', 'id desc', 0, 1);
-            if (!$bindInfo || $bindInfo->isEmpty()) {
-                $this->appendBillExcelError($data, $nextIndex, '房间未绑定该收费标准', $allErrorData, $errorTotal);
-                continue;
-            }
-            $bindInfo = $bindInfo->toArray();
-            $ruleId = intval($bindInfo[0]['rule_id']);
 
-            $rangeKey = $roomInfo['room_id'] . '_' . $ruleId . '_' . $chargeProjectId;
+            $rangeKey = $bindTargetField . '_' . $bindTargetId . '_' . $ruleId . '_' . $chargeProjectId;
             if (isset($importRanges[$rangeKey])) {
                 foreach ($importRanges[$rangeKey] as $range) {
                     if ($this->isTimeRangeOverlap($service_start_time, $service_end_time, $range['start'], $range['end'])) {
@@ -1336,11 +1472,42 @@ class BillExcelImport extends Command
             $serviceStartDayEnd = $serviceStartDayBegin + 86400 - 1;
             $serviceEndDayBegin = strtotime(date('Y-m-d', $service_end_time));
             $serviceEndDayEnd = $serviceEndDayBegin + 86400 - 1;
-            $sameOrderRaw = $this->activePayOrderRaw() . ' AND (ROUND(`o`.`modify_money`,2)=' . $bill_money . ' OR ROUND(`o`.`total_money`,2)=' . $bill_money . ')';
+            if ($isParkingBill) {
+                $overlapParkingOrder = $dbHouseNewPayOrder->get_one([
+                    ['village_id', '=', $village_id],
+                    ['rule_id', '=', $ruleId],
+                    ['project_id', '=', $chargeProjectId],
+                    ['position_id', '=', $positionId],
+                    ['is_discard', '=', 1],
+                    ['service_start_time', '<=', $service_end_time],
+                    ['service_end_time', '>=', $service_start_time],
+                    'string' => $this->paidEffectiveOrderRaw(),
+                ], 'order_id,service_start_time,service_end_time');
+                if (isset($overlapParkingOrder['order_id']) && $overlapParkingOrder['order_id']) {
+                    $this->appendBillExcelError($data, $nextIndex, '账单计费时间与已有车位管理费账单重叠', $allErrorData, $errorTotal);
+                    continue;
+                }
+            }
+            if (!$isParkingBill) {
+                $paidOrderInfo = $dbHouseNewPayOrder->get_one([
+                    ['rule_id', '=', $ruleId],
+                    ['project_id', '=', $chargeProjectId],
+                    [$bindTargetField, '=', $bindTargetId],
+                    ['is_discard', '=', 1],
+                    ['service_start_time', '<=', $service_end_time],
+                    ['service_end_time', '>=', $service_start_time],
+                    'string' => $this->paidEffectiveOrderRaw(),
+                ], 'order_id,service_start_time,service_end_time');
+                if (isset($paidOrderInfo['order_id']) && $paidOrderInfo['order_id']) {
+                    $this->appendBillExcelError($data, $nextIndex, '账单计费时间与已有账单重叠', $allErrorData, $errorTotal);
+                    continue;
+                }
+            }
+            $sameOrderRaw = '`o`.`is_paid`=2 AND (ROUND(`o`.`modify_money`,2)=' . $bill_money . ' OR ROUND(`o`.`total_money`,2)=' . $bill_money . ')';
             $sameOrder = $dbHouseNewPayOrder->get_one([
                 ['rule_id', '=', $ruleId],
                 ['project_id', '=', $chargeProjectId],
-                ['room_id', '=', $roomInfo['room_id']],
+                [$bindTargetField, '=', $bindTargetId],
                 ['is_discard', '=', 1],
                 ['service_start_time', '>=', $serviceStartDayBegin],
                 ['service_start_time', '<=', $serviceStartDayEnd],
@@ -1351,26 +1518,7 @@ class BillExcelImport extends Command
             $matchedUnpaidOrder = [];
 
             if (isset($sameOrder['order_id']) && $sameOrder['order_id']) {
-                if (intval($sameOrder['is_paid']) == 2) {
-                    $matchedUnpaidOrder = $sameOrder;
-                } else {
-                    $this->appendBillExcelError($data, $nextIndex, '账单计费时间与已有账单重叠', $allErrorData, $errorTotal);
-                    continue;
-                }
-            } else {
-                $orderInfo = $dbHouseNewPayOrder->get_one([
-                    ['rule_id', '=', $ruleId],
-                    ['project_id', '=', $chargeProjectId],
-                    ['room_id', '=', $roomInfo['room_id']],
-                    ['is_discard', '=', 1],
-                    ['service_start_time', '<=', $service_end_time],
-                    ['service_end_time', '>=', $service_start_time],
-                    'string' => $this->activePayOrderRaw(),
-                ], 'order_id,service_start_time,service_end_time');
-                if (isset($orderInfo['order_id']) && $orderInfo['order_id']) {
-                    $this->appendBillExcelError($data, $nextIndex, '账单计费时间与已有账单重叠', $allErrorData, $errorTotal);
-                    continue;
-                }
+                $matchedUnpaidOrder = $sameOrder;
             }
 
             $bill_money = $this->normalizeExcelMoney($bill_money);
@@ -1402,7 +1550,7 @@ class BillExcelImport extends Command
                 $payDetail[] = ['name' => '积分抵扣', 'pay_money' => 0, 'discount_money' => $score_deducte];
             }
 
-            $remark = $remark ? $remark : date('Y-m-d H:i:s') . '通过线下表格导入周期性已缴账单';
+            $remark = $remark ? $remark : date('Y-m-d H:i:s') . ($isParkingBill ? '通过线下表格导入车位管理费已缴账单' : '通过线下表格导入周期性已缴账单');
             $payOrderData = [
                 'order_type' => $charge_type,
                 'order_name' => isset($charge_type_arr[$charge_type]) ? $charge_type_arr[$charge_type] : $charge_name,
@@ -1430,8 +1578,8 @@ class BillExcelImport extends Command
                 'service_month_num' => 1,
                 'from' => 3,
                 'unit_price' => $bill_money,
-                'room_id' => $roomInfo['room_id'],
-                'position_id' => 0,
+                'room_id' => $roomId,
+                'position_id' => $positionId,
                 'pigcms_id' => $payerInfo['pigcms_id'],
                 'name' => $payerInfo['name'],
                 'uid' => $payerInfo['uid'] ? $payerInfo['uid'] : 0,
@@ -1446,9 +1594,14 @@ class BillExcelImport extends Command
                 'order_pay_type' => 'pc_excel_import',
                 'invoice_status' => $invoice_status,
                 'role_id' => $rowCashierId,
+                'role_name' => $rowCashierName,
                 'login_role' => 401,
                 'remark' => $remark,
             ];
+            if ($isParkingBill) {
+                $payOrderData['car_type'] = 'month_type';
+                $payOrderData['parking_lot'] = $positionInfo['position_num'];
+            }
             $matchedOrderId = isset($matchedUnpaidOrder['order_id']) ? intval($matchedUnpaidOrder['order_id']) : 0;
             if ($matchedOrderId) {
                 $order_id = $matchedOrderId;
@@ -1463,8 +1616,8 @@ class BillExcelImport extends Command
             $summaryData = [
                 'village_id' => $village_id,
                 'property_id' => $property_id,
-                'room_id' => $roomInfo['room_id'],
-                'position_id' => 0,
+                'room_id' => $roomId,
+                'position_id' => $positionId,
                 'pay_uid' => $payOrderData['uid'],
                 'uid' => $payOrderData['uid'],
                 'total_money' => $total_pay_money,
@@ -1668,10 +1821,13 @@ class BillExcelImport extends Command
         return $start <= $oldEnd && $end >= $oldStart;
     }
 
-    private function activePayOrderRaw($alias = 'o')
+    private function paidEffectiveOrderRaw($alias = 'o')
     {
         $prefix = $alias ? '`' . $alias . '`.' : '';
-        return '(' . $prefix . '`is_paid`=2 OR ' . $prefix . '`is_refund`=1 OR ' . $prefix . '`refund_money`<' . $prefix . '`pay_money`)';
+        return '(' . $prefix . '`is_paid`=1'
+            . ' AND ' . $prefix . '`is_discard`=1'
+            . ' AND ' . $prefix . '`is_refund`=1'
+            . ' AND IFNULL(' . $prefix . '`refund_money`,0)<=0)';
     }
 
     private function matchImportRoom($dbHouseVillageSingle, $dbHouseVillageFloor, $dbHouseVillageLayer, $dbHouseVillageUserVacancy, $village_id, $single, $floor, $layer, $room)

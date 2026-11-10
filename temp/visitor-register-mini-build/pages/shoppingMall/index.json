@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "‎",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "shopping-mall-tabbar": "/pages/shoppingMall/components/shoppingMallTabbar",
+    "goods-item": "/pages/shoppingMall/components/goodsItem",
+    "we-app-ads": "/appComponent/platcommon/weAppAds"
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/Community_menu/index",
+    "pages/Community_menu/Workbench",
+    "pages/Community_menu/CollectMoney",
+    "pages/Community_menu/my",
+    "pages/Community_menu/selectHouseCar",
+    "pages/Property_menu/PropertyIndex",
+    "pages/Property_menu/my",
+    "pages/Property_menu/index",
+    "pages/PropertyWorker_menu/PropertyWorkerIndex",
+    "pages/PropertyWorker_menu/signInOut",
+    "pages/Grid_menu/GridIndex",
+    "pages/webview/webview"
+  ],
+  "subPackages": [
+    {
+      "root": "pages/Community",
+      "pages": [
+        "visitorRegisterNew/detail",
+        "visitorRegisterNew/list",
+        "checkoutApplication/voucherManagement",
+        "checkoutApplication/houseInspection",
+        "checkoutApplication/inspectionManagement",
+        "checkoutApplication/leaseCancellation",
+        "checkoutApplication/selectRooms",
+        "checkoutApplication/webview",
+        "bindPhone/index",
+        "videoSurveillance/hawkEye",
+        "videoSurveillance/hawkEyeDetail",
+        "resetPwd/resetPwd",
+        "CollectMoney/CollectMoneyList",
+        "CollectMoney/CollectMoneyDetails",
+        "CollectMoney/addCollectMoney",
+        "CollectMoney/allHistoryPayMoney",
+        "CollectMoney/HistoryPayMoney",
+        "Workbench/selectRooms",
+        "Workbench/roominfo",
+        "Workbench/searchUser",
+        "Workbench/userinfo",
+        "Workbench/userEdit",
+        "index/auditManagement",
+        "Workbench/accessControl",
+        "Workbench/accessControlEdit",
+        "Workbench/addAccessControl",
+        "Workbench/faceAccessControl",
+        "Workbench/newFaceAccessControl",
+        "scamera/scanBuy",
+        "Workbench/selectAddress",
+        "visitorRegistration/visitorRegistration",
+        "visitorRegistration/addvisitor",
+        "visitorRegistration/selectRooms",
+        "onlineReport/onlineReport",
+        "onlineReport/onlineReportDetailes",
+        "onlineReport/onlineReportperson",
+        "depositManagement/depositManagement",
+        "depositManagement/addDepositMoney",
+        "depositManagement/selectRoom",
+        "depositManagement/depositRefund",
+        "depositManagement/depositDetails",
+        "carManagement/carManagement",
+        "carManagement/carDetails",
+        "carManagement/carEdit",
+        "carManagement/addcar",
+        "carManagement/addgarage",
+        "carManagement/addvehicle",
+        "carManagement/selectRooms",
+        "carManagement/garageManagement",
+        "carManagement/garageDetails",
+        "carManagement/garageEdit",
+        "carManagement/vehicleManagement",
+        "carManagement/vehicleDetails",
+        "carManagement/vehicleEdit",
+        "expressManagement/expressManagement",
+        "expressManagement/expressDetails",
+        "expressManagement/addexpress",
+        "unpaidBills/unpaidBillsList",
+        "unpaidBills/CollectMoneyBills",
+        "unpaidBills/unpaidBillsListDetails",
+        "unpaidBills/CollectMoneyDetails",
+        "villageNew/newindex",
+        "villageNew/villagecontent",
+        "faceAccessControl/faceAccessControl",
+        "faceAccessControl/openDoorRecord",
+        "Property/CostStatistics",
+        "Property/HardwareStatistics",
+        "Property/TrafficStatistics",
+        "Property/ParkingStatistics",
+        "Property/WorkStatistics",
+        "smartQRcode/taskList",
+        "smartQRcode/taskMap",
+        "smartQRcode/taskRecords",
+        "smartQRcode/elevatorManagement",
+        "smartQRcode/failureReport",
+        "smartQRcode/inspectionRecords",
+        "mobileMeterReading/workList",
+        "mobileMeterReading/selectApartment",
+        "mobileMeterReading/selectRoom",
+        "mobileMeterReading/selectRoomy",
+        "mobileMeterReading/selectMeterCate",
+        "mobileMeterReading/writeMeter",
+        "mobileMeterReading/meterRecords",
+        "Worksheets/onlineReport",
+        "Worksheets/onlineReportDetailes",
+        "Worksheets/onlineReportperson",
+        "grid/eventList",
+        "grid/addevent",
+        "grid/eventdetails",
+        "grid/eventrecord",
+        "NewCollectMoney/Cashier",
+        "NewCollectMoney/newCashier",
+        "NewCollectMoney/ModifyMoney",
+        "NewCollectMoney/FeeDetailsList",
+        "NewCollectMoney/FeeDetails",
+        "NewCollectMoney/Collection",
+        "NewCollectMoney/CollectionCate",
+        "NewCollectMoney/GeneratePrepaymentBill",
+        "NewCollectMoney/GenerateBillManually",
+        "NewCollectMoney/AddBill",
+        "NewCollectMoney/PaymentDetails",
+        "NewCollectMoney/AccountsReceivable",
+        "NewCollectMoney/Historypaid",
+        "NewCollectMoney/billPaid",
+        "NewCollectMoney/AccountsReceivableDetails",
+        "reviewRefund/myApproval",
+        "reviewRefund/approvalDetails",
+        "approvalFlow/list",
+        "approvalFlow/detail",
+        "index/setup",
+        "networkManage/networkIndex",
+        "networkManage/messageSuggestions",
+        "networkManage/messageList",
+        "networkManage/taskList",
+        "networkManage/ownerData",
+        "networkManage/taskDetail",
+        "stopFeating/index",
+        "stopFeating/pages/auditShutdown",
+        "stopFeating/pages/trafficBilling",
+        "stopFeating/pages/trafficDetail",
+        "contractManage/index",
+        "contractManage/pages/watchbox",
+        "contractManage/pages/watchboxDetail",
+        "contractManage/pages/watchboxInRecord",
+        "contractManage/pages/watchboxOutRecord",
+        "contractManage/pages/watchboxOuthandle",
+        "contractManage/pages/watchboxhandle",
+        "contractManage/pages/contractNotice",
+        "contractManage/pages/contractUser",
+        "contractManage/pages/contractDetail"
+      ]
+    },
+    {
+      "root": "pages/CommunityPages",
+      "pages": [
+        "HighTossAct/onlineReport",
+        "HighTossAct/onlineReportDetailes",
+        "HighTossAct/onlineReportperson",
+        "workOrder/eventList",
+        "workOrder/addevent",
+        "workOrder/eventdetails",
+        "workOrder/eventrecord",
+        "expressPickup/pickupList",
+        "expressPickup/editPickupApplication",
+        "workOrder/selectPeople",
+        "workOrder/selectRooms"
+      ]
+    },
+    {
+      "root": "pages/socialActivity",
+      "pages": [
+        "index",
+        "activityReview",
+        "detail",
+        "communityActivities",
+        "commentModeration",
+        "activitiesInfo"
+      ]
+    }
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#2681F3",
+    "navigationBarTitleText": "O2O",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f4f4f4"
+  },
+  "tabBar": {
+    "color": "#777",
+    "selectedColor": "#06c1ae",
+    "backgroundColor": "#FAFAFC",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/Community_menu/index",
+        "text": "首页",
+        "iconPath": "./static/village_icon/index_no.png",
+        "selectedIconPath": "./static/village_icon/index_1.png"
+      },
+      {
+        "pagePath": "pages/Community_menu/Workbench",
+        "text": "工作台",
+        "iconPath": "./static/village_icon/work_no.png",
+        "selectedIconPath": "./static/village_icon/work_1.png"
+      },
+      {
+        "pagePath": "pages/Community_menu/CollectMoney",
+        "text": "收银台",
+        "iconPath": "./static/village_icon/money_no.png",
+        "selectedIconPath": "./static/village_icon/money_1.png"
+      },
+      {
+        "pagePath": "pages/Community_menu/selectHouseCar",
+        "text": "收银台",
+        "iconPath": "./static/village_icon/money_no.png",
+        "selectedIconPath": "./static/village_icon/money_1.png"
+      },
+      {
+        "pagePath": "pages/Community_menu/my",
+        "text": "我的",
+        "iconPath": "./static/village_icon/my_no.png",
+        "selectedIconPath": "./static/village_icon/my_1.png"
+      }
+    ],
+    "position": "bottom"
+  },
+  "preloadRule": {
+    "pages/Community_menu/index": {
+      "network": "all",
+      "packages": [
+        "pages/Community"
+      ]
+    },
+    "pages/Community_menu/CollectMoney": {
+      "network": "all",
+      "packages": [
+        "pages/Community"
+      ]
+    },
+    "pages/Community_menu/my": {
+      "network": "all",
+      "packages": [
+        "pages/Community"
+      ]
+    },
+    "pages/Community_menu/Workbench": {
+      "network": "all",
+      "packages": [
+        "pages/Community"
+      ]
+    },
+    "pages/Property_menu/PropertyIndex": {
+      "network": "all",
+      "packages": [
+        "pages/Community"
+      ]
+    },
+    "pages/PropertyWorker_menu/PropertyWorkerIndex": {
+      "network": "all",
+      "packages": [
+        "pages/Community"
+      ]
+    },
+    "pages/CommunityPages/workOrder/eventList": {
+      "network": "all",
+      "packages": [
+        "pages/CommunityPages"
+      ]
+    },
+    "pages/CommunityPages/HighTossAct/onlineReport": {
+      "network": "all",
+      "packages": [
+        "pages/CommunityPages"
+      ]
+    }
+  },
+  "networkTimeout": {
+    "request": 300000
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的相关距离计算"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
+  "usingComponents": {
+    "userinfo": "/appComponent/platcommon/userinfo",
+    "tabbar": "/appComponent/platcommon/tabbar",
+    "lang": "/appComponent/platcommon/lang",
+    "webtemplate": "/pages/webview/webtemplate"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="container"><form data-event-opts="{{[['submit',[['formSubmit',['$event']]]]]}}" bindsubmit="__e"><textarea placeholder="{{placeholder}}" name="value" value="{{value}}"></textarea><button class="block_btn" style="{{('background:'+mobile_head_color)}}" formType="submit"><lang vue-id="3901f5e6-1" keywords="确定" bind:__l="__l"></lang></button></form></view>

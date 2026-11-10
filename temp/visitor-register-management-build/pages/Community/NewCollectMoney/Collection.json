@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "收款",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

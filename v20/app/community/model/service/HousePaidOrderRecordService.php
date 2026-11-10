@@ -17,36 +17,72 @@ use think\Exception;
 
 class HousePaidOrderRecordService
 {
+    public function getExportWhere($villageId, $param)
+    {
+        $where = [['village_id', '=', $villageId], ['source_from', '=', 1]];
+        $orderType = (int) ($param['order_type'] ?? 1);
+        $orderNo = trim($param['order_no'] ?? '');
+        if ($orderType == 1 && $orderNo !== '') {
+            $where[] = ['order_no', '=', $orderNo];
+        } elseif ($orderType == 2) {
+            $where[] = ['pay_order_no', '=', $orderNo];
+        } elseif ($orderType == 3) {
+            $where[] = ['third_transaction_no', '=', $orderNo];
+        }
+        $status = (int) ($param['order_status'] ?? 0);
+        if (in_array($status, [1, 2, 3])) {
+            $where[] = ['refund_status', '=', $status - 1];
+        }
+        if (!empty($param['business_type'])) {
+            $where[] = ['house_type', 'like', '%' . $param['business_type'] . '%'];
+        }
+        $date = $param['date'] ?? [];
+        if (is_array($date)) {
+            if (!empty($date[0])) {
+                $where[] = ['pay_time', '>=', strtotime($date[0] . ' 00:00:00')];
+            }
+            if (!empty($date[1])) {
+                $where[] = ['pay_time', '<=', strtotime($date[1] . ' 23:59:59')];
+            }
+        }
+        return $where;
+    }
+
     public function getPaidOrderRecordList($village_id = 0, $whereArr,$field ='*',$page=0, $limit=15,$is_export=false)
     {
         $db_paid_order_record = new PaidOrderRecord();
         $returnArr = array('lists' => array(), 'count' => 0, 'total_limit' => $limit);
         $paid_orders = $db_paid_order_record->getListData($whereArr,$field, 'id DESC',$page, $limit);
-        $exportTitle=array();
         $service_house_village_user_vacancy = new HouseVillageUserVacancyService();
         $service_house_village = new HouseVillageService();
         $houseNewPayOrder =new HouseNewPayOrder();
-        if($is_export){
-            $exportTitle[]='商户支付订单号';
-            $exportTitle[]='业务订单编号';
-            $exportTitle[]='第三方支付流水号';
-            $exportTitle[]='应收费用';
-            $exportTitle[]='实际缴费金额';
-            $exportTitle[]='支付时间';
-            $exportTitle[]='余额支付金额';
-            $exportTitle[]='支付方式';
-            $exportTitle[]='积分抵扣金额';
-            $exportTitle[]='退款金额';
-            $exportTitle[]='退款时间';
-            $exportTitle[]='订单状态';
-            $exportTitle[]='所属业务';
-            $exportTitle[]='房间号/车位号';
-            $exportTitle[]='缴费人';
-            $exportTitle[]='电话';
-        }
         $exportData=array();
         if ($paid_orders && !$paid_orders->isEmpty()) {
             $paid_orders = $paid_orders->toArray();
+            // 老流水只保存现金部分；按原支付明细还原，列表和导出使用同一金额。
+            $summaryIds = [];
+            foreach ($paid_orders as $record) {
+                if ($record['table_name'] === 'house_new_pay_order_summary' && $record['order_id'] > 0) {
+                    $summaryIds[] = $record['order_id'];
+                }
+            }
+            $mixSummaries = [];
+            if ($summaryIds) {
+                $summaries = (new \app\community\model\db\HouseNewPayOrderSummary())->where([
+                    ['village_id', '=', $village_id],
+                    ['summary_id', 'in', array_unique($summaryIds)],
+                    ['pay_type', '=', 22],
+                ])->field('summary_id,pay_detail')->select();
+                foreach ($summaries as $summary) {
+                    $mixSummaries[$summary['summary_id']] = $summary['pay_detail'];
+                }
+            }
+            foreach ($paid_orders as &$record) {
+                if ($record['table_name'] === 'house_new_pay_order_summary' && isset($mixSummaries[$record['order_id']])) {
+                    $record['pay_money'] = $this->getMixRecordPayMoney($record, $mixSummaries[$record['order_id']]);
+                }
+            }
+            unset($record);
             $count = $db_paid_order_record->getCount($whereArr);
             $returnArr['count'] = $count;
             $houseNewChargeService=new HouseNewChargeService();
@@ -126,7 +162,10 @@ class HousePaidOrderRecordService
                     $tmpArr['address_name']= $address_name;
                     $tmpArr['name']= $name;
                     $tmpArr['phone']= $phone;
-                    $exportData[]=$tmpArr;
+                    $exportRow = $this->getPaidRecordExportRow($vv, $tmpArr, $village_id, count($exportData) + 1);
+                    if ($exportRow !== null) {
+                        $exportData[] = $exportRow;
+                    }
                 }
             }
             $returnArr['lists'] = $paid_orders;
@@ -134,12 +173,164 @@ class HousePaidOrderRecordService
         }
         if($is_export){
             $returnArr['lists'] = $exportData;
-            $returnArr['export_title'] = $exportTitle;
+            $returnArr['export_title'] = ['序号', '房间号/车位号', '业主名称', '收费项目名称', '订单编号', '缴费金额', '计费开始时间', '计费结束时间', '收款人', '支付方式'];
         }
         unset($paid_orders);
         unset($exportData);
         return $returnArr;
     }
+    private function getMixRecordPayMoney($record, $payDetail)
+    {
+        $detail = json_decode($payDetail, true);
+        if (empty($detail['list']) || !is_array($detail['list'])) {
+            return $record['pay_money'];
+        }
+        $total = 0;
+        foreach ($detail['list'] as $item) {
+            $total += max(round(floatval($item['paymoney'] ?? 0), 2), 0);
+        }
+        if ($total <= 0) {
+            return $record['pay_money'];
+        }
+        // 直接还原合计而非在流水上累加，兼容旧流水及已包含抵扣的流水。
+        // 余额和积分保留独立列，避免重复计算。
+        return max(round($total - floatval($record['balance_money'] ?? 0)
+            - floatval($record['score_money'] ?? 0), 2), 0);
+    }
+
+    /** 一笔流水保留一行，关联的多个账单按相同顺序换行，金额不重复累计。 */
+    private function getPaidRecordExportRow($record, $formatted, $villageId, $number)
+    {
+        $addresses = $names = $projects = $starts = $ends = $collectors = [];
+        if ($record['table_name'] == 'house_new_pay_order_summary' && $record['order_id'] > 0 && $record['house_type'] !== 'non_motor_vehicle') {
+            $orders = (new HouseNewPayOrder())->getList([
+                ['o.village_id', '=', $villageId], ['o.summary_id', '=', $record['order_id']],
+                ['o.is_paid', '=', 1],
+            ], 'o.*,p.name as project_name', 0, 0, 'o.order_id ASC');
+            $summary = (new \app\community\model\db\HouseNewPayOrderSummary())->getOne([
+                'summary_id' => $record['order_id'], 'village_id' => $villageId,
+            ]);
+            $summaryInfo = $summary ? $summary->toArray() : [];
+            $cashier = new HouseNewCashierService();
+            $paidMoney = 0;
+            $eligibleCount = 0;
+            foreach ($orders as $order) {
+                // 与已缴账单入口一致；不能把历史流水原额当作当前有效账单金额。
+                if (intval($order['is_discard']) !== 1 || $order['order_type'] === 'non_motor_vehicle'
+                    || !(intval($order['is_refund']) === 1 || floatval($order['refund_money']) < floatval($order['pay_money']))) {
+                    continue;
+                }
+                $eligibleCount++;
+                $paidMoney += $cashier->getOrderPaidExportMoney($order, $summaryInfo);
+                $address = '';
+                if ($order['position_id'] > 0) {
+                    $address = $this->getCarParkingById($order['position_id'], $villageId);
+                } elseif ($order['room_id'] > 0) {
+                    $room = (new HouseVillageUserVacancyService())->getUserVacancyInfo([
+                        'pigcms_id' => $order['room_id'], 'village_id' => $villageId,
+                    ], 'single_id,floor_id,layer_id,village_id');
+                    if ($room) {
+                        $address = (new HouseVillageService())->getSingleFloorRoom($room['single_id'], $room['floor_id'], $room['layer_id'], $order['room_id'], $villageId);
+                    }
+                }
+                $addresses[] = $address ?: $formatted['address_name'];
+                $names[] = $order['name'] ?: $formatted['name'];
+                $projects[] = $order['project_name'] ?: $formatted['business_type_name'];
+                $starts[] = $order['service_start_time'] > 0 ? date('Y-m-d', $order['service_start_time']) : '';
+                $ends[] = $order['service_end_time'] > 0 ? date('Y-m-d', $order['service_end_time']) : '';
+                $collector = trim($order['role_name'] ?? '');
+                if ($collector === '' && $order['role_id'] > 0 && in_array($order['login_role'], [0, 401])) {
+                    $admin = (new \app\community\model\db\HouseAdmin())->getOne(['id' => $order['role_id'], 'village_id' => $villageId], 'realname,account');
+                    if ($admin) {
+                        $collector = $admin['realname'] ?: $admin['account'];
+                    }
+                }
+                $collectors[] = $collector;
+            }
+            // 已无有效已缴子账单的历史流水，不进入“已缴账单明细表”合计。
+            if ($eligibleCount === 0) {
+                return null;
+            }
+            $formatted['pay_money'] = round($paidMoney, 2);
+        }
+        return [
+            $number,
+            $addresses ? implode("\n", array_unique($addresses)) : $formatted['address_name'],
+            $names ? implode("\n", array_unique($names)) : $formatted['name'],
+            $projects ? implode("\n", $projects) : $formatted['business_type_name'],
+            $formatted['order_no'],
+            $formatted['pay_money'],
+            implode("\n", $starts), implode("\n", $ends),
+            implode("\n", array_unique($collectors)), $formatted['pay_type'],
+        ];
+    }
+
+    /** 账单流水专用版式，不影响其他财务报表。 */
+    public function buildPaidRecordSpreadsheet($rows, $projectName, $date = [])
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('已缴账单明细表');
+        $spreadsheet->getDefaultStyle()->getFont()->setName('宋体')->setSize(11);
+        $sheet->getDefaultRowDimension()->setRowHeight(22);
+        foreach (['A' => 7, 'B' => 24, 'C' => 14, 'D' => 22, 'E' => 30, 'F' => 16, 'G' => 18, 'H' => 18, 'I' => 16, 'J' => 18] as $column => $width) {
+            $sheet->getColumnDimension($column)->setWidth($width);
+        }
+        $sheet->mergeCells('A1:J1')->setCellValue('A1', '已缴账单明细表');
+        $sheet->getRowDimension(1)->setRowHeight(28);
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $sheet->mergeCells('A2:C2');
+        $sheet->mergeCells('D2:E2');
+        $sheet->mergeCells('F2:J2');
+        $period = '全部';
+        if (is_array($date) && (!empty($date[0]) || !empty($date[1]))) {
+            $period = ($date[0] ?? '') . ' 至 ' . ($date[1] ?? '');
+        }
+        $sheet->setCellValueExplicit('A2', '项目名称：' . $projectName, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->setCellValueExplicit('D2', '时间：' . $period, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+        $sheet->getRowDimension(2)->setRowHeight(32);
+        $sheet->fromArray(['序号', '房间号/车位号', '业主名称', '收费项目名称', '订单编号', '缴费金额', '计费开始时间', '计费结束时间', '收款人', '支付方式'], null, 'A3');
+        $rowNumber = 4;
+        foreach ($rows as $item) {
+            $column = 'A';
+            $lines = 1;
+            foreach ($item as $value) {
+                $value = (string) $value;
+                $wrappedLines = 0;
+                foreach (explode("\n", $value) as $line) {
+                    $wrappedLines += max(1, (int) ceil(mb_strwidth($line, 'UTF-8') / ($sheet->getColumnDimension($column)->getWidth() - 2)));
+                }
+                $lines = max($lines, $wrappedLines);
+                $sheet->setCellValueExplicit($column . $rowNumber, $value,
+                    in_array($column, ['A', 'F']) ? \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC : \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $column++;
+            }
+            $sheet->getRowDimension($rowNumber)->setRowHeight(22 * $lines);
+            $rowNumber++;
+        }
+        // 与参考图一致：至少保留 22 行明细，超出时自然延长。
+        $totalRow = max($rowNumber, 26);
+        for ($blankRow = $rowNumber; $blankRow < $totalRow; $blankRow++) {
+            $sheet->setCellValue('A' . $blankRow, $blankRow - 3);
+        }
+        $sheet->mergeCells('A' . $totalRow . ':E' . $totalRow)->setCellValue('A' . $totalRow, '合计');
+        $sheet->setCellValue('F' . $totalRow, '=SUM(F4:F' . ($totalRow - 1) . ')');
+        $sheet->setCellValue('F2', '= "收款合计："&TEXT(F' . $totalRow . ',"0.00")');
+        $sheet->getStyle('A1:J' . $totalRow)->applyFromArray([
+            'alignment' => ['horizontal' => 'center', 'vertical' => 'center', 'wrapText' => true],
+            'borders' => ['allBorders' => ['borderStyle' => 'thin', 'color' => ['rgb' => '000000']]],
+        ]);
+        $sheet->getStyle('A2:J2')->getAlignment()->setHorizontal('left');
+        $sheet->getStyle('A3:J3')->getFont()->setBold(true);
+        $sheet->getStyle('F4:F' . $totalRow)->getNumberFormat()->setFormatCode('0.00');
+        $sheet->getStyle('F4:F' . $totalRow)->getAlignment()->setHorizontal('right');
+        $sheet->freezePane('A4');
+        $sheet->setShowGridlines(false);
+        $sheet->getPageSetup()->setOrientation('landscape')->setPaperSize(9)->setFitToWidth(1)->setFitToHeight(0);
+        $sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 3)->setPrintArea('A1:J' . $totalRow);
+        return $spreadsheet;
+    }
+
     public function getCarParkingById($position_id = 0, $village_id = 0)
     {
         $db_house_village_parking_position = new HouseVillageParkingPosition();

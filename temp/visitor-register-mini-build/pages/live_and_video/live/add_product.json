@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "添加宝贝",
+  "navigationBarBackgroundColor": "#FE443A",
+  "usingComponents": {
+    "own-store": "/pages/live_and_video/live/own_store",
+    "business-alliance": "/pages/live_and_video/live/businessAlliance"
+  }
+}

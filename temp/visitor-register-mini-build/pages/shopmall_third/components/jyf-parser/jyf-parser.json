@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "trees": "/pages/shopmall_third/components/jyf-parser/libs/trees"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="container"><view class="top-title">{{village_name+"访客通行证"}}</view><view class="top-text">{{village_name}}</view><image class="QRcode-img" src="{{qrcode}}" mode></image><button class="btn1" type="primary" data-event-opts="{{[['tap',[['goQRvisitor',['$event']]]]]}}" bindtap="__e">生成通行证</button></view>

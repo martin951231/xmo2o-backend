@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d22890e"],{da72:function(n,p,o){n.exports=o.p+"img/party_working_committee.00c78c33.png"}}]);

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "邻里",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "villagecopyfooter": "/appComponent/villagePage/copy_footer"
+  }
+}

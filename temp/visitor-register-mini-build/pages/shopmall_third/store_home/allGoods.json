@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "全部宝贝",
+  "usingComponents": {
+    "shop-trick": "/pages/shopmall_third/components/shopTrick/shopTrick",
+    "tabbar": "/pages/shopmall_third/components/tabbar/tabbar",
+    "goods": "/pages/shopmall_third/store_home/goods"
+  }
+}

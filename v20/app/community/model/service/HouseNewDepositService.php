@@ -19,7 +19,7 @@ class HouseNewDepositService
         ];
         $count = Db::name('house_new_deposit_category')->where($where)->count();
         $list = Db::name('house_new_deposit_category')->where($where)
-            ->field('id,cate_name,status,add_time,update_time')
+            ->field('id,cate_name,cate_key,status,add_time,update_time')
             ->page($page, $limit)
             ->order('id DESC')
             ->select()
@@ -42,7 +42,7 @@ class HouseNewDepositService
             ['village_id', '=', $villageId],
             ['status', '=', 1],
             ['is_del', '=', 0],
-        ])->field('id,cate_name')->order('id DESC')->select()->toArray();
+        ])->field('id,cate_name,cate_key')->order('id DESC')->select()->toArray();
         return ['list' => $list];
     }
 
@@ -55,6 +55,11 @@ class HouseNewDepositService
         if ($cateName === '') {
             throw new \Exception('请输入押金分类名');
         }
+        $oldCategory = [];
+        if ($id > 0) {
+            $oldCategory = $this->getCategory($villageId, $id, false);
+        }
+        $cateKey = !empty($oldCategory['cate_key']) ? trim($oldCategory['cate_key']) : $this->generateDepositCategoryKey($propertyId, $villageId, $cateName, $id);
         $repeatQuery = Db::name('house_new_deposit_category')->where([
             ['village_id', '=', $villageId],
             ['cate_name', '=', $cateName],
@@ -72,19 +77,18 @@ class HouseNewDepositService
             'property_id' => $propertyId,
             'village_id' => $villageId,
             'cate_name' => $cateName,
+            'cate_key' => $cateKey,
             'status' => intval($params['status'] ?? 1) === 1 ? 1 : 0,
             'update_time' => $now,
         ];
         if ($id > 0) {
-            $this->getCategory($villageId, $id, false);
             Db::name('house_new_deposit_category')->where('id', $id)->update($save);
         } else {
             $save['add_time'] = $now;
             $id = Db::name('house_new_deposit_category')->insertGetId($save);
         }
-        return ['id' => $id];
+        return ['id' => $id, 'cate_key' => $cateKey];
     }
-
     public function changeCategoryStatus($adminUser, $params)
     {
         $villageId = $this->getVillageId($adminUser);
@@ -97,7 +101,6 @@ class HouseNewDepositService
         ]);
         return ['id' => $id, 'status' => $status];
     }
-
     public function deleteCategory($adminUser, $params)
     {
         $villageId = $this->getVillageId($adminUser);
@@ -127,6 +130,7 @@ class HouseNewDepositService
             $extraData = [
                 'deposit_category_id' => intval($category['id']),
                 'deposit_category_name' => $category['cate_name'],
+                'deposit_category_key' => $category['cate_key'] ?? '',
                 'remark' => trim($params['remark'] ?? ''),
             ];
             $orderId = Db::name('house_new_pay_order')->insertGetId([
@@ -173,6 +177,17 @@ class HouseNewDepositService
                 'refunded_money' => 0,
                 'account_status' => 0,
                 'remark' => trim($params['remark'] ?? ''),
+                'add_time' => $now,
+                'update_time' => $now,
+            ]);
+            Db::name('house_new_bill_deposit_freeze')->insert([
+                'property_id' => $propertyId,
+                'village_id' => $villageId,
+                'room_id' => intval($roomInfo['pigcms_id']),
+                'order_id' => $orderId,
+                'freeze_money' => $money,
+                'status' => 0,
+                'remark' => trim($params['remark'] ?? '') ?: 'deposit bill freeze',
                 'add_time' => $now,
                 'update_time' => $now,
             ]);
@@ -299,14 +314,13 @@ class HouseNewDepositService
                         'property_id' => intval($row['property_id']),
                         'village_id' => $villageId,
                         'room_id' => intval($row['room_id']),
-                        'total_money' => $this->money4($row['deposit_money']),
+                        'total_money' => 0,
                         'used_money' => 0,
                         'add_time' => $now,
                         'update_time' => $now,
                     ]);
                 } else {
                     Db::name('house_new_bill_deposit_account')->where('id', $account['id'])->update([
-                        'total_money' => $this->money4($account['total_money'] + $row['deposit_money']),
                         'update_time' => $now,
                     ]);
                 }
@@ -323,6 +337,36 @@ class HouseNewDepositService
         return ['count' => count($rows)];
     }
 
+    private function generateDepositCategoryKey($propertyId, $villageId, $name, $excludeId = 0)
+    {
+        for ($i = 0; $i < 20; $i++) {
+            $key = $this->buildRandomEnglishKey('deposit', $name);
+            $query = Db::name('house_new_deposit_category')->where([
+                ['village_id', '=', $villageId],
+                ['cate_key', '=', $key],
+                ['is_del', '=', 0],
+            ]);
+            if ($excludeId > 0) {
+                $query->where('id', '<>', $excludeId);
+            }
+            $existsCategory = $query->find();
+            $existsBusinessType = Db::name('community_approval_business_type')->where([
+                ['property_id', '=', $propertyId],
+                ['village_id', '=', $villageId],
+                ['type_key', '=', $key],
+                ['is_del', '=', 0],
+            ])->find();
+            if (!$existsCategory && !$existsBusinessType) {
+                return $key;
+            }
+        }
+        throw new \Exception('押金分类关键字生成失败，请重试');
+    }
+
+    private function buildRandomEnglishKey($prefix, $name)
+    {
+        return $prefix . '_' . substr(md5($name . microtime(true) . mt_rand(100000, 999999)), 0, 12);
+    }
     private function getDepositOrderDetail($villageId, $orderId)
     {
         $orderId = intval($orderId);

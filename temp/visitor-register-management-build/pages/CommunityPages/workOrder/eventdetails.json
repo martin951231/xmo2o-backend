@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "事件详情",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "u-toast": "/uview-ui/components/u-toast/u-toast",
+    "w-picker": "/pages/CommunityPages/component/w-picker/w-picker",
+    "upload-img": "/pages/CommunityPages/component/uploadImg/uploadImg",
+    "video-play": "/pages/CommunityPages/workOrder/videoPlayer"
+  }
+}

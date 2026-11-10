@@ -1,0 +1,78 @@
+
+.statistical_data{
+  margin: 20px 20px;
+  padding: 14px 0;
+  text-align: center;
+  background-color: #eee;
+  font-size: 14px;
+}
+.statistical_fir_p{
+  font-size: 16px;
+}
+.statistical_data p{
+  margin: 0 0;
+}
+.tab_list{
+  padding: 14px 0;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+.label{
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 4px;
+}
+
+
+.owner_msg .label_con[data-v-18908095] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.owner_msg .label_con[data-v-18908095]:nth-child(1) {
+  margin-top: 0;
+}
+.owner_msg .label_con .title[data-v-18908095] {
+  font-weight: bold;
+}
+.owner_msg .label_con .choose_con[data-v-18908095] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+.user_label .label_con[data-v-18908095] {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 20px;
+}
+.user_label .label_con[data-v-18908095]:nth-child(1) {
+  margin-top: 0;
+}
+.user_label .label_con .title[data-v-18908095] {
+  font-weight: bold;
+}
+.user_label .label_con .radio_con[data-v-18908095] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+

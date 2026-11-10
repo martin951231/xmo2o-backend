@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-sticky": "/uview-ui/components/u-sticky/u-sticky",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "appoint-goods-item": "/pages/customPage/components/customPageComponents/AppointGoodsItem"
+  }
+}

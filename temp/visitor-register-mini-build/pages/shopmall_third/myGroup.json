@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的拼团",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more"
+  }
+}

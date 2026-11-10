@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "分销中心",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-avatar": "/uview-ui/components/u-avatar/u-avatar"
+  }
+}

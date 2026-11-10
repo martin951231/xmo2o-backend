@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "直播详情",
+  "navigationBarBackgroundColor": "#FE443A",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "top-nav-liver": "/pages/live_and_video/components/topNavLiver",
+    "bottm-menu-liver": "/pages/live_and_video/components/bottmMenuLiver",
+    "left-message-liver": "/pages/live_and_video/live/liver/leftMessageLiver",
+    "left-scroll-ing": "/pages/live_and_video/live/liver/leftScrollIng",
+    "left-scroll": "/pages/live_and_video/live/liver/leftScroll",
+    "count-down": "/pages/live_and_video/live/liver/countDown",
+    "creat-live": "/pages/live_and_video/live/creat_live"
+  }
+}

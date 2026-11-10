@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "限时抢购",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "tabs": "/appComponent/platcommon/tabs",
+    "limit-goods": "/appComponent/shopPage/limitGoods"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "我的审批",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "no-data": "/pages/Community/reviewRefund/nodata"
+  }
+}

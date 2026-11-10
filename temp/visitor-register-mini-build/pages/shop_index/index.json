@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "快店",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "shop-page": "/appComponent/shopPage/shopPage",
+    "lottery": "/pages/activity/lottery/lottery",
+    "draw-start": "/pages/activity/lottery/drawStart"
+  }
+}

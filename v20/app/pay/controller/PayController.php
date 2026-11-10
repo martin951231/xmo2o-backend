@@ -11,6 +11,7 @@ use app\common\model\service\merchant_card\MerchantCardService;
 use app\common\model\service\percent_rate\PercentRateService;
 use app\common\model\service\qiye\QiyeService;
 use app\common\model\service\UserService;
+use app\community\model\db\HouseVillagePayConfig;
 use app\community\model\service\HouseVillageService;
 use app\community\model\service\NewPayService;
 use app\community\model\service\PayService as communityPayService;
@@ -24,6 +25,7 @@ use app\mall\model\service\MallOrderCombineService;
 use app\pay\model\service\channel\TianqueService;
 use app\pay\model\service\env\EnvService;
 use app\pay\model\service\PayService;
+use app\social_activity\model\service\SocialActivityPayConfigService;
 use app\thirdRobot\model\service\ThirdRobotDeliveryOrderService;
 use think\facade\Cache;
 use think\facade\Db;
@@ -187,6 +189,51 @@ class PayController
 		return api_output(0, $return);
 	}
 
+    private function isVillageAllinpayEnabled($villageId, $onlinePayMoney = null, $orderType = '')
+    {
+        if (!$villageId || !in_array(request()->agent, ['wechat_mini', 'h5', 'wechat_h5', 'alipay'], true) || ($onlinePayMoney !== null && $onlinePayMoney <= 0)) {
+            return false;
+        }
+        if ($orderType === 'social_activity') {
+            (new SocialActivityPayConfigService())->getEnabledConfig($villageId);
+            return true;
+        }
+        return (new HouseVillagePayConfig())
+            ->where([
+                'village_id' => intval($villageId),
+                'allinpay_status' => 1,
+            ])
+            ->count() > 0;
+    }
+
+    private function isAllinpayRequested($onlinePayMoney = null)
+    {
+        if ($onlinePayMoney !== null && $onlinePayMoney <= 0) {
+            return false;
+        }
+        $payType = request()->param('pay_type', '', 'trim');
+        $forceAllinpay = request()->param('force_allinpay', 0, 'intval');
+        $allinpayWxappCashier = request()->param('allinpay_wxapp_cashier', 0, 'intval');
+        return $forceAllinpay == 1 || $allinpayWxappCashier == 1 || in_array($payType, ['allinpay', 'allinpay_cashier', 'allinpay_wxapp', 'allinpay_wxapp_cashier', 'wxapp_cashier']);
+    }
+
+    private function getAllinpayPayTypes($payTypes)
+    {
+        foreach ($payTypes as $payType) {
+            if (isset($payType['name']) && $payType['name'] == 'allinpay') {
+                return [$payType];
+            }
+        }
+        return [[
+            'name' => 'allinpay',
+            'text' => '通联支付',
+            'icon' => cfg('site_url') . '/static/images/pay_ico/wechat@2x.png',
+            'discount_tips' => '',
+            'service_charge' => '',
+            'rate' => '',
+        ]];
+    }
+
 	/**
 	 * 公共计算
 	 */
@@ -303,6 +350,7 @@ class PayController
 				return api_output_error(1001, '当前业务（'.$order_type.'）未对接');
 		}
 		try{
+            if ($order_type === 'social_activity') { $business->assertCreator($order_id, $now_uid); }
             if(in_array($order_type,array('pile_user_charge_balance'))){
                 $now_order = $business->getOrderPayInfo($order_id,'pile_user_charge_balance');
             }else{
@@ -432,6 +480,23 @@ class PayController
             }
         }
         $pay_types=$pay_types ? array_values($pay_types):array();
+        $isVillageAllinpayEnabled = $this->isVillageAllinpayEnabled($villageId, $now_order['order_money'] ?? null, $order_type);
+        $isNonVillageAllinpayRequested = !$villageId && $this->isAllinpayRequested($now_order['order_money'] ?? null);
+        if ($isVillageAllinpayEnabled || $isNonVillageAllinpayRequested) {
+            $pay_types = $this->getAllinpayPayTypes($pay_types);
+            $pay_type = 'allinpay';
+        } elseif ($villageId) {
+            $allinpayPayTypes = ['allinpay', 'allinpay_cashier', 'allinpay_wxapp', 'allinpay_wxapp_cashier', 'wxapp_cashier'];
+            $pay_types = array_values(array_filter($pay_types, function ($item) use ($allinpayPayTypes) {
+                return !in_array($item['name'] ?? '', $allinpayPayTypes);
+            }));
+            if (in_array($pay_type, $allinpayPayTypes)) {
+                $pay_type = '';
+            }
+        }
+        if (($now_order['order_money'] ?? 0) <= 0 && in_array($pay_type, ['allinpay', 'allinpay_cashier', 'allinpay_wxapp', 'allinpay_wxapp_cashier', 'wxapp_cashier'])) {
+            $pay_type = '';
+        }
 		$select_pay_type = '';//选中的支付方式
 		if($pay_type){
 			if(!in_array($pay_type, array_column($pay_types, 'name'))){
@@ -945,6 +1010,10 @@ class PayController
         }
         if($cfrom=='go_pay' && $online_pay_money>0 && empty($select_pay_type)){
             return api_output_error(1001, '您还有'.$online_pay_money.'元，无法在线支付！');
+        }
+        if ($online_pay_money <= 0) {
+            $select_pay_type = '';
+            $pay_type = '';
         }
         //================================输出================================
 		$symbol = cfg('Currency_symbol') ?? '￥';

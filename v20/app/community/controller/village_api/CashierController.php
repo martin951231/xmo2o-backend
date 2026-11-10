@@ -21,6 +21,8 @@ use app\community\model\service\HouseVillageUserBindService;
 use app\community\model\service\HouseNewCashierService;
 use app\community\model\service\HouseNewDepositService;
 use app\community\model\service\HouseNewManualBillService;
+use app\community\model\service\ApprovalFlowService;
+use app\community\model\service\ChatSidebarService;
 use app\community\model\service\HouseVillageService;
 use app\community\model\service\HouseVillageSingleService;
 use app\community\model\service\HouseVillageParkingService;
@@ -36,6 +38,7 @@ use app\community\model\service\HouseVillageCheckauthSetService;
 use app\community\model\service\HouseVillageCheckauthApplyService;
 use customization\customization;
 use think\facade\Cache;
+use think\facade\Db;
 use think\route\RuleGroup;
 use app\community\model\service\StorageService;
 use app\common\model\service\config\ConfigCustomizationService;
@@ -788,125 +791,75 @@ class CashierController extends CommunityBaseController
         }
         $service_house_new_cashier = new HouseNewCashierService();
         $order_info=$service_house_new_cashier->getInfo($where,'*');
-        if (!empty($order_info)){
-            $db_house_property_digit_service = new HousePropertyDigitService();
-            /*
-            $digit_info =$db_house_property_digit_service->get_one_digit(['property_id'=>$property_id]);
-            
-            if(empty($digit_info)){
-                $modify_money_temp = formatNumber($modify_money,2,1);
-                $digit=2;
-            }else{
-                //  print_r($data['order_type']);exit;
-                if($order_info['order_type'] == 'water' || $order_info['order_type'] == 'electric' || $order_info['order_type'] == 'gas'){
-                   $modify_money_temp = formatNumber($modify_money, $digit_info['meter_digit'], $digit_info['type']);
-                    $digit=$digit_info['meter_digit'];
-                }else {
-                    $modify_money_temp = formatNumber($modify_money, $digit_info['other_digit'], $digit_info['type']);
-                    $digit=$digit_info['other_digit'];
-                }
+        if (empty($order_info) || intval($order_info['village_id']) !== intval($village_id)
+            || intval($order_info['is_paid']) !== 2 || intval($order_info['is_discard']) !== 1) {
+            return api_output_error(1001, '账单不存在或当前状态不能修改金额');
+        }
+        try {
+            $legacyCheck = (new HouseVillageCheckauthApplyService())->checkOrderStatus($order_info['order_id']);
+            if (!empty($legacyCheck['err'])) {
+                throw new \Exception('当前无法修改费用：' . ($legacyCheck['msg'] ?? '账单正在审核中'));
             }
-            */
-        }
-        $modify_money=round($modify_money,2);
-        $order_info['total_money']=round($order_info['total_money'],2);
-        $order_info['modify_money']=round($order_info['modify_money'],2);
-        /*
-        if(strlen($modify_money) > strlen($modify_money_temp)){
-            return api_output_error(1001,'修改的金额只能保留'.$digit.'位小数');
-        }
-        */
-        $extra = array('login_role' => $this->login_role, 'wid' => 0, 'apply_uid' => $this->_uid, 'apply_name' => '', 'apply_phone' => '');
-        if (isset($this->adminUser['wid']) && ($this->adminUser['wid'] > 0)) {
-            $extra['wid'] = $this->adminUser['wid'];
-        }
-        if (isset($this->adminUser['user_name']) && !empty($this->adminUser['user_name'])) {
-            $extra['apply_name'] = $this->adminUser['user_name'];
-        }
-        $houseVillageCheckauthSetService = new HouseVillageCheckauthSetService();
-        $orderRefundCheckWhere = array('village_id' => $order_info['village_id'], 'xtype' => 'order_modify_check');
-        $checkAuthSet = $houseVillageCheckauthSetService->getOneCheckauthSet($orderRefundCheckWhere);
-        if (isset($checkAuthSet['is_open']) && intval($checkAuthSet['is_open']) > 0 && isset($checkAuthSet['check_level']) && !empty($checkAuthSet['check_level'])) {
-            $is_check_pass_modify_money = 1;
-        } else {
-            $is_check_pass_modify_money = 0;
-        }
-        $nowTime = time();
-        if ($is_check_pass_modify_money == 1) {
-            $houseVillageCheckauthApplyService = new HouseVillageCheckauthApplyService();
-            $checkInfo = $houseVillageCheckauthApplyService->checkOrderStatus($order_info['order_id']);
-            if (isset($checkInfo['err']) && intval($checkInfo['err']) > 0) {
-                $msg = isset($checkInfo['msg']) ? trim($checkInfo['msg']) : '';
-                return api_output_error(1001,'当前无法进行修改费用【'.$msg.'】');
-            }
-            if($discount_type=='cut_money'){
-                $discount_v=0;
-            }else if($discount_type=='discount'){
-                $cut_money=0;
-            }
-            $role_id = $this->_uid;
-            $summaryInfo = $service_house_new_cashier->getOrderSummary(['summary_id' => $order_info['summary_id']], 'order_no');
-            $orderRefundCheckArr = array('property_id' => $order_info['property_id'], 'village_id' => $order_info['village_id']);
-            $orderRefundCheckArr['xtype'] = 'modify_money_check';
-            $orderRefundCheckArr['order_id'] = $order_info['order_id'];
-            $orderRefundCheckArr['other_relation_id'] = isset($summaryInfo['order_no']) ? trim($summaryInfo['order_no']) : '';
-            $orderRefundCheckArr['money'] = $modify_money;
-            $orderRefundCheckArr['status'] = 1;  //0未审核 1审核中 2审核通过
-            $orderRefundCheckArr['apply_login_role'] = isset($extra['login_role']) ? $extra['login_role'] : 0;
-            $orderRefundCheckArr['apply_name'] = isset($extra['apply_name']) ? $extra['apply_name'] : '';
-            $orderRefundCheckArr['apply_phone'] = isset($extra['apply_phone']) ? $extra['apply_phone'] : '';
-            $orderRefundCheckArr['apply_uid'] = isset($extra['apply_uid']) ? $extra['apply_uid'] : 0;
-            $extra_data = array('order_id' => $order_id, 'total_money' => $order_info['total_money'], 'modify_money' => $order_info['modify_money'], 'money' => $modify_money,'modify_reason' => $modify_reason, 'modify_time' => $nowTime, 'role_id' => $role_id, 'opt_time' => $nowTime);
-            $extra_data['discount_type']=$discount_type;
-            $extra_data['discount_v']=$discount_v;
-            $extra_data['cut_money']=$cut_money;
-            $extra_data['rule_digit']=$rule_digit;
-            $orderRefundCheckArr['extra_data'] = json_encode($extra_data, JSON_UNESCAPED_UNICODE);
-        
-            $extra['checkauth_set'] = $checkAuthSet;
-            $insert_id = $houseVillageCheckauthApplyService->addApply($orderRefundCheckArr, $extra);
-            if ($insert_id > 0) {
-                $order_apply = $houseVillageCheckauthApplyService->getOneData(['id' => $insert_id]);
-                if ($order_apply['status'] == 2) {
-                    //自动全额通过
-                    $orderUpdateArr = array('check_status' => 3, 'check_apply_id' => $insert_id);
-                    $service_house_new_cashier->saveOrder($where, $orderUpdateArr);
-                    $saveData=['modify_money' => $modify_money, 'modify_reason' => $modify_reason, 'modify_time' => $nowTime];
-                    if($discount_type && in_array($discount_type,array('discount','cut_money'))){
-                        $order_modify_discount=array('check_apply_id'=>$insert_id,'check_apply_type'=>'modify_money_check','discount_type'=>$discount_type,'discount_v'=>$discount_v,'old_money'=>$order_info['modify_money'],'cut_money'=>$cut_money,'modify_money'=>$modify_money,'modify_time'=>$nowTime,'modify_reason' => $modify_reason,'rule_digit'=>$rule_digit);
-                        $saveData['order_modify_discount']=json_encode($order_modify_discount,JSON_UNESCAPED_UNICODE);
-                    }
-                    $res = $service_house_new_cashier->saveOrder($where,$saveData);
-                } else {
-                    $orderUpdateArr = array('check_status' => 5, 'check_apply_id' => $insert_id);
-                    $service_house_new_cashier->saveOrder($where, $orderUpdateArr);
-                    //需要审核
-                    return api_output(0,['xtype' => 'check_opt', 'check_status' => 2, 'check_apply_id' => $insert_id],'待审核');
-                }
-            } else {
-                return api_output_error(1001,'已经存在待审核中的修改费用申请');
-            }
-        } else {
-            $saveData=['modify_money' => $modify_money, 'modify_reason' => $modify_reason, 'modify_time' => $nowTime];
-            if($discount_type && in_array($discount_type,array('discount','cut_money'))){
-                $order_modify_discount=array('discount_type'=>$discount_type,'discount_v'=>$discount_v,'old_money'=>$order_info['modify_money'],'cut_money'=>$cut_money,'modify_money'=>$modify_money,'modify_time'=>$nowTime,'modify_reason' => $modify_reason,'rule_digit'=>$rule_digit);
-                $saveData['order_modify_discount']=json_encode($order_modify_discount,JSON_UNESCAPED_UNICODE);
-            }
-            $res = $service_house_new_cashier->saveOrder($where,$saveData);
-        }
-        if($res) {
-            return api_output(0,[],'修改成功');
-        } else {
-            return api_output_error(1001,'修改失败');
+            $approval = (new ApprovalFlowService())->createInstance($this->adminUser, [
+                'business_type' => ApprovalFlowService::BUSINESS_BILL_AMOUNT,
+                'business_id' => intval($order_info['order_id']),
+                'title' => '修改账单金额审批（账单ID：' . intval($order_info['order_id']) . '）',
+                'apply_reason' => $modify_reason,
+                'apply_remark' => $modify_reason,
+                'change_data' => [
+                    'action' => 'bill_amount_change',
+                    'order_id' => intval($order_info['order_id']),
+                    'old_money' => round(floatval($order_info['modify_money']), 2),
+                    'new_money' => round(floatval($modify_money), 2),
+                    'modify_reason' => $modify_reason,
+                    'discount_type' => $discount_type,
+                    'discount_v' => $discount_type === 'cut_money' ? 0 : $discount_v,
+                    'cut_money' => $discount_type === 'discount' ? 0 : $cut_money,
+                    'rule_digit' => $rule_digit,
+                ],
+            ]);
+            return api_output(0, [
+                'approval_id' => intval($approval['id']),
+                'approval_status' => 0,
+                'order_id' => intval($order_info['order_id']),
+            ], '已提交金额修改审批，审批通过后生效');
+        } catch (\Exception $e) {
+            return api_output_error(1001, $e->getMessage());
         }
     }
-
     /**
      * 作废账单
      * @author lijie
      * @date_time 2021/06/15
      * @return \json
      */
+    public function checkDiscardOrder()
+    {
+        $orderIds = $this->request->post('order_id', '', 'trim');
+        $orderIds = array_values(array_unique(array_filter(array_map('intval', explode(',', strval($orderIds))))));
+        if (empty($orderIds)) {
+            return api_output_error(1001, '缺少账单ID');
+        }
+        $cashierService = new HouseNewCashierService();
+        try {
+            foreach ($orderIds as $orderId) {
+                $orderInfo = $cashierService->getInfo([
+                    ['order_id', '=', $orderId],
+                    ['village_id', '=', intval($this->adminUser['village_id'] ?? 0)],
+                    ['is_discard', '=', 1],
+                    ['is_paid', '=', 2],
+                ], '*');
+                if (empty($orderInfo)) {
+                    throw new \Exception('账单不存在或当前状态已不能作废');
+                }
+                $this->validateOrderDiscardBeforeApply($orderInfo);
+            }
+            return api_output(0, [], '账单可以作废');
+        } catch (\Exception $e) {
+            return api_output_error(1001, $e->getMessage());
+        }
+    }
+
     public function discardOrder()
     {
         $discard_reason = $this->request->post('discard_reason', '','trim');
@@ -935,7 +888,7 @@ class CashierController extends CommunityBaseController
                 if(isset($newOrders['list']) && !empty($newOrders['list'])){
                     $have_error_num=0;
                     foreach ($newOrders['list'] as $ovv){
-                        $res=$this->discardOrderHandle($ovv,$discard_reason,true);
+                        $res=$this->submitOrderDiscardApproval($ovv,$discard_reason,true);
                         if($res['err_code']>0){
                             $have_error_num++;
                         }
@@ -944,7 +897,7 @@ class CashierController extends CommunityBaseController
                         return api_output(0, ['msg'=>'有'.$have_error_num.'个订单没有作废成功，请重新选择作废订单！'], '有'.$have_error_num.'个订单没有作废成功，请重新选择作废订单！');
                     }
                 }
-                return api_output(0, ['msg'=>'批量作废成功'], '批量作废成功');
+                return api_output(0, ['msg'=>'批量提交作废审批成功'], '批量提交作废审批成功');
             }else{
                 $where[] = ['order_id', '=', $order_id];
             }
@@ -978,8 +931,87 @@ class CashierController extends CommunityBaseController
         if (empty($orderInfo)) {
             return api_output_error(1001, '未查找到订单信息！');
         }
-        $res=$this->discardOrderHandle($orderInfo,$discard_reason);
+        $res=$this->submitOrderDiscardApproval($orderInfo,$discard_reason);
         return $res;
+    }
+
+    private function submitOrderDiscardApproval($orderInfo = array(), $discardReason = '', $isReturn = false)
+    {
+        try {
+            if (empty($orderInfo['order_id']) || intval($orderInfo['village_id'] ?? 0) !== intval($this->adminUser['village_id'] ?? 0)) {
+                throw new \Exception('账单信息不存在');
+            }
+            $this->validateOrderDiscardBeforeApply($orderInfo);
+            $roleName = trim($this->adminUser['user_name'] ?? ($this->adminUser['name'] ?? ''));
+            $approval = (new ApprovalFlowService())->createInstance($this->adminUser, [
+                'business_type' => ApprovalFlowService::BUSINESS_ORDER_DISCARD,
+                'business_id' => intval($orderInfo['order_id']),
+                'title' => '账单作废审批（账单ID：' . intval($orderInfo['order_id']) . '）',
+                'apply_reason' => $discardReason,
+                'apply_remark' => $discardReason,
+                'change_data' => [
+                    'action' => 'order_discard',
+                    'order_id' => intval($orderInfo['order_id']),
+                    'total_money' => round(floatval($orderInfo['total_money'] ?? 0), 2),
+                    'discard_reason' => $discardReason,
+                    'role_id' => intval($this->_uid),
+                    'login_role' => trim($this->login_role),
+                    'role_name' => $roleName,
+                ],
+            ]);
+            $data = [
+                'approval_id' => intval($approval['id'] ?? 0),
+                'approval_status' => 0,
+                'order_id' => intval($orderInfo['order_id']),
+            ];
+            if ($isReturn) {
+                return ['err_code' => 0, 'msg' => '已提交账单作废审批', 'is_check' => 1] + $data;
+            }
+            return api_output(0, $data, '已提交账单作废审批');
+        } catch (\Exception $e) {
+            if ($isReturn) {
+                return ['err_code' => 1001, 'msg' => $e->getMessage(), 'is_check' => 0, 'order_id' => intval($orderInfo['order_id'] ?? 0)];
+            }
+            return api_output_error(1001, $e->getMessage());
+        }
+    }
+
+    private function validateOrderDiscardBeforeApply($orderInfo)
+    {
+        $cashierService = new HouseNewCashierService();
+        $projectInfo = $cashierService->getProjectInfo(['id' => $orderInfo['project_id']], 'type');
+        if (empty($projectInfo) || intval($projectInfo['type'] ?? 0) !== 2) {
+            return;
+        }
+        $subjectIds = $cashierService->getNumberArr([
+            ['charge_type', '=', $orderInfo['order_type']],
+            ['property_id', '=', $orderInfo['property_id']],
+            ['status', '<>', 4],
+        ], 'id');
+        $projectIds = [];
+        if ($subjectIds) {
+            $projectIds = $cashierService->getProjectArr([
+                ['village_id', '=', $orderInfo['village_id']],
+                ['subject_id', 'in', $subjectIds],
+                ['type', '=', 2],
+                ['status', '<>', 4],
+            ], 'id');
+        }
+        $latestWhere = [
+            ['is_discard', '=', 1],
+            ['is_paid', '=', 2],
+            [!empty($orderInfo['position_id']) ? 'position_id' : 'room_id', '=', !empty($orderInfo['position_id']) ? $orderInfo['position_id'] : $orderInfo['room_id']],
+            ['order_type', '=', $orderInfo['order_type']],
+        ];
+        if ($projectIds && $orderInfo['order_type'] === 'property') {
+            $latestWhere[] = ['project_id', 'in', $projectIds];
+        } else {
+            $latestWhere[] = ['project_id', '=', $orderInfo['project_id']];
+        }
+        $latestOrder = $cashierService->getInfo($latestWhere, 'order_id', 'service_end_time DESC,order_id DESC');
+        if (cfg('new_pay_order') == 1 && $latestOrder && intval($latestOrder['order_id']) !== intval($orderInfo['order_id'])) {
+            throw new \Exception('当前账单无法作废，请先作废最新的账单');
+        }
     }
     
     public function discardOrderHandle($orderInfo=array(),$discard_reason='',$is_return=false){
@@ -1794,21 +1826,24 @@ class CashierController extends CommunityBaseController
                 }
                 
             }
-            if ($vacancy_id > 0) {
-                $where[] = ['o.room_id', '=', $vacancy_id];
-            } else if (!empty($pigcms_id)) {
-                $service_house_village_user_bind = new HouseVillageUserBindService();
-                $whereArr = array('pigcms_id' => $pigcms_id, 'status' => 1);
-                $village_user_bind = $service_house_village_user_bind->getBindInfo($whereArr, 'vacancy_id');
-                $vacancy_id = 0;
-                if ($village_user_bind && !$village_user_bind->isEmpty()) {
-                    $village_user_bind = $village_user_bind->toArray();
-                    $vacancy_id = $village_user_bind['vacancy_id'];
-                }
+            // 选择车位时只按车位查询，避免已绑定房间的车位被 room_id 条件误过滤
+            if ($position_id <= 0) {
                 if ($vacancy_id > 0) {
                     $where[] = ['o.room_id', '=', $vacancy_id];
-                } else {
-                    $where[] = ['o.pigcms_id', '=', $pigcms_id];
+                } else if (!empty($pigcms_id)) {
+                    $service_house_village_user_bind = new HouseVillageUserBindService();
+                    $whereArr = array('pigcms_id' => $pigcms_id, 'status' => 1);
+                    $village_user_bind = $service_house_village_user_bind->getBindInfo($whereArr, 'vacancy_id');
+                    $vacancy_id = 0;
+                    if ($village_user_bind && !$village_user_bind->isEmpty()) {
+                        $village_user_bind = $village_user_bind->toArray();
+                        $vacancy_id = $village_user_bind['vacancy_id'];
+                    }
+                    if ($vacancy_id > 0) {
+                        $where[] = ['o.room_id', '=', $vacancy_id];
+                    } else {
+                        $where[] = ['o.pigcms_id', '=', $pigcms_id];
+                    }
                 }
             }
             if($ticket_number){
@@ -1889,10 +1924,10 @@ class CashierController extends CommunityBaseController
                 $where[] = ['o.pay_bind_'.$key_val,'=',$value];
             }
             if($service_start_time){
-                $where[] =['o.service_start_time','>=',strtotime($service_start_time.' 00:00:00')];
+                $where[] =['o.service_end_time','>=',strtotime($service_start_time.' 00:00:00')];
             }
             if($service_end_time){
-                $where[] =['o.service_end_time','<=',strtotime($service_end_time.' 23:59:59')];
+                $where[] =['o.service_start_time','<=',strtotime($service_end_time.' 23:59:59')];
             }
             $where[] = ['o.village_id','=',$this->adminUser['village_id']];
             $where[] = ['o.is_discard','=',1];
@@ -1943,10 +1978,19 @@ class CashierController extends CommunityBaseController
             }
             
             $list = $service_house_new_cashier->getCancelOrder($where,$where1,$field,$page,$limit,'o.pay_time DESC,o.service_start_time DESC,o.service_end_time DESC',$menus);
+            $deposit_attachment_status_map = [];
+            if (!empty($list['list']) && is_array($list['list'])) {
+                $deposit_room_ids = array_column($list['list'], 'room_id');
+                $deposit_attachment_status_map = (new ChatSidebarService())->getDepositAttachmentStatusMap($village_id, $deposit_room_ids);
+                foreach ($list['list'] as &$pay_order) {
+                    $pay_order_room_id = intval($pay_order['room_id'] ?? 0);
+                    $pay_order['has_deposit_attachment'] = intval($deposit_attachment_status_map[$pay_order_room_id] ?? 0);
+                }
+                unset($pay_order);
+            }
             $list['orderRefundCheckOpen']=$orderRefundCheckOpen;
             $list['orderPayTimeCheckOpen']=$orderPayTimeCheckOpen;
-            $list['total_pay_money_real']=$list['total_pay_money']-$list['total_refund_money'];
-            $list['total_pay_money_real'] = $list['total_pay_money_real']<0 ? 0 : formatNumber($list['total_pay_money_real'],2,1);
+            $list['total_pay_money_real'] = formatNumber(floatval($list['total_pay_money_real']),2,1);
             $list['login_role']=$this->login_role;
             $list['wid']=$wid;
             $houseVillageService=new HouseVillageService();
@@ -2671,10 +2715,23 @@ class CashierController extends CommunityBaseController
      * @date_time 2021/06/23
      * @return \json
      */
+    private function getCashierChargeTargetType($key)
+    {
+        if (!$key) {
+            return '';
+        }
+        $keyInfo = strpos($key, '|') !== false ? explode('|', $key) : explode('-', $key);
+        if (count($keyInfo) !== 3 || !in_array($keyInfo[2], ['room', 'position'], true)) {
+            return '';
+        }
+        return $keyInfo[2];
+    }
+
     public function ChargeProjectList()
     {
         $village_id = $this->adminUser['village_id'];
         $xtype = $this->request->post('xtype','','trim');
+        $targetType = $this->getCashierChargeTargetType($this->request->post('key', '', 'trim'));
         $HouseNewChargeProjectService = new HouseNewChargeProjectService();
         try{
             $typeAry = (new HouseNewChargeService())->charge_type;
@@ -2691,6 +2748,11 @@ class CashierController extends CommunityBaseController
             $where[] = ['p.village_id','=',$village_id];
             $where[] = ['p.status','=',1];
             $where[] = ['n.charge_type','in',$typeAry];
+            if ($targetType === 'room') {
+                $where[] = ['n.charge_type', '<>', 'parking_management'];
+            } elseif ($targetType === 'position') {
+                $where[] = ['n.charge_type', '=', 'parking_management'];
+            }
             if($xtype=='no_cycle'){
                 $where[] = ['p.type','<',2];
             }
@@ -2711,9 +2773,23 @@ class CashierController extends CommunityBaseController
     public function ChargeRuleList(){
         $charge_project_id = $this->request->post('charge_project_id');
         $village_id = $this->adminUser['village_id'];
+        $targetType = $this->getCashierChargeTargetType($this->request->post('key', '', 'trim'));
         if(!$charge_project_id)
         {
             return api_output_error(1001,'必传参数缺失');
+        }
+        if ($targetType) {
+            $chargeType = Db::name('house_new_charge_project')->alias('p')
+                ->leftJoin('house_new_charge_number n', 'n.id = p.subject_id')
+                ->where([
+                    ['p.id', '=', $charge_project_id],
+                    ['p.village_id', '=', $village_id],
+                    ['p.status', '=', 1],
+                ])->value('n.charge_type');
+            if (($targetType === 'room' && $chargeType === 'parking_management') ||
+                ($targetType === 'position' && $chargeType !== 'parking_management')) {
+                return api_output(0, []);
+            }
         }
         $HouseNewChargeRuleService = new HouseNewChargeRuleService();
         $rule_id = $HouseNewChargeRuleService->getValidChargeRule($charge_project_id);
@@ -2777,7 +2853,7 @@ class CashierController extends CommunityBaseController
                         $housesize = $billable_size>0 ? $billable_size:0;
                     }
                 }
-                if($list['fees_type']>0 && in_array($list['unit_gage_type'],array(1,4,5))){
+                if($list['fees_type']==newChargeConst::FEES_TYPE_UNIT_PRICE_UOM && in_array($list['unit_gage_type'],array(1,4,5))){
                     $custom_value=$housesize>0 ? $housesize:1;
                 }
                 $whereArrTmp[]=array('user_status','=',2);
@@ -3321,6 +3397,26 @@ class CashierController extends CommunityBaseController
         }
     }
 
+    public function batchManualBillCreate()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->createBatchManualBill($this->adminUser, $this->request->param());
+            return api_output(0, $data, $data['msg'] ?? '批量账单已生成');
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
+    public function batchManualBillTargetList()
+    {
+        try {
+            $data = (new HouseNewManualBillService())->getBatchManualBillTargetList($this->adminUser, $this->request->param());
+            return api_output(0, $data);
+        } catch (\Exception $e) {
+            return api_output_error(-1, $e->getMessage());
+        }
+    }
+
     public function manualBillSplit()
     {
         try {
@@ -3598,20 +3694,53 @@ class CashierController extends CommunityBaseController
         }
         try{
             $houseNewCashierService = new HouseNewCashierService();
+            $orderInfo = $houseNewCashierService->getInfo([
+                ['order_id', '=', $order_id],
+                ['village_id', '=', intval($this->adminUser['village_id'] ?? 0)],
+                ['is_paid', '=', 1],
+                ['is_discard', '=', 1],
+            ], 'order_id,village_id,property_id,summary_id,total_money,pay_money,refund_money,discount_money,discount_detail,name,phone');
+            if (empty($orderInfo)) {
+                throw new \Exception('账单不存在或当前状态已不能退款');
+            }
+            $refundMoneyInfo = $houseNewCashierService->getOrderRefundMoneyInfo($orderInfo);
+            $remainMoney = $refundMoneyInfo['remain_money'];
+            if ($remainMoney <= 0 || round(floatval($refund_money), 2) > $remainMoney) {
+                throw new \Exception('退款金额超过当前账单可退金额');
+            }
+            if ($refund_type === 2 && (floatval($orderInfo['refund_money'] ?? 0) > 0 || abs(floatval($refund_money) - floatval($refundMoneyInfo['total_money'])) > 0.001)) {
+                throw new \Exception('退款且还原账单仅支持未退款账单全额退款');
+            }
             (new HouseNewDepositService())->validateDepositBillRefund($this->adminUser, $order_id, $refund_money);
-            $extra=array('login_role'=>$this->login_role,'wid'=>0,'apply_uid'=>$this->_uid,'apply_name'=>'','apply_phone'=>'');
-            if(isset($this->adminUser['wid']) && ($this->adminUser['wid']>0)){
-                $extra['wid']=$this->adminUser['wid'];
-            }
-            if(isset($this->adminUser['user_name']) && !empty($this->adminUser['user_name'])){
-                $extra['apply_name']=$this->adminUser['user_name'];
-            }
-            $data = $houseNewCashierService->addRefundInfo($role_id,$order_id,$refund_type,$refund_money,$refund_reason,$extra);
-            (new HouseNewDepositService())->applyDepositBillRefund($this->adminUser, $order_id, $refund_money);
+            $roleName = trim($this->adminUser['user_name'] ?? ($this->adminUser['name'] ?? ''));
+            $approval = (new ApprovalFlowService())->createInstance($this->adminUser, [
+                'business_type' => ApprovalFlowService::BUSINESS_ORDER_REFUND,
+                'business_id' => $order_id,
+                'title' => '账单退款审批（账单ID：' . $order_id . '）',
+                'apply_reason' => $refund_reason,
+                'apply_remark' => $refund_reason,
+                'change_data' => [
+                    'action' => 'order_refund',
+                    'order_id' => $order_id,
+                    'refund_type' => $refund_type,
+                    'refund_type_text' => $refund_type === 2 ? '退款且还原账单' : '仅退款，不还原账单',
+                    'refund_money' => round(floatval($refund_money), 2),
+                    'refund_reason' => $refund_reason,
+                    'role_id' => intval($role_id),
+                    'login_role' => trim($this->login_role),
+                    'role_name' => $roleName,
+                    'apply_phone' => trim($this->adminUser['phone'] ?? ''),
+                ],
+            ]);
+            $data = [
+                'approval_id' => intval($approval['id'] ?? 0),
+                'approval_status' => 0,
+                'order_id' => $order_id,
+            ];
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }
-        return api_output(0,$data);
+        return api_output(0,$data,'已提交账单退款审批');
     }
 
     /**
@@ -4181,7 +4310,7 @@ class CashierController extends CommunityBaseController
                 $param['file'] = 'sub_auto_discard_prepaid_order';
                 $param['time_type'] = 1;
                 $param['unique_id'] = 'sub_auto_discard_prepaid_order'.$id;
-                $service_plan->addTask($param,1);
+                // $service_plan->addTask($param,1); // 关闭预缴账单30分钟未支付自动作废
             }
             if($postData['order_type'] == 'property' && intval(cfg('cockpit')) && isset($postData['pigcms_id']) && !empty($postData['pigcms_id'])){
                 $system_remarks=(new StorageService())->getRoleData($this->_uid,$this->login_role,$this->adminUser);
@@ -4239,8 +4368,15 @@ class CashierController extends CommunityBaseController
         $is_asyn_export= $this->request->post('is_asyn_export',0,'intval');  //1异步走队列
         $ticket_number          = $this->request->post('ticket_number','','trim');
         $single_id_arr    = $this->request->post('single_id_arr','');  //楼栋ids
+        $order_id_arr     = $this->request->post('order_id_arr', []);  //勾选导出的账单ids
         $opt_id    = $this->request->post('opt_id',''); //opt_id 操作人员
         try{
+            if (is_array($order_id_arr) && !empty($order_id_arr)) {
+                $order_id_arr = array_values(array_unique(array_filter(array_map('intval', $order_id_arr))));
+                if (!empty($order_id_arr)) {
+                    $where[] = ['o.order_id', 'in', $order_id_arr];
+                }
+            }
             if (!empty($date)&&count($date)>0){
                 if (!empty($date[0])){
                     $where[] = ['o.pay_time','>=',strtotime($date[0].' 00:00:00')];
@@ -4336,10 +4472,10 @@ class CashierController extends CommunityBaseController
                 $where[] = ['o.pay_bind_'.$key_val,'=',$value];
             }
             if($service_start_time){
-                $where[] =['o.service_start_time','>=',strtotime($service_start_time.' 00:00:00')];
+                $where[] =['o.service_end_time','>=',strtotime($service_start_time.' 00:00:00')];
             }
             if($service_end_time){
-                $where[] =['o.service_end_time','<=',strtotime($service_end_time.' 23:59:59')];
+                $where[] =['o.service_start_time','<=',strtotime($service_end_time.' 23:59:59')];
             }
             $where[] = ['o.village_id','=',$this->adminUser['village_id']];
             $where[] = ['o.is_discard','=',1];
@@ -4905,7 +5041,7 @@ class CashierController extends CommunityBaseController
             if($single_id_arr && is_array($single_id_arr)){
                 $where['single_id_arr']=$single_id_arr;
             }
-            $fieldStr='o.*,r.charge_name,p.name as project_name,n.charge_number_name';
+            $fieldStr='o.*,o.modify_money as total_money,r.charge_name,p.name as project_name,n.charge_number_name';
             $data = $service_house_new_cashier->getNewPayOrders($where,$fieldStr,$page,$limit,'o.order_id DESC');
             if (isset($where['check_level_info'])) {
                 unset($where['check_level_info']);
@@ -4915,7 +5051,7 @@ class CashierController extends CommunityBaseController
                 unset($where['single_id_arr']);
             }
             $count = $service_house_new_cashier->getNewPayOrdersCount($where,$single_id_arr);
-            $total_money=$service_house_new_cashier->getNewPayOrder2Sum($where,'total_money',$single_id_arr);
+            $total_money=$service_house_new_cashier->getNewPayOrder2Sum($where,'modify_money',$single_id_arr);
         }catch (\Exception $e){
             return api_output_error(-1, $e->getMessage());
         }
@@ -4975,8 +5111,8 @@ class CashierController extends CommunityBaseController
             if(empty($limit)){
                 $limit = 20;
             }
-            //$filed = 'r.charge_name,p.name,o.order_id,o.late_payment_money,o.modify_money,o.is_auto,n.charge_number_name,o.total_money,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,n.charge_type,o.property_id,o.order_type,r.charge_valid_type,r.charge_valid_time';
-            $filed='o.*,r.charge_name,p.name,n.charge_number_name,n.charge_type,r.charge_valid_type,r.charge_valid_time';
+            //$filed = 'r.charge_name,p.name,o.order_id,o.late_payment_money,o.modify_money,o.is_auto,n.charge_number_name,o.modify_money as total_money,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,n.charge_type,o.property_id,o.order_type,r.charge_valid_type,r.charge_valid_time';
+            $filed='o.*,o.modify_money as total_money,r.charge_name,p.name,n.charge_number_name,n.charge_type,r.charge_valid_type,r.charge_valid_time';
             $houseVillageCheckauthSetService =new HouseVillageCheckauthSetService();
             $orderRefundCheckWhere=array('village_id'=>$this->adminUser['village_id'],'xtype'=>'order_refund_check');
             $orderRefundCheckOpen=$houseVillageCheckauthSetService->isOpenSet($orderRefundCheckWhere);
@@ -5160,7 +5296,7 @@ class CashierController extends CommunityBaseController
             $where[] = ['o.pigcms_id','=',$pigcms_id];
         }
         try{
-            $fieldStr= 'o.village_id,o.order_id,o.total_money,o.name,o.phone,o.room_id,o.position_id,o.uid,o.property_id,o.order_type,o.project_id,o.rule_id,r.charge_name,p.name as project_name,n.charge_number_name,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter';
+            $fieldStr= 'o.village_id,o.order_id,o.modify_money as total_money,o.name,o.phone,o.room_id,o.position_id,o.uid,o.property_id,o.order_type,o.order_name,o.project_id,o.rule_id,r.charge_name,p.name as project_name,n.charge_number_name,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter';
             $order='o.order_id DESC';
             if($is_asyn_export==1){
                 $houseListDatasExportOutService= new HouseListDatasExportOutService();
@@ -5264,7 +5400,7 @@ class CashierController extends CommunityBaseController
                 $where['o.is_discard'] = 1;
                 $where['o.village_id'] = $village_id;*/
                 if($is_detail){
-                    $data = $service_house_new_cashier->getNewPayOrders($where,'o.village_id,o.order_id,o.total_money,o.name,o.phone,o.room_id,o.position_id,o.uid,o.property_id,o.order_type,r.charge_name,p.name as project_name,n.charge_number_name,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,o.project_id,o.rule_id',0,0,'o.order_id DESC');
+                    $data = $service_house_new_cashier->getNewPayOrders($where,'o.village_id,o.order_id,o.total_money,o.name,o.phone,o.room_id,o.position_id,o.uid,o.property_id,o.order_type,o.order_name,r.charge_name,p.name as project_name,n.charge_number_name,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,o.project_id,o.rule_id',0,0,'o.order_id DESC');
                     $list = $data;
                 } else{
                     $data = $service_house_new_cashier->getOrderListByGroup($where,'o.village_id,sum(o.total_money) as total_money,o.name,o.phone,v.room,p.position_num,o.room_id,o.position_id,o.uid,o.property_id,o.order_type,o.project_id,o.rule_id,c.name as project_name',0,0,'o.order_id DESC','o.room_id,o.position_id');
@@ -5494,7 +5630,7 @@ class CashierController extends CommunityBaseController
         $where[]=['o.is_discard','=',1];
         $where[]=['o.village_id','=',$village_id];
         try{
-            $fieldStr='r.charge_name,p.name as project_name,o.order_id,n.charge_number_name,o.total_money,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,o.name,o.phone,o.room_id,o.position_id';
+            $fieldStr='r.charge_name,p.name as project_name,o.order_id,n.charge_number_name,o.modify_money as total_money,o.service_start_time,o.service_end_time,o.last_ammeter,o.now_ammeter,o.name,o.phone,o.room_id,o.position_id';
             $order='o.room_id DESC,o.position_id DESC,n.id DESC,o.project_id DESC';
             if($is_asyn_export==1){
                 $houseListDatasExportOutService= new HouseListDatasExportOutService();
@@ -6073,10 +6209,10 @@ class CashierController extends CommunityBaseController
         $data['room_id'] = 0;//房间id
         $data['position_id'] = 0;//车位id
         if ($key_info[2] == 'room') {
-            $data['room_id'] = $key_info[0];
+            $data['room_id'] = intval($key_info[0]);
         }
         if ($key_info[2] == 'position') {
-            $data['position_id'] = $key_info[0];
+            $data['position_id'] = intval($key_info[0]);
         }
         if (empty($data['rule_id'])) {
             return api_output_error(1001, '收费标准不能为空！');
@@ -6341,10 +6477,10 @@ class CashierController extends CommunityBaseController
         $data['room_id']= 0;//房间id
         $data['position_id']= 0;//车位id
         if ($key_info[2]=='room'){
-            $data['room_id']=$key_info[0];
+            $data['room_id']=intval($key_info[0]);
         }
         if ($key_info[2]=='position'){
-            $data['position_id']=$key_info[0];
+            $data['position_id']=intval($key_info[0]);
         }
 
         if (empty($data['room_id'])&&empty($data['position_id'])){
@@ -6524,7 +6660,7 @@ class CashierController extends CommunityBaseController
                 $housesize = $billable_size>0 ? $billable_size:0;
             }
         }
-        if($info['fees_type']>0 && in_array($info['unit_gage_type'],array(1,4,5))){
+        if($info['fees_type']==newChargeConst::FEES_TYPE_UNIT_PRICE_UOM && in_array($info['unit_gage_type'],array(1,4,5))){
             $custom_value=$housesize>0 ? $housesize:1;
         }
         $whereArrTmp[]=array('user_status','=',2);
@@ -6563,6 +6699,22 @@ class CashierController extends CommunityBaseController
             $service_end_time=$todaydatetime+24*3600-1;
         }
         $postData['service_end_time'] = $service_end_time;
+        if (
+            intval($info['fees_type']) == newChargeConst::FEES_TYPE_FIXED_EXPENSES
+            && (intval($info['charge_valid_type']) == 2 || intval($info['bill_create_set']) == 2)
+            && $postData['service_start_time'] > 100
+            && $postData['service_end_time'] >= $postData['service_start_time']
+        ) {
+            $notHouseRate = isset($not_house_rate) && $not_house_rate > 0 && $not_house_rate <= 100 ? $not_house_rate : 100;
+            $rate = isset($info['rate']) && $info['rate'] > 0 ? $info['rate'] : 1;
+            $order_money = $service_house_new_cashier->calcNaturalMonthDayMoney(
+                $info['charge_price'] * $notHouseRate / 100 * $rate,
+                $postData['service_start_time'],
+                $postData['service_end_time']
+            );
+            $postData['total_money'] = $order_money;
+            $postData['modify_money'] = $order_money;
+        }
         $res = $service_house_new_cashier->addOrder($postData);
         return api_output(0,['msg'=>'账单已生成','status'=>0,'new_pay_order'=>cfg('new_pay_order'),'order_id'=>$res],'账单已生成');
     }

@@ -1,0 +1,47 @@
+.my-outbox[data-v-1dad5980] {
+  /*color: #D7BC8D;*/
+  overflow: hidden;
+  color: #FFFFFF;
+  height: 35px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  /*background: #422b02;*/
+}
+.my-outbox .left_icon[data-v-1dad5980] {
+  width: 30px;
+  height: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  z-index: 999;
+  overflow: hidden;
+  background-color: #000000;
+  position: fixed;
+}
+.my-outbox .left_icon .icon_horn[data-v-1dad5980] {
+  width: 30px;
+  height: 30px;
+}
+.my-outbox .my-inbox[data-v-1dad5980] {
+  white-space: nowrap;
+}
+.my-outbox .my-inbox .my-list[data-v-1dad5980] {
+  margin-right: 50px;
+  display: inline-block;
+  font-size: 14px;
+  text-indent: 30px;
+  line-height: 30px;
+  cursor: pointer;
+}
+.my-outbox .my-inbox .my-list .my-uname[data-v-1dad5980] {
+  /*color: #FF8900;*/
+  color: #FFFFFF;
+}
+

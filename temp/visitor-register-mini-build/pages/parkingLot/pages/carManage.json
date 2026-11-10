@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "车辆管理",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "no-vehicle": "/pages/parkingLot/components/noVehicle"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "卡券中心",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#ffffff",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-rate": "/uview-ui/components/u-rate/u-rate"
+  }
+}

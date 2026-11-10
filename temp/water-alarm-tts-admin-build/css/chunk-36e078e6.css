@@ -1,0 +1,30 @@
+
+.content[data-v-7310db8a] {
+  overflow: hidden;
+}
+.code-box[data-v-7310db8a] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+}
+.code[data-v-7310db8a] {
+  margin: 10px;
+}
+.code img[data-v-7310db8a] {
+  width: 250px;
+  height: 250px;
+  /* border: 1px solid #c1c1c1; */
+}
+.error-msg[data-v-7310db8a] {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #c1c1c1;
+}
+

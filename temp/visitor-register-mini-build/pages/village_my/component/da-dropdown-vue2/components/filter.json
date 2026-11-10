@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "part-dropdown-footer": "/pages/village_my/component/da-dropdown-vue2/components/part-dropdown-footer"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "寻人求助",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "list-item": "/pages/lifeTools/help/components/listItem"
+  }
+}

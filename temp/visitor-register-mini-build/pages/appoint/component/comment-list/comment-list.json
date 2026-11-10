@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-read-more": "/uview-ui/components/u-read-more/u-read-more",
+    "tui-rate": "/pages/appoint/component/rate/rate"
+  }
+}

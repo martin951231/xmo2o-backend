@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "订单管理",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "goods-item": "/pages/shop_new/shopOrderOut/component/goodsItem"
+  }
+}

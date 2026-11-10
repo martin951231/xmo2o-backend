@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "coupons-list": "/pages/live_and_video/live/liver/liverCouponsList",
+    "add-product": "/pages/live_and_video/live/add_product"
+  }
+}

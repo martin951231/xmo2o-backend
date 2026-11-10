@@ -1,0 +1,13 @@
+{
+  "component": true,
+  "usingComponents": {
+    "date-picker": "/pages/my/components/w-picker/date-picker",
+    "range-picker": "/pages/my/components/w-picker/range-picker",
+    "half-picker": "/pages/my/components/w-picker/half-picker",
+    "time-picker": "/pages/my/components/w-picker/time-picker",
+    "selector-picker": "/pages/my/components/w-picker/selector-picker",
+    "shortterm-picker": "/pages/my/components/w-picker/shortterm-picker",
+    "region-picker": "/pages/my/components/w-picker/region-picker",
+    "linkage-picker": "/pages/my/components/w-picker/linkage-picker"
+  }
+}

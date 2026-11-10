@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "订单列表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "no-data": "/pages/newCharge/components/noData",
+    "cutdown": "/pages/newCharge/components/cutdown"
+  }
+}

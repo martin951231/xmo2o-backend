@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "‎",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "custom-page": "/pages/customPage/components/CustomPage",
+    "tab-bar-custom-page": "/pages/customPage/components/TabBar",
+    "float-nav": "/pages/customPage/components/FloatNav"
+  }
+}

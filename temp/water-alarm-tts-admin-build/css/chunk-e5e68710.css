@@ -1,0 +1,84 @@
+
+.header-func{
+  border: 1px solid #ffdf84;
+  background-color: #fbffca;
+  padding: 10px;
+}
+.header-title{
+  font-size: 17px;
+  margin: 10px;
+}
+.body-item{
+  margin-top: 10px;
+  height: 100%;
+}
+.items{
+  height: 30px;
+  width: 31.5%;
+  float: left;
+  background-color: #eee;
+  font-size: 15px;
+  margin: 5px;
+}
+.items-left{
+  float: left;
+  padding: 5px 5px 5px 10px;
+}
+.items-right{
+  float: right;
+  padding: 5px 10px 5px 5px;
+}
+
+
+.avatar-uploader > .ant-upload {
+  width: 128px;
+  height: 128px;
+}
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+.imgname{
+  width: 80px;
+}
+.color_picker{
+  z-index: 999;
+}
+
+
+.ant-form-item label {
+  width: 150px;
+}
+.tip-txt {
+  margin-left:4px;font-size: 12px;
+}
+.add-box-tip {
+  text-align: -webkit-center;
+  padding: 0 6px;
+  margin-left: 8px;
+  border-radius: 15px;
+  border: none;
+}
+.add-banner{
+  font-size: 15px;
+  margin: 13px;
+}
+hr{
+  border:1px solid #eee;
+}
+.sel{
+  border-bottom: 2px solid #3283FA;
+  padding-bottom: 8px;
+}
+.prompt{
+  border: 1px solid #d6e9c6;
+  width: 95.5%;
+  padding: 15px;
+  margin-left: 25px;
+  background-color: #dff0d8;
+}
+

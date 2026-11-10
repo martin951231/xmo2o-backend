@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "物业首页",
+  "usingComponents": {
+    "change-role": "/components/change-role/index"
+  }
+}

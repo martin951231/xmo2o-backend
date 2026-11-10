@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "快店分类",
+  "usingComponents": {
+    "shop-item": "/appComponent/platcommon/shopItem"
+  }
+}

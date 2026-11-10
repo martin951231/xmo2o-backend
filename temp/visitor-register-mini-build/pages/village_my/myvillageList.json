@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "加入房屋",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup"
+  }
+}

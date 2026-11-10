@@ -1,0 +1,110 @@
+/* 背景色 */
+.bg-white {
+	background: #ffffff;
+}
+.bg-img {
+	background: #f4f4f4;
+}
+
+.width-100 {
+	width: 100%;
+} 
+.height-100 {
+	height: 100%;
+}
+
+/* 空状态 */
+.empty-top {
+	color: #55534f;
+	margin-top: 300upx;
+}
+
+/* 文本 */
+.text-cut {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.text-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.text-nowrap {
+	white-space: nowrap;
+}
+.text-nowrap >>> .lang-wrapper {
+	white-space: nowrap!important;
+}
+.text-nowrap .lang-wrapper{
+	white-space: nowrap!important;
+}
+.text-bold {
+	font-weight: bold;
+}
+.text-center {
+	text-align: center;
+}
+.text-left {
+	text-align: left;
+}
+.text-right {
+	text-align: right;
+}
+.text-black {
+	color: #000000;
+}
+.text-white {
+	color: #ffffff;
+}
+
+/*  -- flex弹性布局 -- */
+
+.flex {
+	display: flex;
+}
+.flex-sub {
+	flex: 1;
+}
+.flex-direction {
+	flex-direction: column;
+}
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.align-start {
+	align-items: flex-start;
+}
+.align-end {
+	align-items: flex-end;
+}
+.align-center {
+	align-items: center;
+}
+.align-stretch {
+	align-items: stretch;
+}
+.self-start {
+	align-self: flex-start;
+}
+.self-center {
+	align-self: flex-center;
+}
+.self-end {
+	align-self: flex-end;
+}
+.justify-start {
+	justify-content: flex-start;
+}
+.justify-end {
+	justify-content: flex-end;
+}
+.justify-center {
+	justify-content: center;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.justify-around {
+	justify-content: space-around;
+}

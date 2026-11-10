@@ -1,0 +1,32 @@
+.mapContent .chooseLocationBox[data-v-bbdc0ae6] {
+  overflow: hidden;
+}
+#tiandimap[data-v-bbdc0ae6] {
+  width: 100%;
+  height: 450px;
+}
+.ms[data-v-bbdc0ae6] {
+  color: #888;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+
+.bm-view[data-v-09382838] {
+    width: 100%;
+    height: 500px;
+    margin-top: 10px;
+}
+.search-item[data-v-09382838] {
+    width: 200px;
+    height: 500px;
+    overflow: auto;
+    position: absolute;
+    top: 50px;
+    left: -200px;
+}
+

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "充电桩详情",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "charge-modal": "/pages/newCharge/components/chargeModal"
+  }
+}

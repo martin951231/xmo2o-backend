@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "短视频列表",
+  "navigationBarBackgroundColor": "#FE443A",
+  "usingComponents": {
+    "product-author-list": "/pages/live_and_video/video/Author/productAuthorList"
+  }
+}

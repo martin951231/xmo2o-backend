@@ -1,0 +1,1 @@
+<view class="cut_down data-v-626f35f8"><view class="middle_box data-v-626f35f8"><view class="tips data-v-626f35f8">{{text}}</view><view class="number data-v-626f35f8">{{cutdownNumber}}</view></view></view>

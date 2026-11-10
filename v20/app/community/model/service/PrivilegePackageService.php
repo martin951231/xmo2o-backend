@@ -479,6 +479,12 @@ class PrivilegePackageService
 //        $package_application_id = [1, 2, 3, 5,33];
         //智能硬件
         $array_intersect_smart = array_intersect($this->smart_content, $package_content_id);
+        // Water alarm is a standalone hardware menu without a package application.
+        // Keep its parent only when this account's filtered menu list includes it.
+        $hasWaterAlarmMenu = false;
+        foreach ($house_menu_list as $menuItem) {
+            if (($menuItem['component'] ?? '') === 'waterAlarm') { $hasWaterAlarmMenu = true; break; }
+        }
         //我的应用
         $array_intersect_my_app = array_intersect($this->my_application_id, $package_application_id);
         //抄表管理
@@ -515,7 +521,7 @@ class PrivilegePackageService
                 unset($house_menu_list[$key]);
             }
             //如果功能应用库里面没有功能或者没有智能硬件的对应的应用 则《智能硬件》导航不显示
-            if ((!$array_intersect_smart || count($array_intersect_smart) <= 0) && $value['id'] == 284) {
+            if ((!$array_intersect_smart || count($array_intersect_smart) <= 0) && !$hasWaterAlarmMenu && $value['id'] == 284) {
                 unset($house_menu_list[$key]);
             }
             //如果抄表管理里面没有抄表应用 则《我的应用》里面《抄表管理》不显示

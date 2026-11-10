@@ -1959,7 +1959,7 @@ class NewPayService
                 }
                 $tmpUpdateData['over_paid_money']=$over_paid_money_tmp;
             }
-            if ($v['deposit_money']>0){
+            if ($v['deposit_money']>0 && !$this->isDepositBillPayOrder($v)){
                 $deposit_info=$db_house_new_deposit_log->get_one(['order_id'=>$v['order_id'],'type'=>2]);
                 if (empty($deposit_info)){
                     $deposit_info1=$db_house_new_deposit_log->get_one(['room_id'=>$v['room_id']]);
@@ -2000,6 +2000,8 @@ class NewPayService
             $service_start_time = $v['service_start_time'];
             $tmpUpdateData['service_start_time']=$v['service_start_time'];
             $tmpUpdateData['service_end_time']=$v['service_end_time'];
+            $isManualNewBill = isset($v['source_type']) && $v['source_type'] == 'manual_new_bill';
+            $isQuickBill = isset($v['source_type']) && $v['source_type'] == 'quick_bill';
             $service_time_difference=$v['service_end_time']-$v['service_start_time'];
             $service_time_difference=$service_time_difference>0 ?$service_time_difference:0;
             if($v['order_type'] == 'non_motor_vehicle'){ // 非机动车缴费
@@ -2010,7 +2012,7 @@ class NewPayService
                 $send_nmv_card->sendNmvToDevice($v['position_id']);
             }
             $rule_info = $service_house_new_charge_rule->getCallInfo(['r.id'=>$v['rule_id']],'n.charge_type,r.*,p.type');
-            if($v['order_type'] != 'non_motor_vehicle' && ($rule_info['type'] == 2||$v['order_type'] == 'park_new')){
+            if(!$isManualNewBill && !$isQuickBill && $v['order_type'] != 'non_motor_vehicle' && ($rule_info['type'] == 2||$v['order_type'] == 'park_new')){
                 if($v['position_id']){
                     $last_order = $db_house_new_order_log->getOne([['position_id','=',$v['position_id']],['order_type','=',$v['order_type']],['project_id','=',$v['project_id']]],true,'id DESC');
                 } else{
@@ -3256,6 +3258,8 @@ class NewPayService
             $tmp_order['desc'] = '社区缴费';
             $service_start_time = $now_order['service_start_time'];
             $service_end_time = $now_order['service_end_time'];
+            $isManualNewBill = isset($now_order['source_type']) && $now_order['source_type'] == 'manual_new_bill';
+            $isQuickBill = isset($now_order['source_type']) && $now_order['source_type'] == 'quick_bill';
             $rule_info = $service_house_new_charge_rule->getCallInfo(['r.id'=>$now_order['rule_id']],'n.charge_type,r.*,p.type');
             $service_time_difference=$now_order['service_end_time']-$now_order['service_start_time'];
             $service_time_difference=$service_time_difference>0 ? $service_time_difference:0;
@@ -4386,7 +4390,7 @@ class NewPayService
                }
             }
             else{
-                if($rule_info['type'] == 2){
+                if(!$isManualNewBill && !$isQuickBill && $rule_info['type'] == 2){
                 if($now_order['position_id']){
                     $last_order = $db_house_new_order_log->getOne([['position_id','=',$now_order['position_id']],['order_type','=',$now_order['order_type']],['project_id','=',$now_order['project_id']]],true,'id DESC');
                 } else{
@@ -4564,6 +4568,10 @@ class NewPayService
             $date_order['system_balance'] =$system_balance;
             $date_order['pay_amount_points'] = $pay_money;
             $date_order['pay_money'] = $now_order['modify_money'] + $now_order['late_payment_money'];
+            if (in_array($extra['paid_type'] ?? '', ['allinpay', 'allinpay_cashier', 'allinpay_wxapp', 'allinpay_wxapp_cashier', 'wxapp_cashier'], true)) {
+                // 通联回调金额为本次实际线上支付金额，不能再按账单应收/押金字段反推。
+                $date_order['pay_money'] = round_number($pay_money / 100, 2);
+            }
             /*
             $tmp_extra_data=isset($now_order['discount_info']) && $now_order['discount_info'] ? json_decode($now_order['discount_info'],true):array();
             $rule_rate=0;
@@ -4628,7 +4636,7 @@ class NewPayService
                 fdump_api(['line' . __LINE__,'third_meter_code' => $now_order['third_meter_code'], 'order_id' => $now_order['order_id'], 'retOpenMeter' => $retOpenMeter], 'after_pay/newPayServiceLog', 1);
             }
             
-            if ($now_order['deposit_money']>0){
+            if ($now_order['deposit_money']>0 && !$this->isDepositBillPayOrder($now_order)){
                 $db_house_new_deposit_log=new HouseNewDepositLog();
                 $deposit_info=$db_house_new_deposit_log->get_one(['order_id'=>$now_order['order_id'],'type'=>2]);
                 if (empty($deposit_info)){
@@ -5515,8 +5523,9 @@ class NewPayService
             $service_start_time = $value['service_start_time'];
             $service_end_time = $value['service_end_time'];
             $updateData['pay_money'] = $pay_money;
+            $isQuickBill = isset($value['source_type']) && $value['source_type'] == 'quick_bill';
             $rule_info = $service_house_new_charge_rule->getCallInfo(['r.id'=>$value['rule_id']],'n.charge_type,r.*,p.type');
-            if($rule_info['type'] == 2||$value['order_type'] == 'park_new'){
+            if(!$isQuickBill && ($rule_info['type'] == 2||$value['order_type'] == 'park_new')){
                 if($value['position_id']){
                     $last_order = $db_house_new_order_log->getOne([['position_id','=',$value['position_id']],['order_type','=',$value['order_type']],['project_id','=',$value['project_id']]],true,'id DESC');
                 } else{
@@ -5872,7 +5881,7 @@ class NewPayService
                 $updateData['ticket_number']=$param['ticket_number'];
             }
             $db_house_new_pay_order->saveOne(['order_id'=>$value['order_id']],$updateData);
-            if ($value['deposit_money']>0 && !$isHang){
+            if ($value['deposit_money']>0 && !$isHang && !$this->isDepositBillPayOrder($value)){
                 $db_house_new_deposit_log=new HouseNewDepositLog();
                 $deposit_info=$db_house_new_deposit_log->get_one(['order_id'=>$value['order_id'],'type'=>2]);
                 if (empty($deposit_info)){
@@ -6021,6 +6030,32 @@ class NewPayService
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
+    private function findRoomPayerBind($uid, $villageId, $roomId, $preferredBindId = 0)
+    {
+        if ($uid <= 0 || $villageId <= 0 || $roomId <= 0) {
+            return [];
+        }
+        $bindService = new HouseVillageUserBindService();
+        $where = [
+            ['uid', '=', $uid],
+            ['village_id', '=', $villageId],
+            ['vacancy_id', '=', $roomId],
+            ['status', '=', 1],
+            ['type', 'in', [0, 1, 2, 3]],
+        ];
+        $field = 'pigcms_id,uid,name,phone';
+        if ($preferredBindId > 0) {
+            $preferredWhere = $where;
+            $preferredWhere[] = ['pigcms_id', '=', $preferredBindId];
+            $bind = $bindService->getBindInfo($preferredWhere, $field);
+            if ($bind && !$bind->isEmpty()) {
+                return $bind->toArray();
+            }
+        }
+        $bind = $bindService->getBindInfo($where, $field);
+        return $bind && !$bind->isEmpty() ? $bind->toArray() : [];
+    }
+
     public function CashierApiGoPay($pigcms_id=0,$village_id=0,$app_type='',$param=[])
     {
         $service_house_village = new HouseVillageService();
@@ -6140,6 +6175,18 @@ class NewPayService
         }
         $now_order = $order_arr[0];
         $vacancy_id=$now_order['room_id'];
+        // H5/小程序的缓存绑定可能不属于当前付款账号，按实际账单房间重新核实身份。
+        if ($uid > 0 && $vacancy_id > 0) {
+            $payerBind = $this->findRoomPayerBind($uid, $village_id, $vacancy_id, $pigcms_id);
+            if ($payerBind) {
+                $pay_user_info = $payerBind;
+                $pigcms_id_pay = (int)$payerBind['pigcms_id'];
+            } else {
+                // 无有效房间绑定时保留实际付款账号，不能以业主身份代替代缴人。
+                $pay_user_info = (new User())->getOne(['uid' => $uid], 'uid,nickname as name,phone');
+                $pigcms_id_pay = 0;
+            }
+        }
         $property_fee_pay_first_open=0;
         if($customized_meter_reading>0) {
             $whereArrExtend=array('village_id'=>$village_id);
@@ -7002,6 +7049,8 @@ class NewPayService
     public function setHouseNewOrderLog($now_order) {
         $service_start_time = $now_order['service_start_time'];
         $service_end_time = $now_order['service_end_time'];
+        $isManualNewBill = isset($now_order['source_type']) && $now_order['source_type'] == 'manual_new_bill';
+        $isQuickBill = isset($now_order['source_type']) && $now_order['source_type'] == 'quick_bill';
         $service_house_new_charge_rule = new HouseNewChargeRuleService();
         $db_house_new_order_log = new HouseNewOrderLog();
         $service_house_village_user_bind = new HouseVillageUserBindService();
@@ -7055,7 +7104,7 @@ class NewPayService
                     $last_order=$new_order_log;
                 }
             }
-            if($last_order){
+            if(!$isManualNewBill && !$isQuickBill && $last_order){
                 $last_order = $last_order->toArray();
                 if($last_order && isset($last_order['id'])){
                     $date_order['service_start_time'] = $last_order['service_end_time']+100;
@@ -7223,5 +7272,23 @@ class NewPayService
             }
         }
         return $return;
+    }
+    private function isDepositBillPayOrder($order)
+    {
+        if (!is_array($order)) {
+            return false;
+        }
+        if (($order['order_type'] ?? '') === 'deposit_bill' || ($order['source_type'] ?? '') === 'deposit_bill') {
+            return true;
+        }
+        $orderId = intval($order['order_id'] ?? 0);
+        $villageId = intval($order['village_id'] ?? 0);
+        if ($orderId <= 0 || $villageId <= 0) {
+            return false;
+        }
+        return Db::name('house_new_bill_deposit_order')->where([
+            ['order_id', '=', $orderId],
+            ['village_id', '=', $villageId],
+        ])->count() > 0;
     }
 }

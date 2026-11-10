@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "申请停暖列表",
+  "usingComponents": {
+    "no-data": "/pages/stopFeating/components/noData"
+  }
+}

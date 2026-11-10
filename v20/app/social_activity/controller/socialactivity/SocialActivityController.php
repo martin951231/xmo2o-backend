@@ -116,6 +116,24 @@ class SocialActivityController extends AuthBaseController
     }
 
     /**
+     * 消审活动
+     */
+    public function cancelAuditActivity()
+    {
+        $params = [
+            'id' => $this->request->param('id', 0, 'trim,intval'),
+            'editUser' => $this->socialUser,
+        ];
+        try {
+            (new SocialActivityValidate())->scene('detail')->check($params);
+            (new SocialActivityService())->cancelAuditActivity($params);
+            return api_output(0, [], '消审成功');
+        } catch (\Exception $e) {
+            return api_output_error(1003, $e->getMessage());
+        }
+    }
+
+    /**
      * 推荐/撤回活动
      */
     public function recommendActivity()

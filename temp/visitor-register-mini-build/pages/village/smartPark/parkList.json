@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "停车缴费",
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse"
+  }
+}

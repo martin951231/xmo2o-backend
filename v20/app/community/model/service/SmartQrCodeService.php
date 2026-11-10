@@ -1314,10 +1314,17 @@ class SmartQrCodeService
         $dbWisdomQrcodePerson = new WisdomQrcodePerson();
         $dbWisdomQrcodeRecordLog = new WisdomQrcodeRecordLog();
         //新增经纬度参数传参
-        if (!isset($post['lat']) || empty($post['lat']) || !isset($post['lng']) || empty($post['lng'])) {
+        if (!isset($post['lat'], $post['lng']) || !is_numeric($post['lat']) || !is_numeric($post['lng'])) {
             throw new \think\Exception('定位失败');
         }
-        $this->checkLegalDistance($post['lng'], $post['lat'], $qrcode_id);
+        $lat = (float)$post['lat'];
+        $lng = (float)$post['lng'];
+        if ($lat < -90 || $lat > 90 || $lng < -180 || $lng > 180) {
+            throw new \think\Exception('定位失败');
+        }
+        $post['lat'] = $lat;
+        $post['lng'] = $lng;
+        $this->checkLegalDistance($lng, $lat, $qrcode_id);
         //增加工作人员判断
         $village_user_bind[] = ['village_id', '=', $village_id];
         $village_user_bind[] = ['type', '=', 4];

@@ -1120,13 +1120,10 @@ class HouseNewParkingService
         $position_data['position_area']=$data['position_area'];
         $position_data['position_note']=$data['position_note'];
         $position_data['position_pattern']=1;
+        $position_data['position_status']=$data['position_status'];
 
         if (!empty($data['children_type'])){
             $position_data['children_type']=$data['children_type'];
-        }
-        if(intval($data['pigcms_id']) > 0){
-            $position_data['position_status'] = 2;
-
         }
         $configCustomizationService=new ConfigCustomizationService();
         $isWsxCustomizedOpen=$configCustomizationService->getWSXCustomizedOpen();
@@ -1388,7 +1385,7 @@ class HouseNewParkingService
             //车位绑定车辆
            $this->handlePositionBindCar($data['village_id'], $data['garage_id'], $position_info['position_id'], $data['bind_cars']);
         }
-        if ($data['children_type']==$position_info['children_type']&&$position_info['village_id']==$data['village_id']&&$position_info['garage_id']==$data['garage_id']&&$position_info['position_num']==$data['position_num']&&$position_info['position_area']==$data['position_area']&&$position_info['position_note']==$data['position_note']&&$position_info['end_time']==strtotime($data['end_time'].' 23:59:59') && $position_info['opt_type']==$data['opt_type']){
+        if ($data['children_type']==$position_info['children_type']&&$position_info['village_id']==$data['village_id']&&$position_info['garage_id']==$data['garage_id']&&$position_info['position_num']==$data['position_num']&&$position_info['position_area']==$data['position_area']&&$position_info['position_note']==$data['position_note']&&$position_info['position_status']==$data['position_status']&&$position_info['end_time']==strtotime($data['end_time'].' 23:59:59') && $position_info['opt_type']==$data['opt_type']){
             $id=1;
             if(isset($position_info['end_time']) && $position_info['end_time']>0){
                 $this->updateBindCarEndTime($position_info['position_id'],$position_info['village_id'],$position_info['end_time']);
@@ -1400,14 +1397,12 @@ class HouseNewParkingService
             $position_data['position_num']=$data['position_num'];
             $position_data['position_area']=$data['position_area'];
             $position_data['position_note']=$data['position_note'];
+            $position_data['position_status']=$data['position_status'];
             if (!empty($data['children_type'])){
                 $position_data['children_type']=$data['children_type'];
             }
             if (!empty($data['end_time'])&&$data['children_type']==1){
                 $position_data['end_time']=strtotime($data['end_time'].' 23:59:59');
-            }
-            if (!empty($data['pigcms_id'])){
-                $position_data['position_status']=2;
             }
             if($isWsxCustomizedOpen && isset($data['opt_type'])){
                 $position_data['opt_type']=$data['opt_type'];
@@ -1449,7 +1444,6 @@ class HouseNewParkingService
                 $data_bind['user_id'] = $data['pigcms_id'];
                 $db_house_village_bind_position->saveOne($bind_where,$data_bind);
             }
-            $db_house_village_parking_position->saveOne(['position_id'=>$data['position_id']],['position_status'=>2]);
         } elseif ($data['position_id'] && $data['village_id']) {
             $db_house_village_bind_position=new HouseVillageBindPosition();
             $bind_where=[];
@@ -1643,7 +1637,13 @@ class HouseNewParkingService
             if ($position_info['position_status']==1){
                 $position_info['position_status_txt']='未售出';
             }elseif($position_info['position_status']==2){
-                $position_info['position_status_txt']='已售出';
+                $position_info['position_status_txt']='已售出已交付';
+            }elseif($position_info['position_status']==3){
+                $position_info['position_status_txt']='已售出未交付';
+            }elseif($position_info['position_status']==4){
+                $position_info['position_status_txt']='销控已售';
+            }elseif($position_info['position_status']==5){
+                $position_info['position_status_txt']='销控未售';
             }
             if ($position_info['end_time']>1){
                 $position_info['end_time']=date('Y-m-d',$position_info['end_time']);
@@ -1771,7 +1771,13 @@ class HouseNewParkingService
                         $vv['position_status_txt']='未售出';
                     }
                     if ($vv['position_status']==2){
-                        $vv['position_status_txt']='已售出';
+                        $vv['position_status_txt']='已售出已交付';
+                    }elseif ($vv['position_status']==3){
+                        $vv['position_status_txt']='已售出未交付';
+                    }elseif ($vv['position_status']==4){
+                        $vv['position_status_txt']='销控已售';
+                    }elseif ($vv['position_status']==5){
+                        $vv['position_status_txt']='销控未售';
                     }
                     if ($vv['position_pattern']==1){
                         $vv['position_pattern_txt']='真实车位';
@@ -7973,6 +7979,7 @@ class HouseNewParkingService
     public function downPosition($data)
     {
         $db_house_village_parking_position=new HouseVillageParkingPosition();
+        $db_house_village_bind_position=new HouseVillageBindPosition();
         $houseVillageSingleDb= new HouseVillageSingle();
         $houseVillageFloorDb= new HouseVillageFloor();
         $houseVillageLayerDb= new HouseVillageLayer();
@@ -7992,17 +7999,22 @@ class HouseNewParkingService
             $where[] = [ 'pp.position_status','=', $data['position_car_status']];
         }
         if (!empty($data['position_status'])){
+            $bind_position_ids=$db_house_village_bind_position->getColumn([
+                ['village_id','=',$village_id],
+                ['user_id','>',0],
+            ],'position_id');
             if($data['position_status'] == 1){
-                $where[] = ['c.car_id', 'exp', Db::raw('IS NULL')];
+                if (!empty($bind_position_ids)){
+                    $where[] = ['pp.position_id','not in',$bind_position_ids];
+                }
             }elseif ($data['position_status'] == 2){
-                $where[] = ['c.car_id', 'exp', Db::raw('IS NOT NULL')];
+                $where[] = ['pp.position_id','in',!empty($bind_position_ids) ? $bind_position_ids : [-1]];
             }
         }
-        $list=$db_house_village_parking_position->getListss($where,'pp.*,pg.garage_num,c.car_id as is_bind_car',$page=0,15,'pp.position_id DESC','pp.position_id');
+        $list=$db_house_village_parking_position->getPositionListss($where,'pp.*,pg.garage_num',$page=0,15,'pp.position_id DESC','pp.position_id');
         $data_list=[];
         if (!empty($list)){
             $list=$list->toArray();
-            $db_house_village_bind_position=new HouseVillageBindPosition();
             if (!empty($list)){
                 foreach ($list as $k=>$vv){
                     $data_list[$k]['position_id']=$vv['position_id'];
@@ -8013,7 +8025,11 @@ class HouseNewParkingService
                     }else{
                         $data_list[$k]['position_pattern_txt']='虚拟车位';
                     }
-                    if ($vv['is_bind_car']){
+                    $bind_where=[];
+                    $bind_where['position_id'] =$vv['position_id'];
+                    $bind_where['village_id'] = $village_id;
+                    $bind_info=$db_house_village_bind_position->getOne($bind_where);
+                    if ($bind_info && !$bind_info->isEmpty() && intval($bind_info['user_id']) > 0){
                         $data_list[$k]['position_status_txt']='已使用';
                     }else{
                         $data_list[$k]['position_status_txt']='空置';
@@ -8026,10 +8042,6 @@ class HouseNewParkingService
                     $data_list[$k]['room_name']='';
                     $data_list[$k]['user_name']='';
                     $data_list[$k]['user_phone']='';
-                    $bind_where=[];
-                    $bind_where['position_id'] =$vv['position_id'];
-                    $bind_where['village_id'] = $village_id;
-                    $bind_info=$db_house_village_bind_position->getOne($bind_where);
                     if($bind_info && !$bind_info->isEmpty()){
                         $user_id=$bind_info['user_id'];
                         $whereTempArr=array();
@@ -8082,7 +8094,13 @@ class HouseNewParkingService
                     }
                     $data_list[$k]['car_status_txt']='未售出';
                     if ($vv['position_status']==2){
-                        $data_list[$k]['car_status_txt']='已售出';
+                        $data_list[$k]['car_status_txt']='已售出已交付';
+                    }elseif ($vv['position_status']==3){
+                        $data_list[$k]['car_status_txt']='已售出未交付';
+                    }elseif ($vv['position_status']==4){
+                        $data_list[$k]['car_status_txt']='销控已售';
+                    }elseif ($vv['position_status']==5){
+                        $data_list[$k]['car_status_txt']='销控未售';
                     }
                 }
             }

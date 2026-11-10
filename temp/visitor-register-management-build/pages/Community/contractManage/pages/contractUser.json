@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "合同管理",
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control",
+    "no-data": "/pages/Community/contractManage/pages/noData"
+  }
+}

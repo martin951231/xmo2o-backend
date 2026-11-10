@@ -1,0 +1,1 @@
+<view class="container"><view class="qrcodeBox" style="{{('margin-top:'+marginTop+'rpx;')}}"><image class="qrcode" src="{{card_info.card_qrcode}}"></image></view><view class="card_id">{{card_info.show_card_code}}</view><view class="card_info">{{card_info.wx_param_arr.notice}}</view></view>

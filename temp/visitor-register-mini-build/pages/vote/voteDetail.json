@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "投票详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "uni-rate": "/appComponent/uni/uni-rate/uni-rate"
+  }
+}

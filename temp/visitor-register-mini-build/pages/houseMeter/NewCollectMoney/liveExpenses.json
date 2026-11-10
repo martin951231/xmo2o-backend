@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "生活缴费",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "u-switch": "/uview-ui/components/u-switch/u-switch"
+  }
+}

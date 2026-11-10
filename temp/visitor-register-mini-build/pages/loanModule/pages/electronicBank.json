@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "电子银行",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "credit-card": "/pages/loanModule/components/creditCard",
+    "e-pay": "/pages/loanModule/components/ePay",
+    "phone-bank": "/pages/loanModule/components/phoneBank",
+    "weixin-bank": "/pages/loanModule/components/wxBank",
+    "nodata": "/pages/loanModule/components/nodata"
+  }
+}

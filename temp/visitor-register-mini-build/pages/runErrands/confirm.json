@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "提交订单",
+  "usingComponents": {
+    "order-map": "/pages/runErrands/components/OrderMap",
+    "select-goods": "/pages/runErrands/components/SelectGoods",
+    "address-input": "/pages/runErrands/components/AddressInput",
+    "order-tip": "/pages/runErrands/components/OrderTip",
+    "total-price": "/pages/runErrands/components/TotalPrice",
+    "select-time": "/pages/runErrands/components/SelectTime",
+    "upload-img": "/pages/runErrands/components/uploadImg"
+  }
+}

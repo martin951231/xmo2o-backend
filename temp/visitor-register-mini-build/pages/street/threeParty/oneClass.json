@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "三会一课",
+  "usingComponents": {
+    "q-s-tabs": "/pages/street/components/QS-tabs/QS-tabs"
+  }
+}

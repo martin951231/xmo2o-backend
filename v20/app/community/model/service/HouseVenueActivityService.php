@@ -17,6 +17,12 @@ use map\longLat;
 
 class HouseVenueActivityService
 {
+    public $deferAgentNotice=false;
+    private $agentNotice=[];
+    public function flushAgentNotice() {
+        foreach ($this->agentNotice as $args) { try { $this->send_notice(...$args); } catch (\Throwable $e) { error_log('Venue notification failed'); } }
+        $this->agentNotice=[];
+    }
     public $base_map='';//暂无图片 占位
     public $recordStatus=[];
     public $appointMsg=[];
@@ -370,6 +376,7 @@ class HouseVenueActivityService
         $record_number='HDCG-'.date('Ymd',$this->time).substr(microtime(), 2, 9 - strlen($ids)).$ids;
         Db::startTrans();
         try {
+            Db::name('house_venue_activity')->where('id',$activity['id'])->lock(true)->find();
             $where[] = ['activity_id','=',$activity['id']];
             $where[] = ['pigcms_id','=',$param['pigcms_id']];
             $where[] = ['appoint_time','>=',$start_time];
@@ -419,10 +426,13 @@ class HouseVenueActivityService
                 $data['msg']='提交成功，等待管理员审核';
             }
             $res=$this->HouseVenueAppointRecord->add($rr);
+            if (!$res) { throw new \think\Exception('预约记录保存失败'); }
+            $data['record_id']=$res;
             if($activity['is_examine'] == 1 && $res){
                 self::add_news($param['pigcms_id'],'您预约成功【'.$activity['title'].'】',$start_time,$start,$end,1,$rr['uid']);
                 $remark='预约日期：'.(date('Y-m-d',$start_time)).' '.$start.'-'.$end;
-                self::send_notice($param['pigcms_id'],$param['village_id'],$res,'场馆预约','【'.$activity['title'].'】活动','已通过',$remark);
+                $notice=[$param['pigcms_id'],$param['village_id'],$res,'场馆预约','【'.$activity['title'].'】活动','已通过',$remark];
+                if ($this->deferAgentNotice) { $this->agentNotice[]=$notice; } else { $this->send_notice(...$notice); }
             }
             Db::commit();
         } catch (\Exception $e) {

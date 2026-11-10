@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "‎",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f4f4f4",
+  "usingComponents": {
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore"
+  }
+}

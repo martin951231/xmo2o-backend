@@ -1,0 +1,15 @@
+const fs=require('fs');
+const base='D:/projectView/platform_dev/src/';
+const file=base+'views/community/village/charge/cashier/printOrder.vue';
+let source=fs.readFileSync(file,'utf8');
+const start=source.indexOf('            <span style="margin-right: 8px;">打印纸张：');
+const end=source.indexOf('        </span>',start);
+if(start<0||end<0)throw new Error('Paper controls not found');
+source=source.slice(0,start)+'            <a-button type="primary" :loading="printPreparing" @click="print">打印</a-button>\n'+source.slice(end);
+source=source.replace(/            printPaper: 'a4',\r?\n/,'').replace('createReceiptPrintStyle(this.printPaper)','createReceiptPrintStyle()');
+fs.mkdirSync('temp/receipt-auto-backup',{recursive:true});
+fs.copyFileSync(file,'temp/receipt-auto-backup/printOrder.vue');
+fs.copyFileSync(base+'utils/receiptPrintLayout.js','temp/receipt-auto-backup/receiptPrintLayout.js');
+fs.writeFileSync(file,source);
+fs.copyFileSync('temp/receipt-print-auto.js',base+'utils/receiptPrintLayout.js');
+console.log('Installed automatic paper layout and physical typography');

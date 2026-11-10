@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-lazy-load": "/uview-ui/components/u-lazy-load/u-lazy-load"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "短视频详情",
+  "navigationBarBackgroundColor": "#FE443A",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "details-bottom": "/pages/live_and_video/video/Audience/detailsBottom"
+  }
+}

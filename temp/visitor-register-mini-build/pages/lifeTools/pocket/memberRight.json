@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "会员权益",
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#1A86F9",
+  "usingComponents": {
+    "u-parse": "/uview-ui/components/u-parse/u-parse"
+  }
+}

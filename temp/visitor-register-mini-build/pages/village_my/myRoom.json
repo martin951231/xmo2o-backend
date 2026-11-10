@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "加入房屋",
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup"
+  }
+}

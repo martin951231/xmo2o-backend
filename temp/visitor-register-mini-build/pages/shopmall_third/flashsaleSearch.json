@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "搜索",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "countdown": "/pages/shopmall_third/components/countdown",
+    "sell-out-tag": "/pages/shopmall_third/components/sellOutTag"
+  }
+}

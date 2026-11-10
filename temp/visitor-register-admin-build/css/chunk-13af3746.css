@@ -1,0 +1,16 @@
+.set_con[data-v-358e6740] {
+  padding: 20px;
+}
+.set_con .form_item[data-v-358e6740] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.set_con .desc[data-v-358e6740] {
+  color: #999;
+  margin-top: 7px;
+}
+

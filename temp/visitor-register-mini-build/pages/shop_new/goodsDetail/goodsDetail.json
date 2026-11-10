@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "商品详情",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-parse": "/uview-ui/components/u-parse/u-parse",
+    "count": "/pages/shop_new/component/count/count",
+    "goods-tip": "/pages/shop_new/component/goodsTip/goodsTip",
+    "shopcart": "/pages/shop_new/component/shopcart/shopcart",
+    "mini-nav": "/appComponent/platcommon/miniNav",
+    "contact-box": "/pages/shop_new/component/contactBox/contactBox"
+  }
+}

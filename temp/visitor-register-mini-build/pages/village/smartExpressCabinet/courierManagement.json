@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "快递存取",
+  "usingComponents": {
+    "uni-segmented-control": "/appComponent/uni/uni-segmented-control/uni-segmented-control",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup"
+  }
+}

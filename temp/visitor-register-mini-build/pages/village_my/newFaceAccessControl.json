@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "人脸识别门禁",
+  "usingComponents": {
+    "face-upload": "/pages/village_my/component/face-upload/index"
+  }
+}

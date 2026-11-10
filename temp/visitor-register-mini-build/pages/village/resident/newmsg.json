@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "详情",
+  "usingComponents": {
+    "village-bind-house": "/appComponent/villagePage/villageBindHouse",
+    "uni-fab": "/pages/village/component/uni-fab/uni-fab"
+  }
+}

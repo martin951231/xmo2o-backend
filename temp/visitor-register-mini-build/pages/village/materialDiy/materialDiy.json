@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "装修申请",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "w-picker": "/pages/village/component/w-picker/w-picker"
+  }
+}

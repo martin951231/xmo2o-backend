@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "抄表记录",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "sl-filter": "/pages/village/component/sl-filter/sl-filter",
+    "uni-collapse": "/pages/village/component/uni-collapse/uni-collapse",
+    "uni-collapse-item": "/pages/village/component/uni-collapse-item/uni-collapse-item",
+    "w-picker": "/pages/village/component/w-picker/w-picker"
+  }
+}

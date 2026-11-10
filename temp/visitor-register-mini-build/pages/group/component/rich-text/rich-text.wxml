@@ -1,0 +1,1 @@
+<view class="detailCon"><view class="con"><rich-text nodes="{{nodes}}"></rich-text></view></view>

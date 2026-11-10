@@ -1404,6 +1404,7 @@ class AdminLoginService
                 $propertyAdmin = $servicePropertyAdmin->getFind(['id'=>$admin_id]);
                 $house_admin = new HouseVillageService();
                 $user = $house_admin->getHouseVillage($village_id);
+                $user['wid'] = intval($propertyAdmin['wid'] ?? 0);
                 $loginTitle = isset($user['village_name'])&&$user['village_name']?$user['village_name'].'【小区】':'小区后台';
                 $user['loginTitle'] = $loginTitle;
                 if ($propertyAdmin && isset($propertyAdmin['realname'])) {
@@ -1677,6 +1678,7 @@ class AdminLoginService
                 $loginTitle = isset($user['village_name'])&&$user['village_name']?$user['village_name'].'【小区】':'小区后台';
                 $user['loginTitle'] = $loginTitle;
                 if($admin_id>0){
+                    $user['normal_admin_id']=$admin_id;
                     $servicePropertyAdmin = new PropertyAdminService();
                     $adminAuthWhere=array();
                     $adminAuthWhere[]=array('admin_id','=',$admin_id);

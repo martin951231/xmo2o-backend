@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "首页",
+  "usingComponents": {
+    "custom-page": "/pages/customPage/components/CustomPage",
+    "tab-bar-custom-page": "/pages/customPage/components/TabBar",
+    "float-nav": "/pages/customPage/components/FloatNav"
+  }
+}

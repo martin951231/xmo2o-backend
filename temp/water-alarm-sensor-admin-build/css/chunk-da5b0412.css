@@ -1,0 +1,198 @@
+.container[data-v-28ae2145] {
+  width: 100%;
+  min-height: 100%;
+  background: radial-gradient(circle at 50% 22%, rgba(33, 99, 180, 0.18) 0%, rgba(14, 28, 62, 0.12) 35%, rgba(5, 10, 24, 0.96) 100%), -webkit-gradient(linear, left top, left bottom, from(#050b18), to(#07101f));
+  background: radial-gradient(circle at 50% 22%, rgba(33, 99, 180, 0.18) 0%, rgba(14, 28, 62, 0.12) 35%, rgba(5, 10, 24, 0.96) 100%), linear-gradient(180deg, #050b18 0%, #07101f 100%);
+  background-color: #08101f;
+}
+.chart-box[data-v-28ae2145] {
+  gap: 12px;
+  padding: 0 12px 12px;
+  margin: 0;
+}
+.chart-box .chart-item-left[data-v-28ae2145],
+.chart-box .chart-item-center[data-v-28ae2145],
+.chart-box .chart-item-right[data-v-28ae2145] {
+  gap: 12px;
+}
+.chart-box .chart-item[data-v-28ae2145] {
+  margin: 0;
+  min-height: 360px;
+  border-radius: 8px;
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  z-index: 1;
+  overflow: hidden;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(8, 28, 56, 0.78)), to(rgba(6, 20, 40, 0.88)));
+  background: linear-gradient(180deg, rgba(8, 28, 56, 0.78) 0%, rgba(6, 20, 40, 0.88) 100%);
+  border: 1px solid rgba(0, 195, 254, 0.16);
+  -webkit-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 6px 20px rgba(0, 0, 0, 0.18);
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 6px 20px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(2px);
+  -webkit-transition: border-color 0.28s ease, background 0.28s ease, -webkit-transform 0.28s ease, -webkit-box-shadow 0.28s ease;
+  transition: border-color 0.28s ease, background 0.28s ease, -webkit-transform 0.28s ease, -webkit-box-shadow 0.28s ease;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease, -webkit-transform 0.28s ease, -webkit-box-shadow 0.28s ease;
+}
+.chart-box .chart-item[data-v-28ae2145]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 110px;
+  height: 1px;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 195, 254, 0.78)), to(transparent));
+  background: linear-gradient(90deg, rgba(0, 195, 254, 0.78), transparent);
+  pointer-events: none;
+  z-index: 2;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+.chart-box .chart-item[data-v-28ae2145]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 72px;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 195, 254, 0.48)), to(transparent));
+  background: linear-gradient(180deg, rgba(0, 195, 254, 0.48), transparent);
+  pointer-events: none;
+  z-index: 2;
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+.chart-box .chart-item .chart-hover-glow[data-v-28ae2145] {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  -webkit-transition: opacity 0.28s ease;
+  transition: opacity 0.28s ease;
+  background: radial-gradient(circle at 50% 0%, rgba(0, 195, 254, 0.1), transparent 42%), radial-gradient(circle at 100% 100%, rgba(0, 120, 255, 0.08), transparent 38%);
+}
+.chart-box .chart-item .chart-hover-scan[data-v-28ae2145] {
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  -webkit-transform: skewX(-20deg);
+          transform: skewX(-20deg);
+  background: -webkit-gradient(linear, left top, right top, from(transparent), color-stop(30%, rgba(255, 255, 255, 0.03)), color-stop(50%, rgba(0, 195, 254, 0.12)), color-stop(70%, rgba(255, 255, 255, 0.03)), to(transparent));
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 30%, rgba(0, 195, 254, 0.12) 50%, rgba(255, 255, 255, 0.03) 70%, transparent 100%);
+}
+.chart-box .chart-item .chart-hover-corner[data-v-28ae2145] {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  -webkit-transform: scale(0.85);
+          transform: scale(0.85);
+  -webkit-transition: all 0.28s ease;
+  transition: all 0.28s ease;
+}
+.chart-box .chart-item .chart-hover-corner[data-v-28ae2145]::before,
+.chart-box .chart-item .chart-hover-corner[data-v-28ae2145]::after {
+  content: '';
+  position: absolute;
+  background: #00d8ff;
+  -webkit-box-shadow: 0 0 8px rgba(0, 216, 255, 0.45);
+          box-shadow: 0 0 8px rgba(0, 216, 255, 0.45);
+}
+.chart-box .chart-item .chart-hover-corner[data-v-28ae2145]::before {
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+}
+.chart-box .chart-item .chart-hover-corner[data-v-28ae2145]::after {
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 12px;
+  border-radius: 2px;
+}
+.chart-box .chart-item[data-v-28ae2145]:hover {
+  -webkit-transform: translateY(-2px);
+          transform: translateY(-2px);
+  border-color: rgba(0, 195, 254, 0.38);
+  -webkit-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 10px 28px rgba(0, 55, 120, 0.22), 0 0 18px rgba(0, 195, 254, 0.1);
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 10px 28px rgba(0, 55, 120, 0.22), 0 0 18px rgba(0, 195, 254, 0.1);
+}
+.chart-box .chart-item[data-v-28ae2145]:hover::before {
+  width: 180px;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 225, 255, 0.95)), to(transparent));
+  background: linear-gradient(90deg, rgba(0, 225, 255, 0.95), transparent);
+}
+.chart-box .chart-item[data-v-28ae2145]:hover::after {
+  height: 110px;
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 225, 255, 0.7)), to(transparent));
+  background: linear-gradient(180deg, rgba(0, 225, 255, 0.7), transparent);
+}
+.chart-box .chart-item:hover .chart-hover-glow[data-v-28ae2145] {
+  opacity: 1;
+}
+.chart-box .chart-item:hover .chart-hover-scan[data-v-28ae2145] {
+  opacity: 1;
+  -webkit-animation: chartScanMove-data-v-28ae2145 1.4s ease forwards;
+          animation: chartScanMove-data-v-28ae2145 1.4s ease forwards;
+}
+.chart-box .chart-item:hover .chart-hover-corner[data-v-28ae2145] {
+  opacity: 1;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+@-webkit-keyframes chartScanMove-data-v-28ae2145 {
+0% {
+    left: -120%;
+}
+100% {
+    left: 140%;
+}
+}
+@keyframes chartScanMove-data-v-28ae2145 {
+0% {
+    left: -120%;
+}
+100% {
+    left: 140%;
+}
+}
+.chart-box .chart-item-left[data-v-28ae2145],
+.chart-box .chart-item-right[data-v-28ae2145] {
+  width: 30vw;
+}
+.chart-box .chart-item-center[data-v-28ae2145] {
+  width: calc(100vw - 60vw - 2rem);
+}
+/* 根节点rem适配：修复2rem/1.5rem在不同设备的尺寸偏差，必须加 */
+html[data-v-28ae2145] {
+  font-size: 62.5%;
+  /* 1rem = 10px，方便计算，不影响现有布局 */
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+*[data-v-28ae2145],
+*[data-v-28ae2145]::before,
+*[data-v-28ae2145]::after {
+  -webkit-box-sizing: inherit;
+          box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+body[data-v-28ae2145] {
+  font-size: 1.4rem;
+  /* 恢复body默认字号，不影响其他元素 */
+}
+

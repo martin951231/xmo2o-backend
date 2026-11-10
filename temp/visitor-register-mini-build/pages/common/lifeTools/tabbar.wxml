@@ -1,0 +1,1 @@
+<view class="data-v-009703e8"><u-tabbar bind:input="__e" vue-id="5b2ee5bd-1" list="{{tabbarList[type]}}" active-color="{{mainColor}}" inactive-color="#666666" border-top="{{false}}" value="{{current}}" data-event-opts="{{[['^input',[['__set_model',['','current','$event',[]]]]]]}}" class="data-v-009703e8" bind:__l="__l"></u-tabbar></view>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "投票列表",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse"
+  }
+}

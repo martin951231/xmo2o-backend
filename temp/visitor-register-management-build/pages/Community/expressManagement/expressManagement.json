@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "快递代收",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control"
+  }
+}

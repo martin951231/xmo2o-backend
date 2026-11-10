@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "充电详情页",
+  "usingComponents": {
+    "smartphone": "/pages/village/smartCharge/smartphone"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "押金退款",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "w-picker": "/appComponent/uni/w-picker/w-picker"
+  }
+}

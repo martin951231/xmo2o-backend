@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "加入房屋",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "one-input": "/pages/village_my/component/myp-one/myp-one",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "evan-radio": "/pages/village_my/component/evan-radio/evan-radio",
+    "evan-radio-group": "/pages/village_my/component/evan-radio/evan-radio-group",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "w-picker": "/pages/village_my/component/w-picker/w-picker",
+    "lb-picker": "/pages/village_my/component/lb-picker/index"
+  }
+}

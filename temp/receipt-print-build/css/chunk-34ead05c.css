@@ -1,0 +1,38 @@
+
+.page {
+    width: 100%;
+    min-height: 100%;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    background: #ffffff;
+}
+.page-header {
+    background-color: #eef0f3;
+    padding: 14px 16px;
+    font-size: 1rem;
+}
+/* 标签样式 */
+.biaoqian {
+    width: 500px;
+}
+.biaoqian .ant-checkbox-group-item {
+    width: 106px;
+    height: 36px;
+    line-height: 36px;
+    margin-bottom: 16px;
+    margin-right: 18px;
+    text-align: center;
+    overflow: hidden;
+    background: #F6F6F6;
+    border: 1px solid #EEE;
+    color: #000;
+}
+.biaoqian .ant-checkbox-wrapper-checked {
+    color: #1890ff;
+    background: #F6F6F6;
+    border: 1px solid #1890ff;
+}
+.biaoqian .ant-checkbox-group-item .ant-checkbox {
+    display:none;
+}
+

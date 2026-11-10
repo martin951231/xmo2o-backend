@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "停暖管理",
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control",
+    "no-data": "/pages/Community/stopFeating/components/noData"
+  }
+}

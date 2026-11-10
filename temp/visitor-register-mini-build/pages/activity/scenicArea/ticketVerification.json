@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "购票返券",
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#06C1AD",
+  "usingComponents": {
+    "coupons-dialog": "/appComponent/platcommon/coupons-dialog"
+  }
+}

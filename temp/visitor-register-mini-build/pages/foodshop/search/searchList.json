@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "搜索",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "foodshop-item": "/pages/foodshop/components/foodshopItem",
+    "h-mfilter-dropdown": "/pages/foodshop/components/HM-filterDropdown/HM-filterDropdown"
+  }
+}

@@ -1069,7 +1069,7 @@ class HouseVillageParkingService
 
     public function getNav($where = [], $field = true,$select=1)
     {
-        $cacheKey = 'village:'.$where['village_id'].':Car:getNav:'.md5(\json_encode($where).\json_encode($field).\json_encode($select));
+        $cacheKey = 'village:'.$where['village_id'].':Car:getNav:position_num_asc:'.md5(\json_encode($where).\json_encode($field).\json_encode($select));
         $data = Cache::get($cacheKey);
         if (!empty($data)){
             return $data;
@@ -1171,7 +1171,7 @@ class HouseVillageParkingService
 
     public function getPosition($where = [], $field = true)
     {
-        $position_list = $this->parkingPositionModel->getLists($where, $field, 0, 0);
+        $position_list = $this->parkingPositionModel->getLists($where, $field, 0, 0, 'pp.position_num ASC,pp.position_id ASC');
         if ($position_list) {
             foreach ($position_list as $k => $v) {
                 /**

@@ -292,6 +292,84 @@ class HouseApiAction  extends BaseAction
             $toCacheArr['village_info'] = $village_info;
         }
         // 猜你喜欢配置项
+        // 首页颜色配置要求保存后立即生效，不使用上面的首页组合缓存，避免并发请求回写旧配置。
+        $home_color_config = D('House_village_info')->where(array('village_id' => $village_id))->field('switch_village_color,index_title_color,index_header_bg_color,index_header_bg_image')->find();
+        $res['switch_village_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $home_color_config['switch_village_color']) ? strtoupper($home_color_config['switch_village_color']) : '#FFFFFF';
+        $res['index_title_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $home_color_config['index_title_color']) ? strtoupper($home_color_config['index_title_color']) : '#000000';
+        $res['index_header_bg_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $home_color_config['index_header_bg_color']) ? strtoupper($home_color_config['index_header_bg_color']) : '';
+        $res['index_header_bg_image'] = !empty($home_color_config['index_header_bg_image']) ? replace_file_domain($home_color_config['index_header_bg_image']) : '';
+        $public_revenue_home_config = (array)D('House_village_info')
+            ->where(array('village_id' => $village_id))
+            ->field('public_revenue_home_show,public_revenue_home_title,public_revenue_home_bg_color,public_revenue_page_bg_color,public_revenue_page_bg_image')
+            ->find();
+        $public_revenue_title = trim($public_revenue_home_config['public_revenue_home_title']);
+        if ($public_revenue_title === '') {
+            $public_revenue_title = '公共资源经营收益';
+        }
+        $public_revenue_home_bg_color = preg_match('/^#[0-9A-Fa-f]{6}$/', $public_revenue_home_config['public_revenue_home_bg_color']) ? strtoupper($public_revenue_home_config['public_revenue_home_bg_color']) : '#FFFFFF';
+        $public_revenue_page_bg_color = preg_match('/^#[0-9A-Fa-f]{6}$/', $public_revenue_home_config['public_revenue_page_bg_color']) ? strtoupper($public_revenue_home_config['public_revenue_page_bg_color']) : '#F3F4F6';
+        $public_revenue_page_bg_image = !empty($public_revenue_home_config['public_revenue_page_bg_image']) ? replace_file_domain($public_revenue_home_config['public_revenue_page_bg_image']) : '';
+        $res['public_revenue_home'] = array(
+            'show' => intval($public_revenue_home_config['public_revenue_home_show']),
+            'title' => $public_revenue_title,
+            'background_color' => $public_revenue_home_bg_color,
+            'page_background_color' => $public_revenue_page_bg_color,
+            'page_background_image' => $public_revenue_page_bg_image,
+            // 同时返回数据库原始字段名，兼容已发布的不同小程序版本并便于接口排查。
+            'public_revenue_home_bg_color' => $public_revenue_home_bg_color,
+            'public_revenue_page_bg_color' => $public_revenue_page_bg_color,
+            'public_revenue_page_bg_image' => $public_revenue_page_bg_image,
+            'balance_amount' => '0.00',
+            'income_amount' => '0.00',
+            'unit' => '元',
+        );
+        if ($res['public_revenue_home']['show'] === 1) {
+            $public_revenue_period_model = M('Public_revenue_period');
+            $current_public_revenue_year = intval(date('Y'));
+            $current_public_revenue_quarter = intval(ceil(intval(date('n')) / 3));
+            $latest_public_revenue_period = $public_revenue_period_model->where(array(
+                'village_id' => $village_id,
+                'year' => $current_public_revenue_year,
+                'quarter' => array('between', array(0, $current_public_revenue_quarter)),
+                'status' => 1,
+            ))->order('year DESC,quarter DESC,id DESC')->find();
+            if (!$latest_public_revenue_period) {
+                $latest_public_revenue_period = $public_revenue_period_model->where(array(
+                    'village_id' => $village_id,
+                    'year' => array('lt', $current_public_revenue_year),
+                    'quarter' => array('between', array(0, 4)),
+                    'status' => 1,
+                ))->order('year DESC,quarter DESC,id DESC')->find();
+            }
+            if ($latest_public_revenue_period) {
+                $public_revenue_year = intval($latest_public_revenue_period['year']);
+                $public_revenue_quarter = intval($latest_public_revenue_period['quarter']);
+                $opening_public_revenue_period = $public_revenue_period_model->where(array(
+                    'village_id' => $village_id,
+                    'year' => $public_revenue_year,
+                    'quarter' => 0,
+                    'status' => 1,
+                ))->find();
+                $annual_public_revenue = array();
+                if ($public_revenue_quarter > 0) {
+                    $annual_public_revenue = $public_revenue_period_model->where(array(
+                        'village_id' => $village_id,
+                        'year' => $public_revenue_year,
+                        'quarter' => array('between', array(1, $public_revenue_quarter)),
+                        'status' => 1,
+                    ))->field('SUM(actual_income_total) AS actual_income_total,SUM(actual_expense_total) AS actual_expense_total')->find();
+                }
+                $balance_amount = floatval($opening_public_revenue_period['opening_actual_balance'])
+                    + floatval($annual_public_revenue['actual_income_total'])
+                    - floatval($annual_public_revenue['actual_expense_total']);
+                $balance_amount = number_format(round($balance_amount, 2, PHP_ROUND_HALF_UP), 2, '.', '');
+                $res['public_revenue_home']['balance_amount'] = $balance_amount;
+                // 保留旧字段，避免未同步升级的小程序首页出现空金额。
+                $res['public_revenue_home']['income_amount'] = $balance_amount;
+                $res['public_revenue_home']['year'] = $public_revenue_year;
+                $res['public_revenue_home']['quarter'] = $public_revenue_quarter;
+            }
+        }
         $res['is_guess_like'] = $village_info['is_guess_like'];
         // 单行功能导航
         $cacheUidArr=S($cacheindexuidkey);

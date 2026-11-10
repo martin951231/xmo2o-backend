@@ -1,0 +1,58 @@
+.content-container[data-v-5aabc320] {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.main-table[data-v-5aabc320] :deep(.ant-table-thead) {
+  background: #f5f5f5;
+}
+.main-table :deep(.ant-table-thead) th[data-v-5aabc320] {
+  background: #f5f5f5;
+  color: #666;
+  font-weight: 500;
+  font-size: 13px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.main-table :deep(.ant-table-tbody) tr[data-v-5aabc320] {
+  border-bottom: 1px solid #e8e8e8;
+}
+.main-table :deep(.ant-table-tbody) tr[data-v-5aabc320]:hover {
+  background: #fafafa;
+}
+.main-table :deep(.ant-table-tbody) td[data-v-5aabc320] {
+  font-size: 13px;
+  color: #333;
+  padding: 12px 16px;
+}
+.main-table[data-v-5aabc320] :deep(.ant-pagination) {
+  padding: 12px 16px;
+  border-top: 1px solid #e8e8e8;
+  text-align: right;
+}
+.action-buttons[data-v-5aabc320] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+}
+.action-buttons .action-btn[data-v-5aabc320] {
+  font-size: 13px;
+  cursor: pointer;
+}
+.action-buttons .action-btn[data-v-5aabc320]:hover {
+  text-decoration: underline;
+}
+.action-buttons .edit-btn[data-v-5aabc320] {
+  color: #1890FF;
+}
+.action-buttons .delete-btn[data-v-5aabc320] {
+  color: #ff4d4f;
+}
+.status-normal[data-v-5aabc320] {
+  color: #52c41a;
+}
+.status-forbidden[data-v-5aabc320] {
+  color: #ff4d4f;
+}
+

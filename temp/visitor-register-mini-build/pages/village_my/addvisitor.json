@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "新增访客",
+  "usingComponents": {
+    "w-picker": "/pages/village_my/component/w-picker/w-picker"
+  }
+}

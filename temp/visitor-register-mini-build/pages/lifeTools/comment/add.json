@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "去评价",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-rate": "/uview-ui/components/u-rate/u-rate",
+    "u-input": "/uview-ui/components/u-input/u-input"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "首页",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-search": "/uview-ui/components/u-search/u-search",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-calendar": "/uview-ui/components/u-calendar/u-calendar",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar",
+    "hot-activity-item": "/pages/socialActivity/components/hotActivityItem",
+    "activity-item": "/pages/socialActivity/components/activityItem"
+  }
+}

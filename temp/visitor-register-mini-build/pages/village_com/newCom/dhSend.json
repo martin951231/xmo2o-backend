@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "menus-modal": "/pages/village_com/newCom/menusModal"
+  }
+}

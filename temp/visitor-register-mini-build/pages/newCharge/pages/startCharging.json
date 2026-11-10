@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "开始充电",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "set-plate": "/pages/newCharge/components/setPlate",
+    "cutdown": "/pages/newCharge/components/cutdown"
+  }
+}

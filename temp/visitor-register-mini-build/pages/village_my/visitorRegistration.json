@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "待通行访客列表",
+  "usingComponents": {
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse"
+  }
+}

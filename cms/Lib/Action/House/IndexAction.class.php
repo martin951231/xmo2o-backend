@@ -2879,6 +2879,32 @@ class IndexAction extends BaseAction{
             $now_village = D('House_village')->where(array('village_id'=>$this->house_session['village_id']))->find();
             $this->assign('village_id', $village_id);
             $this->assign('now_village', $now_village);
+            $home_color_config = (array)D('House_village_info')
+                ->where(array('village_id' => $village_id))
+                ->field('switch_village_color,index_title_color,index_header_bg_color,index_header_bg_image')
+                ->find();
+            $home_color_config['switch_village_color'] = !empty($home_color_config['switch_village_color']) ? $home_color_config['switch_village_color'] : '#FFFFFF';
+            $home_color_config['index_title_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $home_color_config['index_title_color']) ? strtoupper($home_color_config['index_title_color']) : '#000000';
+            $home_color_config['index_header_bg_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $home_color_config['index_header_bg_color']) ? strtoupper($home_color_config['index_header_bg_color']) : $this->config['mobile_head_color'];
+            $home_color_config['index_header_bg_image'] = !empty($home_color_config['index_header_bg_image']) ? replace_file_domain($home_color_config['index_header_bg_image']) : '';
+            if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $home_color_config['index_header_bg_color'])) {
+                $home_color_config['index_header_bg_color'] = '#FFFFFF';
+            }
+            $this->assign('home_color_config', $home_color_config);
+            $public_revenue_home_config = (array)D('House_village_info')
+                ->where(array('village_id' => $village_id))
+                ->field('public_revenue_home_show,public_revenue_home_title,public_revenue_home_bg_color,public_revenue_page_bg_color,public_revenue_page_bg_image')
+                ->find();
+            $public_revenue_home_config['public_revenue_home_show'] = intval($public_revenue_home_config['public_revenue_home_show']);
+            $public_revenue_home_config['public_revenue_home_title'] = trim($public_revenue_home_config['public_revenue_home_title']);
+            if ($public_revenue_home_config['public_revenue_home_title'] === '') {
+                $public_revenue_home_config['public_revenue_home_title'] = '公共资源经营收益';
+            }
+            $public_revenue_home_config['public_revenue_home_bg_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $public_revenue_home_config['public_revenue_home_bg_color']) ? strtoupper($public_revenue_home_config['public_revenue_home_bg_color']) : '#FFFFFF';
+            $public_revenue_home_config['public_revenue_page_bg_color'] = preg_match('/^#[0-9A-Fa-f]{6}$/', $public_revenue_home_config['public_revenue_page_bg_color']) ? strtoupper($public_revenue_home_config['public_revenue_page_bg_color']) : '#F3F4F6';
+            $public_revenue_home_config['public_revenue_page_bg_image'] = !empty($public_revenue_home_config['public_revenue_page_bg_image']) ? replace_file_domain($public_revenue_home_config['public_revenue_page_bg_image']) : '';
+            $public_revenue_home_config['public_revenue_home_title'] = htmlspecialchars($public_revenue_home_config['public_revenue_home_title'], ENT_QUOTES, 'UTF-8');
+            $this->assign('public_revenue_home_config', $public_revenue_home_config);
             
             $jz_open = D('Config_customization')->getWSXCustomizedOpen();
             if ($jz_open) {
@@ -2902,6 +2928,110 @@ class IndexAction extends BaseAction{
             $this->assign('village_id', $village_id);
             $this->display();
 
+        }
+
+        public function save_home_color_config()
+        {
+            if (!in_array(287, $this->house_session['menus'])) {
+                exit(json_encode(array('status' => 0, 'msg' => '您没有权限执行此操作')));
+            }
+            if (!IS_POST) {
+                exit(json_encode(array('status' => 0, 'msg' => '请求方式错误')));
+            }
+
+            $village_id = intval($this->house_session['village_id']);
+            $switch_village_color = strtoupper(trim($_POST['switch_village_color']));
+            $index_title_color = strtoupper(trim($_POST['index_title_color']));
+            $index_header_bg_color = strtoupper(trim($_POST['index_header_bg_color']));
+            $index_header_bg_image = trim($_POST['index_header_bg_image']);
+            if (!preg_match('/^#[0-9A-F]{6}$/', $switch_village_color)) {
+                exit(json_encode(array('status' => 0, 'msg' => '切换小区按钮颜色格式错误')));
+            }
+            if (!preg_match('/^#[0-9A-F]{6}$/', $index_title_color)) {
+                exit(json_encode(array('status' => 0, 'msg' => '首页标题字体颜色格式错误')));
+            }
+            if (!preg_match('/^#[0-9A-F]{6}$/', $index_header_bg_color)) {
+                exit(json_encode(array('status' => 0, 'msg' => '首页头部背景颜色格式错误')));
+            }
+            if (strlen($index_header_bg_image) > 255) {
+                exit(json_encode(array('status' => 0, 'msg' => '首页头部背景图片地址过长')));
+            }
+            if ($index_header_bg_image !== '' && !preg_match('#^(https?:)?//#i', $index_header_bg_image)
+                && strpos($index_header_bg_image, '/upload/') !== 0 && strpos($index_header_bg_image, './upload/') !== 0) {
+                exit(json_encode(array('status' => 0, 'msg' => '首页头部背景图片地址格式错误')));
+            }
+
+            $result = D('House_village_info')->where(array('village_id' => $village_id))->save(array(
+                'switch_village_color' => $switch_village_color,
+                'index_title_color' => $index_title_color,
+                'index_header_bg_color' => $index_header_bg_color,
+                'index_header_bg_image' => $index_header_bg_image,
+                'update_at' => time(),
+            ));
+            if ($result === false) {
+                exit(json_encode(array('status' => 0, 'msg' => '保存失败，请重试')));
+            }
+
+            S('village:appapi_apiindex:' . $village_id, null);
+            exit(json_encode(array('status' => 1, 'msg' => '保存成功')));
+        }
+
+        public function save_public_revenue_home_config()
+        {
+            if (!in_array(287, $this->house_session['menus'])) {
+                exit(json_encode(array('status' => 0, 'msg' => '您没有权限执行此操作')));
+            }
+            if (!IS_POST) {
+                exit(json_encode(array('status' => 0, 'msg' => '请求方式错误')));
+            }
+
+            $village_id = intval($this->house_session['village_id']);
+            $show = intval($_POST['public_revenue_home_show']) === 1 ? 1 : 0;
+            $title = trim(strip_tags($_POST['public_revenue_home_title']));
+            $home_bg_color = strtoupper(trim($_POST['public_revenue_home_bg_color']));
+            $page_bg_color = strtoupper(trim($_POST['public_revenue_page_bg_color']));
+            $page_bg_image = trim($_POST['public_revenue_page_bg_image']);
+            if ($title === '') {
+                exit(json_encode(array('status' => 0, 'msg' => '请输入公共收益入口标题')));
+            }
+            if (mb_strlen($title, 'UTF-8') > 30) {
+                exit(json_encode(array('status' => 0, 'msg' => '入口标题不能超过30个字符')));
+            }
+            if (!preg_match('/^#[0-9A-F]{6}$/', $home_bg_color) || !preg_match('/^#[0-9A-F]{6}$/', $page_bg_color)) {
+                exit(json_encode(array('status' => 0, 'msg' => '公共收益背景颜色格式错误')));
+            }
+            if (strlen($page_bg_image) > 255) {
+                exit(json_encode(array('status' => 0, 'msg' => '公共收益背景图片地址过长')));
+            }
+            if ($page_bg_image !== '' && !preg_match('#^(https?:)?//#i', $page_bg_image)
+                && strpos($page_bg_image, '/upload/') !== 0 && strpos($page_bg_image, './upload/') !== 0) {
+                exit(json_encode(array('status' => 0, 'msg' => '公共收益背景图片地址格式错误')));
+            }
+
+            // 新增字段上线后，旧的 ThinkPHP 字段缓存不会自动更新，save 会将新字段过滤掉。
+            $database_village_info = D('House_village_info');
+            $database_village_info->flush();
+            $table_fields = $database_village_info->getDbFields();
+            if (!in_array('public_revenue_home_show', $table_fields, true)
+                || !in_array('public_revenue_home_title', $table_fields, true)
+                || !in_array('public_revenue_home_bg_color', $table_fields, true)
+                || !in_array('public_revenue_page_bg_color', $table_fields, true)
+                || !in_array('public_revenue_page_bg_image', $table_fields, true)) {
+                exit(json_encode(array('status' => 0, 'msg' => '公共收益配置字段未安装，请先执行数据库升级SQL')));
+            }
+            $result = $database_village_info->where(array('village_id' => $village_id))->save(array(
+                'public_revenue_home_show' => $show,
+                'public_revenue_home_title' => $title,
+                'public_revenue_home_bg_color' => $home_bg_color,
+                'public_revenue_page_bg_color' => $page_bg_color,
+                'public_revenue_page_bg_image' => $page_bg_image,
+            ));
+            if ($result === false) {
+                exit(json_encode(array('status' => 0, 'msg' => '保存失败，请重试')));
+            }
+
+            S('village:appapi_apiindex:' . $village_id, null);
+            exit(json_encode(array('status' => 1, 'msg' => '保存成功')));
         }
 
 

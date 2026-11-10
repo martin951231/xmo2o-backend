@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "搜索优惠券",
+  "usingComponents": {
+    "coupon-card": "/pages/coupon/components/CouponCard"
+  }
+}

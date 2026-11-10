@@ -1,0 +1,46 @@
+
+[data-v-3f662f56] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+.container[data-v-3f662f56] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 100%;
+}
+.container .props_item[data-v-3f662f56] {
+  width: 46%;
+  margin: 5px;
+}
+
+.charge_order_llist[data-v-4b752890] {
+  width: 100%;
+  background: #ffffff;
+}
+.charge_order_llist .search_container[data-v-4b752890] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 15px;
+  background: #ffffff;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 10px 0;
+}
+.charge_order_llist .search_container .search_item[data-v-4b752890] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-left: 10px;
+}
+.charge_order_llist .search_container .search_item[data-v-4b752890]:nth-child(1) {
+  margin-left: 0;
+}
+

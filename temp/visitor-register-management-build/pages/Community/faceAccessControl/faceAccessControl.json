@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "人脸门禁",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "part-dropdown-footer": "/components/da-dropdown-vue2/components/part-dropdown-footer"
+  }
+}

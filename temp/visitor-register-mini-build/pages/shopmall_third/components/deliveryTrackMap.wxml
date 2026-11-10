@@ -1,0 +1,1 @@
+<view class="deliveryTrackMap data-v-0b8d2916"><map class="map data-v-0b8d2916" id="myMap" latitude="{{mapData.latitude}}" longitude="{{mapData.longitude}}" scale="{{mapData.scale}}" markers="{{markers}}"></map></view>

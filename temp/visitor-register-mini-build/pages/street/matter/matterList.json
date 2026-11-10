@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "事项管理",
+  "usingComponents": {
+    "q-s-tabs": "/pages/street/components/QS-tabs/QS-tabs"
+  }
+}

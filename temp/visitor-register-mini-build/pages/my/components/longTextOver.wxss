@@ -1,0 +1,1 @@
+.normal{line-height:36rpx;font-size:24rpx;font-weight:500;color:#000;display:-webkit-box}.expansion{display:-webkit-box;line-clamp:2;box-orient:vertical;text-overflow:ellipsis;-webkit-line-clamp:2;overflow:hidden;-webkit-box-orient:vertical}.full-text{font-size:26rpx;font-weight:500;color:#335b7e}

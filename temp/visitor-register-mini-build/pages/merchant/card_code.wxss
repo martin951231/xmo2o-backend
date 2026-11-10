@@ -1,0 +1,1 @@
+page{background:#fff}.container{text-align:center;font-size:36rpx}.qrcodeBox{width:500rpx;margin:0 auto}.qrcodeBox image{width:500rpx;height:500rpx}.card_id,.card_info{margin-top:20rpx}

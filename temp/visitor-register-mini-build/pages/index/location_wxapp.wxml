@@ -1,0 +1,1 @@
+<view data-event-opts="{{[['tap',[['goWxapp',['$event']]]]]}}" class="container" bindtap="__e"><view class="content"><view class="text"><lang vue-id="66ff52cc-1" keywords="为了更好的使用体验，我们准备了新版功能" bind:__l="__l"></lang></view><button class="btn" type="primary" size="mini"><lang vue-id="66ff52cc-2" keywords="轻触页面跳转" bind:__l="__l"></lang></button></view></view>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "选择人员",
+  "usingComponents": {
+    "select-worker": "/pages/CommunityPages/component/selectWorker/selectWorker"
+  }
+}

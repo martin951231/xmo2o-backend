@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "寻求帮助",
+  "usingComponents": {
+    "tip-box": "/pages/houseMeter/workOrder/tipBox"
+  }
+}

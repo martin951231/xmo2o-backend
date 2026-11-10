@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "店铺搜索",
+  "usingComponents": {
+    "count": "/pages/shop_new/component/count/count",
+    "shopcart": "/pages/shop_new/component/shopcart/shopcart",
+    "spec-mask": "/pages/shop_new/component/spec-mask/spec-mask",
+    "goods-tip": "/pages/shop_new/component/goodsTip/goodsTip",
+    "goods-item": "/pages/shop_new/component/goodsItem/goodsItem"
+  }
+}

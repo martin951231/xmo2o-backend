@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "choose-license": "/pages/newCharge/components/chooseLicense"
+  }
+}

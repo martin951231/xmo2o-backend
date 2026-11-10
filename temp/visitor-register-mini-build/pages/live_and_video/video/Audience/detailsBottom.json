@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "comment-temp": "/pages/live_and_video/video/Audience/commentTemp",
+    "share": "/pages/live_and_video/video/Audience/share",
+    "product-list": "/pages/live_and_video/video/Audience/product_list"
+  }
+}

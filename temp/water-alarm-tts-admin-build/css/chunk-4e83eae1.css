@@ -1,0 +1,9 @@
+
+.sunburst-chart[data-v-815db260] {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow: hidden;
+  min-height: 400px;
+  background: transparent !important; /* 确保容器背景透明 */
+}
+

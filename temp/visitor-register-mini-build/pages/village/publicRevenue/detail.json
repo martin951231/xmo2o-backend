@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "公共收益",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "amount-item": "/pages/village/publicRevenue/components/amountItem",
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar"
+  }
+}

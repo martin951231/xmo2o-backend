@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "首页",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "charge-list": "/pages/newCharge/components/chargeList",
+    "map-view": "/pages/newCharge/components/mapView"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "办理退租",
+  "usingComponents": {
+    "empty-data": "/pages/Community/checkoutApplication/emptyData"
+  }
+}

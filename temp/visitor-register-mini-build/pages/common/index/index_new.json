@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "custom-header": "/appComponent/platcommon/customNavBar",
+    "goods-nearby": "/pages/common/index/components/GoodsNearby",
+    "goods-group": "/pages/common/index/components/GoodsGroup"
+  }
+}

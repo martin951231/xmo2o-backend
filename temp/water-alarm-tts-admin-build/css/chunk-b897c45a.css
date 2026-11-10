@@ -1,0 +1,255 @@
+.permission-management .content-container[data-v-7e759947] {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.permission-management .action-container[data-v-7e759947] {
+  padding: 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.permission-management .action-container[data-v-7e759947] :deep(.ant-btn-primary) {
+  height: 32px;
+  font-size: 13px;
+  padding: 0 20px;
+  background: #1890FF;
+  border-color: #1890FF;
+}
+.permission-management .main-table[data-v-7e759947] :deep(.ant-table-thead) {
+  background: #f5f5f5;
+}
+.permission-management .main-table :deep(.ant-table-thead) th[data-v-7e759947] {
+  background: #f5f5f5;
+  color: #666;
+  font-weight: 500;
+  font-size: 13px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.permission-management .main-table :deep(.ant-table-tbody) tr[data-v-7e759947] {
+  border-bottom: 1px solid #e8e8e8;
+}
+.permission-management .main-table :deep(.ant-table-tbody) tr[data-v-7e759947]:hover {
+  background: #fafafa;
+}
+.permission-management .main-table :deep(.ant-table-tbody) td[data-v-7e759947] {
+  font-size: 13px;
+  color: #333;
+  padding: 12px 16px;
+}
+.permission-management .main-table[data-v-7e759947] :deep(.ant-pagination) {
+  padding: 12px 16px;
+  border-top: 1px solid #e8e8e8;
+  text-align: right;
+}
+.permission-management .main-table :deep(.ant-pagination) li[data-v-7e759947] {
+  margin: 0 2px;
+}
+.permission-management .main-table :deep(.ant-pagination) li.ant-pagination-item-active[data-v-7e759947] {
+  background: #1890FF;
+  border-color: #1890FF;
+}
+.permission-management .main-table :deep(.ant-pagination) li.ant-pagination-item-active a[data-v-7e759947] {
+  color: #fff;
+}
+.permission-management .action-buttons[data-v-7e759947] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 16px;
+}
+.permission-management .action-buttons .action-btn[data-v-7e759947] {
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.permission-management .action-buttons .action-btn[data-v-7e759947]:hover {
+  text-decoration: none;
+}
+.permission-management .action-buttons .edit-btn[data-v-7e759947] {
+  color: #1890FF;
+}
+.permission-management .action-buttons .edit-btn[data-v-7e759947]:hover {
+  background: #e6f7ff;
+}
+.permission-management .action-buttons .delete-btn[data-v-7e759947] {
+  color: #ff4d4f;
+}
+.permission-management .action-buttons .delete-btn[data-v-7e759947]:hover {
+  background: #fff1f0;
+}
+.permission-management .action-buttons .disabled-btn[data-v-7e759947] {
+  color: #999;
+  cursor: not-allowed;
+}
+.permission-management .delete-content[data-v-7e759947] {
+  padding: 20px 0;
+}
+.permission-management .delete-content p[data-v-7e759947] {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #333;
+}
+.permission-management .delete-content .warning-text[data-v-7e759947] {
+  color: #ff4d4f;
+  font-weight: 600;
+}
+.permission-management .permission-content[data-v-7e759947] {
+  padding: 24px;
+}
+.permission-management[data-v-7e759947] :deep(.ant-modal) {
+  border-radius: 8px;
+  -webkit-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+.permission-management :deep(.ant-modal)-header[data-v-7e759947] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px 8px 0 0;
+  padding: 16px 24px;
+}
+.permission-management :deep(.ant-modal)-header .ant-modal-title[data-v-7e759947] {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+.permission-management :deep(.ant-modal)-header .ant-modal-close[data-v-7e759947] {
+  color: #fff;
+}
+.permission-management :deep(.ant-modal)-header .ant-modal-close[data-v-7e759947]:hover {
+  color: #fff;
+}
+.permission-management :deep(.ant-modal)-content[data-v-7e759947] {
+  border-radius: 0 0 8px 8px;
+}
+.permission-management .modal-footer[data-v-7e759947] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e8e8e8;
+}
+.permission-management .modal-footer .cancel-btn[data-v-7e759947] {
+  width: 100px;
+  height: 36px;
+  font-size: 14px;
+}
+.permission-management .modal-footer .submit-btn[data-v-7e759947] {
+  width: 100px;
+  height: 36px;
+  font-size: 14px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+.permission-management .modal-footer .submit-btn[data-v-7e759947]:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  border-color: #764ba2;
+}
+.permissions-section[data-v-7e759947] {
+  margin-top: 10px;
+}
+.permissions-section .permission-table-container[data-v-7e759947] {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow-x: hidden;
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.permissions-section .permission-group[data-v-7e759947] {
+  border-bottom: 1px solid #e8e8e8;
+}
+.permissions-section .permission-group[data-v-7e759947]:last-child {
+  border-bottom: none;
+}
+.permissions-section .permission-group .group-header[data-v-7e759947] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 12px 20px;
+  background-color: #f0f2f5;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+}
+.permissions-section .permission-group .group-header[data-v-7e759947]:hover {
+  background-color: #e6f0ff;
+}
+.permissions-section .permission-group .group-header .arrow[data-v-7e759947] {
+  display: inline-block;
+  width: 14px;
+  font-size: 10px;
+  color: #666;
+  margin-right: 8px;
+  -webkit-transition: -webkit-transform 0.2s;
+  transition: -webkit-transform 0.2s;
+  transition: transform 0.2s;
+  transition: transform 0.2s, -webkit-transform 0.2s;
+}
+.permissions-section .permission-group .group-header .arrow-open[data-v-7e759947] {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+.permissions-section .permission-group .group-header[data-v-7e759947] :deep(.ant-checkbox-wrapper) {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+.permissions-section .permission-group .group-body .permission-row[data-v-7e759947] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.permissions-section .permission-group .group-body .permission-row[data-v-7e759947]:last-child {
+  border-bottom: none;
+}
+.permissions-section .permission-group .group-body .permission-row[data-v-7e759947]:hover {
+  background-color: #fafafa;
+}
+.permissions-section .permission-group .group-body .permission-row .menu-cell[data-v-7e759947] {
+  width: 220px;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  padding-right: 16px;
+  border-right: 1px solid #f0f0f0;
+}
+.permissions-section .permission-group .group-body .permission-row .menu-cell[data-v-7e759947] :deep(.ant-checkbox-wrapper) {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+.permissions-section .permission-group .group-body .permission-row .actions-cell[data-v-7e759947] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  padding-left: 16px;
+}
+.permissions-section .permission-group .group-body .permission-row .actions-cell .action-group[data-v-7e759947] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 20px;
+}
+.permissions-section .permission-group .group-body .permission-row .actions-cell .action-group[data-v-7e759947] :deep(.ant-checkbox-wrapper) {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+.permissions-section .permission-group .group-body .permission-row .actions-cell .action-group[data-v-7e759947] :deep(.ant-checkbox-wrapper):hover {
+  color: #1890FF;
+}
+

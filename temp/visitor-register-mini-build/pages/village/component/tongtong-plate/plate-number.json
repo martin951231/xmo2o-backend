@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "plate-keyboard": "/pages/village/component/tongtong-plate/plate-keyboard"
+  }
+}

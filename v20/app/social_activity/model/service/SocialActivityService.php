@@ -19,6 +19,7 @@ use app\social_activity\model\db\SocialActivitySessionTicket;
 use app\social_activity\model\db\SocialActivityViews;
 use app\survey\model\SurveyForm;
 use app\survey\model\SurveySubmit;
+use Carbon\Traits\Timestamp;
 use think\facade\Db;
 
 class SocialActivityService
@@ -83,6 +84,24 @@ class SocialActivityService
         }
         $field = 'a.*,c.name as category_name,u.realname as creator';
         $list = (new SocialActivity())->getList($field, $where, $page, $pageSize, $uid);
+        $activity_ids = array_column($list['data'], 'id');
+        $signup_num = [];
+        if ($activity_ids) {
+            $signup_list = (new SocialActivityOrder())
+                ->field('activity_id,SUM(num) as total')
+                ->where([
+                    ['activity_id', 'in', $activity_ids],
+                    ['status', 'in', [SocialActivityOrder::STATUS_0, SocialActivityOrder::STATUS_10]],
+                ])
+                ->group('activity_id')
+                ->select()
+                ->toArray();
+            $signup_num = array_column($signup_list, 'total', 'activity_id');
+        }
+        foreach ($list['data'] as &$activity_item) {
+            $activity_item['sign_up_num'] = (int)($signup_num[$activity_item['id']] ?? 0);
+        }
+        unset($activity_item);
         //活动分类
         $catList = (new SocialActivityCategory())->field('id,name')->where(['status' => 1])->select()->toArray();
         $list['cat_list'] = $catList ?: [];
@@ -161,6 +180,25 @@ class SocialActivityService
     public function saveActivity($data, $id = 0)
     {
         $session_list = $data['sessions'] ?? [];
+        $hostVillageId = intval($data['host_village_id'] ?? 0);
+        $hostVillage = (new HouseVillage())->where([
+            'village_id' => $hostVillageId,
+            'status' => 1,
+        ])->find();
+        if (!$hostVillage) {
+            throw new \Exception('活动主办社区不存在或未启用');
+        }
+        $creator = $data['creator_user'] ?? [];
+        if (intval($creator['role_id'] ?? 0) !== 1) {
+            $allowedVillageIds = array_filter(array_map('intval', explode(',', (string)($creator['village_id'] ?? ''))));
+            if (!in_array($hostVillageId, $allowedVillageIds, true)) {
+                throw new \Exception('无权选择当前活动主办社区');
+            }
+        }
+        (new SocialActivityPayConfigService())->getEnabledConfig($hostVillageId);
+        if (empty($data['position_poster'])) {
+            throw new \Exception('社群活动位海报不能为空');
+        }
         // 验证时间逻辑
         if (strtotime($data['start_time']) >= strtotime($data['end_time'].' 23:59:59')) {
             throw new \Exception('活动开始时间必须早于结束时间');
@@ -285,6 +323,7 @@ class SocialActivityService
         }
         $saveData = [
             'name' => $data['name'],
+            'host_village_id' => $hostVillageId,
             'category_id' => $data['category_id'],
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
@@ -301,12 +340,12 @@ class SocialActivityService
         Db::startTrans();
         try {
             if ($id > 0) {
-                $info = (new SocialActivity())->where(['id' => $id])->findOrEmpty()->toArray();
+                $info = (new SocialActivity())->where(['id' => $id])->lock(true)->findOrEmpty()->toArray();
                 if (!$info) {
                     throw new \Exception('活动不存在/已被删除');
                 }
-                if ($info['status'] == SocialActivity::STATUS_10 && $info['start_time'] <= date('Y-m-d H:i:s')) {
-                    throw new \Exception('活动已开始，无法修改');
+                if ($info['status'] != SocialActivity::STATUS_0) {
+                    throw new \Exception('审核后的活动不允许编辑，请先消审');
                 }
                 //查询活动是否已有人报名
                 $order_info = (new SocialActivityOrder())->where(['activity_id' => $id])->findOrEmpty()->toArray();
@@ -436,7 +475,12 @@ class SocialActivityService
             ->where(['activity_id' => $id])
             ->order('id DESC')
             ->select()->each(function (&$item) use ($res) {
-                $item['status_text'] = $item['status'] == 10 ? '通过' : '驳回';
+                $status_text = [
+                    SocialActivity::STATUS_0 => '已消审',
+                    SocialActivity::STATUS_10 => '通过',
+                    SocialActivity::STATUS_20 => '驳回',
+                ];
+                $item['status_text'] = $status_text[$item['status']] ?? '';
                 $item['activity_creator'] = $res['creator'];
                 $item['activity_create_time'] = $res['create_time'];
             })
@@ -474,6 +518,10 @@ class SocialActivityService
             throw new \Exception('该活动状态不允许审核');
         }
 
+        if (!in_array($status, [SocialActivity::STATUS_10, SocialActivity::STATUS_20])) {
+            throw new \Exception('审核状态值不正确');
+        }
+
         if ($status == SocialActivity::STATUS_20 && !$remark) {
             throw new \Exception('请输入拒绝原因');
         }
@@ -505,6 +553,71 @@ class SocialActivityService
         } catch (\Exception $e) {
             Db::rollback();
             throw new \Exception($e->getMessage());
+        }
+        return true;
+    }
+
+    /**
+     * 消审活动
+     * @param array $params
+     * @return bool
+     * @throws \Exception
+     */
+    public function cancelAuditActivity($params)
+    {
+        $id = $params['id'];
+        $editUser = $params['editUser'];
+        $date = date('Y-m-d H:i:s');
+
+        Db::startTrans();
+        try {
+            $activity = (new SocialActivity())
+                ->where(['id' => $id])
+                ->lock(true)
+                ->findOrEmpty()
+                ->toArray();
+            if (!$activity) {
+                throw new \Exception('活动不存在');
+            }
+            if (!in_array($activity['status'], [SocialActivity::STATUS_10, SocialActivity::STATUS_20])) {
+                throw new \Exception('当前活动状态不允许消审');
+            }
+
+            // 未支付订单也视为已经报名，避免消审后订单继续完成支付。
+            $signup_orders = (new SocialActivityOrder())
+                ->field('id')
+                ->where([
+                    ['activity_id', '=', $id],
+                    ['status', 'in', [SocialActivityOrder::STATUS_0, SocialActivityOrder::STATUS_10]],
+                ])
+                ->lock(true)
+                ->select()
+                ->toArray();
+            if ($signup_orders) {
+                throw new \Exception('活动已有报名，不允许消审');
+            }
+
+            (new SocialActivity())->where(['id' => $id])->update([
+                'status' => SocialActivity::STATUS_0,
+                'is_audit' => SocialActivity::STATUS_0,
+                'remark' => '',
+                'recommend' => 0,
+                'update_time' => $date,
+                'modifier_uid' => $editUser['id'],
+                'modifier' => $editUser['realname'],
+            ]);
+            (new SocialActivityAuditRecord())->save([
+                'activity_id' => $id,
+                'status' => SocialActivity::STATUS_0,
+                'note' => '消审',
+                'create_time' => $date,
+                'create_uid' => $editUser['id'],
+                'creator' => $editUser['realname'],
+            ]);
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw $e;
         }
         return true;
     }
@@ -563,57 +676,19 @@ class SocialActivityService
      */
     public function cancelActivity($params)
     {
-        $id = $params['id'];
-        $editUser = $params['editUser'];
-        $reason = $params['reason'] ?? '';
-        if (!$reason) {
-            throw new \Exception('取消原因不能为空');
-        }
-
-        // 获取活动信息
-        $activity = (new SocialActivity())->where(['id' => $id])->findOrEmpty()->toArray();
-        if (!$activity) {
-            throw new \Exception('活动不存在');
-        }
-
-        // 检查活动状态（已取消状态不能再次取消）
-        if ($activity['status'] == SocialActivity::STATUS_30) {
-            throw new \Exception('该活动已取消');
-        }
-
-        if (strtotime($activity['start_time']) < time()) {
-            throw new \Exception('该活动已开始，无法取消');
-        }
-
-        $date = date('Y-m-d H:i:s');
-        // 更新活动状态为已取消
-        $updateData = [
-            'status' => SocialActivity::STATUS_30,
-            'update_time' => $date,
-            'modifier_uid' => $editUser['id'],
-            'modifier' => $editUser['realname'],
-            'cancel_reason' => $reason,
-        ];
-
-        Db::startTrans();
-        try {
-            $result = (new SocialActivity())->where('id', $id)->update($updateData);
-            //查询活动是否有已支付的订单
-            $order_list = (new SocialActivityOrder())->where(['activity_id' => $id, 'paid' => 1, 'status' => SocialActivityOrder::STATUS_10])->select()->toArray();
-            foreach ($order_list as $order) {
-                //这里处理退款流程
-                try {
-                    (new SocialActivityOrderService())->refundOrder(['order_id' => $order['id'], 'is_cancel_activity' => 1, 'cancel_remark' => '管理员取消活动，自动取消订单']);
-                } catch (\Exception $e) {
-                    fdump_api([$e->getMessage(), $order], 'socialActivity/orderRefund', 1);
-                }
-            }
-            Db::commit();
-        } catch (\Exception $e) {
-            Db::rollback();
-            throw new \Exception($e->getMessage());
-        }
-        return true;
+        if (empty($params['reason'])) { throw new \RuntimeException('取消原因不能为空'); }
+        return Db::transaction(function () use ($params) {
+            $activity = (new SocialActivity())->where('id', $params['id'])->lock(true)->findOrEmpty();
+            if ($activity->isEmpty()) { throw new \RuntimeException('活动不存在'); }
+            if ((int)$activity['status'] === SocialActivity::STATUS_30) { throw new \RuntimeException('该活动已取消'); }
+            if (strtotime($activity['start_time']) <= time()) { throw new \RuntimeException('该活动已开始，无法取消'); }
+            // 与报名下单使用同一活动行锁；有报名、待支付或退款中订单时均不取消。
+            $orders = (new SocialActivityOrder())->where('activity_id', $params['id'])->whereIn('status', [0, 10])->count();
+            if ($orders > 0) { throw new \RuntimeException('该活动已有报名订单，不能取消（含待支付及退款中的订单）'); }
+            $activity->save(['status' => SocialActivity::STATUS_30, 'cancel_reason' => $params['reason'],
+                'modifier_uid' => $params['editUser']['id'], 'modifier' => $params['editUser']['realname'], 'update_time' => date('Y-m-d H:i:s')]);
+            return true;
+        });
     }
 
     /**
@@ -663,22 +738,14 @@ class SocialActivityService
         //统计报名人数
         $order_num = [];
         if ($session_ids) {
-            $orders = (new SocialActivityOrder())->field('count(*) as total, session_id')->where($order_status)->group('session_id')->select()->toArray();
+            $orders = (new SocialActivityOrder())->field('SUM(num) as total, session_id')->where($order_status)->group('session_id')->select()->toArray();
             $order_num = array_column($orders, 'total', 'session_id');
-        }
-
-        //统计签到人数
-        $check_in_num = [];
-        if ($session_ids) {
-            $order_status[] = ['is_sign', '=', 1];
-            $check_ins = (new SocialActivityOrder())->field('count(*) as total, session_id')->where($order_status)->group('session_id')->select()->toArray();
-            $check_in_num = array_column($check_ins, 'total', 'session_id');
         }
 
         foreach ($list['data'] as &$item) {
             $item['total_num'] = $ticket_num[$item['id']] ?? 0;
             $item['sign_up_num'] = $order_num[$item['id']] ?? 0;
-            $item['check_in_num'] = $check_in_num[$item['id']] ?? 0;
+            $item['check_in_num'] = (new SocialActivityParticipantService())->signedCount((new SocialActivityOrder())->where(['session_id' => $item['id'], 'status' => 10, 'paid' => 1]));
             $item['time_range'] = date('Y-m-d H:i', strtotime($item['start_time'])) . ' ~ ' . date('Y-m-d H:i', strtotime($item['end_time']));
 
             $now = date('Y-m-d H:i:s');
@@ -731,11 +798,14 @@ class SocialActivityService
             $where[] = ['o.create_time', '<=', $end_date . ' 23:59:59'];
         }
         if ($check_in_status >= 0) {
-            $where[] = ['o.is_sign', '=', $check_in_status];
+            $matchingOrders = \think\facade\Db::name('social_activity_participant')->where('session_id', $session_id)->where('is_sign', $check_in_status)->column('order_id');
+            $modernOrders = \think\facade\Db::name('social_activity_participant')->where('session_id', $session_id)->column('order_id');
+            $legacyOrders = (new SocialActivityOrder())->where('session_id', $session_id)->whereNotIn('id', $modernOrders ?: [-1])->where('is_sign', $check_in_status)->column('id');
+            $where[] = ['o.id', 'in', array_merge($matchingOrders, $legacyOrders) ?: [-1]];
         }
 
         $query = (new SocialActivityOrder())->alias('o')
-            ->field('o.*, u.nickname, u.avatar, u.phone')
+            ->field('o.*, u.nickname, u.avatar, u.phone, u.phone as signup_phone')
             ->join('user u', 'o.uid = u.uid')
             ->where($where)
             ->append(['source_text'])
@@ -747,26 +817,78 @@ class SocialActivityService
         if ($is_export != 1) {
             $list = $query->paginate($pageSize)->toArray();
             $signUpNum = (new SocialActivityOrder())->alias('o')->where($where)->sum('num');
-            $checkInNum = (new SocialActivityOrder())->alias('o')->where(array_merge($where, [['o.is_sign', '=', 1]]))->sum('num');
+            $checkInNum = (new SocialActivityParticipantService())->signedCount((new SocialActivityOrder())->alias('o')->where($where));
             $list['signUpNum'] = $signUpNum;
             $list['checkInNum'] = $checkInNum;
             $data = $list['data'];
         } else {
             $data = $query->select()->toArray();
         }
-        foreach ($data as &$item) {
-            $item['sign_text'] = $item['is_sign'] == 1 ? '已签到' : '未签到';
-			$item['avatar'] = $item['avatar'] ? replace_file_domain($item['avatar']) : '';
+        $surveyFormMap = [];
+        if ($is_export == 1) {
+            $submitIds = array_values(array_unique(array_filter(array_column($data, 'survey_submit_id'))));
+            if ($submitIds) {
+                $surveyAnswers = (new SurveySubmit())->alias('s')
+                    ->field('s.id as submit_id,sq.type,sq.title,ssa.answer')
+                    ->join('survey_submit_answer ssa', 's.id = ssa.submit_id')
+                    ->join('survey_question sq', 'ssa.question_id = sq.id')
+                    ->whereIn('s.id', $submitIds)
+                    ->order('sq.sort asc,sq.id asc')
+                    ->select()
+                    ->toArray();
+                foreach ($surveyAnswers as $surveyAnswer) {
+                    $answer = $surveyAnswer['answer'] ?? '';
+                    if ($answer && in_array($surveyAnswer['type'], ['image', 'file'])) {
+                        $answer = implode('、', array_map(function ($url) {
+                            return replace_file_domain($url);
+                        }, array_filter(explode(',', $answer))));
+                    }
+                    $submitId = $surveyAnswer['submit_id'];
+                    $surveyFormMap[$submitId][] = $surveyAnswer['title'] . '：' . ($answer !== '' ? $answer : '未填写');
+                }
+                foreach ($surveyFormMap as &$surveyForm) {
+                    $surveyForm = implode('；', $surveyForm);
+                }
+                unset($surveyForm);
+            }
         }
+        $sourceMap = [
+            'androidapp' => '安卓APP',
+            'iosapp' => '苹果APP',
+            'wechat_mini' => '微信小程序',
+            'wechat_h5' => '微信公众号',
+            'h5' => '移动网页',
+        ];
+        foreach ($data as &$item) {
+            $participants = (new SocialActivityParticipantService())->display($item['id'], 0, true);
+            $item['participants'] = $participants;
+            $item['sign_text'] = $item['is_sign'] == 1 ? '已签到' : '未签到';
+            if ($participants) {
+                $signedCount = count(array_filter($participants, function ($person) { return $person['is_sign']; }));
+                $item['is_sign'] = (int)($signedCount === count($participants));
+                $item['sign_text'] = $signedCount . '/' . count($participants) . '人已签到';
+                $item['user_name'] = implode('、', array_map(function ($person) { return $person['user_name'] . '（' . $person['role'] . '）'; }, $participants));
+            }
+			$item['avatar'] = $item['avatar'] ? replace_file_domain($item['avatar']) : '';
+            $item['export_user_name'] = $item['user_name'] ?? '';
+            $item['export_phone'] = $item['signup_phone'] ?? '';
+            $item['export_source'] = !empty($item['user_source']) ? $item['user_source'] : ($sourceMap[$item['source'] ?? ''] ?? '');
+            $item['export_amount'] = number_format((float)($item['amount'] ?? 0), 2, '.', '');
+            $item['export_survey_form'] = $surveyFormMap[$item['survey_submit_id'] ?? 0] ?? '';
+        }
+        unset($item);
 
         if ($is_export == 1) {
             $title = '报名情况导出列表';
             $xlsCell = [
                 ['nickname', '用户昵称'],
+                ['export_user_name', '姓名'],
+                ['export_phone', '手机号'],
+                ['export_survey_form', '报名表单'],
                 ['ticket_name', '票种'],
-                ['amount', '金额'],
+                ['export_amount', '金额'],
                 ['create_time', '报名时间'],
-                ['source', '来源'],
+                ['export_source', '来源'],
                 ['sign_text', '签到状态'],
             ];
             $fileName = '报名列表_' . date('YmdHis');
@@ -779,6 +901,24 @@ class SocialActivityService
         return $list;
     }
 
+    /**
+     * 判断场次是否允许签到
+     * @param mixed $session
+     * @return array
+     */
+    private function getSessionCheckInStatus($session)
+    {
+        if (empty($session) || (is_object($session) && method_exists($session, 'isEmpty') && $session->isEmpty())) {
+            return [0, '场次不存在'];
+        }
+
+        $startTime = $session['start_time'] ?? '';
+        if ($startTime && strtotime($startTime) > time()) {
+            return [0, '活动未开始，暂不允许签到'];
+        }
+
+        return [1, ''];
+    }
     /**
      * 获取订单报名表单
      * @param array $params
@@ -819,30 +959,43 @@ class SocialActivityService
         if (!$orderId) {
             throw new \Exception('订单ID不能为空');
         }
-        
-        $order = (new SocialActivityOrder())->where(['id' => $orderId])->findOrEmpty();
-        if ($order->isEmpty()) {
-            throw new \Exception('订单不存在');
-        }
-        
-        if ($order['status'] != SocialActivityOrder::STATUS_10) {
-            throw new \Exception('订单未支付，无法签到');
-        }
-        
-        if ($order['is_sign'] == 1) {
-            throw new \Exception('订单已签到，请勿重复签到');
-        }
-        
-        $result = (new SocialActivityOrder())->where(['id' => $orderId])->save([
-            'is_sign' => 1,
-            'sign_time' => date('Y-m-d H:i:s'),
-        ]);
-        
-        if ($result === false) {
-            throw new \Exception('签到失败');
-        }
-        
-        return ['msg' => '签到成功'];
+        return \think\facade\Db::transaction(function () use ($orderId) {
+            $order = (new SocialActivityOrder())->where(['id' => $orderId])->lock(true)->findOrEmpty();
+            if ($order->isEmpty()) {
+                throw new \Exception('订单不存在');
+            }
+            if (!empty($order['refund_status'])) { throw new \RuntimeException('订单退款中或已退款，不能核销'); }
+            if ($order['status'] != SocialActivityOrder::STATUS_10) {
+                throw new \Exception('订单未支付，无法签到');
+            }
+            if( time() > strtotime($order->ticket_end_time) ){
+                throw new \Exception('该场次活动已经结束, 无法签到');
+            }
+            $remaining = \think\facade\Db::name('social_activity_participant')->where(['order_id' => $orderId, 'is_sign' => 0])->count();
+            if ($order['is_sign'] == 1 && !$remaining) {
+                throw new \Exception('订单已签到，请勿重复签到');
+            }
+
+            $session = (new SocialActivitySession())->where(['id' => $order['session_id']])->findOrEmpty();
+
+            [$canCheckIn, $checkInMsg] = $this->getSessionCheckInStatus($session);
+
+            if (!$canCheckIn) {
+
+                throw new \Exception($checkInMsg);
+
+            }
+            $result = (new SocialActivityOrder())->where(['id' => $orderId, 'status' => 10, 'refund_status' => 0])->save([
+                'is_sign' => 1,
+                'sign_time' => date('Y-m-d H:i:s'),
+            ]);
+            if (!$result && !$remaining) {
+                throw new \Exception('订单状态已改变，签到失败');
+            }
+            \think\facade\Db::name('social_activity_participant')->where(['order_id' => $orderId, 'is_sign' => 0])->update(['is_sign' => 1, 'sign_time' => date('Y-m-d H:i:s')]);
+            return ['msg' => '签到成功'];
+        });
+
     }
 
     /**
@@ -861,7 +1014,7 @@ class SocialActivityService
         $date = $params['date'];
         $start_date = $params['start_date'] ?? '';
         $end_date = $params['end_date'] ?? '';
-	    
+
         $where = [];
         $where[] = ['a.status', '=', SocialActivity::STATUS_10];
 
@@ -881,7 +1034,7 @@ class SocialActivityService
             $where[] = ['a.start_time', '<=', $date];
             $where[] = ['a.end_time', '>=', $date];
         }
-	    
+
         if ($activity_status) {
             $currentDate = date('Y-m-d');
             if ($activity_status == 1) {
@@ -893,7 +1046,7 @@ class SocialActivityService
                 $where[] = ['a.end_time', '<', $currentDate];
             }
         }
-        $field = 'a.id,a.category_id,a.name,a.poster,a.start_time,a.end_time,a.content,a.recommend,
+        $field = 'a.id,a.category_id,a.name,a.poster,a.position_poster,a.start_time,a.end_time,a.content,a.recommend,
         a.create_time,c.name as category_name, a.status';
         $list = (new SocialActivity())
             ->alias('a')
@@ -909,11 +1062,16 @@ class SocialActivityService
 
         foreach ($data as &$item) {
             $item['poster'] = $item['poster'] ? replace_file_domain($item['poster']) : '';
+            $item['position_poster'] = $item['position_poster'] ? replace_file_domain($item['position_poster']) : '';
+            if (!$item['poster'] && $item['position_poster']) {
+                $item['poster'] = $item['position_poster'];
+            }
             $item['activity_status'] = $this->getActivityStatus($item['start_time'], $item['end_time']);
             $item['activity_status_text'] = $this->getActivityStatusText($item['activity_status']);
-            $item['min_ticket_price'] = min((new SocialActivitySessionTicket())
+            $ticketPrices = (new SocialActivitySessionTicket())
                 ->where(['activity_id' => $item['id']])
-                ->column('price')) ?? 0;
+                ->column('price');
+            $item['min_ticket_price'] = $ticketPrices ? min($ticketPrices) : 0;
             $item['signup_count'] = $this->activitySignupCount($item['id']);
             $this->setActivityDisplayTime($item);
         }
@@ -955,15 +1113,21 @@ class SocialActivityService
         $res = $activity->toArray();
         $res['poster'] = $res['poster'] ? replace_file_domain($res['poster']) : '';
         $res['position_poster'] = $res['position_poster'] ? replace_file_domain($res['position_poster']) : '';
+        $res['content'] = $res['content'] ? replace_file_domain_content($res['content']) : '';
+        if (!$res['poster'] && $res['position_poster']) {
+            $res['poster'] = $res['position_poster'];
+        }
         $res['activity_status'] = $this->getActivityStatus($res['start_time'], $res['end_time']);
         if($res['status'] == SocialActivity::STATUS_30){
             $res['activity_status'] = 4;
         }
         $res['activity_status_text'] = $this->getActivityStatusText($res['activity_status']);
-        
-	    $res['min_ticket_price'] = min((new SocialActivitySessionTicket())
+
+	    $ticketPrices = (new SocialActivitySessionTicket())
 		    ->where(['activity_id' => $id])
-		    ->column('price')) ?? 0;
+		    ->column('price');
+	    $res['min_ticket_price'] = $ticketPrices ? min($ticketPrices) : 0;
+        $res['signup_count'] = $this->activitySignupCount($id);
         $sessions = (new SocialActivitySession())->where(['activity_id' => $id])->select()->toArray();
         $sessionIds = array_column($sessions, 'id');
 
@@ -981,10 +1145,9 @@ class SocialActivityService
             $ticket['order_count'] = SocialActivityOrder::alias('o')
 				->where([
 					'o.session_id' => $ticket['session_id'],
-                    'o.paid' => 1,
-                    'o.status' => SocialActivityOrder::STATUS_10,
-                ])
-                ->count();
+                    'o.ticket_id' => $ticket['id'],
+                ])->whereIn('o.status', [0, 10])
+                ->sum('o.num');
 	        $sessionTickets[$ticket['session_id']] = $sessionTickets[$ticket['session_id']] ?? [];
 	        $sessionTickets[$ticket['session_id']][] = $ticket;
         }
@@ -1021,7 +1184,35 @@ class SocialActivityService
         $res['order_info'] = [];
         $res['can_refund'] = 0; //0-不能取消订单，1-可以取消订单
         if ($orderId > 0) {
-            $res['order_info'] = (new SocialActivityOrder())->where(['id' => $orderId])->findOrEmpty();
+            $res['order_info'] = (new SocialActivityParticipantService())->scope(new SocialActivityOrder(), $uid)->where(['id' => $orderId, 'activity_id' => $id])->findOrEmpty();
+            if ($res['order_info']->isEmpty()) { throw new \RuntimeException('订单不存在或无权查看'); }
+            $res['order_info']['is_payer'] = (int)$res['order_info']['uid'] === (int)$uid;
+            $res['order_info']['participants'] = (new SocialActivityParticipantService())->display($orderId, $uid, $res['order_info']['is_payer']);
+	        if (
+	            !$res['order_info']->isEmpty()
+	            && floatval($res['order_info']['amount']) <= 0
+	            && intval($res['order_info']['paid']) === 0
+	            && intval($res['order_info']['status']) === SocialActivityOrder::STATUS_0
+	        ) {
+	            $freeOrderTime = date('Y-m-d H:i:s');
+	            $res['order_info']->save([
+	                'paid' => 1,
+	                'status' => SocialActivityOrder::STATUS_10,
+	                'pay_time' => $freeOrderTime,
+	                'update_time' => $freeOrderTime,
+	            ]);
+	            $res['order_info']['paid'] = 1;
+	            $res['order_info']['status'] = SocialActivityOrder::STATUS_10;
+	            $res['order_info']['pay_time'] = $freeOrderTime;
+	        }
+	        if (intval($res['order_info']['status']) === SocialActivityOrder::STATUS_20) {
+	            $res['order_info']['status_text'] = '已退款';
+	        } elseif (
+	            floatval($res['order_info']['amount']) <= 0
+	            && intval($res['order_info']['status']) === SocialActivityOrder::STATUS_10
+	        ) {
+	            $res['order_info']['status_text'] = '已报名';
+	        }
 	        $res['order_info']['can_use_time'] = date('Y-m-d H:i', strtotime($res['order_info']['ticket_start_time'])).' ~ '.date('Y-m-d H:i', strtotime($res['order_info']['ticket_end_time']));
 	        $res['order_info']['order_type'] = 'social_activity';
 	        if ($res['order_info']['session_id']) {
@@ -1031,28 +1222,46 @@ class SocialActivityService
 				}
 		        $res['order_info']['location'] = $orderSession['location'];
 		    }
-	        if($res['order_info'] && $res['order_info']['status'] == SocialActivityOrder::STATUS_10 && $res['order_info']['ticket_start_time'] > date('Y-m-d H:i:s')){
+	        if (!empty($res['order_info']['refund_status'])) {
+                $refundDisplay = (new SocialActivityRefundService())->userStatus($res['order_info']['id'], $res['order_info']['uid']);
+                $res['order_info']['refund_status'] = $refundDisplay['refund_status'];
+                $res['order_info']['status_text'] = $refundDisplay['status_text'];
+            }
+            try {
+                SocialActivityRefundPolicy::validate($res['order_info']->toArray(), $uid, time());
                 $res['can_refund'] = 1;
+            } catch (\RuntimeException $e) {
+                $res['refund_disabled_reason'] = $e->getMessage();
+            }
+            // Preserve the persisted order usage flag for refund checks above, then expose personal sign state.
+            $mine = (new SocialActivityParticipantService())->memberQuery($uid)->where('order_id', $orderId)->select()->toArray();
+            if ($mine) {
+                $res['order_info']['is_sign'] = (int)(count(array_filter($mine, function ($p) { return !$p['is_sign']; })) === 0);
+            } elseif (!empty($res['order_info']['participants'])) {
+                $res['order_info']['is_sign'] = 0;
+            }
+            if (!$res['order_info']['is_payer']) {
+                // A participant must not receive the primary attendee's ID card or the payer's gateway data.
+                foreach (['id_number', 'user_name', 'user_source', 'paid_extra', 'pay_orderno'] as $privateField) {
+                    unset($res['order_info'][$privateField]);
+                }
             }
         }
 
         $res['is_success_sign'] = 0;
         $res['success_sign_msg'] = '';
         if($uid && $is_sign && $sign_session_id){
-            $where = [
-                ['uid', '=', $uid],
-                ['is_sign', '=', 0],
-                ['activity_id', '=', $id],
-                ['session_id', '=', $sign_session_id],
-                ['paid', '=', 1],
-                ['status', '=', SocialActivityOrder::STATUS_10],
-            ];
-            $sign_num = (new SocialActivityOrder())->where($where)->count();
-            if ($sign_num > 0) {
+            $signSession = (new SocialActivitySession())->where(['id' => $sign_session_id, 'activity_id' => $id])->findOrEmpty();
+            [$canCheckIn, $checkInMsg] = $this->getSessionCheckInStatus($signSession);
+            if (!$canCheckIn) {
                 $res['is_success_sign'] = 1;
-                $res['success_sign_msg'] = '恭喜签到成功';
-                $sign_date = date('Y-m-d H:i:s');
-                (new SocialActivityOrder())->where($where)->update(['is_sign' => 1, 'sign_time' => $sign_date, 'update_time' => $sign_date]);
+                $res['success_sign_msg'] = $checkInMsg;
+            } else {
+                $signed = \think\facade\Db::transaction(function () use ($id, $sign_session_id, $uid) {
+                    return (new SocialActivityParticipantService())->sign($id, $sign_session_id, $uid);
+                });
+                $res['is_success_sign'] = $signed ? 1 : 0;
+                $res['success_sign_msg'] = $signed ? '恭喜签到成功' : '您没有可签到的报名或已经签到';
             }
         }
 		$this->addViews($id, $uid);
@@ -1212,7 +1421,7 @@ class SocialActivityService
      */
     private function getHotActivities()
     {
-        $field = 'a.id,a.category_id,a.name,a.poster,a.start_time,a.end_time,a.recommend,c.name as category_name';
+        $field = 'a.id,a.category_id,a.name,a.poster,a.position_poster,a.start_time,a.end_time,a.recommend,c.name as category_name';
         $list = (new SocialActivity())
             ->alias('a')
             ->join('social_activity_category c', 'a.category_id = c.id', 'LEFT')
@@ -1228,6 +1437,10 @@ class SocialActivityService
 
         foreach ($list as &$item) {
             $item['poster'] = $item['poster'] ? replace_file_domain($item['poster']) : '';
+            $item['position_poster'] = $item['position_poster'] ? replace_file_domain($item['position_poster']) : '';
+            if (!$item['poster'] && $item['position_poster']) {
+                $item['poster'] = $item['position_poster'];
+            }
             $item['activity_status'] = $this->getActivityStatus($item['start_time'], $item['end_time']);
             $item['activity_status_text'] = $this->getActivityStatusText($item['activity_status']);
             $item['signup_count'] = $this->activitySignupCount($item['id']);
@@ -1288,8 +1501,8 @@ class SocialActivityService
 
         $user = $user->toArray();
 
-        $myActivityCount = (new SocialActivityOrder())
-            ->where(['uid' => $uid, 'status' => SocialActivityOrder::STATUS_10])
+        $myActivityCount = (new SocialActivityParticipantService())->scope(new SocialActivityOrder(), $uid)
+            ->where(['status' => SocialActivityOrder::STATUS_10])
             ->count();
 
         $myCommentCount = (new SocialActivityComment())

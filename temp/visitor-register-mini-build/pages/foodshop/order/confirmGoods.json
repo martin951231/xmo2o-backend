@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "提交订单",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "order-goods-detail": "/pages/foodshop/components/orderGoodsDetail",
+    "order-log-modal": "/pages/foodshop/components/orderLogModal"
+  }
+}

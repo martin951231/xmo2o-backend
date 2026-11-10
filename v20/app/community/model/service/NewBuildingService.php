@@ -943,9 +943,9 @@ class NewBuildingService
         ];
         $sell_status_list=[
             ['key'=>0,'value'=>'无'],
-            ['key'=>1,'value'=>'正常居住'],
-            ['key'=>2,'value'=>'出售中'],
-            ['key'=>3,'value'=>'出租中'],
+            ['key'=>4,'value'=>'空置'],
+            ['key'=>2,'value'=>'已售已交付'],
+            ['key'=>5,'value'=>'已售未交付'],
         ];
         $data=[
             'user_type_list'=>$user_type_list,
@@ -2850,6 +2850,7 @@ class NewBuildingService
         $table_list[]=['title'=>'层号','dataIndex'=>'layer_name'];
         $table_list[]=['title'=>$roomName.'号','dataIndex'=>'room'];
         $table_list[]=['title'=>'使用状态','dataIndex'=>'user_status_txt'];
+        $table_list[]=['title'=>'出售状态','dataIndex'=>'sell_status_txt'];
         $table_list[]=['title'=>'已解绑住户记录','dataIndex'=>'unbound','scopedSlots'=>['customRender'=>'unbound']];
         if($configCustomizationService->getAnakeParkJudge()){
             $table_list[]=['title'=>'IC卡管理','dataIndex'=>'ic_manage','scopedSlots'=>['customRender'=>'ic_manage']];
@@ -3138,12 +3139,13 @@ class NewBuildingService
             $where[]=['house_type','=',intval($param['house_type'])];
         }
         $where[] = ['is_del','=',0];
-        $field = 'pigcms_id,usernum,single_id,floor_id,layer_id,room,user_status,status,sort,house_type';
+        $field = 'pigcms_id,usernum,single_id,floor_id,layer_id,room,user_status,sell_status,status,sort,house_type';
         $order='sort DESC,pigcms_id DESC';
         $result=$this->getHouseVillageUserVacancyListMethod($where,$field,$order,$param['page'],$param['limit']);
         $service_house_new_property = new HouseNewPorpertyService();
         $HouseVillageUserVacancyService=new HouseVillageUserVacancyService();
         $is_new_charge = $service_house_new_property->getTakeEffectTimeJudge($param['property_id']);
+        $room_sell_status_arr = [2=>'已售已交付', 4=>'空置', 5=>'已售未交付'];
         if($result['list']){
             //单元集合
             $floor_list=$this->getHouseVillageFloorSelectMethod([
@@ -3221,8 +3223,9 @@ class NewBuildingService
                 $v['address'] = $room_diy_name;
                 $v['building_name'] = $v['building_name']? $v['building_name']:$word_data['single_name'];
                 $v['user_status_txt']= isset($this->HouseVillageService->user_status_arr[$v['user_status']]) ? $this->HouseVillageService->user_status_arr[$v['user_status']] : '无';
+                $v['sell_status_txt']= isset($room_sell_status_arr[$v['sell_status']]) ? $room_sell_status_arr[$v['sell_status']] : '无';
                 $v['room_status_txt']= isset($this->HouseVillageService->room_status_arr[$v['status']]) ? $this->HouseVillageService->room_status_arr[$v['status']] : '关闭';
-                unset($v['single_id'],$v['floor_id'],$v['layer_id'],$v['user_status'],$v['status'],$v['service_start_time'],$v['service_end_time'],$v['floor_type_name']);
+                unset($v['single_id'],$v['floor_id'],$v['layer_id'],$v['user_status'],$v['sell_status'],$v['status'],$v['service_start_time'],$v['service_end_time'],$v['floor_type_name']);
             }
         }
         $data['list'] = $result['list'];

@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "booking-form": "/appComponent/smartService/bookingForm",
+    "activity-form": "/appComponent/smartService/activityForm"
+  }
+}

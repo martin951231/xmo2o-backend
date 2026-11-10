@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "‎",
+  "usingComponents": {
+    "u-circle-progress": "/uview-ui/components/u-circle-progress/u-circle-progress"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "卫生管理费",
+  "usingComponents": {
+    "uni-number-box": "/pages/village_my/component/uni-number-box/uni-number-box"
+  }
+}

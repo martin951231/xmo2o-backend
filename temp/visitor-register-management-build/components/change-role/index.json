@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "village-modal": "/components/village-modal/index"
+  }
+}

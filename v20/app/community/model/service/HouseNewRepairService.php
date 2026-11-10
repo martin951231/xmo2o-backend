@@ -586,6 +586,9 @@ class HouseNewRepairService
                     $data[$k]['phone'] = $houseVillageDb->phone_desensitization_v($data[$k]['phone'], $v['village_id'], $village_info);
                 }
             }
+        } else {
+            // 始终保持列表接口返回数组，避免空查询结果将 Collection 传给 array_map。
+            $data = [];
         }
         return $data;
     }
@@ -2740,6 +2743,8 @@ class HouseNewRepairService
 
             $order_detail['order_arr'] = $order_arr;
         }
+        $event_status_txt = isset($this->order_work_status_txt[$order_detail['event_status']]) ? $this->order_work_status_txt[$order_detail['event_status']] : '';
+        $order_detail['content_required'] = in_array($event_status_txt, ['已指派', '处理中']);
         //        $order_detail['event_status'] = floor($order_detail['event_status']/10)*10;
         if ($order_detail['event_status'] < 20 && $order_detail['event_status'] != 15) {
             $order_detail['event_status'] = 10;
@@ -3091,6 +3096,12 @@ class HouseNewRepairService
         $order_detail_info = $db_house_new_repair_works_order->getOne($where_order);
         if (empty($order_detail_info)) {
             throw new \think\Exception('对应工单不存在');
+        }
+        $event_status = isset($order_detail_info['event_status']) ? intval($order_detail_info['event_status']) : 0;
+        $event_status_txt = isset($this->order_work_status_txt[$event_status]) ? $this->order_work_status_txt[$event_status] : '';
+        $order_content = isset($data['order_content']) ? trim($data['order_content']) : '';
+        if (in_array($event_status_txt, ['已指派', '处理中']) && $order_content === '') {
+            throw new \think\Exception('请填写内容');
         }
         $property_id = $order_detail_info['property_id'];
         $db_house_new_repair_subject = new HouseNewRepairCate();

@@ -1,0 +1,19 @@
+
+.mb-0[data-v-72f006b8] {
+    margin-bottom: 0;
+}
+.bm-view[data-v-72f006b8] {
+    width: 650px;
+    height: 450px;
+    margin-top: 10px;
+}
+.ms[data-v-72f006b8] {
+    color: #888;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+

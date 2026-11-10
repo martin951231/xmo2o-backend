@@ -1,0 +1,10 @@
+require('../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/shopmall_third/components/group-support"],{"1c29":function(t,n,e){"use strict";var o=e("80ea"),c=e.n(o);c.a},"80ea":function(t,n,e){},b4f6:function(t,n,e){"use strict";e.r(n);var o=e("dd8a"),c=e("c02e");for(var r in c)["default"].indexOf(r)<0&&function(t){e.d(n,t,(function(){return c[t]}))}(r);e("1c29");var u,i=e("f0c5"),a=Object(i["a"])(c["default"],o["b"],o["c"],!1,null,"27b0a230",null,!1,o["a"],u);n["default"]=a.exports},c02e:function(t,n,e){"use strict";e.r(n);var o=e("c3d9"),c=e.n(o);for(var r in o)["default"].indexOf(r)<0&&function(t){e.d(n,t,(function(){return o[t]}))}(r);n["default"]=c.a},c3d9:function(t,n,e){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var o=function(){e.e("pages/shopmall_third/components/countdown").then(function(){return resolve(e("6903"))}.bind(null,e)).catch(e.oe)},c={props:{translateY:Number,groupList:{default:function(){return[]},type:Array}},components:{countDown:o},data:function(){return{}},created:function(){},methods:{closemodel:function(){this.$emit("closefnc")},forbid:function(){this.$emit("sliderfnc")},goGroup:function(t){this.closemodel(),this.$emit("goGroup",t)},getgoodsdetails:function(){this.$emit("refresh")}}};n.default=c},dd8a:function(t,n,e){"use strict";var o;e.d(n,"b",(function(){return c})),e.d(n,"c",(function(){return r})),e.d(n,"a",(function(){return o}));var c=function(){var t=this,n=t.$createElement,o=(t._self._c,e("c6d9"));t.$mp.data=Object.assign({},{$root:{m0:o}})},r=[]}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/shopmall_third/components/group-support-create-component',
+    {
+        'pages/shopmall_third/components/group-support-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("b4f6"))
+        })
+    },
+    [['pages/shopmall_third/components/group-support-create-component']]
+]);

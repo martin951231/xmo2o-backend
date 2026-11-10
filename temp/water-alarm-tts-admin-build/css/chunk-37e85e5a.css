@@ -1,0 +1,74 @@
+
+.mb-0[data-v-4aab5ee0] {
+    margin-bottom: 0;
+}
+.bm-view[data-v-4aab5ee0] {
+    width: 650px;
+    height: 450px;
+    margin-top: 10px;
+}
+.ms[data-v-4aab5ee0] {
+    color: #888;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+
+.mb-0[data-v-85e2b480] {
+    margin-bottom: 0;
+}
+.bm-view[data-v-85e2b480] {
+    width: 650px;
+    height: 450px;
+    margin-top: 10px;
+}
+.ms[data-v-85e2b480] {
+    color: #888;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+}
+
+
+.copyInput {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+}
+.copyInput button{
+    margin-left: 10px;
+}
+.content {
+  overflow: hidden;
+}
+.code-box {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+}
+.code {
+  margin: 10px 20px;
+}
+.code img {
+  width: 180px;
+  height: 180px;
+  margin-bottom: 0.5rem;
+}
+  

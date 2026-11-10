@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "my-index": "/pages/common/my_template"
+  }
+}

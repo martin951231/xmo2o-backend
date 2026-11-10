@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "selector-picker": "/appComponent/uni/lb-picker/pickers/selector-picker",
+    "multi-selector-picker": "/appComponent/uni/lb-picker/pickers/multi-selector-picker",
+    "unlinked-selector-picker": "/appComponent/uni/lb-picker/pickers/unlinked-selector-picker"
+  }
+}

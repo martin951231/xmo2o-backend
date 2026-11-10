@@ -1,0 +1,40 @@
+
+.survey-detail[data-v-6d13d8c2] {
+    padding: 16px;
+}
+.detail-row[data-v-6d13d8c2] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.detail-row[data-v-6d13d8c2]:last-child {
+    border-bottom: none;
+}
+.detail-label[data-v-6d13d8c2] {
+    width: 120px;
+    font-weight: 500;
+    color: #666;
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
+}
+.detail-value[data-v-6d13d8c2] {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    color: #333;
+    word-break: break-all;
+}
+.detail-img[data-v-6d13d8c2] {
+    max-width: 200px;
+    max-height: 200px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+.detail-file[data-v-6d13d8c2] {
+    color: #1890ff;
+    text-decoration: underline;
+}
+

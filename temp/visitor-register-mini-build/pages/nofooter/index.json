@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "首页",
+  "usingComponents": {
+    "index-template": "/pages/common/index_template"
+  }
+}

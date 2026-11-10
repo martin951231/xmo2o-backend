@@ -1,0 +1,25 @@
+.activity-list[data-v-4318b376] {
+  padding: 10px;
+  height: 800px;
+  background: #FFFFFF;
+  text-align: center;
+}
+.content[data-v-4318b376] {
+  width: 36%;
+  margin-left: 32%;
+  height: 378px;
+  border: 1px solid #DDDDDD;
+  padding: 57px 65px 10px 65px;
+  line-height: 25px;
+}
+.title[data-v-4318b376] {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 100px;
+}
+.desc[data-v-4318b376] {
+  color: #999999;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+

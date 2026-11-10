@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "商场导购",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-select": "/uview-ui/components/u-select/u-select"
+  }
+}

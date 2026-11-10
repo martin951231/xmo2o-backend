@@ -1,0 +1,19 @@
+{
+  "navigationBarTitleText": "商品详情",
+  "navigationBarTextStyle": "black",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "goodsrichtext": "/pages/shopmall_third/components/goodsrichtext",
+    "waterfall": "/pages/shopmall_third/components/newfall",
+    "footbar": "/pages/shopmall_third/components/shopfootbar",
+    "coupon-model": "/pages/shopmall_third/components/couponModel",
+    "server-model": "/pages/shopmall_third/components/server_guarantee",
+    "sku-model": "/pages/shopmall_third/components/skuModel",
+    "count-down": "/pages/shopmall_third/components/countdown",
+    "tophalf": "/pages/shopmall_third/components/tophalf",
+    "friend-support": "/pages/shopmall_third/components/friend-support",
+    "group-support": "/pages/shopmall_third/components/group-support",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "bargain-model": "/pages/shopmall_third/components/bargainModel"
+  }
+}

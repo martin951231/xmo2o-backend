@@ -1,0 +1,1 @@
+<block wx:if="{{opacity==1}}"><view data-event-opts="{{[['tap',[['gotop']]]]}}" class="{{['data-v-0c4b46b0',(true)?'tophalf_container':'',(fixedBootom)?'change_bottom':'']}}" style="{{'opacity:'+(opacity)+';'}}" bindtap="__e"><image src="{{$root.m0}}" alt class="_img data-v-0c4b46b0"></image></view></block>

@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-line": "/uview-ui/components/u-line/u-line",
+    "area-item": "/pages/lifeTools/components/areaItem"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "预存",
+  "usingComponents": {
+    "w-picker": "/pages/houseMeter/components/w-picker/w-picker"
+  }
+}

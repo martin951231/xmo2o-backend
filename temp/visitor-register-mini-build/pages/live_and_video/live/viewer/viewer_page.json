@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "主播主页",
+  "navigationBarBackgroundColor": "#FE443A",
+  "usingComponents": {
+    "uni-countdown": "/pages/live_and_video/components/uni-count-down/uni-count-down"
+  }
+}

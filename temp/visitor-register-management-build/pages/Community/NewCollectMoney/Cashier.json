@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "收银台",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "u-switch": "/uview-ui/components/u-switch/u-switch",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

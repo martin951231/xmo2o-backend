@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-icons": "/pages/street/components/uni-icons/uni-icons"
+  }
+}

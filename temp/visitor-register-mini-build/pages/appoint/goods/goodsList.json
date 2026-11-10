@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "‎",
+  "usingComponents": {
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "q-s-tabs": "/pages/appoint/component/QS-tabs/QS-tabs",
+    "h-mfilter-dropdown": "/pages/appoint/component/HM-filterDropdown/HM-filterDropdown",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "goods-llist": "/pages/appoint/component/goods-list/goods-list"
+  }
+}

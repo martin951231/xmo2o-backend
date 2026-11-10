@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "巡检记录",
+  "usingComponents": {
+    "upload-img": "/pages/village/component/uploadImg/uploadImg"
+  }
+}

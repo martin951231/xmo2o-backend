@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "count-down": "/pages/shopmall_third/components/countdown"
+  }
+}

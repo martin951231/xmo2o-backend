@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "在线报修详情",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

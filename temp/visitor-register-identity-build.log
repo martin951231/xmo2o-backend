@@ -1,0 +1,45 @@
+
+​已开启 uni统计 2.0​
+
+There are differences in the implementation mechanism of the browser kernels and custom components of each mini-program, and there may be compatibility issues with styles and layouts, please refer to: https://uniapp.dcloud.io/matter?id=mp
+Compiling...
+
+(node:30780) [DEP0044] DeprecationWarning: The `util.isArray` API is deprecated. Please use `Array.isArray()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:30780) [DEP0055] DeprecationWarning: The `util.isRegExp` API is deprecated. Please use `arg instanceof RegExp` instead.
+提示：Non-h5 platforms: key does not support expression item.$orig.name+jndex, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/shop_new/orderDetail/orderDetail.vue:1
+提示：Non-h5 platforms: key does not support expression item.name+jndex, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/shop_new/orderDetail/orderDetail.vue:1
+提示：Non-h5 platforms: key does not support expression item.ymd+'_1', for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/shop_new/confirmOrder/newCart.vue:1
+提示：Non-h5 platforms: key does not support expression item.$orig.ymd+'_2', for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/shop_new/confirmOrder/newCart.vue:1
+提示：Non-h5 platforms: key does not support expression item.$orig.ymd+'_'+timeItem.$orig.id, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/shop_new/confirmOrder/newCart.vue:1
+提示：Non-h5 platforms: key does not support expression item.id||index, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/socialActivity/index.vue:1
+提示：Non-h5 platforms: key does not support expression item_.news_id||index_, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/village_com/components/villageNoticeList.vue:1
+提示：Non-h5 platforms: key does not support expression 'real_num_'+index, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/lifeTools/sports/activity/detail.vue:1
+提示：Non-h5 platforms: key does not support expression item_.news_id||index_, for details, please refer to: https://uniapp.dcloud.io/use?id=key
+at pages/village/index/notice.vue:1
+​自定义组件 appComponent/platcommon/guess-user-like 建议移动到子包 pages/village 内​
+​自定义组件 appComponent/smartService/smartServiceEntry 建议移动到子包 pages/village 内​
+​自定义组件 appComponent/platcommon/New-guess-user-like 建议移动到子包 pages/village 内​
+​自定义组件 appComponent/platcommon/miniNav 建议移动到子包 pages/shop_new 内​
+​自定义组件 pages/plat_com/components/internalCardPopup 建议移动到子包 pages/shop_new 内​
+​自定义组件 appComponent/shopPage/limitGoods 建议移动到子包 pages/shop_new 内​
+​自定义组件 appComponent/smartService/smartServiceDialog 建议移动到子包 pages/village 内​
+​自定义组件 appComponent/villagePage/villageBindHouse 建议移动到子包 pages/village 内​
+​自定义组件 pages/plat_com/components/searchRanking/searchRanking 建议移动到子包 pages/index 内​
+​自定义组件 uview-ui/components/u-alert-tips/u-alert-tips 建议移动到子包 pages/parkingLot 内​
+WARNING: Conflict: Multiple assets emit different content to the same filename project.config.json
+​warning: platform/UA检测逻辑可能未适配鸿蒙系统，可能导致鸿蒙版微信上体验异常。at: pages/runErrands/index.vue:935 code: let system = uni.getSystemInfoSync().system?uni.getSystemInfoSync().system:''​
+​warning: platform/UA检测逻辑可能未适配鸿蒙系统，可能导致鸿蒙版微信上体验异常。at: utils/checkPlat.js:44 code: if (/(iphone|ipad|ipod)/.test(navigator.userAgent.toLowerCase())) {​
+​warning: platform/UA检测逻辑可能未适配鸿蒙系统，可能导致鸿蒙版微信上体验异常。at: utils/checkPlat.js:119 code: let ua = window.navigator.userAgent.toLowerCase();​
+​warning: platform/UA检测逻辑可能未适配鸿蒙系统，可能导致鸿蒙版微信上体验异常。at: utils/jweixin-1.6.0.js:34 code: r = navigator.userAgent.toLowerCase(),​
+​warning: platform/UA检测逻辑可能未适配鸿蒙系统，可能导致鸿蒙版微信上体验异常。at: utils/jweixin-1.6.0.js:35 code: s = navigator.platform.toLowerCase(),​
+​项目 village 检测出 5 个可能未适配鸿蒙系统的兼容性问题，建议修复​
+ DONE  Build complete. 

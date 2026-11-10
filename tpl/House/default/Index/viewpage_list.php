@@ -58,6 +58,33 @@
                         <div class="tab-pane active" id="basicinfo" style="min-height:1400px;">
                             <div class="table-list">
                                 <div class="fitment_div">
+                                    <div class="form-group">
+                                        <div class="group-title">
+                                            <span class="name">首页样式</span>
+                                            <button type="button" class="btn fitment home-color-save" onclick="saveHomeColorConfig()">保存</button>
+                                        </div>
+                                        <div class="group-content home-color-config">
+                                            <label>切换小区按钮：<input type="color" id="switch_village_color" value="{pigcms{$home_color_config.switch_village_color}" /></label>
+                                            <label>首页标题：<input type="color" id="index_title_color" value="{pigcms{$home_color_config.index_title_color}" /></label>
+                                            <label>头部背景：<input type="color" id="index_header_bg_color" value="{pigcms{$home_color_config.index_header_bg_color}" /></label>
+                                            <div class="home-bg-image-config">
+                                                <input type="hidden" id="index_header_bg_image" value="{pigcms{$home_color_config.index_header_bg_image}" />
+                                                <div class="home-bg-image-preview">
+                                                    <span>头部背景图：</span>
+                                                    <img id="index_header_bg_image_preview" src="{pigcms{$home_color_config.index_header_bg_image}" alt="头部背景图预览" title="点击查看大图" role="button" tabindex="0" />
+                                                    <span class="home-bg-image-tip">建议尺寸：750 × 220，未配置时使用头部背景颜色</span>
+                                                </div>
+                                                <div class="home-bg-image-actions">
+                                                    <button type="button" class="btn btn-sm btn-info" id="index_header_bg_image_upload">选择图片</button>
+                                                    <button type="button" class="btn btn-sm btn-default" onclick="clearIndexHeaderBgImage()">清除图片</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="index_header_bg_image_lightbox" class="home-image-lightbox" aria-hidden="true">
+                                            <button type="button" class="home-image-lightbox-close" onclick="closeIndexHeaderBgImagePreview()" aria-label="关闭大图预览">&times;</button>
+                                            <img id="index_header_bg_image_large" src="" alt="头部背景图大图" />
+                                        </div>
+                                    </div>
                                 <if condition="$jsdhwy_new_wap_index gt 0">
                                         <div class="form-group">
                                             <div class="group-title">
@@ -122,6 +149,54 @@
                                             <div class="group-content">尺寸:{pigcms{$index_center_size},不设置,不展示。</div>
                                         </div>
                                     </if>
+                                    <div class="form-group">
+                                        <div class="group-title">
+                                            <span class="name">公共收益入口</span>
+                                            <button type="button" class="btn fitment public-revenue-decorate" onclick="openPublicRevenueConfig()">装修</button>
+                                        </div>
+                                        <div id="public_revenue_config_modal" class="public-revenue-modal" aria-hidden="true">
+                                            <div class="public-revenue-modal-mask" onclick="closePublicRevenueConfig()"></div>
+                                            <div class="public-revenue-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="public_revenue_modal_title">
+                                                <div class="public-revenue-modal-header">
+                                                    <strong id="public_revenue_modal_title">公共收益装修</strong>
+                                                    <button type="button" class="public-revenue-modal-close" onclick="closePublicRevenueConfig()" aria-label="关闭">&times;</button>
+                                                </div>
+                                                <div class="public-revenue-modal-body public-revenue-home-config">
+                                                    <div class="public-revenue-config-row">
+                                                        <span class="public-revenue-config-label">是否显示：</span>
+                                                        <label><input type="radio" name="public_revenue_home_show" value="1" <if condition="$public_revenue_home_config.public_revenue_home_show eq 1">checked</if> /> 显示</label>
+                                                        <label><input type="radio" name="public_revenue_home_show" value="0" <if condition="$public_revenue_home_config.public_revenue_home_show neq 1">checked</if> /> 隐藏</label>
+                                                    </div>
+                                                    <div class="public-revenue-config-row">
+                                                        <label class="public-revenue-config-label" for="public_revenue_home_title">标题内容：</label>
+                                                        <input type="text" id="public_revenue_home_title" maxlength="30" value="{pigcms{$public_revenue_home_config.public_revenue_home_title}" placeholder="请输入标题" />
+                                                    </div>
+                                                    <div class="public-revenue-config-row">
+                                                        <label class="public-revenue-config-label" for="public_revenue_home_bg_color">入口背景：</label>
+                                                        <input type="color" id="public_revenue_home_bg_color" value="{pigcms{$public_revenue_home_config.public_revenue_home_bg_color}" />
+                                                        <span class="public-revenue-config-tip-inline">小程序首页入口模块背景颜色</span>
+                                                    </div>
+                                                    <div class="public-revenue-config-row">
+                                                        <label class="public-revenue-config-label" for="public_revenue_page_bg_color">页面背景：</label>
+                                                        <input type="color" id="public_revenue_page_bg_color" value="{pigcms{$public_revenue_home_config.public_revenue_page_bg_color}" />
+                                                        <span class="public-revenue-config-tip-inline">详情页和季度详情页共用</span>
+                                                    </div>
+                                                    <div class="public-revenue-config-row public-revenue-image-row">
+                                                        <span class="public-revenue-config-label">背景图片：</span>
+                                                        <input type="hidden" id="public_revenue_page_bg_image" value="{pigcms{$public_revenue_home_config.public_revenue_page_bg_image}" />
+                                                        <img id="public_revenue_page_bg_image_preview" src="{pigcms{$public_revenue_home_config.public_revenue_page_bg_image}" alt="公共收益背景图预览" />
+                                                        <button type="button" class="btn btn-sm btn-info" id="public_revenue_page_bg_image_upload">选择图片</button>
+                                                        <button type="button" class="btn btn-sm btn-default" onclick="clearPublicRevenueBgImage()">清除图片</button>
+                                                    </div>
+                                                    <div class="public-revenue-config-tip">背景图将从手机顶部开始，按页面宽度等比展示，不裁切、不变形，超出内容高度的部分不会显示。</div>
+                                                </div>
+                                                <div class="public-revenue-modal-footer">
+                                                    <button type="button" class="btn btn-default" onclick="closePublicRevenueConfig()">取消</button>
+                                                    <button type="button" class="btn btn-primary" onclick="savePublicRevenueHomeConfig()">保存</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                   <if condition="$jsdhwy_new_wap_index gt 0">
                                         <div class="form-group">
                                             <div class="group-title">
@@ -328,6 +403,51 @@
         font-size: 12px;
         color: #999;
     }
+    .home-color-config {width:100%;white-space:nowrap;}
+    .home-color-config > label {display:inline-flex;align-items:center;margin-right:12px;color:#555;white-space:nowrap;}
+    .home-color-config input[type=color] {width:42px;height:30px;padding:1px;border:1px solid #ddd;cursor:pointer;}
+    .home-color-config .btn {margin-left:5px;}
+    .public-revenue-home-config {width:100%;color:#555;box-sizing:border-box;}
+    .public-revenue-config-row {display:flex;align-items:center;margin-top:10px;}
+    .public-revenue-config-row:first-child {margin-top:0;}
+    .public-revenue-config-row > label {margin:0 18px 0 0;font-weight:normal;}
+    .public-revenue-config-label,
+    .public-revenue-title-label {width:86px;margin:0;flex-shrink:0;font-weight:normal;}
+    .public-revenue-home-config input[type=text] {width:260px;height:30px;padding:4px 8px;border:1px solid #ddd;border-radius:3px;box-sizing:border-box;}
+    .public-revenue-home-config input[type=text]:focus {border-color:#40a9ff;outline:none;box-shadow:0 0 0 2px rgba(64,169,255,.12);}
+    .public-revenue-config-tip {margin-top:8px;color:#999;}
+    .group-title .btn.public-revenue-decorate {width:55px;height:28px;}
+    .public-revenue-modal {display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;}
+    .public-revenue-modal.is-open {display:flex;}
+    .public-revenue-modal-mask {position:absolute;inset:0;background:rgba(0,0,0,.42);}
+    .public-revenue-modal-dialog {position:relative;width:620px;max-width:calc(100vw - 40px);max-height:calc(100vh - 50px);overflow:auto;border-radius:5px;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.25);}
+    .public-revenue-modal-header {display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid #eee;font-size:16px;}
+    .public-revenue-modal-close {padding:0;border:0;background:none;color:#999;font-size:26px;line-height:1;cursor:pointer;}
+    .public-revenue-modal-body {padding:20px;}
+    .public-revenue-modal-footer {padding:12px 20px;border-top:1px solid #eee;text-align:right;}
+    .public-revenue-modal-footer .btn {margin-left:8px;}
+    .public-revenue-config-label {width:86px;flex-shrink:0;font-weight:normal;}
+    .public-revenue-home-config input[type=color] {width:52px;height:32px;padding:1px;border:1px solid #ddd;cursor:pointer;}
+    .public-revenue-config-tip-inline {margin-left:10px;color:#999;}
+    .public-revenue-image-row img {display:block;width:84px;height:84px;margin-right:10px;border:1px solid #ddd;object-fit:contain;background:#f7f7f7;}
+    .public-revenue-image-row img[src=""] {display:none;}
+    .public-revenue-image-row .btn {margin-right:8px;}
+    .home-bg-image-config {margin:15px 0 0;color:#555;white-space:nowrap;}
+    .home-bg-image-actions,
+    .home-bg-image-preview {display:flex;align-items:center;flex-wrap:nowrap;}
+    .home-bg-image-actions {margin-top:10px;padding-left:84px;}
+    .home-bg-image-config .home-bg-image-tip {margin-left:6px;color:#999;}
+    .home-bg-image-config img {width:66px;height:48px;margin-left:10px;border:1px solid #ddd;object-fit:cover;flex-shrink:0;cursor:pointer;}
+    .home-bg-image-config img:hover,
+    .home-bg-image-config img:focus {border-color:#40a9ff;outline:none;box-shadow:0 0 0 2px rgba(64,169,255,.2);}
+    .home-bg-image-config img[src=""] {display:none;}
+    .home-bg-image-config .btn {margin-left:6px;}
+    .home-image-lightbox {display:none;position:fixed;z-index:99999;inset:0;align-items:center;justify-content:center;padding:40px;background:rgba(0,0,0,.72);box-sizing:border-box;}
+    .home-image-lightbox > img {display:block;max-width:100%;max-height:100%;object-fit:contain;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.35);}
+    .home-image-lightbox-close {position:absolute;top:18px;right:24px;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:28px;line-height:34px;text-align:center;cursor:pointer;}
+    .home-image-lightbox-close:hover,
+    .home-image-lightbox-close:focus {background:#40a9ff;outline:none;}
+    .group-title .btn.home-color-save {width:55px;height:28px;}
     .group-title .btn.fitment {
         background-color: #40a9ff!important;
         border-radius: 3px;
@@ -831,7 +951,92 @@
 <script type="text/javascript" src="./static/js/artdialog/iframeTools.js"></script>
 
 <script type="text/javascript">
-	//art弹框组件
+    KindEditor.ready(function(K) {
+        var indexHeaderBgImageEditor = K.editor({
+            allowFileManager: false
+        });
+        K('#index_header_bg_image_upload').click(function() {
+            indexHeaderBgImageEditor.uploadJson = "{pigcms{:U('Cashier/ajax_upload_pic')}";
+            indexHeaderBgImageEditor.loadPlugin('image', function() {
+                indexHeaderBgImageEditor.plugin.imageDialog({
+                    showRemote: false,
+                    imageUrl: K('#index_header_bg_image').val(),
+                    clickFn: function(url) {
+                        K('#index_header_bg_image').val(url);
+                        K('#index_header_bg_image_preview').attr('src', url).show();
+                        indexHeaderBgImageEditor.hideDialog();
+                    }
+                });
+            });
+        });
+        var publicRevenueBgImageEditor = K.editor({ allowFileManager: false });
+        K('#public_revenue_page_bg_image_upload').click(function() {
+            publicRevenueBgImageEditor.uploadJson = "{pigcms{:U('Cashier/ajax_upload_pic')}";
+            publicRevenueBgImageEditor.loadPlugin('image', function() {
+                publicRevenueBgImageEditor.plugin.imageDialog({
+                    showRemote: false,
+                    imageUrl: K('#public_revenue_page_bg_image').val(),
+                    clickFn: function(url) {
+                        K('#public_revenue_page_bg_image').val(url);
+                        K('#public_revenue_page_bg_image_preview').attr('src', url).show();
+                        publicRevenueBgImageEditor.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+
+    function openPublicRevenueConfig() {
+        $('#public_revenue_config_modal').addClass('is-open').attr('aria-hidden', 'false');
+    }
+
+    function closePublicRevenueConfig() {
+        $('#public_revenue_config_modal').removeClass('is-open').attr('aria-hidden', 'true');
+    }
+
+    function clearPublicRevenueBgImage() {
+        $('#public_revenue_page_bg_image').val('');
+        $('#public_revenue_page_bg_image_preview').attr('src', '').hide();
+    }
+
+    function clearIndexHeaderBgImage() {
+        $('#index_header_bg_image').val('');
+        $('#index_header_bg_image_preview').attr('src', '').hide();
+    }
+
+    function previewIndexHeaderBgImage() {
+        var imageUrl = $('#index_header_bg_image_preview').attr('src');
+        if (!imageUrl) {
+            return;
+        }
+        $('#index_header_bg_image_large').attr('src', imageUrl);
+        $('#index_header_bg_image_lightbox').css('display', 'flex').attr('aria-hidden', 'false');
+    }
+
+    function closeIndexHeaderBgImagePreview() {
+        $('#index_header_bg_image_lightbox').hide().attr('aria-hidden', 'true');
+        $('#index_header_bg_image_large').attr('src', '');
+    }
+
+    $(document).on('click', '#index_header_bg_image_preview', previewIndexHeaderBgImage);
+    $(document).on('keydown', '#index_header_bg_image_preview', function(event) {
+        if (event.key === 'Enter' || event.key === ' ' || event.keyCode === 13 || event.keyCode === 32) {
+            event.preventDefault();
+            previewIndexHeaderBgImage();
+        }
+    });
+    $(document).on('click', '#index_header_bg_image_lightbox', function(event) {
+        if (event.target === this) {
+            closeIndexHeaderBgImagePreview();
+        }
+    });
+    $(document).on('keydown', function(event) {
+        if ((event.key === 'Escape' || event.keyCode === 27) && $('#index_header_bg_image_lightbox').is(':visible')) {
+            closeIndexHeaderBgImagePreview();
+        }
+    });
+
+    //art弹框组件
 	function artiframe(url, title, width, height, lock, resize, background, button, id, fixeds, closefun, left, top, padding){
 		if(url.indexOf("?") != -1){
 			url = url+'&frame=1';
@@ -929,6 +1134,41 @@
         },'json');
     }
 	//art信息提示
+	function saveHomeColorConfig() {
+		$.post("{pigcms{:U('save_home_color_config')}", {
+			switch_village_color: $('#switch_village_color').val(),
+			index_title_color: $('#index_title_color').val(),
+			index_header_bg_color: $('#index_header_bg_color').val(),
+			index_header_bg_image: $('#index_header_bg_image').val()
+		}, function (result) {
+			layer.msg(result.msg);
+			if (result.status == 1) {
+				document.getElementById('viewpageIframe').contentWindow.location.reload(true);
+			}
+		}, 'json');
+	}
+
+	function savePublicRevenueHomeConfig() {
+		var title = $.trim($('#public_revenue_home_title').val());
+		if (!title) {
+			layer.msg('请输入公共收益入口标题');
+			return;
+		}
+		$.post("{pigcms{:U('save_public_revenue_home_config')}", {
+			public_revenue_home_show: $('input[name="public_revenue_home_show"]:checked').val(),
+			public_revenue_home_title: title,
+			public_revenue_home_bg_color: $('#public_revenue_home_bg_color').val(),
+			public_revenue_page_bg_color: $('#public_revenue_page_bg_color').val(),
+			public_revenue_page_bg_image: $('#public_revenue_page_bg_image').val()
+		}, function (result) {
+			layer.msg(result.msg);
+			if (result.status == 1) {
+				closePublicRevenueConfig();
+				document.getElementById('viewpageIframe').contentWindow.location.reload(true);
+			}
+		}, 'json');
+	}
+
 	function msg(status,msg,lock,time){
 		var list = window.art.dialog.list;
 		for (var i in list){

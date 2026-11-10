@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "临时车登记",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-alert-tips": "/uview-ui/components/u-alert-tips/u-alert-tips",
+    "u-switch": "/uview-ui/components/u-switch/u-switch",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "choose-car-num": "/pages/parkingLot/components/chooseCarNum",
+    "uni-fab": "/pages/parkingLot/components/uni-fab"
+  }
+}

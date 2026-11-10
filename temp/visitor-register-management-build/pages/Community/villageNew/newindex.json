@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "小区公告",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

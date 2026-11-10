@@ -1,0 +1,32 @@
+.statistics[data-v-21d3eb8d] {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /*创建三列，每列占据可用空间的1/3 */
+  grid-gap: 30px;
+  /*网格项之间的间距为10rpx */
+  -webkit-column-gap: 50px;
+     -moz-column-gap: 50px;
+          column-gap: 50px;
+  /*网格项上下之间的间距为10rpx */
+  margin-bottom: 20px;
+}
+.statistics .item[data-v-21d3eb8d] {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  border: 1px solid rgba(153, 153, 153, 0.4);
+  padding: 25px 30px;
+}
+.statistics .item .title[data-v-21d3eb8d] {
+  color: #000;
+  margin-bottom: 5px;
+  font-size: 16px;
+  text-align: left;
+}
+.statistics .item .money[data-v-21d3eb8d] {
+  color: #272727;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+}
+

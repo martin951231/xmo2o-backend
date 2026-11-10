@@ -1,0 +1,41 @@
+
+.withdraw-record[data-v-8ddd9f0e] {
+    padding: 20px;
+}
+.search-bar[data-v-8ddd9f0e] {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.date-picker[data-v-8ddd9f0e] {
+    width: 250px;
+}
+.status-select[data-v-8ddd9f0e] {
+    width: 150px;
+}
+.status-tag[data-v-8ddd9f0e] {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.status-0[data-v-8ddd9f0e] {
+    color: #faad14;
+    background: #fff7e6;
+}
+.status-1[data-v-8ddd9f0e] {
+    color: #52c41a;
+    background: #f6ffed;
+}
+.status-2[data-v-8ddd9f0e] {
+    color: #ff4d4f;
+    background: #fff2f0;
+}
+

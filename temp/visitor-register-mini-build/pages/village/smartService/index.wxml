@@ -1,0 +1,1 @@
+<view><block wx:if="{{ready}}"><smart-service-dialog class="vue-ref" vue-id="2155c03b-1" village-id="{{villageId}}" pigcms-id="{{pigcmsId}}" data-ref="dialog" data-event-opts="{{[['^close',[['close']]]]}}" bind:close="__e" bind:__l="__l"></smart-service-dialog></block></view>

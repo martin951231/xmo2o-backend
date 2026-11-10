@@ -1,0 +1,1 @@
+<block wx:if="{{show_countDown}}"><view class="boxCutDown"><view class="boxCutDownBox">{{time}}</view></view></block>

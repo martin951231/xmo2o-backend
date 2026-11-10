@@ -1,0 +1,90 @@
+.container {
+  width: 100%;
+  min-height: 100%;
+  background: radial-gradient(circle at 50% 30%, rgba(76, 175, 255, 0.2) 0%, /* 中心浅蓝（低透） */ rgba(61, 65, 119, 0.15) 50%, /* 中间粉紫过渡（低透） */ rgba(0, 0, 0, 0.95) 100% /* 四周纯黑（高透） */);
+  /* 可选：如果需要背景底色兜底 */
+  background-color: #0a0a1a;
+}
+.chart-box {
+  margin: 0 1rem 1rem;
+}
+.chart-box .chart-item div {
+  height: calc(100% - 3rem) !important;
+}
+.chart-box .chart-item {
+  margin: 0 10px 10px;
+  min-height: 300px !important;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(3px);
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+.chart-box .chart-item:hover {
+  -webkit-box-shadow: 0 0 30px rgba(0, 102, 255, 0.3);
+          box-shadow: 0 0 30px rgba(0, 102, 255, 0.3);
+}
+.chart-box .chart-item::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 50%;
+  height: 50%;
+  border-top: 2px solid transparent;
+  border-left: 2px solid transparent;
+  border-bottom-color: #00c3fe;
+  border-right-color: #00c3fe;
+  background: -webkit-gradient(linear, left top, right top, from(#00c3fe), color-stop(85%, transparent)) top / 100% 2px no-repeat, -webkit-gradient(linear, left top, left bottom, from(#00c3fe), color-stop(85%, transparent)) left / 2px 100% no-repeat;
+  background: linear-gradient(to right, #00c3fe 0%, transparent 85%) top / 100% 2px no-repeat, linear-gradient(to bottom, #00c3fe 0%, transparent 85%) left / 2px 100% no-repeat;
+  opacity: 0;
+  -webkit-transform: scale(0.9);
+          transform: scale(0.9);
+  -webkit-transition: opacity 0.4s ease, -webkit-transform 0.4s ease;
+  transition: opacity 0.4s ease, -webkit-transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, -webkit-transform 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+.chart-box .chart-item::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 50%;
+  height: 50%;
+  border-top: 2px solid transparent;
+  border-left: 2px solid transparent;
+  border-bottom-color: #00c3fe;
+  border-right-color: #00c3fe;
+  background: -webkit-gradient(linear, right top, left top, from(#00c3fe), to(transparent)) bottom / 100% 2px no-repeat, -webkit-gradient(linear, left bottom, left top, from(#00c3fe), to(transparent)) right / 2px 100% no-repeat;
+  background: linear-gradient(to left, #00c3fe 0%, transparent 100%) bottom / 100% 2px no-repeat, linear-gradient(to top, #00c3fe 0%, transparent 100%) right / 2px 100% no-repeat;
+  opacity: 0;
+  -webkit-transform: scale(0.9);
+          transform: scale(0.9);
+  -webkit-transition: opacity 0.4s ease, -webkit-transform 0.4s ease;
+  transition: opacity 0.4s ease, -webkit-transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, -webkit-transform 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+.chart-box .chart-item:hover::before,
+.chart-box .chart-item:hover::after {
+  opacity: 1;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+}
+.chart-box .chart-item-left,
+.chart-box .chart-item-right {
+  width: 30vw;
+}
+.chart-box .chart-item-center {
+  width: calc(100vw - 60vw - 2rem);
+}
+

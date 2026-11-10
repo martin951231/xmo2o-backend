@@ -1,0 +1,1 @@
+<view class="item-content"><view class="{{[active&&status?'normal expansion':'normal']}}"><slot name="append"></slot><text id="spanBox">{{''+longTextContent}}</text></view><block wx:if="{{active}}"><view data-event-opts="{{[['tap',[['e0',['$event']]]]]}}" class="full-text" bindtap="__e">{{''+(status?"全文":"收起")+''}}</view></block></view>

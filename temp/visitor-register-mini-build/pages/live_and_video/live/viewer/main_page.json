@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "直播间",
+  "navigationBarBackgroundColor": "#FE443A",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "top-nav": "/pages/live_and_video/components/topNav",
+    "not-started": "/pages/live_and_video/live/viewer/not_Started",
+    "bottm-menu": "/pages/live_and_video/components/bottm_menu",
+    "left-message": "/pages/live_and_video/live/viewer/left_message",
+    "coupons-popup": "/pages/live_and_video/live/viewer/couponsPopup",
+    "explain-popup": "/pages/live_and_video/live/viewer/explainPopup",
+    "share": "/pages/live_and_video/live/viewer/share",
+    "viewer-page": "/pages/live_and_video/live/viewer/viewer_page",
+    "liver-details": "/pages/live_and_video/live/liver/liverDetails"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="video_play_con data-v-61d52f34"><view data-event-opts="{{[['tap',[['closeThis',['$event']]]]]}}" class="close_this data-v-61d52f34" bindtap="__e">关闭</view><video id="video_player" autoplay="{{true}}" src="{{videoUrl}}" class="data-v-61d52f34"></video></view>

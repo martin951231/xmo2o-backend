@@ -246,7 +246,7 @@ class VillageMenuService
         }
 
         $false=0;
-        $newPathComponentArr=array('visitorTmpParking');
+        $newPathComponentArr=array('visitorTmpParking', 'visitorRegisterNew', 'waterAlarm');
         $cloudAccessIframeUrlMap = [
             'access_device@device_list' => cfg('site_url') . '/v20/public/platform/house_access_manager.html?view=device',
             'sensors@sensors_list' => cfg('site_url') . '/v20/public/platform/house_access_manager.html?view=sensor',
@@ -357,7 +357,7 @@ class VillageMenuService
             if (isset($value['application_id']) && $value['application_id']>0 && !isset($fixed_application_arr[$value['application_id']])  && (empty($application_arr) || !isset($application_arr[$value['application_id']]) || empty($application_arr[$value['application_id']]))) {
                 fdump_api(['line' => __LINE__, 'value' => $value], '$house_menu_list', 1);
                 continue;
-            } elseif(isset($value['fid']) && $value['fid']==194 && !$value['application_id'] && empty($application_txt)) {
+            } elseif(isset($value['fid']) && $value['fid']==194 && !$value['application_id'] && empty($application_txt) && ($value['component'] ?? '') !== 'visitorRegisterNew') {
                 fdump_api(['line' => __LINE__, 'value' => $value], '$house_menu_list', 1);
                 continue;
             } elseif(isset($value['fid']) && $value['fid']==194 && !empty($application_txt)) {

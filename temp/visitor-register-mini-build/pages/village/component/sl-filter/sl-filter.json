@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "popup-layer": "/pages/village/component/sl-filter/popup-layer",
+    "sl-filter-view": "/pages/village/component/sl-filter/filter-view"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "个人中心",
+  "navigationBarBackgroundColor": "#F8F8F9",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "main-page-tabbar": "/pages/live_and_video/components/mainPageTabbar"
+  }
+}

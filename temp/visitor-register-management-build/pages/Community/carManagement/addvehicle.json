@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "添加车辆",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "u-calendar": "/uview-ui/components/u-calendar/u-calendar",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "w-picker": "/appComponent/uni/w-picker/w-picker"
+  }
+}

@@ -1,0 +1,10 @@
+require('../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/live_and_video/components/sendMsg"],{"0e18":function(n,t,e){"use strict";(function(n){Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;e("a3a9"),e("c5d3"),getApp();var o,i={data:function(){return{content:""}},props:["show_send"],watch:{},created:function(){o=this},methods:{sendMsg:function(t){t&&t.length<=30?(o.content="",o.$emit("sendMsg",t)):n.showToast({title:"不能超过30个字",icon:"none",duration:2e3}),o.close_send()},close_send:function(){this.$emit("is_show_send",!1)},sendMsgInput:function(t){var e=this;this.content=t.detail.value,this.content.length>30&&(n.showToast({title:"不能超过30个字",icon:"none",duration:2e3}),this.$nextTick((function(){e.content=String(e.content).slice(0,30)})))},show_send_opt:function(){this.$emit("show_send_opt")}}};t.default=i}).call(this,e("543d")["default"])},"2f8d":function(n,t,e){"use strict";var o;e.d(t,"b",(function(){return i})),e.d(t,"c",(function(){return s})),e.d(t,"a",(function(){return o}));var i=function(){var n=this,t=n.$createElement;n._self._c},s=[]},"30ba":function(n,t,e){},51940:function(n,t,e){"use strict";var o=e("30ba"),i=e.n(o);i.a},"74a1":function(n,t,e){"use strict";e.r(t);var o=e("2f8d"),i=e("8838");for(var s in i)["default"].indexOf(s)<0&&function(n){e.d(t,n,(function(){return i[n]}))}(s);e("51940");var c,u=e("f0c5"),a=Object(u["a"])(i["default"],o["b"],o["c"],!1,null,null,null,!1,o["a"],c);t["default"]=a.exports},8838:function(n,t,e){"use strict";e.r(t);var o=e("0e18"),i=e.n(o);for(var s in o)["default"].indexOf(s)<0&&function(n){e.d(t,n,(function(){return o[n]}))}(s);t["default"]=i.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/live_and_video/components/sendMsg-create-component',
+    {
+        'pages/live_and_video/components/sendMsg-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("74a1"))
+        })
+    },
+    [['pages/live_and_video/components/sendMsg-create-component']]
+]);

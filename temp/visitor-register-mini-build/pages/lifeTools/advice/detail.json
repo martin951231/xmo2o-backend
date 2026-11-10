@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "投诉意见",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-avatar": "/uview-ui/components/u-avatar/u-avatar",
+    "u-image": "/uview-ui/components/u-image/u-image"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "车位详情",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

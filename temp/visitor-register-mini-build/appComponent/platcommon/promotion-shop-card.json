@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "shop-item-mask-handle": "/appComponent/shopPage/shopItemMaskHandle"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "componentPlaceholder": {
+    "internal-card-popup": "view"
+  },
+  "navigationBarTitleText": "选择支付方式",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "internal-card-popup": "/pages/plat_com/components/internalCardPopup"
+  }
+}

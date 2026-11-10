@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "投诉举报",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-select": "/uview-ui/components/u-select/u-select"
+  }
+}

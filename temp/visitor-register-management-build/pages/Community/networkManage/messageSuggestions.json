@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "留言建议",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker"
+  }
+}

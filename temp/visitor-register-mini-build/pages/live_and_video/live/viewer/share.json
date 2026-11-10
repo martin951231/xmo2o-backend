@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "share-pic": "/pages/live_and_video/live/viewer/share_pic"
+  }
+}

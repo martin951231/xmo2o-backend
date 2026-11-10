@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "售后申请",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "refund-reason": "/pages/shopmall_third/components/refundReason"
+  }
+}

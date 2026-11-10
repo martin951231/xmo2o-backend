@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "商品评价",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "footbar": "/pages/shopmall_third/components/shopfootbar",
+    "tophalf": "/pages/shopmall_third/components/tophalf",
+    "sku-model": "/pages/shopmall_third/components/skuModel",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more"
+  }
+}

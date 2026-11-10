@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "任务详情",
+  "usingComponents": {
+    "w-picker": "/appComponent/uni/w-picker/w-picker",
+    "upload-img": "/pages/Community/component/uploadImg/uploadImg"
+  }
+}

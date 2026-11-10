@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "房间管理",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select"
+  }
+}

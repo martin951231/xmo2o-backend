@@ -1,0 +1,1 @@
+<view class="return-page data-v-5d7517c0"><view class="data-v-5d7517c0">{{message}}</view><block wx:if="{{finished}}"><button data-event-opts="{{[['tap',[['back',['$event']]]]]}}" bindtap="__e" class="data-v-5d7517c0">返回订单</button></block></view>

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "店铺专题",
+  "usingComponents": {
+    "shop-item": "/appComponent/platcommon/shopItem"
+  }
+}

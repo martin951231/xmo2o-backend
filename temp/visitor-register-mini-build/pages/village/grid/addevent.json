@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "添加事件",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "w-picker": "/pages/village/component/w-picker/w-picker",
+    "upload-img": "/pages/village/component/uploadImg/uploadImg",
+    "lb-picker": "/pages/village/component/lb-picker/index",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

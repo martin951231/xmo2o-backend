@@ -1,0 +1,10 @@
+require('../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/houseMeter/preStorage/warmTips"],{"28a0":function(n,t,e){"use strict";(function(n){Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var i=e("a3a9"),a={props:{tipsParams:{type:Object,default:function(){return{}}}},watch:{tipsParams:{handler:function(n){this.getTipsInfo(n)},immediate:!0}},data:function(){return{tipsInfo:{}}},methods:{cancel:function(){this.$emit("cancel")},confirm:function(){this.$emit("confirm")},clickPhone:function(){n.makePhoneCall({phoneNumber:this.tipsInfo.phone,success:function(){console.log("拨打电话成功")},fail:function(){console.log("打电话失败了")}})},getTipsInfo:function(n){var t=this;i.postV20("/community/village_api.User.StorageApi/checkUserOrderPaymentStatus",n,(function(n){t.tipsInfo=n,0==t.tipsInfo.is_need_popup_tips&&t.$emit("cancel",!0)}),t,"back")}}};t.default=a}).call(this,e("543d")["default"])},"6c77":function(n,t,e){"use strict";var i=e("96fe"),a=e.n(i);a.a},"96fe":function(n,t,e){},"9ae1":function(n,t,e){"use strict";e.r(t);var i=e("28a0"),a=e.n(i);for(var c in i)["default"].indexOf(c)<0&&function(n){e.d(t,n,(function(){return i[n]}))}(c);t["default"]=a.a},a142:function(n,t,e){"use strict";var i;e.d(t,"b",(function(){return a})),e.d(t,"c",(function(){return c})),e.d(t,"a",(function(){return i}));var a=function(){var n=this,t=n.$createElement;n._self._c},c=[]},cf3e:function(n,t,e){"use strict";e.r(t);var i=e("a142"),a=e("9ae1");for(var c in a)["default"].indexOf(c)<0&&function(n){e.d(t,n,(function(){return a[n]}))}(c);e("6c77");var o,u=e("f0c5"),r=Object(u["a"])(a["default"],i["b"],i["c"],!1,null,"5e1db70c",null,!1,i["a"],o);t["default"]=r.exports}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/houseMeter/preStorage/warmTips-create-component',
+    {
+        'pages/houseMeter/preStorage/warmTips-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("cf3e"))
+        })
+    },
+    [['pages/houseMeter/preStorage/warmTips-create-component']]
+]);

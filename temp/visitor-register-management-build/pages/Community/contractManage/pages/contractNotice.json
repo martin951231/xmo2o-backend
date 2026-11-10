@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "合同通知",
+  "usingComponents": {
+    "no-data": "/pages/Community/contractManage/pages/noData"
+  }
+}

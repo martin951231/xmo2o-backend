@@ -209,6 +209,10 @@
 				<td>
 				<a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/store_edit_percent',array('store_id'=>$store['store_id'],'type'=>'merchant_store'))}','设置店铺抽成比例',800,560,true,false,false,null,'edit_percent',true);" style="color:blue">设置店铺抽成比例</a>&nbsp;&nbsp;&nbsp;&nbsp;
 			</tr>
+			<tr>
+				<th width="160">通联支付配置</th>
+				<td><a href="javascript:void(0);" onclick="window.o2oTop.artiframe('{pigcms{:U('Merchant/store_allinpay',array('store_id'=>$store['store_id']))}','通联支付配置',700,480,true,false,false,null,'edit_store_allinpay',true);" style="color:blue">设置通联支付配置</a></td>
+			</tr>
             <if condition="$config['is_open_merchant_foodshop_discount'] eq 1">
                 <tr>
                     <th width="160">店铺餐饮折扣设置</th>

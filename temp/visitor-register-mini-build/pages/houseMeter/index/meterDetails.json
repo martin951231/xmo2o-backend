@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "每日详情",
+  "usingComponents": {
+    "w-picker": "/pages/houseMeter/components/w-picker/w-picker"
+  }
+}

@@ -1,0 +1,1 @@
+<view class="container"><view class="tip">点击页面右上角分享给访客填写或长按保存发送给访客</view><image class="img_1" src="{{listdata.qrcode}}" mode></image><view class="flex-box"><view>是否给好友开门权限</view><switch checked="{{is_open_door}}" data-event-opts="{{[['change',[['Changes',['$event']]]]]}}" bindchange="__e"></switch></view></view>

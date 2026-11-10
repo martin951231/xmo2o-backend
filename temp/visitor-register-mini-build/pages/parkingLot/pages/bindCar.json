@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "绑定车辆",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-switch": "/uview-ui/components/u-switch/u-switch",
+    "u-select": "/uview-ui/components/u-select/u-select",
+    "choose-car-num": "/pages/parkingLot/components/chooseCarNum"
+  }
+}

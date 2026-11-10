@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "一键开门",
+  "usingComponents": {
+    "w-picker": "/pages/village/component/w-picker/w-picker"
+  }
+}

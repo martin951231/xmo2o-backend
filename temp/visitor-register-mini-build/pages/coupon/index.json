@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "领券中心",
+  "disableScroll": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "cat-tabs": "/pages/coupon/components/CatTabs",
+    "coupon-card": "/pages/coupon/components/CouponCard"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "停车费",
+  "usingComponents": {
+    "plate-number": "/pages/village/component/tongtong-plate/plate-number"
+  }
+}

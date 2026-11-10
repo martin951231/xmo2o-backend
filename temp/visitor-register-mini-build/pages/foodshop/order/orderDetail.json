@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "订单详情",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "book-price-desc": "/pages/foodshop/components/bookPriceDesc",
+    "order-goods-detail": "/pages/foodshop/components/orderGoodsDetail",
+    "order-log-modal": "/pages/foodshop/components/orderLogModal"
+  }
+}

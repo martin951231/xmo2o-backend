@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "提交订单",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "delivery-model": "/pages/shopmall_third/components/deliveryMethod_Model",
+    "server-model": "/pages/shopmall_third/components/server_guarantee",
+    "couponmodel": "/pages/shopmall_third/components/couponchoose_model",
+    "more_info": "/pages/shopmall_third/components/more_info"
+  }
+}

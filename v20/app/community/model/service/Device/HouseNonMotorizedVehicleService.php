@@ -113,8 +113,7 @@ class HouseNonMotorizedVehicleService
         $keyword = trim((string)$keyword);
         if ($keyword !== '') {
             $query->where(function ($subQuery) use ($keyword) {
-                $subQuery->where('code', 'like', '%' . $keyword . '%')
-                    ->whereOr('parking_num', 'like', '%' . $keyword . '%');
+                $subQuery->where('parking_num', 'like', '%' . $keyword . '%');
             });
         }
 

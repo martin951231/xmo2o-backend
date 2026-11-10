@@ -9,6 +9,7 @@ class SocialActivityValidate extends Validate
     protected $rule = [
         'id' => 'integer|gt:0',
         'name' => 'require|length:1,100',
+        'host_village_id' => 'require|integer|gt:0',
         'category_id' => 'require|integer|gt:0',
         'start_time' => 'require|date',
         'end_time' => 'require|date',
@@ -18,7 +19,7 @@ class SocialActivityValidate extends Validate
         'notice' => 'require',
         'status' => 'require|integer|in:0,10,20,30',
         'sessions' => 'require|array',
-        'poster' => 'require',
+        'position_poster' => 'require',
         'recommend' => 'require|integer|in:0,1',
     ];
 
@@ -27,6 +28,9 @@ class SocialActivityValidate extends Validate
         'id.gt' => '活动ID必须大于0',
         'name.require' => '活动名称不能为空',
         'name.length' => '活动名称长度为1-100个字符',
+        'host_village_id.require' => '请选择活动主办社区',
+        'host_village_id.integer' => '活动主办社区ID必须为整数',
+        'host_village_id.gt' => '请选择活动主办社区',
         'category_id.require' => '活动分类不能为空',
         'category_id.integer' => '活动分类ID必须为整数',
         'category_id.gt' => '活动分类ID必须大于0',
@@ -46,7 +50,7 @@ class SocialActivityValidate extends Validate
         'status.in' => '状态值不正确',
         'sessions.require' => '场次不能为空',
         'sessions.array' => '场次必须为数组',
-        'poster.require' => '活动海报不能为空',
+        'position_poster.require' => '社群活动位海报不能为空',
         'recommend.require' => '推荐状态不能为空',
         'recommend.integer' => '推荐状态必须为整数',
         'recommend.in' => '推荐状态值不正确',
@@ -55,8 +59,8 @@ class SocialActivityValidate extends Validate
 
 
     protected $scene = [
-        'add' => ['name', 'category_id', 'start_time', 'end_time', 'form_id', 'rule_id', 'content', 'notice', 'sessions', 'poster'],
-        'edit' => ['id', 'name', 'category_id', 'start_time', 'end_time', 'form_id', 'rule_id', 'content', 'notice', 'sessions', 'poster'],
+        'add' => ['name', 'host_village_id', 'category_id', 'start_time', 'end_time', 'form_id', 'rule_id', 'content', 'notice', 'sessions', 'position_poster'],
+        'edit' => ['id', 'name', 'host_village_id', 'category_id', 'start_time', 'end_time', 'form_id', 'rule_id', 'content', 'notice', 'sessions', 'position_poster'],
         'detail' => ['id'],
         'delete' => ['id'],
         'status' => ['id', 'status'],

@@ -1,0 +1,1 @@
+<userinfo class="userinfo-box data-v-39af2108" vue-id="35a7246c-1" options="{{user_options}}" data-event-opts="{{[['^getUserscope',[['getUserInfo']]],['^toLogin',[['getUserInfo']]]]}}" bind:getUserscope="__e" bind:toLogin="__e" bind:__l="__l"></userinfo>

@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "popup-layer": "/pages/Community/component/sl-filter/popup-layer",
+    "sl-filter-view": "/pages/Community/component/sl-filter/filter-view"
+  }
+}

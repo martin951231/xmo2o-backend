@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "order-goods-item": "/pages/foodshop/components/orderGoodsItem"
+  }
+}

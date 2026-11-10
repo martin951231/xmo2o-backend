@@ -1,0 +1,1 @@
+.search-warp.data-v-7300b6ee{background-color:#f5f5f5;min-height:100vh;box-sizing:border-box}.search-warp .search-box.data-v-7300b6ee{padding:16rpx;background-color:#fff;position:-webkit-sticky;position:sticky;top:0;z-index:100}.search-warp .activity-section.data-v-7300b6ee{margin:20rpx;display:grid;grid-template-columns:repeat(2,1fr);grid-gap:20rpx}

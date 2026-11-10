@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/live_and_video/live/liver/leftScrollIng"],{"04e0":function(n,t,e){"use strict";e.r(t);var i=e("4789"),o=e("e48f");for(var c in o)["default"].indexOf(c)<0&&function(n){e.d(t,n,(function(){return o[n]}))}(c);e("2ff1");var r,u=e("f0c5"),l=Object(u["a"])(o["default"],i["b"],i["c"],!1,null,null,null,!1,i["a"],r);t["default"]=l.exports},"2ff1":function(n,t,e){"use strict";var i=e("cb60"),o=e.n(i);o.a},4789:function(n,t,e){"use strict";var i;e.d(t,"b",(function(){return o})),e.d(t,"c",(function(){return c})),e.d(t,"a",(function(){return i}));var o=function(){var n=this,t=n.$createElement;n._self._c},c=[]},"78ca":function(n,t,e){"use strict";(function(n){Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var i,o=e("a3a9"),c=n.getSystemInfoSync(),r=(c.windowWidth,c.windowHeight,c.screenHeight,getApp()),u={data:function(){return{dataInfo:{},time:"",curIndex:2,goods_list:[]}},onLoad:function(){},created:function(){i=this,i.init_live_real_count()},methods:{init_live_real_count:function(){var n={noTip:!1,live_id:r.globalData.live_id};o.post("Live&a=live_real_count",n,(function(n){i.dataInfo=n,i.goods_list=n.part_2}))},reverseArr:function(){1==i.curIndex?i.curIndex=2:i.curIndex=1,i.goods_list&&(i.goods_list=i.goods_list.reverse())},close_leftScroll:function(){i.$emit("showleftScroll",!1)},click_refurbish:function(){i.init_live_real_count()}}};t.default=u}).call(this,e("543d")["default"])},cb60:function(n,t,e){},e48f:function(n,t,e){"use strict";e.r(t);var i=e("78ca"),o=e.n(i);for(var c in i)["default"].indexOf(c)<0&&function(n){e.d(t,n,(function(){return i[n]}))}(c);t["default"]=o.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/live_and_video/live/liver/leftScrollIng-create-component',
+    {
+        'pages/live_and_video/live/liver/leftScrollIng-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("04e0"))
+        })
+    },
+    [['pages/live_and_video/live/liver/leftScrollIng-create-component']]
+]);

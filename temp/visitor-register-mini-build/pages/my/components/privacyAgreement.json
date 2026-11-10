@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "agreement-content": "/pages/my/components/agreementContent"
+  }
+}

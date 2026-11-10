@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "支付列表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "no-data": "/pages/parkingLot/components/noData"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "店内搜索",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "spec-modal": "/pages/foodshop/components/specModal",
+    "cart-shop": "/pages/foodshop/components/cartShop",
+    "goods-item": "/pages/foodshop/components/goodsItem",
+    "order-log-modal": "/pages/foodshop/components/orderLogModal"
+  }
+}

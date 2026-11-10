@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "wifi查询",
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-search": "/uview-ui/components/u-search/u-search",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore"
+  }
+}

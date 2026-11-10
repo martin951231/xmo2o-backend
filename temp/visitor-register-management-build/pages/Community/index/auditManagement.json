@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "待审核管理",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

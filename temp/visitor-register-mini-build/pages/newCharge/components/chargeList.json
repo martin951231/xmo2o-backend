@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "no-data": "/pages/newCharge/components/noData"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-rate": "/appComponent/uni/uni-rate/uni-rate"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "发布求助",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "u-line": "/uview-ui/components/u-line/u-line",
+    "u-image": "/uview-ui/components/u-image/u-image"
+  }
+}

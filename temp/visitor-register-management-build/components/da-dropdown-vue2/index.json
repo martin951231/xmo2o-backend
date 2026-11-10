@@ -1,0 +1,16 @@
+{
+  "componentGenerics": {
+    "scoped-slots-slot1": true,
+    "scoped-slots-slot2": true,
+    "scoped-slots-slot3": true,
+    "scoped-slots-slot4": true,
+    "scoped-slots-slot5": true
+  },
+  "component": true,
+  "usingComponents": {
+    "dropdown-picker": "/components/da-dropdown-vue2/components/picker",
+    "dropdown-cell": "/components/da-dropdown-vue2/components/cell",
+    "dropdown-filter": "/components/da-dropdown-vue2/components/filter",
+    "dropdown-daterange": "/components/da-dropdown-vue2/components/daterange"
+  }
+}

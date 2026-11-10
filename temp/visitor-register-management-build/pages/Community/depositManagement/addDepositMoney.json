@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加押金",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "预约",
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-sticky": "/uview-ui/components/u-sticky/u-sticky",
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "suspension-nav": "/pages/appoint/component/suspension-nav/suspension-nav",
+    "information-item": "/pages/appoint/component/informationItem/informationItem",
+    "coupons-dialog": "/appComponent/platcommon/coupons-dialog"
+  }
+}

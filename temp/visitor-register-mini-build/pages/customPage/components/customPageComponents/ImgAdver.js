@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/customPage/components/customPageComponents/ImgAdver"],{"04f1":function(t,n,e){"use strict";var c;e.d(n,"b",(function(){return o})),e.d(n,"c",(function(){return a})),e.d(n,"a",(function(){return c}));var o=function(){var t=this,n=t.$createElement,e=(t._self._c,t.content&&t.content.list&&t.content.list.length),c=e&&t.content&&t.content.style_type&&"1"==t.content.style_type?t.__map(t.content.list,(function(n,e){var c=t.__get_orig(n),o=t.content.style_type&&"1"==t.content.style_type&&t.content.list.length>1&&0!=e&&n.pic;return{$orig:c,g1:o}})):null,o=e&&t.content&&t.content.style_type&&"6"==t.content.style_type?t.content&&t.content.list&&t.content.list.length>1:null;t.$mp.data=Object.assign({},{$root:{g0:e,l0:c,g2:o}})},a=[]},"4a8d":function(t,n,e){"use strict";e.r(n);var c=e("aafb"),o=e.n(c);for(var a in c)["default"].indexOf(a)<0&&function(t){e.d(n,t,(function(){return c[t]}))}(a);n["default"]=o.a},"4c1c":function(t,n,e){"use strict";var c=e("a85c"),o=e.n(c);o.a},a85c:function(t,n,e){},aafb:function(t,n,e){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var c={props:{content:{type:[String,Object],default:""}},data:function(){return{}},methods:{goAdvUrl:function(t){var n=t.link_url||"";n&&this.common.parseUrl(n)}}};n.default=c},c8a5:function(t,n,e){"use strict";e.r(n);var c=e("04f1"),o=e("4a8d");for(var a in o)["default"].indexOf(a)<0&&function(t){e.d(n,t,(function(){return o[t]}))}(a);e("4c1c");var r,u=e("f0c5"),l=Object(u["a"])(o["default"],c["b"],c["c"],!1,null,"a4f8466a",null,!1,c["a"],r);n["default"]=l.exports}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/customPage/components/customPageComponents/ImgAdver-create-component',
+    {
+        'pages/customPage/components/customPageComponents/ImgAdver-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("c8a5"))
+        })
+    },
+    [['pages/customPage/components/customPageComponents/ImgAdver-create-component']]
+]);

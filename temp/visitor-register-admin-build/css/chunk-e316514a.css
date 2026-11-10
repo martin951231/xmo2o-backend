@@ -1,0 +1,104 @@
+.sensitive-words .search-container[data-v-5ae85896] {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+}
+.sensitive-words .search-container .search-item[data-v-5ae85896] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.sensitive-words .search-container .search-item label[data-v-5ae85896] {
+  min-width: 70px;
+  text-align: right;
+  margin-right: 12px;
+  font-size: 14px;
+  color: #333;
+}
+.sensitive-words .search-container .search-buttons[data-v-5ae85896] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+}
+.sensitive-words .action-container[data-v-5ae85896] {
+  margin-bottom: 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+}
+.sensitive-words .action-container .import-btn[data-v-5ae85896] {
+  margin-left: 12px;
+}
+.sensitive-words .main-table[data-v-5ae85896] {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sensitive-words .main-table[data-v-5ae85896] :deep(.ant-table-thead) {
+  background: #f5f5f5;
+}
+.sensitive-words .main-table :deep(.ant-table-thead) th[data-v-5ae85896] {
+  background: #f5f5f5;
+  color: #666;
+  font-weight: 500;
+  font-size: 13px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.sensitive-words .main-table :deep(.ant-table-tbody) tr[data-v-5ae85896] {
+  border-bottom: 1px solid #e8e8e8;
+}
+.sensitive-words .main-table :deep(.ant-table-tbody) tr[data-v-5ae85896]:hover {
+  background: #fafafa;
+}
+.sensitive-words .main-table :deep(.ant-table-tbody) td[data-v-5ae85896] {
+  font-size: 13px;
+  color: #333;
+  padding: 12px 16px;
+}
+.sensitive-words .main-table[data-v-5ae85896] :deep(.ant-pagination) {
+  padding: 12px 16px;
+  border-top: 1px solid #e8e8e8;
+  text-align: right;
+}
+.sensitive-words .main-table :deep(.ant-pagination) li[data-v-5ae85896] {
+  margin: 0 2px;
+}
+.sensitive-words .main-table :deep(.ant-pagination) li.ant-pagination-item-active[data-v-5ae85896] {
+  background: #1890FF;
+  border-color: #1890FF;
+}
+.sensitive-words .main-table :deep(.ant-pagination) li.ant-pagination-item-active a[data-v-5ae85896] {
+  color: #fff;
+}
+.sensitive-words .status-enable[data-v-5ae85896] {
+  color: #52c41a;
+}
+.sensitive-words .status-disable[data-v-5ae85896] {
+  color: #ff4d4f;
+}
+.sensitive-words .action-buttons[data-v-5ae85896] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+}
+.sensitive-words .action-buttons .action-btn[data-v-5ae85896] {
+  font-size: 13px;
+  cursor: pointer;
+  color: #1890FF;
+}
+.sensitive-words .action-buttons .action-btn[data-v-5ae85896]:hover {
+  text-decoration: underline;
+}
+.sensitive-words .action-buttons .delete-btn[data-v-5ae85896] {
+  color: #ff4d4f;
+}
+

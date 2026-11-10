@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "投票详情",
+  "usingComponents": {
+    "uni-rate": "/pages/street/components/uni-rate/uni-rate"
+  }
+}

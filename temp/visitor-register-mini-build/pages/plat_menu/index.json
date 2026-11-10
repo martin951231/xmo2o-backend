@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": " ",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "index-template": "/pages/common/index_template",
+    "collect-miniapp": "/appComponent/platcommon/collectMiniapp",
+    "index-new": "/pages/common/index/index_new",
+    "authorize-tips": "/appComponent/platcommon/authorizeTips"
+  }
+}

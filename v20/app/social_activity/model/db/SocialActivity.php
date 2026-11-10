@@ -30,7 +30,7 @@ class SocialActivity extends Model
             ->append(['status_text', 'activity_status_text'])
             ->each(function(&$item) use ($uid){
                 $item->share_url = get_base_url('pages/socialActivity/detail?id='.$item->id);
-                $item->is_view = ($uid != 1 && $item->creator_uid != $uid) ? 1 : 0;
+                $item->is_view = ($item->status != self::STATUS_0 || ($uid != 1 && $item->creator_uid != $uid)) ? 1 : 0;
             })
             ->toArray();
         return $list;
@@ -59,7 +59,12 @@ class SocialActivity extends Model
     }
 
     public function getPosterAttr($value, $data){
-        return $data ? ($data['poster'] ? replace_file_domain($data['poster']) : '') : '';
+        if (!$data) {
+            return '';
+        }
+        $poster = $data['poster'] ?? $value;
+        $positionPoster = $data['position_poster'] ?? '';
+        return $poster ? replace_file_domain($poster) : ($positionPoster ? replace_file_domain($positionPoster) : '');
     }
     public function getPositionPosterAttr($value, $data){
         return $data ? ($data['position_poster'] ? replace_file_domain($data['position_poster']) : '') : '';

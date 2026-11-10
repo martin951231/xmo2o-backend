@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/village_com/components/villageActivity"],{"2a64":function(t,n,i){"use strict";var e=i("df65"),a=i.n(e);a.a},"3bf8":function(t,n,i){"use strict";i.r(n);var e=i("479f"),a=i.n(e);for(var r in e)["default"].indexOf(r)<0&&function(t){i.d(n,t,(function(){return e[t]}))}(r);n["default"]=a.a},"479f":function(t,n,i){"use strict";(function(t){Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var i={filters:{ellipsiss:function(t){return t?t.length>14?t.slice(0,14)+"...":t:""}},computed:{mtopStyle:function(){var t;return{marginTop:null!==(t=this.listData)&&void 0!==t&&t.jz_open?"20rpx":"15rpx"}}},props:{listData:{type:Object,default:function(){return{}}}},data:function(){return{}},methods:{goActivityUrl:function(n){var i=n.id;t.navigateTo({url:"/pages/village/index/activitySignup?id="+i})}}};n.default=i}).call(this,i("bc2e")["default"])},a1d0:function(t,n,i){"use strict";i.r(n);var e=i("c418"),a=i("3bf8");for(var r in a)["default"].indexOf(r)<0&&function(t){i.d(n,t,(function(){return a[t]}))}(r);i("2a64");var u,c=i("f0c5"),l=Object(c["a"])(a["default"],e["b"],e["c"],!1,null,"a09c455c",null,!1,e["a"],u);n["default"]=l.exports},c418:function(t,n,i){"use strict";var e;i.d(n,"b",(function(){return a})),i.d(n,"c",(function(){return r})),i.d(n,"a",(function(){return e}));var a=function(){var t=this,n=t.$createElement,i=(t._self._c,t.listData.house_village_activity.length),e=t.__map(t.listData.house_village_activity,(function(n,i){var e=t.__get_orig(n),a=t._f("ellipsiss")(n.title);return{$orig:e,f0:a}}));t.$mp.data=Object.assign({},{$root:{g0:i,l0:e}})},r=[]},df65:function(t,n,i){}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/village_com/components/villageActivity-create-component',
+    {
+        'pages/village_com/components/villageActivity-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("a1d0"))
+        })
+    },
+    [['pages/village_com/components/villageActivity-create-component']]
+]);

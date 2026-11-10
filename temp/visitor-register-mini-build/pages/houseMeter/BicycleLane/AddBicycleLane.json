@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加非机动车卡",
+  "usingComponents": {
+    "u-select": "/uview-ui/components/u-select/u-select"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "E支付",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper"
+  }
+}

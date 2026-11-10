@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "鹰眼服务",
+  "usingComponents": {
+    "no-data": "/pages/Community/videoSurveillance/noData"
+  }
+}

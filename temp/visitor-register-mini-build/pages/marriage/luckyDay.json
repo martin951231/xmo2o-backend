@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "黄道吉日",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-calendar": "/pages/marriage/uni-calendar/uni-calendar"
+  }
+}

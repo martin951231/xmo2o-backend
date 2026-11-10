@@ -1,0 +1,64 @@
+
+.imgname {
+  width: 100px;
+}
+
+
+[data-v-e717763c] .cont_box .ant-form-item-control {
+  line-height: 25px !important;
+}
+[data-v-e717763c] .ant-form-item {
+  margin-left: 30px !important;
+  margin-bottom: 15px !important;
+}
+[data-v-e717763c] .label_col {
+  margin-right: 30px !important;
+  font-weight: bold !important;
+  margin-bottom: 10px !important;
+}
+[data-v-e717763c] .box_width {
+  display: inline-block;
+  width: 150px;
+}
+[data-v-e717763c] .ant-form-item .ant-col-sm-13 {
+  width: 100% !important;
+}
+[data-v-e717763c] .ant-input-number {
+  width: 150px !important;
+  display: inline-block;
+}
+[data-v-e717763c] .adress_box {
+  padding: 5px;
+  color: white;
+  background: #87B87F;
+  margin-left: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+[data-v-e717763c] .times_but {
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+}
+[data-v-e717763c] .el-date-editor {
+  margin-right: 5px !important;
+}
+[data-v-e717763c] .time_box {
+  display: inline-block;
+  margin-bottom: 5px !important;
+}
+[data-v-e717763c] .set_time {
+  display: inline-block;
+  margin-left: 30px !important;
+}
+[data-v-e717763c] .time_right {
+  display: inline-block;
+  width: 80% !important;
+  margin-left: 1px !important;
+  position: relative;
+}
+[data-v-e717763c] .ant-upload-list {
+  margin-bottom: 0 !important;
+}
+

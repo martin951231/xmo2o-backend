@@ -1,0 +1,1 @@
+<view class="page data-v-78e4568a"><view class="title data-v-78e4568a">{{''+$root.m0+''}}</view><view class="data-v-78e4568a"><u-parse vue-id="631a356e-1" html="{{detail.content_html}}" class="data-v-78e4568a" bind:__l="__l"></u-parse></view></view>

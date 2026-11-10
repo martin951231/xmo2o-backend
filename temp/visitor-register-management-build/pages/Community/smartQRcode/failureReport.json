@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "故障上报",
+  "usingComponents": {
+    "u-modal": "/uview-ui/components/u-modal/u-modal",
+    "sunui-upimg": "/appComponent/uni/sunui-upimg/sunui-upimg-basic"
+  }
+}

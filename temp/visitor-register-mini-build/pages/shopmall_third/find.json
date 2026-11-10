@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "发现",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "selftabbar": "/pages/shopmall_third/components/self_tabbar",
+    "stackswiper": "/pages/shopmall_third/components/stackingswiper"
+  }
+}

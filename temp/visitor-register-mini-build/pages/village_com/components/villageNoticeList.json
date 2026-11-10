@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-segmented-control": "/appComponent/uni/uni-segmented-control/uni-segmented-control"
+  }
+}

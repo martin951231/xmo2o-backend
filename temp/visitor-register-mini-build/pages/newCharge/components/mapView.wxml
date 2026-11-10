@@ -1,0 +1,1 @@
+<view class="map_view data-v-3396cf48"><map class="charge_map data-v-3396cf48" latitude="{{localParams.latitude}}" longitude="{{localParams.longitude}}" scale="{{localParams.scale}}" show-location="{{true}}" markers="{{markers}}"></map></view>

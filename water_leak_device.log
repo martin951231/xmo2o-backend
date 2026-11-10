@@ -1,2 +1,3 @@
-{"time":"2026-05-26 10:25:05","message":"request received","request":{"get":[],"post":[],"raw_body":""}}
-{"time":"2026-05-26 10:25:09","message":"request received","request":{"get":[],"post":[],"raw_body":""}}
+{"time":"2026-10-19 15:10:21","message":"request received","request":{"get":[],"post":[],"raw_body":"{\"ID\":1111,\"zhuangtai\":1.00}"}}
+{"time":"2026-10-19 15:10:42","message":"request received","request":{"get":[],"post":[],"raw_body":"{\"ID\":1111,\"zhuangtai\":0.00}"}}
+{"time":"2026-10-19 15:11:03","message":"request received","request":{"get":[],"post":[],"raw_body":"{\"ID\":1111,\"zhuangtai\":1.00}"}}

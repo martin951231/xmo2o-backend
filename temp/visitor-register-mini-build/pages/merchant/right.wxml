@@ -1,0 +1,1 @@
+<view class="container"><view class="myde_tq"><image src="https://cloud.mrsqfw.com/static/wxapp/right_zs.png"></image></view><view class="myxq"><view class="myxq_title">会员特权</view><view class="myxq_mx" id="member_right">{{card_info.info}}</view></view></view>

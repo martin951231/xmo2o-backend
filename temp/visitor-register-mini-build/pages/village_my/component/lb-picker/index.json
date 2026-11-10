@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "selector-picker": "/pages/village_my/component/lb-picker/pickers/selector-picker",
+    "multi-selector-picker": "/pages/village_my/component/lb-picker/pickers/multi-selector-picker",
+    "unlinked-selector-picker": "/pages/village_my/component/lb-picker/pickers/unlinked-selector-picker"
+  }
+}

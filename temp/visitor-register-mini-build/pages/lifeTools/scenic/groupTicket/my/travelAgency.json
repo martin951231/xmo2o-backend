@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "旅行社认证",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "custom-form": "/pages/lifeTools/order/components/customForm"
+  }
+}

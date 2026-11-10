@@ -1,0 +1,1 @@
+<view><tabbar vue-id="d5b3eb1a-1" tabbar="{{tabbar}}" bind:__l="__l"></tabbar><convenient vue-id="d5b3eb1a-2" optionsData="{{optionsData}}" bind:__l="__l"></convenient></view>

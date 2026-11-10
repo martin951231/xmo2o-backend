@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "tui-icon": "/pages/appoint/component/icon/icon",
+    "tui-tag": "/pages/appoint/component/tag/tag",
+    "tui-actionsheet": "/pages/appoint/component/actionsheet/actionsheet"
+  }
+}

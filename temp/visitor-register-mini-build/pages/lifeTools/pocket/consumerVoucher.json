@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "消费券",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-line": "/uview-ui/components/u-line/u-line",
+    "u-empty": "/uview-ui/components/u-empty/u-empty"
+  }
+}

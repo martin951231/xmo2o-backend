@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "平台优惠会员卡",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "shop-item": "/appComponent/platcommon/shopItem",
+    "shop-item-filter": "/pages/membership/components/shop-item-filter"
+  }
+}

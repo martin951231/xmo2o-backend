@@ -1,0 +1,1 @@
+<block wx:if="{{isShow}}"><view class="collect-miniapp" style="{{('top:'+offsetTop+'px;')}}"> 点击“ <text class="iconfont icon-sangedian"></text> ”添加至我的小程序，微信首页下拉即可快速访问 <text data-event-opts="{{[['tap',[['hideHandle',['$event']]]]]}}" class="iconfont icon-cha1" bindtap="__e"></text><text class="iconfont icon-arr-top"></text></view></block>

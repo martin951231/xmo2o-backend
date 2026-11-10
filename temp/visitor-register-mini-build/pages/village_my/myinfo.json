@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "我的资料",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "evan-radio": "/pages/village_my/component/evan-radio/evan-radio",
+    "evan-radio-group": "/pages/village_my/component/evan-radio/evan-radio-group",
+    "w-picker": "/pages/village_my/component/w-picker/w-picker",
+    "lb-picker": "/pages/village_my/component/lb-picker/index"
+  }
+}

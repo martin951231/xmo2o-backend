@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "人流量统计",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

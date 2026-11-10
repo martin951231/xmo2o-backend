@@ -1,0 +1,12 @@
+{
+  "component": true,
+  "usingComponents": {
+    "deposit-com": "/pages/loanModule/components/depositCom",
+    "account-open": "/pages/loanModule/components/accountOpen",
+    "e-paycom": "/pages/loanModule/components/ePaycom",
+    "person-loan": "/pages/loanModule/components/personLoan",
+    "enterprise-loan": "/pages/loanModule/components/enterpriseLoan",
+    "apply-creditcard": "/pages/loanModule/components/applyCreditcard",
+    "nodata": "/pages/loanModule/components/nodata"
+  }
+}

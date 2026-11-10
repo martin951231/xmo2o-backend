@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "linkage-list": "/pages/index/components/linkage-list/linkage-list",
+    "original-list": "/pages/index/components/original-list/original-list"
+  }
+}

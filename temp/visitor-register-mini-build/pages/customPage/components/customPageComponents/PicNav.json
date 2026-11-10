@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "component-bg-image": "/pages/customPage/components/customPageComponents/ComponentBgImage"
+  }
+}

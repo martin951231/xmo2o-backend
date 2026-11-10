@@ -1,0 +1,10 @@
+{
+  "componentPlaceholder": {
+    "recommend-goods-popup": "view"
+  },
+  "navigationBarTitleText": "支付结果",
+  "usingComponents": {
+    "u-loading": "/uview-ui/components/u-loading/u-loading",
+    "recommend-goods-popup": "/pages/plat_com/components/recommendGoodsPopup"
+  }
+}

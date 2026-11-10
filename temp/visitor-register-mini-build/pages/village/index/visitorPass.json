@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "访客通行",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "xfl-select": "/pages/village/component/xfl-select/xfl-select"
+  }
+}

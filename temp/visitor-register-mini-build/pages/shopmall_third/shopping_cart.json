@@ -1,0 +1,18 @@
+{
+  "navigationBarTitleText": "购物车",
+  "navigationBarTextStyle": "black",
+  "navigationStyle": "custom",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "selftabbar": "/pages/shopmall_third/components/self_tabbar",
+    "waterfall": "/pages/shopmall_third/components/newfall",
+    "coupon-model": "/pages/shopmall_third/components/couponModel",
+    "sku-model": "/pages/shopmall_third/components/skuModel",
+    "gift-model": "/pages/shopmall_third/components/giftModel",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "tophalf": "/pages/shopmall_third/components/tophalf",
+    "count-down": "/pages/shopmall_third/components/countdown",
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar"
+  }
+}

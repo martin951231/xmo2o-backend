@@ -1,0 +1,1062 @@
+{
+  "pages": [
+    "pages/village_menu/index",
+    "pages/visitorRegister/person",
+    "pages/visitorRegister/vehicle",
+    "pages/visitorRegister/success",
+    "pages/plat_menu/index",
+    "pages/plat_menu/store",
+    "pages/plat_menu/my",
+    "pages/shop_index/index",
+    "pages/village_menu/convenient",
+    "pages/village_menu/my",
+    "pages/village_menu/resident",
+    "pages/village_menu/new_resident",
+    "pages/plat_menu/merchant",
+    "pages/login/login",
+    "pages/webview/tab_webview",
+    "pages/webview/webview"
+  ],
+  "subPackages": [
+    {
+      "root": "pages/common",
+      "pages": [
+        "index_template"
+      ]
+    },
+    {
+      "root": "pages/share",
+      "pages": [
+        "share_friend",
+        "share",
+        "set"
+      ]
+    },
+    {
+      "root": "pages/shop_new",
+      "pages": [
+        "shopDetail/shopDetail",
+        "shopDetail/marketDetail",
+        "scanBuy/scanBuy",
+        "scanBuyLocate/scanBuyLocate",
+        "scanBuyExplain/scanBuyExplain",
+        "search/search",
+        "goodsDetail/goodsDetail",
+        "goodsDetail/marketGoodsDetail",
+        "goodsActivity/goodsActivity",
+        "orderTogether/orderTogether",
+        "goodsSearch/goodsSearch",
+        "cart/cart",
+        "selectAddress/selectAddress",
+        "shopType/shopType",
+        "confirmOrder/pay",
+        "confirmOrder/order_mark",
+        "confirmOrder/newCart",
+        "payByOthers/payByOthers",
+        "shopSpecial/shopSpecial",
+        "shopSpecial/shopSpecialComplex",
+        "orderDetail/orderDetail",
+        "infoList/infoList",
+        "infoList/infoDetail",
+        "limitPage/limitPage",
+        "scanGoodsList/scanGoodsList",
+        "shopOrderOut/index",
+        "shopOrderOut/outOrder",
+        "shopOrderOut/orderManagement"
+      ]
+    },
+    {
+      "root": "pages/appoint",
+      "pages": [
+        "index",
+        "category",
+        "goods/goodsList",
+        "goods/search",
+        "goods/searchCate",
+        "goods/productDetail",
+        "goods/commentList",
+        "goods/goodsDetail",
+        "goods/submitOrder",
+        "goods/submitDetail",
+        "goods/address",
+        "information/list",
+        "information/detail",
+        "worker/list",
+        "worker/detail"
+      ]
+    },
+    {
+      "root": "pages/robot",
+      "pages": [
+        "choose_village",
+        "call_robot_list",
+        "maps_point_list",
+        "call_history",
+        "call_task_detail",
+        "call_robot_release_order",
+        "call_robot_release_order_2"
+      ]
+    },
+    {
+      "root": "pages/village_my",
+      "pages": [
+        "richText",
+        "waterReportlist",
+        "waterReport",
+        "waterReportdetailds",
+        "repairComment",
+        "lifepayment",
+        "payMentlist",
+        "payMentdetailds",
+        "unpaidMentdetailds",
+        "healthManagementfee",
+        "independentPayement",
+        "expressManagement",
+        "expressAppointment",
+        "expressDelivery",
+        "expressPickup",
+        "express_pickup/pickupApplication",
+        "express_pickup/addPickupApplication",
+        "express_pickup/commonPerson",
+        "express_pickup/addCommonPerson",
+        "addexpressInfo",
+        "visitorRegistration",
+        "visitorRegistrationlist",
+        "addvisitor",
+        "QRvisitor",
+        "shareVisitor",
+        "villagelist",
+        "QRcode",
+        "myPosts",
+        "myPostsdetailds",
+        "convenientList",
+        "faceAccessControl",
+        "newFaceAccessControl",
+        "selectBindFace",
+        "familyMembersNotice",
+        "myVillage",
+        "bindFamily",
+        "joinHouse",
+        "myvillageList",
+        "myApartment",
+        "myRoom",
+        "hawkEye",
+        "selectRooms",
+        "myinfo",
+        "AIcharge",
+        "addVisitorinfo",
+        "addVisitorinfoTwo",
+        "shareVisitorTwo",
+        "applicationCode",
+        "visitorRecords",
+        "visitorInfo"
+      ]
+    },
+    {
+      "root": "pages/houseManage",
+      "pages": [
+        "index",
+        "pages/subscribe",
+        "pages/leaseApply",
+        "pages/houseInspectionQRcode",
+        "pages/checkoutList",
+        "pages/checkoutView",
+        "pages/subscribeDetail",
+        "pages/subscribeRecord"
+      ]
+    },
+    {
+      "root": "pages/village",
+      "pages": [
+        "smartService/index",
+        "publicRevenue/index",
+        "publicRevenue/detail",
+        "publicRevenue/quarter",
+        "index/openLock",
+        "index/notice",
+        "index/develop",
+        "index/villagecontent",
+        "resident/detailds",
+        "resident/newmsg",
+        "resident/publish",
+        "commonly_used/house_phone",
+        "index/activitySignup",
+        "index/visitorPass",
+        "index/writeApplication",
+        "smartExpressCabinet/selectExpress",
+        "smartExpressCabinet/courierCertification",
+        "smartExpressCabinet/courierDepositExpress",
+        "smartExpressCabinet/courierManagement",
+        "smartQRcode/taskList",
+        "smartQRcode/taskMap",
+        "smartQRcode/taskRecords",
+        "smartQRcode/elevatorManagement",
+        "smartQRcode/failureReport",
+        "smartQRcode/inspectionRecords",
+        "mobileMeterReading/workList",
+        "mobileMeterReading/selectApartment",
+        "mobileMeterReading/selectRoom",
+        "mobileMeterReading/selectRoomy",
+        "mobileMeterReading/selectMeterCate",
+        "mobileMeterReading/writeMeter",
+        "mobileMeterReading/meterRecords",
+        "index/oneClickAlarm",
+        "commonly_used/pickUpMaterials",
+        "street/streetNews",
+        "street/villagecontent",
+        "communityNews/communityNews",
+        "communityNews/villagecontent",
+        "smartPark/parkList",
+        "smartPark/parkpayment",
+        "smartPark/stopParkMoney",
+        "smartPark/parkingFee",
+        "smartPark/parkingFeetwo",
+        "smartPark/parkingFeeDetails",
+        "smartPark/paymentSuccessful",
+        "smartPark/successful",
+        "smartPark/fail",
+        "Einvoice/EinvoiceList",
+        "Einvoice/openEinvoice",
+        "Einvoice/EinvoiceHistory",
+        "Einvoice/EinvoiceDetails",
+        "scamera/scanBuy",
+        "materialDiy/materialList",
+        "materialDiy/materialDetails",
+        "materialDiy/materialDiy",
+        "materialDiy/myMsg",
+        "materialDiy/successful",
+        "resident/residentCategory",
+        "visitorPass/visitorinfo",
+        "visitorPass/openCode",
+        "visitorPass/userinfoCode",
+        "visitorPass/userinfo",
+        "smartCharge/AIcharge",
+        "smartCharge/smartCharge",
+        "smartCharge/chargeNumDeatail",
+        "smartCharge/chargeApply",
+        "smartCharge/chargeRecord",
+        "smartCharge/chargeNum",
+        "smartCharge/payMonthcard",
+        "smartCharge/paySuccess",
+        "smartCharge/myCard",
+        "smartCharge/monthCardDetails",
+        "smartCharge/historyLog",
+        "smartCharge/historyOrderDetails",
+        "smartCharge/refund",
+        "smartCharge/chargeDetails",
+        "smartCharge/chargeList",
+        "openDoor/opendoor",
+        "smartPark/shopCoupon",
+        "my_pages/invitationCode",
+        "my_pages/popupsCode",
+        "grid/eventList",
+        "grid/addevent",
+        "grid/eventdetails",
+        "grid/eventrecord",
+        "grid/eventcate"
+      ]
+    },
+    {
+      "root": "pages/mall",
+      "pages": [
+        "store_home/index",
+        "store_home/goods",
+        "store_home/goodsClass",
+        "store_home/search",
+        "store_home/allGoods"
+      ]
+    },
+    {
+      "root": "pages/vote",
+      "pages": [
+        "index",
+        "voteDetail"
+      ]
+    },
+    {
+      "root": "pages/store",
+      "pages": [
+        "detail",
+        "prepay",
+        "homePage",
+        "phoneList",
+        "replyList",
+        "storeList",
+        "queue/queueDetail"
+      ]
+    },
+    {
+      "root": "pages/my",
+      "pages": [
+        "address/index",
+        "address/address-add-or-edit",
+        "number",
+        "newnumber",
+        "privacyContent",
+        "address",
+        "pick_address",
+        "myinfo",
+        "username",
+        "address_add",
+        "birth",
+        "collect",
+        "openMap",
+        "my_order",
+        "my_order_search",
+        "make_comments",
+        "authentication",
+        "myextension/mine_extension",
+        "authentication_result",
+        "myextension/myinvitation",
+        "myextension/entry_record",
+        "my_tracks",
+        "my_collect",
+        "my_release",
+        "my_evaluate",
+        "oldAgePension/manage",
+        "oldAgePension/detail",
+        "oldAgePension/draw",
+        "identityAuthentication",
+        "property_recommendation",
+        "complaint/submit",
+        "pointExchange/pointExchange",
+        "pointExchange/pointRecord",
+        "pointExchange/exchangeDetail",
+        "pointExchange/myExchange",
+        "pointExchange/poinExchangeDetail",
+        "address/modifyShippingAddress",
+        "message/list",
+        "message/orderStatusMsg",
+        "internalCard/myCard",
+        "internalCard/myCardLog",
+        "internalCard/changePassword",
+        "internalCard/offlineCouponList",
+        "internalCard/offlineCouponVerification",
+        "weChatTransferCash"
+      ]
+    },
+    {
+      "root": "pages/group",
+      "pages": [
+        "index",
+        "detail",
+        "shop",
+        "buy",
+        "store_index",
+        "store_class_list",
+        "listPage",
+        "groupCombineList",
+        "groupCombineDetail",
+        "groupCombineOrderDetail",
+        "index/home",
+        "index/catPage",
+        "index/list",
+        "index/selectAddress"
+      ]
+    },
+    {
+      "root": "pages/merchant",
+      "pages": [
+        "card",
+        "coupon",
+        "store",
+        "order",
+        "right",
+        "personal",
+        "point",
+        "transrecord",
+        "prepay",
+        "card_code"
+      ]
+    },
+    {
+      "root": "pages/index",
+      "pages": [
+        "index",
+        "location",
+        "location_wxapp",
+        "share",
+        "dicount_list",
+        "search",
+        "searchList",
+        "select_address",
+        "select_address_new"
+      ]
+    },
+    {
+      "root": "pages/nofooter",
+      "pages": [
+        "store/store_index",
+        "index",
+        "my_index",
+        "shop/shop_index",
+        "village_menu/convenient",
+        "village_menu/resident",
+        "village_menu/new_resident"
+      ]
+    },
+    {
+      "root": "pages/pay",
+      "pages": [
+        "allinpayReturn",
+        "coupon",
+        "index",
+        "check",
+        "alipayTips",
+        "result",
+        "unmannedMachine/paySuccess",
+        "unmannedMachine/recyclerActions"
+      ]
+    },
+    {
+      "root": "pages/membership",
+      "pages": [
+        "platMembership",
+        "platMemberList"
+      ]
+    },
+    {
+      "root": "pages/runErrands",
+      "pages": [
+        "index",
+        "confirm",
+        "addAddress",
+        "selectAddress",
+        "my",
+        "goodsType",
+        "openMap",
+        "recording"
+      ]
+    },
+    {
+      "root": "pages/live_and_video",
+      "pages": [
+        "live/creat_live",
+        "live/add_product",
+        "live/own_store",
+        "live/businessAlliance",
+        "live/productTemp",
+        "live/selectProduct",
+        "live/viewer/viewer_list",
+        "live/viewer/main_page",
+        "live/viewer/viewer_page",
+        "live/viewer/report",
+        "live/viewer/report_submit",
+        "live/liver/liver_page",
+        "live/liver/my_liverList",
+        "live/liver/liverDetails",
+        "video/Author/my_videoList",
+        "video/Author/take_video",
+        "video/Author/create_Video",
+        "video/Author/talking",
+        "video/Audience/talkingDetails",
+        "video/Audience/videoDetails",
+        "mainPage",
+        "my",
+        "fansList",
+        "searchIndex"
+      ]
+    },
+    {
+      "root": "pages/foodshop",
+      "pages": [
+        "index/index",
+        "search/index",
+        "search/searchList",
+        "mapFoodList/index",
+        "store/recommendList",
+        "store/storeMenu",
+        "store/tableSign",
+        "order/onLineBookSeat",
+        "order/onLineBookSeatDetail",
+        "order/orderDetail",
+        "order/confirmGoods",
+        "store/goodsDetail",
+        "order/paySuccess",
+        "store/menuSearch",
+        "order/orderList",
+        "order/confirmOrder",
+        "order/comments",
+        "order/cancelReason",
+        "merchant/storeList"
+      ]
+    },
+    {
+      "root": "pages/shopmall_third",
+      "pages": [
+        "store_home/index",
+        "store_home/goods",
+        "store_home/goodsClass",
+        "store_home/search",
+        "store_home/allGoods",
+        "shopmall_index",
+        "searchindex",
+        "searchresult",
+        "find",
+        "mine",
+        "shopping_cart",
+        "activityPages",
+        "activityGive",
+        "commodity_details",
+        "footprint",
+        "goodscomments",
+        "placeOrder",
+        "orderDetails",
+        "refundDetails",
+        "invoicepage",
+        "watchinvoice",
+        "aftersaleApplication",
+        "publishComments",
+        "bargaining",
+        "bargainingDetails",
+        "mybargaining",
+        "flashSale",
+        "flashsaleSearch",
+        "makeGroup",
+        "myGroup",
+        "inviteFriends",
+        "selectAddress"
+      ]
+    },
+    {
+      "root": "pages/coupon",
+      "pages": [
+        "index",
+        "myCoupon",
+        "storeCoupon",
+        "search",
+        "myGroupCoupon"
+      ]
+    },
+    {
+      "root": "pages/street",
+      "pages": [
+        "street_index",
+        "streetParty_index",
+        "matter/matterList",
+        "matter/matterDetails",
+        "streetNews/streetNews",
+        "streetNews/villagecontent",
+        "threeParty/threeParty",
+        "threeParty/villagecontent",
+        "threeParty/BuildingPartyinfo",
+        "threeParty/BuildingPartyDetails",
+        "index/streetActivityList",
+        "index/activitySignup",
+        "index/volunteersActivityList",
+        "index/volunteersActivitySignup",
+        "index/communityList",
+        "index/villageList",
+        "index/partyList",
+        "index/partyDetail",
+        "vote/index",
+        "vote/voteDetail",
+        "tookPictures/tookPicturesList",
+        "tookPictures/tookPicturesDetails",
+        "tookPictures/addTookPictures",
+        "threeParty/oneClass",
+        "threeParty/oneClassDetails"
+      ]
+    },
+    {
+      "root": "pages/parkingLot",
+      "pages": [
+        "index",
+        "pages/parkingFee",
+        "pages/registrationRecord",
+        "pages/registerCar",
+        "pages/bindCar",
+        "pages/carManage",
+        "pages/payList",
+        "pages/orderDetail",
+        "pages/verticalDetail"
+      ]
+    },
+    {
+      "root": "pages/loginRoles",
+      "pages": [
+        "index",
+        "readTxt"
+      ]
+    },
+    {
+      "root": "pages/newCharge",
+      "pages": [
+        "index",
+        "pages/orderList",
+        "pages/durationCharge",
+        "pages/chargeDetail",
+        "pages/pileDetail",
+        "pages/priceDetail",
+        "pages/startCharging",
+        "pages/chargePointCode",
+        "pages/scanCode",
+        "pages/personCenter",
+        "pages/rechargeDetails",
+        "pages/physicalCard",
+        "pages/bindPhysical",
+        "pages/refundApply",
+        "pages/payMoney"
+      ]
+    },
+    {
+      "root": "pages/loanModule",
+      "pages": [
+        "index",
+        "pages/toExamine",
+        "pages/myLoan",
+        "pages/applyLoan",
+        "pages/applyDetail",
+        "pages/applyThis",
+        "pages/deposit",
+        "pages/depositForm",
+        "pages/depositDetail",
+        "pages/creditCardDetail",
+        "pages/creditCardForm",
+        "pages/electronicBank",
+        "pages/financialKnowledge",
+        "pages/financialDetail",
+        "pages/ePay",
+        "pages/accountReservation",
+        "pages/accountDetail",
+        "pages/readAgreement"
+      ]
+    },
+    {
+      "root": "pages/houseMeter",
+      "pages": [
+        "index/meterManagement",
+        "index/advanceManagement",
+        "index/meterDetails",
+        "index/successful",
+        "index/payRecord",
+        "index/billList",
+        "index/billDetails",
+        "NewCollectMoney/liveExpenses",
+        "NewCollectMoney/newLiveExpenses",
+        "NewCollectMoney/ercodePayment",
+        "NewCollectMoney/orderList",
+        "NewCollectMoney/liveExpensesDetails",
+        "NewCollectMoney/billDetails",
+        "NewCollectMoney/preStorage",
+        "NewCollectMoney/vehicleList",
+        "NewCollectMoney/lifePayment",
+        "NewCollectMoney/billsPaid",
+        "NewCollectMoney/balanceRecord",
+        "workOrder/workOrder",
+        "workOrder/eventList",
+        "workOrder/addevent",
+        "workOrder/eventdetails",
+        "workOrder/eventrecord",
+        "workOrder/eventcate",
+        "workOrder/selectRooms",
+        "workOrder/dayNight",
+        "workOrder/warrantyDetails",
+        "facedoor/facedoor",
+        "venuerese/venuelist",
+        "venuerese/venuedetail",
+        "venuerese/subscribe",
+        "venuerese/mycollect",
+        "venuerese/cancel",
+        "preStorage/preStorageIndex",
+        "preStorage/preStoragePay",
+        "preStorage/preStorageMoney",
+        "venuerese/myappointment",
+        "preStorage/preStorageDetails",
+        "venuerese/appointdetail",
+        "preStorage/webviewPDF",
+        "VisitorInvitation/visitorPass",
+        "VisitorInvitation/shareRecords",
+        "VisitorInvitation/visitorOpenDoor",
+        "VisitorInvitation/shareRecordsDetail",
+        "BicycleLane/BicycleLane",
+        "BicycleLane/AddBicycleLane",
+        "BicycleLane/PayRecord",
+        "BicycleLane/BicycleLanePay"
+      ]
+    },
+    {
+      "root": "pages/marriage",
+      "pages": [
+        "luckyDay"
+      ]
+    },
+    {
+      "root": "pages/activity",
+      "pages": [
+        "scanDrawAward/draw",
+        "scenicArea/ticketVerification",
+        "lottery/getCoupons",
+        "pluginUse/merScorePlugins",
+        "probeShop/index",
+        "probeShop/couponDetail",
+        "lottery/turntableLottery",
+        "mahjongCard/index",
+        "mahjongCard/cashPrizeCenter",
+        "mahjongCard/userCard",
+        "mahjongCard/userPrize"
+      ]
+    },
+    {
+      "root": "pages/deposit",
+      "pages": [
+        "goodsList",
+        "msgList",
+        "goodsDetail"
+      ]
+    },
+    {
+      "root": "pages/lifeTools",
+      "pages": [
+        "appointment/myAppoint",
+        "comment/list",
+        "comment/add",
+        "information/list",
+        "information/detail",
+        "livingPay/list",
+        "match/list",
+        "match/detail",
+        "match/myMatch/list",
+        "match/myMatch/detail",
+        "message/list",
+        "order/confirmOrder",
+        "order/orderDetail",
+        "payCode/index",
+        "pocket/list",
+        "pocket/consumerVoucher",
+        "pocket/detail",
+        "pocket/timeCardDetail",
+        "pocket/payCode",
+        "pocket/memberRight",
+        "pocket/message",
+        "pocket/personalInformation",
+        "pocket/recharge",
+        "sports/index",
+        "tools/detail",
+        "sports/catList",
+        "order/applyRefund",
+        "scenic/index",
+        "scenic/ticketBook",
+        "scenic/timeCardPayList",
+        "match/register",
+        "help/helpList",
+        "help/helpRelease",
+        "help/helpDetail",
+        "tools/my",
+        "advice/list",
+        "advice/detail",
+        "advice/release",
+        "sports/activity/detail",
+        "sports/activity/list",
+        "buildingSale/list",
+        "buildingSale/detail",
+        "buildingSale/myDistributionList",
+        "employee/activityArea",
+        "employee/activityList",
+        "scenic/groupTicket/index/index",
+        "scenic/groupTicket/my/index",
+        "scenic/groupTicket/my/travelAgency",
+        "scenic/groupTicket/order/list",
+        "scenic/groupTicket/order/touristsInfo",
+        "scenic/groupTicket/order/touristsInfoSubmit",
+        "scenic/groupTicket/order/paySuccess",
+        "distribution/index/apply",
+        "distribution/index/applySubmit",
+        "distribution/index/index",
+        "distribution/index/myCertification",
+        "distribution/settlementSheet/index",
+        "distribution/settlementSheet/list",
+        "distribution/settlementSheet/detail",
+        "distribution/spread/order",
+        "distribution/spread/share",
+        "tools/parkingLot",
+        "tools/wifiList",
+        "appointment/detail",
+        "appointment/register",
+        "appointment/mineAppoint/detail",
+        "appointment/mineAppoint/list",
+        "scenic/scenicMap/scMap",
+        "scenic/scenicMap/scenicMonitor",
+        "scenic/scenicMap/scenicDetail"
+      ]
+    },
+    {
+      "root": "pages/sccba",
+      "pages": [
+        "result"
+      ]
+    },
+    {
+      "root": "pages/customPage",
+      "pages": [
+        "index",
+        "my",
+        "customPage"
+      ]
+    },
+    {
+      "root": "pages/snatchParking",
+      "pages": [
+        "index",
+        "rent_index",
+        "pages/orderList",
+        "pages/orderDetail"
+      ]
+    },
+    {
+      "root": "pages/stopFeating",
+      "pages": [
+        "index",
+        "pages/heatingProtocol",
+        "pages/applyStop",
+        "pages/applyDetail"
+      ]
+    },
+    {
+      "root": "pages/trafficBilling",
+      "pages": [
+        "index",
+        "pages/heatingProtocol",
+        "pages/applyStop",
+        "pages/applyDetail"
+      ]
+    },
+    {
+      "root": "pages/village_com",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "root": "pages/plat_com",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "root": "pages/shoppingMall",
+      "pages": [
+        "index",
+        "my",
+        "guide",
+        "areaMap",
+        "order",
+        "pointsApply",
+        "nearbyShoppingMall",
+        "searchStore"
+      ]
+    },
+    {
+      "root": "pages/socialActivity",
+      "pages": [
+        "index",
+        "search",
+        "myActivity",
+        "pastInteractions",
+        "detail",
+        "activitySubmit",
+        "my",
+        "pointsRecord"
+      ]
+    }
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#f4f4f4",
+    "navigationBarTitleText": "O2O",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f4f4f4"
+  },
+  "tabBar": {
+    "color": "#777",
+    "selectedColor": "#06c1ae",
+    "backgroundColor": "#FAFAFC",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/village_menu/index",
+        "text": "首页",
+        "iconPath": "./static/village_icon/index.png",
+        "selectedIconPath": "./static/village_icon/index2.png"
+      },
+      {
+        "pagePath": "pages/village_menu/convenient",
+        "text": "便民",
+        "iconPath": "./static/village_icon/convenient.png",
+        "selectedIconPath": "./static/village_icon/convenient2.png"
+      },
+      {
+        "text": "web页面",
+        "pagePath": "pages/webview/tab_webview",
+        "iconPath": "./static/images/footer_my.png",
+        "selectedIconPath": "./static/images/footer_my_active.png"
+      },
+      {
+        "pagePath": "pages/village_menu/resident",
+        "text": "邻里",
+        "iconPath": "./static/village_icon/lt.png",
+        "selectedIconPath": "./static/village_icon/lt2.png"
+      },
+      {
+        "pagePath": "pages/village_menu/my",
+        "text": "我的",
+        "iconPath": "./static/village_icon/my.png",
+        "selectedIconPath": "./static/village_icon/my2.png"
+      }
+    ],
+    "position": "bottom"
+  },
+  "preloadRule": {
+    "pages/shop_index/index": {
+      "network": "all",
+      "packages": [
+        "pages/shop_new"
+      ]
+    },
+    "pages/plat_menu/my": {
+      "network": "all",
+      "packages": [
+        "pages/my"
+      ]
+    },
+    "pages/plat_menu/index": {
+      "network": "all",
+      "packages": [
+        "pages/index",
+        "pages/plat_com"
+      ]
+    },
+    "pages/plat_com/index": {
+      "network": "all",
+      "packages": [
+        "pages/plat_com"
+      ]
+    },
+    "pages/village_menu/index": {
+      "network": "all",
+      "packages": [
+        "pages/village",
+        "pages/village_com"
+      ]
+    },
+    "pages/village_com/index": {
+      "network": "all",
+      "packages": [
+        "pages/village_com"
+      ]
+    },
+    "pages/village_menu/resident": {
+      "network": "all",
+      "packages": [
+        "pages/village"
+      ]
+    },
+    "pages/village_menu/my": {
+      "network": "all",
+      "packages": [
+        "pages/village"
+      ]
+    },
+    "pages/appoint/index": {
+      "network": "all",
+      "packages": [
+        "pages/appoint"
+      ]
+    },
+    "pages/appoint/category": {
+      "network": "all",
+      "packages": [
+        "pages/appoint"
+      ]
+    },
+    "pages/houseMeter/index/meterManagement": {
+      "network": "all",
+      "packages": [
+        "pages/houseMeter"
+      ]
+    },
+    "pages/houseManage/index": {
+      "network": "all",
+      "packages": [
+        "pages/houseManage"
+      ]
+    },
+    "pages/parkingLot/index": {
+      "network": "all",
+      "packages": [
+        "pages/parkingLot"
+      ]
+    },
+    "pages/loanModule/index": {
+      "network": "all",
+      "packages": [
+        "pages/loanModule"
+      ]
+    },
+    "pages/marriage/luckyDay": {
+      "network": "all",
+      "packages": [
+        "pages/marriage"
+      ]
+    },
+    "pages/village_my/joinHouse": {
+      "network": "all",
+      "packages": [
+        "pages/village_my"
+      ]
+    },
+    "pages/newCharge/index": {
+      "network": "all",
+      "packages": [
+        "pages/newCharge"
+      ]
+    },
+    "pages/loginRoles/index": {
+      "network": "all",
+      "packages": [
+        "pages/loginRoles"
+      ]
+    },
+    "pages/snatchParking/index": {
+      "network": "all",
+      "packages": [
+        "pages/snatchParking"
+      ]
+    },
+    "pages/stopFeating/index": {
+      "network": "all",
+      "packages": [
+        "pages/stopFeating"
+      ]
+    },
+    "pages/trafficBilling/index": {
+      "network": "all",
+      "packages": [
+        "pages/trafficBilling"
+      ]
+    }
+  },
+  "networkTimeout": {
+    "request": 300000
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的相关距离计算"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
+  "navigateToMiniProgramAppIdList": [
+    "wxef277996acc166c3"
+  ],
+  "plugins": {},
+  "usingComponents": {
+    "userinfo": "/appComponent/platcommon/userinfo",
+    "privacy-policy": "/appComponent/platcommon/privacy-policy",
+    "tabbar": "/appComponent/platcommon/tabbar",
+    "lang": "/appComponent/platcommon/lang",
+    "buy-can-get-score": "/appComponent/platcommon/buyCanGetScore"
+  }
+}

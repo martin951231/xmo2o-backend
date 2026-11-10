@@ -1,0 +1,1 @@
+<view><userinfo vue-id="7ab41938-1" id="user" options="{{user_options}}" data-event-opts="{{[['^getUserscope',[['getUserInfo']]],['^toLogin',[['getUserInfo']]]]}}" bind:getUserscope="__e" bind:toLogin="__e" bind:__l="__l"></userinfo><view class="release">我的发布</view></view>

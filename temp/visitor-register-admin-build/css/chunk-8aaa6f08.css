@@ -1,0 +1,29 @@
+.detail-search-container[data-v-74d34fcb] {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+}
+.detail-search-container .search-item[data-v-74d34fcb] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.detail-search-container .search-item label[data-v-74d34fcb] {
+  min-width: 70px;
+  text-align: right;
+  margin-right: 12px;
+  font-size: 14px;
+  color: #333;
+}
+.detail-search-container .search-buttons[data-v-74d34fcb] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+}
+

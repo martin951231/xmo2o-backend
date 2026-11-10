@@ -1,0 +1,17 @@
+
+.cloudintercom {
+  padding: 20px 20px;
+}
+.page_top{
+  background-color: #40a9ff;
+  display: inline-block;
+  width: 100%;
+  padding: 20px 20px;
+  margin-bottom: 20px;
+  color: #FFFFFF;
+}
+.select_position{
+  width: 150px !important;
+  margin-right: 10px;
+}
+

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "常用电话",
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup"
+  }
+}

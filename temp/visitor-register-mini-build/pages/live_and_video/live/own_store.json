@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "自有店铺",
+  "navigationBarBackgroundColor": "#FE443A",
+  "usingComponents": {
+    "select-product": "/pages/live_and_video/live/selectProduct"
+  }
+}

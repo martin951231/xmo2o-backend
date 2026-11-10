@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加内容",
+  "usingComponents": {
+    "upload-img": "/pages/street/components/uploadImg/uploadImg"
+  }
+}

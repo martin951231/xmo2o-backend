@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/village_com/components/scrollNotice"],{"44fb7":function(t,e,n){"use strict";n.r(e);var i=n("b456"),a=n("d51f");for(var r in a)["default"].indexOf(r)<0&&function(t){n.d(e,t,(function(){return a[t]}))}(r);n("ea46");var u,c=n("f0c5"),o=Object(c["a"])(a["default"],i["b"],i["c"],!1,null,"791f38fc",null,!1,i["a"],u);e["default"]=o.exports},"9b12":function(t,e,n){"use strict";(function(t){Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var n={props:{listData:{type:Object,default:function(){return{}}}},computed:{mtopStyle:function(){var t;return{marginTop:null!==(t=this.listData)&&void 0!==t&&t.jz_open?"20rpx":"15rpx"}}},watch:{listData:{handler:function(e){var n=this;e&&e.news_info&&e.news_info.title&&setTimeout((function(){var e=t.createSelectorQuery();e.select("#news_title").boundingClientRect(),e.select("#news_title_box").boundingClientRect(),e.exec((function(t){t[1]&&0!=t[1].height&&(n.news_title_animate=!(t[1].width>=t[0].width))}))}),1e3)}}},data:function(){return{news_title_animate:!1}},methods:{goUrls:function(t){this.$emit("goUrls",t.currentTarget.dataset)}}};e.default=n}).call(this,n("543d")["default"])},b456:function(t,e,n){"use strict";var i;n.d(e,"b",(function(){return a})),n.d(e,"c",(function(){return r})),n.d(e,"a",(function(){return i}));var a=function(){var t=this,e=t.$createElement;t._self._c},r=[]},d4e7:function(t,e,n){},d51f:function(t,e,n){"use strict";n.r(e);var i=n("9b12"),a=n.n(i);for(var r in i)["default"].indexOf(r)<0&&function(t){n.d(e,t,(function(){return i[t]}))}(r);e["default"]=a.a},ea46:function(t,e,n){"use strict";var i=n("d4e7"),a=n.n(i);a.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/village_com/components/scrollNotice-create-component',
+    {
+        'pages/village_com/components/scrollNotice-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("44fb7"))
+        })
+    },
+    [['pages/village_com/components/scrollNotice-create-component']]
+]);

@@ -4,7 +4,7 @@
 	 * */
 class plan_sub_quick_call extends plan_base{
 	public function runTask($param){
-        invoke_v20_service('\app\community\model\service\HouseNewCashierService/discardQuickCall', $param);
+        // invoke_v20_service('\app\community\model\service\HouseNewCashierService/discardQuickCall', $param);
         return true;
 	}
 }

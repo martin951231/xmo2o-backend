@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "充电详情页",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-count-down": "/uview-ui/components/u-count-down/u-count-down"
+  }
+}

@@ -1,0 +1,1 @@
+.like-fx{position:absolute;right:-140rpx;bottom:65rpx;z-index:888;width:220rpx;padding-right:50rpx;height:600rpx;pointer-events:none}

@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "任务详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-time-line": "/uview-ui/components/u-time-line/u-time-line",
+    "u-time-line-item": "/uview-ui/components/u-time-line-item/u-time-line-item",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-badge": "/uview-ui/components/u-badge/u-badge",
+    "u-tag": "/uview-ui/components/u-tag/u-tag",
+    "u-line": "/uview-ui/components/u-line/u-line",
+    "u-card": "/uview-ui/components/u-card/u-card",
+    "u-back-top": "/uview-ui/components/u-back-top/u-back-top"
+  }
+}

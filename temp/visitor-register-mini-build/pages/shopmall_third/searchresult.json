@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "搜索",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "u-tag": "/uview-ui/components/u-tag/u-tag",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "tophalf": "/pages/shopmall_third/components/tophalf",
+    "footprintframe": "/pages/shopmall_third/components/footprintframe",
+    "goods-item": "/pages/shopmall_third/components/goodsItem"
+  }
+}

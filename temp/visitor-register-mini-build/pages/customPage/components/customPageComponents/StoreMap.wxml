@@ -1,0 +1,1 @@
+<view class="data-v-7d675adb"><map class="store-map-wrap data-v-7d675adb" style="{{'height:'+(mapH+'rpx')+';'}}" longitude="{{longitude}}" latitude="{{latitude}}" scale="13" markers="{{markers}}"></map></view>

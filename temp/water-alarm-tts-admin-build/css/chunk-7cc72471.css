@@ -1,0 +1,40 @@
+.flag[data-v-63d29e48] {
+  margin-left: 2%;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.flag p[data-v-63d29e48] {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+.info-list .info[data-v-63d29e48] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 24px;
+}
+.info-list .info span[data-v-63d29e48]:first-child {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  margin-right: 8px;
+}
+.info-list .info img[data-v-63d29e48] {
+  cursor: pointer;
+  min-width: 180px;
+  width: 35%;
+  height: 130px;
+  margin-right: 20px;
+}
+.info-list .info .ant-input[data-v-63d29e48] {
+  width: 40%;
+}
+.border_info[data-v-63d29e48] {
+  border-bottom: 1px #e5e3e3 solid;
+  margin-bottom: 25px;
+}
+

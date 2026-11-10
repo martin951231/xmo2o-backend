@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "便民",
+  "usingComponents": {
+    "convenient": "/appComponent/villagePage/convenient"
+  }
+}

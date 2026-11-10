@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "店铺优惠券",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "coupon-card": "/pages/coupon/components/StoreCouponCard"
+  }
+}

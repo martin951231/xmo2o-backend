@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "商品详情",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "cart-shop": "/pages/foodshop/components/cartShop",
+    "spec-modal": "/pages/foodshop/components/specModal",
+    "order-log-modal": "/pages/foodshop/components/orderLogModal"
+  }
+}

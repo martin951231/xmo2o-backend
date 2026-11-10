@@ -470,15 +470,16 @@ class HouseNewTransactionSummaryService
         return ['park_number' => $park_number, 'garage_num' => $garage_num, 'position_num' => $position_num];
     }
 
+    // 已缴口径与账单列表一致：现金支付 + 组合支付抵扣；退款仍按报表原有规则处理。
     public function getSummaryByRoomAndRuleList($village_id = 0, $whereArr = array(), $pay_status = '', $page = 1, $limit = 10, $is_export = false)
     {
         $db_house_new_pay_order = new HouseNewPayOrder();
         $returnArr = array('lists' => array(), 'count' => 0, 'total_limit' => $limit + 1, 'rule_count' => 0);
-        $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.modify_money,sum(ROUND(o.modify_money,2)) as all_modify_money,sum(ROUND(o.late_payment_money,2)) as all_late_payment_money,o.pay_money,sum(ROUND(o.pay_money,2)) as all_pay_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
+        $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.modify_money,sum(ROUND(o.modify_money,2)) as all_modify_money,sum(ROUND(o.late_payment_money,2)) as all_late_payment_money,o.pay_money,sum(ROUND(o.pay_money + COALESCE(o.discount_money,0),2)) as all_pay_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
         if ($pay_status == 'no_pay') {
             $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.total_money,sum(ROUND(o.modify_money,2)) as all_modify_money,sum(ROUND(o.late_payment_money,2)) as all_late_payment_money,o.late_payment_money,o.modify_money,o.pay_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
         } else if ($pay_status == 'is_pay') {
-            $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.total_money,sum(ROUND(o.pay_money,2)) as all_pay_money,o.late_payment_money,o.modify_money,o.pay_money,o.refund_money,sum(ROUND(o.refund_money,2)) as all_refund_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
+            $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.total_money,sum(ROUND(o.pay_money + COALESCE(o.discount_money,0),2)) as all_pay_money,o.late_payment_money,o.modify_money,o.pay_money,o.refund_money,sum(ROUND(o.refund_money,2)) as all_refund_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
         }
         $order_rules = $this->getOrderTableRuleList($village_id, $pay_status);
         $order_rules_lists = $order_rules['lists'];
@@ -511,7 +512,7 @@ class HouseNewTransactionSummaryService
                     $exportTitle[] = $rvv['charge_name'];
                 }
                 if ($where_rule_id > 0 && $rvv['id'] == $where_rule_id) {
-                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                     $sumOrderMoney = $db_house_new_pay_order->get_one($ruleWhereArr, $tmpSumField);
                     if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                         $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -527,7 +528,7 @@ class HouseNewTransactionSummaryService
                     } else {
                         $ruleWhereArr[] = array('rule_id', '=', $rvv['id']);
                     }
-                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                     $sumOrderMoney = $db_house_new_pay_order->get_one($ruleWhereArr, $tmpSumField);
                     if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                         $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -628,7 +629,7 @@ class HouseNewTransactionSummaryService
                 } else if ($pay_status == 'is_pay') {
                     $all_total_money = $vv['all_pay_money'] - $vv['all_refund_money'];
                     $orders[$kk]['all_total_money'] = round_number($all_total_money);
-                    $rule_order_tmp = $db_house_new_pay_order->getOrderByGroup($tmpWhereArr, 'project_id,rule_id,sum(ROUND(pay_money,2)) as all_total_money,sum(ROUND(refund_money,2)) as all_refund_money,car_type,car_number,service_start_time,service_end_time', 'rule_id,car_type,car_number');
+                    $rule_order_tmp = $db_house_new_pay_order->getOrderByGroup($tmpWhereArr, 'project_id,rule_id,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_total_money,sum(ROUND(refund_money,2)) as all_refund_money,car_type,car_number,service_start_time,service_end_time', 'rule_id,car_type,car_number');
                     if ($rule_order_tmp && !$rule_order_tmp->isEmpty()) {
                         $rule_order_tmp = $rule_order_tmp->toArray();
                         foreach ($rule_order_tmp as $itemR) {
@@ -687,7 +688,7 @@ class HouseNewTransactionSummaryService
             unset($orders);
             unset($exportData);
 
-            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
             $sumOrderMoney = $db_house_new_pay_order->get_one($whereArr, $tmpSumField);
             $all_total_money = 0;
             if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
@@ -730,11 +731,11 @@ class HouseNewTransactionSummaryService
     {
         $db_house_new_pay_order = new HouseNewPayOrder();
         $returnArr = array('lists' => array(), 'count' => 0, 'total_limit' => $limit + 1, 'rule_count' => 0);
-        $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.modify_money,sum(ROUND(o.modify_money,2)) as all_modify_money,sum(ROUND(o.late_payment_money,2)) as all_late_payment_money,o.pay_money,sum(ROUND(o.pay_money,2)) as all_pay_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
+        $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.modify_money,sum(ROUND(o.modify_money,2)) as all_modify_money,sum(ROUND(o.late_payment_money,2)) as all_late_payment_money,o.pay_money,sum(ROUND(o.pay_money + COALESCE(o.discount_money,0),2)) as all_pay_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
         if ($pay_status == 'no_pay') {
             $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.total_money,sum(ROUND(o.modify_money,2)) as all_modify_money,sum(ROUND(o.late_payment_money,2)) as all_late_payment_money,o.late_payment_money,o.modify_money,o.pay_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
         } else if ($pay_status == 'is_pay') {
-            $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.total_money,sum(ROUND(o.pay_money,2)) as all_pay_money,o.late_payment_money,o.modify_money,o.pay_money,o.refund_money,sum(ROUND(o.refund_money,2)) as all_refund_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
+            $field = 'o.order_id,o.uid,o.pigcms_id,o.name,o.phone,o.pay_bind_id,o.pay_bind_name,o.pay_bind_phone,o.room_id,o.position_id,o.total_money,sum(ROUND(o.pay_money + COALESCE(o.discount_money,0),2)) as all_pay_money,o.late_payment_money,o.modify_money,o.pay_money,o.refund_money,sum(ROUND(o.refund_money,2)) as all_refund_money,o.pay_amount_points,o.project_id,o.rule_id,o.car_type,o.car_number,o.service_start_time,o.service_end_time';
         }
         $order_project = $this->getOrderTableProjectList($village_id, $pay_status);
         $order_project_lists = $order_project['lists'];
@@ -767,7 +768,7 @@ class HouseNewTransactionSummaryService
                     $exportTitle[] = $rvv['name'];
                 }
                 if ($where_project_id > 0 && $rvv['id'] == $where_project_id) {
-                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                     $sumOrderMoney = $db_house_new_pay_order->get_one($ruleWhereArr, $tmpSumField);
                     if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                         $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -783,7 +784,7 @@ class HouseNewTransactionSummaryService
                     } else {
                         $ruleWhereArr[] = array('project_id', '=', $rvv['id']);
                     }
-                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                     $sumOrderMoney = $db_house_new_pay_order->get_one($ruleWhereArr, $tmpSumField);
                     if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                         $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -884,7 +885,7 @@ class HouseNewTransactionSummaryService
                 } else if ($pay_status == 'is_pay') {
                     $all_total_money = $vv['all_pay_money'] - $vv['all_refund_money'];
                     $orders[$kk]['all_total_money'] = round_number($all_total_money);
-                    $rule_order_tmp = $db_house_new_pay_order->getOrderByGroup($tmpWhereArr, 'project_id,rule_id,sum(ROUND(pay_money,2)) as all_total_money,sum(ROUND(refund_money,2)) as all_refund_money,car_type,car_number,service_start_time,service_end_time', 'project_id,car_type,car_number');
+                    $rule_order_tmp = $db_house_new_pay_order->getOrderByGroup($tmpWhereArr, 'project_id,rule_id,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_total_money,sum(ROUND(refund_money,2)) as all_refund_money,car_type,car_number,service_start_time,service_end_time', 'project_id,car_type,car_number');
                     if ($rule_order_tmp && !$rule_order_tmp->isEmpty()) {
                         $rule_order_tmp = $rule_order_tmp->toArray();
                         foreach ($rule_order_tmp as $itemR) {
@@ -943,7 +944,7 @@ class HouseNewTransactionSummaryService
             unset($orders);
             unset($exportData);
 
-            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
             $sumOrderMoney = $db_house_new_pay_order->get_one($whereArr, $tmpSumField);
             $all_total_money = 0;
             if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
@@ -1159,7 +1160,7 @@ class HouseNewTransactionSummaryService
                         }
 
                         if ($where_rule_id > 0 && $crvv['id'] == $where_rule_id) {
-                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                             $sumOrderMoney = $db_house_new_pay_order->get_one($tmpWhereArr, $tmpSumField);
                             if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                                 $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -1187,7 +1188,7 @@ class HouseNewTransactionSummaryService
                             }
 
                             if ($funcKaidalaicnSpecial && $pay_status == 'is_pay' && in_array($order_service_type, [1, 2])) {
-                                $tmpSumFieldx = 'order_id,modify_money,pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
+                                $tmpSumFieldx = 'order_id,modify_money,(pay_money + COALESCE(discount_money,0)) as pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
                                 $payOrderSpecialObj = $db_house_new_pay_order->getOrder($whereArrSpecialTmp, $tmpSumFieldx);
                                 $payOrderSpecials = array();
                                 if ($payOrderSpecialObj && !$payOrderSpecialObj->isEmpty()) {
@@ -1243,7 +1244,7 @@ class HouseNewTransactionSummaryService
                             }
                         } else if ($where_rule_id < 1 && !empty($crvv['id'])) {
                             $tmpWhereArr[] = array('rule_id', '=', $crvv['id']);
-                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                             $sumOrderMoney = $db_house_new_pay_order->get_one($tmpWhereArr, $tmpSumField);
                             if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                                 $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -1272,7 +1273,7 @@ class HouseNewTransactionSummaryService
 
                             if ($funcKaidalaicnSpecial && $pay_status == 'is_pay' && in_array($order_service_type, [1, 2])) {
                                 $whereArrSpecialTmp[] = array('rule_id', '=', $crvv['id']);
-                                $tmpSumFieldx = 'order_id,modify_money,pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
+                                $tmpSumFieldx = 'order_id,modify_money,(pay_money + COALESCE(discount_money,0)) as pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
                                 $payOrderSpecialObj = $db_house_new_pay_order->getOrder($whereArrSpecialTmp, $tmpSumFieldx);
                                 $payOrderSpecials = array();
                                 if ($payOrderSpecialObj && !$payOrderSpecialObj->isEmpty()) {
@@ -1377,7 +1378,7 @@ class HouseNewTransactionSummaryService
                         $tmpWhereArr[] = ['service_end_time', '<=', $_end_time];
                     }
 
-                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                     $sumOrderMoney = $db_house_new_pay_order->get_one($tmpWhereArr, $tmpSumField);
                     if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                         $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -1604,7 +1605,7 @@ class HouseNewTransactionSummaryService
                         }
 
                         if ($where_project_id > 0 && $crvv['id'] == $where_project_id) {
-                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                             $sumOrderMoney = $db_house_new_pay_order->get_one($tmpWhereArr, $tmpSumField);
                             if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                                 $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -1632,7 +1633,7 @@ class HouseNewTransactionSummaryService
                             }
 
                             if ($funcKaidalaicnSpecial && $pay_status == 'is_pay' && in_array($order_service_type, [1, 2])) {
-                                $tmpSumFieldx = 'order_id,modify_money,pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
+                                $tmpSumFieldx = 'order_id,modify_money,(pay_money + COALESCE(discount_money,0)) as pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
                                 $payOrderSpecialObj = $db_house_new_pay_order->getOrder($whereArrSpecialTmp, $tmpSumFieldx);
                                 $payOrderSpecials = array();
                                 if ($payOrderSpecialObj && !$payOrderSpecialObj->isEmpty()) {
@@ -1688,7 +1689,7 @@ class HouseNewTransactionSummaryService
                             }
                         } else if ($where_project_id < 1 && !empty($crvv['id'])) {
                             $tmpWhereArr[] = array('project_id', '=', $crvv['id']);
-                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                            $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                             $sumOrderMoney = $db_house_new_pay_order->get_one($tmpWhereArr, $tmpSumField);
                             if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                                 $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -1717,7 +1718,7 @@ class HouseNewTransactionSummaryService
 
                             if ($funcKaidalaicnSpecial && $pay_status == 'is_pay' && in_array($order_service_type, [1, 2])) {
                                 $whereArrSpecialTmp[] = array('project_id', '=', $crvv['id']);
-                                $tmpSumFieldx = 'order_id,modify_money,pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
+                                $tmpSumFieldx = 'order_id,modify_money,(pay_money + COALESCE(discount_money,0)) as pay_money,order_type,order_type_flag,red_reversal_money,append_later_money,service_start_time,service_end_time';
                                 $payOrderSpecialObj = $db_house_new_pay_order->getOrder($whereArrSpecialTmp, $tmpSumFieldx);
                                 $payOrderSpecials = array();
                                 if ($payOrderSpecialObj && !$payOrderSpecialObj->isEmpty()) {
@@ -1822,7 +1823,7 @@ class HouseNewTransactionSummaryService
                         $tmpWhereArr[] = ['service_end_time', '<=', $_end_time];
                     }
 
-                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money,2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
+                    $tmpSumField = 'sum(ROUND(modify_money,2)) as all_modify_money,sum(ROUND(late_payment_money,2)) as all_late_payment_money,sum(ROUND(pay_money + COALESCE(discount_money,0),2)) as all_pay_money,sum(ROUND(refund_money,2)) as all_refund_money';
                     $sumOrderMoney = $db_house_new_pay_order->get_one($tmpWhereArr, $tmpSumField);
                     if ($sumOrderMoney && isset($sumOrderMoney['all_modify_money'])) {
                         $all_total_money = $sumOrderMoney['all_modify_money'] + $sumOrderMoney['all_late_payment_money'];
@@ -3367,13 +3368,27 @@ class HouseNewTransactionSummaryService
             $title = $param['export_title'];
         }
         $paramStr = json_encode($param, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $addArr = array('type' => $type, 'param' => $paramStr, 'status' => 0, 'dateline' => time());
+        $addArr = array('type' => $type, 'param' => $paramStr, 'status' => 0, 'dateline' => time(), 'file_name' => '');
         $addArr['title'] = $title;
         $export_id = $exportLogDb->addOneData($addArr);
         $retArr = array('export_id' => $export_id);
         $queueData = $param;
         $queueData['export_id'] = $export_id;
         $queueData['export_type'] = $type;
+        // 少量账单流水直接生成，避免因队列未启动或旧 worker 未重启而一直等待。
+        if ($type === 'house_paid_order_record') {
+            $where = (new HousePaidOrderRecordService())->getExportWhere($village_id, $param);
+            $records = (new \app\common\model\db\PaidOrderRecord())->getListData($where, 'id', 'id DESC', 1, 101);
+            if ($records->count() <= 100) {
+                try {
+                    (new HouseListDatasExportOutService())->startExecExportOut($queueData);
+                } catch (\Throwable $e) {
+                    fdump_api(['export_id' => $export_id, 'error' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()], 'errHouseListDatasExportOutJob', true);
+                    throw new \think\Exception('账单流水导出失败，请检查服务器导出日志（任务编号：' . $export_id . '）');
+                }
+                return $retArr;
+            }
+        }
         $this->exportExcelOutJob($queueData);
         return $retArr;
     }

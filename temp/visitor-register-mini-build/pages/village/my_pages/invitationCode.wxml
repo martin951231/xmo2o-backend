@@ -1,0 +1,1 @@
+<view class="container"><view class="tip">邀请业主扫码入住,业主消费后获得佣金</view><image class="img_1" src="{{listdata}}" mode></image></view>

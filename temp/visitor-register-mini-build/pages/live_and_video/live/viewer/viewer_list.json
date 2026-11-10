@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "直播",
+  "navigationBarBackgroundColor": "#FE443A",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar"
+  }
+}

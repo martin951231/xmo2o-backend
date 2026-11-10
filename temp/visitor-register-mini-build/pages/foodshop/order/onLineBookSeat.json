@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "订座",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "book-price-desc": "/pages/foodshop/components/bookPriceDesc"
+  }
+}

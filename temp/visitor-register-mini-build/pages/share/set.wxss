@@ -1,0 +1,1 @@
+.container{padding:10px;background:#fff;margin-top:20px}.flex{display:flex!important;display:-webkit-flex;align-items:center}.flex_one{flex:1;-webkit-box-flex:1;-webkit-flex:1}.weui-media-box__title .h4{font-size:16px}.detail{padding-top:5px;color:#999}

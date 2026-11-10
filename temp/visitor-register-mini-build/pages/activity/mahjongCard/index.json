@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "‎",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "rules-popup": "/pages/activity/mahjongCard/components/rulesPopup",
+    "lottery-result-popup": "/pages/activity/mahjongCard/components/lotteryResultPopup"
+  }
+}

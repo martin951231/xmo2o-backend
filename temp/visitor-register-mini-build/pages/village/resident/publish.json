@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发布",
+  "usingComponents": {
+    "helang-checkbox": "/pages/village/resident/components/helang-checkbox/helang-checkbox",
+    "upload-img": "/pages/village/component/uploadImg/uploadImg"
+  }
+}

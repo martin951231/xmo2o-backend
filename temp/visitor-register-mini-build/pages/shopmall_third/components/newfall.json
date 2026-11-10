@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "goods-item": "/pages/shopmall_third/components/goodsItem",
+    "shop-goods-item": "/pages/shopmall_third/components/shopGoodsItem"
+  }
+}

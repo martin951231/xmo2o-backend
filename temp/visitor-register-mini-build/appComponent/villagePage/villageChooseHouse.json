@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "village-bind-house": "/appComponent/villagePage/villageBindHouse",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup"
+  }
+}

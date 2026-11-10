@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "我的小区",
+  "usingComponents": {
+    "uni-collapse": "/pages/village_my/component/uni-collapse/uni-collapse",
+    "uni-collapse-item": "/pages/village_my/component/uni-collapse-item/uni-collapse-item",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "read-modal": "/pages/village_my/component/readModal"
+  }
+}

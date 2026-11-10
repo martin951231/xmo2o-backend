@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "事件详情",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "u-modal": "/uview-ui/components/u-modal/u-modal",
+    "w-picker": "/pages/houseMeter/components/w-picker/w-picker",
+    "upload-img": "/pages/houseMeter/components/uploadImg/uploadImg",
+    "uni-rate": "/appComponent/uni/uni-rate/uni-rate",
+    "video-play": "/pages/houseMeter/workOrder/videoPlayer"
+  }
+}

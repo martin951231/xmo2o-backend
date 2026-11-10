@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "跑腿",
+  "usingComponents": {
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "address-input": "/pages/runErrands/components/AddressInput",
+    "select-goods": "/pages/runErrands/components/SelectGoods",
+    "shop-item": "/pages/runErrands/components/ShopItem"
+  }
+}

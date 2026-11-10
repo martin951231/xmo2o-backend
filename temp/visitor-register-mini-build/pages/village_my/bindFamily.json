@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "绑定家属",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "evan-radio": "/pages/village_my/component/evan-radio/evan-radio",
+    "evan-radio-group": "/pages/village_my/component/evan-radio/evan-radio-group",
+    "w-picker": "/pages/village_my/component/w-picker/w-picker",
+    "lb-picker": "/pages/village_my/component/lb-picker/index"
+  }
+}

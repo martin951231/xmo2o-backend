@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "提交订单",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-calendar": "/uview-ui/components/u-calendar/u-calendar",
+    "change-count": "/pages/lifeTools/order/components/changeCount",
+    "change-coupon": "/pages/lifeTools/order/components/changeCoupon",
+    "change-date": "/pages/lifeTools/order/components/changeDate",
+    "change-user": "/pages/lifeTools/order/components/changeUser",
+    "engagement-form": "/pages/lifeTools/order/components/engagementForm",
+    "custom-form": "/pages/lifeTools/order/components/customForm",
+    "change-seat-map": "/pages/lifeTools/order/components/changeSeatMap"
+  }
+}

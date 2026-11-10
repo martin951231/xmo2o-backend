@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "砍价",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "waterfall": "/pages/shopmall_third/components/newfall",
+    "bargain-model": "/pages/shopmall_third/components/bargainModel",
+    "tophalf": "/pages/shopmall_third/components/tophalf"
+  }
+}

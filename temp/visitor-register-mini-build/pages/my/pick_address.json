@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "切换自提点",
+  "usingComponents": {
+    "u-search": "/uview-ui/components/u-search/u-search",
+    "u-image": "/uview-ui/components/u-image/u-image"
+  }
+}

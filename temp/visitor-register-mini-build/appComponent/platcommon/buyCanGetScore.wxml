@@ -1,0 +1,1 @@
+<block wx:if="{{$root.g0}}"><view style="{{$root.s0}}" class="data-v-05d02708"><view class="{{['buyCanGetScore','u-font-22','u-m-t-10','u-m-b-10','data-v-05d02708',[(hideBg)?'hideBg':'']]}}" style="{{$root.s1}}">{{''+$root.g1+''}}</view></view></block>

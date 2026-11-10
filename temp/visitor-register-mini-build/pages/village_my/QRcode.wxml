@@ -1,0 +1,1 @@
+<view style="height:100%;"><view class="container"><view class="text">{{listdata.share_title}}</view><view class="qrcode-icon"><image class="qrcode-img" src="{{see_qrcode_img}}"></image></view><view class="text">长按识别小程序码开门</view></view></view>

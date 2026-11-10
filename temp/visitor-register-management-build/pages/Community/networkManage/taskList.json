@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "任务列表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "no-data": "/pages/Community/networkManage/noData"
+  }
+}

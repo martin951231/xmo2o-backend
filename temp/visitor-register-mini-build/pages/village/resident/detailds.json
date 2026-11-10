@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "动态详情",
+  "usingComponents": {
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "uni-fab": "/pages/village/component/uni-fab/uni-fab"
+  }
+}

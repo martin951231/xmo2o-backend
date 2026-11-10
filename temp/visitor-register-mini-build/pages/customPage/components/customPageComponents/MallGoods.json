@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-sticky": "/uview-ui/components/u-sticky/u-sticky",
+    "mall-goods-item": "/pages/customPage/components/customPageComponents/MallGoodsItem"
+  }
+}

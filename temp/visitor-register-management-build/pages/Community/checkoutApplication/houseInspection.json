@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "验房",
+  "usingComponents": {
+    "u-upload": "/uview-ui/components/u-upload/u-upload",
+    "u-select": "/uview-ui/components/u-select/u-select"
+  }
+}

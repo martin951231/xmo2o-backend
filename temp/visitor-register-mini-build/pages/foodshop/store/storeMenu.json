@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "菜单",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "usingComponents": {
+    "table-sign-modal": "/pages/foodshop/components/tableSignModal",
+    "advance-order-modal": "/pages/foodshop/components/advanceOrderModal",
+    "spec-modal": "/pages/foodshop/components/specModal",
+    "cart-shop": "/pages/foodshop/components/cartShop",
+    "goods-item": "/pages/foodshop/components/goodsItem",
+    "order-log-modal": "/pages/foodshop/components/orderLogModal"
+  }
+}

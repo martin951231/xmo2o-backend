@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "订单详情",
+  "usingComponents": {
+    "recommend-store": "/pages/shop_new/component/recommendDetailByStore/recommendDetailByStore",
+    "we-app-ads": "/appComponent/platcommon/weAppAds"
+  }
+}

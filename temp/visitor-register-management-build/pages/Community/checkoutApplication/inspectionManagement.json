@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "验房管理",
+  "usingComponents": {
+    "empty-data": "/pages/Community/checkoutApplication/emptyData"
+  }
+}

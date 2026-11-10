@@ -1,0 +1,1 @@
+<view data-event-opts="{{[['tap',[['gofootprint']]]]}}" class="footprint_container data-v-4fc14e4d" bindtap="__e"><image src="{{$root.m0}}" alt class="_img data-v-4fc14e4d"></image></view>

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "预存",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "warm-tips": "/pages/houseMeter/preStorage/warmTips"
+  }
+}

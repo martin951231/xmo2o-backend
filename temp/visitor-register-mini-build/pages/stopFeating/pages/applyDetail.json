@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "详情",
+  "usingComponents": {
+    "base-msg": "/pages/stopFeating/components/baseMsgDetail",
+    "document-msg": "/pages/stopFeating/components/documentMsgDetail"
+  }
+}

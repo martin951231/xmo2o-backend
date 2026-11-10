@@ -1,0 +1,1 @@
+<view class="{{['log-modal-wrap','data-v-69c3c59c',cur_goods_log?'show':'']}}"><block wx:if="{{cur_goods_log}}"><view class="flex data-v-69c3c59c"><view class="avatar data-v-69c3c59c"><image src="{{cur_goods_log.avatar?cur_goods_log.avatar:defaultAvatar}}" class="data-v-69c3c59c"></image></view><text class="desc data-v-69c3c59c">{{cur_goods_log.desc}}</text></view></block></view>

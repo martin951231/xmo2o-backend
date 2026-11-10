@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "委托取件",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

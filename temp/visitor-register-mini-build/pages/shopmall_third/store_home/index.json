@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "",
+  "onReachBottomDistance": 500,
+  "usingComponents": {
+    "shop-trick": "/pages/shopmall_third/components/shopTrick/shopTrick",
+    "tabbar": "/pages/shopmall_third/components/tabbar/tabbar",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "goods": "/pages/shopmall_third/store_home/goods",
+    "new-goods": "/pages/shopmall_third/store_home/newGoods",
+    "custorm-decorate": "/pages/shopmall_third/store_home/custormDecorate"
+  }
+}

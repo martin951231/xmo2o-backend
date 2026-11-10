@@ -1,0 +1,1 @@
+<view><block wx:if="{{webview_url!=''}}"><view><web-view src="{{webview_url}}" data-event-opts="{{[['message',[['webviewMessage',['$event']]]],['load',[['webviewLoad',['$event']]]]]}}" bindmessage="__e" bindload="__e"></web-view></view></block><view><tabbar vue-id="1cc82636-1" tabbar="{{tabbar}}" bind:__l="__l"></tabbar></view></view>

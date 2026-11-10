@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "详情",
+  "usingComponents": {
+    "base-msg": "/pages/trafficBilling/components/baseMsgDetail",
+    "document-msg": "/pages/trafficBilling/components/documentMsgDetail"
+  }
+}

@@ -133,6 +133,9 @@ class RepairCenterController extends CommunityBaseController
         try{
             $params = ['source_type' => 'village', 'village_id' => $village_id, 'jz_open' => $jz_open];
             $data = $service_house_new_repair->getOrderList($where,$field,$page,$limit,$order,0,[],$params);
+            if (!is_array($data)) {
+                $data = [];
+            }
             $data = array_map(function($item) {
                 // 先解码HTML实体（&quot;等），再解析JSON为数组
                 if( $item['inspection_auto_add'] === 1 ){

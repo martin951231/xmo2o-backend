@@ -1,0 +1,1 @@
+<view class="container"><view class="tip">请向物业出示下方二维码</view><view class="tip_1">{{village_name}}</view><image class="img_1" src="{{listdata.qrcode}}" mode></image></view>

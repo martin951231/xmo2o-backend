@@ -395,44 +395,58 @@ class PrintTemplateService
         unset($data);
         // 开启事务
         Db::startTrans();
-        //删除之前的
-        $print_custom->delTemplateCustom($where);
-        if (is_array($ids) && $ids) {
-            $data = [];
-            foreach ($ids as $key => $value) {
-                if(is_numeric($value['id'])){ // 非自定义字段
-                    $temp = array(
-                        'template_id' => $template_id,
-                        'village_id' => $village_id,
-                        'configure_id' => intval($value['id']),
-                        'uid'=>0,
-                        'time' => time(),
-                    );
-                    $data[] = $temp;
+        try {
+            // 删除并重建标准字段关联，兼容仍从关联表读取模板字段的旧逻辑
+            $print_custom->delTemplateCustom($where);
+            $customData = [];
+            if (is_array($ids) && $ids) {
+                foreach ($ids as $value) {
+                    if (isset($value['id']) && is_numeric($value['id'])) { // 非自定义字段
+                        $customData[] = [
+                            'template_id' => $template_id,
+                            'village_id' => $village_id,
+                            'configure_id' => intval($value['id']),
+                            'uid' => 0,
+                            'time' => time(),
+                        ];
+                    }
+                }
+                $js_ids = json_encode($ids, JSON_UNESCAPED_UNICODE);
+                if ($js_ids === false) {
+                    throw new Exception('模板字段数据格式错误');
+                }
+            } else {
+                $js_ids = '';
+            }
+            if ($customData) {
+                $res = $print_custom->addPrintTemplateCustom($customData);
+                if ($res !== count($customData)) {
+                    throw new Exception('模板字段关联保存失败');
                 }
             }
-            $res = $print_custom->addPrintTemplateCustom($data);
-            if(!$res){
-                // 回滚
-                Db::rollback();
-                throw new Exception('保存失败');
+
+            // getPrintInfo 优先读取 custom_field，必须与关联表在同一事务内同步成功
+            $saveArr = ['custom_field' => $js_ids];
+            if ($type == 3 && !empty($font_set)) {
+                $saveArr['font_set'] = json_encode($font_set, JSON_UNESCAPED_UNICODE);
             }
-            $js_ids = json_encode($ids,JSON_UNESCAPED_UNICODE);
-        }else{
-            $js_ids = '';
+            if ($type == 3 && !empty($extra_data)) {
+                $print_extra_data = array_merge($print_extra_data, $extra_data);
+                $saveArr['extra_data'] = json_encode($print_extra_data, JSON_UNESCAPED_UNICODE);
+            }
+            $saveResult = $print_template->templateSave($where, $saveArr);
+            if ($saveResult === false) {
+                throw new Exception('打印模板配置保存失败');
+            }
+            $savedTemplate = $print_template->get_one($where, 'custom_field');
+            if (!$savedTemplate || $savedTemplate->isEmpty() || $savedTemplate['custom_field'] !== $js_ids) {
+                throw new Exception('打印模板字段同步失败');
+            }
+            Db::commit();
+        } catch (\Throwable $e) {
+            Db::rollback();
+            throw $e;
         }
-        // 保存 转json 保存
-        $saveArr=array('custom_field' => $js_ids);
-        if($type==3 && !empty($font_set)){
-            $saveArr['font_set']=json_encode($font_set,JSON_UNESCAPED_UNICODE);
-        }
-        if($type==3 && !empty($extra_data)){
-            $print_extra_data=array_merge($print_extra_data,$extra_data);
-            $saveArr['extra_data']=json_encode($print_extra_data,JSON_UNESCAPED_UNICODE);
-        }
-        $print_template->templateSave($where,$saveArr);
-        // 提交
-        Db::commit();
         return [];
     }
 

@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "订单提交",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "tui-list-cell": "/pages/appoint/component/list-cell/list-cell",
+    "tui-bottom-popup": "/pages/appoint/component/bottom-popup/bottom-popup",
+    "w-picker": "/pages/appoint/component/w-picker/w-picker",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "hj-dragabledrawer": "/pages/appoint/component/hj-dragabledrawer/hj-dragabledrawer"
+  }
+}

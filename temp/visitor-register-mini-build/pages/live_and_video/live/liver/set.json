@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "manage-lists": "/pages/live_and_video/live/liver/manageLists"
+  }
+}

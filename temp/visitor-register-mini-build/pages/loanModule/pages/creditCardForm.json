@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "信用卡申请",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper"
+  }
+}

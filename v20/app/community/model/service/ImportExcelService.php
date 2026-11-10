@@ -36,6 +36,7 @@ class ImportExcelService
     const UPLOAD_BILL_PAY_EXCEL = 'billPayExcel'; // 定制 一次性费用已缴账单导入
     const UPLOAD_CYCLE_BILL_EXCEL = 'cycleBillExcel'; // 定制 周期性账单导入
     const UPLOAD_CYCLE_BILL_PAY_EXCEL = 'cycleBillPayExcel'; // 定制 周期性已缴账单导入
+    const UPLOAD_PARKING_BILL_PAY_EXCEL = 'parkingBillPayExcel'; // 车位管理费已缴账单导入
     const upload_standard_vacancy_bind = 'standardVacancyBind'; // 定制 导入标准绑定房间数据
     const upload_standard_position_bind = 'standardPositionBind'; // 定制 导入标准绑定车位数据
     const upload_express_application = 'expressApplication';
@@ -53,6 +54,7 @@ class ImportExcelService
         self::UPLOAD_BILL_PAY_EXCEL => 'billExcelImport',
         self::UPLOAD_CYCLE_BILL_EXCEL => 'billExcelImport',
         self::UPLOAD_CYCLE_BILL_PAY_EXCEL => 'billExcelImport',
+        self::UPLOAD_PARKING_BILL_PAY_EXCEL => 'billExcelImport',
         self::upload_standard_vacancy_bind => 'standardVacancyBindImport',
         self::upload_standard_position_bind => 'standardPositionBindImport',
         self::upload_express_application => 'expressApplication',
@@ -155,6 +157,7 @@ class ImportExcelService
                 $data = [];
                 break;
             case self::UPLOAD_CYCLE_BILL_PAY_EXCEL:
+            case self::UPLOAD_PARKING_BILL_PAY_EXCEL:
                 $data = [];
                 break;
             case self::upload_standard_vacancy_bind:

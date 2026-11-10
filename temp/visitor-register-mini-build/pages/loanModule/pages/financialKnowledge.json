@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "普惠金融知识",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "nodata": "/pages/loanModule/components/nodata"
+  }
+}

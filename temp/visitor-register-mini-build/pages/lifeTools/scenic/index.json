@@ -1,0 +1,18 @@
+{
+  "navigationBarTitleText": "景区服务",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "u-grid": "/uview-ui/components/u-grid/u-grid",
+    "u-grid-item": "/uview-ui/components/u-grid-item/u-grid-item",
+    "u-notice-bar": "/uview-ui/components/u-notice-bar/u-notice-bar",
+    "food-shop-item": "/pages/lifeTools/components/foodShopItem",
+    "hotel-item": "/pages/lifeTools/components/hotelItem",
+    "life-tools-tabbar": "/pages/common/lifeTools/tabbar",
+    "match-item": "/pages/lifeTools/components/matchItem",
+    "course-item": "/pages/lifeTools/components/courseItem",
+    "mall-item": "/pages/lifeTools/components/mallItem",
+    "stadium-item": "/pages/lifeTools/components/stadiumItem"
+  }
+}

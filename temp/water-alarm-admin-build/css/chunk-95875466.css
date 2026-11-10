@@ -1,0 +1,16 @@
+
+.videos .ant-form-explain{
+    margin-top: 15px !important;
+}
+
+
+.m-10[data-v-2d50c8d0] {
+    margin: 10px;
+}
+.img[data-v-2d50c8d0] {
+    width: 50px;
+    height: 50px;
+    -o-object-fit: cover;
+       object-fit: cover;
+}
+

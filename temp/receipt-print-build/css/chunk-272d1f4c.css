@@ -1,0 +1,16 @@
+.payment-settings[data-v-0b0d1c1e] {
+  margin: 10px 0;
+}
+.payment-settings[data-v-0b0d1c1e]  .ant-card-body {
+  padding: 24px;
+}
+.payment-settings[data-v-0b0d1c1e]  .ant-tabs-left-bar {
+  min-width: 180px;
+  max-width: 280px;
+}
+.payment-settings[data-v-0b0d1c1e]  .ant-tabs-left .ant-tabs-tab {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+

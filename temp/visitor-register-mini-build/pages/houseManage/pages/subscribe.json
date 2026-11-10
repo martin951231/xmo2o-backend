@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "预约",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-picker": "/uview-ui/components/u-picker/u-picker",
+    "subscribe-result": "/pages/houseManage/components/subscribeResult"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "工单统计",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

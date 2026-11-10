@@ -1272,7 +1272,7 @@ class FrontCashierController extends CommunityBaseController
                 $param['file'] = 'sub_auto_discard_prepaid_order';
                 $param['time_type'] = 1;
                 $param['unique_id'] = 'sub_auto_discard_prepaid_order'.$id;
-                $service_plan->addTask($param,1);
+                // $service_plan->addTask($param,1); // 关闭预缴账单30分钟未支付自动作废
             }
             if($postData['order_type'] == 'property' && intval(cfg('cockpit')) && isset($postData['pigcms_id']) && !empty($postData['pigcms_id'])){
                 $uid=(isset($user_info['uid'])&&!empty($user_info['uid']))?$user_info['uid']:0;

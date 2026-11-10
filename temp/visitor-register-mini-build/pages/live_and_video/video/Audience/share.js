@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/live_and_video/video/Audience/share"],{"01f47":function(e,n,t){"use strict";t.r(n);var o=t("09de"),u=t.n(o);for(var a in o)["default"].indexOf(a)<0&&function(e){t.d(n,e,(function(){return o[e]}))}(a);n["default"]=u.a},"09de":function(e,n,t){"use strict";(function(e){Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var o,u=t("a3a9"),a=e.getSystemInfoSync(),i=(a.windowWidth,a.windowHeight,a.screenHeight,getApp()),r={data:function(){return{countShareNum:""}},props:["show_share","shareNum"],created:function(){o=this,o.countShareNum=o.shareNum},methods:{close_share:function(){o.$emit("closeShareBox",!1)},clickShare:function(){var n={video_id:i.globalData.video_id,noTip:!0};u.post("Live&a=video_share",n,(function(n){e.showToast({title:"分享成功",icon:"none",duration:2e3}),console.log(o.countShareNum++,"分享次数"),o.$emit("setShareNum",o.countShareNum++)}))}}};n.default=r}).call(this,t("543d")["default"])},"0c57":function(e,n,t){"use strict";var o;t.d(n,"b",(function(){return u})),t.d(n,"c",(function(){return a})),t.d(n,"a",(function(){return o}));var u=function(){var e=this,n=e.$createElement;e._self._c},a=[]},"0fef":function(e,n,t){},"6e73":function(e,n,t){"use strict";t.r(n);var o=t("0c57"),u=t("01f47");for(var a in u)["default"].indexOf(a)<0&&function(e){t.d(n,e,(function(){return u[e]}))}(a);t("e8d0");var i,r=t("f0c5"),c=Object(r["a"])(u["default"],o["b"],o["c"],!1,null,null,null,!1,o["a"],i);n["default"]=c.exports},e8d0:function(e,n,t){"use strict";var o=t("0fef"),u=t.n(o);u.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/live_and_video/video/Audience/share-create-component',
+    {
+        'pages/live_and_video/video/Audience/share-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("6e73"))
+        })
+    },
+    [['pages/live_and_video/video/Audience/share-create-component']]
+]);

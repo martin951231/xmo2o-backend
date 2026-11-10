@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "内容详情",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-upload": "/uview-ui/components/u-upload/u-upload",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "village-choose-house": "/appComponent/villagePage/villageChooseHouse",
+    "uni-fab": "/pages/village/component/uni-fab/uni-fab"
+  }
+}

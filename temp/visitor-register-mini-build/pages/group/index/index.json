@@ -1,0 +1,12 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "group-common-index": "/pages/group/component/groupCommonIndex",
+    "module-item": "/pages/group/component/moduleItem",
+    "list-item": "/pages/group/component/listItem",
+    "group-goods-item": "/pages/group/component/groupGoodsItem",
+    "h-mfilter-dropdown": "/pages/group/component/HM-filterDropdown"
+  }
+}

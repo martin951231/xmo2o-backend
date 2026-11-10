@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "add-product": "/pages/live_and_video/live/add_product"
+  }
+}

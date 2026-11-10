@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["appComponent/platcommon/buyCanGetScore"],{5029:function(t,n,e){"use strict";var o=e("b4b96"),c=e.n(o);c.a},7867:function(t,n,e){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var o={props:{content:{type:[String,Object],default:""},hideBg:{type:Boolean,default:!1},customStyle:{type:Object,default:function(){return{}}},customContentStyle:{type:Object,default:function(){return{}}}},data:function(){return{mainColor:""}},created:function(){var t=this;this.common.getConfig((function(n){t.mainColor=n.config.mobile_head_color}))}};n.default=o},8e3:function(t,n,e){"use strict";e.r(n);var o=e("7867"),c=e.n(o);for(var u in o)["default"].indexOf(u)<0&&function(t){e.d(n,t,(function(){return o[t]}))}(u);n["default"]=c.a},b4b96:function(t,n,e){},c4fa:function(t,n,e){"use strict";var o;e.d(n,"b",(function(){return c})),e.d(n,"c",(function(){return u})),e.d(n,"a",(function(){return o}));var c=function(){var t=this,n=t.$createElement,e=(t._self._c,t.common.buyCanGetScore(t.content)),o=e?t.__get_style([t.customStyle],{width:"100%"}):null,c=e?t.__get_style([{backgroundColor:t.common.colorRgb(t.mainColor,.1),color:t.mainColor},t.customContentStyle]):null,u=e?t.common.buyCanGetScore(t.content):null;t.$mp.data=Object.assign({},{$root:{g0:e,s0:o,s1:c,g1:u}})},u=[]},f0d4:function(t,n,e){"use strict";e.r(n);var o=e("c4fa"),c=e("8000");for(var u in c)["default"].indexOf(u)<0&&function(t){e.d(n,t,(function(){return c[t]}))}(u);e("5029");var r,a=e("f0c5"),l=Object(a["a"])(c["default"],o["b"],o["c"],!1,null,"05d02708",null,!1,o["a"],r);n["default"]=l.exports}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'appComponent/platcommon/buyCanGetScore-create-component',
+    {
+        'appComponent/platcommon/buyCanGetScore-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("f0d4"))
+        })
+    },
+    [['appComponent/platcommon/buyCanGetScore-create-component']]
+]);

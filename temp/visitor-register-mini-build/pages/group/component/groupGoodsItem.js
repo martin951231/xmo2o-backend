@@ -1,0 +1,10 @@
+require('../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/group/component/groupGoodsItem"],{"36a0":function(t,n,e){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var u={data:function(){return{}},props:{item:{type:Object,default:function(){return{}}},currency_symbol:{type:String,default:function(){return"￥"}}},created:function(){},methods:{goUrl:function(){var t=this.item.url||"";t&&this.common.parseUrl(t,"",!1,"")}}};n.default=u},3795:function(t,n,e){},"4824c":function(t,n,e){"use strict";e.d(n,"b",(function(){return o})),e.d(n,"c",(function(){return r})),e.d(n,"a",(function(){return u}));var u={uRate:function(){return e.e("uview-ui/components/u-rate/u-rate").then(e.bind(null,"fdf0"))},uIcon:function(){return e.e("uview-ui/components/u-icon/u-icon").then(e.bind(null,"2516"))}},o=function(){var t=this,n=t.$createElement,e=(t._self._c,void 0!=t.item.score&&void 0!=t.item.distance&&void 0!=t.item.score?Number(t.item.score):null),u=t.common.buyCanGetScore(t.item),o=t.common.buyCanGetScore(t.item),r=void 0!=t.item.sale_count_total?t.L("已售"):null;t.$mp.data=Object.assign({},{$root:{m0:e,g0:u,g1:o,m1:r}})},r=[]},"6a76":function(t,n,e){"use strict";var u=e("3795"),o=e.n(u);o.a},fc78:function(t,n,e){"use strict";e.r(n);var u=e("36a0"),o=e.n(u);for(var r in u)["default"].indexOf(r)<0&&function(t){e.d(n,t,(function(){return u[t]}))}(r);n["default"]=o.a},fe66:function(t,n,e){"use strict";e.r(n);var u=e("4824c"),o=e("fc78");for(var r in o)["default"].indexOf(r)<0&&function(t){e.d(n,t,(function(){return o[t]}))}(r);e("6a76");var c,i=e("f0c5"),a=Object(i["a"])(o["default"],u["b"],u["c"],!1,null,"0d50b2c8",null,!1,u["a"],c);n["default"]=a.exports}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/group/component/groupGoodsItem-create-component',
+    {
+        'pages/group/component/groupGoodsItem-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("fe66"))
+        })
+    },
+    [['pages/group/component/groupGoodsItem-create-component']]
+]);

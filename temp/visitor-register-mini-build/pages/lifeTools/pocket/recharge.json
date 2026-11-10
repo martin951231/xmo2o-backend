@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "余额充值",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-toast": "/uview-ui/components/u-toast/u-toast",
+    "u-line": "/uview-ui/components/u-line/u-line"
+  }
+}

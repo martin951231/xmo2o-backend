@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "jyf-parser": "/pages/shopmall_third/components/jyf-parser/jyf-parser"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "选择收货地址",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#ffffff",
+  "usingComponents": {
+    "u-search": "/uview-ui/components/u-search/u-search"
+  }
+}

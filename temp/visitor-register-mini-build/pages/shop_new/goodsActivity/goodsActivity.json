@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "店铺活动",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "count": "/pages/shop_new/component/count/count",
+    "shopcart": "/pages/shop_new/component/shopcart/shopcart",
+    "spec-mask": "/pages/shop_new/component/spec-mask/spec-mask",
+    "goods-tip": "/pages/shop_new/component/goodsTip/goodsTip"
+  }
+}

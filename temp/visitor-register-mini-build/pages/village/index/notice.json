@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "公告通知",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "uni-segmented-control": "/appComponent/uni/uni-segmented-control/uni-segmented-control",
+    "uni-fab": "/pages/village/component/uni-fab/uni-fab"
+  }
+}

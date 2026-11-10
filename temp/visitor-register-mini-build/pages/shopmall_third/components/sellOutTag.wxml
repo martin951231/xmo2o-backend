@@ -1,0 +1,1 @@
+<view class="sellOut-tag-wrap data-v-9eb78684"><image class="img data-v-9eb78684" src="{{sellOutImg}}" lazy-load="true" mode="widthFix"></image></view>

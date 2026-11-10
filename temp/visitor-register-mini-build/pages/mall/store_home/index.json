@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "",
+  "usingComponents": {
+    "u-grid": "/uview-ui/components/u-grid/u-grid",
+    "u-grid-item": "/uview-ui/components/u-grid-item/u-grid-item",
+    "u-cell-group": "/uview-ui/components/u-cell-group/u-cell-group",
+    "u-cell-item": "/uview-ui/components/u-cell-item/u-cell-item",
+    "shop-trick": "/pages/mall/components/shopTrick/shopTrick",
+    "tabbar": "/pages/mall/components/tabbar/tabbar",
+    "uni-popup": "/appComponent/uni/uni-popup/uni-popup",
+    "goods": "/pages/mall/store_home/goods",
+    "new-goods": "/pages/mall/store_home/newGoods"
+  }
+}

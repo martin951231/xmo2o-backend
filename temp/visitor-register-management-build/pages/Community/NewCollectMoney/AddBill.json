@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "添加收费",
+  "usingComponents": {
+    "w-picker": "/appComponent/uni/w-picker/w-picker"
+  }
+}

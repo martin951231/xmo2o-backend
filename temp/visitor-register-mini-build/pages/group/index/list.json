@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "‎",
+  "navigationBarTextStyle": "black",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "h-mfilter-dropdown": "/pages/group/component/HM-filterDropdown",
+    "list-item": "/pages/group/component/listItem",
+    "group-goods-item": "/pages/group/component/groupGoodsItem"
+  }
+}

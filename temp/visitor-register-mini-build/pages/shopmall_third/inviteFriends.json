@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "邀请好友",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "count-down": "/pages/shopmall_third/components/countdown",
+    "waterfall": "/pages/shopmall_third/components/newfall",
+    "sku-model": "/pages/shopmall_third/components/skuModel",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "tophalf": "/pages/shopmall_third/components/tophalf"
+  }
+}

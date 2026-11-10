@@ -1,0 +1,11 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-sticky": "/uview-ui/components/u-sticky/u-sticky",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "promotion-shop": "/appComponent/platcommon/promotion-shop-card",
+    "food-nearby": "/appComponent/platcommon/food-nearby-card",
+    "plat-index-list-item": "/appComponent/platcommon/platIndexListItem"
+  }
+}

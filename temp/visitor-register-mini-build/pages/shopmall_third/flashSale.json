@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "限时抢购",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F9F9F9",
+  "onReachBottomDistance": 300,
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "countdown": "/pages/shopmall_third/components/countdown",
+    "uniloadmore": "/pages/shopmall_third/components/uni-load-more/uni-load-more",
+    "sell-out-tag": "/pages/shopmall_third/components/sellOutTag"
+  }
+}

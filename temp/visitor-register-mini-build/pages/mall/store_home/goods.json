@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "宝贝",
+  "usingComponents": {
+    "sku-model": "/pages/mall/store_home/skuModel"
+  }
+}

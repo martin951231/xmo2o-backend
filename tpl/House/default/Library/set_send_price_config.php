@@ -55,9 +55,9 @@
                                             for="express_person_average_entrust">快递代取人均日委托数</label></label>
                                 <input class="col-sm-2" size="10" name="express_person_average_entrust"
                                        id="express_person_average_entrust" type="number"
-                                       placeholder="请输入人均日委托数"
+                                       placeholder="请输入户均日委托数"
                                        value="{pigcms{$village_info.express_person_average_entrust}"/>
-                                <span class="form_tips" style="line-height: 30px;">请输入人均日委托数, 0或空则不限制</span>
+                                <span class="form_tips" style="line-height: 30px;">请输入户均日委托数, 0或空则不限制</span>
                             </div>
                             <div class="form-group express_project_daily_entrust">
                                 <label class="col-sm-2"><label
@@ -66,7 +66,7 @@
                                        id="express_project_daily_entrust" type="number"
                                        placeholder="请输入项目日委托数"
                                        value="{pigcms{$village_info.express_project_daily_entrust}"/>
-                                <span class="form_tips" style="line-height: 30px;">请输入项目日委托数, 0或空则不限制, 人均日委托数不得大于项目日委托数</span>
+                                <span class="form_tips" style="line-height: 30px;">请输入项目日委托数, 0或空则不限制, 户均日委托数不得大于项目日委托数</span>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2"><label for="express_project_startDate">代取快递申请时间限制</label></label>

@@ -49,6 +49,34 @@
 			}
 		}
 
+        public function allinpay()
+        {
+            $params = request()->param();
+            $input = file_get_contents("php://input");
+            if (empty($params) && $input) {
+                parse_str($input, $params);
+                if (empty($params)) {
+                    $params = json_decode($input, true) ?: [];
+                }
+            }
+            fdump_sql([$params, $input], 'notify_allinpay_controller');
+            $orderNo = $params['cusorderid'] ?? ($params['reqsn'] ?? ($params['out_trade_no'] ?? ''));
+            if (!$orderNo) {
+                exit('fail');
+            }
+            try {
+                $pay_service = new PayService;
+                $notice = $pay_service->notice($orderNo);
+                if ($notice['after_pay']) {
+                    $pay_service->afterPay($notice['business'], $notice['business_order_id'], $notice['extra']);
+                }
+            } catch (\Exception $e) {
+                fdump_sql(['params' => $params, 'msg' => $e->getMessage()], 'allinpay_notify_error');
+                exit('fail');
+            }
+            exit('success');
+        }
+
 		/**
 		 * 支付宝官方接口 异步通知
 		 * @return [type] [description]

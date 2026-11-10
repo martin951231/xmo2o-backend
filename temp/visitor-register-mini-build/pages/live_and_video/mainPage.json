@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "直播首页",
+  "navigationBarBackgroundColor": "#000000",
+  "navigationBarTextStyle": "white",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "tabs": "/appComponent/platcommon/tabs",
+    "custom-nav-bar": "/appComponent/platcommon/customNavBar",
+    "main-page-tabbar": "/pages/live_and_video/components/mainPageTabbar",
+    "video-list": "/pages/live_and_video/components/videoList",
+    "live-list": "/pages/live_and_video/components/liveList"
+  }
+}

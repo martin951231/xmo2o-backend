@@ -1,0 +1,1 @@
+<view><block wx:if="{{webview_url!=''}}"><view><web-view src="{{webview_url}}" id="webViewBox" data-event-opts="{{[['message',[['webviewMessage',['$event']]]],['load',[['webviewLoad',['$event']]]]]}}" bindmessage="__e" bindload="__e"></web-view></view></block></view>

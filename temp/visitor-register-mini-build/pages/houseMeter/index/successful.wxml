@@ -1,0 +1,1 @@
+<view class="container data-v-043f2576"><image class="img_1 data-v-043f2576" src="../static/images/success_icon_1.png" mode></image><view class="text data-v-043f2576">支付成功</view><view data-event-opts="{{[['tap',[['gourl',['$event']]]]]}}" class="btn data-v-043f2576" bindtap="__e">完成</view><view class="text_1 data-v-043f2576">{{seconds+"s"}}</view></view>

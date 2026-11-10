@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "个人中心",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-avatar": "/uview-ui/components/u-avatar/u-avatar",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-action-sheet": "/uview-ui/components/u-action-sheet/u-action-sheet",
+    "shopping-mall-tabbar": "/pages/shoppingMall/components/shoppingMallTabbar"
+  }
+}

@@ -193,7 +193,7 @@ class CashierApiController extends CommunityBaseController
             return api_output_error(1001,'缺少必传参数');
         $service_house_new_cashier = new HouseNewCashierService();
         try{
-            $field ='o.*,r.late_fee_reckon_day,r.late_fee_top_day,r.late_fee_rate,r.bill_create_set,r.charge_name,p.name as project_name,p.type,r.charge_valid_time';
+            $field ='o.*,r.late_fee_reckon_day,r.late_fee_top_day,r.late_fee_rate,r.bill_create_set,r.charge_name,p.name as project_name,p.type,o.order_name,r.charge_valid_time';
             $data = $service_house_new_cashier->getOrder(['order_id'=>$order_id], $field,1);
         }catch (\Exception $e){
             return api_output_error(-1,$e->getMessage());
@@ -867,7 +867,7 @@ class CashierApiController extends CommunityBaseController
             }
             $where[] = ['o.village_id','=',$village_id];
             
-            $field='o.car_number,o.car_type,o.order_id,o.order_no,o.room_id,o.position_id,p.name as project_name,o.modify_money,o.late_payment_money,o.pay_money,o.pay_bind_name,o.pay_bind_phone,o.pay_time,o.pay_type,o.is_refund,o.refund_money,o.village_id,o.property_id,o.order_type,o.invoice_status';
+            $field='o.car_number,o.car_type,o.order_id,o.order_no,o.room_id,o.position_id,p.name as project_name,o.order_name,o.modify_money,o.late_payment_money,o.pay_money,o.pay_bind_name,o.pay_bind_phone,o.pay_time,o.pay_type,o.is_refund,o.refund_money,o.village_id,o.property_id,o.order_type,o.invoice_status';
             $list = $service_house_new_cashier->getCancelOrderUser($where,$whereRaw,$field,$page,$limit,'o.pay_time DESC');
 
         }catch (\Exception $e){
@@ -893,7 +893,8 @@ class CashierApiController extends CommunityBaseController
         }
         $service_house_new_cashier = new HouseNewCashierService();
         $where[] = ['o.order_id', '=', $order_id];
-        $field = 'o.name,o.room_id,o.position_id,o.parking_num,o.parking_lot,r.charge_valid_type,o.meter_reading_id,o.car_number,o.car_type,o.summary_id,o.pay_amount_points,o.system_balance,o.score_deducte,o.score_used_count,o.is_prepare,o.order_type,o.total_money,o.modify_money,o.diy_content,o.service_month_num,service_give_month_num,o.is_auto,o.modify_money,o.add_time,r.charge_name,p.name as project_name,p.type,r.late_fee_reckon_day,r.late_fee_rate,r.late_fee_top_day,r.charge_valid_time,r.bill_create_set,o.order_no,o.modify_reason,o.pay_money,o.discount_money,o.discount_detail,o.extra_data,o.pay_type,o.offline_pay_type,o.pay_time,o.unit_price,o.service_month_num,o.diy_content,o.service_start_time,o.service_end_time,o.order_id,o.is_refund,o.refund_money,o.last_ammeter,o.now_ammeter,o.late_payment_money,o.late_payment_day,o.village_id,o.property_id,o.village_balance,o.offline_pay_money';
+        $field = 'o.name,o.room_id,o.position_id,o.parking_num,o.parking_lot,r.charge_valid_type,o.meter_reading_id,o.car_number,o.car_type,o.summary_id,o.pay_amount_points,o.system_balance,o.score_deducte,o.score_used_count,o.is_prepare,o.order_type,o.total_money,o.modify_money,o.diy_content,o.service_month_num,service_give_month_num,o.is_auto,o.modify_money,o.add_time,r.charge_name,p.name as project_name,p.type,o.order_name,r.late_fee_reckon_day,r.late_fee_rate,r.late_fee_top_day,r.charge_valid_time,r.bill_create_set,o.order_no,o.modify_reason,o.pay_money,o.discount_money,o.discount_detail,o.extra_data,o.pay_type,o.offline_pay_type,o.pay_time,o.unit_price,o.service_month_num,o.diy_content,o.service_start_time,o.service_end_time,o.order_id,o.is_refund,o.refund_money,o.last_ammeter,o.now_ammeter,o.late_payment_money,o.late_payment_day,o.village_id,o.property_id,o.village_balance,o.offline_pay_money';
+        $field .= ',r.unit_price as ticket_rule_unit_price,r.fees_type as ticket_fees_type,r.unit_gage_type as ticket_unit_gage_type,r.unit_gage as ticket_unit_gage,r.measure_unit as ticket_measure_unit';
         $data = $service_house_new_cashier->getOrderInfo($where, $field,1);
         return api_output(0, $data);
     }
@@ -1305,3 +1306,4 @@ class CashierApiController extends CommunityBaseController
         return api_output(0,$data);
     }
 }
+

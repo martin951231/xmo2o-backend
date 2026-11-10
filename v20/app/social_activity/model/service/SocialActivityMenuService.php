@@ -265,6 +265,13 @@ class SocialActivityMenuService
             ->order('sort DESC,id ASC')
             ->select()
             ->toArray();
+        // 兼容缺失及旧退款图标，使用标准方形钱包图标，与活动订单区分。
+        foreach ($allMenus as &$menu) {
+            if ($menu['component'] === 'SocialActivityRefundList' && (empty($menu['icon']) || in_array($menu['icon'], ['iconzhangdan-copy', 'icondingdan3'], true))) {
+                $menu['icon'] = 'iconzhifu';
+            }
+        }
+        unset($menu);
         // 获取所有权限按钮（type 3）
         $permField = 'id,pid,perms action,title';
         $allPermissions = (new SocialActivityMenu())

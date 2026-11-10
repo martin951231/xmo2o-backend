@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "生成预缴账单",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

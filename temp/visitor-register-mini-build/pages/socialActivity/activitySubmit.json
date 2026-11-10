@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "活动报名",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "form-box": "/pages/socialActivity/components/formBox"
+  }
+}

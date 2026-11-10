@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "赛事详情",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "u-count-down": "/uview-ui/components/u-count-down/u-count-down",
+    "u-parse": "/uview-ui/components/u-parse/u-parse"
+  }
+}

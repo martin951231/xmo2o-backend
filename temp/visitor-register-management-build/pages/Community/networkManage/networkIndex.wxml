@@ -1,0 +1,1 @@
+<view class="network_index data-v-8138275e"><view class="top_container data-v-8138275e"><map style="width:100%;height:100%;" id="myMap" show-location="{{true}}" latitude="{{map.latitude}}" longitude="{{map.longitude}}" scale="{{map.scale}}" markers="{{markers}}" polyline="{{polygons}}" class="data-v-8138275e"></map></view></view>

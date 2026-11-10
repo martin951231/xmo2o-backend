@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "我的现金抵用券",
+  "navigationBarBackgroundColor": "#f4f4f4",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "u-tabs": "/uview-ui/components/u-tabs/u-tabs",
+    "u-empty": "/uview-ui/components/u-empty/u-empty",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore"
+  }
+}

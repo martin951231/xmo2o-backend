@@ -14,6 +14,9 @@ use think\facade\Route;
 Route::rule('wechat_notify', 'notify/wechat')
 	->name('wechat_notify');//微信官方支付
 
+Route::rule('allinpay_notify', 'notify/allinpay')
+    ->name('allinpay_notify');//通联支付
+
 Route::rule('alipay_notify', 'notify/alipay')
 	->name('alipay_notify');//支付宝官方支付
 

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "街道首页",
+  "usingComponents": {
+    "q-s-tabs": "/pages/street/components/QS-tabs/QS-tabs",
+    "bottom-menu": "/pages/street/components/bottom-menu/bottom-menu"
+  }
+}

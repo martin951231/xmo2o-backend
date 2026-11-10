@@ -1,0 +1,14 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-sticky": "/uview-ui/components/u-sticky/u-sticky",
+    "shop-item": "/appComponent/platcommon/shopItem",
+    "promotion-shop": "/appComponent/platcommon/promotion-shop-card",
+    "food-nearby": "/appComponent/platcommon/food-nearby-card",
+    "coupons-dialog": "/appComponent/platcommon/coupons-dialog",
+    "limit-goods": "/appComponent/shopPage/limitGoods",
+    "we-app-ads": "/appComponent/platcommon/weAppAds"
+  }
+}

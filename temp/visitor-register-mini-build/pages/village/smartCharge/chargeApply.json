@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "申请退款",
+  "usingComponents": {
+    "u-field": "/uview-ui/components/u-field/u-field",
+    "u-button": "/uview-ui/components/u-button/u-button",
+    "u-modal": "/uview-ui/components/u-modal/u-modal",
+    "u-toast": "/uview-ui/components/u-toast/u-toast"
+  }
+}

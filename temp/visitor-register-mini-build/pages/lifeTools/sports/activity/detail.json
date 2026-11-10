@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "约战详情",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "usingComponents": {
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "u-count-down-new": "/uview-ui/components/u-count-down-new/u-count-down-new",
+    "u-avatar": "/uview-ui/components/u-avatar/u-avatar",
+    "u-action-sheet": "/uview-ui/components/u-action-sheet/u-action-sheet",
+    "u-toast": "/uview-ui/components/u-toast/u-toast"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "流量计费统计",
+  "usingComponents": {
+    "no-data": "/pages/Community/stopFeating/components/noData"
+  }
+}

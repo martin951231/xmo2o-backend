@@ -1,0 +1,44 @@
+
+.water-alarm-page[data-v-837d939e] { margin: 20px;
+}
+.page-heading[data-v-837d939e], .toolbar[data-v-837d939e] { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; gap: 16px;
+}
+.page-heading[data-v-837d939e] { margin-bottom: 22px;
+}
+.page-heading h2[data-v-837d939e] { font-size: 22px; margin-bottom: 6px; color: #1f2937;
+}
+.page-heading p[data-v-837d939e], .secondary[data-v-837d939e], .footnote[data-v-837d939e] { color: #7b8492; font-size: 13px;
+}
+.page-heading p[data-v-837d939e] { margin: 0;
+}
+.toolbar[data-v-837d939e] { margin: 0 0 18px; color: #596579;
+}
+.secondary[data-v-837d939e], .state-tags[data-v-837d939e] { margin-top: 6px;
+}
+.actions[data-v-837d939e] { display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; gap: 8px;
+}
+.links[data-v-837d939e] { margin-top: 8px;
+}
+.links .ant-btn[data-v-837d939e] { padding-left: 0; margin-right: 12px;
+}
+.error-text[data-v-837d939e] { color: #c06724; font-size: 12px; margin-top: 6px; max-width: 230px;
+}
+.footnote[data-v-837d939e] { margin-top: 20px;
+}
+.volume-control[data-v-837d939e] { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; gap: 20px; margin: 24px 0;
+}
+.volume-control .ant-slider[data-v-837d939e] { -webkit-box-flex: 1; -ms-flex: 1; flex: 1;
+}
+.tts-add[data-v-837d939e] { margin: 20px 0;
+}
+.tts-add .toolbar[data-v-837d939e] { margin-top: 10px; font-size: 12px;
+}
+.tts-content[data-v-837d939e] { white-space: pre-wrap; overflow-wrap: anywhere;
+}
+@media (max-width: 768px) {
+.water-alarm-page[data-v-837d939e] { margin: 10px;
+}
+.page-heading[data-v-837d939e] { -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start;
+}
+}
+

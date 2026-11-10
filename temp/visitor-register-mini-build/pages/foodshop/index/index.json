@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "餐饮",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-swiper": "/uview-ui/components/u-swiper/u-swiper",
+    "h-mfilter-dropdown": "/pages/foodshop/components/HM-filterDropdown/HM-filterDropdown",
+    "foodshop-item": "/pages/foodshop/components/foodshopItem"
+  }
+}

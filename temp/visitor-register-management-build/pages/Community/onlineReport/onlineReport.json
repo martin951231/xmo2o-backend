@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "在线报修",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "宝贝",
+  "usingComponents": {
+    "sell-out-tag": "/pages/shopmall_third/components/sellOutTag"
+  }
+}

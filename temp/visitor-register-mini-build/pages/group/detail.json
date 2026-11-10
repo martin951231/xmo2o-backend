@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "团购详情",
+  "usingComponents": {
+    "richtext": "/pages/group/component/rich-text/rich-text"
+  }
+}

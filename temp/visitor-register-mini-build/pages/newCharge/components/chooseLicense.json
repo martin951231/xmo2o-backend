@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "key-board": "/pages/newCharge/components/keyBoard"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "商品分类",
+  "usingComponents": {
+    "tabbar": "/pages/shopmall_third/components/tabbar/tabbar",
+    "shop-trick": "/pages/shopmall_third/components/shopTrick/shopTrick"
+  }
+}

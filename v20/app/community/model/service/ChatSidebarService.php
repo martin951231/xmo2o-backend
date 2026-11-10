@@ -78,6 +78,11 @@ class ChatSidebarService
             'accept' => '.pdf',
             'allow_exts' => ['pdf'],
         ],
+        7 => [
+            'name' => '附件',
+            'accept' => '.jpg,.jpeg,.png,.gif,.bmp,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar',
+            'allow_exts' => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar'],
+        ],
     ];
     public $express_goods_type = array('0'=>'文件','1'=>'数码产品','2'=>'生活用品','3'=>'服饰','4'=>'食品','5'=>'其他');
     public $express_status = array('0'=>'未送','1'=>'业主确认取件','2'=>'物业确认取件');
@@ -981,6 +986,107 @@ class ChatSidebarService
         ];
     }
 
+    public function getDepositAttachmentList($village_id, $vacancy_id)
+    {
+        $user = $this->getRoomOwnerBind($village_id, $vacancy_id);
+        if (!$user) {
+            throw new \think\Exception('room owner not found');
+        }
+        $field = $this->getDepositAttachmentField($village_id, true);
+        $authentication_field = $this->parseAuthenticationField(isset($user['authentication_field']) ? $user['authentication_field'] : '');
+        return [
+            'bind_id' => intval($user['pigcms_id']),
+            'group' => $this->formatDepositAttachmentGroup($field, $authentication_field),
+        ];
+    }
+
+    /**
+     * 批量获取房间是否已上传押金附件。
+     *
+     * @param int $village_id
+     * @param array $vacancy_ids
+     * @return array<int, int>
+     */
+    public function getDepositAttachmentStatusMap($village_id, $vacancy_ids)
+    {
+        $vacancy_ids = array_values(array_unique(array_filter(array_map('intval', (array)$vacancy_ids))));
+        if (!$vacancy_ids) {
+            return [];
+        }
+        $status_map = array_fill_keys($vacancy_ids, 0);
+        $bind_list = (new HouseVillageUserBind())->getList([
+            ['village_id', '=', intval($village_id)],
+            ['vacancy_id', 'in', $vacancy_ids],
+            ['type', 'in', [0, 3]],
+            ['status', '<>', 4],
+        ], 'pigcms_id,vacancy_id,authentication_field', 'pigcms_id desc');
+        if (!$bind_list || $bind_list->isEmpty()) {
+            return $status_map;
+        }
+        $handled_room_ids = [];
+        foreach ($bind_list->toArray() as $bind) {
+            $room_id = intval($bind['vacancy_id'] ?? 0);
+            if ($room_id <= 0 || isset($handled_room_ids[$room_id])) {
+                continue;
+            }
+            $handled_room_ids[$room_id] = true;
+            $authentication_field = $this->parseAuthenticationField($bind['authentication_field'] ?? '');
+            $field_value = isset($authentication_field['deposit_attachment']) && is_array($authentication_field['deposit_attachment'])
+                ? $authentication_field['deposit_attachment']
+                : [];
+            $file_list = !empty($field_value['file_list']) && is_array($field_value['file_list'])
+                ? $field_value['file_list']
+                : (!empty($field_value['files']) && is_array($field_value['files']) ? $field_value['files'] : []);
+            $status_map[$room_id] = $this->formatAttachmentFiles($file_list) ? 1 : 0;
+        }
+        return $status_map;
+    }
+
+    public function saveDepositAttachmentList($village_id, $vacancy_id, $files)
+    {
+        $user = $this->getRoomOwnerBind($village_id, $vacancy_id);
+        if (!$user) {
+            throw new \think\Exception('room owner not found');
+        }
+        if (is_string($files)) {
+            $files = json_decode($files, true);
+        }
+        if (!is_array($files)) {
+            $files = [];
+        }
+        $field = $this->getDepositAttachmentField($village_id, true);
+        $save_files = $this->formatAttachmentFiles($files);
+        $allow_exts = isset($this->attachment_type_config[intval($field['type'])]['allow_exts']) ? $this->attachment_type_config[intval($field['type'])]['allow_exts'] : [];
+        foreach ($save_files as $save_file) {
+            if ($allow_exts && !in_array(strtolower($save_file['suffix']), $allow_exts)) {
+                throw new \think\Exception('attachment type error');
+            }
+        }
+        $authentication_field = $this->parseAuthenticationField(isset($user['authentication_field']) ? $user['authentication_field'] : '');
+        $file_name_list = [];
+        foreach ($save_files as $file_item) {
+            $file_name_list[] = $file_item['original_name'];
+        }
+        if ($save_files) {
+            $authentication_field['deposit_attachment'] = [
+                'type' => intval($field['type']),
+                'is_must' => isset($field['is_must']) ? intval($field['is_must']) : 0,
+                'key' => 'deposit_attachment',
+                'title' => isset($field['title']) ? $field['title'] : '押金附件',
+                'value' => implode(', ', $file_name_list),
+                'file_list' => $save_files,
+            ];
+        } else {
+            unset($authentication_field['deposit_attachment']);
+        }
+        (new HouseVillageUserBind())->saveOne(['pigcms_id' => $user['pigcms_id'], 'village_id' => $village_id], [
+            'authentication_field' => serialize($authentication_field),
+        ]);
+        return [
+            'bind_id' => intval($user['pigcms_id']),
+            'group' => $this->formatDepositAttachmentGroup($field, $authentication_field),
+        ];
+    }
     public function saveRoomAttachmentList($village_id, $vacancy_id, $files)
     {
         $user = $this->getRoomOwnerBind($village_id, $vacancy_id);
@@ -1043,6 +1149,85 @@ class ChatSidebarService
         ];
     }
 
+    private function getDepositAttachmentField($village_id, $create = false)
+    {
+        $village = (new HouseVillageService())->getHouseVillageInfo([
+            ['village_id', '=', $village_id],
+        ], 'property_id');
+        $property_id = isset($village['property_id']) ? intval($village['property_id']) : 0;
+        if ($property_id <= 0) {
+            throw new \think\Exception('property not found');
+        }
+        $where = [
+            ['village_id', '=', 0],
+            ['property_id', '=', $property_id],
+            ['key', '=', 'deposit_attachment'],
+        ];
+        $field = Db::name('house_village_data_config')->where($where)->find();
+        if ($field && (intval($field['type']) !== 7 || intval($field['is_close']) !== 0)) {
+            Db::name('house_village_data_config')->where($where)->update([
+                'title' => '押金附件',
+                'type' => 7,
+                'is_close' => 0,
+            ]);
+            $field['title'] = '押金附件';
+            $field['type'] = 7;
+            $field['is_close'] = 0;
+        }
+        if (!$field && $create) {
+            $data = [
+                'village_id' => 0,
+                'property_id' => $property_id,
+                'title' => '押金附件',
+                'type' => 7,
+                'is_must' => 0,
+                'is_system' => 0,
+                'key' => 'deposit_attachment',
+                'use_field' => '',
+                'is_close' => 0,
+                'sort' => 0,
+            ];
+            $id = Db::name('house_village_data_config')->insertGetId($data);
+            $field = Db::name('house_village_data_config')->where('acid', $id)->find();
+            if (!$field) {
+                $field = $data;
+            }
+        }
+        if (!$field) {
+            $field = [
+                'key' => 'deposit_attachment',
+                'title' => '押金附件',
+                'type' => 7,
+                'is_must' => 0,
+            ];
+        }
+        return $field;
+    }
+
+    private function formatDepositAttachmentGroup($field, $authentication_field)
+    {
+        $type = isset($field['type']) ? intval($field['type']) : 7;
+        $field_value = isset($authentication_field['deposit_attachment']) && is_array($authentication_field['deposit_attachment']) ? $authentication_field['deposit_attachment'] : [];
+        $file_list = [];
+        if (!empty($field_value['file_list']) && is_array($field_value['file_list'])) {
+            $file_list = $field_value['file_list'];
+        } elseif (!empty($field_value['files']) && is_array($field_value['files'])) {
+            $file_list = $field_value['files'];
+        }
+        if (empty($this->attachment_type_config[$type])) {
+            $type = 7;
+        }
+        return [
+            'key' => 'deposit_attachment',
+            'title' => isset($field['title']) ? $field['title'] : '押金附件',
+            'type' => $type,
+            'type_name' => $this->attachment_type_config[$type]['name'],
+            'accept' => isset($this->attachment_type_config[$type]['accept']) ? $this->attachment_type_config[$type]['accept'] : '',
+            'allow_exts' => $this->attachment_type_config[$type]['allow_exts'],
+            'allow_exts_text' => implode(',', $this->attachment_type_config[$type]['allow_exts']),
+            'files' => $this->formatAttachmentFiles($file_list),
+        ];
+    }
     private function getRoomOwnerBind($village_id, $vacancy_id)
     {
         $room = (new HouseVillageUserVacancy())->getOne([

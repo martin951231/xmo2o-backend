@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "详情",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "u-parse": "/uview-ui/components/u-parse/u-parse",
+    "u-image": "/uview-ui/components/u-image/u-image",
+    "information-item": "/pages/appoint/component/informationItem/informationItem"
+  }
+}

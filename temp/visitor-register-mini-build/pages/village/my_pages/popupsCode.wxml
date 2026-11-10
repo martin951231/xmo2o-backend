@@ -1,0 +1,1 @@
+<view class="container"><view class="tip">长按识别加管家微信</view><image class="img_1" src="{{url}}" mode></image></view>

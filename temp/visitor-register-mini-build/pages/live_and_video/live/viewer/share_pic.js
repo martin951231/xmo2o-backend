@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/live_and_video/live/viewer/share_pic"],{"274b":function(e,t,n){"use strict";n.r(t);var s=n("f234"),c=n.n(s);for(var o in s)["default"].indexOf(o)<0&&function(e){n.d(t,e,(function(){return s[e]}))}(o);t["default"]=c.a},"3cba":function(e,t,n){},"72fd":function(e,t,n){"use strict";var s=n("3cba"),c=n.n(s);c.a},dafc:function(e,t,n){"use strict";n.r(t);var s=n("fe00"),c=n("274b");for(var o in c)["default"].indexOf(o)<0&&function(e){n.d(t,e,(function(){return c[e]}))}(o);n("72fd");var a,i=n("f0c5"),u=Object(i["a"])(c["default"],s["b"],s["c"],!1,null,"6910efb5",null,!1,s["a"],a);t["default"]=u.exports},f234:function(e,t,n){"use strict";(function(e,n){var s;Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var c={data:function(){return{is_show:!0}},props:["shareImg"],created:function(){s=this},methods:{saveImg:function(){e.authorize({scope:"scope.writePhotosAlbum",success:function(){console.log("保存海报成功事件",s.shareImg),n.showLoading({title:s.common.changeTxt("保存中")}),n.getImageInfo({src:s.shareImg,success:function(t){n.hideLoading(),e.saveImageToPhotosAlbum({filePath:t.path,success:function(){s.is_show=!1,s.$emit("close_share",!1),n.showToast({icon:"success",title:s.common.changeTxt("保存成功")}),console.log("save success")}})}})}})},btn_close:function(){this.is_show=!1,this.$emit("close_share",!1)}}};t.default=c}).call(this,n("543d")["default"],n("bc2e")["default"])},fe00:function(e,t,n){"use strict";var s;n.d(t,"b",(function(){return c})),n.d(t,"c",(function(){return o})),n.d(t,"a",(function(){return s}));var c=function(){var e=this,t=e.$createElement;e._self._c},o=[]}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/live_and_video/live/viewer/share_pic-create-component',
+    {
+        'pages/live_and_video/live/viewer/share_pic-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("dafc"))
+        })
+    },
+    [['pages/live_and_video/live/viewer/share_pic-create-component']]
+]);

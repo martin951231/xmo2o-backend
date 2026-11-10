@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "promotion-shop": "/appComponent/platcommon/promotion-shop-card"
+  }
+}

@@ -70,6 +70,7 @@ use app\community\model\db\HouseVillagePrintTemplate;
 use app\community\model\db\HouseVillageUserBind;
 use app\community\model\db\HouseVillageUserVacancy;
 use app\community\model\db\HouseVillageBindCar;
+use app\community\model\db\HouseWorker;
 use app\community\model\db\HouseNewSelectProjectLog;
 use app\community\model\db\HouseNewSelectProjectRecord;
 use customization\customization;
@@ -81,6 +82,7 @@ use app\community\model\service\HouseVillageSingleService;
 use think\Exception;
 use function Qcloud\Cos\encodeKey;
 use think\facade\Cache;
+use think\facade\Db;
 use app\traits\CommonSmallDoTraits;
 class HouseNewCashierService
 {
@@ -142,6 +144,185 @@ class HouseNewCashierService
             'val' => sprintf('%.2f', $money),
             'money_type' => 1,
         ));
+    }
+
+    private function getPrintActualPayMoney($order_info = array(), $summary_info = array())
+    {
+        if (!is_array($order_info) && method_exists($order_info, 'toArray')) {
+            $order_info = $order_info->toArray();
+        }
+        if (!is_array($summary_info) && method_exists($summary_info, 'toArray')) {
+            $summary_info = $summary_info->toArray();
+        }
+        $paidMoney = isset($order_info['pay_money']) ? round(floatval($order_info['pay_money']), 2) : 0;
+        $refundMoney = isset($order_info['refund_money']) ? round(floatval($order_info['refund_money']), 2) : 0;
+        $scoreMoney = isset($order_info['score_deducte']) ? round(floatval($order_info['score_deducte']), 2) : 0;
+        $actualPayMoney = round($paidMoney - $refundMoney - $scoreMoney, 2);
+        return $actualPayMoney > 0 ? $actualPayMoney : 0;
+    }
+
+    private function getOrderActualPayMoney($orderInfo = array(), $summaryInfo = array())
+    {
+        if (!is_array($orderInfo) && method_exists($orderInfo, 'toArray')) {
+            $orderInfo = $orderInfo->toArray();
+        }
+        if (!is_array($summaryInfo) && method_exists($summaryInfo, 'toArray')) {
+            $summaryInfo = $summaryInfo->toArray();
+        }
+        // 老的组合支付订单没有保存子订单抵扣金额，根据汇总单支付明细补齐。
+        if (empty($orderInfo['discount_detail']) && !empty($summaryInfo['pay_detail'])) {
+            $orderInfo = $this->fillOldMixPayOrderDetail($orderInfo, $summaryInfo);
+        }
+
+        $cashMoney = round(floatval($orderInfo['pay_money'] ?? 0), 2);
+        $discountMoney = round(floatval($orderInfo['discount_money'] ?? 0), 2);
+        if (!empty($orderInfo['discount_detail'])) {
+            $discountDetail = json_decode($orderInfo['discount_detail'], true);
+            if (is_array($discountDetail)) {
+                $detailMoney = 0;
+                foreach ($discountDetail as $item) {
+                    $detailMoney += floatval($item['paymoney'] ?? 0);
+                }
+                $discountMoney = max($discountMoney, round($detailMoney, 2));
+            }
+        }
+
+        return max(round($cashMoney + $discountMoney, 2), 0);
+
+        // 组合支付的抵扣项（优惠券、代金券等）同样属于实际缴费金额。
+        return max(round($cashMoney + $discountMoney, 2), 0);
+    }
+
+    /** 已缴导出的单笔实缴金额，供账单明细和流水导出共用。 */
+    public function getOrderPaidExportMoney($orderInfo = array(), $summaryInfo = array())
+    {
+        if (!is_array($orderInfo) && method_exists($orderInfo, 'toArray')) {
+            $orderInfo = $orderInfo->toArray();
+        }
+        $actualPayTotal = $this->getOrderActualPayMoney($orderInfo, $summaryInfo);
+        $depositMoney = round(floatval($orderInfo['deposit_money'] ?? 0)
+            + $this->getNewDepositDeductMoney($orderInfo, $summaryInfo), 2);
+        return max(round($actualPayTotal - floatval($orderInfo['refund_money'] ?? 0)
+            - floatval($orderInfo['score_deducte'] ?? 0) - $depositMoney, 2), 0);
+    }
+
+    public function getOrderRefundMoneyInfo($orderInfo = array(), $summaryInfo = array())
+    {
+        if (!is_array($orderInfo) && method_exists($orderInfo, 'toArray')) {
+            $orderInfo = $orderInfo->toArray();
+        }
+        if (!is_array($summaryInfo) && method_exists($summaryInfo, 'toArray')) {
+            $summaryInfo = $summaryInfo->toArray();
+        }
+        if (empty($summaryInfo) && !empty($orderInfo['summary_id'])) {
+            $summary = (new HouseNewPayOrderSummary())->getOne(['summary_id' => intval($orderInfo['summary_id'])], '*');
+            if ($summary && !$summary->isEmpty()) {
+                $summaryInfo = $summary->toArray();
+            }
+        }
+        $totalMoney = $this->getOrderActualPayMoney($orderInfo, $summaryInfo);
+        $refundedMoney = round(floatval($orderInfo['refund_money'] ?? 0), 2);
+        return array(
+            'total_money' => $totalMoney,
+            'refunded_money' => $refundedMoney,
+            'remain_money' => max(round($totalMoney - $refundedMoney, 2), 0),
+        );
+    }
+
+    private function allocateOrderRefundDetail($orderInfo, $summaryInfo, $refundMoney)
+    {
+        if (!is_array($orderInfo) && method_exists($orderInfo, 'toArray')) {
+            $orderInfo = $orderInfo->toArray();
+        }
+        if (!is_array($summaryInfo) && method_exists($summaryInfo, 'toArray')) {
+            $summaryInfo = $summaryInfo->toArray();
+        }
+        if (empty($orderInfo['discount_detail']) && !empty($summaryInfo['pay_detail'])) {
+            $orderInfo = $this->fillOldMixPayOrderDetail($orderInfo, $summaryInfo);
+        }
+
+        $sources = array();
+        $cashMoney = round(floatval($orderInfo['pay_money'] ?? 0), 2);
+        if ($cashMoney > 0) {
+            $cashTitle = $this->buildPayMethodTitle($orderInfo, $summaryInfo, '现金支付');
+            $cashPayId = 0;
+            if (!empty($summaryInfo['pay_detail'])) {
+                $payDetail = json_decode($summaryInfo['pay_detail'], true);
+                foreach (($payDetail['list'] ?? array()) as $item) {
+                    if (intval($item['money_type'] ?? 1) === 1) {
+                        $cashTitle = trim($item['offlinepay_name'] ?? '') ?: $cashTitle;
+                        $cashPayId = intval($item['offlinepay_id'] ?? 0);
+                        break;
+                    }
+                }
+            }
+            $sources[] = array(
+                'offlinepay_id' => $cashPayId,
+                'pay_type_name' => $cashTitle,
+                'money_type' => 1,
+                'pay_money' => $cashMoney,
+            );
+        }
+
+        if (!empty($orderInfo['discount_detail'])) {
+            $discountDetail = json_decode($orderInfo['discount_detail'], true);
+            foreach ((array)$discountDetail as $item) {
+                $money = round(floatval($item['paymoney'] ?? 0), 2);
+                if ($money <= 0) {
+                    continue;
+                }
+                $sources[] = array(
+                    'offlinepay_id' => intval($item['offlinepay_id'] ?? 0),
+                    'pay_type_name' => trim($item['offlinepay_name'] ?? '') ?: '其他支付方式',
+                    'money_type' => intval($item['money_type'] ?? 2) === 1 ? 1 : 2,
+                    'pay_money' => $money,
+                );
+            }
+        }
+
+        $sourceTotal = 0;
+        foreach ($sources as $source) {
+            $sourceTotal = round($sourceTotal + floatval($source['pay_money'] ?? 0), 2);
+        }
+        $actualPayTotal = $this->getOrderActualPayMoney($orderInfo, $summaryInfo);
+        if ($actualPayTotal > $sourceTotal) {
+            $sources[] = array(
+                'offlinepay_id' => 0,
+                'pay_type_name' => '其他支付方式',
+                'money_type' => 2,
+                'pay_money' => round($actualPayTotal - $sourceTotal, 2),
+            );
+        }
+
+        // 现金类支付优先退款，其他支付方式保持原组合支付明细顺序。
+        usort($sources, function ($a, $b) {
+            return intval($a['money_type']) <=> intval($b['money_type']);
+        });
+        usort($sources, function ($a, $b) {
+            return intval($a['money_type']) <=> intval($b['money_type']);
+        });
+        $historicalRefund = round(floatval($orderInfo['refund_money'] ?? 0), 2);
+        $currentRemain = round(floatval($refundMoney), 2);
+        $detail = array();
+        foreach ($sources as $source) {
+            $sourceMoney = round(floatval($source['pay_money']), 2);
+            $usedBefore = min($sourceMoney, $historicalRefund);
+            $historicalRefund = max(round($historicalRefund - $usedBefore, 2), 0);
+            $available = max(round($sourceMoney - $usedBefore, 2), 0);
+            $allocated = min($available, $currentRemain);
+            if ($allocated > 0) {
+                $source['refund_money'] = round($allocated, 2);
+                $detail[] = $source;
+                $currentRemain = max(round($currentRemain - $allocated, 2), 0);
+            }
+            if ($currentRemain <= 0) {
+                break;
+            }
+        }
+        if ($currentRemain > 0) {
+            throw new \think\Exception('退款金额超过组合支付可退金额');
+        }
+        return $detail;
     }
 
     private function buildPayMethodTitle($order_info = array(), $summary_info = array(), $pay_type_name = '')
@@ -342,6 +523,65 @@ class HouseNewCashierService
         );
     }
 
+    private function getPendingOrderApprovalMap($villageId, $businessType)
+    {
+        $villageId = intval($villageId);
+        $businessType = trim($businessType);
+        if ($villageId <= 0 || $businessType === '') {
+            return array();
+        }
+        $instances = Db::name('community_approval_instance')
+            ->where('village_id', $villageId)
+            ->where('status', 0)
+            ->where('business_type', $businessType)
+            ->field('id,business_id,change_data')
+            ->select();
+        if (!$instances || $instances->isEmpty()) {
+            return array();
+        }
+        $approvalMap = array();
+        foreach ($instances->toArray() as $instance) {
+            $changeData = json_decode($instance['change_data'] ?? '', true);
+            $orderId = intval($changeData['order_id'] ?? ($instance['business_id'] ?? 0));
+            if ($orderId > 0) {
+                $instance['change_data_array'] = is_array($changeData) ? $changeData : array();
+                $approvalMap[$orderId] = $instance;
+            }
+        }
+        return $approvalMap;
+    }
+
+    /**
+     * 获取审批中的账单退款金额。审批通过后实例状态会变为已完成，退款金额改由订单字段统计。
+     */
+    private function getPendingOrderRefundMoneyMap($villageId, $approvalMap = null)
+    {
+        if ($approvalMap === null) {
+            $approvalMap = $this->getPendingOrderApprovalMap($villageId, ApprovalFlowService::BUSINESS_ORDER_REFUND);
+        }
+        $moneyMap = array();
+        foreach ($approvalMap as $orderId => $instance) {
+            $changeData = $instance['change_data_array'] ?? array();
+            $refundMoney = round(floatval($changeData['refund_money'] ?? 0), 2);
+            if ($orderId > 0 && $refundMoney > 0) {
+                $moneyMap[$orderId] = round(floatval($moneyMap[$orderId] ?? 0) + $refundMoney, 2);
+            }
+        }
+        return $moneyMap;
+    }
+
+    private function buildOrderMoneyCaseExpression($moneyMap)
+    {
+        if (empty($moneyMap)) {
+            return '0';
+        }
+        $caseSql = 'CASE o.order_id';
+        foreach ($moneyMap as $orderId => $money) {
+            $caseSql .= ' WHEN ' . intval($orderId) . ' THEN ' . sprintf('%.2F', floatval($money));
+        }
+        return $caseSql . ' ELSE 0 END';
+    }
+
     private function getNewDepositDeductMoney($order_info = array(), $summary_info = array())
     {
         if (!is_array($order_info) && method_exists($order_info, 'toArray')) {
@@ -355,20 +595,34 @@ class HouseNewCashierService
                 continue;
             }
             $extra = is_array($info['extra_data']) ? $info['extra_data'] : json_decode($info['extra_data'], true);
-            if (is_array($extra) && isset($extra['new_deposit_money']) && floatval($extra['new_deposit_money']) > 0) {
-                return round(floatval($extra['new_deposit_money']), 2);
+            $depositMoney = is_array($extra) ? round(floatval($extra['new_deposit_money'] ?? 0), 2) : 0;
+            $freezeId = is_array($extra) ? intval($extra['new_deposit_freeze_id'] ?? 0) : 0;
+            if ($depositMoney <= 0 || $freezeId <= 0) {
+                continue;
+            }
+            $where = [
+                ['id', '=', $freezeId],
+                ['status', '=', 1],
+            ];
+            $villageId = intval($order_info['village_id'] ?? ($info['village_id'] ?? 0));
+            $roomId = intval($order_info['room_id'] ?? ($info['room_id'] ?? 0));
+            $orderId = intval($order_info['order_id'] ?? ($info['order_id'] ?? 0));
+            if ($villageId > 0) {
+                $where[] = ['village_id', '=', $villageId];
+            }
+            if ($roomId > 0) {
+                $where[] = ['room_id', '=', $roomId];
+            }
+            if ($orderId > 0) {
+                $where[] = ['order_id', '=', $orderId];
+            }
+            $freezeMoney = Db::name('house_new_bill_deposit_freeze')->where($where)->value('freeze_money');
+            if ($freezeMoney !== null && floatval($freezeMoney) > 0) {
+                return min($depositMoney, round(floatval($freezeMoney), 2));
             }
         }
-        $totalMoney = isset($summary_info['total_money']) ? round(floatval($summary_info['total_money']), 2) : 0;
-        $cashMoney = isset($summary_info['pay_money']) ? round(floatval($summary_info['pay_money']), 2) : 0;
-        $oldDepositMoney = isset($summary_info['deposit_money']) ? round(floatval($summary_info['deposit_money']), 2) : 0;
-        $discountMoney = isset($summary_info['discount_money']) ? round(floatval($summary_info['discount_money']), 2) : 0;
-        $systemBalance = isset($summary_info['system_balance']) ? round(floatval($summary_info['system_balance']), 2) : 0;
-        $villageBalance = isset($summary_info['village_balance']) ? round(floatval($summary_info['village_balance']), 2) : 0;
-        $scoreDeducte = isset($summary_info['score_deducte']) ? round(floatval($summary_info['score_deducte']), 2) : 0;
-        $onlineMoney = isset($summary_info['pay_amount_points']) ? round(floatval($summary_info['pay_amount_points']) / 100, 2) : 0;
-        $money = round($totalMoney - $cashMoney - $oldDepositMoney - $discountMoney - $systemBalance - $villageBalance - $scoreDeducte - $onlineMoney, 2);
-        return $money > 0.01 ? $money : 0;
+        // 费用调整、优惠等造成的应收与实收差额不代表押金抵扣。
+        return 0;
     }
 
     private function fillOldMixPayOrderDetail($order_info = array(), $summary_info = array())
@@ -1051,6 +1305,29 @@ class HouseNewCashierService
         */
         $res['pay_money'] = $x_pay_money;
         $res['total_money'] = $x_total_money;
+        foreach (($data ?: []) as $displayKey => $unusedOrder) {
+            $displayOrder =& $data[$displayKey];
+            if (($displayOrder['order_type'] ?? '') === 'deposit_bill') {
+                $displayOrder = $this->fillDepositCategoryInfo($displayOrder);
+                $displayOrder['charge_name'] = '押金账单';
+                $displayOrder['rule_name'] = $displayOrder['deposit_category_name'] ?? '';
+            }
+            if (!empty($displayOrder['children'])) {
+                foreach ($displayOrder['children'] as &$childOrder) {
+                    if (($childOrder['order_type'] ?? '') === 'deposit_bill') {
+                        $childOrder = $this->fillDepositCategoryInfo($childOrder);
+                        $childOrder['charge_name'] = '押金账单';
+                    }
+                }
+                unset($childOrder);
+                if (($displayOrder['order_type'] ?? '') === 'deposit_bill') {
+                    $categoryNames = array_unique(array_filter(array_column($displayOrder['children'], 'deposit_category_name')));
+                    $displayOrder['deposit_category_name'] = implode('、', $categoryNames);
+                    $displayOrder['rule_name'] = $displayOrder['deposit_category_name'];
+                }
+            }
+        }
+        unset($displayOrder);
         $res['order_list'] = $data;
         return $res;
     }
@@ -1282,6 +1559,7 @@ class HouseNewCashierService
         if ($data && !is_array($data)) {
             $data = $data->toArray();
         }
+        $data = $this->fillDepositCategoryInfo($data);
         if(isset($data['property_id'])){
             $db_house_property_digit_service = new HousePropertyDigitService();
             $digit_info =$db_house_property_digit_service->get_one_digit(['property_id'=>$data['property_id']]);
@@ -1444,6 +1722,29 @@ class HouseNewCashierService
                         $data['service_month_num']=$service_month_num.'个月';
                     }
                 }
+                // 物业服务费按实际账期展示月数，包含结束当天，不足一个月按一个月算。
+                if (($data['order_type'] ?? '') === 'property'
+                    && intval($data['service_start_time'] ?? 0) > 100
+                    && intval($data['service_end_time'] ?? 0) >= intval($data['service_start_time'])) {
+                    $cycleStart = new \DateTime(date('Y-m-d', $data['service_start_time']));
+                    $cycleEnd = new \DateTime(date('Y-m-d', $data['service_end_time']));
+                    $cycleEnd->modify('+1 day');
+                    $cycleMonths = (intval($cycleEnd->format('Y')) - intval($cycleStart->format('Y'))) * 12
+                        + intval($cycleEnd->format('n')) - intval($cycleStart->format('n'));
+                    // 月末按目标月最后一天对齐，避免 PHP 的加月操作溢出到下个月。
+                    $cycleBoundary = clone $cycleStart;
+                    $cycleBoundary->modify('first day of this month');
+                    $cycleBoundary->modify('+' . $cycleMonths . ' months');
+                    $cycleBoundary->setDate(
+                        intval($cycleBoundary->format('Y')),
+                        intval($cycleBoundary->format('n')),
+                        min(intval($cycleStart->format('j')), intval($cycleBoundary->format('t')))
+                    );
+                    if ($cycleEnd > $cycleBoundary) {
+                        $cycleMonths++;
+                    }
+                    $data['service_month_num'] = max(1, $cycleMonths) . '个月';
+                }
                 $return_data[0]['list'][] = array(
                     'title' => '收费周期',
                     'val' => $data['service_month_num']
@@ -1549,6 +1850,78 @@ class HouseNewCashierService
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
+    private function fillDepositCategoryInfo($order)
+    {
+        if (empty($order) || !is_array($order)) {
+            return $order;
+        }
+        $orderType = $order['order_type'] ?? '';
+        $extraData = [];
+        if (!empty($order['extra_data'])) {
+            $extraData = json_decode($order['extra_data'], true);
+            if (!is_array($extraData)) {
+                $extraData = [];
+            }
+        }
+        if ($orderType !== 'deposit_bill' && empty($extraData['deposit_category_id']) && empty($extraData['deposit_category_key'])) {
+            return $order;
+        }
+        $depositInfo = Db::name('house_new_bill_deposit_order')->alias('d')
+            ->leftJoin('house_new_deposit_category c', 'c.id = d.category_id')
+            ->where('d.order_id', intval($order['order_id'] ?? 0))
+            ->field('d.category_id,d.category_name,d.deposit_money,d.refunded_money,d.account_status,c.cate_key,c.cate_name')
+            ->find();
+        if (!$depositInfo) {
+            $order['is_deposit_order'] = $orderType === 'deposit_bill' ? 1 : 0;
+            if ($order['is_deposit_order']) {
+                $categoryName = $extraData['deposit_category_name'] ?? ($order['order_name'] ?? '');
+                $order['deposit_category_name'] = $categoryName;
+                $order['project_name'] = '押金账单';
+                $order['charge_name'] = $categoryName;
+                $order['rule_name'] = $categoryName;
+            }
+            return $order;
+        }
+        $order['is_deposit_order'] = 1;
+        $order['deposit_category_id'] = intval($depositInfo['category_id'] ?? 0);
+        $order['deposit_category_name'] = $depositInfo['category_name'] ?: ($depositInfo['cate_name'] ?? '');
+        $order['deposit_category_key'] = $depositInfo['cate_key'] ?? '';
+        if ($order['deposit_category_name'] !== '') {
+            $order['project_name'] = '押金账单';
+            $order['rule_name'] = $order['deposit_category_name'];
+            $order['charge_name'] = $order['deposit_category_name'];
+            $order['order_name'] = $order['deposit_category_name'];
+        }
+        $order['deposit_account_status'] = intval($depositInfo['account_status'] ?? 0);
+        $order['deposit_status'] = $order['deposit_account_status'];
+        $order['deposit_status_text'] = $this->depositStatusText($order['deposit_account_status']);
+        $order['show_deposit_release_btn'] = $order['deposit_account_status'] === 1 ? 1 : 0;
+        $order['deposit_money_origin'] = $depositInfo['deposit_money'] ?? 0;
+        $order['deposit_refunded_money'] = $depositInfo['refunded_money'] ?? 0;
+        $order['category_id'] = $order['deposit_category_id'];
+        $order['category_name'] = $order['deposit_category_name'];
+        $order['category_key'] = $order['deposit_category_key'];
+        $pendingApproval = Db::name('community_approval_instance')->where([
+            ['village_id', '=', intval($order['village_id'] ?? 0)],
+            ['business_id', '=', intval($order['order_id'] ?? 0)],
+            ['status', '=', 0],
+        ])->whereLike('change_data', '%deposit_release%')->field('id,status')->order('id DESC')->find();
+        $order['deposit_release_approval_id'] = intval($pendingApproval['id'] ?? 0);
+        $order['deposit_release_approval_status'] = $pendingApproval ? intval($pendingApproval['status']) : -1;
+        return $order;
+    }
+
+    private function depositStatusText($status)
+    {
+        $status = intval($status);
+        if ($status === 1) {
+            return '冻结';
+        }
+        if ($status === 2) {
+            return '已解冻';
+        }
+        return '未入账';
+    }
     public function getOrderList($where = [], $field = true, $page = 0, $limit = 10, $order = 'order_id DESC',$village_id=0)
     {
         $check_level_info = array();
@@ -1584,6 +1957,7 @@ class HouseNewCashierService
             $houseVillageCheckauthApplyService = new HouseVillageCheckauthApplyService();
             $cyclePayArr = array();
             foreach ($data as $k => &$v) {
+                $v = $this->fillDepositCategoryInfo($v);
                 $v['modify_btn_show']=$modify_btn_show;
                 if(empty($digit_info)){
                     $v['late_payment_money'] = formatNumber($v['late_payment_money'],2,1);
@@ -1872,6 +2246,7 @@ class HouseNewCashierService
             $houseVillageDb=new HouseVillage();
             $village_id=$data['0']['village_id'];
             $village_info=$houseVillageDb->getInfo(array('village_id'=>$village_id),'*');
+            $pendingDiscardApprovalMap = $this->getPendingOrderApprovalMap($village_id, ApprovalFlowService::BUSINESS_ORDER_DISCARD);
             
             $db_house_property_digit_service = new HousePropertyDigitService();
             $houseVillageCheckauthDetailService = new HouseVillageCheckauthDetailService();
@@ -1889,6 +2264,10 @@ class HouseNewCashierService
             $sell_status_arr=array('无','正常居住','出售中','出租中');
             $user_status_arr=array('无','业主入住','未入住','租客入住'); //使用状态
             foreach ($data as $k => &$v) {
+                $v = $this->fillDepositCategoryInfo($v);
+                $pendingDiscardApproval = $pendingDiscardApprovalMap[intval($v['order_id'] ?? 0)] ?? array();
+                $v['discard_approval_pending'] = empty($pendingDiscardApproval) ? 0 : 1;
+                $v['discard_approval_id'] = intval($pendingDiscardApproval['id'] ?? 0);
                 if($xcomfrom){
                     $v['need_pay_order_type']=$xcomfrom;
                 }
@@ -1896,10 +2275,10 @@ class HouseNewCashierService
                 $v['total_money'] = formatNumber($v['total_money'], 2, 1);
                 $v['park_number'] = '';
                 $v['project_name_str'] = $v['project_name'];
-                if ($showID && isset($v['project_name']) && !empty($v['project_name'])) {
+                if (empty($v['is_deposit_order']) && $showID && isset($v['project_name']) && !empty($v['project_name'])) {
                     $v['project_name'] = $v['project_name'] . '(ID:' . $v['project_id'] . ')';
                 }
-                if ($showID && isset($v['charge_name']) && !empty($v['charge_name'])) {
+                if (empty($v['is_deposit_order']) && $showID && isset($v['charge_name']) && !empty($v['charge_name'])) {
                     $v['charge_name'] = $v['charge_name'] . '(ID:' . $v['rule_id'] . ')';
                 }
                 $usernum='';
@@ -2186,6 +2565,44 @@ class HouseNewCashierService
         return get_format_number($total_money);
     }
 
+    /** 票据展示账单关联收费标准的当前配置单价及单位。 */
+    public function formatTicketUnitPrice($data)
+    {
+        if (!isset($data['ticket_rule_unit_price']) || !is_numeric($data['ticket_rule_unit_price'])) {
+            return '--';
+        }
+        $price = rtrim(rtrim(number_format((float)$data['ticket_rule_unit_price'], 6, '.', ''), '0'), '.');
+        $orderType = isset($data['order_type']) ? $data['order_type'] : '';
+        if (in_array($orderType, ['water', 'electric', 'gas', 'new_nuanqifei'])) {
+            $unit = trim((string)$data['ticket_measure_unit']);
+            // 与收费标准的默认计量单位保持一致。
+            return $price . ($unit !== '' ? $unit : '元/度');
+        }
+        $unit = '元';
+        $feesType = isset($data['ticket_fees_type']) ? (int)$data['ticket_fees_type'] : 0;
+        if ($feesType === 2) {
+            $gageType = isset($data['ticket_unit_gage_type']) ? (int)$data['ticket_unit_gage_type'] : 1;
+            $gage = trim((string)$data['ticket_unit_gage']);
+            if ($gageType === 2) {
+                if ($gage !== '') {
+                    $unit .= '/' . $gage;
+                }
+            } else {
+                $unit .= '/平方米';
+            }
+        } elseif ($feesType === 5) {
+            $unit .= '/车位';
+        }
+        if (isset($data['type']) && (int)$data['type'] === 2) {
+            $cycles = [1 => '日', 2 => '月', 3 => '年'];
+            $cycle = isset($data['bill_create_set']) ? (int)$data['bill_create_set'] : 0;
+            if (isset($cycles[$cycle])) {
+                $unit .= '/' . $cycles[$cycle];
+            }
+        }
+        return $price . $unit;
+    }
+
     /**
      * 获取订单详情
      * @param array $where
@@ -2460,6 +2877,12 @@ class HouseNewCashierService
                 'title' => '支付时间',
                 'val' => $data['pay_time_txt']
             );
+            if (array_key_exists('ticket_rule_unit_price', $data)) {
+                $return_data[0]['list'][] = array(
+                    'title' => '费用单价',
+                    'val' => $this->formatTicketUnitPrice($data)
+                );
+            }
             if ($seal_img) {
                 $return_data[0]['list'][] = array(
                     'title' => 'seal_img',
@@ -3639,10 +4062,68 @@ class HouseNewCashierService
 
 
     /**
-     *获取作废订单
-     * @author: liukezhu
-     * @date : 2021/6/17
+     * 解析缴费人快照及当前小区绑定信息，供列表、详情和打印共用。
      */
+    private function resolveCashierPayer(array $order, $villageId, $actualPayerOnly = false)
+    {
+        $name = trim((string)($order['pay_bind_name'] ?? ''));
+        $phone = trim((string)($order['pay_bind_phone'] ?? ''));
+        $name = in_array($name, ['', '无', '0'], true) ? '' : $name;
+        $phone = in_array($phone, ['', '无', '0'], true) ? '' : $phone;
+        $payerBindId = (int)($order['pay_bind_id'] ?? 0);
+        $bindDb = new HouseVillageUserBind();
+        $payUid = (int)($order['payer_uid'] ?? 0);
+        if ($actualPayerOnly && $payUid > 0) {
+            $bind = $bindDb->getOne(['village_id' => $villageId, 'uid' => $payUid, 'status' => 1], 'pigcms_id,name,phone');
+            if ($bind && !$bind->isEmpty()) {
+                $payerBindId = (int)$bind['pigcms_id'];
+                $name = trim((string)$bind['name']) ?: $name;
+                $phone = trim((string)$bind['phone']) ?: $phone;
+            } else {
+                $payerBindId = 0;
+                $user = (new UserService())->getUser($payUid, 'uid');
+                if ($user) {
+                    $name = trim((string)($user['nickname'] ?? '')) ?: $name;
+                    $phone = trim((string)($user['phone'] ?? '')) ?: $phone;
+                }
+            }
+            // 已知实际支付账号，不再使用房屋业主代替缴费人。
+            return ['name' => $name, 'phone' => $phone, 'bind_id' => $payerBindId];
+        }
+        if ($name !== '' && $phone !== '' && $payerBindId > 0) {
+            return ['name' => $name, 'phone' => $phone, 'bind_id' => $payerBindId];
+        }
+        $bind = null;
+        $bindId = (int)($order['pay_bind_id'] ?? 0);
+        if (!$bindId && !$actualPayerOnly) {
+            $bindId = (int)($order['pigcms_id'] ?? 0);
+        }
+        if ($bindId > 0) {
+            $bind = $bindDb->getOne(['village_id' => $villageId, 'pigcms_id' => $bindId, 'status' => 1], 'pigcms_id,name,phone');
+        }
+        if ((!$bind || $bind->isEmpty()) && !$actualPayerOnly && !empty($order['room_id'])) {
+            $bind = $bindDb->getOne([
+                ['village_id', '=', $villageId], ['vacancy_id', '=', $order['room_id']],
+                ['status', '=', 1], ['type', 'in', [0, 3]],
+            ], 'pigcms_id,name,phone');
+        }
+        $boundUser = $bind && !$bind->isEmpty() ? $bind->toArray() : [];
+        if (!$boundUser && !$actualPayerOnly && !empty($order['position_id'])) {
+            $boundUser = $this->getRoomUserBindByPosition($order['position_id'], $villageId);
+        }
+        // 已有缴费快照可能属于代缴人，不给不同姓名/电话的快照配上业主 ID。
+        if (!empty($boundUser['pigcms_id'])
+            && ($name === '' || $name === trim((string)($boundUser['name'] ?? '')))
+            && ($phone === '' || $phone === trim((string)($boundUser['phone'] ?? '')))) {
+            $payerBindId = (int)$boundUser['pigcms_id'];
+        }
+        return [
+            'name' => $name !== '' ? $name : trim((string)($boundUser['name'] ?? '')),
+            'phone' => $phone !== '' ? $phone : trim((string)($boundUser['phone'] ?? '')),
+            'bind_id' => $payerBindId,
+        ];
+    }
+
     public function getCancelOrder($where = [], $where1 = '', $field = true, $page = 1, $limit = 10,$order='',$menus=[])
     {
         $db_house_new_pay_order = new HouseNewPayOrder();
@@ -3848,6 +4329,9 @@ class HouseNewCashierService
         if(!empty($menus) && in_array(111182,$menus)){
             $is_allow_print=false;
         }
+        $pendingRefundApprovalMap = $this->getPendingOrderApprovalMap($village_id, ApprovalFlowService::BUSINESS_ORDER_REFUND);
+        $pendingRefundMoneyMap = $this->getPendingOrderRefundMoneyMap($village_id, $pendingRefundApprovalMap);
+        $pendingRefundMoneySql = $this->buildOrderMoneyCaseExpression($pendingRefundMoneyMap);
         //print_r($where);die;
         $list = $db_house_new_pay_order->getCancelOrder($where, $where1, $field, $page, $limit,$order,$where_summary,$joinTableArr);
         if ($list) {
@@ -3864,6 +4348,10 @@ class HouseNewCashierService
                     $sumRefundMoney = formatNumber($sumRefundMoney,$digit_info['other_digit'],$digit_info['type']);
                 }
                 foreach ($list as $k => &$v) {
+                    $pendingRefundApproval = $pendingRefundApprovalMap[intval($v['order_id'] ?? 0)] ?? array();
+                    $v['refund_approval_pending'] = empty($pendingRefundApproval) ? 0 : 1;
+                    $v['refund_approval_id'] = intval($pendingRefundApproval['id'] ?? 0);
+                    $v = $this->fillDepositCategoryInfo($v);
                     $is_button=false;
                     if(isset($village_info_config['print_number_times']) && (intval($village_info_config['print_number_times']) == 0)){
                         if($is_allow_print && !empty($record_order) && in_array($v['order_id'],$record_order)){
@@ -3884,16 +4372,17 @@ class HouseNewCashierService
                     $v['fact_pay_all_money']=$fact_pay_all_money;
                     
                     $v['is_button']=$is_button;
-                    $v['pay_money'] = formatNumber($v['pay_money'],2,1);
-                    if (isset($v['project_name']) && !empty($v['project_name'])) {
+                    if (empty($v['is_deposit_order']) && isset($v['project_name']) && !empty($v['project_name'])) {
                         $v['project_name'] = $v['project_name'] . '(ID:' . $v['project_id'] . ')';
                     }
                     $pay_time = $v['pay_time'];
                     $pay_type = $v['pay_type'];
                     $summary_order = $db_house_new_pay_order_summary->getOne(array('summary_id' => $v['summary_id']), '*');
+                    $actualPaySummaryInfo = [];
                     $is_online_show = 0;
                     if ($summary_order && !$summary_order->isEmpty()) {
                         $summary_order = $summary_order->toArray();
+                        $actualPaySummaryInfo = $summary_order;
                         $pay_time =$pay_time>1000 ? $pay_time: $summary_order['pay_time'];
                         $pay_type = $summary_order['pay_type'];
                         $offline_pay_type = '';
@@ -3918,6 +4407,29 @@ class HouseNewCashierService
                         }
                         $order_no = $summary_order['paid_orderid'];
                     }
+                    $v['pay_money'] = $this->getOrderActualPayMoney($v, $actualPaySummaryInfo);
+                    $depositDeductMoney = round(
+                        floatval($v['deposit_money'] ?? 0) + $this->getNewDepositDeductMoney($v, $actualPaySummaryInfo),
+                        2
+                    );
+                    if ($depositDeductMoney > 0 && in_array(intval($pay_type), [2, 22], true)) {
+                        $offlinePayTypeItems = array_values(array_filter(array_map('trim', explode('、', $offline_pay_type))));
+                        if (!in_array('押金抵扣', $offlinePayTypeItems, true)) {
+                            $offlinePayTypeItems[] = '押金抵扣';
+                        }
+                        $offline_pay_type = implode('、', $offlinePayTypeItems);
+                    }
+                    $actualPayMoney = round(
+                        floatval($v['pay_money'])
+                        - (intval($v['is_refund'] ?? 1) === 2 ? floatval($v['refund_money']) : 0)
+                        - floatval($pendingRefundMoneyMap[intval($v['order_id'] ?? 0)] ?? 0)
+                        - floatval($v['score_deducte'])
+                        - $depositDeductMoney,
+                        2
+                    );
+                    $actualPayMoney = $actualPayMoney > 0 ? $actualPayMoney : 0;
+                    $v['pay_money'] = formatNumber($v['pay_money'], 2, 1);
+                    $v['pay_money_real'] = formatNumber($actualPayMoney, 2, 1);
                     
                     /* if (!empty($is_online_show) && isset($is_online_show)) {
                          unset($list[$k]);
@@ -3928,7 +4440,7 @@ class HouseNewCashierService
                     if (isset($pay_type) && !empty($pay_type)) {
                         $v['pay_type_way']=intval($pay_type);
                         if (in_array($pay_type, [2, 22])) {
-                            $v['pay_type'] = $this->pay_type[$pay_type] . '-' . $offline_pay_type;
+                            $v['pay_type'] = $this->pay_type[$pay_type] . ($offline_pay_type !== '' ? '-' . $offline_pay_type : '');
                         } elseif (in_array($pay_type, [1, 3])) {
                             $v['pay_type'] = $this->pay_type[$pay_type];
                         } elseif (in_array($pay_type, [4, 9])) {
@@ -4009,12 +4521,10 @@ class HouseNewCashierService
                         }
                         $v['refund_money'] =formatNumber($v['refund_money'],2,1);
                     }
-                    if (empty($v['pay_bind_name'])){
-                        $v['pay_bind_name']='无';
-                    }
-                    if (empty($v['pay_bind_phone'])){
-                        $v['pay_bind_phone']='无';
-                    }
+                    $payer = $this->resolveCashierPayer($v, $village_id);
+                    $v['pay_bind_id'] = $payer['bind_id'];
+                    $v['pay_bind_name'] = $payer['name'] !== '' ? $payer['name'] : '无';
+                    $v['pay_bind_phone'] = $payer['phone'] !== '' ? $payer['phone'] : '无';
 
                     $number = '';
                     /*if ($room_flag==1&&!empty($v['position_id'])){
@@ -4124,14 +4634,15 @@ class HouseNewCashierService
                         $v['project_name'] .= ']';
                     }
                     $role_name = '';
-                    if($v['role_id']>0 && ($v['login_role']==401||$v['login_role']==0)){
+                    // 线上支付统一显示支付渠道，不能使用账单遗留的操作人。
+                    if ((int)$pay_type === 4) {
+                        $role_name = '通联支付';
+                    }else if($v['role_id']>0 && ($v['login_role']==401||$v['login_role']==0)){
                         $role_name=$v['role_name'];
                         $admininfo = $db_admin->getOne(['id' => $v['role_id']],'id,village_id,account,realname,phone');
                         if($admininfo && !$admininfo->isEmpty()){
                             $role_name=$admininfo['realname'];
                         }
-                    }else if($v['role_id']<1 && $pay_type==4){
-                        $role_name = '自助缴费';
                     }else if(in_array($v['login_role'],[0,303,304,104,105])){
                         $role_name = '平台缴费';
                     }
@@ -4149,13 +4660,15 @@ class HouseNewCashierService
                 $where[]=$swhere;
             }
         }
-        $total_pay_money=$this->getNewPayOrderJoinSummarySum($where,$where1,'ROUND(o.pay_money,2)',$joinTableArr);
-        $total_refund_money=$this->getNewPayOrderJoinSummarySum($where,$where1,'ROUND(o.refund_money,2)',$joinTableArr);
+        $total_pay_money=$this->getNewPayOrderJoinSummarySum($where,$where1,'ROUND(o.pay_money + COALESCE(o.discount_money,0),2)',$joinTableArr);
+        $total_refund_money=$this->getNewPayOrderJoinSummarySum($where,$where1,'ROUND(CASE WHEN o.is_refund=2 THEN COALESCE(o.refund_money,0) ELSE 0 END + '.$pendingRefundMoneySql.',2)',$joinTableArr);
+        $total_pay_money_real=$this->getNewPayOrderJoinSummarySum($where,$where1,'GREATEST(ROUND(o.pay_money + COALESCE(o.discount_money,0) - CASE WHEN o.is_refund=2 THEN COALESCE(o.refund_money,0) ELSE 0 END - '.$pendingRefundMoneySql.' - COALESCE(o.score_deducte,0) - COALESCE(o.deposit_money,0),2),0)',$joinTableArr);
         $data['list'] = array_values($list);
         $data['total_limit'] = $limit;
         $data['count'] = $count;
         $data['total_pay_money'] = $total_pay_money;
         $data['total_refund_money'] = $total_refund_money;
+        $data['total_pay_money_real'] = $total_pay_money_real;
         $data['sumMoney'] =  $sumMoney-$sumRefundMoney;
         $data['sumMoney']=formatNumber($data['sumMoney'],2,1);
         return $data;
@@ -4258,6 +4771,7 @@ class HouseNewCashierService
                 $sumMoney = formatNumber($sumMoney,$digit_info['other_digit'],$digit_info['type']);
             }
             foreach ($list as $k => &$v) {
+                $v = $this->fillDepositCategoryInfo($v);
 
                 $car_type = isset($v['car_type']) ? $v['car_type'] : '';
                 $car_type_txt = (new HouseNewParkingService())->getCarType($car_type);
@@ -4465,6 +4979,7 @@ class HouseNewCashierService
                 
 		        $digit_info=array();
                 foreach ($list as $k => &$v) {
+                $v = $this->fillDepositCategoryInfo($v);
                     
                     if(empty($digit_info)){
                         $v['total_money']= formatNumber($v['total_money'],2,1);
@@ -4475,7 +4990,7 @@ class HouseNewCashierService
                             $v['total_money'] = formatNumber($v['total_money'],$digit_info['other_digit'],$digit_info['type']);
                         }
                     }
-                    if(isset($v['project_name']) && !empty($v['project_name'])){
+                    if(empty($v['is_deposit_order']) && isset($v['project_name']) && !empty($v['project_name'])){
                         $v['project_name']=$v['project_name'].'(ID:'.$v['project_id'].')';
                     }
                     if (isset($v['update_time']) && $v['update_time'] > 1) {
@@ -4707,6 +5222,7 @@ class HouseNewCashierService
         if ($data && !is_array($data)) {
             $data = $data->toArray();
         }
+        $data = $this->fillDepositCategoryInfo($data);
         $configCustomizationService=new ConfigCustomizationService();
         $is_grapefruit_prepaid=$configCustomizationService->getHzhouGrapefruitOrderJudge();
         $isfuncKaidalaicnSpecial=$configCustomizationService->getfuncKaidalaicnSpecial();
@@ -4812,7 +5328,12 @@ class HouseNewCashierService
                             }
                         }
                     }
-                    $data['pay_type'] = $this->pay_type[$data['pay_type']] . '-' . $offline_pay_type;
+                    $depositDeductMoney = round(floatval($data['deposit_money'] ?? 0) + floatval($new_deposit_money), 2);
+                    $offline_pay_type = trim($offline_pay_type);
+                    if ($depositDeductMoney > 0 && strpos($offline_pay_type, '押金抵扣') === false) {
+                        $offline_pay_type .= ($offline_pay_type !== '' ? '、' : '') . '押金抵扣';
+                    }
+                    $data['pay_type'] = $this->pay_type[$data['pay_type']] . ($offline_pay_type !== '' ? '-' . $offline_pay_type : '');
                 } elseif (in_array($summary_info['pay_type'], [1, 3])) {
                     $data['pay_type'] = $this->pay_type[$summary_info['pay_type']];
                 } elseif (in_array($summary_info['pay_type'], [4, 9])) {
@@ -4837,19 +5358,36 @@ class HouseNewCashierService
                     }
                 }
             }
+            $import_role_name = trim(strval($data['role_name']));
             $data['role_name'] = '';
             $data['ammeter'] = bcsub(strval($data['now_ammeter']),strval($data['last_ammeter']),2);
 
 
             $role_name = '';
-            if($data['role_id']>0 && ($data['login_role']==401||$data['login_role']==0)){
-                $role_name=$data['role_name'];
-                $admininfo = $db_admin->getOne(['id' => $data['role_id']],'id,village_id,account,realname,phone');
-                if($admininfo && !$admininfo->isEmpty()){
-                    $role_name=$admininfo['realname'];
+            // 优先按实际支付方式判断，避免线上订单把制单/修改人员当成收款人。
+            $collectorPayType = !empty($summary_info['pay_type'])
+                ? (int)$summary_info['pay_type'] : (int)$data['pay_type_way'];
+            if ($collectorPayType === 4) {
+                $role_name = '通联支付';
+            }else if($data['role_id']>0 && ($data['login_role']==401||$data['login_role']==0)){
+                $role_name = $import_role_name;
+                if (!$role_name && isset($data['order_pay_type']) && $data['order_pay_type'] == 'pc_excel_import') {
+                    $workerInfo = (new HouseWorker())->get_one([
+                        ['village_id', '=', $data['village_id']],
+                        ['relation_id', '=', $data['role_id']],
+                        ['is_del', '=', 0],
+                        ['status', '<>', 4],
+                    ], 'name');
+                    if ($workerInfo && !$workerInfo->isEmpty()) {
+                        $role_name = $workerInfo['name'];
+                    }
                 }
-            }else if($data['pay_type_way']==4){
-                $role_name = '自助缴费';
+                if (!$role_name) {
+                    $admininfo = $db_admin->getOne(['id' => $data['role_id']],'id,village_id,account,realname,phone');
+                    if($admininfo && !$admininfo->isEmpty()){
+                        $role_name=$admininfo['realname'];
+                    }
+                }
             }else if(in_array($data['login_role'],[0,303,304,104,105])){
                 $role_name = '平台缴费';
             }
@@ -4868,7 +5406,15 @@ class HouseNewCashierService
                     $data['refund_status'] = '部分退款';
                 }
             }
-            $data['pay_money_real'] = $data['pay_money'] - $data['refund_money']-$data['score_deducte'];
+            $data['pay_money'] = $this->getOrderActualPayMoney($data, $summary_info);
+            $data['pay_money_real'] = max(round(
+                floatval($data['pay_money'])
+                - floatval($data['refund_money'])
+                - floatval($data['score_deducte'])
+                - floatval($data['deposit_money'])
+                - floatval($new_deposit_money),
+                2
+            ), 0);
             $data['is_split_order']=1;
             if($is_grapefruit_prepaid==1 && $data['diy_type']==1 && !empty($data['diy_content']) && strpos($data['diy_content'],'预缴优惠')!==false){
                 $data['diy_type'] ='折扣';
@@ -5036,6 +5582,11 @@ class HouseNewCashierService
                 }
                 $data['print_no']=implode('，',$print_no_arr);
             }
+            // 与已缴列表使用相同的缴费人兜底规则，补齐后再脱敏。
+            $payer = $this->resolveCashierPayer($data, $data['village_id']);
+            $data['pay_bind_id'] = $payer['bind_id'];
+            $data['pay_bind_name'] = $payer['name'] !== '' ? $payer['name'] : '无';
+            $data['pay_bind_phone'] = $payer['phone'] !== '' ? $payer['phone'] : '无';
             if($hidephone && isset($data['phone']) && !empty($data['phone'])){
                 $data['phone']=$houseVillageDb->phone_desensitization_v($data['phone'],$data['village_id'],$village_info);
             }
@@ -5106,6 +5657,7 @@ class HouseNewCashierService
                 $data['pay_time_modify_record'][]=$mvv;
             }
         }
+        $data['deposit_deduct_info'] = $this->buildPayOrderDepositDeductInfo($data, $summary_info, $new_deposit_money);
         return $data;
     }
 
@@ -5115,6 +5667,173 @@ class HouseNewCashierService
      * @author:zhubaodi
      * @date_time: 2021/6/25 19:12
      */
+    private function buildPayOrderDepositDeductInfo($order, $summaryInfo = array(), $newDepositMoney = 0)
+    {
+        $roomId = intval($order['room_id'] ?? 0);
+        $villageId = intval($order['village_id'] ?? 0);
+        $orderId = intval($order['order_id'] ?? 0);
+        $this->repairReleasedDepositFreezeAccounts($villageId, $roomId);
+        $balance = array('total_money' => '0.00元', 'used_money' => '0.00元', 'available_money' => '0.00元');
+        if ($villageId > 0 && $roomId > 0) {
+            $account = Db::name('house_new_bill_deposit_account')->where([
+                ['village_id', '=', $villageId],
+                ['room_id', '=', $roomId],
+                ['status', '=', 1],
+            ])->find();
+            $total = $account ? round(floatval($account['total_money'] ?? 0), 2) : 0;
+            $used = $account ? round(floatval($account['used_money'] ?? 0), 2) : 0;
+            $frozen = Db::name('house_new_bill_deposit_freeze')->alias('f')
+                ->leftJoin('house_new_bill_deposit_order d', 'd.order_id = f.order_id AND d.village_id = f.village_id AND d.room_id = f.room_id')
+                ->where([
+                    ['f.village_id', '=', $villageId],
+                    ['f.room_id', '=', $roomId],
+                    ['f.status', '=', 0],
+                ])->whereNull('d.id')->sum('f.freeze_money');
+            $available = max(round($total - $used - floatval($frozen), 2), 0);
+            $balance = array(
+                'total_money' => sprintf('%.2f元', $total),
+                'used_money' => sprintf('%.2f元', $used),
+                'available_money' => sprintf('%.2f元', $available),
+            );
+        }
+
+        $list = array();
+        if ($villageId > 0 && $roomId > 0 && $orderId > 0) {
+            $rows = Db::name('house_new_bill_deposit_freeze')->alias('f')
+                ->leftJoin('house_new_pay_order o', 'o.order_id = f.order_id AND o.village_id = f.village_id')
+                ->where([
+                    ['f.village_id', '=', $villageId],
+                    ['f.room_id', '=', $roomId],
+                    ['f.order_id', '=', $orderId],
+                    ['f.status', '=', 1],
+                ])->field('f.*,o.order_no,o.order_name,o.project_id,o.service_start_time,o.service_end_time,o.pay_bind_name,o.role_name')
+                ->order('f.id ASC')
+                ->select()
+                ->toArray();
+            foreach ($rows as $row) {
+                $deductTime = intval($row['update_time'] ?? 0) ?: intval($row['add_time'] ?? 0);
+                $period = '';
+                if (!empty($row['service_start_time'])) {
+                    $period = date('Y-m-d', intval($row['service_start_time']));
+                    if (!empty($row['service_end_time'])) {
+                        $period .= ' 至 ' . date('Y-m-d', intval($row['service_end_time']));
+                    }
+                }
+                $list[] = array(
+                    'pay_bind_name' => $row['pay_bind_name'] ?? ($order['pay_bind_name'] ?? ''),
+                    'role_name' => $row['role_name'] ?? ($order['role_name'] ?? ''),
+                    'deduct_money' => sprintf('%.2f元', round(floatval($row['freeze_money'] ?? 0), 2)),
+                    'after_balance' => $balance['available_money'],
+                    'deduct_time' => $deductTime > 0 ? date('Y-m-d H:i:s', $deductTime) : '',
+                    'remark' => $row['remark'] ?? '押金抵扣',
+                    'origin_order_no' => $row['order_no'] ?? ($order['order_no'] ?? ''),
+                    'origin_project_name' => $row['order_name'] ?? ($order['project_name'] ?? ''),
+                    'origin_project_period' => $period,
+                );
+            }
+        }
+        $show = !empty($list) || floatval($newDepositMoney) > 0 || (($order['order_type'] ?? '') === 'deposit_bill') ? 1 : 0;
+        return array('show' => $show, 'balance' => $balance, 'list' => $list);
+    }
+
+    private function hasNewDepositDeductFreeze($orderInfo)
+    {
+        $orderId = intval($orderInfo['order_id'] ?? 0);
+        $villageId = intval($orderInfo['village_id'] ?? 0);
+        $roomId = intval($orderInfo['room_id'] ?? 0);
+        if ($orderId <= 0 || $villageId <= 0 || $roomId <= 0) {
+            return false;
+        }
+        return Db::name('house_new_bill_deposit_freeze')->where([
+            ['village_id', '=', $villageId],
+            ['room_id', '=', $roomId],
+            ['order_id', '=', $orderId],
+            ['status', '=', 1],
+        ])->count() > 0;
+    }
+    private function restoreDepositDeductForRefund($orderInfo, $summaryInfo, $roleId = 0, $refundMoney = 0)
+    {
+        $orderId = intval($orderInfo['order_id'] ?? 0);
+        $villageId = intval($orderInfo['village_id'] ?? 0);
+        $roomId = intval($orderInfo['room_id'] ?? 0);
+        if ($orderId <= 0 || $villageId <= 0 || $roomId <= 0) {
+            return;
+        }
+        $paidMoney = round(floatval($orderInfo['pay_money'] ?? 0), 4);
+        $refundedMoney = round(floatval($orderInfo['refund_money'] ?? 0) + floatval($refundMoney), 4);
+        if ($paidMoney > 0 && $refundedMoney + 0.0001 < $paidMoney) {
+            return;
+        }
+        $rows = Db::name('house_new_bill_deposit_freeze')->where([
+            ['village_id', '=', $villageId],
+            ['room_id', '=', $roomId],
+            ['order_id', '=', $orderId],
+            ['status', '=', 1],
+        ])->select()->toArray();
+        if (!$rows) {
+            return;
+        }
+        $restoreMoney = 0;
+        $freezeIds = [];
+        foreach ($rows as $row) {
+            $money = round(floatval($row['freeze_money'] ?? 0), 4);
+            if ($money <= 0) {
+                continue;
+            }
+            $restoreMoney = round($restoreMoney + $money, 4);
+            $freezeIds[] = intval($row['id']);
+        }
+        if ($restoreMoney <= 0 || !$freezeIds) {
+            return;
+        }
+        Db::startTrans();
+        try {
+            $account = Db::name('house_new_bill_deposit_account')->where([
+                ['village_id', '=', $villageId],
+                ['room_id', '=', $roomId],
+            ])->lock(true)->find();
+            if ($account) {
+                Db::name('house_new_bill_deposit_account')->where('id', intval($account['id']))->update([
+                    'used_money' => max(round(floatval($account['used_money'] ?? 0) - $restoreMoney, 4), 0),
+                    'update_time' => time(),
+                ]);
+            }
+            Db::name('house_new_bill_deposit_freeze')->whereIn('id', $freezeIds)->update([
+                'status' => 2,
+                'update_time' => time(),
+            ]);
+            $existsLog = Db::name('house_new_deposit_log')->where([
+                ['village_id', '=', $villageId],
+                ['room_id', '=', $roomId],
+                ['order_id', '=', $orderId],
+                ['type', '=', 1],
+            ])->find();
+            if (!$existsLog) {
+                $depositInfo = Db::name('house_new_deposit_log')->where([
+                    ['village_id', '=', $villageId],
+                    ['room_id', '=', $roomId],
+                ])->order('id DESC')->find();
+                $beforeMoney = $depositInfo ? round(floatval($depositInfo['total_money'] ?? 0), 4) : 0;
+                Db::name('house_new_deposit_log')->insert([
+                    'village_id' => $villageId,
+                    'room_id' => $roomId,
+                    'order_id' => $orderId,
+                    'order_no' => $summaryInfo['order_no'] ?? ($orderInfo['order_no'] ?? ''),
+                    'type' => 1,
+                    'before_money' => $beforeMoney,
+                    'money' => $restoreMoney,
+                    'total_money' => round($beforeMoney + $restoreMoney, 4),
+                    'add_time' => time(),
+                    'role_id' => intval($roleId),
+                ]);
+            }
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw $e;
+        }
+    }
+
     public function getRefundList($order_id, $page, $limit)
     {
         $db_house_new_pay_order = new HouseNewPayOrderRefund();
@@ -5123,6 +5842,14 @@ class HouseNewCashierService
         $where[] = ['order_id', '=', $order_id];
         $page = empty($page) ? 1 : $page;
         $orderInfo=$db_house_new_pay_order1->get_one($where);
+        $summaryInfo = array();
+        if (!empty($orderInfo['summary_id'])) {
+            $summary = (new HouseNewPayOrderSummary())->getOne(['summary_id' => $orderInfo['summary_id']], '*');
+            if ($summary && !$summary->isEmpty()) {
+                $summaryInfo = $summary->toArray();
+            }
+        }
+        $refundMoneyInfo = $this->getOrderRefundMoneyInfo($orderInfo, $summaryInfo);
         $count = $db_house_new_pay_order->getCount($where);
         $list = $db_house_new_pay_order->getList($where, true, $page, $limit);
         if (!empty($list)) {
@@ -5144,6 +5871,12 @@ class HouseNewCashierService
                         }
                     }
                     $v['refund_score_count']= formatNumber($v['refund_score_count'],2,1);
+                    $v['refund_detail'] = !empty($v['refund_detail']) ? json_decode($v['refund_detail'], true) : array();
+                    $refundDetailText = array();
+                    foreach ((array)$v['refund_detail'] as $refundDetail) {
+                        $refundDetailText[] = ($refundDetail['pay_type_name'] ?? '其他支付方式') . '：' . formatNumber($refundDetail['refund_money'] ?? 0, 2, 1) . '元';
+                    }
+                    $v['refund_detail_text'] = implode('；', $refundDetailText);
                     if(1||empty($digit_info)){
                         $v['refund_money']= formatNumber($v['refund_money'],2,1);
                         $v['refund_online_money']= formatNumber($v['refund_online_money'],2,1);
@@ -5163,7 +5896,7 @@ class HouseNewCashierService
                         }
                     }
                     $refund_money_total = round((float)$refund_money_total + (float)$v['refund_money'],4);
-                    $v['remaining_amount'] = round((float)$orderInfo['pay_money'] - (float)$refund_money_total,4);
+                    $v['remaining_amount'] = round((float)$refundMoneyInfo['total_money'] - (float)$refund_money_total,4);
                 }
             }
         }
@@ -5199,6 +5932,9 @@ class HouseNewCashierService
             throw new \think\Exception("订单信息不存在！");
         }
         $orderInfo=$orderInfo->toArray();
+        $summaryInfo = $db_house_new_pay_order_summary->getOne(['summary_id' => $orderInfo['summary_id']], '*');
+        $summaryInfo = ($summaryInfo && !$summaryInfo->isEmpty()) ? $summaryInfo->toArray() : array();
+        $refundMoneyInfo = $this->getOrderRefundMoneyInfo($orderInfo, $summaryInfo);
         $offline_pay_money=isset($orderInfo['offline_pay_money']) && $orderInfo['offline_pay_money']>0 ? $orderInfo['offline_pay_money']:0;
         /*
         if ($orderInfo['order_type']=='park_new' && $orderInfo['car_type']=='stored_type'){
@@ -5327,15 +6063,14 @@ class HouseNewCashierService
             }
 
             fdump_api(['退款信息' . __LINE__, $refund_money, $orderInfo['pay_money']], 'new_village_order_refund_zbd', 1);
-            if ($refund_money > formatNumber($orderInfo['pay_money'], 2)) {
+            if ($refund_money > $refundMoneyInfo['total_money']) {
                 throw new \think\Exception("退款金额不能大于实付金额");
             }
-            if ($refund_money > formatNumber(($orderInfo['pay_money'] - $orderInfo['refund_money']), 2)) {
+            if ($refund_money > $refundMoneyInfo['remain_money']) {
                 throw new \think\Exception("退款总金额不能大于实付金额");
             }
         }
 
-        $summaryInfo = $db_house_new_pay_order_summary->getOne(['summary_id' => $orderInfo['summary_id']], '*');
         if ($refund_type == 2) {
             if ($projectInfo['type']==2){
                 //查询最新未缴账单
@@ -5417,7 +6152,7 @@ class HouseNewCashierService
                 }
                 */
             }
-            $refund_money = $orderInfo['pay_money'];
+            $refund_money = $refundMoneyInfo['total_money'];
             $refund_status = 1;
 
         }
@@ -5462,7 +6197,7 @@ class HouseNewCashierService
                 }
             }
         }
-        $pay_money_tmp=round($orderInfo['pay_money'],2);
+        $pay_money_tmp=round($refundMoneyInfo['total_money'],2);
         if ($refund_type == 1 && $refund_money < $pay_money_tmp) {
             $refund_status = 2;
         } elseif ($refund_type == 1 && $refund_money == $pay_money_tmp) {
@@ -5976,6 +6711,7 @@ class HouseNewCashierService
             ];
             $db_house_new_deposit_log->addOne($deposit_data);
         }
+        $refundPayDetail = $this->allocateOrderRefundDetail($orderInfo, $summaryInfo, $refund_money);
         $data = [
             'order_id' => $order_id,
             'refund_type' => $refund_type,
@@ -5986,6 +6722,7 @@ class HouseNewCashierService
             'refund_balance_money'=>$system_balance_money,
             'refund_score_money'=>$score_deducte_money,
             'refund_score_count'=>$score_used_count,
+            'refund_detail'=>json_encode($refundPayDetail, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             'role_id' => $role_id,
             'add_time' => time(),
             'update_time' => time(),
@@ -5996,7 +6733,8 @@ class HouseNewCashierService
         }
         $id = $db_house_new_pay_order_refund->addOne($data);
         if ($id > 0) {
-            if($orderInfo['deposit_money']>0){
+            $this->restoreDepositDeductForRefund($orderInfo, $summaryInfo, $role_id, $refund_money);
+            if($orderInfo['deposit_money']>0 && !$this->hasNewDepositDeductFreeze($orderInfo)){
                 $db_house_new_deposit_log=new HouseNewDepositLog();
                 $deposit_info=$db_house_new_deposit_log->get_one(['village_id'=>$orderInfo['village_id'],'room_id'=>$orderInfo['room_id']]);
                 if (!empty($deposit_info)){
@@ -6679,9 +7417,20 @@ class HouseNewCashierService
             $is_func_efamily365_special=$configCustomizationService->getfuncEfamily365Special(true);
             $func_kaidalaicn_special=$configCustomizationService->getfuncKaidalaicnSpecial(true);
             foreach ($list as $k => $v) {
+                $summary_info = [];
+                if (!empty($v['summary_id'])) {
+                    $summaryOrder = $db_house_new_pay_order_summary->getOne(['summary_id' => $v['summary_id']]);
+                    if ($summaryOrder && !$summaryOrder->isEmpty()) {
+                        $summary_info = $summaryOrder->toArray();
+                        $v['order_serial'] = $summary_info['paid_orderid'];
+                        $v['order_no'] = $summary_info['order_no'];
+                    }
+                }
+                // 与已缴账单列表保持一致：组合支付抵扣也计入实缴，再扣除退款、积分和押金抵扣。
+                $v['pay_money_real'] = $this->getOrderPaidExportMoney($v, $summary_info);
                 $count['total_money'] = $count['total_money'] + $v['total_money'];
                 $count['modify_money'] = $count['modify_money'] + $v['modify_money'];
-                $count['pay_money'] = $count['pay_money'] + $v['pay_money'];
+                $count['pay_money'] = $count['pay_money'] + ($exporttype == 'exportRefund' ? $v['pay_money'] : $v['pay_money_real']);
                 $count['late_payment_money'] = $count['late_payment_money'] + $v['late_payment_money'];
                 $count['prepare_pay_money'] = $count['prepare_pay_money'] + $v['prepare_pay_money'];
                 $count['refund_money'] = $count['refund_money'] + $v['refund_money'];
@@ -6716,7 +7465,7 @@ class HouseNewCashierService
                 $v['print_number'] = (!empty($print_num)) ? implode(',',$print_num) : '';
                 if ($v['is_refund'] == 1) {
                     $v['order_status'] = '未退款';
-                }elseif($v['refund_money'] >= $v['pay_money']){
+                }elseif($v['refund_money'] >= ($exporttype == 'exportRefund' ? $v['pay_money'] : $actualPayTotal)){
                     $v['order_status'] = '已退款';
                 } else {
                     $v['order_status'] = '部分退款';
@@ -6774,14 +7523,6 @@ class HouseNewCashierService
                         }
                     }
                 }
-                if (!empty($v['summary_id'])){
-                    $db_house_new_pay_order_summary = new HouseNewPayOrderSummary();
-                    $summary_info= $db_house_new_pay_order_summary->getOne(['summary_id' => $v['summary_id']]);
-                    if (!empty($summary_info)){
-                        $v['order_serial']=$summary_info['paid_orderid'];
-                        $v['order_no']=$summary_info['order_no'];
-                    }
-                }
                 if($v['role_id']>0 && ($v['login_role']==401||$v['login_role']==0)){
                     $role_name=$v['role_name'];
                     $admininfo = $db_admin->getOne(['id' => $v['role_id']],'id,village_id,account,realname,phone');
@@ -6810,12 +7551,9 @@ class HouseNewCashierService
                     $data_list[$k]['charge_name'] = $v['charge_name'];
                     $data_list[$k]['order_no'] = '';
                     //$data_list[$k]['order_serial'] = $v['order_serial'];
-                    if (!empty($v['summary_id'])) {
-                        $summary_info = $db_house_new_pay_order_summary->getOne(['summary_id' => $v['summary_id']]);
-                        if (!empty($summary_info)) {
-                            $data_list[$k]['order_no'] = $summary_info['order_no'];
-                            //$data_list[$k]['order_serial'] = $summary_info['paid_orderid'];
-                        }
+                    if (!empty($summary_info)) {
+                        $data_list[$k]['order_no'] = $summary_info['order_no'];
+                        //$data_list[$k]['order_serial'] = $summary_info['paid_orderid'];
                     }
                     $data_list[$k]['total_money'] = $v['total_money'];
                     $data_list[$k]['pay_money'] = $v['pay_money'];
@@ -6897,17 +7635,14 @@ class HouseNewCashierService
                     $data_list[$k]['order_no'] = '';
                     $data_list[$k]['order_serial'] = $v['order_serial'];
                     $remark = '';
-                    if (!empty($v['summary_id'])) {
-                        $summary_info = $db_house_new_pay_order_summary->getOne(['summary_id' => $v['summary_id']]);
-                        if (!empty($summary_info)) {
-                            $data_list[$k]['order_no'] = $summary_info['order_no'];
-                            $data_list[$k]['order_serial'] = $summary_info['paid_orderid'];
-                            $remark = $summary_info['remark'];
-                        }
+                    if (!empty($summary_info)) {
+                        $data_list[$k]['order_no'] = $summary_info['order_no'];
+                        $data_list[$k]['order_serial'] = $summary_info['paid_orderid'];
+                        $remark = $summary_info['remark'];
                     }
                     $data_list[$k]['total_money'] = $v['total_money'];
                     $data_list[$k]['modify_money'] = $v['modify_money'];
-                    $data_list[$k]['pay_money'] = $v['pay_money'];
+                    $data_list[$k]['pay_money'] = $v['pay_money_real'];
                     if (!empty($v['diy_type'])) {
                         $data_list[$k]['diy_type'] = $this->diy_type[$v['diy_type']];
                     } else {
@@ -8274,7 +9009,7 @@ class HouseNewCashierService
             }
         }
 
-        $field='o.*,s.remark as s_remark,p.name as order_name2,p.type,r.bill_create_set,r.measure_unit,s.online_pay_type,s.order_no as s_order_no,r.charge_name,r.fees_type';
+        $field='o.*,s.pay_uid as payer_uid,s.remark as s_remark,p.name as order_name2,p.type,r.bill_create_set,r.measure_unit,s.online_pay_type,s.order_no as s_order_no,r.charge_name,r.fees_type';
         $orderBy = 'o.project_id DESC,o.service_start_time desc,o.order_id DESC';
         if($print_orders_merge_project>0){
             $orderBy = 'o.project_id DESC,o.service_start_time ASC,o.order_id DESC';
@@ -8522,21 +9257,20 @@ class HouseNewCashierService
             $digit_info=array();
             $v['score_used_count']=formatNumber($v['score_used_count'],2,1);
             if(1||empty($digit_info)){
-                $real_money=formatNumber($v['pay_money']-$v['refund_money']-$v['score_deducte'],2,1);
+                $real_money=formatNumber($this->getPrintActualPayMoney($v, $v),2,1);
                 $v['total_money']=formatNumber($v['total_money'],2,1);
-                $v['pay_money']=formatNumber($v['pay_money'],2,1);
                 $v['score_deducte']=formatNumber($v['score_deducte'],2,1);
             }
             else{
                 if($v['order_type'] == 'water' || $v['order_type'] == 'electric' || $v['order_type'] == 'gas'){
-                    $real_money=formatNumber($v['pay_money']-$v['refund_money']-$v['score_deducte'],$digit_info['meter_digit'],$digit_info['type']);
+                    $real_money=formatNumber($this->getPrintActualPayMoney($v, $v),$digit_info['meter_digit'],$digit_info['type']);
                     $v['total_money']=formatNumber($v['total_money'],$digit_info['meter_digit'],$digit_info['type']);
                     $v['pay_money']=formatNumber($v['pay_money'],$digit_info['meter_digit'],$digit_info['type']);
 
                     $v['score_deducte']=formatNumber($v['score_deducte'],$digit_info['meter_digit'],$digit_info['type']);
 
                 }else{
-                    $real_money=formatNumber($v['pay_money']-$v['refund_money']-$v['score_deducte'],$digit_info['other_digit'],$digit_info['type']);
+                    $real_money=formatNumber($this->getPrintActualPayMoney($v, $v),$digit_info['other_digit'],$digit_info['type']);
                     $v['total_money']=formatNumber($v['total_money'],$digit_info['other_digit'],$digit_info['type']);
                     $v['pay_money']=formatNumber($v['pay_money'],$digit_info['other_digit'],$digit_info['type']);
 
@@ -8677,6 +9411,10 @@ class HouseNewCashierService
                         $body_item['merge_order_id'] = $merge_project_key_arr[$v["project_id"]]['merge_order_id'];
                     }
                     $merge_project_key = $v["project_id"].'_'.$body_item['merge_order_id'].'_'.$body_item['is_prepare'];
+                }
+                // 独立收据按实际收款日期分组，跨日账单不能合并成同一张收据。
+                if ((int)$templateInfo['type'] === 4) {
+                    $merge_project_key .= '_receipt_date_' . $body_item['pay_time'];
                 }
                 if (isset($order_body_merge[$merge_project_key])) {
                     if ($body_item['rule_name'] != $order_body_merge[$merge_project_key]['rule_name']) {
@@ -8885,7 +9623,7 @@ class HouseNewCashierService
                     $pay_time=$min_date.'-'.$max_date;
                 }
             } else{
-                $pay_time=date('Y-m-d H:i:s',$pay_time[0]);
+                $pay_time=date('Y-m-d',$pay_time[0]);
             }
         }
         else{
@@ -8915,6 +9653,16 @@ class HouseNewCashierService
         if($totalMoneyType<0.01){
             $totalMoneyType=$money;
         }
+        $printPayerNames = [];
+        foreach ($orderList as $payerOrder) {
+            $isOnlinePayer = (int)($payerOrder['pay_type'] ?? 0) === 4
+                || !empty($payerOrder['payer_uid']);
+            $payerInfo = $this->resolveCashierPayer($payerOrder, $village_id, $isOnlinePayer);
+            if ($payerInfo['name'] !== '') {
+                $printPayerNames[] = $payerInfo['name'];
+            }
+        }
+        $printPayerName = implode('，', array_unique($printPayerNames));
         $over_paid_money_total= round($over_paid_money_total,2);
         $order_field=[
             'title'=> $templateInfo['top_title'],
@@ -8922,7 +9670,7 @@ class HouseNewCashierService
             'housesize'=>0,//房屋面积
             'village_name'=>$village_info['village_name'],//小区
             'room_num'=>'',//房号
-            'username'=> !empty($user_info) ? $user_info['name'] : '',//住户姓名
+            'username'=> $printPayerName,//实际缴费人
             'phone'=>!empty($user_info) ? $user_info['phone'] : '',//住户手机号
             'totalMoney'=>'￥' . $realMoney . '(' . cny($realMoney) . ')',//合计
             'real_money_type' => ['value1' => cny($realMoney),'value2' => '￥' . $realMoney], // 实收金额 新版打印模板使用
@@ -8935,7 +9683,7 @@ class HouseNewCashierService
             'payee'=>$role_name,//收款方
             'payee_namess'=>$payee_name,//收款人
             'desc'=>$templateInfo['desc'],//说明
-            'payer'=>!empty($user_info) ? $user_info['name'] : '',//付款人
+            'payer'=>$printPayerName,//付款人
             'pay_type_name'=>!empty($pay_type) ? (implode('，',array_unique($pay_type))): '',//收款方式
             //'remarks'=>empty($remark) ? '' : ((count($remark) < 2) ? $remark[0] :count($remark).'条账单有备注内容'),//收款备注
             'remarks'=>empty($remark) ? '' : ((count($remark) < 2) ? $remark[0] :implode('，',$remark)),//收款备注
@@ -12958,8 +13706,21 @@ class HouseNewCashierService
             $type = 2;
             $id   = $data['position_id'];
         }
+        $this->assertQuickTargetBelongsToVillage(
+            $data['village_id'],
+            $data['room_id'],
+            $data['position_id']
+        );
+        $this->assertQuickTargetRuleType($data['village_id'], $data['rule_id'], $type === 2);
         if (empty($data['cycle'])){
             $data['cycle']=1;
+        }
+        if (!empty($data['order_add_time']) && !empty($data['end_time'])) {
+            $requestStartTime = strtotime($data['order_add_time'] . ' 00:00:00');
+            $requestEndTime = strtotime($data['end_time'] . ' 23:59:59');
+            if ($requestStartTime && $requestEndTime && $requestStartTime > $requestEndTime) {
+                throw new \think\Exception('账单开始时间不能晚于结束时间');
+            }
         }
         $contract_info = $service_house_new_charge_rule->getHouseVillageInfo(['village_id'=>$data['village_id']],'contract_time_start,contract_time_end');
         $info = $db_rule->getDetail(['r.id'=>$data['rule_id']],'n.charge_type,r.*,p.type,p.name as order_name');
@@ -13016,6 +13777,7 @@ class HouseNewCashierService
             //使用房子的 未入住状态来判断
             $whereArrTmp=array();
             $whereArrTmp[]=array('pigcms_id','=',$data['room_id']);
+            $whereArrTmp[]=array('village_id','=',$data['village_id']);
             $whereArrTmp[]=array('user_status','=',2);
             //$whereArrTmp[]=array('status','in',[1,2,3]);
             $whereArrTmp[]=array('user_status','=',2);
@@ -13027,7 +13789,7 @@ class HouseNewCashierService
             }
         }else{
             $service_house_village_parking = new HouseVillageParkingService();
-            $carInfo = $service_house_village_parking->getCar(['car_position_id'=>$data['position_id']]);
+            $carInfo = $service_house_village_parking->getCar(['car_position_id'=>$data['position_id'],'village_id'=>$data['village_id']]);
             if($carInfo){
                 $carInfo = $carInfo->toArray();
             }
@@ -13063,7 +13825,7 @@ class HouseNewCashierService
                 if($jz_wsxdsj_net_customized_open){
                     $field .= ',heating_size,billable_size';
                 }
-                $vacancy_info=$service_house_village_user_vacancy->getUserVacancyInfo(['pigcms_id'=>$data['room_id']],$field);
+                $vacancy_info=$service_house_village_user_vacancy->getUserVacancyInfo(['pigcms_id'=>$data['room_id'],'village_id'=>$data['village_id']],$field);
                 if (!empty($vacancy_info)&&$vacancy_info['housesize']>0){
                     $custom_value=$vacancy_info['housesize'];
                 }
@@ -13089,7 +13851,7 @@ class HouseNewCashierService
                 if(empty($data['position_id'])){
                     throw new \think\Exception("车位面积为0，无法生成账单");
                 }
-                $positionSize = (new HouseVillageParkingPosition())->where(['position_id' =>$data['position_id']])->value('position_area');
+                $positionSize = (new HouseVillageParkingPosition())->where(['position_id'=>$data['position_id'],'village_id'=>$data['village_id']])->value('position_area');
                 if(!$positionSize || $positionSize<=0){
                     throw new \think\Exception('车位面积为0，无法生成账单！');
                 }
@@ -13145,6 +13907,7 @@ class HouseNewCashierService
         }
         $cycle_cc=$cycle=$data['cycle'];
         $postData['from'] = 1;
+        $postData['source_type'] = 'quick_bill';
         if($info['type'] == 2){
             $postData['service_month_num'] = $data['cycle'];
             $projectInfo = $db_project->getOne(['id'=>$info['charge_project_id']],'subject_id');
@@ -13269,7 +14032,7 @@ class HouseNewCashierService
                 if($jz_wsxdsj_net_customized_open){
                     $field .= ',heating_size,billable_size';
                 }
-                $vacancy_info=$service_house_village_user_vacancy->getUserVacancyInfo(['pigcms_id'=>$data['room_id']],$field);
+                $vacancy_info=$service_house_village_user_vacancy->getUserVacancyInfo(['pigcms_id'=>$data['room_id'],'village_id'=>$data['village_id']],$field);
                 if (!empty($vacancy_info)&&$vacancy_info['housesize']>0&&$info['fees_type']==2 && !in_array($info['unit_gage_type'],[4,5])){
                     $info['charge_price']=$info['charge_price']*$vacancy_info['housesize'];
                 }elseif($info['unit_gage_type'] == 4){
@@ -13289,7 +14052,7 @@ class HouseNewCashierService
                 $info['charge_price']=$info['charge_price']*$data['custom_value'];
             }
             if($info['unit_gage_type'] == 3 && $data['position_id']) {
-                $positionSize = (new HouseVillageParkingPosition())->where(['position_id' =>$data['position_id']])->value('position_area');
+                $positionSize = (new HouseVillageParkingPosition())->where(['position_id'=>$data['position_id'],'village_id'=>$data['village_id']])->value('position_area');
                 if($positionSize >0){
                     $info['charge_price']=$info['charge_price']*$positionSize;
                 }
@@ -13368,7 +14131,7 @@ class HouseNewCashierService
         }
         if($data['room_id']){
             $postData['room_id'] = $data['room_id'];
-            $user_info = $service_house_village_user_bind->getBindInfo([['vacancy_id','=',$data['room_id']],['type','in','0,3'],['status','=',1]],'pigcms_id,name,phone');
+            $user_info = $service_house_village_user_bind->getBindInfo([['village_id','=',$data['village_id']],['vacancy_id','=',$data['room_id']],['type','in','0,3'],['status','=',1]],'pigcms_id,name,phone');
             if($user_info){
                 $postData['pigcms_id'] = $user_info['pigcms_id']?$user_info['pigcms_id']:0;
                 $postData['name'] = $user_info['name']?$user_info['name']:'';
@@ -13378,8 +14141,8 @@ class HouseNewCashierService
         if($data['position_id']){
             $service_house_village_parking = new HouseVillageParkingService();
             $postData['position_id'] = $data['position_id'];
-            $bind_position = $service_house_village_parking->getBindPosition(['position_id'=>$postData['position_id']]);
-            $user_info = $service_house_village_user_bind->getBindInfo(['pigcms_id'=>$bind_position['user_id']],'pigcms_id,name,phone,vacancy_id');
+            $bind_position = $service_house_village_parking->getBindPosition(['position_id'=>$postData['position_id'],'village_id'=>$data['village_id']]);
+            $user_info = $service_house_village_user_bind->getBindInfo([['pigcms_id','=',$bind_position['user_id'] ?? 0],['village_id','=',$data['village_id']]],'pigcms_id,name,phone,vacancy_id');
             if($user_info){
                 $postData['pigcms_id'] = $user_info['pigcms_id']?$user_info['pigcms_id']:0;
                 $postData['name'] = $user_info['name']?$user_info['name']:'';
@@ -13387,7 +14150,7 @@ class HouseNewCashierService
                 $postData['room_id'] = $user_info['vacancy_id']?$user_info['vacancy_id']:0;
             }
             if($info['fees_type'] == 4){
-                $car_info= $service_house_village_parking->getCar(['car_position_id'=>$postData['position_id']],'car_id,province,car_number,end_time');
+                $car_info= $service_house_village_parking->getCar(['car_position_id'=>$postData['position_id'],'village_id'=>$data['village_id']],'car_id,province,car_number,end_time');
                 $postData['car_type'] = 'month_type';
                 $postData['is_prepare'] = 2;
                 $postData['car_number'] = !empty($car_info)?$car_info['province'].$car_info['car_number']:'';
@@ -13428,6 +14191,9 @@ class HouseNewCashierService
             //年按月拆
             $tmp_cycle=$data['cycle']*12;
         }
+        Db::startTrans();
+        try {
+            $this->assertNoOverlappingQuickBill($postData);
         if($tmp_cycle>1){
             fdump_api(['postData'=>$postData,'tmp_cycle'=>$tmp_cycle],'sub_quick_call_0718',1);
             $postData['unify_flage_id']=$unify_flage_id;
@@ -13473,37 +14239,131 @@ class HouseNewCashierService
                 fdump_api(['addOrder','postData'=>$postData,'tmp_cycle'=>$tmp_cycle],'sub_quick_call_0718',1);
                 $res = $service_house_new_cashier->addOrder($postData);
                 if ($res>0){
-                    $db_process_sub_plan = new ProcessSubPlan();
-                    $arr = array();
-                    $arr['param'] = serialize(array('order_id' =>$res));
-                    $arr['plan_time'] = time()+$postData['expires']*3600;
-                    $arr['space_time'] = 0;
-                    $arr['add_time'] = time();
-                    $arr['file'] = 'sub_quick_call';
-                    $arr['time_type'] = 1;
-                    $arr['unique_id'] = $res.'_sub_quick_call';
-                    $arr['rand_number'] = mt_rand(1, max(cfg('sub_process_num'), 3));
-                    $db_process_sub_plan->add($arr);
+                    // $db_process_sub_plan = new ProcessSubPlan();
+                    // $arr = array();
+                    // $arr['param'] = serialize(array('order_id' =>$res));
+                    // $arr['plan_time'] = time()+$postData['expires']*3600;
+                    // $arr['space_time'] = 0;
+                    // $arr['add_time'] = time();
+                    // $arr['file'] = 'sub_quick_call';
+                    // $arr['time_type'] = 1;
+                    // $arr['unique_id'] = $res.'_sub_quick_call';
+                    // $arr['rand_number'] = mt_rand(1, max(cfg('sub_process_num'), 3));
+                    // $db_process_sub_plan->add($arr);
                 }
             }
         }else{
             $res = $service_house_new_cashier->addOrder($postData);
             if ($res>0){
-                $db_process_sub_plan = new ProcessSubPlan();
-                $arr = array();
-                $arr['param'] = serialize(array('order_id' =>$res));
-                $arr['plan_time'] = time()+$postData['expires']*3600;
-                $arr['space_time'] = 0;
-                $arr['add_time'] = time();
-                $arr['file'] = 'sub_quick_call';
-                $arr['time_type'] = 1;
-                $arr['unique_id'] = $res.'_sub_quick_call';
-                $arr['rand_number'] = mt_rand(1, max(cfg('sub_process_num'), 3));
-                fdump_api([$arr],'sub_quick_call_0718',1);
-                $db_process_sub_plan->add($arr);
+                // $db_process_sub_plan = new ProcessSubPlan();
+                // $arr = array();
+                // $arr['param'] = serialize(array('order_id' =>$res));
+                // $arr['plan_time'] = time()+$postData['expires']*3600;
+                // $arr['space_time'] = 0;
+                // $arr['add_time'] = time();
+                // $arr['file'] = 'sub_quick_call';
+                // $arr['time_type'] = 1;
+                // $arr['unique_id'] = $res.'_sub_quick_call';
+                // $arr['rand_number'] = mt_rand(1, max(cfg('sub_process_num'), 3));
+                // fdump_api([$arr],'sub_quick_call_0718',1);
+                // $db_process_sub_plan->add($arr);
             }
         }
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
+            throw $e;
+        }
         return $res;
+    }
+
+    private function assertNoOverlappingQuickBill($orderData)
+    {
+        $startTime = intval($orderData['service_start_time'] ?? 0);
+        $endTime = intval($orderData['service_end_time'] ?? 0);
+        if ($startTime <= 0 || $endTime <= 0) {
+            return;
+        }
+        if ($startTime > $endTime) {
+            throw new \think\Exception('账单开始时间不能晚于结束时间');
+        }
+        $targetField = !empty($orderData['position_id']) ? 'position_id' : 'room_id';
+        $targetId = intval($orderData[$targetField] ?? 0);
+        $overlap = Db::name('house_new_pay_order')->where([
+            ['village_id', '=', intval($orderData['village_id'] ?? 0)],
+            [$targetField, '=', $targetId],
+            ['project_id', '=', intval($orderData['project_id'] ?? 0)],
+            ['is_paid', 'in', [1, 2]],
+            ['is_discard', '=', 1],
+            ['is_refund', '=', 1],
+            ['service_start_time', '<=', $endTime],
+            ['service_end_time', '>=', $startTime],
+        ])->field('order_id,service_start_time,service_end_time')->lock(true)->find();
+        if ($overlap) {
+            $existingStart = date('Y-m-d', intval($overlap['service_start_time']));
+            $existingEnd = date('Y-m-d', intval($overlap['service_end_time']));
+            throw new \think\Exception('当前收费项目在' . $existingStart . '至' . $existingEnd . '已存在应缴或已缴账单，不能重复创建');
+        }
+    }
+
+    private function assertQuickTargetRuleType($villageId, $ruleId, $isPosition)
+    {
+        $chargeType = Db::name('house_new_charge_rule')->alias('r')
+            ->leftJoin('house_new_charge_project p', 'p.id = r.charge_project_id')
+            ->leftJoin('house_new_charge_number n', 'n.id = p.subject_id')
+            ->where([
+                ['r.id', '=', intval($ruleId)],
+                ['r.status', '=', 1],
+                ['p.village_id', '=', intval($villageId)],
+                ['p.status', '=', 1],
+            ])->value('n.charge_type');
+        if (!$chargeType) {
+            throw new \think\Exception('收费标准信息不存在');
+        }
+        if ($isPosition && $chargeType !== 'parking_management') {
+            throw new \think\Exception('车场只能选择车位管理费收费项目和标准');
+        }
+        if (!$isPosition && $chargeType === 'parking_management') {
+            throw new \think\Exception('房产不能选择车位管理费收费项目和标准');
+        }
+    }
+
+    /**
+     * 校验快捷账单的房间或车位属于当前小区，防止切换小区后沿用旧 key 串单。
+     */
+    private function assertQuickTargetBelongsToVillage($villageId, $roomId, $positionId)
+    {
+        $villageId = intval($villageId);
+        $roomId = intval($roomId);
+        $positionId = intval($positionId);
+
+        if ($villageId <= 0) {
+            throw new \think\Exception('小区信息不存在，请重新进入收银台');
+        }
+        if ($roomId > 0) {
+            $roomExists = Db::name('house_village_user_vacancy')->where([
+                ['pigcms_id', '=', $roomId],
+                ['village_id', '=', $villageId],
+                ['is_del', '=', 0],
+                ['status', 'in', [1, 2, 3]],
+            ])->value('pigcms_id');
+            if (!$roomExists) {
+                throw new \think\Exception('房间不属于当前小区，请重新选择');
+            }
+            return;
+        }
+        if ($positionId > 0) {
+            $positionExists = Db::name('house_village_parking_position')->where([
+                ['position_id', '=', $positionId],
+                ['village_id', '=', $villageId],
+                ['position_status', 'in', [1, 2, 3]],
+            ])->value('position_id');
+            if (!$positionExists) {
+                throw new \think\Exception('车位不属于当前小区，请重新选择');
+            }
+            return;
+        }
+        throw new \think\Exception('房间或车场不能为空');
     }
 
     public function getQuickRuleInfo($data){
@@ -13515,6 +14375,16 @@ class HouseNewCashierService
         if ($rule_info && !is_array($rule_info)) {
             $rule_info = $rule_info->toArray();
         }
+        $this->assertQuickTargetRuleType(
+            $data['village_id'],
+            $data['rule_id'],
+            !empty($data['position_id'])
+        );
+        $this->assertQuickTargetBelongsToVillage(
+            $data['village_id'],
+            $data['room_id'],
+            $data['position_id']
+        );
         //收费周期
         if (empty($data['cycle'])){
             $data['cycle']=1;
@@ -13806,16 +14676,20 @@ class HouseNewCashierService
                     $days=ceil($time_c/86400);
                     $rule_info['pay_money']=$rule_info['charge_price']*$days;
                 }elseif($rule_info['charge_valid_type']==2){
-                    $cycles=0;
-                    if (isset($years)&&!empty($years)){
-                       $cycles=$cycles+$years*12;
+                    if (intval($rule_info['fees_type']) == newChargeConst::FEES_TYPE_FIXED_EXPENSES) {
+                        $rule_info['pay_money'] = $this->calcNaturalMonthDayMoney($rule_info['charge_price'], $rule_info['start_time'], $data['end_time']);
+                    } else {
+                        $cycles=0;
+                        if (isset($years)&&!empty($years)){
+                           $cycles=$cycles+$years*12;
+                        }
+                        if (isset($month)&&!empty($month)){
+                            $cycles=$cycles+$month;
+                        }
+                        $times=$data['end_time']-strtotime("+$cycles month",$rule_info['start_time']);
+                        $price=$rule_info['charge_price']*($times/$cycle_s);
+                        $rule_info['pay_money']=$rule_info['charge_price']*$cycles+$price;
                     }
-                    if (isset($month)&&!empty($month)){
-                        $cycles=$cycles+$month;
-                    }
-                    $times=$data['end_time']-strtotime("+$cycles month",$rule_info['start_time']);
-                    $price=$rule_info['charge_price']*($times/$cycle_s);
-                    $rule_info['pay_money']=$rule_info['charge_price']*$cycles+$price;
 
                 }else{
                     $cycles=0;
@@ -13878,15 +14752,19 @@ class HouseNewCashierService
                     $days=ceil($time_c/86400);
                     $rule_info['pay_money']=$rule_info['charge_price']*$days;
                 }elseif($rule_info['charge_valid_type']==2){
-                    $cycles=0;
-                    if (isset($years)&&!empty($years)){
-                        $cycles=$cycles+$years*12;
+                    if (intval($rule_info['fees_type']) == newChargeConst::FEES_TYPE_FIXED_EXPENSES) {
+                        $rule_info['pay_money'] = $this->calcNaturalMonthDayMoney($rule_info['charge_price'], $rule_info['charge_valid_time'], $data['end_time']);
+                    } else {
+                        $cycles=0;
+                        if (isset($years)&&!empty($years)){
+                            $cycles=$cycles+$years*12;
+                        }
+                        if (isset($month)&&!empty($month)){
+                            $cycles=$cycles+$month;
+                        }
+                        $price=$rule_info['charge_price']*($time_s/$cycle_s);
+                        $rule_info['pay_money']=$rule_info['charge_price']*$cycles+$price;
                     }
-                    if (isset($month)&&!empty($month)){
-                        $cycles=$cycles+$month;
-                    }
-                    $price=$rule_info['charge_price']*($time_s/$cycle_s);
-                    $rule_info['pay_money']=$rule_info['charge_price']*$cycles+$price;
 
                 }else{
                     $cycles=0;
@@ -14062,9 +14940,267 @@ class HouseNewCashierService
         $data1['list']=$list;
         return $data1;
     }
+    private function repairReversedDepositReleaseLogs($villageId, $roomId)
+    {
+        $villageId = intval($villageId);
+        $roomId = intval($roomId);
+        if ($villageId <= 0 || $roomId <= 0) {
+            return;
+        }
+        $logs = Db::name('house_new_deposit_log')->alias('l')
+            ->leftJoin('house_new_pay_order o', 'o.order_id = l.order_id AND o.village_id = l.village_id')
+            ->leftJoin('house_new_bill_deposit_order d', 'd.order_id = l.order_id AND d.village_id = l.village_id')
+            ->where([
+                ['l.village_id', '=', $villageId],
+                ['l.room_id', '=', $roomId],
+                ['o.order_type', '=', 'deposit_bill'],
+            ])
+            ->field('l.id,l.before_money,l.money,l.total_money,l.type,d.account_status,d.refunded_money')
+            ->order('l.id ASC')
+            ->select()
+            ->toArray();
+        foreach ($logs as $log) {
+            $logId = intval($log['id']);
+            $prevLog = Db::name('house_new_deposit_log')->where([
+                ['village_id', '=', $villageId],
+                ['room_id', '=', $roomId],
+                ['id', '<', $logId],
+            ])->order('id DESC')->field('total_money')->find();
+            $beforeMoney = $prevLog ? round(floatval($prevLog['total_money'] ?? 0), 4) : round(floatval($log['before_money'] ?? 0), 4);
+            $money = round(floatval($log['money'] ?? 0), 4);
+            if ($money <= 0) {
+                continue;
+            }
+            $type = intval($log['type'] ?? 0);
+            if ($type === 2) {
+                $targetTotal = $beforeMoney;
+            } elseif ($type === 1 && intval($log['account_status'] ?? 0) === 2 && round(floatval($log['refunded_money'] ?? 0), 4) > 0) {
+                $targetTotal = round($beforeMoney + $money, 4);
+            } else {
+                continue;
+            }
+            $currentBefore = round(floatval($log['before_money'] ?? 0), 4);
+            $currentTotal = round(floatval($log['total_money'] ?? 0), 4);
+            if ($currentBefore != $beforeMoney || $currentTotal != $targetTotal) {
+                Db::name('house_new_deposit_log')->where('id', $logId)->update([
+                    'before_money' => $beforeMoney,
+                    'total_money' => $targetTotal,
+                ]);
+            }
+        }
+    }
 
+    private function repairReleasedDepositFreezeAccounts($villageId, $roomId)
+    {
+        $villageId = intval($villageId);
+        $roomId = intval($roomId);
+        if ($villageId <= 0 || $roomId <= 0) {
+            return;
+        }
+        $rows = Db::name('house_new_bill_deposit_order')->alias('d')
+            ->leftJoin('house_new_bill_deposit_freeze f', 'f.order_id = d.order_id AND f.village_id = d.village_id AND f.room_id = d.room_id')
+            ->where([
+                ['d.village_id', '=', $villageId],
+                ['d.room_id', '=', $roomId],
+                ['d.account_status', '=', 2],
+                ['d.refunded_money', '>', 0],
+                ['f.status', '=', 0],
+            ])->field('d.*,f.id as freeze_id')
+            ->select()
+            ->toArray();
+        foreach ($rows as $row) {
+            $orderId = intval($row['order_id'] ?? 0);
+            if ($orderId <= 0) {
+                continue;
+            }
+            $hasApproval = Db::name('community_approval_instance')->where([
+                ['village_id', '=', $villageId],
+                ['status', '=', 1],
+                ['business_id', '=', $orderId],
+            ])->whereLike('change_data', '%deposit_release%')->find();
+            if (!$hasApproval) {
+                continue;
+            }
+            $releaseMoney = round(floatval($row['refunded_money'] ?? 0), 4);
+            if ($releaseMoney <= 0) {
+                continue;
+            }
+            Db::startTrans();
+            try {
+                $account = Db::name('house_new_bill_deposit_account')->where([
+                    ['village_id', '=', $villageId],
+                    ['room_id', '=', $roomId],
+                ])->lock(true)->find();
+                if ($account) {
+                    Db::name('house_new_bill_deposit_account')->where('id', $account['id'])->update([
+                        'total_money' => round(floatval($account['total_money'] ?? 0) + $releaseMoney, 4),
+                        'update_time' => time(),
+                    ]);
+                }
+                Db::name('house_new_bill_deposit_freeze')->where('id', intval($row['freeze_id']))->update([
+                    'status' => 2,
+                    'update_time' => time(),
+                ]);
+                $existsLog = Db::name('house_new_deposit_log')->where([
+                    ['village_id', '=', $villageId],
+                    ['room_id', '=', $roomId],
+                    ['order_id', '=', $orderId],
+                    ['type', '=', 1],
+                ])->find();
+                if (!$existsLog) {
+                    $oldDepositInfo = Db::name('house_new_deposit_log')->where([
+                        ['village_id', '=', $villageId],
+                        ['room_id', '=', $roomId],
+                    ])->order('id DESC')->find();
+                    $beforeMoney = $oldDepositInfo ? round(floatval($oldDepositInfo['total_money'] ?? 0), 4) : 0;
+                    $payOrder = Db::name('house_new_pay_order')->where([
+                        ['village_id', '=', $villageId],
+                        ['order_id', '=', $orderId],
+                    ])->field('order_no,summary_id')->find();
+                    $orderNo = $payOrder['order_no'] ?? '';
+                    if (empty($orderNo) && !empty($payOrder['summary_id'])) {
+                        $orderNo = Db::name('house_new_pay_order_summary')->where('summary_id', intval($payOrder['summary_id']))->value('order_no') ?: '';
+                    }
+                    Db::name('house_new_deposit_log')->insert([
+                        'village_id' => $villageId,
+                        'room_id' => $roomId,
+                        'order_id' => $orderId,
+                        'order_no' => $orderNo,
+                        'type' => 1,
+                        'before_money' => $beforeMoney,
+                        'money' => $releaseMoney,
+                        'total_money' => round($beforeMoney + $releaseMoney, 4),
+                        'add_time' => time(),
+                        'role_id' => intval($hasApproval['apply_wid'] ?? 0),
+                    ]);
+                }
+                Db::commit();
+            } catch (\Exception $e) {
+                Db::rollback();
+            }
+        }
+    }
 
+    private function syncApprovedDepositReleaseForRoom($villageId, $roomId)
+    {
+        $villageId = intval($villageId);
+        $roomId = intval($roomId);
+        if ($villageId <= 0 || $roomId <= 0) {
+            return;
+        }
+        $instances = Db::name('community_approval_instance')->where([
+            ['village_id', '=', $villageId],
+            ['status', '=', 1],
+            ['business_id', '>', 0],
+        ])->field('id,business_id,business_type,business_type_id,change_data,apply_wid')->select()->toArray();
+        foreach ($instances as $instance) {
+            $data = json_decode($instance['change_data'] ?? '[]', true);
+            if (!is_array($data)) {
+                $data = [];
+            }
+            $orderId = intval($data['order_id'] ?? ($instance['business_id'] ?? 0));
+            if ($orderId <= 0) {
+                continue;
+            }
+            $detail = Db::name('house_new_bill_deposit_order')->alias('d')
+                ->leftJoin('house_new_deposit_category c', 'c.id = d.category_id')
+                ->where([
+                    ['d.order_id', '=', $orderId],
+                    ['d.village_id', '=', $villageId],
+                    ['d.room_id', '=', $roomId],
+                ])->field('d.*,c.cate_key')->find();
+            if (!$detail || intval($detail['account_status'] ?? 0) !== 1) {
+                continue;
+            }
+            $isDepositRelease = (($data['action'] ?? '') === 'deposit_release');
+            if (!$isDepositRelease && !empty($detail['cate_key'])) {
+                if (($instance['business_type'] ?? '') === $detail['cate_key']) {
+                    $isDepositRelease = true;
+                } elseif (intval($instance['business_type_id'] ?? 0) > 0) {
+                    $typeKey = Db::name('community_approval_business_type')->where('id', intval($instance['business_type_id']))->value('type_key');
+                    $isDepositRelease = $typeKey === $detail['cate_key'];
+                }
+            }
+            if (!$isDepositRelease) {
+                continue;
+            }
+            $depositMoney = round(floatval($detail['deposit_money'] ?? 0), 4);
+            $refundedMoney = round(floatval($detail['refunded_money'] ?? 0), 4);
+            $remainMoney = round($depositMoney - $refundedMoney, 4);
+            $releaseMoney = round(floatval($data['deposit_money'] ?? 0), 4);
+            if ($releaseMoney <= 0 || $releaseMoney > $remainMoney) {
+                $releaseMoney = $remainMoney;
+            }
+            if ($releaseMoney <= 0) {
+                continue;
+            }
+            Db::startTrans();
+            try {
+                $account = Db::name('house_new_bill_deposit_account')->where([
+                    ['village_id', '=', $villageId],
+                    ['room_id', '=', intval($detail['room_id'])],
+                ])->lock(true)->find();
+                if (!$account) {
+                    Db::rollback();
+                    continue;
+                }
+                $now = time();
+                $newRefundedMoney = round($refundedMoney + $releaseMoney, 4);
+                Db::name('house_new_bill_deposit_account')->where('id', $account['id'])->update([
+                    'total_money' => round(floatval($account['total_money'] ?? 0) + $releaseMoney, 4),
+                    'update_time' => $now,
+                ]);
+                Db::name('house_new_bill_deposit_freeze')->where([
+                    ['village_id', '=', $villageId],
+                    ['room_id', '=', intval($detail['room_id'])],
+                    ['order_id', '=', $orderId],
+                    ['status', '=', 0],
+                ])->update([
+                    'status' => 2,
+                    'update_time' => $now,
+                ]);
+                Db::name('house_new_bill_deposit_order')->where('id', $detail['id'])->update([
+                    'refunded_money' => $newRefundedMoney,
+                    'account_status' => $newRefundedMoney >= $depositMoney ? 2 : 1,
+                    'update_time' => $now,
+                ]);
+                $oldDepositInfo = Db::name('house_new_deposit_log')->where([
+                    ['village_id', '=', $villageId],
+                    ['room_id', '=', $roomId],
+                ])->order('id DESC')->find();
+                $beforeMoney = $oldDepositInfo ? round(floatval($oldDepositInfo['total_money'] ?? 0), 4) : 0;
+                $oldTotalMoney = round($beforeMoney + $releaseMoney, 4);
+                $payOrder = Db::name('house_new_pay_order')->where([
+                    ['village_id', '=', $villageId],
+                    ['order_id', '=', $orderId],
+                ])->field('order_no,summary_id')->find();
+                $orderNo = $payOrder['order_no'] ?? '';
+                if (empty($orderNo) && !empty($payOrder['summary_id'])) {
+                    $orderNo = Db::name('house_new_pay_order_summary')->where('summary_id', intval($payOrder['summary_id']))->value('order_no') ?: '';
+                }
+                Db::name('house_new_deposit_log')->insert([
+                    'village_id' => $villageId,
+                    'room_id' => $roomId,
+                    'order_id' => $orderId,
+                    'order_no' => $orderNo,
+                    'type' => 1,
+                    'before_money' => $beforeMoney,
+                    'money' => $releaseMoney,
+                    'total_money' => $oldTotalMoney,
+                    'add_time' => $now,
+                    'role_id' => intval($instance['apply_wid'] ?? 0),
+                ]);
+                Db::commit();
+            } catch (\Exception $e) {
+                Db::rollback();
+            }
+        }
+    }
     public function getDepositInfo($data){
+        $this->repairReversedDepositReleaseLogs(intval($data['village_id'] ?? 0), intval($data['room_id'] ?? 0));
+        $this->repairReleasedDepositFreezeAccounts(intval($data['village_id'] ?? 0), intval($data['room_id'] ?? 0));
+        $this->syncApprovedDepositReleaseForRoom(intval($data['village_id'] ?? 0), intval($data['room_id'] ?? 0));
+        $this->repairReversedDepositReleaseLogs(intval($data['village_id'] ?? 0), intval($data['room_id'] ?? 0));
         $db_house_new_deposit_log=new HouseNewDepositLog();
         $where['village_id']=$data['village_id'];
         $where['room_id']=$data['room_id'];
@@ -14836,7 +15972,7 @@ class HouseNewCashierService
         $where[] = ['o.order_type','<>','non_motor_vehicle'];
         $where[] = ['o.village_id','=',$village_id];
         $where[]=  ['o.check_status','not in',array(1)];
-        $field='o.order_id,o.position_id,o.summary_id,o.uid,o.pigcms_id,o.name,o.phone,o.room_id,o.check_status,o.project_id,p.subject_id,p.type,n.charge_type,n.charge_number_name';
+        $field='o.order_type,o.order_id,o.position_id,o.summary_id,o.uid,o.pigcms_id,o.name,o.phone,o.room_id,o.check_status,o.project_id,p.subject_id,p.type,n.charge_type,n.charge_number_name';
         $dataObj = $db_house_new_pay_order->getList($where, $field,0,100,'o.service_end_time ASC,o.order_id ASC');
         $charge_type=[];
         $charge_type_arr=[];
@@ -14855,6 +15991,16 @@ class HouseNewCashierService
             foreach ($property_project_arr as $item_arr) {
                 $del_key=false;
                 foreach ($item_arr as $v) {
+                    if (($v['order_type'] ?? '') === 'deposit_bill') {
+                        if (!isset($charge_type['deposit_bill'])) {
+                            $depositType = ['key' => 'deposit_bill', 'only_key' => 'deposit_bill_0', 'subject_id' => 0, 'value' => '押金账单', 'charge_name' => '押金账单'];
+                            $charge_type_arr[] = $depositType;
+                            $charge_type_number['deposit_bill'] = $depositType;
+                        }
+                        $charge_type['deposit_bill'][] = $v['order_id'];
+                        continue;
+                    }
+
                     if($v['check_status']==5 && $v['type']==2){
                         //周期性账单
                        $del_key=true;
@@ -14917,7 +16063,35 @@ class HouseNewCashierService
      * @author:zhubaodi
      * @date_time: 2023/2/15 10:28
      */
+    private function getPendingDepositDisplayOrders($params)
+    {
+        $where = [
+            ['village_id', '=', intval($params['village_id'] ?? 0)],
+            ['order_type', '=', 'deposit_bill'], ['is_paid', '=', 2],
+            ['is_discard', '=', 1], ['check_status', '<>', 1],
+        ];
+        if (intval($params['summary_id'] ?? 0) > 0) {
+            $where[] = ['summary_id', '=', intval($params['summary_id'])];
+        } else {
+            $where[] = ['room_id', '=', intval($params['vacancy_id'] ?? 0)];
+        }
+        $rows = Db::name('house_new_pay_order')->where($where)
+            ->order('service_start_time ASC,order_id ASC')->select()->toArray();
+        foreach ($rows as &$row) {
+            $row = $this->fillDepositCategoryInfo($row);
+            $row['deposit_display_rule_id'] = -max(1, intval($row['deposit_category_id'] ?? 0));
+        }
+        unset($row);
+        return $rows;
+    }
+
     public function getOrderProjectList($data){
+        if (($data['charge_type'] ?? '') === 'deposit_bill') {
+            return $this->getPendingDepositDisplayOrders($data)
+                ? [['key' => -1, 'value' => '押金账单', 'charge_type' => 'deposit_bill', 'subject_id' => 0, 'subject_name' => '押金账单']]
+                : [];
+        }
+
 
         $db_house_new_pay_order = new HouseNewPayOrder();
         $vacancy_id=0;
@@ -14963,6 +16137,18 @@ class HouseNewCashierService
      * @date_time: 2023/2/15 10:28
      */
     public function getOrderRuleList($data){
+        if (intval($data['project_id'] ?? 0) === -1) {
+            $rules = [];
+            foreach ($this->getPendingDepositDisplayOrders($data) as $row) {
+                $key = $row['deposit_display_rule_id'];
+                if (!isset($rules[$key])) {
+                    $rules[$key] = ['key' => $key, 'value' => $row['deposit_category_name'], 'money' => 0];
+                }
+                $rules[$key]['money'] = round($rules[$key]['money'] + $row['modify_money'], 2);
+            }
+            return array_values($rules);
+        }
+
 
         $db_house_new_pay_order = new HouseNewPayOrder();
         $vacancy_id=0;
@@ -15023,6 +16209,22 @@ class HouseNewCashierService
      * @date_time: 2023/2/15 10:28
      */
     public function getChargeOrderList($data){
+        if (intval($data['project_id'] ?? 0) === -1) {
+            $orders = [];
+            foreach ($this->getPendingDepositDisplayOrders($data) as $row) {
+                if ($row['deposit_display_rule_id'] !== intval($data['rule_id'] ?? 0)) continue;
+                $row['title'] = date('Y-m', $row['service_start_time'] ?: $row['add_time']);
+                $row['modify_money'] = round($row['modify_money'], 2);
+                $row['index'] = count($orders);
+                $row['order_index'] = count($orders);
+                $row['is_cycle'] = 1;
+                $row['is_detail'] = 1;
+                $row['order_unify_flage'] = '';
+                $orders[] = $row;
+            }
+            return $orders;
+        }
+
 
         $db_house_new_pay_order = new HouseNewPayOrder();
         $db_house_new_charge_rule = new HouseNewChargeRule();
@@ -15207,6 +16409,11 @@ class HouseNewCashierService
                     $data['charge_type']=implode('","',$data['charge_type']);
                 }
                 $whereOr.= '`n`.`charge_type` in ("'.$data['charge_type'].'")';
+                $selectedTypes = explode('","', $data['charge_type']);
+                if (in_array('deposit_bill', $selectedTypes, true)) {
+                    $whereOr .= ' OR `o`.`order_type` = "deposit_bill"';
+                }
+
             }
             if (!empty($data['order_id'])){
                 if (is_array($data['order_id'])){
@@ -16148,7 +17355,8 @@ class HouseNewCashierService
         ];
         $id = $db_house_new_pay_order_refund->addOne($data);
         if ($id > 0) {
-            if($orderInfo['deposit_money']>0){
+            $this->restoreDepositDeductForRefund($orderInfo, $summaryInfo, $role_id, $refund_money);
+            if($orderInfo['deposit_money']>0 && !$this->hasNewDepositDeductFreeze($orderInfo)){
                 $db_house_new_deposit_log=new HouseNewDepositLog();
                 $deposit_info=$db_house_new_deposit_log->get_one(['village_id'=>$orderInfo['village_id'],'room_id'=>$orderInfo['room_id']]);
                 if (!empty($deposit_info)){
@@ -16271,7 +17479,7 @@ class HouseNewCashierService
                     }
                 }
                 $new_order = [
-                    'summary_id' => $orderInfo['summary_id'],
+                    'summary_id' => 0,
                     'uid' => $orderInfo['uid'],
                     'pigcms_id' => $orderInfo['pigcms_id'],
                     'name' => $orderInfo['name'],
@@ -16285,6 +17493,10 @@ class HouseNewCashierService
                     'total_money' => $orderInfo['total_money'],
                     'modify_money' => $orderInfo['total_money'],
                     'is_paid' => 2,
+                    'is_refund' => 1,
+                    'refund_money' => 0,
+                    'refund_type' => 0,
+                    'refund_reason' => '',
                     'is_prepare' => $orderInfo['is_prepare'],
                     'prepare_pay_money' => $orderInfo['prepare_pay_money'],
                     'service_month_num' => $orderInfo['service_month_num'],
@@ -16638,6 +17850,32 @@ class HouseNewCashierService
 
         }
         return false;
+    }
+
+    public function calcNaturalMonthDayMoney($monthMoney, $startTime, $endTime)
+    {
+        $monthMoney = floatval($monthMoney);
+        $startTime = intval($startTime);
+        $endTime = intval($endTime);
+        if ($monthMoney <= 0 || $startTime <= 0 || $endTime < $startTime) {
+            return 0;
+        }
+
+        $startDay = strtotime(date('Y-m-d 00:00:00', $startTime));
+        $endDay = strtotime(date('Y-m-d 00:00:00', $endTime));
+        $money = 0;
+
+        while ($startDay <= $endDay) {
+            $monthStart = strtotime(date('Y-m-01 00:00:00', $startDay));
+            $monthEnd = strtotime(date('Y-m-t 00:00:00', $startDay));
+            $segmentEnd = min($monthEnd, $endDay);
+            $days = intval(($segmentEnd - $startDay) / 86400) + 1;
+            $monthDays = intval(date('t', $startDay));
+            $money += $monthMoney / $monthDays * $days;
+            $startDay = strtotime('+1 day', $segmentEnd);
+        }
+
+        return round($money, 2);
     }
 
 }

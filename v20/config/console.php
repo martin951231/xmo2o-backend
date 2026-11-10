@@ -5,6 +5,8 @@
 return [
     // 指令定义
     'commands' => [
+        'waterAlarmGateway' => 'app\\command\\WaterAlarmGateway',
+        'socialActivityRefundQuery' => 'app\\command\\SocialActivityRefundQuery',
 		'buildingImport' => 'app\command\BuildingImport',
         'unitImport' => 'app\command\UnitImport',
         'floorImport' => 'app\command\FloorImport',

@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["uview-ui/components/u-line/u-line"],{"2a92":function(t,e,n){"use strict";var r;n.d(e,"b",(function(){return i})),n.d(e,"c",(function(){return a})),n.d(e,"a",(function(){return r}));var i=function(){var t=this,e=t.$createElement,n=(t._self._c,t.__get_style([t.lineStyle]));t.$mp.data=Object.assign({},{$root:{s0:n}})},a=[]},"2fec":function(t,e,n){"use strict";var r=n("d0cd"),i=n.n(r);i.a},a71ea:function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var r={name:"u-line",props:{color:{type:String,default:"#e4e7ed"},length:{type:String,default:"100%"},direction:{type:String,default:"row"},hairLine:{type:Boolean,default:!0},margin:{type:String,default:"0"},borderStyle:{type:String,default:"solid"}},computed:{lineStyle:function(){var t={};return t.margin=this.margin,"row"==this.direction?(t.borderBottomWidth="1px",t.borderBottomStyle=this.borderStyle,t.width=this.$u.addUnit(this.length),this.hairLine&&(t.transform="scaleY(0.5)")):(t.borderLeftWidth="1px",t.borderLeftStyle=this.borderStyle,t.height=this.$u.addUnit(this.length),this.hairLine&&(t.transform="scaleX(0.5)")),t.borderColor=this.color,t}}};e.default=r},bb90:function(t,e,n){"use strict";n.r(e);var r=n("2a92"),i=n("d5ee");for(var a in i)["default"].indexOf(a)<0&&function(t){n.d(e,t,(function(){return i[t]}))}(a);n("2fec");var o,u=n("f0c5"),d=Object(u["a"])(i["default"],r["b"],r["c"],!1,null,"6b54d216",null,!1,r["a"],o);e["default"]=d.exports},d0cd:function(t,e,n){},d5ee:function(t,e,n){"use strict";n.r(e);var r=n("a71ea"),i=n.n(r);for(var a in r)["default"].indexOf(a)<0&&function(t){n.d(e,t,(function(){return r[t]}))}(a);e["default"]=i.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'uview-ui/components/u-line/u-line-create-component',
+    {
+        'uview-ui/components/u-line/u-line-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("bb90"))
+        })
+    },
+    [['uview-ui/components/u-line/u-line-create-component']]
+]);

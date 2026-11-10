@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "sell-out-tag": "/pages/shopmall_third/components/sellOutTag"
+  }
+}

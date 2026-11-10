@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "添加事件",
+  "usingComponents": {
+    "w-picker": "/pages/Community/component/w-picker/w-picker",
+    "upload-img": "/pages/Community/component/uploadImg/uploadImg",
+    "lb-picker": "/appComponent/uni/lb-picker/index"
+  }
+}

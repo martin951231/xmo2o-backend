@@ -1,0 +1,10 @@
+{
+  "component": true,
+  "usingComponents": {
+    "product-list-liver": "/pages/live_and_video/live/liver/productListLiver",
+    "share": "/pages/live_and_video/live/viewer/share",
+    "set": "/pages/live_and_video/live/liver/set",
+    "send-msg": "/pages/live_and_video/components/sendMsg",
+    "love": "/pages/live_and_video/live/viewer/love"
+  }
+}

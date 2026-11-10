@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "硬件统计",
+  "usingComponents": {
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

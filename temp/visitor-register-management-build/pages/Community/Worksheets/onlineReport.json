@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "工单处理",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-segmented-control": "/components/uni-segmented-control/uni-segmented-control",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups"
+  }
+}

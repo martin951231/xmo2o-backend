@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "已缴账单",
+  "usingComponents": {
+    "w-picker": "/pages/houseMeter/components/w-picker/w-picker"
+  }
+}

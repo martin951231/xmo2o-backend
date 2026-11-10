@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "车库编辑",
+  "usingComponents": {
+    "u-switch": "/uview-ui/components/u-switch/u-switch"
+  }
+}

@@ -1,0 +1,26 @@
+
+[data-v-89b521ec] textarea {
+  overflow-x: hidden;
+  overflow-y: scroll !important;
+}
+.upload_list .upload_item[data-v-89b521ec] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 460px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-top: 3px;
+  cursor: pointer;
+}
+.upload_list .upload_item .left_file[data-v-89b521ec] {
+  color: #18f;
+}
+.upload_list .upload_item .right_delete[data-v-89b521ec] {
+  color: red;
+}
+

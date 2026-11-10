@@ -1,0 +1,1 @@
+<view hidden="{{!($root.g0)}}" class="tabbar-wrap data-v-48e59182"><u-tabbar vue-id="9f3c6126-1" value="{{current}}" list="{{tabbarList}}" active-color="{{activeColor}}" inactive-color="{{inactiveColor}}" border-top="{{false}}" data-ref="uTabbar" data-event-opts="{{[['^change',[['change']]]]}}" bind:change="__e" class="data-v-48e59182 vue-ref" bind:__l="__l"></u-tabbar></view>

@@ -1,0 +1,1 @@
+page{background-color:#fff}.container{margin:0;padding:0;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;height:100%}.qrcode-icon{width:425rpx;height:425rpx}.qrcode-img{width:100%;height:100%}.text{margin:30rpx 100rpx;text-align:center}

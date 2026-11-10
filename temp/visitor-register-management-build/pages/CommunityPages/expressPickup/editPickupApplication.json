@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "快递代取",
+  "usingComponents": {
+    "upload-img": "/pages/CommunityPages/component/uploadImg/uploadImg"
+  }
+}

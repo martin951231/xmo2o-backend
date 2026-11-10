@@ -1,0 +1,9 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "外来车辆出入登记",
+  "usingComponents": {
+    "date-time-field": "/pages/visitorRegister/DateTimeField",
+    "registration-nav": "/pages/visitorRegister/RegistrationNav",
+    "phone-authorization": "/pages/visitorRegister/PhoneAuthorization"
+  }
+}

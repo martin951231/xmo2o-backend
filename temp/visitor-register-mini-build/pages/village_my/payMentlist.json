@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "缴费列表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-segmented-control": "/appComponent/uni/uni-segmented-control/uni-segmented-control"
+  }
+}

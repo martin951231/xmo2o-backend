@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "事件列表",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-segmented-control": "/appComponent/uni/uni-segmented-control/uni-segmented-control",
+    "uni-popups": "/appComponent/uni/uni-popups/uni-popups",
+    "tip-box": "/pages/houseMeter/workOrder/tipBox"
+  }
+}

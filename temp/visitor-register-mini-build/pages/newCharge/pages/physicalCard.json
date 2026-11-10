@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "实体卡",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "card-empty": "/pages/newCharge/components/cardEmpty"
+  }
+}

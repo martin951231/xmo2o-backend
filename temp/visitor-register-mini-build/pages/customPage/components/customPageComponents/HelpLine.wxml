@@ -1,0 +1,1 @@
+<block wx:if="{{content}}"><view class="line-box data-v-8885c718"><view class="assist-line data-v-8885c718" style="{{'--line-style:'+(content.aux_line_style||'solid')+';'+('--line-color:'+(content.aux_line_color||'#e5e5e5')+';')+('margin:'+(content.left_right_margin=='noMargin'?'':'0 60rpx')+';')}}"></view></view></block>

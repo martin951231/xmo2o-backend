@@ -1,0 +1,40 @@
+.cloud-access-page[data-v-34adf36c] {
+  padding: 16px;
+}
+.page-header[data-v-34adf36c] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title[data-v-34adf36c] {
+  color: #1f2329;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+}
+.page-desc[data-v-34adf36c] {
+  margin-top: 4px;
+  color: #8c8c8c;
+  line-height: 22px;
+}
+.filter-wrap[data-v-34adf36c] {
+  padding: 16px 16px 0;
+  margin-bottom: 16px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+}
+.action-danger[data-v-34adf36c] {
+  color: #ff4d4f;
+}
+[data-v-34adf36c] .ant-form-item {
+  margin-bottom: 16px;
+}
+

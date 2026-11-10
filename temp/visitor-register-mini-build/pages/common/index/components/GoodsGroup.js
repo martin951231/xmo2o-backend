@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/common/index/components/GoodsGroup"],{"08f6":function(t,n,e){"use strict";var o=e("4f01"),r=e.n(o);r.a},"1d9d":function(t,n,e){"use strict";e.r(n);var o=e("5e5d"),r=e.n(o);for(var c in o)["default"].indexOf(c)<0&&function(t){e.d(n,t,(function(){return o[t]}))}(c);n["default"]=r.a},"4f01":function(t,n,e){},"5e5d":function(t,n,e){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),n.default=void 0;var o={name:"IndexGoods-group",props:{cardWidth:{type:Number,default:172},imgHeight:{type:Number,default:129},content:{type:Object,default:function(){return{}}}},data:function(){return{mainColor:"",currency:"￥"}},methods:{goUrl:function(){this.common.parseUrl(this.content.group_detail_url)}},mounted:function(){var t=this;this.common.getConfig((function(n){t.mainColor=n.config.mobile_head_color,t.currency=n.config.Currency_symbol}))},computed:{containerStyle:function(){return"width:".concat(this.cardWidth,"px;height:").concat(this.imgHeight+100,"px")},imgStyle:function(){return"width:100%;height:".concat(this.imgHeight,"px")},primaryColor:function(){return"color:".concat(this.mainColor,";")}}};n.default=o},"7cbf":function(t,n,e){"use strict";e.r(n);var o=e("de15"),r=e("1d9d");for(var c in r)["default"].indexOf(c)<0&&function(t){e.d(n,t,(function(){return r[t]}))}(c);e("08f6");var i,u=e("f0c5"),a=Object(u["a"])(r["default"],o["b"],o["c"],!1,null,"aa97ef9c",null,!1,o["a"],i);n["default"]=a.exports},de15:function(t,n,e){"use strict";var o;e.d(n,"b",(function(){return r})),e.d(n,"c",(function(){return c})),e.d(n,"a",(function(){return o}));var r=function(){var t=this,n=t.$createElement;t._self._c},c=[]}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/common/index/components/GoodsGroup-create-component',
+    {
+        'pages/common/index/components/GoodsGroup-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("7cbf"))
+        })
+    },
+    [['pages/common/index/components/GoodsGroup-create-component']]
+]);

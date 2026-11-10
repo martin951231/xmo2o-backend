@@ -1,0 +1,1 @@
+<view class="amount-item data-v-ca31b80a"><view class="data-v-ca31b80a"><text class="amount data-v-ca31b80a">{{money}}</text><text class="unit data-v-ca31b80a">元</text></view><block wx:if="{{label}}"><view class="label data-v-ca31b80a">{{label}}</view></block></view>
